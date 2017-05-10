@@ -38,64 +38,64 @@ WIP
 ## Events
 ### Listeners
 simple event listener:
-```
-entity.on(‘add’, …)
+```javascript
+entity.on('add', callback)
 ```
 one time listener:
-```
-entity.once(‘add’, …)
+```javascript
+entity.once('add', callback)
 ```
 returns a promise when no callback function is provided:
-```
-entity.once(‘add’).then( …)
+```javascript
+entity.once('add').then( callback)
 ```
 catch all events of a specific entity:
-```
-entity.on(‘*’, …)
+```javascript
+entity.on('*', callback)
 ```
 multiple events in one handler:
-```
-entity.on([‘**/add’, ‘**/remove’], …)
+```javascript
+entity.on(['**/add','**/remove'], callback)
 ```
 
 ### Hierarchy
 catch all events of a specific property:
-```
-entity.on(‘add’, …)
+```javascript
+entity.on('add', callback)
 ```
 include all children (recursive):
-```
-entity.on(‘**/add’, …)
+```javascript
+entity.on('**/add', callback)
 ```
 include direct children only (non-recursive):
-```
-entity.on(‘*/add’, …)
+```javascript
+entity.on('*/add', callback)
 ```
 include all parent (recursive):
-```
-entity.on(‘.../add’, …)
+```javascript
+entity.on('.../add', callback)
 ```
 include direct parent only (non-recursive):
-```
-entity.on(‘../add’, …)
+```javascript
+entity.on('../add', callback)
 ```
 
 ### Selectors
 by id:
-```
-scene.on(‘**/#myEntityId:update’, …)
+```javascript
+scene.on('**/#myEntityId:update', callback)
 ```
 by class
-```
-scene.on(‘**/.window:update’, …)
+```javascript
+scene.on('**/.window:update', callback)
 ```
 
 ### Property Updates
 geometries
-```
-entity.on(‘update.geometries’, …)
+```javascript
+entity.on('update.geometries', callback)
 ```
 geometries and materials
-```
-entity.on([‘update’.geometries’, ‘update.materials’], …)
+```javascript
+entity.on(['update.geometries','update.materials'], callback)
 ```
