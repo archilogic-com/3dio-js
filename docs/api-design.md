@@ -1,4 +1,6 @@
-# ms.js API
+# API Design
+
+<img src="https://docs.google.com/drawings/d/1Wep2ezu1ysOQv079CDwIswonGtYQZWKEUIga0CqtkH8/pub?w=829&h=137" />
 
 WORK IN PROGRESS
 
