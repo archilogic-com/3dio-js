@@ -1,8 +1,8 @@
 # API Design
 
-WORK IN PROGRESS
+_WORK IN PROGRESS - SUGGESTIONS ARE VERY WELLCOME ;)_
 
-_Note: Documentation and reference will reside in code. This is a place for openly formulated design iterations preceding implementation._
+This is a place for openly formulated design iterations preceding implementation. The implemented ready to used API reference will be generated automatically from code inlined documentation. 
 
 <img src="https://docs.google.com/drawings/d/1Wep2ezu1ysOQv079CDwIswonGtYQZWKEUIga0CqtkH8/pub?w=829&h=137" />
 
