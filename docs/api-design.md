@@ -57,7 +57,7 @@ entity.on('*', callback)
 ```
 multiple events in one handler:
 ```javascript
-entity.on(['**/add','**/remove'], callback)
+entity.on(['add','remove'], callback)
 ```
 
 ### Hierarchy
