@@ -1,6 +1,6 @@
-# ms.js
+# Parse Building Data the Easy Way
 
-Create, edit and parse [model structure format](https://github.com/archilogic-com/model-structure) the easy way: a low-level API library.
+**ms.js** - A comfortable low-level API for parsing, editing and creation of [model structure data](https://github.com/archilogic-com/model-structure).
 
 * [API design](docs/api-design.md)
 * [Examples](docs/examples.md)
