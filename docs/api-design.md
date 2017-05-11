@@ -1,10 +1,10 @@
 # API Design
 
-<img src="https://docs.google.com/drawings/d/1Wep2ezu1ysOQv079CDwIswonGtYQZWKEUIga0CqtkH8/pub?w=829&h=137" />
-
 WORK IN PROGRESS
 
 _Note: Documentation and reference will reside in code. This is a place for openly formulated design iterations preceding implementation._
+
+<img src="https://docs.google.com/drawings/d/1Wep2ezu1ysOQv079CDwIswonGtYQZWKEUIga0CqtkH8/pub?w=829&h=137" />
 
 ## Configs
 WIP
