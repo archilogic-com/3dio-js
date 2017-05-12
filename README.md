@@ -12,6 +12,6 @@ Comfortable APIs for web based parsing and editing of building data.
 
 ## Development
 * Install from NPM: `npm install ms-js`
-* Install from Git: `git clone https://github.com/archilogic-com/ms-js.git`
+* Or install from Git: `git clone https://github.com/archilogic-com/ms-js.git`
 * Run: `npm run dev`
 * Contribute: [Development page](docs/development.md)
