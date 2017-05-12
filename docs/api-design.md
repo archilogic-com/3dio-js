@@ -22,6 +22,7 @@ WIP
 ## Storage
 * ms.storage.load
 * ms.storage.save
+* ms.storage.setAutoSave
 
 ## Import
 * ms.import.ms1
