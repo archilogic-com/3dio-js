@@ -4,8 +4,8 @@
 
 Comfortable APIs for web based parsing and editing of building data.
 
-* [Examples](docs/examples.md)
 * [API](docs/api-reference/index.md)
+* [Examples](docs/examples.md)
 
 ## Related Projects
 
