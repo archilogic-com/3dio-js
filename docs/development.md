@@ -5,9 +5,9 @@
 
 ## Requirements
 
-* [Scope](docs/scope.md)
-* [Examples](docs/examples.md)
+* [Scope](scope.md)
+* [Examples](examples.md)
 
 ## Architecture
 
-* [API Design](docs/api-design.md)
+* [API Design](api-design.md)
