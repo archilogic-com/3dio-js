@@ -1,7 +1,5 @@
 # API Design
 
-This is a place for openly formulated design iterations preceding implementation. Suggestions in form of pull requests are very welcome! :) The implemented ready to used API reference will be generated automatically from inlined documentation. 
-
 ## Configs
 WIP
 
