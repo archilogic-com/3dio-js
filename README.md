@@ -4,8 +4,14 @@
 
 Comfortable APIs for web based parsing and editing of building data.
 
-* [API](docs/api-design.md)
-* [Scope](docs/scope.md)
 * [Examples](docs/examples.md)
+* [API Reference](docs/api-reference/index.md)
+* [Scope](docs/scope.md)
 * Data Format: [Model Structure](https://github.com/archilogic-com/model-structure)
 * GUI: [3D Viewer Web Component](https://github.com/archilogic-com/viewer)
+
+## Development
+* Install from NPM: `npm install ms-js`
+* Install from Git: `git clone https://github.com/archilogic-com/ms-js.git`
+* Run: `npm run dev`
+* Contribute: [Development page](docs/development.md)
