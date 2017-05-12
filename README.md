@@ -1,4 +1,4 @@
-# Make Buildings Editable
+# Making Buildings Editable
 
 `ms.js`
 
