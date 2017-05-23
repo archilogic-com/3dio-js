@@ -1,7 +1,7 @@
 # Development
 
-* Install from NPM: `npm install ms-js`
-* Or install from Git: `git clone https://github.com/archilogic-com/ms-js.git`
+* Install from NPM: `npm install base3d`
+* Or install from Git: `git clone https://github.com/archilogic-com/base-js.git`
 * Run development server: `npm run dev`
 * Run tests: `npm run tests`
 
@@ -12,9 +12,9 @@
 
 ## Requirements
 
-* [Scope](scope.md)
-* [Examples](examples.md)
+* [Scope](development/scope.md)
+* [Examples](../examples/index.html)
 
 ## Architecture
 
-* [API Design](api-design.md)
+* [API Design](development/api-design.md)

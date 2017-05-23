@@ -1,0 +1,17 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    padding: 30px;
+    margin: 0;
+    font-family: 'Dosis', sans-serif;
+    font-size: 18px;
+    background-color: #eee;
+    overflow: hidden;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+}
