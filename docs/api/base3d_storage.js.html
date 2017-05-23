@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>base3d.js - Documentation</title>
+    <title>base3d/storage.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Source: base3d.js</h1>
+    <h1 class="page-title">Source: base3d/storage.js</h1>
     
 
     
@@ -39,63 +39,44 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import './bootstrap.js'
-
-import { generateUuid, validateUuid } from './utils/uuid.js'
-import runtime from './runtime.js'
-import Entity from './base3d/entity.js'
-import Storage from './base3d/storage.js'
-
-/**
- * Creates an Base3d application instance.
- * @class Base3d
- * */
-export default function Base3d () {
+            <pre class="prettyprint source linenums"><code>/**
+ * @memberof Base3d
+ * @namespace storage
+ */
+export default function Storage (app) {
   // Avoid direct this references (= less bugs and ES2015 compatible)
-  var app = this
+  var this_ = this
 
-  app.id = generateUuid()
-
-  app.scene = new Entity(app)
-  app.storage = new Storage(app)
-
-  runtime.registerInstance(app)
-
-  // Flags
-  app.initialized = true
+  this_.app = app
 
 }
-
-// Static flags
-Base3d.initialized = false
-Base3d.destroyed = null
 
 /**
  * ...
  * @memberof Base3d
- * */
-Base3d.prototype.destroy = function destroy () {
-  var app = this
-
-  runtime.deregisterInstance(app)
-  app.destroyed = true
+ * @function storage#save
+ * @param   {object}                          args
+ * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
+ * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
+ * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
+ * @returns {Promise}
+ */
+Storage.prototype.save = function save () {
+  console.log('Found nothing')
 }
 
 /**
  * ...
  * @memberof Base3d
- * @function
- * */
-Base3d.registerPlugin = Base3d.prototype.registerPlugin = runtime.registerPlugin
-
-/**
- * ...
- * @memberof Base3d
- * @namespace
- * */
-Base3d.utils = Base3d.prototype.utils = {
-  generateUuid: generateUuid,
-  validateUuid: validateUuid
+ * @function storage#load
+ * @param   {object}                          args
+ * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
+ * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
+ * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
+ * @returns {Promise}
+ */
+Storage.prototype.load = function load () {
+  console.log('Found nothing')
 }</code></pre>
         </article>
     </section>

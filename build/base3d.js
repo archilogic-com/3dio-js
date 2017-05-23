@@ -330,6 +330,9 @@
 	  })();
 	}
 
+	// Bootstrap logger
+	logger.useDefaults();
+
 	var PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 	/**
@@ -351,7 +354,7 @@
 	/**
 	 * Validates UUID as specified in RFC4122
 	 * @memberof Base3d
-	 * @function utils#generateUuid
+	 * @function utils#validateUuid
 	 */
 
 	function validateUuid (str) {
@@ -373,8 +376,6 @@
 	  && Object.prototype.toString.call(process) === '[object process]'
 	  && process.title.indexOf('node') !== -1
 	);
-
-	console.log(IS_NODE);
 
 	// instances
 
@@ -448,116 +449,107 @@
 
 	};
 
-	function initScene () {
-
-	  /**
-	   * @memberof Base3d
-	   * @namespace scene
-	   */
-	  var scene = {};
-
-	  /**
-	   * ...
-	   * @memberof Base3d
-	   * @function scene#find
-	   * @param   {object}                          args
-	   * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
-	   * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
-	   * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
-	   * @returns {Promise}
-	   */
-	  scene.find = function find () {
-	    console.log('Found nothing');
-	  };
-
-	  /**
-	   * ...
-	   * @memberof Base3d
-	   * @function scene#findFirst
-	   * @param   {object}                          args
-	   * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
-	   * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
-	   * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
-	   * @returns {Promise}
-	   */
-	  scene.findFirst = function find () {
-	    console.log('Found nothing');
-	  };
-
-	  return scene
-
-	}
-
-	function initStorage (app) {
-
-	  /**
-	   * @memberof Base3d
-	   * @namespace storage
-	   */
-	  var storage = {};
-
-	  /**
-	   * ...
-	   * @memberof Base3d
-	   * @function storage#save
-	   * @param   {object}                          args
-	   * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
-	   * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
-	   * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
-	   * @returns {Promise}
-	   */
-	  storage.save = function save () {
-	    console.log('Found nothing');
-	  };
-
-	  /**
-	   * ...
-	   * @memberof Base3d
-	   * @function storage#load
-	   * @param   {object}                          args
-	   * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
-	   * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
-	   * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
-	   * @returns {Promise}
-	   */
-	  storage.load = function load () {
-	    console.log('Found nothing');
-	  };
-
-	  return storage
-
-	}
-
-	// bootstrap
-	logger.useDefaults();
 	/**
-	 * Creates an Base3d application. The base3d() function is a top-level function exported by the base3d module.
+	 * @memberof Base3d
+	 * @namespace entity
+	 */
+	function Entity (app) {
+	  // Avoid direct this references (= less bugs and ES2015 compatible)
+	  var this_ = this;
+
+	  this_.app = app;
+
+	}
+
+	/**
+	 * ...
+	 * @memberof Base3d
+	 * @function entity#find
+	 * @param   {object}                          args
+	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
+	 * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
+	 * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
+	 * @returns {Promise}
+	 */
+	Entity.prototype.find = function find () {
+	  console.log('Found nothing');
+	};
+
+	/**
+	 * ...
+	 * @memberof Base3d
+	 * @function entity#findFirst
+	 * @param   {object}                          args
+	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
+	 * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
+	 * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
+	 * @returns {Promise}
+	 */
+	Entity.prototype.findFirst = function find () {
+	  console.log('Found nothing');
+	};
+
+	/**
+	 * @memberof Base3d
+	 * @namespace storage
+	 */
+	function Storage (app) {
+	  // Avoid direct this references (= less bugs and ES2015 compatible)
+	  var this_ = this;
+
+	  this_.app = app;
+
+	}
+
+	/**
+	 * ...
+	 * @memberof Base3d
+	 * @function storage#save
+	 * @param   {object}                          args
+	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
+	 * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
+	 * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
+	 * @returns {Promise}
+	 */
+	Storage.prototype.save = function save () {
+	  console.log('Found nothing');
+	};
+
+	/**
+	 * ...
+	 * @memberof Base3d
+	 * @function storage#load
+	 * @param   {object}                          args
+	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
+	 * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
+	 * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
+	 * @returns {Promise}
+	 */
+	Storage.prototype.load = function load () {
+	  console.log('Found nothing');
+	};
+
+	/**
+	 * Creates an Base3d application instance.
 	 * @class Base3d
 	 * */
-	function Base3d (config) {
-
+	function Base3d () {
+	  // Avoid direct this references (= less bugs and ES2015 compatible)
 	  var app = this;
 
-	  // instance specific
-	  // app.configs = initConfigs(app)
-	  app.scene = initScene(app);
-	  app.storage = initStorage(app);
-	  // app.io = initIo(app)
-
-	  /**
-	   * @memberof Base3d
-	   * @member sessionId
-	   */
 	  app.id = generateUuid();
 
-	  runtime.registerInstance(app);
-	  console.log(runtime.getInstances());
+	  app.scene = new Entity(app);
+	  app.storage = new Storage(app);
 
-	  // flags
+	  runtime.registerInstance(app);
+
+	  // Flags
 	  app.initialized = true;
-	  console.log('ok ;)');
 
 	}
+
+	// Static flags
 	Base3d.initialized = false;
 	Base3d.destroyed = null;
 
@@ -566,8 +558,10 @@
 	 * @memberof Base3d
 	 * */
 	Base3d.prototype.destroy = function destroy () {
+	  var app = this;
+
 	  runtime.deregisterInstance(app);
-	  this.destroyed = true;
+	  app.destroyed = true;
 	};
 
 	/**

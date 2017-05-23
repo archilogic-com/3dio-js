@@ -19,7 +19,7 @@ export function generateUuid () {
 /**
  * Validates UUID as specified in RFC4122
  * @memberof Base3d
- * @function utils#generateUuid
+ * @function utils#validateUuid
  */
 
 export function validateUuid (str) {
