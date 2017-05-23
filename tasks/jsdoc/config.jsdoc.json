@@ -18,10 +18,10 @@
     "showInheritedInNav": true
   },
   "opts": {
-    "destination": "./docs/api/",
+    "destination": "docs/api/",
+    "template": "tasks/jsdoc/template",
     "encoding": "utf8",
     "private": false,
-    "recurse": true,
-    "template": "./docs/jsdoc/template"
+    "recurse": true
   }
 }
