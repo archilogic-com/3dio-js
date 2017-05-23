@@ -9,7 +9,8 @@
     "excludePattern": "(node_modules/|docs)"
   },
   "plugins": [
-    "plugins/markdown"
+    "../../tasks/jsdoc/plugins/description-files",
+    "../../node_modules/jsdoc/plugins/markdown"
   ],
   "templates": {
     "cleverLinks": false,
