@@ -12,7 +12,9 @@
 
 ## Requirements
 
-* [Scope](development/scope.md)
+* [Isomorphic Code](development/isomorphic-code.md)
+* [Simple Development Environment](development/dev-evnironment.md)
+* [Feature Scope](development/scope.md)
 * [Examples](../examples/index.html)
 
 ## Architecture
