@@ -1,58 +1,23 @@
-import './bootstrap.js'
+import './base3d/bootstrap.js'
 
-import { generateUuid, validateUuid } from './utils/uuid.js'
-import runtime from './runtime.js'
 import Entity from './base3d/entity.js'
-import Storage from './base3d/storage.js'
+import runtime from './base3d/runtime.js'
+import { generateUuid, validateUuid } from './base3d/utils/uuid.js'
 
 /**
- * Creates an Base3d application instance.
- * @class Base3d
+ * @description base3d library object
+ * @namespace base3d
  * */
-export default function Base3d () {
-  // Avoid direct this references (= less bugs and ES2015 compatible)
-  var app = this
-
-  app.id = generateUuid()
-
-  app.scene = new Entity(app)
-  app.storage = new Storage(app)
-
-  runtime.registerInstance(app)
-
-  // Flags
-  app.initialized = true
-
+var base3d = {
+  Entity: Entity,
+  sessionId: runtime.sessionId,
+  registerPlugin: runtime.registerPlugin,
+  utils: {
+    generateUuid: generateUuid,
+    validateUuid: validateUuid
+  }
 }
 
-// Static flags
-Base3d.initialized = false
-Base3d.destroyed = null
+console.log(base3d)
 
-/**
- * ...
- * @memberof Base3d
- * */
-Base3d.prototype.destroy = function destroy () {
-  var app = this
-
-  runtime.deregisterInstance(app)
-  app.destroyed = true
-}
-
-/**
- * ...
- * @memberof Base3d
- * @function
- * */
-Base3d.registerPlugin = Base3d.prototype.registerPlugin = runtime.registerPlugin
-
-/**
- * ...
- * @memberof Base3d
- * @namespace
- * */
-Base3d.utils = Base3d.prototype.utils = {
-  generateUuid: generateUuid,
-  validateUuid: validateUuid
-}
+export default base3d

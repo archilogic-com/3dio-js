@@ -1,7 +1,7 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
-	(global.Base3d = factory());
+	(global.base3d = factory());
 }(this, (function () { 'use strict';
 
 	var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
@@ -330,8 +330,72 @@
 	  })();
 	}
 
-	// Bootstrap logger
 	logger.useDefaults();
+
+	/**
+	 * ...
+	 * @memberof base3d
+	 * @function Entity#find
+	 * @param   {object}                          args
+	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
+	 * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
+	 * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
+	 * @returns {Promise}
+	 */
+	function find () {
+
+	  console.log('Found nothing');
+
+	}
+
+	/**
+	 * ...
+	 * @memberof base3d
+	 * @function Entity#findFirst
+	 * @param   {object}                          args
+	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
+	 * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
+	 * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
+	 * @returns {Promise}
+	 */
+	function findFirst () {
+
+	  console.log('Found nothing');
+
+	}
+
+	/**
+	 * ...
+	 * @memberof base3d
+	 * @function Entity#on
+	 * @param   {object}                          args
+	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
+	 * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
+	 * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
+	 * @returns {Promise}
+	 */
+	function on () {
+	  var this_ = this;
+
+	  console.log('WIP');
+
+	}
+
+	/**
+	 * ...
+	 * @memberof base3d
+	 * @function Entity#add
+	 * @param   {object}                          args
+	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
+	 * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
+	 * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
+	 * @returns {Promise}
+	 */
+	function add (arg) {
+
+	  console.log('Adding to the scene: ',arg);
+
+	}
 
 	var PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -362,9 +426,24 @@
 	  return PATTERN.test(str)
 	}
 
-	// rgeistries
+	// methods
+	function Entity () {
+	  // Avoid direct this references (= less bugs and ES2015 compatible)
+	  var this_ = this;
 
-	var instances = [];
+	  this_.uuid = generateUuid();
+
+	  // Flags
+	  this_.initialized = true;
+
+	}
+
+	Entity.prototype.on = on;
+	Entity.prototype.add = add;
+	Entity.prototype.find = find;
+	Entity.prototype.findFirst = findFirst;
+
+	var entitites = [];
 	var plugins = [];
 
 	// constants
@@ -377,28 +456,28 @@
 	  && process.title.indexOf('node') !== -1
 	);
 
-	// instances
+	// entitites
 
-	function registerInstance (app) {
-	  instances[instances.length] = app;
+	function registerEntity (entity) {
+	  entitites[entitites.length] = entity;
 	}
 
-	function deregisterInstance (app) {
-	  var i = instance.indexOf(app);
+	function deregisterEntity (entity) {
+	  var i = entities.indexOf(entity);
 	  if (i === -1) {
-	    console.error('Instance with id:'+app.id+' not found in runtime registry.');
+	    console.error('Entity with uuid:'+entity.uuid+' not found in runtime registry.');
 	  } else {
-	    instances.splice(i,1);
+	    entitites.splice(i,1);
 	  }
 	}
 
-	function getInstances () {
-	  return instances
+	function getEntities () {
+	  return entitites
 	}
 
-	function getInstanceById (id) {
-	  for (var i = 0, l = instances.length; i < l; i++) {
-	    if (instances[i].id === id) return instances[i]
+	function getEntityByUuid (uuid) {
+	  for (var i = 0, l = entitites.length; i < l; i++) {
+	    if (entitites[i].uuid === uuid) return entitites[i]
 	  }
 	  return null
 	}
@@ -411,23 +490,23 @@
 	    return false
 	  } else {
 	    pluginsByName[plugin.name] = plugin;
-	    // TODO: init plugin on running instances
-	    getInstances().forEach(function(app){
-	      initPlugin(app, plugin);
+	    // TODO: init plugin on running entitites
+	    getEntities().forEach(function(entity){
+	      initPlugin(entity, plugin);
 	    });
 	    return true
 	  }
 	}
 
-	function initPlugin (app, plugin) {
+	function initPlugin (entity, plugin) {
 
 	  // TODO: init plugin here
 
 	}
 
-	function initPlugins (app) {
+	function initPlugins (entity) {
 	  plugins.forEach(function(plugin){
-	    initPlugin(app, plugin);
+	    initPlugin(entity, plugin);
 	  });
 	}
 
@@ -435,153 +514,35 @@
 
 	var runtime = {
 
+	  sessionId: generateUuid(),
+
 	  env: {
 	    IS_NODE: IS_NODE
 	  },
 
-	  registerInstance: registerInstance,
-	  deregisterInstance: deregisterInstance,
-	  getInstanceById: getInstanceById,
-	  getInstances: getInstances,
+	  registerEntity: registerEntity,
+	  deregisterEntity: deregisterEntity,
+	  getEntityByUuid: getEntityByUuid,
+	  getEntities: getEntities,
 
 	  registerPlugin: registerPlugin,
 	  initPlugins: initPlugins
 
 	};
 
-	/**
-	 * @memberof Base3d
-	 * @namespace entity
-	 */
-	function Entity (app) {
-	  // Avoid direct this references (= less bugs and ES2015 compatible)
-	  var this_ = this;
-
-	  this_.app = app;
-
-	}
-
-	/**
-	 * ...
-	 * @memberof Base3d
-	 * @function entity#find
-	 * @param   {object}                          args
-	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
-	 * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
-	 * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
-	 * @returns {Promise}
-	 */
-	Entity.prototype.find = function find () {
-	  console.log('Found nothing');
+	var base3d = {
+	  Entity: Entity,
+	  sessionId: runtime.sessionId,
+	  registerPlugin: runtime.registerPlugin,
+	  utils: {
+	    generateUuid: generateUuid,
+	    validateUuid: validateUuid
+	  }
 	};
 
-	/**
-	 * ...
-	 * @memberof Base3d
-	 * @function entity#findFirst
-	 * @param   {object}                          args
-	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
-	 * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
-	 * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
-	 * @returns {Promise}
-	 */
-	Entity.prototype.findFirst = function find () {
-	  console.log('Found nothing');
-	};
+	console.log(base3d);
 
-	/**
-	 * @memberof Base3d
-	 * @namespace storage
-	 */
-	function Storage (app) {
-	  // Avoid direct this references (= less bugs and ES2015 compatible)
-	  var this_ = this;
-
-	  this_.app = app;
-
-	}
-
-	/**
-	 * ...
-	 * @memberof Base3d
-	 * @function storage#save
-	 * @param   {object}                          args
-	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
-	 * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
-	 * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
-	 * @returns {Promise}
-	 */
-	Storage.prototype.save = function save () {
-	  console.log('Found nothing');
-	};
-
-	/**
-	 * ...
-	 * @memberof Base3d
-	 * @function storage#load
-	 * @param   {object}                          args
-	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
-	 * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
-	 * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
-	 * @returns {Promise}
-	 */
-	Storage.prototype.load = function load () {
-	  console.log('Found nothing');
-	};
-
-	/**
-	 * Creates an Base3d application instance.
-	 * @class Base3d
-	 * */
-	function Base3d () {
-	  // Avoid direct this references (= less bugs and ES2015 compatible)
-	  var app = this;
-
-	  app.id = generateUuid();
-
-	  app.scene = new Entity(app);
-	  app.storage = new Storage(app);
-
-	  runtime.registerInstance(app);
-
-	  // Flags
-	  app.initialized = true;
-
-	}
-
-	// Static flags
-	Base3d.initialized = false;
-	Base3d.destroyed = null;
-
-	/**
-	 * ...
-	 * @memberof Base3d
-	 * */
-	Base3d.prototype.destroy = function destroy () {
-	  var app = this;
-
-	  runtime.deregisterInstance(app);
-	  app.destroyed = true;
-	};
-
-	/**
-	 * ...
-	 * @memberof Base3d
-	 * @function
-	 * */
-	Base3d.registerPlugin = Base3d.prototype.registerPlugin = runtime.registerPlugin;
-
-	/**
-	 * ...
-	 * @memberof Base3d
-	 * @namespace
-	 * */
-	Base3d.utils = Base3d.prototype.utils = {
-	  generateUuid: generateUuid,
-	  validateUuid: validateUuid
-	};
-
-	return Base3d;
+	return base3d;
 
 })));
 //# sourceMappingURL=base3d.js.map

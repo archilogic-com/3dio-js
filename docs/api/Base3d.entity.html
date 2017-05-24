@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>entity - Documentation</title>
+    <title>Entity - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -24,12 +24,12 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <li class="nav-link nav-home-link"><a href="index.html"><span class="nav-title">base.js</span><span class="nav-title-version-number">1.0.0</span></a></li><li class="nav-heading"></li><li class="nav-heading"><span class="nav-item-type type-class"></span><span class="nav-item-name"><a href="Base3d.html">Base3d</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="Base3d.html#.registerPlugin">registerPlugin</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="Base3d.html#destroy">destroy</a></span></li><li class="nav-heading"></li><li class="nav-heading"><span class="nav-item-type type-namespace"></span><span class="nav-item-name"><a href="Base3d.entity.html">entity</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="Base3d.entity.html#find">find</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="Base3d.entity.html#findFirst">findFirst</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace"></span><span class="nav-item-name"><a href="Base3d.storage.html">storage</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="Base3d.storage.html#load">load</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="Base3d.storage.html#save">save</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace"></span><span class="nav-item-name"><a href="Base3d.utils.html">utils</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="Base3d.utils.html#generateUuid">generateUuid</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="Base3d.utils.html#validateUuid">validateUuid</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace"></span><span class="nav-item-name"><a href="scene.html">scene</a></span></li>
+    <li class="nav-link nav-home-link"><a href="index.html"><span class="nav-title">base3d.js</span><span class="nav-title-version-number">1.0.0</span></a></li><li class="nav-heading"></li><li class="nav-heading"><span class="nav-item-type type-class"></span><span class="nav-item-name"><a href="base3d.Entity.html">Entity</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="base3d.Entity.html#add">add</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="base3d.Entity.html#find">find</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="base3d.Entity.html#findFirst">findFirst</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="base3d.Entity.html#on">on</a></span></li><li class="nav-heading"></li><li class="nav-heading"><span class="nav-item-type type-namespace"></span><span class="nav-item-name"><a href="base3d.html">base3d</a></span></li>
 </nav>
 
 <div id="main">
     
-    <h1 class="page-title">Namespace: entity</h1>
+    <h1 class="page-title">Class: Entity</h1>
     
 
     
@@ -42,9 +42,9 @@
 <header>
     
         <h2>
-            <span class="ancestors"><a href="Base3d.html">Base3d</a>.</span>
+            <span class="ancestors"><a href="base3d.html">base3d</a>.</span>
         
-        entity
+        Entity
         </h2>
         
     
@@ -54,8 +54,18 @@
     <div class="container-overview">
     
         
+<div class="section-method">
 
-        
+    
+
+    <h4 class="name" id="Entity"><span class="type-signature"></span>new Entity<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+
 
 
 <dl class="details">
@@ -87,7 +97,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="base3d_entity.js.html">base3d/entity.js</a>, <a href="base3d_entity.js.html#line1">line 1</a>
+        <a href="base3d_entity.js.html">base3d/entity.js</a>, <a href="base3d_entity.js.html#line9">line 9</a>
     </li></ul></dd>
     
 
@@ -99,7 +109,28 @@
 </dl>
 
 
-        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
     
     </div>
 
@@ -118,6 +149,322 @@
     
         <h3 class="subsection-title">Methods</h3>
 
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="add"><span class="type-signature"></span>add<span class="signature">(args)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>...</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="base3d_entity_add.js.html">base3d/entity/add.js</a>, <a href="base3d_entity_add.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>object</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                
+                
+                    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>apiUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>string</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">
+                <p>Url of archilogic services server-side endpoints.</p>
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>modelMakerApiUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>string</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">
+                <p>Url of model maker services server-side endpoints.</p>
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>logLevel</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>'error'</code></span>
+|
+
+<span class="param-type"><code>'warn'</code></span>
+|
+
+<span class="param-type"><code>'info'</code></span>
+|
+
+<span class="param-type"><code>'debug'</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    warn
+                
+                </td>
+            
+
+            <td class="description last">
+                <p>Specify logging level</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Promise</code></span>
+
+
+    </dd>
+</dl>
+
+
+    
+</div>
+
+
+
+</div>
         
             
 <div class="section-method">
@@ -167,7 +514,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="base3d_entity.js.html">base3d/entity.js</a>, <a href="base3d_entity.js.html#line13">line 13</a>
+        <a href="base3d_entity_find.js.html">base3d/entity/find.js</a>, <a href="base3d_entity_find.js.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -483,7 +830,323 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="base3d_entity.js.html">base3d/entity.js</a>, <a href="base3d_entity.js.html#line27">line 27</a>
+        <a href="base3d_entity_find-first.js.html">base3d/entity/find-first.js</a>, <a href="base3d_entity_find-first.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>object</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                
+                
+                    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>apiUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>string</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">
+                <p>Url of archilogic services server-side endpoints.</p>
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>modelMakerApiUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>string</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">
+                <p>Url of model maker services server-side endpoints.</p>
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>logLevel</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>'error'</code></span>
+|
+
+<span class="param-type"><code>'warn'</code></span>
+|
+
+<span class="param-type"><code>'info'</code></span>
+|
+
+<span class="param-type"><code>'debug'</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    warn
+                
+                </td>
+            
+
+            <td class="description last">
+                <p>Specify logging level</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Promise</code></span>
+
+
+    </dd>
+</dl>
+
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="on"><span class="type-signature"></span>on<span class="signature">(args)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>...</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="base3d_entity_on.js.html">base3d/entity/on.js</a>, <a href="base3d_entity_on.js.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -768,7 +1431,7 @@
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue May 23 2017 16:39:30 GMT+0200 (CEST) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed May 24 2017 10:52:15 GMT+0200 (CEST) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

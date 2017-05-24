@@ -24,7 +24,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <li class="nav-link nav-home-link"><a href="index.html"><span class="nav-title">base.js</span><span class="nav-title-version-number">1.0.0</span></a></li><li class="nav-heading"></li><li class="nav-heading"><span class="nav-item-type type-class"></span><span class="nav-item-name"><a href="Base3d.html">Base3d</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="Base3d.html#.registerPlugin">registerPlugin</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="Base3d.html#destroy">destroy</a></span></li><li class="nav-heading"></li><li class="nav-heading"><span class="nav-item-type type-namespace"></span><span class="nav-item-name"><a href="Base3d.entity.html">entity</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="Base3d.entity.html#find">find</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="Base3d.entity.html#findFirst">findFirst</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace"></span><span class="nav-item-name"><a href="Base3d.storage.html">storage</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="Base3d.storage.html#load">load</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="Base3d.storage.html#save">save</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace"></span><span class="nav-item-name"><a href="Base3d.utils.html">utils</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="Base3d.utils.html#generateUuid">generateUuid</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="Base3d.utils.html#validateUuid">validateUuid</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace"></span><span class="nav-item-name"><a href="scene.html">scene</a></span></li>
+    <li class="nav-link nav-home-link"><a href="index.html"><span class="nav-title">base3d.js</span><span class="nav-title-version-number">1.0.0</span></a></li><li class="nav-heading"></li><li class="nav-heading"><span class="nav-item-type type-class"></span><span class="nav-item-name"><a href="base3d.Entity.html">Entity</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="base3d.Entity.html#add">add</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="base3d.Entity.html#find">find</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="base3d.Entity.html#findFirst">findFirst</a></span></li><li class="nav-item"><span class="nav-item-type type-function"></span><span class="nav-item-name"><a href="base3d.Entity.html#on">on</a></span></li><li class="nav-heading"></li><li class="nav-heading"><span class="nav-item-type type-namespace"></span><span class="nav-item-name"><a href="base3d.html">base3d</a></span></li>
 </nav>
 
 <div id="main">
@@ -39,70 +39,29 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import './bootstrap.js'
+            <pre class="prettyprint source linenums"><code>import './base3d/bootstrap.js'
 
-import { generateUuid, validateUuid } from './utils/uuid.js'
-import runtime from './runtime.js'
 import Entity from './base3d/entity.js'
-import Storage from './base3d/storage.js'
+import runtime from './base3d/runtime.js'
+import { generateUuid, validateUuid } from './base3d/utils/uuid.js'
 
 /**
- * Creates an Base3d application instance.
- * @class Base3d
+ * @description base3d library object
+ * @namespace base3d
  * */
-export default function Base3d () {
-  // Avoid direct this references (= less bugs and ES2015 compatible)
-  var app = this
-
-  app.id = generateUuid()
-
-  /**
-   * Root entity
-   * @description base3d.md
-   * @namespace scene
-   * @type {Entity}
-   */
-  app.scene = new Entity(app)
-  app.storage = new Storage(app)
-
-  runtime.registerInstance(app)
-
-  // Flags
-  app.initialized = true
-
+var base3d = {
+  Entity: Entity,
+  sessionId: runtime.sessionId,
+  registerPlugin: runtime.registerPlugin,
+  utils: {
+    generateUuid: generateUuid,
+    validateUuid: validateUuid
+  }
 }
 
-// Static flags
-Base3d.initialized = false
-Base3d.destroyed = null
+console.log(base3d)
 
-/**
- * ...
- * @memberof Base3d
- * */
-Base3d.prototype.destroy = function destroy () {
-  var app = this
-
-  runtime.deregisterInstance(app)
-  app.destroyed = true
-}
-
-/**
- * ...
- * @memberof Base3d
- * @function
- * */
-Base3d.registerPlugin = Base3d.prototype.registerPlugin = runtime.registerPlugin
-
-/**
- * ...
- * @memberof Base3d
- * @namespace
- * */
-Base3d.utils = Base3d.prototype.utils = {
-  generateUuid: generateUuid,
-  validateUuid: validateUuid
-}</code></pre>
+export default base3d</code></pre>
         </article>
     </section>
 
@@ -114,7 +73,7 @@ Base3d.utils = Base3d.prototype.utils = {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue May 23 2017 16:39:30 GMT+0200 (CEST) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed May 24 2017 10:52:15 GMT+0200 (CEST) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

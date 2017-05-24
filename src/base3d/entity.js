@@ -1,39 +1,27 @@
+// methods
+import find       from './entity/find.js'
+import findFirst  from './entity/find-first.js'
+import on         from './entity/on.js'
+import add        from './entity/add.js'
+// utils
+import { generateUuid } from './utils/uuid.js'
+
 /**
- * @memberof Base3d
- * @namespace entity
+ * @memeberof base3d
+ * @class base3d.Entity
  */
-export default function Entity (app) {
+export default function Entity () {
   // Avoid direct this references (= less bugs and ES2015 compatible)
   var this_ = this
 
-  this_.app = app
+  this_.uuid = generateUuid()
+
+  // Flags
+  this_.initialized = true
 
 }
 
-/**
- * ...
- * @memberof Base3d
- * @function entity#find
- * @param   {object}                          args
- * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
- * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
- * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
- * @returns {Promise}
- */
-Entity.prototype.find = function find () {
-  console.log('Found nothing')
-}
-
-/**
- * ...
- * @memberof Base3d
- * @function entity#findFirst
- * @param   {object}                          args
- * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
- * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
- * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
- * @returns {Promise}
- */
-Entity.prototype.findFirst = function find () {
-  console.log('Found nothing')
-}
+Entity.prototype.on = on
+Entity.prototype.add = add
+Entity.prototype.find = find
+Entity.prototype.findFirst = findFirst

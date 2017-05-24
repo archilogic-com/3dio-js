@@ -21,7 +21,35 @@
 check console …
 
 <script>
-  var b3d = new Base3d()
+
+  // configs
+  var S3_CONFIGS = {
+    bucket: ''
+  }
+
+  // create scene
+
+  var scene = new base3d.Entity()
+  console.log('Created scene (root level entity) with uuid:'+scene.uuid)
+
+  // pushing data to the renderer
+
+  // hierarchy
+  scene.on('**/*:add', function(uuid, entity){
+    console.log('Added entity to scene. uuid:'+entity)
+  })
+  // geometry
+  scene.on('**/*:data:geometry', function(uuid, entity, geometry){
+    console.log('Entity geometry data updated (loaded or updated by param change). uuid:'+geometry)
+  })
+  // material
+  scene.on('**/*:data:material', function(uuid, entity, material){
+    console.log('Entity material data updated (loaded or updated by param change). uuid:'+geometry)
+  })
+
+  // initiate loading
+  scene.add('../assets/cubes.base3d.json')
+
 </script>
 
 </body>

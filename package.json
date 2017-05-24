@@ -1,9 +1,9 @@
 {
-  "name": "base.js",
+  "name": "base3d.js",
   "private": true,
   "version": "1.0.0",
   "description": "Comfortable APIs for web based parsing and editing of building data in BASE format.",
-  "main": "build/base.js",
+  "main": "build/base3d.js",
   "repository": "archilogic-com/base-js",
   "dependencies": {
     "bluebird": "^3.5.0",

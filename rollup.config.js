@@ -9,7 +9,7 @@ export default {
   targets: [
     {
       format: 'umd',
-      moduleName: 'Base3d',
+      moduleName: 'base3d',
       dest: 'build/base3d.js'
     }
   ]
