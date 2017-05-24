@@ -330,6 +330,7 @@
 	  })();
 	}
 
+	// Bootstrap logger
 	logger.useDefaults();
 
 	/**
@@ -427,6 +428,11 @@
 	}
 
 	// methods
+	// utils
+	/**
+	 * @memeberof base3d
+	 * @class base3d.Entity
+	 */
 	function Entity () {
 	  // Avoid direct this references (= less bugs and ES2015 compatible)
 	  var this_ = this;
@@ -442,6 +448,8 @@
 	Entity.prototype.add = add;
 	Entity.prototype.find = find;
 	Entity.prototype.findFirst = findFirst;
+
+	// rgeistries
 
 	var entitites = [];
 	var plugins = [];
@@ -530,6 +538,10 @@
 
 	};
 
+	/**
+	 * @description base3d library object
+	 * @namespace base3d
+	 * */
 	var base3d = {
 	  Entity: Entity,
 	  sessionId: runtime.sessionId,
