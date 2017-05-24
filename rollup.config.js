@@ -9,7 +9,14 @@ export default {
   entry: 'src/base3d.js',
   indent: '\t',
   sourceMap: true,
-  plugins: [json(), commonjs(), resolve()],
+  plugins: [
+    json(),
+    commonjs({
+      exclude: [ 'node_modules/node-fetch/**' ]
+    }),
+    resolve()
+  ],
+  context: 'global', // required for whatwg-fetch module
   targets: [
     {
       format: 'umd',
@@ -19,7 +26,7 @@ export default {
     }
   ],
   onwarn (warning) {
-    // skip eval warnings
+    // skip eval warnings (bluebird module uses eval)
     if (warning.code === 'EVAL') return
     // log everything else
     console.warn(warning.message)

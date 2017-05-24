@@ -1,5 +1,22 @@
-// Promise library (also serves as polyfill for IE11)
+// Promise API polyfill for IE11
+
 import 'bluebird/js/browser/bluebird.js'
+
+// fetch API polyfill for old browsers
+import 'whatwg-fetch'
+
+// fetch API for node
+if (!!(
+    // detect node environment
+    typeof module !== 'undefined'
+    && module.exports
+    && typeof process !== 'undefined'
+    && Object.prototype.toString.call(process) === '[object process]'
+    && process.title.indexOf('node') !== -1
+  )) {
+  // load node-fetch module
+  global.fetch = require('node-fetch')
+}
 
 // based on https://raw.githubusercontent.com/mrdoob/three.js/dev/src/polyfills.js
 
