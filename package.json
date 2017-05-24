@@ -19,7 +19,7 @@
     "build": "rollup -c",
     "dist": "npm run build && uglifyjs build/base3d.js -o dist/base3d.min.js -cm --source-map includeSources,content=build/base3d.js.map,url=base3d.min.js.map",
     "dist-gzip": "npm run build && uglifyjs build/base3d.js -o dist/base3d.min.js -cm --source-map includeSources,content=build/base3d.js.map,url=base3d.min.js.map && gzip -9 dist/base3d.min.js dist/base3d.min.js.map && mv dist/base3d.min.js.gz dist/base3d.min.js && mv dist/base3d.min.js.map.gz dist/base3d.min.js.map",
-    "docs": "node_modules/.bin/jsdoc --configure tasks/jsdoc/config.jsdoc.json --verbose"
+    "docs": "node_modules/.bin/jsdoc --configure dev/jsdoc/config.jsdoc.json --verbose"
   },
   "devDependencies": {
     "jsdoc": "^3.4.3",

@@ -9,7 +9,7 @@
     "excludePattern": "(node_modules/|docs)"
   },
   "plugins": [
-    "../../tasks/jsdoc/plugins/description-files",
+    "../../dev/jsdoc/plugins/embed-file",
     "../../node_modules/jsdoc/plugins/markdown"
   ],
   "templates": {
@@ -20,7 +20,7 @@
   },
   "opts": {
     "destination": "docs/api/",
-    "template": "tasks/jsdoc/template",
+    "template": "dev/jsdoc/template",
     "encoding": "utf8",
     "private": false,
     "recurse": true
