@@ -56,25 +56,21 @@ entity.on(['add','remove'], callback)
 ```
 
 ### Hierarchy
-catch all events of a specific property:
-```javascript
-entity.on('add', callback)
-```
-include all children (recursive):
-```javascript
-entity.on('**/add', callback)
-```
-include direct children only (non-recursive):
+include children:
 ```javascript
 entity.on('*/add', callback)
 ```
-include all parent (recursive):
+include children recursively:
 ```javascript
-entity.on('.../add', callback)
+entity.on('**/add', callback)
 ```
-include direct parent only (non-recursive):
+include parent:
 ```javascript
 entity.on('../add', callback)
+```
+include parents recursively:
+```javascript
+entity.on('.../add', callback)
 ```
 
 ### Selectors
