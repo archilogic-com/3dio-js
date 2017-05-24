@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>utils/uuid.js - Documentation</title>
+    <title>base3d/entity/on.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Source: utils/uuid.js</h1>
+    <h1 class="page-title">Source: base3d/entity/on.js</h1>
     
 
     
@@ -39,31 +39,22 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>var PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
-
-/**
- * Generate an UUID as specified in RFC4122
+            <pre class="prettyprint source linenums"><code>/**
+ * ...
+ * @memberof base3d
+ * @function Entity#on
+ * @param   {object}                          args
+ * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
+ * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
+ * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
+ * @returns {Promise}
  */
+export default function on () {
+  var this_ = this
 
-export function generateUuid () {
-  var d = Date.now()
-  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    var r = (d + Math.random() * 16) % 16 | 0;
-    d = Math.floor(d / 16);
-    return (c == 'x' ? r : (r &amp; 0x3 | 0x8)).toString(16);
-  })
-  return uuid
-}
+  console.log('WIP')
 
-/**
- * Validates UUID as specified in RFC4122
- */
-
-export function validateUuid (str) {
-  if (!str || typeof str !== "string") return false
-  return PATTERN.test(str)
-}
-</code></pre>
+}</code></pre>
         </article>
     </section>
 
