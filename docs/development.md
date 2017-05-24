@@ -1,9 +1,9 @@
 # Development
 
 * Install from NPM: `npm install base3d`
-* Or install from Git: `git clone https://github.com/archilogic-com/base-js.git`
+* Or install from Git: `git clone https://github.com/archilogic-com/base3d-js.git`
 * Run development server: `npm run dev`
-* Run tests: `npm run tests`
+* Run tests: `npm run tests` (not implemented yet)
 
 ## Process
 
@@ -12,11 +12,11 @@
 
 ## Requirements
 
-* [Isomorphic Code](development/isomorphic-code.md)
-* [Simple Development Environment](development/dev-evnironment.md)
-* [Feature Scope](development/scope.md)
+* [Isomorphic Code](dev/isomorphic-code.md)
+* [Simple Development Environment](dev/dev-evnironment.md)
+* [Feature Scope](dev/scope.md)
 * [Examples](../examples/index.html)
 
 ## Architecture
 
-* [API Design](development/api-design.md)
+* [API Design](dev/api-design.md)
