@@ -2,8 +2,6 @@ var PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a
 
 /**
  * Generate an UUID as specified in RFC4122
- * @memberof Base3d
- * @function utils#generateUuid
  */
 
 export function generateUuid () {
@@ -18,8 +16,6 @@ export function generateUuid () {
 
 /**
  * Validates UUID as specified in RFC4122
- * @memberof Base3d
- * @function utils#validateUuid
  */
 
 export function validateUuid (str) {

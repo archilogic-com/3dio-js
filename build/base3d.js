@@ -402,8 +402,6 @@
 
 	/**
 	 * Generate an UUID as specified in RFC4122
-	 * @memberof Base3d
-	 * @function utils#generateUuid
 	 */
 
 	function generateUuid () {
@@ -418,8 +416,6 @@
 
 	/**
 	 * Validates UUID as specified in RFC4122
-	 * @memberof Base3d
-	 * @function utils#validateUuid
 	 */
 
 	function validateUuid (str) {

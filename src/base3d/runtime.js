@@ -1,4 +1,4 @@
-import { generateUuid } from './utils/uuid.js'
+import { generateUuid } from '../utils/uuid.js'
 
 // rgeistries
 

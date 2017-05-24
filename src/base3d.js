@@ -2,7 +2,7 @@ import './base3d/bootstrap.js'
 
 import Entity from './base3d/entity.js'
 import runtime from './base3d/runtime.js'
-import { generateUuid, validateUuid } from './base3d/utils/uuid.js'
+import { generateUuid, validateUuid } from './utils/uuid.js'
 
 /**
  * @description base3d library object

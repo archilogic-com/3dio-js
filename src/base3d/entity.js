@@ -4,7 +4,7 @@ import findFirst  from './entity/find-first.js'
 import on         from './entity/on.js'
 import add        from './entity/add.js'
 // utils
-import { generateUuid } from './utils/uuid.js'
+import { generateUuid } from '../utils/uuid.js'
 
 /**
  * @memeberof base3d
