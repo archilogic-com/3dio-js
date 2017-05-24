@@ -1,6 +1,6 @@
 # Making Buildings Editable
 
-`base.js`
+`base3d.js`
 
 Comfortable APIs for web based parsing and editing of building data.
 
@@ -10,7 +10,7 @@ Comfortable APIs for web based parsing and editing of building data.
 ## Related Projects
 
 * GUI: [3D Viewer Web Component](https://github.com/archilogic-com/viewer)
-* Data Format: [BASE Format](https://github.com/archilogic-com/base-format)
+* Data Format: [BASE Format](https://github.com/archilogic-com/base3d-format)
 
 ## Contribute
 
