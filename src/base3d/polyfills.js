@@ -1,3 +1,6 @@
+// Promise library (also serves as polyfill for IE11)
+import 'bluebird/js/browser/bluebird.js'
+
 // based on https://raw.githubusercontent.com/mrdoob/three.js/dev/src/polyfills.js
 
 if (Number.EPSILON === undefined) {
