@@ -1,5 +1,5 @@
 {
-  "name": "base3d.js",
+  "name": "base3d",
   "private": true,
   "version": "1.0.0",
   "description": "Comfortable APIs for web based parsing and editing of building data in BASE format.",
