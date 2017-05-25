@@ -1,7 +1,7 @@
 # Development
 
-* Install from NPM: `npm install base3d`
-* Or install from Git: `git clone https://github.com/archilogic-com/base3d-js.git`
+* Install from NPM: `npm install base-query`
+* Or install from Git: `git clone https://github.com/archilogic-com/base-query.git`
 * Run development server: `npm run dev`
 * Run tests: `npm run tests` (not implemented yet)
 

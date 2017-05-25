@@ -6,8 +6,8 @@ import runtime from './base-query/runtime.js'
 import { generateUuid, validateUuid } from './utils/uuid.js'
 
 /**
- * @description base3d library object
- * @namespace base3d
+ * @description base-query library object
+ * @namespace bq
  * */
 var bq = {
   // info

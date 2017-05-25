@@ -10,8 +10,8 @@ import remove     from './entity/remove.js'
 
 
 /**
- * @memeberof base3d
- * @class base3d.Entity
+ * @memeberof bq
+ * @class bq.Entity
  */
 
 export default function Entity () {

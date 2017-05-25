@@ -1,6 +1,6 @@
 /**
  * ...
- * @memberof base3d
+ * @memberof bq
  * @function Entity#findFirst
  * @param   {object}                          args
  * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.

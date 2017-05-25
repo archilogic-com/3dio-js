@@ -11,4 +11,4 @@
 * Export scene to IFC file
 * Collaborate in real-time
 * Listen to scene events
-* Add Plugin to Base3d class
+* Add Plugin to base query lib
