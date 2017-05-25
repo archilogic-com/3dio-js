@@ -1,16 +1,16 @@
 # Making Buildings Editable
 
-`base3d.js`
+`base-query.js`
 
-Comfortable APIs for web based parsing and editing of building data.
+Parse and Edit building data in base format using simple APIs.
 
 * [API](docs/api/index.html)
 * [Examples](docs/examples/index.html)
 
 ## Related Projects
 
-* GUI: [3D Viewer Web Component](https://github.com/archilogic-com/viewer)
-* Data Format: [BASE Format](https://github.com/archilogic-com/base3d-format)
+* GUI: [3D Base Viewer Web Component](https://github.com/archilogic-com/base-viewer)
+* Data Format: [Base](https://github.com/archilogic-com/base-format)
 
 ## Contribute
 
