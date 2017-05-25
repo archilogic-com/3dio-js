@@ -17,7 +17,7 @@
   },
   "scripts": {
     "dev": "npm run dev-browser",
-    "dev-browser": "rollup -cw &! live-server ./ --port=8080 --ignore=**/* --open=/examples/browser",
+    "dev-browser": "rollup -cw &! live-server ./ -q --port=8080 --ignore=node_modules/**,dev/** --open=/examples/browser",
     "dev-node": "rollup -c && node examples/node/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rm -f build/* && rollup -c",
