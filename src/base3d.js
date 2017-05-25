@@ -1,4 +1,4 @@
-import { version, repository } from '../package.json'
+import { version } from '../package.json'
 import './base3d/bootstrap.js'
 
 import Entity from './base3d/entity.js'
@@ -12,7 +12,6 @@ import { generateUuid, validateUuid } from './utils/uuid.js'
 var base3d = {
   // info
   version: version,
-  repository: repository.url,
   sessionId: runtime.sessionId,
   // class
   Entity: Entity,

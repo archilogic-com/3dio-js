@@ -20,7 +20,7 @@ export default {
   targets: [
     {
       format: 'umd',
-      banner: '/* base3d.js lib v' + packageInfo.version + ' ' + packageInfo.repository.url + '*/',
+      banner: '/* base3d.js v' + packageInfo.version + ' ' + packageInfo.homepage + '*/',
       moduleName: 'base3d',
       dest: 'build/base3d.js'
     }

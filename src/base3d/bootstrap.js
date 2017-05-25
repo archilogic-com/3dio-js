@@ -1,4 +1,4 @@
-import { version, repository } from '../../package.json'
+import { version, homepage } from '../../package.json'
 import Logger from 'js-logger'
 import './polyfills.js'
 
@@ -6,4 +6,4 @@ import './polyfills.js'
 Logger.useDefaults()
 
 // print header to console
-console.log('base3d.js library v'+version+'\n'+repository.url)
+console.log('base3d.js v'+version+'\n'+homepage)

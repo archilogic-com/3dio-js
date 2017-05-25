@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "Comfortable APIs for web based parsing and editing of building data in BASE format.",
   "main": "dist/base3d.js",
+  "homepage": "https://github.com/archilogic-com/base3d-js",
   "repository": {
     "type": "git",
     "url": "https://github.com/archilogic-com/base3d-js.git"
