@@ -1,56 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-  <title>services.js examples</title>
-
+  <title>base3d</title>
   <meta charset="utf-8">
   <meta name="robots" content="index, follow">
   <meta http-equiv="pragma" content="no-cache">
   <meta http-equiv="cache-control" content="no-cache">
-
-  <script src="/build/base3d.js"></script>
-
-  <link href="https://fonts.googleapis.com/css?family=Dosis:200,400,700" rel="stylesheet">
-  <link href="./css/main.css" rel="stylesheet">
-
+  <link href="./style.css" rel="stylesheet">
 </head>
+<body>
 
-<h1>Examples</h1>
+<h1 id="title">console says:</h1>
+<div id="console-output"></div>
 
-check console …
-
+<script src="./js/libs/jquery-3.1.1.min.js"></script>
+<script src="./js/libs/linkify.min.js"></script>
+<script src="./js/libs/linkify-jquery.min.js"></script>
+<script src="./js/print-console.js"></script>
 <script>
-
-  // configs
-  var S3_CONFIGS = {
-    bucket: ''
-  }
-
-  // create scene
-
-  var scene = new base3d.Entity()
-  console.log('Created scene (root level entity) with uuid:'+scene.uuid)
-
-  // pushing data to the renderer
-
-  // hierarchy
-  scene.on('**/*:add', function(uuid, entity){
-    console.log('Added entity to scene. uuid:'+entity)
-  })
-  // geometry
-  scene.on('**/*:data:geometry', function(uuid, entity, geometry){
-    console.log('Entity geometry data updated (loaded or updated by param change). uuid:'+geometry)
-  })
-  // material
-  scene.on('**/*:data:material', function(uuid, entity, material){
-    console.log('Entity material data updated (loaded or updated by param change). uuid:'+geometry)
-  })
-
-  // initiate loading
-  scene.add('../assets/cubes.base3d.json')
-
+  // output console to div
+  // comment this out
+  printConsole('console-output', false)
 </script>
+
+<script src="/build/base3d.js"></script>
+
+<script src="main.js"></script>
 
 </body>
 </html>

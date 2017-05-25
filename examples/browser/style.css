@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css?family=Droid+Sans+Mono');
+@import url('https://fonts.googleapis.com/css?family=Satisfy');
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    position: relative;
+    height: 100%;
+}
+
+body {
+
+    color: white;
+
+    position: absolute;
+    height: 100%;
+    width: 100%;
+
+    padding: 30px;
+    margin: 0;
+    overflow: hidden;
+
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background: #6c6bc9;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(-45deg, #6a5ea5, #6c6bc9);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(140deg, #594a96, #6c6bc5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+
+#title {
+
+    color: hsl(250, 26%, 60%);
+    font-family: 'Satisfy', cursive;
+    font-size: 9vh;
+
+    font-weight: normal;
+    position: absolute;
+    top: 4vh;
+    height: 25vh;
+    left: 20vw;
+    right: 20vw;
+
+}
+a {
+    color: white;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+#console-output {
+
+    font-family: 'Droid Sans Mono', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+
+    position: absolute;
+    bottom: 5%;
+    height: 65%;
+    left: 20vw;
+    right: 20vw;
+
+}
+.console-entry {
+    width: 100%;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+
+    border-bottom: 1px dotted;
+    -webkit-border-image: -webkit-linear-gradient(to right, gba(255,255,255,0.2) 0%, rgba(255,255,255,0.11) 15%, rgba(255,255,255,0) 100%) 1 round;
+    border-image: linear-gradient(to right, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.11) 15%, rgba(255,255,255,0) 100%) 1 round;
+
+}
+.console-entry-details {
+    color: rgba(255,255,255,0.3);
+    margin-right: 8px;
+    margin-bottom: 5px;
+}
+.console-entry-info {
+    color: black;
+}
+.console-entry-debug {
+    color: black;
+}
+.console-entry-warn {
+    color: #ff9100;
+}
+.console-entry-error {
+    color: red;
+}

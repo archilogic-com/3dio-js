@@ -10,6 +10,6 @@
  */
 export default function add (arg) {
 
-  console.log('Adding to the scene: ',arg)
+  console.log('Adding to the scene: '+arg)
 
 }

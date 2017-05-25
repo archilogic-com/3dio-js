@@ -6036,12 +6036,10 @@
 	    })
 	  };
 	  self.fetch.polyfill = true;
-	})(typeof self !== 'undefined' ? self : global);
+	})(typeof self !== 'undefined' ? self : window);
 
 	// Promise API polyfill for IE11
 
-	// fetch API polyfill for old browsers
-	// fetch API for node
 	if (!!(
 	    // detect node environment
 	    typeof module !== 'undefined'
@@ -6110,7 +6108,6 @@
 	  })();
 	}
 
-	// Bootstrap logger
 	logger.useDefaults();
 
 	// print header to console
@@ -6153,7 +6150,7 @@
 	 */
 	function add (arg) {
 
-	  console.log('Adding to the scene: ',arg);
+	  console.log('Adding to the scene: '+arg);
 
 	}
 
@@ -6265,8 +6262,6 @@
 	Entity.prototype.on = on;
 	Entity.prototype.remove = remove;
 
-	// rgeistries
-
 	var entitites = [];
 	var plugins = [];
 
@@ -6354,10 +6349,6 @@
 
 	};
 
-	/**
-	 * @description base3d library object
-	 * @namespace base3d
-	 * */
 	var base3d = {
 	  // info
 	  version: version,
