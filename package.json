@@ -1,10 +1,10 @@
 {
   "name": "base-query",
   "version": "0.0.1",
+  "description": "Parse and Edit building data in base format using simple APIs.",
   "homepage": "http://base-query.org/",
   "repository": "archilogic-com/base-query",
   "license": "MIT",
-  "description": "Comfortable APIs for web based parsing and editing of building data in base format.",
   "main": "dist/base3d.js",
   "scripts": {
     "dev": "! npm install || npm run dev-browser",
