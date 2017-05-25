@@ -8,7 +8,7 @@
 	var version = "1.0.0";
 
 
-	var repository = {"type":"git","url":"https://github.com/archilogic-com/base3d-js.git"};
+	var homepage = "https://github.com/archilogic-com/base3d-js";
 
 	var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -6036,7 +6036,7 @@
 	    })
 	  };
 	  self.fetch.polyfill = true;
-	})(typeof self !== 'undefined' ? self : window);
+	})(typeof self !== 'undefined' ? self : global);
 
 	// Promise API polyfill for IE11
 
@@ -6108,10 +6108,11 @@
 	  })();
 	}
 
+	// Bootstrap logger
 	logger.useDefaults();
 
 	// print header to console
-	console.log('base3d.js library v'+version+'\n'+repository.url);
+	console.log('base3d.js v'+version+'\n'+homepage);
 
 	var PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -6236,12 +6237,6 @@
 	}
 
 	// utils
-	// methods
-	/**
-	 * @memeberof base3d
-	 * @class base3d.Entity
-	 */
-
 	function Entity () {
 	  // Avoid direct this references (= less bugs and ES2015 compatible)
 	  var this_ = this;
@@ -6352,7 +6347,6 @@
 	var base3d = {
 	  // info
 	  version: version,
-	  repository: repository.url,
 	  sessionId: runtime.sessionId,
 	  // class
 	  Entity: Entity,
