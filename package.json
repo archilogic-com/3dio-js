@@ -1,13 +1,13 @@
 {
-  "name": "base3d",
+  "name": "base-query",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Comfortable APIs for web based parsing and editing of building data in BASE format.",
   "main": "dist/base3d.js",
-  "homepage": "https://github.com/archilogic-com/base3d-js",
+  "homepage": "https://github.com/archilogic-com/base3d-query",
   "repository": {
     "type": "git",
-    "url": "https://github.com/archilogic-com/base3d-js.git"
+    "url": "https://github.com/archilogic-com/base3d-query.git"
   },
   "dependencies": {
     "bluebird": "^3.5.0",
