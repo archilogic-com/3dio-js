@@ -2,7 +2,6 @@ const Promise = require('bluebird')
 const spawn = require('child_process').spawn
 const version = require('../package.json').version
 
-
 run([
   // empty build fodler
   'rm -f build/*',
@@ -26,7 +25,6 @@ run([
   console.error(err)
 })
 
-
 /////////////////////////////////// helpers
 
 function run (a, b) {
@@ -34,22 +32,15 @@ function run (a, b) {
   if (typeof a === 'string') {
     var lines = a.split('\n')
     if (lines.length === 1) {
-
-      console.log(a)
-
-      // single command
+      // is single command
       return runSingleCmd(a, b)
-
     } else {
-
-      // multiple commands
+      // is multiple commands
       a = lines
-
     }
   }
 
   if (Array.isArray(a)) {
-
     // run multiple commands
     return Promise.mapSeries(a, (args) => {
       if (Array.isArray(args)) {
@@ -61,8 +52,8 @@ function run (a, b) {
         return runSingleCmd(args)
       }
     })
-
   }
+
 }
 
 function runSingleCmd (cmd, args) {
@@ -86,7 +77,7 @@ function runSingleCmd (cmd, args) {
     })
 
     ls.on('close', (code) => {
-      if (code===0) {
+      if (code === 0) {
         resolve()
       } else {
         reject()
