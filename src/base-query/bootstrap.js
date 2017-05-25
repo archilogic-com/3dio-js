@@ -5,5 +5,8 @@ import './polyfills.js'
 // Bootstrap logger
 Logger.useDefaults()
 
-// print header to console
-console.log('base3d.js v'+version+'\n'+homepage)
+// print header to console in browser environment
+var isBrowser = typeof window !== 'undefined' && Object.prototype.toString.call(window) === '[object Window]'
+if (isBrowser) {
+  console.log('bq v'+version+'\n'+homepage)
+}
