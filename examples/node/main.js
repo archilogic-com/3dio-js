@@ -1,5 +1,5 @@
-var base3d = require('../../build/base3d.js')
+var bq = require('../../build/base-query.js')
 
-var scene = new base3d.Entity()
+var scene = new bq.Entity()
 
 console.log('scene', scene)

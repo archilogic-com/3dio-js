@@ -14,7 +14,7 @@
 //  })
 
 // create scene
-var scene = new base3d.Entity()
+var scene = new bq.Entity()
 //console.log('Created scene (root level entity) with uuid:' + scene.uuid)
 // initiate loading
 scene.add('../assets/cubes.base3d.json')

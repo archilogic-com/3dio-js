@@ -5,14 +5,14 @@
   "homepage": "http://base-query.org/",
   "repository": "archilogic-com/base-query",
   "license": "MIT",
-  "main": "dist/base3d.js",
+  "main": "build/base-query.js",
   "scripts": {
     "dev": "! npm install || npm run dev-browser",
     "dev-browser": "rollup -cw &! live-server ./ -q --port=8080 --ignore=node_modules/**,dev/** --open=/examples/browser",
     "dev-node": "rollup -c && node examples/node/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rm -f build/* && rollup -c",
-    "dist": "npm run build && rm -f dist/* && cp -R build/ dist/ && uglifyjs dist/base3d.js -o dist/base3d.min.js -cm --source-map includeSources,content=build/base3d.js.map,url=base3d.min.js.map && gzip -9 dist/base3d.min.js dist/base3d.min.js.map && mv dist/base3d.min.js.gz dist/base3d.min.js && mv dist/base3d.min.js.map.gz dist/base3d.min.js.map",
+    "dist": "node dev/generate-distributables.js",
     "docs": "node_modules/.bin/jsdoc --configure dev/jsdoc/config.jsdoc.json --verbose"
   },
   "dependencies": {

@@ -1,14 +1,13 @@
-/* base3d.js lib v1.0.0 https://github.com/archilogic-com/base3d-js.git*/
+/* base-query.js v0.0.1a http://base-query.org/*/
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
-	(global.base3d = factory());
+	(global['base-query'] = factory());
 }(this, (function () { 'use strict';
 
-	var version = "1.0.0";
+	var version = "0.0.1a";
 
-
-	var homepage = "https://github.com/archilogic-com/base3d-js";
+	var homepage = "http://base-query.org/";
 
 	var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -6040,6 +6039,8 @@
 
 	// Promise API polyfill for IE11
 
+	// fetch API polyfill for old browsers
+	// fetch API for node
 	if (!!(
 	    // detect node environment
 	    typeof module !== 'undefined'
@@ -6237,6 +6238,12 @@
 	}
 
 	// utils
+	// methods
+	/**
+	 * @memeberof base3d
+	 * @class base3d.Entity
+	 */
+
 	function Entity () {
 	  // Avoid direct this references (= less bugs and ES2015 compatible)
 	  var this_ = this;
@@ -6256,6 +6263,8 @@
 	Entity.prototype.findFirst = findFirst;
 	Entity.prototype.on = on;
 	Entity.prototype.remove = remove;
+
+	// rgeistries
 
 	var entitites = [];
 	var plugins = [];
@@ -6344,7 +6353,11 @@
 
 	};
 
-	var base3d = {
+	/**
+	 * @description base3d library object
+	 * @namespace base3d
+	 * */
+	var bq = {
 	  // info
 	  version: version,
 	  sessionId: runtime.sessionId,
@@ -6359,7 +6372,7 @@
 	  }
 	};
 
-	return base3d;
+	return bq;
 
 })));
-//# sourceMappingURL=base3d.js.map
+//# sourceMappingURL=base-query.js.map

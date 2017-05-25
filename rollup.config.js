@@ -6,7 +6,7 @@ import resolve from 'rollup-plugin-node-resolve'
 var packageInfo = JSON.parse(fs.readFileSync('package.json', 'utf8'))
 
 export default {
-  entry: 'src/base3d.js',
+  entry: 'src/base-query.js',
   indent: '\t',
   sourceMap: true,
   plugins: [
@@ -20,9 +20,9 @@ export default {
   targets: [
     {
       format: 'umd',
-      banner: '/* base3d.js v' + packageInfo.version + ' ' + packageInfo.homepage + '*/',
-      moduleName: 'base3d',
-      dest: 'build/base3d.js'
+      banner: '/* base-query.js v' + packageInfo.version + ' ' + packageInfo.homepage + '*/',
+      moduleName: 'base-query',
+      dest: 'build/base-query.js'
     }
   ],
   onwarn (warning) {
