@@ -21,7 +21,7 @@ export default {
     {
       format: 'umd',
       banner: '/* base-query.js v' + packageInfo.version + ' ' + packageInfo.homepage + '*/',
-      moduleName: 'base-query',
+      moduleName: 'bq', // and global object name in browser environment
       dest: 'build/base-query.js'
     }
   ],
