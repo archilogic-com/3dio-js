@@ -1,8 +1,17 @@
-/* base-query.js v0.0.1a http://base-query.org/*/
+/** 
+ * @name base-query
+ * @version 0.0.1a
+ * @description Parse and Edit building data in base format using simple APIs.
+ * @see http://base-query.org/
+ * @tutorial https://github.com/archilogic-com/base-query
+ * @author archilogic <dev.rocks@archilogic.com> (https://archilogic.com)
+ * @license MIT
+ */
+
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
-	(global['base-query'] = factory());
+	(global.bq = factory());
 }(this, (function () { 'use strict';
 
 	var version = "0.0.1a";
