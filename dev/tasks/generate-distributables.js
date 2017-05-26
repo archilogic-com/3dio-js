@@ -1,9 +1,11 @@
 const run = require('./utils/run-cli-cmd.js')
 const fs = require('fs')
 const UglifyJS = require('uglify-js')
-const version = require('../../package.json').version
+const packageInfo = require('../../package.json')
 
+const version = packageInfo.version
 const distName = `base-query-${version}`
+const deployTargetDir = `code.archilogic.com/base-query/${version}`
 
 run([
 
@@ -33,6 +35,9 @@ run([
   // remove .gz extension
   `mv dist/${distName}.min.js.gz dist/${distName}.min.js`,
   `mv dist/${distName}.min.js.map.gz dist/${distName}.min.js.map`
+  // deploy to S3
+  // `aws s3 sync ./dist s3://${deployTargetDir}/`
+  // `aws s3 cp --content-encoding=gzip ./dist/${distName}.min.js s3://${deployTargetDir}/${distName}.min.js`
 
 ]).catch((err) => {
   console.error(err)

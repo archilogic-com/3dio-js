@@ -16,6 +16,7 @@ const preamble = `/**
  */
 `
 
+// https://github.com/rollup/rollup/wiki/JavaScript-API#rolluprollup-options-
 export default {
   entry: 'src/base-query.js',
   indent: '\t',
@@ -23,6 +24,8 @@ export default {
   plugins: [
     json(),
     commonjs({
+      // will be loaded from node_module dependencies in node environment and
+      // doesn't need to be included in browser environments
       exclude: [ 'node_modules/node-fetch/**' ]
     }),
     resolve()

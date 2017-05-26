@@ -6048,8 +6048,6 @@
 
 	// Promise API polyfill for IE11
 
-	// fetch API polyfill for old browsers
-	// fetch API for node
 	if (!!(
 	    // detect node environment
 	    typeof module !== 'undefined'
@@ -6118,7 +6116,6 @@
 	  })();
 	}
 
-	// Bootstrap logger
 	logger.useDefaults();
 
 	// print header to console in browser environment
@@ -6250,12 +6247,6 @@
 	}
 
 	// utils
-	// methods
-	/**
-	 * @memeberof bq
-	 * @class bq.Entity
-	 */
-
 	function Entity () {
 	  // Avoid direct this references (= less bugs and ES2015 compatible)
 	  var this_ = this;
@@ -6275,8 +6266,6 @@
 	Entity.prototype.findFirst = findFirst;
 	Entity.prototype.on = on;
 	Entity.prototype.remove = remove;
-
-	// rgeistries
 
 	var entitites = [];
 	var plugins = [];
@@ -6365,10 +6354,6 @@
 
 	};
 
-	/**
-	 * @description base-query library object
-	 * @namespace bq
-	 * */
 	var bq = {
 	  // info
 	  version: version,

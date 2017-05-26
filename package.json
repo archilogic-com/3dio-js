@@ -6,13 +6,13 @@
   "repository": "archilogic-com/base-query",
   "license": "MIT",
   "author": {
-    "name":"archilogic",
-    "email":"dev.rocks@archilogic.com",
-    "url":"https://archilogic.com"
+    "name": "archilogic",
+    "email": "dev.rocks@archilogic.com",
+    "url": "https://archilogic.com"
   },
   "main": "build/base-query.js",
   "scripts": {
-    "dev": "! npm install || rollup -w -c dev/rollup.config.js &! live-server ./ -q --port=8080 --ignore=node_modules/**,dev/** --open=/examples/browser",
+    "dev": "! npm install || ! killall rollup || rollup -w -c dev/rollup.config.js &! lite-server -c dev/lite-server.config.js",
     "node-example": "rollup -c dev/rollup.config.js && node examples/node/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rm -f build/* && rollup -c dev/rollup.config.js",
@@ -28,8 +28,7 @@
   },
   "devDependencies": {
     "jsdoc": "^3.4.3",
-    "live-server": "1.2.0",
-    "minami": "^1.2.3",
+    "lite-server": "^2.3.0",
     "rollup": "^0.41.6",
     "rollup-plugin-commonjs": "^8.0.2",
     "rollup-plugin-json": "^2.1.1",
