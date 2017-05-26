@@ -2,6 +2,7 @@
 // https://browsersync.io/docs/options/
 module.exports = {
   port: 8080,
+  startPath: '/examples/browser/',
   watchOptions: {
     ignored: [
       'node_modules',
