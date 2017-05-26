@@ -6048,6 +6048,8 @@
 
 	// Promise API polyfill for IE11
 
+	// fetch API polyfill for old browsers
+	// fetch API for node
 	if (!!(
 	    // detect node environment
 	    typeof module !== 'undefined'
@@ -6116,6 +6118,7 @@
 	  })();
 	}
 
+	// Bootstrap logger
 	logger.useDefaults();
 
 	// print header to console in browser environment
@@ -6148,6 +6151,95 @@
 	  if (!str || typeof str !== "string") return false
 	  return PATTERN.test(str)
 	}
+
+	// rgeistries
+
+	var entitites = [];
+	var plugins = [];
+
+	// constants
+
+	var IS_NODE = !!(
+	  typeof module !== 'undefined'
+	  && module.exports
+	  && typeof process !== 'undefined'
+	  && Object.prototype.toString.call(process) === '[object process]'
+	  && process.title.indexOf('node') !== -1
+	);
+
+	// entitites
+
+	function registerEntity (entity) {
+	  entitites[entitites.length] = entity;
+	}
+
+	function deregisterEntity (entity) {
+	  var i = entities.indexOf(entity);
+	  if (i === -1) {
+	    console.error('Entity with uuid:'+entity.uuid+' not found in runtime registry.');
+	  } else {
+	    entitites.splice(i,1);
+	  }
+	}
+
+	function getEntities () {
+	  return entitites
+	}
+
+	function getEntityByUuid (uuid) {
+	  for (var i = 0, l = entitites.length; i < l; i++) {
+	    if (entitites[i].uuid === uuid) return entitites[i]
+	  }
+	  return null
+	}
+
+	// plugins
+
+	function registerPlugin (plugin) {
+	  if (pluginsByName[plugin.name]) {
+	    console.error('Plugin '+plugin.name+' has been registered already.');
+	    return false
+	  } else {
+	    pluginsByName[plugin.name] = plugin;
+	    // TODO: init plugin on running entitites
+	    getEntities().forEach(function(entity){
+	      initPlugin(entity, plugin);
+	    });
+	    return true
+	  }
+	}
+
+	function initPlugin (entity, plugin) {
+
+	  // TODO: init plugin here
+
+	}
+
+	function initPlugins (entity) {
+	  plugins.forEach(function(plugin){
+	    initPlugin(entity, plugin);
+	  });
+	}
+
+	// export public functions
+
+	var runtime = {
+
+	  sessionId: generateUuid(),
+
+	  env: {
+	    IS_NODE: IS_NODE
+	  },
+
+	  registerEntity: registerEntity,
+	  deregisterEntity: deregisterEntity,
+	  getEntityByUuid: getEntityByUuid,
+	  getEntities: getEntities,
+
+	  registerPlugin: registerPlugin,
+	  initPlugins: initPlugins
+
+	};
 
 	/**
 	 * ...
@@ -6247,6 +6339,12 @@
 	}
 
 	// utils
+	// methods
+	/**
+	 * @memeberof bq
+	 * @class bq.Entity
+	 */
+
 	function Entity () {
 	  // Avoid direct this references (= less bugs and ES2015 compatible)
 	  var this_ = this;
@@ -6258,6 +6356,17 @@
 
 	}
 
+	Entity.Entity = Entity.prototype.Entity = Entity;
+
+	// static
+
+	Entity.version = Entity.prototype.version = version;
+	Entity.registerPlugin = Entity.prototype.registerPlugin = runtime.registerPlugin;
+	Entity.utils = Entity.prototype.utils = {
+	  generateUuid: generateUuid,
+	  validateUuid: validateUuid
+	};
+
 	// methods
 
 	Entity.prototype.add = add;
@@ -6267,107 +6376,11 @@
 	Entity.prototype.on = on;
 	Entity.prototype.remove = remove;
 
-	var entitites = [];
-	var plugins = [];
-
-	// constants
-
-	var IS_NODE = !!(
-	  typeof module !== 'undefined'
-	  && module.exports
-	  && typeof process !== 'undefined'
-	  && Object.prototype.toString.call(process) === '[object process]'
-	  && process.title.indexOf('node') !== -1
-	);
-
-	// entitites
-
-	function registerEntity (entity) {
-	  entitites[entitites.length] = entity;
-	}
-
-	function deregisterEntity (entity) {
-	  var i = entities.indexOf(entity);
-	  if (i === -1) {
-	    console.error('Entity with uuid:'+entity.uuid+' not found in runtime registry.');
-	  } else {
-	    entitites.splice(i,1);
-	  }
-	}
-
-	function getEntities () {
-	  return entitites
-	}
-
-	function getEntityByUuid (uuid) {
-	  for (var i = 0, l = entitites.length; i < l; i++) {
-	    if (entitites[i].uuid === uuid) return entitites[i]
-	  }
-	  return null
-	}
-
-	// plugins
-
-	function registerPlugin (plugin) {
-	  if (pluginsByName[plugin.name]) {
-	    console.error('Plugin '+plugin.name+' has been registered already.');
-	    return false
-	  } else {
-	    pluginsByName[plugin.name] = plugin;
-	    // TODO: init plugin on running entitites
-	    getEntities().forEach(function(entity){
-	      initPlugin(entity, plugin);
-	    });
-	    return true
-	  }
-	}
-
-	function initPlugin (entity, plugin) {
-
-	  // TODO: init plugin here
-
-	}
-
-	function initPlugins (entity) {
-	  plugins.forEach(function(plugin){
-	    initPlugin(entity, plugin);
-	  });
-	}
-
-	// export public functions
-
-	var runtime = {
-
-	  sessionId: generateUuid(),
-
-	  env: {
-	    IS_NODE: IS_NODE
-	  },
-
-	  registerEntity: registerEntity,
-	  deregisterEntity: deregisterEntity,
-	  getEntityByUuid: getEntityByUuid,
-	  getEntities: getEntities,
-
-	  registerPlugin: registerPlugin,
-	  initPlugins: initPlugins
-
-	};
-
-	var bq = {
-	  // info
-	  version: version,
-	  sessionId: runtime.sessionId,
-	  // class
-	  Entity: Entity,
-	  // static methods
-	  registerPlugin: runtime.registerPlugin,
-	  // utils
-	  utils: {
-	    generateUuid: generateUuid,
-	    validateUuid: validateUuid
-	  }
-	};
+	/**
+	 * @description base-query library object
+	 * @namespace bq
+	 * */
+	var bq = new Entity();
 
 	return bq;
 
