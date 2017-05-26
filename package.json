@@ -12,10 +12,10 @@
   },
   "main": "build/base-query.js",
   "scripts": {
-    "dev": "! npm install || ! killall rollup || rollup -w -c tasks/build/rollup.config.js &! node_modules/.bin/lite-server -c tasks/dev/lite-server.config.js",
-    "node-example": "npm run build && node examples/node/main.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rm -f build/* && rollup -c tasks/build/rollup.config.js",
+    "dev": "npm install || true \n killall node || true \n node_modules/.bin/rollup -w -c tasks/build/rollup.config.js & \n node_modules/.bin/lite-server -c tasks/dev/lite-server.config.js",
+    "node-example": "npm run build \n node examples/node/main.js",
+    "test": "echo \"Error: no test specified\" \n exit 1",
+    "build": "rm -f build/* \n rollup -c tasks/build/rollup.config.js",
     "dist": "node tasks/dist/generate-distributables.js",
     "docs": "node_modules/.bin/jsdoc --configure tasks/jsdoc/config.jsdoc.json --verbose"
   },

@@ -1,5 +1,7 @@
+import { version } from '../package.json'
+import runtime from './runtime.js'
 // utils
-import { generateUuid } from '../utils/uuid.js'
+import { generateUuid, validateUuid } from './utils/uuid.js'
 // methods
 import add        from './entity/add.js'
 import destroy    from './entity/destroy.js'
@@ -23,6 +25,17 @@ export default function Entity () {
   // Flags
   this_.initialized = true
 
+}
+
+Entity.Entity = Entity.prototype.Entity = Entity
+
+// static
+
+Entity.version = Entity.prototype.version = version
+Entity.registerPlugin = Entity.prototype.registerPlugin = runtime.registerPlugin
+Entity.utils = Entity.prototype.utils = {
+  generateUuid: generateUuid,
+  validateUuid: validateUuid
 }
 
 // methods

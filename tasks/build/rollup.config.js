@@ -18,7 +18,7 @@ const preamble = `/**
 
 // https://github.com/rollup/rollup/wiki/JavaScript-API#rolluprollup-options-
 export default {
-  entry: 'src/base-query.js',
+  entry: 'src/index.js',
   indent: '\t',
   sourceMap: true,
   plugins: [

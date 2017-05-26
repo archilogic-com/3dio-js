@@ -1,4 +1,4 @@
-import { version, homepage } from '../../package.json'
+import { version, homepage } from '../package.json'
 import Logger from 'js-logger'
 import './polyfills.js'
 
