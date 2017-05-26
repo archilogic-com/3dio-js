@@ -1,7 +1,7 @@
 const run = require('./utils/run-cli-cmd.js')
 const fs = require('fs')
 const UglifyJS = require('uglify-js')
-const version = require('../package.json').version
+const version = require('../../package.json').version
 
 const distName = `base-query-${version}`
 

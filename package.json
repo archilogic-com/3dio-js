@@ -12,12 +12,11 @@
   },
   "main": "build/base-query.js",
   "scripts": {
-    "dev": "! npm install || npm run dev-browser",
-    "dev-browser": "rollup -cw &! live-server ./ -q --port=8080 --ignore=node_modules/**,dev/** --open=/examples/browser",
-    "dev-node": "rollup -c && node examples/node/main.js",
+    "dev": "! npm install || rollup -w -c dev/rollup.config.js &! live-server ./ -q --port=8080 --ignore=node_modules/**,dev/** --open=/examples/browser",
+    "node-example": "rollup -c dev/rollup.config.js && node examples/node/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rm -f build/* && rollup -c",
-    "dist": "node dev/generate-distributables.js",
+    "build": "rm -f build/* && rollup -c dev/rollup.config.js",
+    "dist": "node dev/tasks/generate-distributables.js",
     "docs": "node_modules/.bin/jsdoc --configure dev/jsdoc/config.jsdoc.json --verbose"
   },
   "dependencies": {
