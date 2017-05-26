@@ -12,12 +12,12 @@
   },
   "main": "build/base-query.js",
   "scripts": {
-    "dev": "! npm install || ! killall rollup || rollup -w -c dev/rollup.config.js &! lite-server -c dev/lite-server.config.js",
-    "node-example": "rollup -c dev/rollup.config.js && node examples/node/main.js",
+    "dev": "! npm install || ! killall rollup || rollup -w -c tasks/build/rollup.config.js &! lite-server -c tasks/dev/lite-server.config.js",
+    "node-example": "rollup -c tasks/build/rollup.config.js && node examples/node/main.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rm -f build/* && rollup -c dev/rollup.config.js",
-    "dist": "node dev/tasks/generate-distributables.js",
-    "docs": "node_modules/.bin/jsdoc --configure dev/jsdoc/config.jsdoc.json --verbose"
+    "build": "rm -f build/* && rollup -c tasks/build/rollup.config.js",
+    "dist": "node tasks/dist/generate-distributables.js",
+    "docs": "node_modules/.bin/jsdoc --configure tasks/jsdoc/config.jsdoc.json --verbose"
   },
   "dependencies": {
     "bluebird": "^3.5.0",

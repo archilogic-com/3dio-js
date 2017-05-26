@@ -5,7 +5,7 @@ const packageInfo = require('../../package.json')
 
 const version = packageInfo.version
 const distName = `base-query-${version}`
-const deployTargetDir = `code.archilogic.com/base-query/${version}`
+const deployTargetDir = `code.archilogic.com`
 
 run([
 
@@ -38,6 +38,7 @@ run([
   // deploy to S3
   // `aws s3 sync ./dist s3://${deployTargetDir}/`
   // `aws s3 cp --content-encoding=gzip ./dist/${distName}.min.js s3://${deployTargetDir}/${distName}.min.js`
+  // `aws s3 cp --content-encoding=gzip ./dist/${distName}.min.js.map s3://${deployTargetDir}/${distName}.min.js.map`
 
 ]).catch((err) => {
   console.error(err)
