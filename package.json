@@ -5,6 +5,11 @@
   "homepage": "http://base-query.org/",
   "repository": "archilogic-com/base-query",
   "license": "MIT",
+  "author": {
+    "name":"archilogic",
+    "email":"dev.rocks@archilogic.com",
+    "url":"https://archilogic.com"
+  },
   "main": "build/base-query.js",
   "scripts": {
     "dev": "! npm install || npm run dev-browser",
