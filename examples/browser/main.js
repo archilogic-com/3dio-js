@@ -17,7 +17,8 @@
 var scene = new bq.Entity()
 //console.log('Created scene (root level entity) with uuid:' + scene.uuid)
 // initiate loading
-scene.add('../assets/cubes.base.json')
+
+bq.add('../assets/cubes.base.json')
 
 // TODO: renderer: catch error case of unknown uuid (exception: add)
 // TODO: bq: detect invalid hierarchies (ie. cycles) in file reference and dynamic scene handling

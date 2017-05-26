@@ -83,15 +83,17 @@ a:hover {
     margin-right: 8px;
     margin-bottom: 5px;
 }
-.console-entry-info {
-    color: black;
-}
 .console-entry-debug {
-    color: black;
+}
+.console-entry-info {
 }
 .console-entry-warn {
-    color: #ff9100;
+    -webkit-background: -webkit-linear-gradient(to right, rgba(191, 155, 0, 0.33) 0%, rgba(191, 155, 0, 0) 70%);
+    background: linear-gradient(to right, rgba(191, 155, 0, 0.33) 0%, rgba(191, 155, 0, 0) 70%);
+    padding-left: 5px;
 }
 .console-entry-error {
-    color: red;
+    -webkit-background: -webkit-linear-gradient(to right, rgba(191, 34, 0, 0.65) 0%, rgba(191, 155, 0, 0) 70%);
+    background: linear-gradient(to right, rgba(191, 34, 0, 0.65) 0%, rgba(191, 155, 0, 0) 70%);
+    padding-left: 5px;
 }

@@ -1,7 +1,7 @@
 // proxy console
-function printConsole(elId, addDetails) {
+function printConsole (elId, addDetails) {
 
-  var $logOutput = $('#'+elId)
+  var $logOutput = $(elId)
 
   var actualConsole = window.console
   window.console = {
@@ -14,10 +14,10 @@ function printConsole(elId, addDetails) {
 
   var runExampleTimeStamp
   var previousLogTimeStamp
-  window.proxyConsole = function proxyConsole (logLevel, logArgs, lineNumber) {
+  window.proxyConsole = function proxyConsole (logLevel, logArgs, lineNumber, silent) {
 
     // also log to the actual console
-    actualConsole[logLevel].apply(actualConsole, logArgs)
+    if (!silent) actualConsole[logLevel].apply(actualConsole, logArgs)
 
     // get line number here
     if (addDetails && !lineNumber) {
@@ -70,6 +70,11 @@ function printConsole(elId, addDetails) {
 
     // scroll to bottom
     $logOutput.scrollTop($logOutput[0].scrollHeight)
+  }
+
+  // also print errors to console
+  window.onerror = function (message, codePath, lineNumber) {
+    window.proxyConsole("error", [message, codePath + ' :' + lineNumber], null, true)
   }
 
 }
