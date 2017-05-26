@@ -6112,8 +6112,11 @@
 	// Bootstrap logger
 	logger.useDefaults();
 
-	// print header to console
-	console.log('base3d.js v'+version+'\n'+homepage);
+	// print header to console in browser environment
+	var isBrowser = typeof window !== 'undefined' && Object.prototype.toString.call(window) === '[object Window]';
+	if (isBrowser) {
+	  console.log('bq v'+version+'\n'+homepage);
+	}
 
 	var PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -6142,7 +6145,7 @@
 
 	/**
 	 * ...
-	 * @memberof base3d
+	 * @memberof bq
 	 * @function Entity#add
 	 * @param   {object}                          args
 	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
@@ -6158,7 +6161,7 @@
 
 	/**
 	 * ...
-	 * @memberof base3d
+	 * @memberof bq
 	 * @function Entity#destroy
 	 * @param   {object}                          args
 	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
@@ -6174,7 +6177,7 @@
 
 	/**
 	 * ...
-	 * @memberof base3d
+	 * @memberof bq
 	 * @function Entity#find
 	 * @param   {object}                          args
 	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
@@ -6190,7 +6193,7 @@
 
 	/**
 	 * ...
-	 * @memberof base3d
+	 * @memberof bq
 	 * @function Entity#findFirst
 	 * @param   {object}                          args
 	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
@@ -6206,7 +6209,7 @@
 
 	/**
 	 * ...
-	 * @memberof base3d
+	 * @memberof bq
 	 * @function Entity#on
 	 * @param   {object}                          args
 	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
@@ -6223,7 +6226,7 @@
 
 	/**
 	 * ...
-	 * @memberof base3d
+	 * @memberof bq
 	 * @function Entity#remove
 	 * @param   {object}                          args
 	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
@@ -6240,8 +6243,8 @@
 	// utils
 	// methods
 	/**
-	 * @memeberof base3d
-	 * @class base3d.Entity
+	 * @memeberof bq
+	 * @class bq.Entity
 	 */
 
 	function Entity () {
@@ -6354,8 +6357,8 @@
 	};
 
 	/**
-	 * @description base3d library object
-	 * @namespace base3d
+	 * @description base-query library object
+	 * @namespace bq
 	 * */
 	var bq = {
 	  // info
