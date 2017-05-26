@@ -1,6 +1,6 @@
 # Scope
 
-1. Translate model structure into operable objects.
+1. Translate base data into operable objects.
 1. Scene parsing methods.
 1. Scene editing methods.
 1. Hierarchy aware event system for scene objects.
