@@ -3,7 +3,18 @@ import json from 'rollup-plugin-json'
 import commonjs from 'rollup-plugin-commonjs'
 import resolve from 'rollup-plugin-node-resolve'
 
-var packageInfo = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+const packageInfo = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+
+const preamble = `/** 
+ * @name ${packageInfo.name}
+ * @version ${packageInfo.version}
+ * @description ${packageInfo.description}
+ * @see ${packageInfo.homepage}
+ * @tutorial https://github.com/${packageInfo.repository}
+ * @author ${packageInfo.author.name} <${packageInfo.author.email}> (${packageInfo.author.url})
+ * @license ${packageInfo.license}
+ */
+`
 
 export default {
   entry: 'src/base-query.js',
@@ -20,7 +31,7 @@ export default {
   targets: [
     {
       format: 'umd',
-      banner: '/* base-query.js v' + packageInfo.version + ' ' + packageInfo.homepage + '*/',
+      banner: preamble,
       moduleName: 'bq', // and global object name in browser environment
       dest: 'build/base-query.js'
     }
