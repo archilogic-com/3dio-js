@@ -8,7 +8,7 @@ module.exports = {
       'node_modules',
       // Do not watch files in source directory: They first have to get bundled using rollup.
       // Examples then will get updated as soon as built files are ready.
-      'src'
+      'lib'
     ]
   },
   serveStatic: ['./'], // uses index.html in directories

@@ -1,7 +1,7 @@
 {
   "name": "base-query",
   "version": "0.0.1a",
-  "description": "Parse and Edit building data in base format using simple APIs.",
+  "description": "Parse and Edit building data using simple APIs.",
   "homepage": "http://base-query.org/",
   "repository": "archilogic-com/base-query",
   "license": "MIT",
