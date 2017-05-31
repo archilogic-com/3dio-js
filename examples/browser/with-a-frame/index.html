@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello, WebVR! - A-Frame</title>
+    <meta name="description" content="Hello, WebVR! - A-Frame">
+    <!-- a-frame lib -->
+    <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
+    <!-- base lib -->
+    <script src="../../../build/a-base.js"></script>
+    <!-- base components -->
+    <script src="../../../node_modules/a-frame-components/base/product.js"></script>
+    <script src="../../../node_modules/a-frame-components/base/model.js"></script>
+  </head>
+  <body>
+    <a-scene>
+
+      <a-entity base-model="src:https://dnvf9esa6v418.cloudfront.net/fd72bf39-9d3a-471f-a4ff-ecaa3f5ff30b/bake/2017-04-15_22-45-14_XsiltX/regular/lighting.gz.data3d.buffer" position="-2 0 -2"></a-entity>
+
+      <a-entity base-product="resourceId:10344b13-d981-47a0-90ac-f048ee2780a6" position="-2 0 -2"></a-entity>
+      <a-entity base-product="resourceId:59e726e0-77fb-478e-89ec-74b5933bf344" position="1 0 -4"></a-entity>
+
+      <a-plane position="0 0 -2" rotation="-90 0 0" width="7" height="7" color="#7BC8A4"></a-plane>
+      <a-sky color="#ECECEC"></a-sky>
+    </a-scene>
+  </body>
+</html>
