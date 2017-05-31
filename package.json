@@ -27,6 +27,7 @@
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
+    "a-frame-components": "archilogic-com/a-frame-components",
     "jsdoc": "^3.4.3",
     "lite-server": "^2.3.0",
     "rollup": "^0.41.6",
