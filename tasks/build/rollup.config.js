@@ -1,10 +1,7 @@
-import fs from 'fs'
 import json from 'rollup-plugin-json'
 import commonjs from 'rollup-plugin-commonjs'
 import resolve from 'rollup-plugin-node-resolve'
-import preamble from './preamble.js'
-
-const packageInfo = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+const preamble = require('./preamble.js')
 
 // https://github.com/rollup/rollup/wiki/JavaScript-API#rolluprollup-options-
 export default {

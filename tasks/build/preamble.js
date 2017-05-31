@@ -1,4 +1,7 @@
-export default const preamble = `/** 
+const fs = require('fs')
+const packageInfo = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+
+module.exports = `/**
  * @preserve
  * @name ${packageInfo.name}
  * @version ${packageInfo.version}
