@@ -35,7 +35,10 @@ export default {
     {
       format: 'umd',
       banner: preamble,
-      moduleName: 'bq', // and global object name in browser environment
+      moduleName: 'BASE', // and global object name in browser environment
+      globals: {
+        THREE: 'THREE'
+      },
       dest: 'build/base-query.js'
     }
   ],
