@@ -1,7 +1,7 @@
 /** 
  * @name base-query
  * @version 0.0.1a
- * @description Parse and Edit building data in base format using simple APIs.
+ * @description Parse and Edit building data using simple APIs.
  * @see http://base-query.org/
  * @tutorial https://github.com/archilogic-com/base-query
  * @author archilogic <dev.rocks@archilogic.com> (https://archilogic.com)
@@ -14,10 +14,6 @@
 	(global.bq = factory());
 }(this, (function () { 'use strict';
 
-	var version = "0.0.1a";
-
-	var homepage = "http://base-query.org/";
-
 	var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 
@@ -27,266 +23,6 @@
 	function createCommonjsModule(fn, module) {
 		return module = { exports: {} }, fn(module, module.exports), module.exports;
 	}
-
-	var logger = createCommonjsModule(function (module) {
-	/*!
-	 * js-logger - http://github.com/jonnyreeves/js-logger
-	 * Jonny Reeves, http://jonnyreeves.co.uk/
-	 * js-logger may be freely distributed under the MIT license.
-	 */
-	(function (global) {
-		"use strict";
-
-		// Top level module for the global, static logger instance.
-		var Logger = { };
-
-		// For those that are at home that are keeping score.
-		Logger.VERSION = "1.3.0";
-
-		// Function which handles all incoming log messages.
-		var logHandler;
-
-		// Map of ContextualLogger instances by name; used by Logger.get() to return the same named instance.
-		var contextualLoggersByNameMap = {};
-
-		// Polyfill for ES5's Function.bind.
-		var bind = function(scope, func) {
-			return function() {
-				return func.apply(scope, arguments);
-			};
-		};
-
-		// Super exciting object merger-matron 9000 adding another 100 bytes to your download.
-		var merge = function () {
-			var args = arguments, target = args[0], key, i;
-			for (i = 1; i < args.length; i++) {
-				for (key in args[i]) {
-					if (!(key in target) && args[i].hasOwnProperty(key)) {
-						target[key] = args[i][key];
-					}
-				}
-			}
-			return target;
-		};
-
-		// Helper to define a logging level object; helps with optimisation.
-		var defineLogLevel = function(value, name) {
-			return { value: value, name: name };
-		};
-
-		// Predefined logging levels.
-		Logger.DEBUG = defineLogLevel(1, 'DEBUG');
-		Logger.INFO = defineLogLevel(2, 'INFO');
-		Logger.TIME = defineLogLevel(3, 'TIME');
-		Logger.WARN = defineLogLevel(4, 'WARN');
-		Logger.ERROR = defineLogLevel(8, 'ERROR');
-		Logger.OFF = defineLogLevel(99, 'OFF');
-
-		// Inner class which performs the bulk of the work; ContextualLogger instances can be configured independently
-		// of each other.
-		var ContextualLogger = function(defaultContext) {
-			this.context = defaultContext;
-			this.setLevel(defaultContext.filterLevel);
-			this.log = this.info;  // Convenience alias.
-		};
-
-		ContextualLogger.prototype = {
-			// Changes the current logging level for the logging instance.
-			setLevel: function (newLevel) {
-				// Ensure the supplied Level object looks valid.
-				if (newLevel && "value" in newLevel) {
-					this.context.filterLevel = newLevel;
-				}
-			},
-
-			// Is the logger configured to output messages at the supplied level?
-			enabledFor: function (lvl) {
-				var filterLevel = this.context.filterLevel;
-				return lvl.value >= filterLevel.value;
-			},
-
-			debug: function () {
-				this.invoke(Logger.DEBUG, arguments);
-			},
-
-			info: function () {
-				this.invoke(Logger.INFO, arguments);
-			},
-
-			warn: function () {
-				this.invoke(Logger.WARN, arguments);
-			},
-
-			error: function () {
-				this.invoke(Logger.ERROR, arguments);
-			},
-
-			time: function (label) {
-				if (typeof label === 'string' && label.length > 0) {
-					this.invoke(Logger.TIME, [ label, 'start' ]);
-				}
-			},
-
-			timeEnd: function (label) {
-				if (typeof label === 'string' && label.length > 0) {
-					this.invoke(Logger.TIME, [ label, 'end' ]);
-				}
-			},
-
-			// Invokes the logger callback if it's not being filtered.
-			invoke: function (level, msgArgs) {
-				if (logHandler && this.enabledFor(level)) {
-					logHandler(msgArgs, merge({ level: level }, this.context));
-				}
-			}
-		};
-
-		// Protected instance which all calls to the to level `Logger` module will be routed through.
-		var globalLogger = new ContextualLogger({ filterLevel: Logger.OFF });
-
-		// Configure the global Logger instance.
-		(function() {
-			// Shortcut for optimisers.
-			var L = Logger;
-
-			L.enabledFor = bind(globalLogger, globalLogger.enabledFor);
-			L.debug = bind(globalLogger, globalLogger.debug);
-			L.time = bind(globalLogger, globalLogger.time);
-			L.timeEnd = bind(globalLogger, globalLogger.timeEnd);
-			L.info = bind(globalLogger, globalLogger.info);
-			L.warn = bind(globalLogger, globalLogger.warn);
-			L.error = bind(globalLogger, globalLogger.error);
-
-			// Don't forget the convenience alias!
-			L.log = L.info;
-		}());
-
-		// Set the global logging handler.  The supplied function should expect two arguments, the first being an arguments
-		// object with the supplied log messages and the second being a context object which contains a hash of stateful
-		// parameters which the logging function can consume.
-		Logger.setHandler = function (func) {
-			logHandler = func;
-		};
-
-		// Sets the global logging filter level which applies to *all* previously registered, and future Logger instances.
-		// (note that named loggers (retrieved via `Logger.get`) can be configured independently if required).
-		Logger.setLevel = function(level) {
-			// Set the globalLogger's level.
-			globalLogger.setLevel(level);
-
-			// Apply this level to all registered contextual loggers.
-			for (var key in contextualLoggersByNameMap) {
-				if (contextualLoggersByNameMap.hasOwnProperty(key)) {
-					contextualLoggersByNameMap[key].setLevel(level);
-				}
-			}
-		};
-
-		// Retrieve a ContextualLogger instance.  Note that named loggers automatically inherit the global logger's level,
-		// default context and log handler.
-		Logger.get = function (name) {
-			// All logger instances are cached so they can be configured ahead of use.
-			return contextualLoggersByNameMap[name] ||
-				(contextualLoggersByNameMap[name] = new ContextualLogger(merge({ name: name }, globalLogger.context)));
-		};
-
-		// CreateDefaultHandler returns a handler function which can be passed to `Logger.setHandler()` which will
-		// write to the window's console object (if present); the optional options object can be used to customise the
-		// formatter used to format each log message.
-		Logger.createDefaultHandler = function (options) {
-			options = options || {};
-
-			options.formatter = options.formatter || function defaultMessageFormatter(messages, context) {
-				// Prepend the logger's name to the log message for easy identification.
-				if (context.name) {
-					messages.unshift("[" + context.name + "]");
-				}
-			};
-
-			// Map of timestamps by timer labels used to track `#time` and `#timeEnd()` invocations in environments
-			// that don't offer a native console method.
-			var timerStartTimeByLabelMap = {};
-
-			// Support for IE8+ (and other, slightly more sane environments)
-			var invokeConsoleMethod = function (hdlr, messages) {
-				Function.prototype.apply.call(hdlr, console, messages);
-			};
-
-			// Check for the presence of a logger.
-			if (typeof console === "undefined") {
-				return function () { /* no console */ };
-			}
-
-			return function(messages, context) {
-				// Convert arguments object to Array.
-				messages = Array.prototype.slice.call(messages);
-
-				var hdlr = console.log;
-				var timerLabel;
-
-				if (context.level === Logger.TIME) {
-					timerLabel = (context.name ? '[' + context.name + '] ' : '') + messages[0];
-
-					if (messages[1] === 'start') {
-						if (console.time) {
-							console.time(timerLabel);
-						}
-						else {
-							timerStartTimeByLabelMap[timerLabel] = new Date().getTime();
-						}
-					}
-					else {
-						if (console.timeEnd) {
-							console.timeEnd(timerLabel);
-						}
-						else {
-							invokeConsoleMethod(hdlr, [ timerLabel + ': ' +
-								(new Date().getTime() - timerStartTimeByLabelMap[timerLabel]) + 'ms' ]);
-						}
-					}
-				}
-				else {
-					// Delegate through to custom warn/error loggers if present on the console.
-					if (context.level === Logger.WARN && console.warn) {
-						hdlr = console.warn;
-					} else if (context.level === Logger.ERROR && console.error) {
-						hdlr = console.error;
-					} else if (context.level === Logger.INFO && console.info) {
-						hdlr = console.info;
-					}
-
-					options.formatter(messages, context);
-					invokeConsoleMethod(hdlr, messages);
-				}
-			};
-		};
-
-		// Configure and example a Default implementation which writes to the `window.console` (if present).  The
-		// `options` hash can be used to configure the default logLevel and provide a custom message formatter.
-		Logger.useDefaults = function(options) {
-			Logger.setLevel(options && options.defaultLevel || Logger.DEBUG);
-			Logger.setHandler(Logger.createDefaultHandler(options));
-		};
-
-		// Export to popular environments boilerplate.
-		if (typeof undefined === 'function' && undefined.amd) {
-			undefined(Logger);
-		}
-		else if ('object' !== 'undefined' && module.exports) {
-			module.exports = Logger;
-		}
-		else {
-			Logger._prevLogger = global.Logger;
-
-			Logger.noConflict = function () {
-				global.Logger = Logger._prevLogger;
-				return Logger;
-			};
-
-			global.Logger = Logger;
-		}
-	}(commonjsGlobal));
-	});
 
 	var bluebird = createCommonjsModule(function (module, exports) {
 	/* @preserve
@@ -6048,8 +5784,6 @@
 
 	// Promise API polyfill for IE11
 
-	// fetch API polyfill for old browsers
-	// fetch API for node
 	if (!!(
 	    // detect node environment
 	    typeof module !== 'undefined'
@@ -6118,14 +5852,2140 @@
 	  })();
 	}
 
-	// Bootstrap logger
+	var name = "base-query";
+	var version = "0.0.1a";
+
+	var homepage = "http://base-query.org/";
+
+	var logger = createCommonjsModule(function (module) {
+	/*!
+	 * js-logger - http://github.com/jonnyreeves/js-logger
+	 * Jonny Reeves, http://jonnyreeves.co.uk/
+	 * js-logger may be freely distributed under the MIT license.
+	 */
+	(function (global) {
+		"use strict";
+
+		// Top level module for the global, static logger instance.
+		var Logger = { };
+
+		// For those that are at home that are keeping score.
+		Logger.VERSION = "1.3.0";
+
+		// Function which handles all incoming log messages.
+		var logHandler;
+
+		// Map of ContextualLogger instances by name; used by Logger.get() to return the same named instance.
+		var contextualLoggersByNameMap = {};
+
+		// Polyfill for ES5's Function.bind.
+		var bind = function(scope, func) {
+			return function() {
+				return func.apply(scope, arguments);
+			};
+		};
+
+		// Super exciting object merger-matron 9000 adding another 100 bytes to your download.
+		var merge = function () {
+			var args = arguments, target = args[0], key, i;
+			for (i = 1; i < args.length; i++) {
+				for (key in args[i]) {
+					if (!(key in target) && args[i].hasOwnProperty(key)) {
+						target[key] = args[i][key];
+					}
+				}
+			}
+			return target;
+		};
+
+		// Helper to define a logging level object; helps with optimisation.
+		var defineLogLevel = function(value, name) {
+			return { value: value, name: name };
+		};
+
+		// Predefined logging levels.
+		Logger.DEBUG = defineLogLevel(1, 'DEBUG');
+		Logger.INFO = defineLogLevel(2, 'INFO');
+		Logger.TIME = defineLogLevel(3, 'TIME');
+		Logger.WARN = defineLogLevel(4, 'WARN');
+		Logger.ERROR = defineLogLevel(8, 'ERROR');
+		Logger.OFF = defineLogLevel(99, 'OFF');
+
+		// Inner class which performs the bulk of the work; ContextualLogger instances can be configured independently
+		// of each other.
+		var ContextualLogger = function(defaultContext) {
+			this.context = defaultContext;
+			this.setLevel(defaultContext.filterLevel);
+			this.log = this.info;  // Convenience alias.
+		};
+
+		ContextualLogger.prototype = {
+			// Changes the current logging level for the logging instance.
+			setLevel: function (newLevel) {
+				// Ensure the supplied Level object looks valid.
+				if (newLevel && "value" in newLevel) {
+					this.context.filterLevel = newLevel;
+				}
+			},
+
+			// Is the logger configured to output messages at the supplied level?
+			enabledFor: function (lvl) {
+				var filterLevel = this.context.filterLevel;
+				return lvl.value >= filterLevel.value;
+			},
+
+			debug: function () {
+				this.invoke(Logger.DEBUG, arguments);
+			},
+
+			info: function () {
+				this.invoke(Logger.INFO, arguments);
+			},
+
+			warn: function () {
+				this.invoke(Logger.WARN, arguments);
+			},
+
+			error: function () {
+				this.invoke(Logger.ERROR, arguments);
+			},
+
+			time: function (label) {
+				if (typeof label === 'string' && label.length > 0) {
+					this.invoke(Logger.TIME, [ label, 'start' ]);
+				}
+			},
+
+			timeEnd: function (label) {
+				if (typeof label === 'string' && label.length > 0) {
+					this.invoke(Logger.TIME, [ label, 'end' ]);
+				}
+			},
+
+			// Invokes the logger callback if it's not being filtered.
+			invoke: function (level, msgArgs) {
+				if (logHandler && this.enabledFor(level)) {
+					logHandler(msgArgs, merge({ level: level }, this.context));
+				}
+			}
+		};
+
+		// Protected instance which all calls to the to level `Logger` module will be routed through.
+		var globalLogger = new ContextualLogger({ filterLevel: Logger.OFF });
+
+		// Configure the global Logger instance.
+		(function() {
+			// Shortcut for optimisers.
+			var L = Logger;
+
+			L.enabledFor = bind(globalLogger, globalLogger.enabledFor);
+			L.debug = bind(globalLogger, globalLogger.debug);
+			L.time = bind(globalLogger, globalLogger.time);
+			L.timeEnd = bind(globalLogger, globalLogger.timeEnd);
+			L.info = bind(globalLogger, globalLogger.info);
+			L.warn = bind(globalLogger, globalLogger.warn);
+			L.error = bind(globalLogger, globalLogger.error);
+
+			// Don't forget the convenience alias!
+			L.log = L.info;
+		}());
+
+		// Set the global logging handler.  The supplied function should expect two arguments, the first being an arguments
+		// object with the supplied log messages and the second being a context object which contains a hash of stateful
+		// parameters which the logging function can consume.
+		Logger.setHandler = function (func) {
+			logHandler = func;
+		};
+
+		// Sets the global logging filter level which applies to *all* previously registered, and future Logger instances.
+		// (note that named loggers (retrieved via `Logger.get`) can be configured independently if required).
+		Logger.setLevel = function(level) {
+			// Set the globalLogger's level.
+			globalLogger.setLevel(level);
+
+			// Apply this level to all registered contextual loggers.
+			for (var key in contextualLoggersByNameMap) {
+				if (contextualLoggersByNameMap.hasOwnProperty(key)) {
+					contextualLoggersByNameMap[key].setLevel(level);
+				}
+			}
+		};
+
+		// Retrieve a ContextualLogger instance.  Note that named loggers automatically inherit the global logger's level,
+		// default context and log handler.
+		Logger.get = function (name) {
+			// All logger instances are cached so they can be configured ahead of use.
+			return contextualLoggersByNameMap[name] ||
+				(contextualLoggersByNameMap[name] = new ContextualLogger(merge({ name: name }, globalLogger.context)));
+		};
+
+		// CreateDefaultHandler returns a handler function which can be passed to `Logger.setHandler()` which will
+		// write to the window's console object (if present); the optional options object can be used to customise the
+		// formatter used to format each log message.
+		Logger.createDefaultHandler = function (options) {
+			options = options || {};
+
+			options.formatter = options.formatter || function defaultMessageFormatter(messages, context) {
+				// Prepend the logger's name to the log message for easy identification.
+				if (context.name) {
+					messages.unshift("[" + context.name + "]");
+				}
+			};
+
+			// Map of timestamps by timer labels used to track `#time` and `#timeEnd()` invocations in environments
+			// that don't offer a native console method.
+			var timerStartTimeByLabelMap = {};
+
+			// Support for IE8+ (and other, slightly more sane environments)
+			var invokeConsoleMethod = function (hdlr, messages) {
+				Function.prototype.apply.call(hdlr, console, messages);
+			};
+
+			// Check for the presence of a logger.
+			if (typeof console === "undefined") {
+				return function () { /* no console */ };
+			}
+
+			return function(messages, context) {
+				// Convert arguments object to Array.
+				messages = Array.prototype.slice.call(messages);
+
+				var hdlr = console.log;
+				var timerLabel;
+
+				if (context.level === Logger.TIME) {
+					timerLabel = (context.name ? '[' + context.name + '] ' : '') + messages[0];
+
+					if (messages[1] === 'start') {
+						if (console.time) {
+							console.time(timerLabel);
+						}
+						else {
+							timerStartTimeByLabelMap[timerLabel] = new Date().getTime();
+						}
+					}
+					else {
+						if (console.timeEnd) {
+							console.timeEnd(timerLabel);
+						}
+						else {
+							invokeConsoleMethod(hdlr, [ timerLabel + ': ' +
+								(new Date().getTime() - timerStartTimeByLabelMap[timerLabel]) + 'ms' ]);
+						}
+					}
+				}
+				else {
+					// Delegate through to custom warn/error loggers if present on the console.
+					if (context.level === Logger.WARN && console.warn) {
+						hdlr = console.warn;
+					} else if (context.level === Logger.ERROR && console.error) {
+						hdlr = console.error;
+					} else if (context.level === Logger.INFO && console.info) {
+						hdlr = console.info;
+					}
+
+					options.formatter(messages, context);
+					invokeConsoleMethod(hdlr, messages);
+				}
+			};
+		};
+
+		// Configure and example a Default implementation which writes to the `window.console` (if present).  The
+		// `options` hash can be used to configure the default logLevel and provide a custom message formatter.
+		Logger.useDefaults = function(options) {
+			Logger.setLevel(options && options.defaultLevel || Logger.DEBUG);
+			Logger.setHandler(Logger.createDefaultHandler(options));
+		};
+
+		// Export to popular environments boilerplate.
+		if (typeof undefined === 'function' && undefined.amd) {
+			undefined(Logger);
+		}
+		else if ('object' !== 'undefined' && module.exports) {
+			module.exports = Logger;
+		}
+		else {
+			Logger._prevLogger = global.Logger;
+
+			Logger.noConflict = function () {
+				global.Logger = Logger._prevLogger;
+				return Logger;
+			};
+
+			global.Logger = Logger;
+		}
+	}(commonjsGlobal));
+	});
+
 	logger.useDefaults();
 
 	// print header to console in browser environment
 	var isBrowser = typeof window !== 'undefined' && Object.prototype.toString.call(window) === '[object Window]';
 	if (isBrowser) {
-	  console.log('bq v'+version+'\n'+homepage);
+	  console.log(name+' v'+version+'\n'+homepage);
 	}
+
+	// configs
+
+	var HEADER_BYTE_LENGTH = 16;
+	var MAGIC_NUMBER = 0x41443344; // AD3D encoded as ASCII characters in hex
+	var VERSION = 1;
+	var TEXTURE_PATH_KEYS = [
+	  // source
+	  'mapDiffuseSource',
+	  'mapSpecularSource',
+	  'mapNormalSource',
+	  'mapAlphaSource',
+	  'mapLightSource',
+	  // hi-res
+	  'mapDiffuse',
+	  'mapSpecular',
+	  'mapNormal',
+	  'mapAlpha',
+	  'mapLight',
+	  // preview
+	  'mapDiffusePreview',
+	  'mapSpecularPreview',
+	  'mapNormalPreview',
+	  'mapAlphaPreview',
+	  'mapLightPreview',
+	];
+
+	// text decoder shim
+
+	var textDecoder = window.TextDecoder ? new window.TextDecoder('utf-16') : makeUtf16Decoder();
+
+	function makeUtf16Decoder () {
+	  return {
+
+	    decode: function decodeText (a) {
+	      var
+	        string = '',
+	        // ignore any initial character other than '{' = 123 and '[' = 91 (>> bug #9818)
+	        i = a[0] === 123 || a[1] === 91 ? 0 : 1,
+	        l20 = a.length - 20,
+	        l2 =  a.length;
+	      // passing 20 arguments into fromCharCode function provides fastest performance
+	      // (based on practical performance testing)
+	      for (; i<l20; i += 20) {
+	        string += String.fromCharCode(
+	          a[ i ],      a[ i + 1 ],  a[ i + 2 ],  a[ i + 3 ],  a[ i + 4 ],  a[ i + 5 ],  a[ i + 6 ],  a[ i + 7 ],  a[ i + 8 ],  a[ i + 9 ],
+	          a[ i + 10 ], a[ i + 11 ], a[ i + 12 ], a[ i + 13 ], a[ i + 14 ], a[ i + 15 ], a[ i + 16 ], a[ i + 17 ], a[ i + 18 ], a[ i + 19 ]
+	        );
+	      }
+	      // the rest we do char by char
+	      for (; i<l2; i++) {
+	        string += String.fromCharCode( a[ i ] );
+	      }
+	      return string
+	    }
+
+	  }
+	}
+
+	function convertTextureKeys (data3d, rootDirectory) {
+
+	  var i, l, i2, l2, m, materialKeys = data3d.materialKeys || Object.keys(data3d.materials || {}), texturePathKey;
+
+	  for (i=0, l=materialKeys.length; i<l; i++) {
+	    m = data3d.materials[materialKeys[i]];
+
+	    // hi-res textures
+	    for (i2=0, l2=TEXTURE_PATH_KEYS.length; i2<l2; i2++) {
+	      texturePathKey = TEXTURE_PATH_KEYS[i2];
+	      if (m[texturePathKey] && m[texturePathKey][0] !== '/') {
+	        m[texturePathKey] = rootDirectory + m[texturePathKey];
+	      }
+	    }
+
+	  }
+
+	}
+
+	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, s3Key) {
+
+	  var mesh, i, l, meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
+
+	  for (i=0, l=meshKeys.length; i<l; i++) {
+	    mesh = data3d.meshes[ meshKeys[i] ];
+
+	    // map arrays to meshes
+	    if (mesh.positionsOffset !== undefined && mesh.positionsLength !== undefined) {
+	      mesh.positions = new Float32Array( buffer, payloadByteOffset + mesh.positionsOffset * 4, mesh.positionsLength );
+	      delete mesh.positionsOffset;
+	      delete mesh.positionsLength;
+	    }
+	    if (mesh.normalsOffset !== undefined && mesh.normalsLength !== undefined) {
+	      mesh.normals = new Float32Array( buffer, payloadByteOffset + mesh.normalsOffset * 4, mesh.normalsLength );
+	      delete mesh.normalsOffset;
+	      delete mesh.normalsLength;
+	    }
+	    if (mesh.uvsOffset !== undefined && mesh.uvsLength !== undefined) {
+	      mesh.uvs = new Float32Array( buffer, payloadByteOffset + mesh.uvsOffset * 4, mesh.uvsLength );
+	      delete mesh.uvsOffset;
+	      delete mesh.uvsLength;
+	    }
+	    if (mesh.uvsLightmapOffset !== undefined && mesh.uvsLightmapLength !== undefined) {
+	      mesh.uvsLightmap = new Float32Array( buffer, payloadByteOffset + mesh.uvsLightmapOffset * 4, mesh.uvsLightmapLength );
+	      delete mesh.uvsLightmapOffset;
+	      delete mesh.uvsLightmapLength;
+	    }
+
+	    // add cache key
+	    if (s3Key) {
+	      mesh.cacheKey = s3Key + ':' + meshKeys[i];
+	    }
+
+	  }
+
+	}
+
+	function traverseData3d(data3d, callback) {
+
+	  callback(data3d);
+
+	  if (data3d.children) {
+	    for (var i=0, l=data3d.children.length; i<l; i++) {
+	      traverseData3d(data3d.children[i], callback);
+	    }
+	  }
+
+	}
+
+	// public methods
+
+	function decodeBuffer (buffer, options) {
+
+	  // API
+	  options = options || {};
+	  var s3Key = options.s3Key;
+	  var rootDirectory = options.rootDirectory;
+
+	  // TODO: validate in buffer param is of type buffer
+
+	  // internals
+	  var headerArray = new Int32Array( buffer, 0, HEADER_BYTE_LENGTH / 4 );
+	  var magicNumber = headerArray[ 0 ];
+	  var version = headerArray[ 1 ];
+	  var structureByteLength = headerArray[ 2 ];
+	  var payloadByteLength = headerArray[ 3 ];
+	  var expectedFileByteLength = HEADER_BYTE_LENGTH + structureByteLength + payloadByteLength;
+
+	  // add trailing slash to root dir
+	  if (rootDirectory && rootDirectory[ rootDirectory.length - 1 ] !== '/') {
+	    rootDirectory += '/';
+	  }
+
+	  // validation warnings
+
+	  if (magicNumber !== MAGIC_NUMBER) {
+	    console.error('File header error: Wrong magic number. File is probably not data3d buffer format.');
+	  }
+	  if (version !== VERSION) {
+	    console.error('File header error: Wrong version number: '+version+'. Parser supports version: '+VERSION);
+	  }
+
+	  // validation errors
+
+	  if (buffer.byteLength !== expectedFileByteLength) {
+	    var errorMessage = 'Can not parse Data3d buffer. Wrong buffer size: ' + buffer.byteLength + ' Expected: '+ expectedFileByteLength;
+	    console.error(errorMessage);
+	    return Promise.reject(errorMessage)
+	  }
+
+	  // parse structure info
+
+	  var structureArray = new Uint16Array( buffer, HEADER_BYTE_LENGTH, structureByteLength / 2 );
+	  var structureString = textDecoder.decode( structureArray );
+	  var structure;
+	  try {
+	    structure = JSON.parse( structureString );
+	  } catch (e) {
+	    return Promise.reject( e )
+	  }
+
+	  // add geometry arrays to data3d
+
+	  var payloadByteOffset = HEADER_BYTE_LENGTH + structureByteLength;
+	  traverseData3d( structure.data3d, function(data3d){
+
+	    // map typed arrays to payload area in file buffer
+	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, s3Key);
+
+	    //  convert relative material keys into absolute once
+	    if (rootDirectory && data3d.materials) {
+	      convertTextureKeys(data3d, rootDirectory);
+	    }
+
+	  });
+
+	  return Promise.resolve( structure.data3d )
+
+	}
+
+	function sendBasicRequest (url, method, type, body){
+	  return new Promise(function (resolve, reject) {
+
+	    var xhr = new XMLHttpRequest();
+	    xhr.onload = function (event) {
+	      if (xhr.status >= 200 && xhr.status < 300) {
+	        resolve(xhr.response);
+	      } else {
+	        reject('Http request to '+url+' returned status: '+xhr.status+'. Body:\n'+xhr.response);
+	      }
+	    };
+	    xhr.onerror = function (event) {
+	      reject('Http request error. URL: '+url);
+	    };
+	    xhr.open(method, url, true);
+	    xhr.crossOrigin = 'Anonymous';
+	    xhr.responseType = type.toLowerCase();
+	    xhr.send(body);
+
+	  })
+	}
+
+	function sendJsonRequest(url, method, type, data){
+	  return new Promise(function (resolve, reject) {
+
+	    // internals
+	    var jsonString = null;
+	    var triedPreflightWorkaround = false;
+
+	    // preprocess data
+	    if (data) {
+	      try {
+	        jsonString = JSON.stringify(data);
+	      } catch (e) {
+	        reject('Error creating JSON string.');
+	      }
+	    }
+
+	    // create request
+	    var xhr = new XMLHttpRequest();
+	    xhr.crossOrigin = 'Anonymous';
+
+	    xhr.onload = function (event) {
+	      // parse data
+	      var json;
+	      try {
+	        json = JSON.parse(xhr.responseText);
+	      } catch (e) {
+	        reject({
+	          message: 'Http Request failed: Error parsing response JSON',
+	          url: url,
+	          status: xhr.status,
+	          headers: xhr.getAllResponseHeaders(),
+	          event: event
+	        });
+	        return
+	      }
+	      if (xhr.status >= 200 && xhr.status < 300) {
+	        resolve(json);
+	      } else {
+	        reject(json);
+	      }
+	    };
+	    xhr.onerror = function (event) {
+
+	      // When CORS preflight fails then xhr.status is 0
+	      if (!triedPreflightWorkaround && xhr.status === 0) {
+
+	        // try again with simple header to avoid OPTIONS preflight
+	        triedPreflightWorkaround = true;
+	        xhr.open(method, url, true);
+	        xhr.setRequestHeader('Content-Type', 'text/plain');
+	        xhr.send(jsonString);
+
+	      } else {
+
+	        reject({
+	          message: 'Http Request error',
+	          url: url,
+	          status: xhr.status,
+	          headers: xhr.getAllResponseHeaders(),
+	          event: event
+	        });
+
+	      }
+
+	    };
+
+	    xhr.open(method, url, true);
+	      if (method !== 'GET') {
+	          xhr.setRequestHeader('Content-Type', 'application/json');
+	      }
+	    xhr.send(jsonString);
+	    
+	  })
+	}
+
+	// FIXME: use proper config
+
+	var config$1 = {
+	  webgl: {
+	    params: {
+	      MAX_TEXTURE_SIZE
+	    }
+	  }
+	};
+
+	// internals
+
+	// graphic card max supported texture size
+	var MAX_TEXTURE_SIZE = config$1.webgl.params.MAX_TEXTURE_SIZE || 2048;
+
+	// helpers
+
+	function checkPowerOfTwo (value) {
+	  return ( value & ( value - 1 ) ) === 0 && value !== 0
+	}
+
+	function nearestPowerOfTwoOrMaxTextureSize (n) {
+	  // max texture size supported by vga
+	    if (n > MAX_TEXTURE_SIZE) {
+	        return MAX_TEXTURE_SIZE
+	    }
+	  // next best power of two
+	  var l = Math.log(n) / Math.LN2;
+	  return Math.pow(2, Math.round(l))
+	}
+
+	function resizeImage (image, url) {
+
+	  var width = nearestPowerOfTwoOrMaxTextureSize(image.width);
+	  var height = nearestPowerOfTwoOrMaxTextureSize(image.height);
+
+	  var canvas = document.createElement('canvas');
+	  canvas.width = width;
+	  canvas.height = height;
+	  canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+
+	  console.log('Image size not compatible. Image has been resized from ' + image.width + 'x' + image.height + 'px to ' + canvas.width + 'x' + canvas.height +
+	  'px.\n' + url);
+
+	  return canvas
+	}
+
+	// function
+
+	function sendTextureRequest (url, type, dataType, data, progress, s3Key) {
+	  return new Promise(function (resolve, reject) {
+	    
+	    var image = document.createElement('img');
+	    image.crossOrigin = 'Anonymous';
+
+	    image.onload = function () {
+	      
+	      var texture = new THREE.Texture();
+
+	      texture.sourceFile = url;
+	      texture.s3Key = s3Key;
+
+	      // image size compatibility check
+
+	      var isPowerOfTwo = (checkPowerOfTwo(image.width) && checkPowerOfTwo(image.height));
+	      var isNotTooBig = (image.width <= MAX_TEXTURE_SIZE && image.height <= MAX_TEXTURE_SIZE);
+
+	      if (isPowerOfTwo && isNotTooBig) {
+
+	        // use image as it is
+	        texture.image = image;
+
+	      } else {
+
+	        // resize image to make it compatible
+	        texture.image = resizeImage(image, url);
+	        // add url reference
+	        texture.image.src = url;
+
+	      }
+	      
+	      resolve(texture);
+
+	    };
+
+	    var triedWithCacheBust = false;
+	    image.onerror = function () {
+	      if(triedWithCacheBust) {
+	        reject('Error loading texture ' + url);
+	      } else {
+	        // try again with cache busting to avoid things like #1510
+	        triedWithCacheBust = true;
+	        if (url.indexOf('?') === -1) {
+	          url += '?cacheBust=' + new Date().getTime();
+	        } else {
+	          url += '&cacheBust=' + new Date().getTime();
+	        }
+	        image.src = url;
+	      }
+	    };
+
+	    // initiate image loading
+	    image.src = url;
+
+	  })
+	}
+
+	var DDS_MAGIC = 0x20534444;
+
+	var DDSD_MIPMAPCOUNT = 0x20000;
+
+	var DDSCAPS2_CUBEMAP = 0x200;
+
+	var DDPF_FOURCC = 0x4;
+
+	// internals
+
+	var FOURCC_DXT1 = fourCCToInt32("DXT1");
+	var FOURCC_DXT3 = fourCCToInt32("DXT3");
+	var FOURCC_DXT5 = fourCCToInt32("DXT5");
+
+	// functions
+
+	function fourCCToInt32 (value) {
+
+	  return value.charCodeAt(0) +
+	    (value.charCodeAt(1) << 8) +
+	    (value.charCodeAt(2) << 16) +
+	    (value.charCodeAt(3) << 24);
+
+	}
+
+	function int32ToFourCC (value) {
+
+	  return String.fromCharCode(
+	    value & 0xff,
+	    (value >> 8) & 0xff,
+	    (value >> 16) & 0xff,
+	    (value >> 24) & 0xff
+	  );
+	}
+
+	function loadARGBMip (buffer, dataOffset, width, height) {
+	  var dataLength = width * height * 4;
+	  var srcBuffer = new Uint8Array(buffer, dataOffset, dataLength);
+	  var byteArray = new Uint8Array(dataLength);
+	  var dst = 0;
+	  var src = 0;
+	  for (var y = 0; y < height; y++) {
+	    for (var x = 0; x < width; x++) {
+	      var b = srcBuffer[ src ];
+	      src++;
+	      var g = srcBuffer[ src ];
+	      src++;
+	      var r = srcBuffer[ src ];
+	      src++;
+	      var a = srcBuffer[ src ];
+	      src++;
+	      byteArray[ dst ] = r;
+	      dst++;  //r
+	      byteArray[ dst ] = g;
+	      dst++;  //g
+	      byteArray[ dst ] = b;
+	      dst++;  //b
+	      byteArray[ dst ] = a;
+	      dst++;  //a
+	    }
+	  }
+	  return byteArray;
+	}
+
+	function parse (buffer, loadMipmaps) {
+
+	  var dds = { mipmaps: [], width: 0, height: 0, format: null, mipmapCount: 1 };
+
+	  var headerLengthInt = 31; // The header length in 32 bit ints
+
+	  // Offsets into the header array
+
+	  var off_magic = 0;
+
+	  var off_size = 1;
+	  var off_flags = 2;
+	  var off_height = 3;
+	  var off_width = 4;
+
+	  var off_mipmapCount = 7;
+
+	  var off_pfFlags = 20;
+	  var off_pfFourCC = 21;
+	  var off_RGBBitCount = 22;
+	  var off_RBitMask = 23;
+	  var off_GBitMask = 24;
+	  var off_BBitMask = 25;
+	  var off_ABitMask = 26;
+
+	  var off_caps = 27;
+	  var off_caps2 = 28;
+	  var off_caps3 = 29;
+	  var off_caps4 = 30;
+
+	  // Parse header
+
+	  var header = new Int32Array(buffer, 0, headerLengthInt);
+
+	  if (header[ off_magic ] !== DDS_MAGIC) {
+
+	    console.error('THREE.DDSLoader.parse: Invalid magic number in DDS header.');
+	    return dds;
+
+	  }
+
+	  if (!header[ off_pfFlags ] & DDPF_FOURCC) {
+
+	    console.error('THREE.DDSLoader.parse: Unsupported format, must contain a FourCC code.');
+	    return dds;
+
+	  }
+
+	  var blockBytes;
+
+	  var fourCC = header[ off_pfFourCC ];
+
+	  var isRGBAUncompressed = false;
+
+	  switch (fourCC) {
+
+	    case FOURCC_DXT1:
+
+	      blockBytes = 8;
+	      dds.format = THREE.RGB_S3TC_DXT1_Format;
+	      break;
+
+	    case FOURCC_DXT3:
+
+	      blockBytes = 16;
+	      dds.format = THREE.RGBA_S3TC_DXT3_Format;
+	      break;
+
+	    case FOURCC_DXT5:
+
+	      blockBytes = 16;
+	      dds.format = THREE.RGBA_S3TC_DXT5_Format;
+	      break;
+
+	    default:
+
+	      if (header[ off_RGBBitCount ] == 32
+	        && header[ off_RBitMask ] & 0xff0000
+	        && header[ off_GBitMask ] & 0xff00
+	        && header[ off_BBitMask ] & 0xff
+	        && header[ off_ABitMask ] & 0xff000000) {
+	        isRGBAUncompressed = true;
+	        blockBytes = 64;
+	        dds.format = THREE.RGBAFormat;
+	      } else {
+	        console.error('THREE.DDSLoader.parse: Unsupported FourCC code ', int32ToFourCC(fourCC));
+	        return dds;
+	      }
+	  }
+
+	  dds.mipmapCount = 1;
+
+	  if (header[ off_flags ] & DDSD_MIPMAPCOUNT && loadMipmaps !== false) {
+
+	    dds.mipmapCount = Math.max(1, header[ off_mipmapCount ]);
+
+	  }
+
+	  //TODO: Verify that all faces of the cubemap are present with DDSCAPS2_CUBEMAP_POSITIVEX, etc.
+
+	  dds.isCubemap = header[ off_caps2 ] & DDSCAPS2_CUBEMAP ? true : false;
+
+	  dds.width = header[ off_width ];
+	  dds.height = header[ off_height ];
+
+	  var dataOffset = header[ off_size ] + 4;
+
+	  // Extract mipmaps buffers
+
+	  var width = dds.width;
+	  var height = dds.height;
+
+	  var faces = dds.isCubemap ? 6 : 1;
+
+	  for (var face = 0; face < faces; face++) {
+
+	    for (var i = 0; i < dds.mipmapCount; i++) {
+
+	      var byteArray, dataLength;
+	      if (isRGBAUncompressed) {
+	        byteArray = loadARGBMip(buffer, dataOffset, width, height);
+	        dataLength = byteArray.length;
+	      } else {
+	        dataLength = Math.max(4, width) / 4 * Math.max(4, height) / 4 * blockBytes;
+	        byteArray = new Uint8Array(buffer, dataOffset, dataLength);
+	      }
+
+	      var mipmap = { "data": byteArray, "width": width, "height": height };
+	      dds.mipmaps.push(mipmap);
+
+	      dataOffset += dataLength;
+
+	      width = Math.max(width * 0.5, 1);
+	      height = Math.max(height * 0.5, 1);
+
+	    }
+
+	    width = dds.width;
+	    height = dds.height;
+
+	  }
+
+	  return dds;
+
+	}
+
+	function log2 (x) {
+	  return Math.log(x) / Math.LN2
+	}
+
+	// load function
+
+	function sendDdsTextureRequest (url, type, dataType, data, progress, s3Key) {
+	  return new Promise(function (resolve, reject) {
+
+	    var xhr = new XMLHttpRequest();
+
+	    xhr.onload = function (event) {
+
+	      if (xhr.status >= 200 && xhr.status < 300) {
+
+	        var buffer = xhr.response,
+	          dds;
+
+	        // parse data
+	        try {
+	          dds = parse(buffer, true);
+	        } catch (e) {
+	          var message = 'Error Loading DDS Texture\n' + url + '\n' + e.name + ': ' + e.message;
+	          console.error(message);
+	          reject(message);
+	          return
+	        }
+
+	        // See OpenGL ES 2.0.25 p. 81 paragraph 1 for the number of required mipmaps.
+	        var mipmapCount = log2(Math.max(dds.width, dds.height)) + 1;
+	        if (dds.mipmapCount != mipmapCount) {
+	          console.error('Reading DDS texture failed: ' + url + '\nmipmaps counted: ' + dds.mipmapCount + ', should be: ' + mipmapCount +
+	            '\nPlease make sure you have mipmap generation enabled when creating DDS textures from images.');
+	          reject('Error parsing DDS. Wrong mipmaps count. ' + url);
+	          return
+	        }
+
+	        // create compressed texture
+	        var texture = new THREE.CompressedTexture();
+
+	        texture.format = dds.format;
+	        texture.mipmaps = dds.mipmaps;
+	        texture.image.width = dds.width;
+	        texture.image.height = dds.height;
+	        texture.image.src = url;
+	        texture.sourceFile = url;
+	        texture.s3Key = s3Key;
+	        texture.bufferByteLength = buffer.byteLength;
+
+	        // gl.generateMipmap fails for compressed textures
+	        // mipmaps must be embedded in the DDS file
+	        // or texture filters must not use mipmapping
+	        texture.generateMipmaps = false;
+
+	        resolve(texture);
+
+	      } else {
+	        reject({
+	          message: 'Http Request error',
+	          url: url,
+	          status: xhr.status,
+	          headers: xhr.getAllResponseHeaders(),
+	          event: event
+	        });
+	      }
+
+	    };
+	    xhr.onerror = function (event) {
+	      reject({
+	        message: 'Http Request error',
+	        url: url,
+	        status: xhr.status,
+	        headers: xhr.getAllResponseHeaders(),
+	        event: event
+	      });
+	    };
+
+	    xhr.open('GET', url, true);
+	    xhr.crossOrigin = "Anonymous";
+	    xhr.responseType = 'arraybuffer';
+	    xhr.send(null);
+
+	  })
+	}
+
+	function request(args) {
+	  // API
+	  var url = args.url || args.uri;
+	  var method = args.method || 'GET';
+	  var body = args.body;
+	  var type = getType(args.type, url, body);
+	  
+	  // TODO: add support for additional params
+	  //var headers = args.headers || {}
+	  //var qs = args.qs
+
+	  //var noCache = !!args.noCache
+
+	  // TODO: validate params
+	  if (sendRequestByType[type]) {
+	    return sendRequestByType[type](url, method, type, body)
+	  } else {
+	    return Promise.reject('Type '+type+' not supported.')
+	  }
+
+	}
+
+	// shortcuts
+
+	request.get = function get (url) {
+	  return request({
+	    method: 'GET',
+	    url: url
+	  })
+	};
+
+	request.getTexture = function getTexture (url) {
+	  return request({
+	    method: 'GET',
+	    type: 'texture',
+	    url: url
+	  })
+
+	};
+
+	// private properties and methods
+
+	var sendRequestByType = {
+	  'text': sendBasicRequest,
+	  'arrayBuffer': sendBasicRequest,
+	  'blob': sendBasicRequest,
+	  'json': sendJsonRequest, // IE11 does not support responseType=json
+	  //'ddsTexture': getDdsTexture,
+	  'imageTexture': sendTextureRequest,
+	  'ddsTexture': sendDdsTextureRequest
+	  // TODO: add support for following types
+	  //'document': sendDocumentRequest,
+	  //'urlEncoded': sendUrlEncodedRequest,
+	  //'formData': sendFormDataRequest,
+	  //'img': sendImgRequest
+	};
+
+	var typeByExtension = {
+	  'buffer': 'arrayBuffer',
+	  'txt': 'text',
+	  'json': 'json'
+	  // TODO: enable these once support for those types is provided
+	  //'jpg': 'img',
+	  //'jpeg': 'img',
+	  //'jpe': 'img',
+	  //'png': 'img',
+	  //'gif': 'img',
+	  //'xml': 'document',
+	  //'html': 'document',
+	  //'svg': 'document'
+	};
+
+	var textureTypeByExtension = {
+	  '.dds': 'ddsTexture',
+	  '.jpg': 'imageTexture',
+	  '.jpeg': 'imageTexture',
+	  '.jpe': 'imageTexture',
+	  '.png': 'imageTexture',
+	  '.gif': 'imageTexture',
+	  '.svg': 'imageTexture'
+	};
+
+	function getType (type, url, data) {
+	  if (!url) return 'text'
+	  var fileName = url.split('/').pop();
+	  var extension = fileName.split('.').pop();
+
+	  if (!type) {
+
+	    if (data) {
+	      // estimate dataType from data
+	      if (data instanceof FormData) {
+	        type = 'form-data';
+	      } else if (_.isObject(data)) {
+	        type = 'url-encoded';
+	      }
+	    } else {
+	      // estimate dataType from URL
+	      type = dataTypeFromUrl(url);
+	    }
+
+	    // fallback to text request
+	    if (!type) {
+	      type = 'text';
+	    }
+
+	  } else if (type === 'texture') {
+
+	    // estimate texture type from URL
+	    type = getTextureTypeFromUrl(url);
+
+	  }
+
+	  return type
+	}
+
+	var typeByExtensionKeys = Object.keys(typeByExtension);
+	function dataTypeFromUrl (url) {
+
+	  var extension, i, l, urlLow = url.toLowerCase();
+
+	  for (i= 0, l=typeByExtensionKeys.length; i<l; i++ ) {
+	    extension = typeByExtensionKeys[i];
+	    if (urlLow.substring( urlLow.length - extension.length ) === extension) {
+	      return typeByExtension[ extension ]
+	    }
+	  }
+
+	  return 'text'
+
+	}
+
+	function getTextureTypeFromUrl (url, isTexture) {
+
+	  // get file extension
+	  var search = url.match(/\.[A-Za-z]+(?=\?|$)/i);
+
+	  if (search) {
+	    var extension = search[ 0 ].toLowerCase();
+	    return textureTypeByExtension[ extension ]
+	  } else {
+	    return false
+	  }
+
+	}
+
+	/*
+
+	 PERFORMANCE CRITICAL CODE
+
+	 readability may suffer from performance optimization
+	 ask tomas-polach if you have questions
+
+	*/
+
+	var s3 = {
+	  getTexture: function(path) {
+	    return request.getTexture('https://dnvf9esa6v418.cloudfront.net'+path)
+	  }
+	};
+
+	// constants
+
+	var THREEJS_TEXTURE_TYPES_MAP = {
+	  // hi-res textures
+	  'mapDiffuse': 'map',
+	  'mapSpecular': 'specularMap',
+	  'mapNormal':'normalMap',
+	  'mapAlpha':'alphaMap',
+	  'mapLight':'lightMap',
+	  // lo-res textures
+	  'mapDiffusePreview': 'map',
+	  'mapSpecularPreview': 'specularMap',
+	  'mapNormalPreview':'normalMap',
+	  'mapAlphaPreview':'alphaMap',
+	  'mapLightPreview':'lightMap'
+	};
+	var WEBGL_WRAP_TYPES = {
+	  repeat: 1000,
+	  mirror: 1002,
+	  clamp: 1001
+	};
+	// RepeatWrapping: 1000 / ClampToEdgeWrapping: 1001 / MirroredRepeatWrapping: 1002
+
+	// helpers
+
+	function onError (e) {
+	  console.error('Texture could not been loaded: ', e);
+	}
+
+	var textureRefCount = {};
+
+	function countTextureReference ( key ) {
+	  if ( key !== undefined ) {
+	    if (textureRefCount[ key ]) {
+	      textureRefCount[ key ]++;
+	    } else {
+	      textureRefCount[ key ] = 1;
+	    }
+	  }
+	}
+
+	function disposeIfPossible () {
+	  var texture3d = this;
+	  var key = this.s3Key;
+	  if (key) {
+	    if (textureRefCount[ key ]) {
+	      textureRefCount[ key ]--;
+	      if (textureRefCount[ key ] === 0) {
+	//          console.log('dispose texture', texture3d.s3Key)
+	        texture3d.dispose();
+	//          texture3d.needsUpdate = true
+	      }
+	    } else {
+	//        console.warn('texture not in cache ' + key)
+	      texture3d.dispose();
+	    }
+	  } else {
+	    texture3d.dispose();
+	//      texture3d.needsUpdate = true
+	  }
+	}
+
+	// class
+
+	function loadTextures ( queue, TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, resetTexturesOnLoadStart) {
+
+	  // new textures
+
+	  var
+	    texture3dKeys = [],
+	    textureKeys = [],
+	    texturePromises = [],
+	    textureCount = 0,
+	    textureS3Key,
+	    texture3d,
+	    textureType3d,
+	    textureType,
+	    needsUpdate,
+	    hasUv1Textures = false,
+	    geometry3d = mesh3d ? mesh3d.geometry : null,
+	    attributes3d = geometry3d ? geometry3d.attributes : null,
+	    hasUvVertices = attributes3d && attributes3d.uv && attributes3d.uv.count > 0,
+	    hasUv2Vertices = attributes3d && attributes3d.uv2 && attributes3d.uv2.count > 0,
+	    i,
+	    l;
+
+	  // UV1 textures
+
+	  for (i = 0, l = TEXTURE_TYPES.UV1.length; i < l; i++) {
+	    textureType = TEXTURE_TYPES.UV1[ i ];
+	    textureS3Key = _attributes[ textureType ];
+	    textureType3d = THREEJS_TEXTURE_TYPES_MAP[ textureType ];
+	    texture3d = material3d[ textureType3d ];
+
+	    if (textureS3Key) {
+	      if (hasUvVertices) {
+	        hasUv1Textures = true;
+	      } else {
+	        console.error('Texture ' + textureS3Key + ' could not be assigned because geometry has no UV vertices.');
+	        continue
+	      }
+	    }
+
+	    if (textureS3Key) {
+
+	      needsUpdate = true;
+
+	      // update wrap
+	      wrap = WEBGL_WRAP_TYPES[ _attributes.wrap ] || WEBGL_WRAP_TYPES[ 'repeat' ];
+	      if (texture3d && wrap !== texture3d.wrapS) {
+	        texture3d.wrapS = wrap;
+	        texture3d.wrapT = wrap;
+	        texture3d.needsUpdate = true;
+	      }
+
+	      // don't reload texture if files are of same origin
+	      if (
+	        texture3d
+	        && texture3d.s3Key
+	        && textureS3Key === texture3d.s3Key
+	      ) {
+	        needsUpdate = false;
+	      }
+
+	      if (needsUpdate && texture3d && resetTexturesOnLoadStart) {
+	        // dispose old texture
+	        if (material3d[ textureType3d ] && material3d[ textureType3d ].disposeIfPossible) {
+	          material3d[ textureType3d ].disposeIfPossible();
+	        }
+	        material3d[ textureType3d ] = null;
+	      }
+
+	      if (needsUpdate) {
+	        // load new texture
+	        texturePromises[ textureCount ] = s3.getTexture(textureS3Key, { queue: queue }).catch(onError);
+	        textureKeys[ textureCount ] = textureType;
+	        texture3dKeys[ textureCount ] = textureType3d;
+	        textureCount++;
+	        material3d.needsUpdate = true;
+	      }
+
+	    } else if (material3d[ textureType3d ]) {
+
+	      // no new texture: just dispose old texture
+	      if (material3d[ textureType3d ] && material3d[ textureType3d ].disposeIfPossible) {
+	        material3d[ textureType3d ].disposeIfPossible();
+	      }
+	      material3d[ textureType3d ] = null;
+	      material3d.needsUpdate = true;
+
+	    }
+
+	  }
+
+	  // UV1 vectors
+
+	  if (attributes3d) {
+
+	    // UV channel 1
+
+	    if (hasUv1Textures) {
+
+	      // resize UV array
+
+	      if (_attributes.size) {
+
+	        var
+	          targetScaleU = _attributes.size[ 0 ],
+	          targetScaleV = _attributes.size[ 1 ],
+	          currentScaleU = attributes3d.uv._scaleU || 1,
+	          currentScaleV = attributes3d.uv._scaleV || 1;
+	        // check if uv recalculation is needed
+	        if (targetScaleU !== currentScaleU || targetScaleV !== currentScaleV) {
+	          // remember original uv array
+	          if (!attributes3d.uv._source) {
+	            attributes3d.uv._source = attributes3d.uv.array;
+	          }
+	          // internals
+	          var
+	            sourceUVs = attributes3d.uv._source,
+	            resizedUVs = new Float32Array(sourceUVs.length);
+	          // resize array
+	          for (var i = 0, l = resizedUVs.length; i < l; i += 2) {
+	            resizedUVs[ i ] = sourceUVs[ i ] / targetScaleU;
+	            resizedUVs[ i + 1 ] = sourceUVs[ i + 1 ] / targetScaleV;
+	          }
+	          // set resized array
+	          attributes3d.uv.array = resizedUVs;
+	          // remember size
+	          attributes3d.uv._scaleU = targetScaleU;
+	          attributes3d.uv._scaleV = targetScaleV;
+	          // set update flag
+	          attributes3d.uv.needsUpdate = true;
+	        }
+
+	      }
+
+	    }
+
+	    // UV channel 2
+
+	    if (_attributes[ TEXTURE_TYPES.UV2 ]) {
+
+	      // check uv count
+	      if (hasUv2Vertices) {
+
+	        // everything ok - load lightmap
+	        textureType = TEXTURE_TYPES.UV2;
+	        textureS3Key = _attributes[ textureType ];
+	        texturePromises[ textureCount ] = s3.getTexture(textureS3Key, { queue: queue }).catch(onError);
+	        textureKeys[ textureCount ] = textureType;
+	        texture3dKeys[ textureCount ] = THREEJS_TEXTURE_TYPES_MAP[ textureType ];
+	        textureCount++;
+
+	      } else {
+
+	        console.error('Lightmap ' + _attributes[ TEXTURE_TYPES.UV2 ] + ' could not be assigned because geometry has no lightmap UV (UV2) vertices.');
+
+	      }
+
+	    }
+
+	  }
+
+	  // load textures
+
+	  var promise, wrap;
+	  if (textureCount) {
+
+	    promise = Promise.all(texturePromises).then(function (textures) {
+	      
+	      // assign textures
+	      wrap = WEBGL_WRAP_TYPES[ _attributes.wrap ] || WEBGL_WRAP_TYPES[ 'repeat' ];
+	      for (i = 0; i < textureCount; i++) {
+	        // FIXME:
+	        // if (
+	        //   // avoid racing conditions
+	        // textures[ i ] && textures[ i ].s3Key === material3d._texturesToBeLoaded[ textureKeys[i] ] &&
+	        //   // filter texture loading errors
+	        // (textures[i] instanceof THREE.CompressedTexture || textures[i] instanceof THREE.Texture)
+	        // ){
+	          
+	          // cache
+	          countTextureReference(textures[ i ].s3Key);
+	          textures[ i ].disposeIfPossible = disposeIfPossible;
+
+	          // set texture settings
+	          textures[ i ].wrapS = wrap;
+	          textures[ i ].wrapT = wrap;
+	          textures[ i ].anisotropy = 2;
+	          // dispose previous texture
+	          if (material3d[ texture3dKeys[ i ] ] && material3d[ texture3dKeys[ i ] ].disposeIfPossible) {
+	            material3d[ texture3dKeys[ i ] ].disposeIfPossible();
+	          }
+	          // add new texture
+	          material3d[ texture3dKeys[ i ] ] = textures[ i ];
+	          material3d[ texture3dKeys[ i ] ].needsUpdate = true;
+	        // }
+	      }
+	      // update material
+	      material3d.needsUpdate = true;
+
+	      // to prevent warnings: "GL ERROR :GL_INVALID_OPERATION : glDrawElements: attempt to access out of range vertices in attribute 1 "
+	      // this happens when switching from a material without texture to a material with texture or vice versa
+	      if ( mesh3d && mesh3d.geometry ) {
+	        mesh3d.geometry.buffersNeedUpdate = true;
+	        mesh3d.geometry.uvsNeedUpdate = true;
+	      }
+
+	      // render
+	      if (vm) vm.viewport.render();
+
+	    });
+
+	  } else {
+
+	    promise = Promise.resolve();
+
+	    // render
+	    if (vm) vm.viewport.render();
+
+	  }
+
+	  return promise
+
+	}
+
+	/*
+
+	 PERFORMANCE CRITICAL CODE
+
+	 readability may suffer from performance optimization
+	 ask tomas-polach if you have questions
+
+	*/
+
+	var config = {
+	  isMobile: false,
+	  compatibility: {
+	    webglCompressedTextures: true
+	  }
+	};
+
+	// constants
+
+	var HI_RES_TEXTURE_TYPES = {
+	  UV1: [ 'mapDiffuse', 'mapSpecular', 'mapNormal', 'mapAlpha' ],
+	  UV2: 'mapLight'
+	};
+	var LO_RES_TEXTURE_TYPES = {
+	  UV1: [ 'mapDiffusePreview', 'mapSpecularPreview', 'mapNormalPreview', 'mapAlphaPreview' ],
+	  UV2: 'mapLightPreview'
+	};
+
+	// RepeatWrapping: 1000 / ClampToEdgeWrapping: 1001 / MirroredRepeatWrapping: 1002
+
+	// function
+
+	function setMaterial (args) {
+
+	  var vm = args.vm;
+	  var material3d = args.material3d;
+	  var mesh3d = args.mesh3d;
+	  var _attributes = args.attributes || {};
+	  var reset = args.reset !== undefined ? args.reset : true;
+	  var loadingQueuePrefix = args.loadingQueuePrefix;
+	  var onFirstTextureSetLoaded = args.onFirstTextureSetLoaded;
+
+	  // transparency
+
+	//     material3d.transparent = true
+	//     material3d.opacity = 0.55
+
+	  // depth buffer
+	//    if (material3d.opacity < 1) {
+	//      material3d.depthWrite = false
+	//      var alphaTest = material3d.opacity - 0.001
+	//      if (alphaTest < 0) alphaTest = 0
+	//      material3d.alphaTest = alphaTest
+	//    }
+
+	  // specular coefficient
+
+	  material3d.shininess = _attributes.specularCoef !== undefined ? _attributes.specularCoef : 0.1;
+
+	  // colors
+
+	  if (_attributes.colorDiffuse) {
+	    material3d.color.r = _attributes.colorDiffuse[ 0 ];
+	    material3d.color.g = _attributes.colorDiffuse[ 1 ];
+	    material3d.color.b = _attributes.colorDiffuse[ 2 ];
+	  } else if (reset) {
+	    if (_attributes.mapDiffuse) {
+	      // has diffuse texture
+	      material3d.color.r = 1;
+	      material3d.color.g = 1;
+	      material3d.color.b = 1;
+	    } else {
+	      // has NO diffuse texture
+	      material3d.color.r = 0.85;
+	      material3d.color.g = 0.85;
+	      material3d.color.b = 0.85;
+	    }
+
+	  }
+
+	  if (_attributes.colorAmbient) {
+	    // material3d.ambient.r = _attributes.colorAmbient[ 0 ]
+	    // material3d.ambient.g = _attributes.colorAmbient[ 1 ]
+	    // material3d.ambient.b = _attributes.colorAmbient[ 2 ]
+	  } else if (reset) {
+	    // if (!material3d.ambient) {
+	    //   material3d.ambient = new THREE.Color()
+	    // }
+	    // material3d.ambient.r = material3d.color.r
+	    // material3d.ambient.g = material3d.color.g
+	    // material3d.ambient.b = material3d.color.b
+	  }
+
+	  if (_attributes.colorSpecular) {
+	    material3d.specular.r = _attributes.colorSpecular[ 0 ];
+	    material3d.specular.g = _attributes.colorSpecular[ 1 ];
+	    material3d.specular.b = _attributes.colorSpecular[ 2 ];
+	  } else if (reset) {
+	    if (!material3d.specular) {
+	      material3d.specular = new THREE.Color();
+	    }
+	    material3d.specular.r = 0.25;
+	    material3d.specular.g = 0.25;
+	    material3d.specular.b = 0.25;
+	  }
+
+	  if (_attributes.colorEmissive) {
+	    material3d.emissive.r = _attributes.colorEmissive[ 0 ];
+	    material3d.emissive.g = _attributes.colorEmissive[ 1 ];
+	    material3d.emissive.b = _attributes.colorEmissive[ 2 ];
+	  } else if (reset) {
+	    if (!material3d.emissive) {
+	      material3d.emissive = new THREE.Color();
+	    }
+	    material3d.emissive.r = 0;
+	    material3d.emissive.g = 0;
+	    material3d.emissive.b = 0;
+	  }
+
+	  // lightmap settings
+	  if (_attributes.mapLight || _attributes.mapLightPreview) {
+	    material3d.enhancedLightMap = material3d.enhancedLightMap || {};
+	    material3d.enhancedLightMap.intensity = (_attributes.mapLightIntensity !== undefined) ? _attributes.mapLightIntensity : 1;
+	    material3d.enhancedLightMap.center = (_attributes.mapLightCenter !== undefined) ? _attributes.mapLightCenter : 0.5;
+	    material3d.enhancedLightMap.falloff = (_attributes.mapLightFalloff !== undefined) ? _attributes.mapLightFalloff : 0.5;
+	  }
+
+	  // shadows
+
+	  if (mesh3d) {
+	    // (2017/04/05) Interiors are currently not shadow receivers, as this
+	    // would produce many artifacts. However, flat and thin objects laying
+	    // very close to the floor (such as carpets) need to be excepted from
+	    // that rule. This is a temporary way to achieve that.
+	    if (!mesh3d.geometry.boundingBox)
+	      mesh3d.geometry.computeBoundingBox();
+	    var boundingBox = mesh3d.geometry.boundingBox;
+	    var position    = boundingBox.min.clone();
+	    position.applyMatrix4(mesh3d.matrixWorld);
+	    var meshIsFlat          = boundingBox.max.y - boundingBox.min.y < 0.05;
+	    var meshIsOnGroundLevel = position.y < 0.1;
+	    mesh3d.castShadow    = !(meshIsFlat && meshIsOnGroundLevel) && _attributes.castRealTimeShadows;
+	    mesh3d.receiveShadow =  (meshIsFlat && meshIsOnGroundLevel) || _attributes.receiveRealTimeShadows;
+	    mesh3d.material.needsUpdate = true; // without this, receiveShadow does not become effective
+	  }
+
+	  // load textures
+
+	  // remember current textures (avoiding racing conditions between texture loading and material updates)
+	  material3d._texturesToBeLoaded = {
+	    // hires textures
+	    mapDiffuse: _attributes.mapDiffuse,
+	    mapSpecular: _attributes.mapSpecular,
+	    mapNormal: _attributes.mapNormal,
+	    mapAlpha: _attributes.mapAlpha,
+	    mapLight: _attributes.mapLight,
+	    // lores textures
+	    mapDiffusePreview: _attributes.mapDiffusePreview,
+	    mapSpecularPreview: _attributes.mapSpecularPreview,
+	    mapNormalPreview: _attributes.mapNormalPreview,
+	    mapAlphaPreview: _attributes.mapAlphaPreview,
+	    mapLightPreview: _attributes.mapLightPreview
+	  };
+
+	  var
+	    loadingTexturesPromise,
+	    loadingQueue,
+	    isLoadingLoResTextures,
+	    hasLoResTextures = _attributes.mapDiffusePreview || _attributes.mapSpecularPreview || _attributes.mapNormalPreview || _attributes.mapAlphaPreview || _attributes.mapLightPreview,
+	//      hasHiResTextures = _attributes.mapDiffuse || _attributes.mapSpecular || _attributes.mapNormal || _attributes.mapAlpha || _attributes.mapLight,
+	    // TODO: readd hiResTextures config
+	    // hiResTexturesEnabled = !config.isMobile && vm.viewport.a.hiResTextures && config.compatibility.webglCompressedTextures
+	    hiResTexturesEnabled = !config.isMobile && config.compatibility.webglCompressedTextures;
+
+	  if (!hiResTexturesEnabled || (hasLoResTextures && !material3d.firstTextureLoaded)) {
+	    if (loadingQueuePrefix) {
+	      loadingQueue = loadingQueuePrefix + 'TexturesLoRes';
+	    }
+	    loadingTexturesPromise = loadTextures(loadingQueue, LO_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
+	    isLoadingLoResTextures = true;
+	  } else {
+	    if (loadingQueuePrefix) {
+	      loadingQueue = loadingQueuePrefix + 'TexturesHiRes';
+	    }
+	    loadingTexturesPromise = loadTextures(loadingQueue, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
+	    isLoadingLoResTextures = false;
+	  }
+
+
+	  // set opacity after textures have loaded
+	  loadingTexturesPromise.then(function(){
+
+	    if (_attributes.opacity !== undefined && _attributes.opacity < 1) {
+	      // 0 = fully transparent, 1 = non-transparent
+	      material3d.transparent = true;
+	      material3d.opacity = _attributes.opacity;
+	    } else if (_attributes.mapAlpha) {
+	      // has alpha map
+	      material3d.transparent = true;
+	      material3d.opacity = 1;
+	    } else {
+	      material3d.transparent = false;
+	      material3d.opacity = 1;
+	    }
+
+	    // trigger callback
+	    if (onFirstTextureSetLoaded) onFirstTextureSetLoaded();
+
+	    // set onFirstTextureLoaded
+	    if (hasLoResTextures) material3d.firstTextureLoaded = true;
+
+	  });
+
+	  // 2. load hi-res textures (if: material has preview texture set, not on mobile, hi-res enabled and supported)
+	  if (isLoadingLoResTextures && hiResTexturesEnabled) {
+	    loadingTexturesPromise.then(function(){
+	      if (loadingQueuePrefix) {
+	        loadingQueue = loadingQueuePrefix + 'TexturesHiRes';
+	      }
+	      loadTextures(loadingQueue, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
+	    });
+	  }
+
+	  // return texture loading promise
+
+	  return loadingTexturesPromise
+
+	}
+
+	// static class, @memberof View
+
+	// TODO: add dependencies
+	// * compareArrays
+	// * generateWireframeBuffer
+
+	// class
+
+	function Wireframe () {
+
+	  // internals
+	  this._wireframeGeometry = new THREE.BufferGeometry();
+	  this._wireframeGeometry.addAttribute( 'position', new THREE.BufferAttribute( new Float32Array(0), 3 ) );
+	  this._wireframeMaterial = new THREE.LineBasicMaterial();
+
+	  this._positions = null;
+	  this._buffer = null;
+	  this._thresholdAngle = 10;
+	  this._thickness = 1;
+	  this._color = [0,0,0];
+	  this._opacity = 1;
+
+	  // init
+	  THREE.Line.call( this, this._wireframeGeometry, this._wireframeMaterial, THREE.LinePieces );
+
+	}
+
+	// inherit from THREE Line prototype
+
+	Wireframe.prototype = Object.create( THREE.Line.prototype );
+	Wireframe.prototype.constructor = Wireframe;
+
+	// extend with own methods
+
+	Wireframe.prototype.update = function (options) {
+
+	  // API
+	  var positions = options.positions;
+	  //var normals = options.normals
+	  var thresholdAngle = options.thresholdAngle === undefined ? this._thresholdAngle : options.thresholdAngle;
+	  var thickness = options.thickness === undefined ? this._thickness : options.thickness;
+	  var color = options.color === undefined ? this._color : options.color;
+	  var opacity = options.opacity === undefined ? this._opacity : options.opacity;
+
+
+	  if (thickness === 0) {
+
+	    this.visible = false;
+
+	  } else {
+	    
+	    // take care of line buffer
+	    var regenerateBuffer = (!this._buffer || thresholdAngle !== this._thresholdAngle || !compareArrays(this._positions, positions));
+	    if (regenerateBuffer) {
+
+	      // generate new buffer from positions
+	      //var newBuffer = generateWireframeBuffer( positions, thresholdAngle )
+	      var newBuffer = new Float32Array(27);
+	      if (newBuffer.length) {
+	        this._wireframeGeometry.attributes.position.array = newBuffer;
+	        this._wireframeGeometry.attributes.position.needsUpdate = true;
+	        this.visible = true;
+	      } else {
+	        this.visible = false;
+	      }
+	      // remember settings
+	      this._buffer = newBuffer;
+	      this._positions = positions;
+	      this._thresholdAngle = thresholdAngle;
+
+	    } else if (this._thickness === 0) {
+
+	      // was hidden
+	      this.visible = true;
+
+	    }
+
+	    // update material
+	    this._wireframeMaterial.color.r = color[ 0 ];
+	    this._wireframeMaterial.color.g = color[ 1 ];
+	    this._wireframeMaterial.color.b = color[ 2 ];
+	    this._wireframeMaterial.opacity = opacity;
+	    this._wireframeMaterial.linewidth = thickness;
+	    // remember settings
+	    this._color = color;
+	    this._opacity = opacity;
+
+	  }
+
+	  this._thickness = thickness;
+
+	};
+
+	Wireframe.prototype.destroy = function () {
+
+	  this._wireframeGeometry = null;
+	  this._wireframeMaterial = null;
+
+	  this._positions = null;
+	  this._buffer = null;
+	  this._thresholdAngle = null;
+	  this._thickness = null;
+	  this._color = null;
+	  this._opacity = null;
+
+	};
+
+	var WEBGL_SIDE = {
+	  front: 0,
+	  back: 1,
+	  both: 2
+	};
+
+	var DEG_TO_RAD = Math.PI / 180;
+	var geometry3dCache = {};
+
+	// helpers
+
+	function createOrReuseGeometry3d( key ) {
+	    if (key) {
+	      // use cache
+	      if (geometry3dCache[ key ]) {
+	        geometry3dCache[ key ].refCount++;
+	      } else {
+	        geometry3dCache[ key ] = {
+	          geometry3d: new THREE.BufferGeometry(),
+	          refCount: 1
+	        };
+	      }
+	      return geometry3dCache[ key ].geometry3d
+	    } else {
+	      // no key no cache
+	      return new THREE.BufferGeometry()
+	    }
+	  }
+
+	function disposeGeometry3dIfNotUsedElsewhere( key, geometry3d ) {
+	    if (key) {
+	      // involve cache
+	      if (geometry3dCache[ key ]) {
+	        geometry3dCache[ key ].refCount--;
+	        if (geometry3dCache[ key ].refCount < 1) {
+	          geometry3dCache[ key ].geometry3d.dispose();
+	          delete geometry3dCache[ key ];
+	        }
+	      } else {
+	        // (2017/01/09) See comment in ThreeView.set()
+	        // if (geometry3d.attributes.pickingColor)
+	        //  delete geometry3d.attributes['pickingColor'];
+	        geometry3d.dispose();
+	      }
+	    } else {
+	      // no key bo cache
+	      // (2017/01/09) See comment in ThreeView.set()
+	      // if (geometry3d.attributes.pickingColor)
+	      //   delete geometry3d.attributes['pickingColor'];
+	      geometry3d.dispose();
+	    }
+	  }
+
+	function View (options) {
+
+	  // API
+	  this.threeParent = options.parent;
+
+	  // internals
+	  this.meshKeys = [];
+	  this.meshes = {};
+	  this.materialKeys = [];
+	  this.materials = {};
+	  this._meshes3d = {}; // three meshes indexed by meshId
+	  this._wireframes3d = {}; // wireframe  three meshes indexed by meshId
+	  this._materials3d = {}; // three materials indexed by meshId
+
+	}
+
+	View.prototype = {
+
+	  set: function (data3d, options) {
+
+	    // API
+	    options = options || {};
+	    var
+	      meshes = data3d.meshes || this.meshes,
+	      meshKeys = data3d.meshKeys,
+	      materials = data3d.materials || this.materials,
+	      materialKeys = data3d.materialKeys,
+	      loadingQueuePrefix = data3d.loadingQueuePrefix || options.loadingQueuePrefix,
+	      onFirstTextureSetLoaded = options.onFirstTextureSetLoaded;
+
+	    // internals
+	    var self = this, meshId, mesh, materialId, wireframe3d, positions, uvs, uvs2, scale,
+	      normals, mesh3d, geometry3d, material3d, position, rotRad, rotDeg, i, l;
+
+	    // output
+	    var promise;
+
+	    ///////////////// meshes
+
+	    if (meshes) {
+
+	      // generate IDs if not provided
+	      if (!meshKeys) {
+	        meshKeys = Object.keys(meshes);
+	      }
+
+	      for (i = 0, l = meshKeys.length; i < l; i++) {
+
+	        meshId = meshKeys[ i ];
+	        mesh = meshes[ meshId ];
+
+	        // internals
+	        materialId = mesh.material;
+	        positions = mesh.positions;
+	        uvs = mesh.uvs;
+	        uvs2 = mesh.uvsLightmap;
+	        normals = mesh.normals;
+	        position = mesh.position;
+	        rotRad = mesh.rotRad;
+	        rotDeg = mesh.rotDeg;
+	        scale = mesh.scale;
+
+	        // three.js materials
+	        if (!self._materials3d[ meshId ]) {
+	          // (one material pro mesh, because some of our mesh properties are material properties and it does not matter performance wise)
+	          material3d = new THREE.MeshPhongMaterial({ opacity: 0.5, transparent: true });
+	          material3d.name = materialId;
+	          if (!materials) {
+	            // there is no material properties. using default properties
+	            setMaterial({ material3d: material3d });
+	          }
+	          self._materials3d[ meshId ] = material3d;
+	        }
+
+	        // set face side (a mesh property in our data structure, but a material property in three.js data structure)
+	        self._materials3d[ meshId ].side = WEBGL_SIDE[ meshes[ meshId ].side ] || WEBGL_SIDE['front'];
+
+	        // create three.js meshes
+
+	        if (!self._meshes3d[ meshId ]) {
+
+	          // create geometry
+	          geometry3d = createOrReuseGeometry3d( mesh.cacheKey );
+	          // create mesh
+	          mesh3d = new THREE.Mesh(geometry3d, material3d);
+	          mesh3d.userData = self.userData;
+	          // add to parent
+	          self.threeParent.add(mesh3d);
+	          // remembers
+	          self._meshes3d[ meshId ] = mesh3d;
+
+	          // create a separate geometry object for wireframes
+	          wireframe3d = new Wireframe();
+	          // add to parent
+	          //self._meshes3d[ meshId ].add(wireframe3d)
+	          // remember
+	          self._wireframes3d[ meshId ] = wireframe3d;
+
+	        } else {
+
+	          mesh3d = self._meshes3d[ meshId ];
+	          geometry3d = mesh3d.geometry;
+
+	        }
+
+	        // apply scale
+	        if (scale) {
+	          mesh3d.scale.set( scale[0] , scale[1], scale[2] );
+	        }
+
+	        // apply position
+	        if (rotRad) {
+	          mesh3d.rotation.set( rotRad[0] , rotRad[1], rotRad[2] );
+	        } else if (rotDeg) {
+	          mesh3d.rotation.set( rotDeg[0] * DEG_TO_RAD, rotDeg[1] * DEG_TO_RAD, rotDeg[2] * DEG_TO_RAD );
+	        }
+
+	        // apply buffers if they are different than current buffers
+	        if (geometry3d.attributes.position === undefined) {
+	          geometry3d.attributes.position = new THREE.BufferAttribute(positions, 3);
+	//              geometry3d.addAttribute( 'position', new THREE.BufferAttribute(positions, 3) )
+	          // The bounding box of the scene may need to be updated
+	          if (this.vm && this.vm.viewport && this.vm.viewport.webglView)
+	            self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true;
+	        } else if (geometry3d.attributes.position.array !== positions ) {
+	          geometry3d.attributes.position.array = positions;
+	          geometry3d.attributes.position.needsUpdate = true;
+	          // Three.js needs this to update
+	          geometry3d.computeBoundingSphere();
+	          // The bounding box of the scene may need to be updated
+	          if (this.vm && this.vm.viewport && this.vm.viewport.webglView)
+	            self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true;
+	        }
+	        if (geometry3d.attributes.normal === undefined) {
+	          geometry3d.attributes.normal = new THREE.BufferAttribute(normals, 3);
+	//              geometry3d.addAttribute( 'normal', new THREE.BufferAttribute(normals, 3) )
+	        } else if (geometry3d.attributes.normal.array !== normals ) {
+	          geometry3d.attributes.normal.array = normals;
+	          geometry3d.attributes.normal.needsUpdate = true;
+	        }
+	        // geometry3d.attributesKeys = ['position', 'normal']
+	        // set uvs channel 1 (material)
+	        if (uvs) {
+	          if (geometry3d.attributes.uv === undefined) {
+	            geometry3d.attributes.uv = new THREE.BufferAttribute(uvs, 2);
+	          } else if (geometry3d.attributes.uv.array !== uvs ) {
+	            geometry3d.attributes.uv.array = uvs;
+	            geometry3d.attributes.uv.needsUpdate = true;
+	            // remove previous scale settings
+	            delete geometry3d.attributes.uv._scaleU;
+	            delete geometry3d.attributes.uv._scaleV;
+	            delete geometry3d.attributes.uv._source;
+	          }
+	          // geometry3d.attributesKeys[ 2 ] = 'uv'
+	        } else if (geometry3d.attributes.uv) {
+	          delete geometry3d.attributes.uv;
+	        }
+	        if (uvs2) {
+	          if (geometry3d.attributes.uv2 === undefined) {
+	            geometry3d.attributes.uv2 = new THREE.BufferAttribute(uvs2, 2);
+	          } else if (geometry3d.attributes.uv2.array !== uvs2 ) {
+	            geometry3d.attributes.uv2.array = uvs2;
+	            geometry3d.attributes.uv2.needsUpdate = true;
+	          }
+	          // geometry3d.attributesKeys[ geometry3d.attributesKeys.length++ ] = 'uv2'
+	        } else if (geometry3d.attributes.uv2) {
+	          delete geometry3d.attributes.uv2;
+	        }
+
+	        // (2017/01/09) The WebGL buffer of the pickingColor attribute is erroneously deleted
+	        // by ThreeJS (r69) in deallocateGeometry(). ThreeJS doesn't seem to account for the fact
+	        // that the attribute is shared by multiple geometries. It then does not get recreated, because
+	        // this function was attempting to manually set BufferGeometry.attributesKeys, missing any
+	        // extra attributes such as pickingColor.
+	        geometry3d.attributesKeys = Object.keys(geometry3d.attributes);
+
+	        // update wireframe
+
+	        if (materials[ materialId ]) {
+	          self._wireframes3d[ meshId ].update({
+	            positions: positions,
+	            thickness: materials[ materialId ].wireframeThickness === undefined ? 0 : materials[ materialId ].wireframeThickness,
+	            thresholdAngle: materials[ materialId ].wireframeThresholdAngle,
+	            color: materials[ materialId ].wireframeColor,
+	            opacity: materials[ materialId ].wireframeOpacity
+	          });
+	        }
+
+	      }
+
+	      // remove obsolete three.js meshes
+	      var mesh, meshIds = Object.keys(self._meshes3d);
+	      meshIds.forEach(function(meshId, i){
+	        mesh = self._meshes3d[meshId];
+	        if (!meshes[ meshId ]) {
+	          // destroy wireframe geometry
+	          /*
+	          var wireframe3d = self._wireframes3d[ meshId ]
+	          if (wireframe3d.parent) {
+	            wireframe3d.parent.remove( wireframe3d )
+	            wireframe3d.geometry.dispose()
+	          }
+	          */
+	          // destroy geometry
+	          console.log(self._meshes3d, meshId);
+	          var geometry3d = self._meshes3d[ meshId ].geometry;
+	          disposeGeometry3dIfNotUsedElsewhere(self.meshes[ meshId ].cacheKey, geometry3d);
+	          // destroy threejs mesh
+	          var mesh3d = self._meshes3d[ meshId ];
+	          if (mesh3d.parent) {
+	            mesh3d.parent.remove( mesh3d );
+	          }
+	          // destroy material
+	          var material3d = self._materials3d[ meshId ];
+	          if (material3d.map) material3d.map.disposeIfPossible();
+	          if (material3d.specularMap) material3d.specularMap.disposeIfPossible();
+	          if (material3d.normalMap) material3d.normalMap.disposeIfPossible();
+	          if (material3d.alphaMap) material3d.alphaMap.disposeIfPossible();
+	          if (material3d.lightMap) material3d.lightMap.disposeIfPossible();
+	          material3d.dispose();
+	          // remove reference to destroyed 3d objects
+	          delete self._meshes3d[ meshId ];
+	          delete self._wireframes3d[ meshId ];
+	          delete self._materials3d[ meshId ];
+	        }
+	      });
+
+	      // update properties
+	      self.meshKeys = meshKeys;
+	      self.meshes = meshes;
+
+	    }
+
+	    ///////////////// materials
+
+	    if (materials) {
+
+	      var materialPromises = [], material;
+	      for (i = 0, l = self.meshKeys.length; i < l; i++) {
+	        meshId = self.meshKeys[ i ];
+	        materialId = self.meshes[ meshId ].material;
+
+	        // material attributes
+	        material = materials[ materialId ];
+	        if (material && Object.keys(material).length) {
+	          // set material
+	          materialPromises[ i ] = setMaterial({
+	            vm: self.vm,
+	            loadingQueuePrefix: loadingQueuePrefix,
+	            mesh3d: self._meshes3d[ meshId ],
+	            material3d: self._materials3d[ meshId ],
+	            attributes: materials[ materialId ],
+	            onFirstTextureSetLoaded: onFirstTextureSetLoaded
+	          });
+	        }
+
+	      }
+
+	      // output
+	      promise = Promise.all(materialPromises);
+
+	      // update properties
+	      self.materialKeys = materialKeys;
+	      self.materials = materials;
+
+	    }
+
+	    ///////////////// return
+
+	    if (!promise) {
+	      promise = Promise.resolve();
+	    }
+
+	    return promise.then(function(){
+	      if (self.isDestroyed) return
+	      //self.vm.viewport.render()
+	    })
+
+	  },
+
+	  hasMeshes: function hasMeshes() {
+	    return Object.keys(this._meshes3d).length > 0
+	  },
+
+	  setMeshes: function(meshes){
+	    this.set({
+	      meshes: meshes
+	    });
+	  },
+
+	  setMaterials: function(materials, options){
+	    this.set({
+	      materials: materials
+	    }, options);
+	  },
+
+	  reset: function(){
+
+	    this.set({
+	      meshes: {},
+	      materials: {}
+	    });
+
+	  },
+
+	  destroy: function(){
+
+	    this.isDestroyed = true;
+
+	    this.reset();
+
+	    this.vm = null;
+	    this.threeParent = null;
+	    this.userData = null;
+
+	    this.threeParent = null;
+
+	    // internals
+	    this.meshKeys = null;
+	    this.meshes = null;
+	    this.materialKeys = null;
+	    this.materials = null;
+	    this._meshes3d = null;
+	    this._materials3d = null;
+
+	  }
+
+	};
 
 	var PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -6133,7 +7993,9 @@
 	 * Generate an UUID as specified in RFC4122
 	 */
 
-	function generateUuid () {
+	var uuid = {};
+
+	uuid.generate = function generateUuid () {
 	  var d = Date.now();
 	  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
 	    var r = (d + Math.random() * 16) % 16 | 0;
@@ -6141,248 +8003,35 @@
 	    return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
 	  });
 	  return uuid
-	}
+	};
 
 	/**
 	 * Validates UUID as specified in RFC4122
 	 */
 
-	function validateUuid (str) {
+	uuid.validate = function validateUuid (str) {
 	  if (!str || typeof str !== "string") return false
 	  return PATTERN.test(str)
-	}
+	};
 
-	// rgeistries
+	var BASE = {
 
-	var entitites = [];
-	var plugins = [];
-
-	// constants
-
-	var IS_NODE = !!(
-	  typeof module !== 'undefined'
-	  && module.exports
-	  && typeof process !== 'undefined'
-	  && Object.prototype.toString.call(process) === '[object process]'
-	  && process.title.indexOf('node') !== -1
-	);
-
-	// entitites
-
-	function registerEntity (entity) {
-	  entitites[entitites.length] = entity;
-	}
-
-	function deregisterEntity (entity) {
-	  var i = entities.indexOf(entity);
-	  if (i === -1) {
-	    console.error('Entity with uuid:'+entity.uuid+' not found in runtime registry.');
-	  } else {
-	    entitites.splice(i,1);
-	  }
-	}
-
-	function getEntities () {
-	  return entitites
-	}
-
-	function getEntityByUuid (uuid) {
-	  for (var i = 0, l = entitites.length; i < l; i++) {
-	    if (entitites[i].uuid === uuid) return entitites[i]
-	  }
-	  return null
-	}
-
-	// plugins
-
-	function registerPlugin (plugin) {
-	  if (pluginsByName[plugin.name]) {
-	    console.error('Plugin '+plugin.name+' has been registered already.');
-	    return false
-	  } else {
-	    pluginsByName[plugin.name] = plugin;
-	    // TODO: init plugin on running entitites
-	    getEntities().forEach(function(entity){
-	      initPlugin(entity, plugin);
-	    });
-	    return true
-	  }
-	}
-
-	function initPlugin (entity, plugin) {
-
-	  // TODO: init plugin here
-
-	}
-
-	function initPlugins (entity) {
-	  plugins.forEach(function(plugin){
-	    initPlugin(entity, plugin);
-	  });
-	}
-
-	// export public functions
-
-	var runtime = {
-
-	  sessionId: generateUuid(),
-
-	  env: {
-	    IS_NODE: IS_NODE
+	  data3d: {
+	    decodeBuffer: decodeBuffer,
+	    View: View
 	  },
 
-	  registerEntity: registerEntity,
-	  deregisterEntity: deregisterEntity,
-	  getEntityByUuid: getEntityByUuid,
-	  getEntities: getEntities,
+	  utils: {
+	    uuid: uuid
+	  },
 
-	  registerPlugin: registerPlugin,
-	  initPlugins: initPlugins
+	  io: {
+	    request: request
+	  }
 
 	};
 
-	/**
-	 * ...
-	 * @memberof bq
-	 * @function Entity#add
-	 * @param   {object}                          args
-	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
-	 * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
-	 * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
-	 * @returns {Promise}
-	 */
-	function add (arg) {
-
-	  console.log('Adding to the scene: '+arg);
-
-	}
-
-	/**
-	 * ...
-	 * @memberof bq
-	 * @function Entity#destroy
-	 * @param   {object}                          args
-	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
-	 * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
-	 * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
-	 * @returns {Promise}
-	 */
-	function destroy () {
-
-	  console.log('Destroy');
-
-	}
-
-	/**
-	 * ...
-	 * @memberof bq
-	 * @function Entity#find
-	 * @param   {object}                          args
-	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
-	 * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
-	 * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
-	 * @returns {Promise}
-	 */
-	function find () {
-
-	  console.log('Found nothing');
-
-	}
-
-	/**
-	 * ...
-	 * @memberof bq
-	 * @function Entity#findFirst
-	 * @param   {object}                          args
-	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
-	 * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
-	 * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
-	 * @returns {Promise}
-	 */
-	function findFirst () {
-
-	  console.log('Found nothing');
-
-	}
-
-	/**
-	 * ...
-	 * @memberof bq
-	 * @function Entity#on
-	 * @param   {object}                          args
-	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
-	 * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
-	 * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
-	 * @returns {Promise}
-	 */
-	function on () {
-	  var this_ = this;
-
-	  console.log('WIP');
-
-	}
-
-	/**
-	 * ...
-	 * @memberof bq
-	 * @function Entity#remove
-	 * @param   {object}                          args
-	 * @param   {string}                          [args.apiUrl]           - Url of archilogic services server-side endpoints.
-	 * @param   {string}                          [args.modelMakerApiUrl] - Url of model maker services server-side endpoints.
-	 * @param   {('error'|'warn'|'info'|'debug')} [args.logLevel=warn]         - Specify logging level
-	 * @returns {Promise}
-	 */
-	function remove () {
-
-	  console.log('Remove');
-
-	}
-
-	// utils
-	// methods
-	/**
-	 * @memeberof bq
-	 * @class bq.Entity
-	 */
-
-	function Entity () {
-	  // Avoid direct this references (= less bugs and ES2015 compatible)
-	  var this_ = this;
-
-	  this_.uuid = generateUuid();
-
-	  // Flags
-	  this_.initialized = true;
-
-	}
-
-	Entity.Entity = Entity.prototype.Entity = Entity;
-
-	// static
-
-	Entity.version = Entity.prototype.version = version;
-	Entity.registerPlugin = Entity.prototype.registerPlugin = runtime.registerPlugin;
-	Entity.utils = Entity.prototype.utils = {
-	  generateUuid: generateUuid,
-	  validateUuid: validateUuid
-	};
-
-	// methods
-
-	Entity.prototype.add = add;
-	Entity.prototype.destroy = destroy;
-	Entity.prototype.find = find;
-	Entity.prototype.findFirst = findFirst;
-	Entity.prototype.on = on;
-	Entity.prototype.remove = remove;
-
-	/**
-	 * @description base-query library object
-	 * @namespace bq
-	 * */
-	var bq = new Entity();
-
-	return bq;
+	return BASE;
 
 })));
 //# sourceMappingURL=base-query.js.map
