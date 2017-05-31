@@ -5783,21 +5783,22 @@
 	  self.fetch.polyfill = true;
 	})(typeof self !== 'undefined' ? self : global);
 
-	// Promise API polyfill for IE11
+	const isNode = !!(
+	  // detect node environment
+	  typeof module !== 'undefined'
+	  && module.exports
+	  && typeof process !== 'undefined'
+	  && Object.prototype.toString.call(process) === '[object process]'
+	  && process.title.indexOf('node') !== -1
+	);
 
+	// Promise API polyfill for IE11
 	// fetch API polyfill for old browsers
 	// fetch API for node
-	if (!!(
-	    // detect node environment
-	    typeof module !== 'undefined'
-	    && module.exports
-	    && typeof process !== 'undefined'
-	    && Object.prototype.toString.call(process) === '[object process]'
-	    && process.title.indexOf('node') !== -1
-	  )) {
-	  // load node-fetch module
-	  global.fetch = require('node-fetch');
-	}
+	if (isNode) global.fetch = require('node-fetch');
+
+	// three.js
+	if (isNode) global.THREE = require('three');
 
 	// based on https://raw.githubusercontent.com/mrdoob/three.js/dev/src/polyfills.js
 
@@ -6157,7 +6158,8 @@
 
 	// text decoder shim
 
-	var textDecoder = window.TextDecoder ? new window.TextDecoder('utf-16') : makeUtf16Decoder();
+	// TODO: use StringDecoder in Node environment
+	var textDecoder = window && window.TextDecoder ? new window.TextDecoder('utf-16') : makeUtf16Decoder();
 
 	function makeUtf16Decoder () {
 	  return {
