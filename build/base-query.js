@@ -15,6 +15,87 @@
 	(global.BASE = factory());
 }(this, (function () { 'use strict';
 
+	console.time('runtime setup');
+
+	const isNode = !!(
+	  // detect node environment
+	  typeof module !== 'undefined'
+	  && module.exports
+	  && typeof process !== 'undefined'
+	  && Object.prototype.toString.call(process) === '[object process]'
+	  && process.title.indexOf('node') !== -1
+	);
+	var isBrowser = typeof window !== 'undefined';
+
+	// webGl info
+	var webGl = isBrowser ? getWebGlInfo() : null;
+
+	// create runtime object
+
+	var runtime = {
+
+	  isMobile: false,
+	  isNode: isNode,
+
+	  compatibility: {
+	    webglCompressedTextures: true
+	  }
+
+	};
+
+	// helpers
+
+	function getWebGlInfo () {
+
+	  var canvas = document.createElement('canvas');
+	  var gl = canvas.getContext('webgl') ||
+	    canvas.getContext('experimental-webgl') ||
+	    canvas.getContext('webgl', {antialias: false}) ||
+	    canvas.getContext('experimental-webgl', {antialias: false});
+
+	  var glParamKeys = [
+	    'SHADING_LANGUAGE_VERSION',
+	    'VENDOR',
+	    'RENDERER',
+	    'MAX_TEXTURE_SIZE',
+	    'MAX_CUBE_MAP_TEXTURE_SIZE',
+	    'MAX_TEXTURE_IMAGE_UNITS',
+	    'MAX_COMBINED_TEXTURE_IMAGE_UNITS',
+	    'MAX_VERTEX_TEXTURE_IMAGE_UNITS',
+	    'MAX_FRAGMENT_UNIFORM_VECTORS',
+	    'MAX_VERTEX_UNIFORM_VECTORS',
+	    'MAX_VARYING_VECTORS',
+	    'MAX_RENDERBUFFER_SIZE',
+	    'MAX_VERTEX_ATTRIBS'
+	    //'MAX_VIEWPORT_DIMS'
+	  ];
+	  var glParams = {};
+	  for (var i = 0, l = glParams.length; i < l; i++) {
+	    glParams[ glParamKeys[ i ] ] = gl.getParameter(gl[ glParamKeys[ i ] ]);
+	  }
+
+	// extensions (inspired by jussi-kalliokoski)
+	  var glExtensions = gl.getSupportedExtensions();
+
+	// compressed textures
+	// if (gl.getExtension('WEBGL_compressed_texture_s3tc')) {
+	//   has.webglCompressedTextures = true
+	// }
+
+	// GPU name
+	// if (gl.getExtension('WEBGL_debug_renderer_info')) {
+	//   window.env.gpu.name = gl.getParameter(37446)
+	// }
+
+	  return {
+	    params: glParams,
+	    extensions: glExtensions
+	  }
+
+	}
+
+	console.timeEnd('runtime setup');
+
 	var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 
@@ -5783,24 +5864,24 @@
 	  self.fetch.polyfill = true;
 	})(typeof self !== 'undefined' ? self : global);
 
-	const isNode = !!(
-	  // detect node environment
-	  typeof module !== 'undefined'
-	  && module.exports
-	  && typeof process !== 'undefined'
-	  && Object.prototype.toString.call(process) === '[object process]'
-	  && process.title.indexOf('node') !== -1
-	);
-
 	// Promise API polyfill for IE11
 	// fetch API polyfill for old browsers
 	// fetch API for node
-	if (isNode) global.fetch = require('node-fetch');
+	if (runtime.isNode) global.fetch = require('node-fetch');
 
-	// three.js
-	if (isNode) global.THREE = require('three');
+	if (!console.time || !console.timeEnd) {
+	  var timers = {};
+	  console.time = function(key) {
+	    timers[key] = new Date().getTime();
+	  };
+	  console.timeEnd = function(id) {
+	    if (!timers[key]) return
+	    console.log(key + ': ' + (new Date().getTime() - timers[key]) + 'ms');
+	    delete timers[key];
+	  };
+	}
 
-	// based on https://raw.githubusercontent.com/mrdoob/three.js/dev/src/polyfills.js
+	// from https://raw.githubusercontent.com/mrdoob/three.js/dev/src/polyfills.js
 
 	if (Number.EPSILON === undefined) {
 	  Number.EPSILON = Math.pow(2, -52);
@@ -6125,9 +6206,19 @@
 	logger.useDefaults();
 
 	// print header to console in browser environment
-	var isBrowser = typeof window !== 'undefined' && Object.prototype.toString.call(window) === '[object Window]';
-	if (isBrowser) {
+
+	var isBrowser$1 = typeof window !== 'undefined' && Object.prototype.toString.call(window) === '[object Window]';
+	if (isBrowser$1) {
 	  console.log(name+' v'+version+'\n'+homepage);
+	}
+
+	// global dependencies
+
+	// three.js
+	if (runtime.isNode) {
+	  global.THREE = require('three');
+	} else if (typeof THREE === 'undefined') {
+	  throw new Error('Base query requires THREE.js library. Please add <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/85/three.min.js"></script> to your html file at top of <head> section.')
 	}
 
 	// configs
@@ -6170,9 +6261,9 @@
 	  // check buffer type
 	  if (!buffer) {
 	    return Promise.reject('Missing buffer parameter.')
-	  } else if (Buffer && buffer instanceof Buffer) {
-	    // convert buffer to bufferArray
-	    buffer = convertToArrayBuffer(buffer);
+	  } else if (typeof Buffer !== 'undefined' && buffer instanceof Buffer) {
+	    // convert node buffer to arrayBuffer
+	    buffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
 	  }
 
 	  // internals
@@ -6333,10 +6424,6 @@
 
 	}
 
-	function convertToArrayBuffer (b) {
-	  return b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength)
-	}
-
 	function sendBasicRequest (url, method, type, body){
 	  return new Promise(function (resolve, reject) {
 
@@ -6434,20 +6521,10 @@
 	  })
 	}
 
-	// FIXME: use proper config
-
-	var config$1 = {
-	  webgl: {
-	    params: {
-	      MAX_TEXTURE_SIZE: 2048
-	    }
-	  }
-	};
-
 	// internals
 
 	// graphic card max supported texture size
-	var MAX_TEXTURE_SIZE = config$1.webgl.params.MAX_TEXTURE_SIZE || 2048;
+	var MAX_TEXTURE_SIZE = runtime.webgl ? runtime.webgl.params.MAX_TEXTURE_SIZE || 2048 : 2048;
 
 	// helpers
 
@@ -7301,14 +7378,6 @@
 
 	// static method, @memberof View
 
-	// FIXME: use proper config
-	var config = {
-	  isMobile: false,
-	  compatibility: {
-	    webglCompressedTextures: true
-	  }
-	};
-
 	// constants
 
 	var HI_RES_TEXTURE_TYPES = {
@@ -7462,9 +7531,9 @@
 	    isLoadingLoResTextures,
 	    hasLoResTextures = _attributes.mapDiffusePreview || _attributes.mapSpecularPreview || _attributes.mapNormalPreview || _attributes.mapAlphaPreview || _attributes.mapLightPreview,
 	//      hasHiResTextures = _attributes.mapDiffuse || _attributes.mapSpecular || _attributes.mapNormal || _attributes.mapAlpha || _attributes.mapLight,
-	    // TODO: readd hiResTextures config
-	    // hiResTexturesEnabled = !config.isMobile && vm.viewport.a.hiResTextures && config.compatibility.webglCompressedTextures
-	    hiResTexturesEnabled = !config.isMobile && config.compatibility.webglCompressedTextures;
+	    // TODO: readd hiResTextures configs
+	    // hiResTexturesEnabled = !configs.isMobile && vm.viewport.a.hiResTextures && configs.compatibility.webglCompressedTextures
+	    hiResTexturesEnabled = !runtime.isMobile && runtime.compatibility.webglCompressedTextures;
 
 	  if (!hiResTexturesEnabled || (hasLoResTextures && !material3d.firstTextureLoaded)) {
 	    if (loadingQueuePrefix) {
