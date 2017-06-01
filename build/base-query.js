@@ -15,8 +15,6 @@
 	(global.BASE = factory());
 }(this, (function () { 'use strict';
 
-	console.time('runtime setup');
-
 	const isNode = !!(
 	  // detect node environment
 	  typeof module !== 'undefined'
@@ -42,8 +40,6 @@
 	  }
 
 	};
-
-	// helpers
 
 	function getWebGlInfo () {
 
@@ -93,8 +89,6 @@
 	  }
 
 	}
-
-	console.timeEnd('runtime setup');
 
 	var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -5864,11 +5858,6 @@
 	  self.fetch.polyfill = true;
 	})(typeof self !== 'undefined' ? self : global);
 
-	// Promise API polyfill for IE11
-	// fetch API polyfill for old browsers
-	// fetch API for node
-	if (runtime.isNode) global.fetch = require('node-fetch');
-
 	if (!console.time || !console.timeEnd) {
 	  var timers = {};
 	  console.time = function(key) {
@@ -6202,7 +6191,6 @@
 	}(commonjsGlobal));
 	});
 
-	// Bootstrap logger
 	logger.useDefaults();
 
 	// print header to console in browser environment
@@ -6521,9 +6509,6 @@
 	  })
 	}
 
-	// internals
-
-	// graphic card max supported texture size
 	var MAX_TEXTURE_SIZE = runtime.webgl ? runtime.webgl.params.MAX_TEXTURE_SIZE || 2048 : 2048;
 
 	// helpers
@@ -6913,8 +6898,6 @@
 	  })
 	}
 
-	// main
-
 	function request(args) {
 	  // API
 	  var url = args.url || args.uri;
@@ -7069,10 +7052,6 @@
 	 ask tomas-polach if you have questions
 
 	*/
-
-	// static method, @memberof View
-
-	// dependencies
 
 	var s3 = {
 	  getTexture: function(path) {
@@ -7375,10 +7354,6 @@
 	 ask tomas-polach if you have questions
 
 	*/
-
-	// static method, @memberof View
-
-	// constants
 
 	var HI_RES_TEXTURE_TYPES = {
 	  UV1: [ 'mapDiffuse', 'mapSpecular', 'mapNormal', 'mapAlpha' ],
@@ -7697,8 +7672,6 @@
 
 	};
 
-	// constants
-
 	var WEBGL_SIDE = {
 	  front: 0,
 	  back: 1,
@@ -7706,8 +7679,6 @@
 	};
 
 	var DEG_TO_RAD = Math.PI / 180;
-	// shared variables
-
 	var geometry3dCache = {};
 
 	// helpers
@@ -8110,10 +8081,29 @@
 	  return PATTERN.test(str)
 	};
 
-	/**
-	 * @description a-base library object
-	 * @namespace BASE
-	 * */
+	var fetch$1 = (function(){
+
+	  if (runtime.isNode) {
+	    return require('node-fetch')
+	  } else if (typeof fetch !== 'undefined') {
+	    return fetch
+	  } else {
+	    console.warn('Missing global fetch API.');
+	    return function() {
+	      throw new Error('Missing global fetch API.')
+	    }
+	  }
+
+	})();
+
+	function loadData3d (url, options) {
+	  return fetch$1(url, options).then(function(res){
+	    return res.arrayBuffer()
+	  }).then(function(buffer){
+	    return decodeBuffer(buffer)
+	  })
+	}
+
 	var BASE = {
 
 	  data3d: {
@@ -8126,7 +8116,9 @@
 	  },
 
 	  io: {
-	    request: request
+	    fetch: fetch$1,
+	    request: request,
+	    loadData3d: loadData3d
 	  }
 
 	};
