@@ -4,8 +4,6 @@ var s3Prefix = 'https://dnvf9esa6v418.cloudfront.net'
 var url = s3Prefix + s3Key
 
 // send request
-fetch(url).then(function(res) {
-  return res.arrayBuffer()
-}).then(BASE.data3d.decodeBuffer).then(function(data3d){
+BASE.io.loadData3d(url).then(function(data3d){
   console.log('Data3d has '+Object.keys(data3d.materials).length+' materials.')
 })
