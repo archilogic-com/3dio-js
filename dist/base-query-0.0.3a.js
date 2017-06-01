@@ -1,8 +1,8 @@
 /**
  * @preserve
  * @name base-query
- * @version 0.0.2a
- * @description Parse and Edit building data using simple APIs.
+ * @version 0.0.3a
+ * @description Parse and edit building data using simple APIs.
  * @see http://base-query.org/
  * @tutorial https://github.com/archilogic-com/base-query
  * @author archilogic <dev.rocks@archilogic.com> (https://archilogic.com)
@@ -14,6 +14,83 @@
 	typeof define === 'function' && define.amd ? define(factory) :
 	(global.BASE = factory());
 }(this, (function () { 'use strict';
+
+	var isNode = !!(
+	  // detect node environment
+	  typeof module !== 'undefined'
+	  && module.exports
+	  && typeof process !== 'undefined'
+	  && Object.prototype.toString.call(process) === '[object process]'
+	  && process.title.indexOf('node') !== -1
+	);
+	var isBrowser = typeof window !== 'undefined';
+
+	// webGl info
+	var webGl = isBrowser ? getWebGlInfo() : null;
+
+	// create runtime object
+
+	var runtime = {
+
+	  isMobile: false,
+	  isNode: isNode,
+
+	  compatibility: {
+	    webglCompressedTextures: true
+	  }
+
+	};
+
+	// helpers
+
+	function getWebGlInfo () {
+
+	  var canvas = document.createElement('canvas');
+	  var gl = canvas.getContext('webgl') ||
+	    canvas.getContext('experimental-webgl') ||
+	    canvas.getContext('webgl', {antialias: false}) ||
+	    canvas.getContext('experimental-webgl', {antialias: false});
+
+	  var glParamKeys = [
+	    'SHADING_LANGUAGE_VERSION',
+	    'VENDOR',
+	    'RENDERER',
+	    'MAX_TEXTURE_SIZE',
+	    'MAX_CUBE_MAP_TEXTURE_SIZE',
+	    'MAX_TEXTURE_IMAGE_UNITS',
+	    'MAX_COMBINED_TEXTURE_IMAGE_UNITS',
+	    'MAX_VERTEX_TEXTURE_IMAGE_UNITS',
+	    'MAX_FRAGMENT_UNIFORM_VECTORS',
+	    'MAX_VERTEX_UNIFORM_VECTORS',
+	    'MAX_VARYING_VECTORS',
+	    'MAX_RENDERBUFFER_SIZE',
+	    'MAX_VERTEX_ATTRIBS'
+	    //'MAX_VIEWPORT_DIMS'
+	  ];
+	  var glParams = {};
+	  for (var i = 0, l = glParams.length; i < l; i++) {
+	    glParams[ glParamKeys[ i ] ] = gl.getParameter(gl[ glParamKeys[ i ] ]);
+	  }
+
+	// extensions (inspired by jussi-kalliokoski)
+	  var glExtensions = gl.getSupportedExtensions();
+
+	// compressed textures
+	// if (gl.getExtension('WEBGL_compressed_texture_s3tc')) {
+	//   has.webglCompressedTextures = true
+	// }
+
+	// GPU name
+	// if (gl.getExtension('WEBGL_debug_renderer_info')) {
+	//   window.env.gpu.name = gl.getParameter(37446)
+	// }
+
+	  return {
+	    params: glParams,
+	    extensions: glExtensions
+	  }
+
+	}
 
 	var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -5784,22 +5861,20 @@
 	})(typeof self !== 'undefined' ? self : global);
 
 	// Promise API polyfill for IE11
-
 	// fetch API polyfill for old browsers
-	// fetch API for node
-	if (!!(
-	    // detect node environment
-	    typeof module !== 'undefined'
-	    && module.exports
-	    && typeof process !== 'undefined'
-	    && Object.prototype.toString.call(process) === '[object process]'
-	    && process.title.indexOf('node') !== -1
-	  )) {
-	  // load node-fetch module
-	  global.fetch = require('node-fetch');
+	if (!console.time || !console.timeEnd) {
+	  var timers = {};
+	  console.time = function(key) {
+	    timers[key] = new Date().getTime();
+	  };
+	  console.timeEnd = function(id) {
+	    if (!timers[key]) return
+	    console.log(key + ': ' + (new Date().getTime() - timers[key]) + 'ms');
+	    delete timers[key];
+	  };
 	}
 
-	// based on https://raw.githubusercontent.com/mrdoob/three.js/dev/src/polyfills.js
+	// from https://raw.githubusercontent.com/mrdoob/three.js/dev/src/polyfills.js
 
 	if (Number.EPSILON === undefined) {
 	  Number.EPSILON = Math.pow(2, -52);
@@ -5856,7 +5931,7 @@
 	}
 
 	var name = "base-query";
-	var version = "0.0.2a";
+	var version = "0.0.3a";
 
 	var homepage = "http://base-query.org/";
 
@@ -6124,9 +6199,19 @@
 	logger.useDefaults();
 
 	// print header to console in browser environment
-	var isBrowser = typeof window !== 'undefined' && Object.prototype.toString.call(window) === '[object Window]';
-	if (isBrowser) {
+
+	var isBrowser$1 = typeof window !== 'undefined' && Object.prototype.toString.call(window) === '[object Window]';
+	if (isBrowser$1) {
 	  console.log(name+' v'+version+'\n'+homepage);
+	}
+
+	// global dependencies
+
+	// three.js
+	if (runtime.isNode) {
+	  global.THREE = require('three');
+	} else if (typeof THREE === 'undefined') {
+	  throw new Error('Base query requires THREE.js library. Please add <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/85/three.min.js"></script> to your html file at top of <head> section.')
 	}
 
 	// configs
@@ -6152,13 +6237,89 @@
 	  'mapSpecularPreview',
 	  'mapNormalPreview',
 	  'mapAlphaPreview',
-	  'mapLightPreview',
+	  'mapLightPreview'
 	];
+	// TODO: use StringDecoder in Node environment
+	var textDecoder = window && window.TextDecoder ? new window.TextDecoder('utf-16') : makeUtf16Decoder();
+
+	// public methods
+
+	function decodeBuffer (buffer, options) {
+
+	  // API
+	  options = options || {};
+	  var s3Key = options.s3Key;
+	  var rootDirectory = options.rootDirectory;
+
+	  // check buffer type
+	  if (!buffer) {
+	    return Promise.reject('Missing buffer parameter.')
+	  } else if (typeof Buffer !== 'undefined' && buffer instanceof Buffer) {
+	    // convert node buffer to arrayBuffer
+	    buffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+	  }
+
+	  // internals
+	  var headerArray = new Int32Array(buffer, 0, HEADER_BYTE_LENGTH / 4);
+	  var magicNumber = headerArray[0];
+	  var version = headerArray[1];
+	  var structureByteLength = headerArray[2];
+	  var payloadByteLength = headerArray[3];
+	  var expectedFileByteLength = HEADER_BYTE_LENGTH + structureByteLength + payloadByteLength;
+
+	  // add trailing slash to root dir
+	  if (rootDirectory && rootDirectory[rootDirectory.length - 1] !== '/') {
+	    rootDirectory += '/';
+	  }
+
+	  // validation warnings
+
+	  if (magicNumber !== MAGIC_NUMBER) {
+	    console.error('File header error: Wrong magic number. File is probably not data3d buffer format.');
+	  }
+	  if (version !== VERSION) {
+	    console.error('File header error: Wrong version number: ' + version + '. Parser supports version: ' + VERSION);
+	  }
+
+	  // validation errors
+
+	  if (buffer.byteLength !== expectedFileByteLength) {
+	    var errorMessage = 'Can not parse Data3d buffer. Wrong buffer size: ' + buffer.byteLength + ' Expected: ' + expectedFileByteLength;
+	    console.error(errorMessage);
+	    return Promise.reject(errorMessage)
+	  }
+
+	  // parse structure info
+
+	  var structureArray = new Uint16Array(buffer, HEADER_BYTE_LENGTH, structureByteLength / 2);
+	  var structureString = textDecoder.decode(structureArray);
+	  var structure;
+	  try {
+	    structure = JSON.parse(structureString);
+	  } catch (e) {
+	    return Promise.reject(e)
+	  }
+
+	  // add geometry arrays to data3d
+
+	  var payloadByteOffset = HEADER_BYTE_LENGTH + structureByteLength;
+	  traverseData3d(structure.data3d, function (data3d) {
+
+	    // map typed arrays to payload area in file buffer
+	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, s3Key);
+
+	    //  convert relative material keys into absolute once
+	    if (rootDirectory && data3d.materials) {
+	      convertTextureKeys(data3d, rootDirectory);
+	    }
+
+	  });
+
+	  return Promise.resolve(structure.data3d)
+
+	}
 
 	// text decoder shim
-
-	var textDecoder = window.TextDecoder ? new window.TextDecoder('utf-16') : makeUtf16Decoder();
-
 	function makeUtf16Decoder () {
 	  return {
 
@@ -6168,18 +6329,18 @@
 	        // ignore any initial character other than '{' = 123 and '[' = 91 (>> bug #9818)
 	        i = a[0] === 123 || a[1] === 91 ? 0 : 1,
 	        l20 = a.length - 20,
-	        l2 =  a.length;
+	        l2 = a.length;
 	      // passing 20 arguments into fromCharCode function provides fastest performance
 	      // (based on practical performance testing)
-	      for (; i<l20; i += 20) {
+	      for (; i < l20; i += 20) {
 	        string += String.fromCharCode(
-	          a[ i ],      a[ i + 1 ],  a[ i + 2 ],  a[ i + 3 ],  a[ i + 4 ],  a[ i + 5 ],  a[ i + 6 ],  a[ i + 7 ],  a[ i + 8 ],  a[ i + 9 ],
-	          a[ i + 10 ], a[ i + 11 ], a[ i + 12 ], a[ i + 13 ], a[ i + 14 ], a[ i + 15 ], a[ i + 16 ], a[ i + 17 ], a[ i + 18 ], a[ i + 19 ]
+	          a[i], a[i + 1], a[i + 2], a[i + 3], a[i + 4], a[i + 5], a[i + 6], a[i + 7], a[i + 8], a[i + 9],
+	          a[i + 10], a[i + 11], a[i + 12], a[i + 13], a[i + 14], a[i + 15], a[i + 16], a[i + 17], a[i + 18], a[i + 19]
 	        );
 	      }
 	      // the rest we do char by char
-	      for (; i<l2; i++) {
-	        string += String.fromCharCode( a[ i ] );
+	      for (; i < l2; i++) {
+	        string += String.fromCharCode(a[i]);
 	      }
 	      return string
 	    }
@@ -6189,13 +6350,13 @@
 
 	function convertTextureKeys (data3d, rootDirectory) {
 
-	  var i, l, i2, l2, m, materialKeys = data3d.materialKeys || Object.keys(data3d.materials || {}), texturePathKey;
+	  var i, l, i2, l2, m, materialKeys = data3d.materialKeys || Object.keys(data3d.materials || {}), texturePathKey;
 
-	  for (i=0, l=materialKeys.length; i<l; i++) {
+	  for (i = 0, l = materialKeys.length; i < l; i++) {
 	    m = data3d.materials[materialKeys[i]];
 
 	    // hi-res textures
-	    for (i2=0, l2=TEXTURE_PATH_KEYS.length; i2<l2; i2++) {
+	    for (i2 = 0, l2 = TEXTURE_PATH_KEYS.length; i2 < l2; i2++) {
 	      texturePathKey = TEXTURE_PATH_KEYS[i2];
 	      if (m[texturePathKey] && m[texturePathKey][0] !== '/') {
 	        m[texturePathKey] = rootDirectory + m[texturePathKey];
@@ -6210,27 +6371,27 @@
 
 	  var mesh, i, l, meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
 
-	  for (i=0, l=meshKeys.length; i<l; i++) {
-	    mesh = data3d.meshes[ meshKeys[i] ];
+	  for (i = 0, l = meshKeys.length; i < l; i++) {
+	    mesh = data3d.meshes[meshKeys[i]];
 
 	    // map arrays to meshes
 	    if (mesh.positionsOffset !== undefined && mesh.positionsLength !== undefined) {
-	      mesh.positions = new Float32Array( buffer, payloadByteOffset + mesh.positionsOffset * 4, mesh.positionsLength );
+	      mesh.positions = new Float32Array(buffer, payloadByteOffset + mesh.positionsOffset * 4, mesh.positionsLength);
 	      delete mesh.positionsOffset;
 	      delete mesh.positionsLength;
 	    }
 	    if (mesh.normalsOffset !== undefined && mesh.normalsLength !== undefined) {
-	      mesh.normals = new Float32Array( buffer, payloadByteOffset + mesh.normalsOffset * 4, mesh.normalsLength );
+	      mesh.normals = new Float32Array(buffer, payloadByteOffset + mesh.normalsOffset * 4, mesh.normalsLength);
 	      delete mesh.normalsOffset;
 	      delete mesh.normalsLength;
 	    }
 	    if (mesh.uvsOffset !== undefined && mesh.uvsLength !== undefined) {
-	      mesh.uvs = new Float32Array( buffer, payloadByteOffset + mesh.uvsOffset * 4, mesh.uvsLength );
+	      mesh.uvs = new Float32Array(buffer, payloadByteOffset + mesh.uvsOffset * 4, mesh.uvsLength);
 	      delete mesh.uvsOffset;
 	      delete mesh.uvsLength;
 	    }
 	    if (mesh.uvsLightmapOffset !== undefined && mesh.uvsLightmapLength !== undefined) {
-	      mesh.uvsLightmap = new Float32Array( buffer, payloadByteOffset + mesh.uvsLightmapOffset * 4, mesh.uvsLightmapLength );
+	      mesh.uvsLightmap = new Float32Array(buffer, payloadByteOffset + mesh.uvsLightmapOffset * 4, mesh.uvsLightmapLength);
 	      delete mesh.uvsLightmapOffset;
 	      delete mesh.uvsLightmapLength;
 	    }
@@ -6244,86 +6405,15 @@
 
 	}
 
-	function traverseData3d(data3d, callback) {
+	function traverseData3d (data3d, callback) {
 
 	  callback(data3d);
 
 	  if (data3d.children) {
-	    for (var i=0, l=data3d.children.length; i<l; i++) {
+	    for (var i = 0, l = data3d.children.length; i < l; i++) {
 	      traverseData3d(data3d.children[i], callback);
 	    }
 	  }
-
-	}
-
-	// public methods
-
-	function decodeBuffer (buffer, options) {
-
-	  // API
-	  options = options || {};
-	  var s3Key = options.s3Key;
-	  var rootDirectory = options.rootDirectory;
-
-	  // TODO: validate in buffer param is of type buffer
-
-	  // internals
-	  var headerArray = new Int32Array( buffer, 0, HEADER_BYTE_LENGTH / 4 );
-	  var magicNumber = headerArray[ 0 ];
-	  var version = headerArray[ 1 ];
-	  var structureByteLength = headerArray[ 2 ];
-	  var payloadByteLength = headerArray[ 3 ];
-	  var expectedFileByteLength = HEADER_BYTE_LENGTH + structureByteLength + payloadByteLength;
-
-	  // add trailing slash to root dir
-	  if (rootDirectory && rootDirectory[ rootDirectory.length - 1 ] !== '/') {
-	    rootDirectory += '/';
-	  }
-
-	  // validation warnings
-
-	  if (magicNumber !== MAGIC_NUMBER) {
-	    console.error('File header error: Wrong magic number. File is probably not data3d buffer format.');
-	  }
-	  if (version !== VERSION) {
-	    console.error('File header error: Wrong version number: '+version+'. Parser supports version: '+VERSION);
-	  }
-
-	  // validation errors
-
-	  if (buffer.byteLength !== expectedFileByteLength) {
-	    var errorMessage = 'Can not parse Data3d buffer. Wrong buffer size: ' + buffer.byteLength + ' Expected: '+ expectedFileByteLength;
-	    console.error(errorMessage);
-	    return Promise.reject(errorMessage)
-	  }
-
-	  // parse structure info
-
-	  var structureArray = new Uint16Array( buffer, HEADER_BYTE_LENGTH, structureByteLength / 2 );
-	  var structureString = textDecoder.decode( structureArray );
-	  var structure;
-	  try {
-	    structure = JSON.parse( structureString );
-	  } catch (e) {
-	    return Promise.reject( e )
-	  }
-
-	  // add geometry arrays to data3d
-
-	  var payloadByteOffset = HEADER_BYTE_LENGTH + structureByteLength;
-	  traverseData3d( structure.data3d, function(data3d){
-
-	    // map typed arrays to payload area in file buffer
-	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, s3Key);
-
-	    //  convert relative material keys into absolute once
-	    if (rootDirectory && data3d.materials) {
-	      convertTextureKeys(data3d, rootDirectory);
-	    }
-
-	  });
-
-	  return Promise.resolve( structure.data3d )
 
 	}
 
@@ -6424,20 +6514,10 @@
 	  })
 	}
 
-	// FIXME: use proper config
-
-	var config$1 = {
-	  webgl: {
-	    params: {
-	      MAX_TEXTURE_SIZE: 2048
-	    }
-	  }
-	};
-
 	// internals
 
 	// graphic card max supported texture size
-	var MAX_TEXTURE_SIZE = config$1.webgl.params.MAX_TEXTURE_SIZE || 2048;
+	var MAX_TEXTURE_SIZE = runtime.webgl ? runtime.webgl.params.MAX_TEXTURE_SIZE || 2048 : 2048;
 
 	// helpers
 
@@ -7291,14 +7371,6 @@
 
 	// static method, @memberof View
 
-	// FIXME: use proper config
-	var config = {
-	  isMobile: false,
-	  compatibility: {
-	    webglCompressedTextures: true
-	  }
-	};
-
 	// constants
 
 	var HI_RES_TEXTURE_TYPES = {
@@ -7452,9 +7524,9 @@
 	    isLoadingLoResTextures,
 	    hasLoResTextures = _attributes.mapDiffusePreview || _attributes.mapSpecularPreview || _attributes.mapNormalPreview || _attributes.mapAlphaPreview || _attributes.mapLightPreview,
 	//      hasHiResTextures = _attributes.mapDiffuse || _attributes.mapSpecular || _attributes.mapNormal || _attributes.mapAlpha || _attributes.mapLight,
-	    // TODO: readd hiResTextures config
-	    // hiResTexturesEnabled = !config.isMobile && vm.viewport.a.hiResTextures && config.compatibility.webglCompressedTextures
-	    hiResTexturesEnabled = !config.isMobile && config.compatibility.webglCompressedTextures;
+	    // TODO: readd hiResTextures configs
+	    // hiResTexturesEnabled = !configs.isMobile && vm.viewport.a.hiResTextures && configs.compatibility.webglCompressedTextures
+	    hiResTexturesEnabled = !runtime.isMobile && runtime.compatibility.webglCompressedTextures;
 
 	  if (!hiResTexturesEnabled || (hasLoResTextures && !material3d.firstTextureLoaded)) {
 	    if (loadingQueuePrefix) {
@@ -8031,6 +8103,29 @@
 	  return PATTERN.test(str)
 	};
 
+	var fetch$1 = (function(){
+
+	  if (runtime.isNode) {
+	    return require('node-fetch')
+	  } else if (typeof fetch !== 'undefined') {
+	    return fetch
+	  } else {
+	    console.warn('Missing global fetch API.');
+	    return function() {
+	      throw new Error('Missing global fetch API.')
+	    }
+	  }
+
+	})();
+
+	function loadData3d (url, options) {
+	  return fetch$1(url, options).then(function(res){
+	    return res.arrayBuffer()
+	  }).then(function(buffer){
+	    return decodeBuffer(buffer)
+	  })
+	}
+
 	/**
 	 * @description a-base library object
 	 * @namespace BASE
@@ -8047,7 +8142,9 @@
 	  },
 
 	  io: {
-	    request: request
+	    fetch: fetch$1,
+	    request: request,
+	    loadData3d: loadData3d
 	  }
 
 	};
