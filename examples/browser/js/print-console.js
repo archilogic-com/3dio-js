@@ -9,7 +9,9 @@ function printConsole (elId, addDetails) {
     debug: function () { window.proxyConsole('debug', arguments); },
     info: function () { window.proxyConsole('info', arguments); },
     warn: function () { window.proxyConsole('warn', arguments); },
-    error: function () { window.proxyConsole('error', arguments); }
+    error: function () { window.proxyConsole('error', arguments); },
+    time: actualConsole.time,
+    timeEnd: actualConsole.timeEnd
   }
 
   var runExampleTimeStamp
