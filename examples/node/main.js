@@ -6,18 +6,28 @@ var s3Prefix = 'https://dnvf9esa6v418.cloudfront.net'
 var url = s3Prefix + s3Key
 
 // send request
+console.time('fetch buffer')
 fetch(url)
   .then(function(res) {
     // get buffer
     return res.buffer()
   })
   .then(function(buffer){
+    console.timeEnd('fetch buffer')
+
+    // convert to arrayBuffer
+    console.time('conver to arrayBuffer')
+    var arrayBuffer = convertToArrayBuffer(buffer)
+    console.timeEnd('conver to arrayBuffer')
+
     // decode to data3d
-    return BASE.data3d.decodeBuffer( convertToArrayBuffer(buffer) )
+    console.time('decode data3d')
+    return BASE.data3d.decodeBuffer( arrayBuffer )
   })
   .then(function(data3d){
+    console.timeEnd('decode data3d')
     // log
-    console.log(data3d)
+
   })
 
 
