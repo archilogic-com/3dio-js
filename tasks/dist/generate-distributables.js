@@ -30,7 +30,7 @@ run([
       sourceMap: { content: map, url: `${distName}.min.js.map` }
     })
     if (ugly.warnings) console.log('UGLIFY WARNINGS: ', ugly.warnings)
-    if (ugly.error) return Promise.reject('UGLIFY ERROR: ', ugly.error)
+    if (ugly.error) return Promise.reject(ugly.error)
     fs.writeFileSync(`dist/${distName}.min.js`, ugly.code)
     fs.writeFileSync(`dist/${distName}.min.js.map`, ugly.map)
   },
