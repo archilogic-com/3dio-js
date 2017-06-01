@@ -1,7 +1,7 @@
 {
   "name": "base-query",
-  "version": "0.0.2a",
-  "description": "Parse and Edit building data using simple APIs.",
+  "version": "0.0.3a",
+  "description": "Parse and edit building data using simple APIs.",
   "homepage": "http://base-query.org/",
   "repository": "archilogic-com/base-query",
   "license": "MIT",
@@ -28,7 +28,6 @@
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
-    "a-frame-components": "archilogic-com/a-frame-components",
     "jsdoc": "^3.4.3",
     "lite-server": "^2.3.0",
     "rollup": "^0.41.6",
