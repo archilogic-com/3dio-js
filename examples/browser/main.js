@@ -20,7 +20,7 @@ var url = s3Prefix + s3Key
 
 // send request
 fetch(url).then(function(res) {
-  return res.buffer ? res.buffer() : res.arrayBuffer()
+  return res.arrayBuffer()
 }).then(BASE.data3d.decodeBuffer).then(function(data3d){
   console.log('Data3d has '+Object.keys(data3d.materials).length+' materials.')
 })
