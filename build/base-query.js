@@ -40,6 +40,8 @@
 
 	};
 
+	// helpers
+
 	function getWebGlInfo () {
 
 	  var canvas = typeof document !== 'undefined' ? document.createElement('canvas') : null;
@@ -5847,6 +5849,8 @@
 	  self.fetch.polyfill = true;
 	})(typeof self !== 'undefined' ? self : global);
 
+	// Promise API polyfill for IE11
+	// fetch API polyfill for old browsers
 	if (!console.time || !console.timeEnd) {
 	  var timers = {};
 	  console.time = function(key) {
@@ -6180,6 +6184,7 @@
 	}(commonjsGlobal));
 	});
 
+	// Bootstrap logger
 	logger.useDefaults();
 
 	// print header to console in browser environment
@@ -6498,6 +6503,9 @@
 	  })
 	}
 
+	// internals
+
+	// graphic card max supported texture size
 	var MAX_TEXTURE_SIZE = runtime.has.webGl ? runtime.webGl.maxTextureSize || 2048 : 2048;
 
 	// helpers
@@ -6887,6 +6895,8 @@
 	  })
 	}
 
+	// main
+
 	function request(args) {
 	  // API
 	  var url = args.url || args.uri;
@@ -7041,6 +7051,10 @@
 	 ask tomas-polach if you have questions
 
 	*/
+
+	// static method, @memberof View
+
+	// dependencies
 
 	var s3 = {
 	  getTexture: function(path) {
@@ -7343,6 +7357,10 @@
 	 ask tomas-polach if you have questions
 
 	*/
+
+	// static method, @memberof View
+
+	// constants
 
 	var HI_RES_TEXTURE_TYPES = {
 	  UV1: [ 'mapDiffuse', 'mapSpecular', 'mapNormal', 'mapAlpha' ],
@@ -7661,6 +7679,8 @@
 
 	};
 
+	// constants
+
 	var WEBGL_SIDE = {
 	  front: 0,
 	  back: 1,
@@ -7668,6 +7688,8 @@
 	};
 
 	var DEG_TO_RAD = Math.PI / 180;
+	// shared variables
+
 	var geometry3dCache = {};
 
 	// helpers
@@ -8085,14 +8107,69 @@
 
 	})();
 
-	function loadData3d (url, options) {
+	var loadData3d = function (url, options) {
 	  return fetch$1(url, options).then(function(res){
 	    return res.arrayBuffer()
 	  }).then(function(buffer){
 	    return decodeBuffer(buffer)
 	  })
+	};
+
+	// constants
+
+	var CDN_DOMAIN = 'dnvf9esa6v418.cloudfront.net';
+	var BUCKET = 'archilogic-content-beta';
+
+	// main
+
+	var getFromStore = function (key, options) {
+
+	  // WIP: for now, assume that this is only being used for data3d
+	  // TODO: use options.type or filename extension to specify loader
+	  return loadData3d(convertKeyToUrl(key))
+
+	};
+
+	// helpers
+
+	function convertKeyToUrl (key, options) {
+	  // API
+	  options = options || {};
+	  var cdn = options.cdn !== undefined ? options.cdn : true;
+	  var encode = options.encode !== undefined ? options.encode : true;
+	  // check cache
+	  // if (keyToUrlCache[ key + cdn + encode ]) {
+	  //   return keyToUrlCache[ key + cdn + encode ]
+	  // }
+	  // internals
+	  var url, processedKey = key;
+	  // remove leading slash
+	  var startsWithSlash = /^\/(.*)$/.exec(processedKey);
+	  if (startsWithSlash) {
+	    processedKey = startsWithSlash[1];
+	  }
+	  // encode key if containig special chars
+	  if (encode && !/^[\.\-\_\/a-zA-Z0-9]+$/.test(processedKey)) {
+	    processedKey = encodeURIComponent(processedKey);
+	  }
+	  // compose url
+	  if (cdn) {
+	    url = 'https://'+CDN_DOMAIN+'/' + processedKey;
+	  } else {
+	    // http://s3-eu-west-1.amazonaws.com/<bucket-name>/<s3-key>
+	    // http://<bucket-name>.s3-website-eu-west-1.amazonaws.com // has index.html functionality
+	    // http://<bucket-name>.s3.amazon.com/<s3-key>
+	    url = 'https://'+BUCKET+'.s3.amazonaws.com/' + processedKey;
+	  }
+	  // add to cache
+	  // keyToUrlCache[ key + cdn + encode ] = url
+	  return url
 	}
 
+	/**
+	 * @description a-base library object
+	 * @namespace BASE
+	 * */
 	var BASE = {
 
 	  data3d: {
@@ -8108,6 +8185,10 @@
 	    fetch: fetch$1,
 	    request: request,
 	    loadData3d: loadData3d
+	  },
+
+	  store: {
+	    get: getFromStore
 	  },
 
 	  runtime: runtime
