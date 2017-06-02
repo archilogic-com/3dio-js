@@ -1,7 +1,7 @@
 /**
  * @preserve
  * @name base-query
- * @version 0.0.3a
+ * @version 0.0.4a
  * @description Parse and edit building data using simple APIs.
  * @see http://base-query.org/
  * @tutorial https://github.com/archilogic-com/base-query
@@ -5920,7 +5920,7 @@
 	}
 
 	var name = "base-query";
-	var version = "0.0.3a";
+	var version = "0.0.4a";
 
 	var homepage = "http://base-query.org/";
 
