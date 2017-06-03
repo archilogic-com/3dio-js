@@ -1,5 +1,4 @@
-const fs = require('fs')
-const packageInfo = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+const packageInfo = require('../../package.json')
 
 module.exports = `/**
  * @preserve
