@@ -1,7 +1,7 @@
 /**
  * @preserve
  * @name base-query
- * @version 0.0.4a
+ * @version 0.0.5-alpha.1
  * @description Parse and edit building data using simple APIs.
  * @see http://base-query.org/
  * @tutorial https://github.com/archilogic-com/base-query
@@ -5920,7 +5920,7 @@
 	}
 
 	var name = "base-query";
-	var version = "0.0.4a";
+	var version = "0.0.5-alpha.1";
 
 	var homepage = "http://base-query.org/";
 
@@ -8170,27 +8170,42 @@
 	 * @description a-base library object
 	 * @namespace BASE
 	 * */
+
+	// TODO: methods?? bake,  furnish, analyze
+
 	var BASE = {
 
-	  data3d: {
-	    decodeBuffer: decodeBuffer,
+	  //version: version
+
+	  // high-level / convenience
+
+	  three: {
 	    View: View
 	  },
-
-	  utils: {
-	    uuid: uuid
-	  },
-
-	  io: {
-	    fetch: fetch$1,
-	    request: request,
-	    loadData3d: loadData3d
-	  },
-
+	  // ui: {}
+	  // poduct: {},
+	  // scene: {},
+	  // space: {}
+	  // channel: { subscribe:… }
 	  store: {
 	    get: getFromStore
 	  },
 
+	  // low-level
+
+	  // processing of data3d
+	  data3d: {
+	    decodeBuffer: decodeBuffer,
+	  },
+	  io: {
+	    // api: api,
+	    fetch: fetch$1,
+	    request: request,
+	    loadData3d: loadData3d
+	  },
+	  utils: {
+	    uuid: uuid,
+	  },
 	  runtime: runtime
 
 	};
