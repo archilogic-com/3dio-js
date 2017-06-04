@@ -1,7 +1,7 @@
 /**
  * @preserve
  * @name base-query
- * @version 0.0.5-alpha.3
+ * @version 0.0.5-alpha.5
  * @description Parse and edit building data using simple APIs.
  * @see http://base-query.org/
  * @tutorial https://github.com/archilogic-com/base-query
@@ -5921,13 +5921,272 @@
 	}
 
 	var name = "base-query";
-	var version = "0.0.5-alpha.3";
+	var version = "0.0.5-alpha.5";
 
 	var homepage = "http://base-query.org/";
 
-	//import Logger from 'js-logger'
+	var logger = createCommonjsModule(function (module) {
+	/*!
+	 * js-logger - http://github.com/jonnyreeves/js-logger
+	 * Jonny Reeves, http://jonnyreeves.co.uk/
+	 * js-logger may be freely distributed under the MIT license.
+	 */
+	(function (global) {
+		"use strict";
+
+		// Top level module for the global, static logger instance.
+		var Logger = { };
+
+		// For those that are at home that are keeping score.
+		Logger.VERSION = "1.3.0";
+
+		// Function which handles all incoming log messages.
+		var logHandler;
+
+		// Map of ContextualLogger instances by name; used by Logger.get() to return the same named instance.
+		var contextualLoggersByNameMap = {};
+
+		// Polyfill for ES5's Function.bind.
+		var bind = function(scope, func) {
+			return function() {
+				return func.apply(scope, arguments);
+			};
+		};
+
+		// Super exciting object merger-matron 9000 adding another 100 bytes to your download.
+		var merge = function () {
+			var args = arguments, target = args[0], key, i;
+			for (i = 1; i < args.length; i++) {
+				for (key in args[i]) {
+					if (!(key in target) && args[i].hasOwnProperty(key)) {
+						target[key] = args[i][key];
+					}
+				}
+			}
+			return target;
+		};
+
+		// Helper to define a logging level object; helps with optimisation.
+		var defineLogLevel = function(value, name) {
+			return { value: value, name: name };
+		};
+
+		// Predefined logging levels.
+		Logger.DEBUG = defineLogLevel(1, 'DEBUG');
+		Logger.INFO = defineLogLevel(2, 'INFO');
+		Logger.TIME = defineLogLevel(3, 'TIME');
+		Logger.WARN = defineLogLevel(4, 'WARN');
+		Logger.ERROR = defineLogLevel(8, 'ERROR');
+		Logger.OFF = defineLogLevel(99, 'OFF');
+
+		// Inner class which performs the bulk of the work; ContextualLogger instances can be configured independently
+		// of each other.
+		var ContextualLogger = function(defaultContext) {
+			this.context = defaultContext;
+			this.setLevel(defaultContext.filterLevel);
+			this.log = this.info;  // Convenience alias.
+		};
+
+		ContextualLogger.prototype = {
+			// Changes the current logging level for the logging instance.
+			setLevel: function (newLevel) {
+				// Ensure the supplied Level object looks valid.
+				if (newLevel && "value" in newLevel) {
+					this.context.filterLevel = newLevel;
+				}
+			},
+
+			// Is the logger configured to output messages at the supplied level?
+			enabledFor: function (lvl) {
+				var filterLevel = this.context.filterLevel;
+				return lvl.value >= filterLevel.value;
+			},
+
+			debug: function () {
+				this.invoke(Logger.DEBUG, arguments);
+			},
+
+			info: function () {
+				this.invoke(Logger.INFO, arguments);
+			},
+
+			warn: function () {
+				this.invoke(Logger.WARN, arguments);
+			},
+
+			error: function () {
+				this.invoke(Logger.ERROR, arguments);
+			},
+
+			time: function (label) {
+				if (typeof label === 'string' && label.length > 0) {
+					this.invoke(Logger.TIME, [ label, 'start' ]);
+				}
+			},
+
+			timeEnd: function (label) {
+				if (typeof label === 'string' && label.length > 0) {
+					this.invoke(Logger.TIME, [ label, 'end' ]);
+				}
+			},
+
+			// Invokes the logger callback if it's not being filtered.
+			invoke: function (level, msgArgs) {
+				if (logHandler && this.enabledFor(level)) {
+					logHandler(msgArgs, merge({ level: level }, this.context));
+				}
+			}
+		};
+
+		// Protected instance which all calls to the to level `Logger` module will be routed through.
+		var globalLogger = new ContextualLogger({ filterLevel: Logger.OFF });
+
+		// Configure the global Logger instance.
+		(function() {
+			// Shortcut for optimisers.
+			var L = Logger;
+
+			L.enabledFor = bind(globalLogger, globalLogger.enabledFor);
+			L.debug = bind(globalLogger, globalLogger.debug);
+			L.time = bind(globalLogger, globalLogger.time);
+			L.timeEnd = bind(globalLogger, globalLogger.timeEnd);
+			L.info = bind(globalLogger, globalLogger.info);
+			L.warn = bind(globalLogger, globalLogger.warn);
+			L.error = bind(globalLogger, globalLogger.error);
+
+			// Don't forget the convenience alias!
+			L.log = L.info;
+		}());
+
+		// Set the global logging handler.  The supplied function should expect two arguments, the first being an arguments
+		// object with the supplied log messages and the second being a context object which contains a hash of stateful
+		// parameters which the logging function can consume.
+		Logger.setHandler = function (func) {
+			logHandler = func;
+		};
+
+		// Sets the global logging filter level which applies to *all* previously registered, and future Logger instances.
+		// (note that named loggers (retrieved via `Logger.get`) can be configured independently if required).
+		Logger.setLevel = function(level) {
+			// Set the globalLogger's level.
+			globalLogger.setLevel(level);
+
+			// Apply this level to all registered contextual loggers.
+			for (var key in contextualLoggersByNameMap) {
+				if (contextualLoggersByNameMap.hasOwnProperty(key)) {
+					contextualLoggersByNameMap[key].setLevel(level);
+				}
+			}
+		};
+
+		// Retrieve a ContextualLogger instance.  Note that named loggers automatically inherit the global logger's level,
+		// default context and log handler.
+		Logger.get = function (name) {
+			// All logger instances are cached so they can be configured ahead of use.
+			return contextualLoggersByNameMap[name] ||
+				(contextualLoggersByNameMap[name] = new ContextualLogger(merge({ name: name }, globalLogger.context)));
+		};
+
+		// CreateDefaultHandler returns a handler function which can be passed to `Logger.setHandler()` which will
+		// write to the window's console object (if present); the optional options object can be used to customise the
+		// formatter used to format each log message.
+		Logger.createDefaultHandler = function (options) {
+			options = options || {};
+
+			options.formatter = options.formatter || function defaultMessageFormatter(messages, context) {
+				// Prepend the logger's name to the log message for easy identification.
+				if (context.name) {
+					messages.unshift("[" + context.name + "]");
+				}
+			};
+
+			// Map of timestamps by timer labels used to track `#time` and `#timeEnd()` invocations in environments
+			// that don't offer a native console method.
+			var timerStartTimeByLabelMap = {};
+
+			// Support for IE8+ (and other, slightly more sane environments)
+			var invokeConsoleMethod = function (hdlr, messages) {
+				Function.prototype.apply.call(hdlr, console, messages);
+			};
+
+			// Check for the presence of a logger.
+			if (typeof console === "undefined") {
+				return function () { /* no console */ };
+			}
+
+			return function(messages, context) {
+				// Convert arguments object to Array.
+				messages = Array.prototype.slice.call(messages);
+
+				var hdlr = console.log;
+				var timerLabel;
+
+				if (context.level === Logger.TIME) {
+					timerLabel = (context.name ? '[' + context.name + '] ' : '') + messages[0];
+
+					if (messages[1] === 'start') {
+						if (console.time) {
+							console.time(timerLabel);
+						}
+						else {
+							timerStartTimeByLabelMap[timerLabel] = new Date().getTime();
+						}
+					}
+					else {
+						if (console.timeEnd) {
+							console.timeEnd(timerLabel);
+						}
+						else {
+							invokeConsoleMethod(hdlr, [ timerLabel + ': ' +
+								(new Date().getTime() - timerStartTimeByLabelMap[timerLabel]) + 'ms' ]);
+						}
+					}
+				}
+				else {
+					// Delegate through to custom warn/error loggers if present on the console.
+					if (context.level === Logger.WARN && console.warn) {
+						hdlr = console.warn;
+					} else if (context.level === Logger.ERROR && console.error) {
+						hdlr = console.error;
+					} else if (context.level === Logger.INFO && console.info) {
+						hdlr = console.info;
+					}
+
+					options.formatter(messages, context);
+					invokeConsoleMethod(hdlr, messages);
+				}
+			};
+		};
+
+		// Configure and example a Default implementation which writes to the `window.console` (if present).  The
+		// `options` hash can be used to configure the default logLevel and provide a custom message formatter.
+		Logger.useDefaults = function(options) {
+			Logger.setLevel(options && options.defaultLevel || Logger.DEBUG);
+			Logger.setHandler(Logger.createDefaultHandler(options));
+		};
+
+		// Export to popular environments boilerplate.
+		if (typeof undefined === 'function' && undefined.amd) {
+			undefined(Logger);
+		}
+		else if ('object' !== 'undefined' && module.exports) {
+			module.exports = Logger;
+		}
+		else {
+			Logger._prevLogger = global.Logger;
+
+			Logger.noConflict = function () {
+				global.Logger = Logger._prevLogger;
+				return Logger;
+			};
+
+			global.Logger = Logger;
+		}
+	}(commonjsGlobal));
+	});
+
 	// Bootstrap logger
-	//Logger.useDefaults()
+	logger.useDefaults();
 
 	// print header to console in browser environment
 
@@ -6092,7 +6351,7 @@
 	      var texture = new THREE.Texture();
 
 	      texture.sourceFile = url;
-	      texture.s3Key = s3Key;
+	      texture.url = url;
 
 	      // image size compatibility check
 
@@ -6395,7 +6654,7 @@
 	        texture.image.height = dds.height;
 	        texture.image.src = url;
 	        texture.sourceFile = url;
-	        texture.s3Key = s3Key;
+	        texture.url = url;
 	        texture.bufferByteLength = buffer.byteLength;
 
 	        // gl.generateMipmap fails for compressed textures
@@ -6593,14 +6852,6 @@
 
 	// static method, @memberof View
 
-	// dependencies
-
-	var s3 = {
-	  getTexture: function(path) {
-	    return request.getTexture('https://dnvf9esa6v418.cloudfront.net'+path)
-	  }
-	};
-
 	// constants
 
 	var THREEJS_TEXTURE_TYPES_MAP = {
@@ -6644,12 +6895,12 @@
 
 	function disposeIfPossible () {
 	  var texture3d = this;
-	  var key = this.s3Key;
+	  var key = this.url;
 	  if (key) {
 	    if (textureRefCount[ key ]) {
 	      textureRefCount[ key ]--;
 	      if (textureRefCount[ key ] === 0) {
-	//          console.log('dispose texture', texture3d.s3Key)
+	//          console.log('dispose texture', texture3d.url)
 	        texture3d.dispose();
 	//          texture3d.needsUpdate = true
 	      }
@@ -6719,8 +6970,8 @@
 	      // don't reload texture if files are of same origin
 	      if (
 	        texture3d
-	        && texture3d.s3Key
-	        && textureS3Key === texture3d.s3Key
+	        && texture3d.url
+	        && textureS3Key === texture3d.url
 	      ) {
 	        needsUpdate = false;
 	      }
@@ -6735,7 +6986,7 @@
 
 	      if (needsUpdate) {
 	        // load new texture
-	        texturePromises[ textureCount ] = s3.getTexture(textureS3Key, { queue: queue }).catch(onError);
+	        texturePromises[ textureCount ] = request.getTexture(textureS3Key, { queue: queue }).catch(onError);
 	        textureKeys[ textureCount ] = textureType;
 	        texture3dKeys[ textureCount ] = textureType3d;
 	        textureCount++;
@@ -6810,7 +7061,7 @@
 	        // everything ok - load lightmap
 	        textureType = TEXTURE_TYPES.UV2;
 	        textureS3Key = _attributes[ textureType ];
-	        texturePromises[ textureCount ] = s3.getTexture(textureS3Key, { queue: queue }).catch(onError);
+	        texturePromises[ textureCount ] = request.getTexture(textureS3Key, { queue: queue }).catch(onError);
 	        textureKeys[ textureCount ] = textureType;
 	        texture3dKeys[ textureCount ] = THREEJS_TEXTURE_TYPES_MAP[ textureType ];
 	        textureCount++;
@@ -6838,13 +7089,13 @@
 	        // FIXME:
 	        // if (
 	        //   // avoid racing conditions
-	        // textures[ i ] && textures[ i ].s3Key === material3d._texturesToBeLoaded[ textureKeys[i] ] &&
+	        // textures[ i ] && textures[ i ].url === material3d._texturesToBeLoaded[ textureKeys[i] ] &&
 	        //   // filter texture loading errors
 	        // (textures[i] instanceof THREE.CompressedTexture || textures[i] instanceof THREE.Texture)
 	        // ){
 	          
 	          // cache
-	          countTextureReference(textures[ i ].s3Key);
+	          countTextureReference(textures[ i ].url);
 	          textures[ i ].disposeIfPossible = disposeIfPossible;
 
 	          // set texture settings
@@ -7604,6 +7855,1078 @@
 
 	};
 
+	// from https://github.com/jbgutierrez/path-parse
+	// Split a filename into [root, dir, basename, ext], unix version
+	// 'root' is just a slash, or nothing.
+	var splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+
+	function parsePath (path) {
+	  if (typeof path !== 'string') {
+	    throw new TypeError(
+	      "Parameter 'path' must be a string, not " + typeof path
+	    );
+	  }
+	  var allParts = splitPathRe.exec(path).slice(1);
+	  if (!allParts || allParts.length !== 4) {
+	    throw new TypeError("Invalid path '" + path + "'");
+	  }
+	  allParts[2] = allParts[2] || '';
+	  allParts[3] = allParts[3] || '';
+
+	  return {
+	    root: allParts[0],
+	    dir: allParts[0] + allParts[1].slice(0, -1),
+	    base: allParts[2],
+	    ext: allParts[3],
+	    name: allParts[2].slice(0, allParts[2].length - allParts[3].length)
+	  }
+	}
+
+	var pathUtil = {
+	  parse: parsePath
+	};
+
+	// source: https://github.com/petkaantonov/urlparser
+	// modified for browser compatibility
+
+	/*
+	 Copyright (c) 2014 Petka Antonov
+
+	 Permission is hereby granted, free of charge, to any person obtaining a copy
+	 of this software and associated documentation files (the "Software"), to deal
+	 in the Software without restriction, including without limitation the rights
+	 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	 copies of the Software, and to permit persons to whom the Software is
+	 furnished to do so, subject to the following conditions:
+
+	 The above copyright notice and this permission notice shall be included in
+	 all copies or substantial portions of the Software.
+
+	 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+	 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+	 THE SOFTWARE.
+	 */
+	function Url() {
+	  //For more efficient internal representation and laziness.
+	  //The non-underscore versions of these properties are accessor functions
+	  //defined on the prototype.
+	  this._protocol = null;
+	  this._href = "";
+	  this._port = -1;
+	  this._query = null;
+
+	  this.auth = null;
+	  this.slashes = null;
+	  this.host = null;
+	  this.hostname = null;
+	  this.hash = null;
+	  this.search = null;
+	  this.pathname = null;
+
+	  this._prependSlash = false;
+	}
+
+	Url.prototype.parse =
+	  function Url$parse(str, parseQueryString, hostDenotesSlash, disableAutoEscapeChars) {
+	    if (typeof str !== "string") {
+	      throw new TypeError("Parameter 'url' must be a string, not " +
+	        typeof str);
+	    }
+	    if (str.substr(0,2) === '//' && typeof window !== 'undefined' && window.location && window.location.protocol) {
+	      str = window.location.protocol + str;
+	    }
+	    var start = 0;
+	    var end = str.length - 1;
+
+	    //Trim leading and trailing ws
+	    while (str.charCodeAt(start) <= 0x20 /*' '*/) start++;
+	    while (str.charCodeAt(end) <= 0x20 /*' '*/) end--;
+
+	    start = this._parseProtocol(str, start, end);
+
+	    //Javascript doesn't have host
+	    if (this._protocol !== "javascript") {
+	      start = this._parseHost(str, start, end, hostDenotesSlash);
+	      var proto = this._protocol;
+	      if (!this.hostname &&
+	        (this.slashes || (proto && !slashProtocols[proto]))) {
+	        this.hostname = this.host = "";
+	      }
+	    }
+
+	    if (start <= end) {
+	      var ch = str.charCodeAt(start);
+
+	      if (ch === 0x2F /*'/'*/ || ch === 0x5C /*'\'*/) {
+	        this._parsePath(str, start, end, disableAutoEscapeChars);
+	      }
+	      else if (ch === 0x3F /*'?'*/) {
+	        this._parseQuery(str, start, end, disableAutoEscapeChars);
+	      }
+	      else if (ch === 0x23 /*'#'*/) {
+	        this._parseHash(str, start, end, disableAutoEscapeChars);
+	      }
+	      else if (this._protocol !== "javascript") {
+	        this._parsePath(str, start, end, disableAutoEscapeChars);
+	      }
+	      else { //For javascript the pathname is just the rest of it
+	        this.pathname = str.slice(start, end + 1 );
+	      }
+
+	    }
+
+	    if (!this.pathname && this.hostname &&
+	      this._slashProtocols[this._protocol]) {
+	      this.pathname = "/";
+	    }
+
+	    if (parseQueryString) {
+	      var search = this.search;
+	      if (search == null) {
+	        search = this.search = "";
+	      }
+	      if (search.charCodeAt(0) === 0x3F /*'?'*/) {
+	        search = search.slice(1);
+	      }
+	      //This calls a setter function, there is no .query data property
+	      this.query = Url.queryString.parse(search);
+	    }
+	  };
+
+	Url.prototype.resolve = function Url$resolve(relative) {
+	  return this.resolveObject(Url.parse(relative, false, true)).format();
+	};
+
+	Url.prototype.format = function Url$format() {
+	  var auth = this.auth || "";
+
+	  if (auth) {
+	    auth = encodeURIComponent(auth);
+	    auth = auth.replace(/%3A/i, ":");
+	    auth += "@";
+	  }
+
+	  var protocol = this.protocol || "";
+	  var pathname = this.pathname || "";
+	  var hash = this.hash || "";
+	  var search = this.search || "";
+	  var query = "";
+	  var hostname = this.hostname || "";
+	  var port = this.port || "";
+	  var host = false;
+	  var scheme = "";
+
+	  //Cache the result of the getter function
+	  var q = this.query;
+	  if (q && typeof q === "object") {
+	    query = Url.queryString.stringify(q);
+	  }
+
+	  if (!search) {
+	    search = query ? "?" + query : "";
+	  }
+
+	  if (protocol && protocol.charCodeAt(protocol.length - 1) !== 0x3A /*':'*/)
+	    protocol += ":";
+
+	  if (this.host) {
+	    host = auth + this.host;
+	  }
+	  else if (hostname) {
+	    var ip6 = hostname.indexOf(":") > -1;
+	    if (ip6) hostname = "[" + hostname + "]";
+	    host = auth + hostname + (port ? ":" + port : "");
+	  }
+
+	  var slashes = this.slashes ||
+	    ((!protocol ||
+	    slashProtocols[protocol]) && host !== false);
+
+
+	  if (protocol) scheme = protocol + (slashes ? "//" : "");
+	  else if (slashes) scheme = "//";
+
+	  if (slashes && pathname && pathname.charCodeAt(0) !== 0x2F /*'/'*/) {
+	    pathname = "/" + pathname;
+	  }
+	  if (search && search.charCodeAt(0) !== 0x3F /*'?'*/)
+	    search = "?" + search;
+	  if (hash && hash.charCodeAt(0) !== 0x23 /*'#'*/)
+	    hash = "#" + hash;
+
+	  pathname = escapePathName(pathname);
+	  search = escapeSearch(search);
+
+	  return scheme + (host === false ? "" : host) + pathname + search + hash;
+	};
+
+	Url.prototype.resolveObject = function Url$resolveObject(relative) {
+	  if (typeof relative === "string")
+	    relative = Url.parse(relative, false, true);
+
+	  var result = this._clone();
+
+	  // hash is always overridden, no matter what.
+	  // even href="" will remove it.
+	  result.hash = relative.hash;
+
+	  // if the relative url is empty, then there"s nothing left to do here.
+	  if (!relative.href) {
+	    result._href = "";
+	    return result;
+	  }
+
+	  // hrefs like //foo/bar always cut to the protocol.
+	  if (relative.slashes && !relative._protocol) {
+	    relative._copyPropsTo(result, true);
+
+	    if (slashProtocols[result._protocol] &&
+	      result.hostname && !result.pathname) {
+	      result.pathname = "/";
+	    }
+	    result._href = "";
+	    return result;
+	  }
+
+	  if (relative._protocol && relative._protocol !== result._protocol) {
+	    // if it"s a known url protocol, then changing
+	    // the protocol does weird things
+	    // first, if it"s not file:, then we MUST have a host,
+	    // and if there was a path
+	    // to begin with, then we MUST have a path.
+	    // if it is file:, then the host is dropped,
+	    // because that"s known to be hostless.
+	    // anything else is assumed to be absolute.
+	    if (!slashProtocols[relative._protocol]) {
+	      relative._copyPropsTo(result, false);
+	      result._href = "";
+	      return result;
+	    }
+
+	    result._protocol = relative._protocol;
+	    if (!relative.host && relative._protocol !== "javascript") {
+	      var relPath = (relative.pathname || "").split("/");
+	      while (relPath.length && !(relative.host = relPath.shift()));
+	      if (!relative.host) relative.host = "";
+	      if (!relative.hostname) relative.hostname = "";
+	      if (relPath[0] !== "") relPath.unshift("");
+	      if (relPath.length < 2) relPath.unshift("");
+	      result.pathname = relPath.join("/");
+	    } else {
+	      result.pathname = relative.pathname;
+	    }
+
+	    result.search = relative.search;
+	    result.host = relative.host || "";
+	    result.auth = relative.auth;
+	    result.hostname = relative.hostname || relative.host;
+	    result._port = relative._port;
+	    result.slashes = result.slashes || relative.slashes;
+	    result._href = "";
+	    return result;
+	  }
+
+	  var isSourceAbs =
+	    (result.pathname && result.pathname.charCodeAt(0) === 0x2F /*'/'*/);
+	  var isRelAbs = (
+	    relative.host ||
+	    (relative.pathname &&
+	    relative.pathname.charCodeAt(0) === 0x2F /*'/'*/)
+	  );
+	  var mustEndAbs = (isRelAbs || isSourceAbs ||
+	  (result.host && relative.pathname));
+
+	  var removeAllDots = mustEndAbs;
+
+	  var srcPath = result.pathname && result.pathname.split("/") || [];
+	  var relPath = relative.pathname && relative.pathname.split("/") || [];
+	  var psychotic = result._protocol && !slashProtocols[result._protocol];
+
+	  // if the url is a non-slashed url, then relative
+	  // links like ../.. should be able
+	  // to crawl up to the hostname, as well.  This is strange.
+	  // result.protocol has already been set by now.
+	  // Later on, put the first path part into the host field.
+	  if (psychotic) {
+	    result.hostname = "";
+	    result._port = -1;
+	    if (result.host) {
+	      if (srcPath[0] === "") srcPath[0] = result.host;
+	      else srcPath.unshift(result.host);
+	    }
+	    result.host = "";
+	    if (relative._protocol) {
+	      relative.hostname = "";
+	      relative._port = -1;
+	      if (relative.host) {
+	        if (relPath[0] === "") relPath[0] = relative.host;
+	        else relPath.unshift(relative.host);
+	      }
+	      relative.host = "";
+	    }
+	    mustEndAbs = mustEndAbs && (relPath[0] === "" || srcPath[0] === "");
+	  }
+
+	  if (isRelAbs) {
+	    // it"s absolute.
+	    result.host = relative.host ?
+	      relative.host : result.host;
+	    result.hostname = relative.hostname ?
+	      relative.hostname : result.hostname;
+	    result.search = relative.search;
+	    srcPath = relPath;
+	    // fall through to the dot-handling below.
+	  } else if (relPath.length) {
+	    // it"s relative
+	    // throw away the existing file, and take the new path instead.
+	    if (!srcPath) srcPath = [];
+	    srcPath.pop();
+	    srcPath = srcPath.concat(relPath);
+	    result.search = relative.search;
+	  } else if (relative.search) {
+	    // just pull out the search.
+	    // like href="?foo".
+	    // Put this after the other two cases because it simplifies the booleans
+	    if (psychotic) {
+	      result.hostname = result.host = srcPath.shift();
+	      //occationaly the auth can get stuck only in host
+	      //this especialy happens in cases like
+	      //url.resolveObject("mailto:local1@domain1", "local2@domain2")
+	      var authInHost = result.host && result.host.indexOf("@") > 0 ?
+	        result.host.split("@") : false;
+	      if (authInHost) {
+	        result.auth = authInHost.shift();
+	        result.host = result.hostname = authInHost.shift();
+	      }
+	    }
+	    result.search = relative.search;
+	    result._href = "";
+	    return result;
+	  }
+
+	  if (!srcPath.length) {
+	    // no path at all.  easy.
+	    // we"ve already handled the other stuff above.
+	    result.pathname = null;
+	    result._href = "";
+	    return result;
+	  }
+
+	  // if a url ENDs in . or .., then it must get a trailing slash.
+	  // however, if it ends in anything else non-slashy,
+	  // then it must NOT get a trailing slash.
+	  var last = srcPath.slice(-1)[0];
+	  var hasTrailingSlash = (
+	  (result.host || relative.host) && (last === "." || last === "..") ||
+	  last === "");
+
+	  // strip single dots, resolve double dots to parent dir
+	  // if the path tries to go above the root, `up` ends up > 0
+	  var up = 0;
+	  for (var i = srcPath.length; i >= 0; i--) {
+	    last = srcPath[i];
+	    if (last === ".") {
+	      srcPath.splice(i, 1);
+	    } else if (last === "..") {
+	      srcPath.splice(i, 1);
+	      up++;
+	    } else if (up) {
+	      srcPath.splice(i, 1);
+	      up--;
+	    }
+	  }
+
+	  // if the path is allowed to go above the root, restore leading ..s
+	  if (!mustEndAbs && !removeAllDots) {
+	    for (; up--; up) {
+	      srcPath.unshift("..");
+	    }
+	  }
+
+	  if (mustEndAbs && srcPath[0] !== "" &&
+	    (!srcPath[0] || srcPath[0].charCodeAt(0) !== 0x2F /*'/'*/)) {
+	    srcPath.unshift("");
+	  }
+
+	  if (hasTrailingSlash && (srcPath.join("/").substr(-1) !== "/")) {
+	    srcPath.push("");
+	  }
+
+	  var isAbsolute = srcPath[0] === "" ||
+	    (srcPath[0] && srcPath[0].charCodeAt(0) === 0x2F /*'/'*/);
+
+	  // put the host back
+	  if (psychotic) {
+	    result.hostname = result.host = isAbsolute ? "" :
+	      srcPath.length ? srcPath.shift() : "";
+	    //occationaly the auth can get stuck only in host
+	    //this especialy happens in cases like
+	    //url.resolveObject("mailto:local1@domain1", "local2@domain2")
+	    var authInHost = result.host && result.host.indexOf("@") > 0 ?
+	      result.host.split("@") : false;
+	    if (authInHost) {
+	      result.auth = authInHost.shift();
+	      result.host = result.hostname = authInHost.shift();
+	    }
+	  }
+
+	  mustEndAbs = mustEndAbs || (result.host && srcPath.length);
+
+	  if (mustEndAbs && !isAbsolute) {
+	    srcPath.unshift("");
+	  }
+
+	  result.pathname = srcPath.length === 0 ? null : srcPath.join("/");
+	  result.auth = relative.auth || result.auth;
+	  result.slashes = result.slashes || relative.slashes;
+	  result._href = "";
+	  return result;
+	};
+
+	var escapePathName = Url.prototype._escapePathName =
+	  function Url$_escapePathName(pathname) {
+	    if (!containsCharacter2(pathname, 0x23 /*'#'*/, 0x3F /*'?'*/)) {
+	      return pathname;
+	    }
+	    //Avoid closure creation to keep this inlinable
+	    return _escapePath(pathname);
+	  };
+
+	var escapeSearch = Url.prototype._escapeSearch =
+	  function Url$_escapeSearch(search) {
+	    if (!containsCharacter2(search, 0x23 /*'#'*/, -1)) return search;
+	    //Avoid closure creation to keep this inlinable
+	    return _escapeSearch(search);
+	  };
+
+	Url.prototype._parseProtocol = function Url$_parseProtocol(str, start, end) {
+	  var doLowerCase = false;
+	  var protocolCharacters = this._protocolCharacters;
+
+	  for (var i = start; i <= end; ++i) {
+	    var ch = str.charCodeAt(i);
+
+	    if (ch === 0x3A /*':'*/) {
+	      var protocol = str.slice(start, i);
+	      if (doLowerCase) protocol = protocol.toLowerCase();
+	      this._protocol = protocol;
+	      return i + 1;
+	    }
+	    else if (protocolCharacters[ch] === 1) {
+	      if (ch < 0x61 /*'a'*/)
+	        doLowerCase = true;
+	    }
+	    else {
+	      return start;
+	    }
+
+	  }
+	  return start;
+	};
+
+	Url.prototype._parseAuth = function Url$_parseAuth(str, start, end, decode) {
+	  var auth = str.slice(start, end + 1);
+	  if (decode) {
+	    auth = decodeURIComponent(auth);
+	  }
+	  this.auth = auth;
+	};
+
+	Url.prototype._parsePort = function Url$_parsePort(str, start, end) {
+	  //Internal format is integer for more efficient parsing
+	  //and for efficient trimming of leading zeros
+	  var port = 0;
+	  //Distinguish between :0 and : (no port number at all)
+	  var hadChars = false;
+	  var validPort = true;
+
+	  for (var i = start; i <= end; ++i) {
+	    var ch = str.charCodeAt(i);
+
+	    if (0x30 /*'0'*/ <= ch && ch <= 0x39 /*'9'*/) {
+	      port = (10 * port) + (ch - 0x30 /*'0'*/);
+	      hadChars = true;
+	    }
+	    else {
+	      validPort = false;
+	      if (ch === 0x5C/*'\'*/ || ch === 0x2F/*'/'*/) {
+	        validPort = true;
+	      }
+	      break;
+	    }
+
+	  }
+	  if ((port === 0 && !hadChars) || !validPort) {
+	    if (!validPort) {
+	      this._port = -2;
+	    }
+	    return 0;
+	  }
+
+	  this._port = port;
+	  return i - start;
+	};
+
+	Url.prototype._parseHost =
+	  function Url$_parseHost(str, start, end, slashesDenoteHost) {
+	    var hostEndingCharacters = this._hostEndingCharacters;
+	    var first = str.charCodeAt(start);
+	    var second = str.charCodeAt(start + 1);
+	    if ((first === 0x2F /*'/'*/ || first === 0x5C /*'\'*/) &&
+	      (second === 0x2F /*'/'*/ || second === 0x5C /*'\'*/)) {
+	      this.slashes = true;
+
+	      //The string starts with //
+	      if (start === 0) {
+	        //The string is just "//"
+	        if (end < 2) return start;
+	        //If slashes do not denote host and there is no auth,
+	        //there is no host when the string starts with //
+	        var hasAuth =
+	          containsCharacter(str, 0x40 /*'@'*/, 2, hostEndingCharacters);
+	        if (!hasAuth && !slashesDenoteHost) {
+	          this.slashes = null;
+	          return start;
+	        }
+	      }
+	      //There is a host that starts after the //
+	      start += 2;
+	    }
+	    //If there is no slashes, there is no hostname if
+	    //1. there was no protocol at all
+	    else if (!this._protocol ||
+	      //2. there was a protocol that requires slashes
+	      //e.g. in 'http:asd' 'asd' is not a hostname
+	      slashProtocols[this._protocol]
+	    ) {
+	      return start;
+	    }
+
+	    var doLowerCase = false;
+	    var idna = false;
+	    var hostNameStart = start;
+	    var hostNameEnd = end;
+	    var lastCh = -1;
+	    var portLength = 0;
+	    var charsAfterDot = 0;
+	    var authNeedsDecoding = false;
+
+	    var j = -1;
+
+	    //Find the last occurrence of an @-sign until hostending character is met
+	    //also mark if decoding is needed for the auth portion
+	    for (var i = start; i <= end; ++i) {
+	      var ch = str.charCodeAt(i);
+
+	      if (ch === 0x40 /*'@'*/) {
+	        j = i;
+	      }
+	      //This check is very, very cheap. Unneeded decodeURIComponent is very
+	      //very expensive
+	      else if (ch === 0x25 /*'%'*/) {
+	        authNeedsDecoding = true;
+	      }
+	      else if (hostEndingCharacters[ch] === 1) {
+	        break;
+	      }
+	    }
+
+	    //@-sign was found at index j, everything to the left from it
+	    //is auth part
+	    if (j > -1) {
+	      this._parseAuth(str, start, j - 1, authNeedsDecoding);
+	      //hostname starts after the last @-sign
+	      start = hostNameStart = j + 1;
+	    }
+
+	    //Host name is starting with a [
+	    if (str.charCodeAt(start) === 0x5B /*'['*/) {
+	      for (var i = start + 1; i <= end; ++i) {
+	        var ch = str.charCodeAt(i);
+
+	        //Assume valid IP6 is between the brackets
+	        if (ch === 0x5D /*']'*/) {
+	          if (str.charCodeAt(i + 1) === 0x3A /*':'*/) {
+	            portLength = this._parsePort(str, i + 2, end) + 1;
+	          }
+	          var hostname = str.slice(start + 1, i).toLowerCase();
+	          this.hostname = hostname;
+	          this.host = this._port > 0 ?
+	            "[" + hostname + "]:" + this._port :
+	            "[" + hostname + "]";
+	          this.pathname = "/";
+	          return i + portLength + 1;
+	        }
+	      }
+	      //Empty hostname, [ starts a path
+	      return start;
+	    }
+
+	    for (var i = start; i <= end; ++i) {
+	      if (charsAfterDot > 62) {
+	        this.hostname = this.host = str.slice(start, i);
+	        return i;
+	      }
+	      var ch = str.charCodeAt(i);
+
+	      if (ch === 0x3A /*':'*/) {
+	        portLength = this._parsePort(str, i + 1, end) + 1;
+	        hostNameEnd = i - 1;
+	        break;
+	      }
+	      else if (ch < 0x61 /*'a'*/) {
+	        if (ch === 0x2E /*'.'*/) {
+	          //Node.js ignores this error
+	          /*
+	           if (lastCh === DOT || lastCh === -1) {
+	           this.hostname = this.host = "";
+	           return start;
+	           }
+	           */
+	          charsAfterDot = -1;
+	        }
+	        else if (0x41 /*'A'*/ <= ch && ch <= 0x5A /*'Z'*/) {
+	          doLowerCase = true;
+	        }
+	        //Valid characters other than ASCII letters -, _, +, 0-9
+	        else if (!(ch === 0x2D /*'-'*/ ||
+	          ch === 0x5F /*'_'*/ ||
+	          ch === 0x2B /*'+'*/ ||
+	          (0x30 /*'0'*/ <= ch && ch <= 0x39 /*'9'*/))
+	        ) {
+	          if (hostEndingCharacters[ch] === 0 &&
+	            this._noPrependSlashHostEnders[ch] === 0) {
+	            this._prependSlash = true;
+	          }
+	          hostNameEnd = i - 1;
+	          break;
+	        }
+	      }
+	      else if (ch >= 0x7B /*'{'*/) {
+	        if (ch <= 0x7E /*'~'*/) {
+	          if (this._noPrependSlashHostEnders[ch] === 0) {
+	            this._prependSlash = true;
+	          }
+	          hostNameEnd = i - 1;
+	          break;
+	        }
+	        idna = true;
+	      }
+	      lastCh = ch;
+	      charsAfterDot++;
+	    }
+
+	    //Node.js ignores this error
+	    /*
+	     if (lastCh === DOT) {
+	     hostNameEnd--;
+	     }
+	     */
+
+	    if (hostNameEnd + 1 !== start &&
+	      hostNameEnd - hostNameStart <= 256) {
+	      var hostname = str.slice(hostNameStart, hostNameEnd + 1);
+	      if (doLowerCase) hostname = hostname.toLowerCase();
+	      this.hostname = hostname;
+	      this.host = this._port > 0 ? hostname + ":" + this._port : hostname;
+	    }
+
+	    return hostNameEnd + 1 + portLength;
+
+	  };
+
+	Url.prototype._copyPropsTo = function Url$_copyPropsTo(input, noProtocol) {
+	  if (!noProtocol) {
+	    input._protocol = this._protocol;
+	  }
+	  input._href = this._href;
+	  input._port = this._port;
+	  input._prependSlash = this._prependSlash;
+	  input.auth = this.auth;
+	  input.slashes = this.slashes;
+	  input.host = this.host;
+	  input.hostname = this.hostname;
+	  input.hash = this.hash;
+	  input.search = this.search;
+	  input.pathname = this.pathname;
+	};
+
+	Url.prototype._clone = function Url$_clone() {
+	  var ret = new Url();
+	  ret._protocol = this._protocol;
+	  ret._href = this._href;
+	  ret._port = this._port;
+	  ret._prependSlash = this._prependSlash;
+	  ret.auth = this.auth;
+	  ret.slashes = this.slashes;
+	  ret.host = this.host;
+	  ret.hostname = this.hostname;
+	  ret.hash = this.hash;
+	  ret.search = this.search;
+	  ret.pathname = this.pathname;
+	  return ret;
+	};
+
+	Url.prototype._getComponentEscaped =
+	  function Url$_getComponentEscaped(str, start, end, isAfterQuery) {
+	    var cur = start;
+	    var i = start;
+	    var ret = "";
+	    var autoEscapeMap = isAfterQuery ?
+	      this._afterQueryAutoEscapeMap : this._autoEscapeMap;
+	    for (; i <= end; ++i) {
+	      var ch = str.charCodeAt(i);
+	      var escaped = autoEscapeMap[ch];
+
+	      if (escaped !== "" && escaped !== undefined) {
+	        if (cur < i) ret += str.slice(cur, i);
+	        ret += escaped;
+	        cur = i + 1;
+	      }
+	    }
+	    if (cur < i + 1) ret += str.slice(cur, i);
+	    return ret;
+	  };
+
+	Url.prototype._parsePath =
+	  function Url$_parsePath(str, start, end, disableAutoEscapeChars) {
+	    var pathStart = start;
+	    var pathEnd = end;
+	    var escape = false;
+	    var autoEscapeCharacters = this._autoEscapeCharacters;
+	    var prePath = this._port === -2 ? "/:" : "";
+
+	    for (var i = start; i <= end; ++i) {
+	      var ch = str.charCodeAt(i);
+	      if (ch === 0x23 /*'#'*/) {
+	        this._parseHash(str, i, end, disableAutoEscapeChars);
+	        pathEnd = i - 1;
+	        break;
+	      }
+	      else if (ch === 0x3F /*'?'*/) {
+	        this._parseQuery(str, i, end, disableAutoEscapeChars);
+	        pathEnd = i - 1;
+	        break;
+	      }
+	      else if (!disableAutoEscapeChars && !escape && autoEscapeCharacters[ch] === 1) {
+	        escape = true;
+	      }
+	    }
+
+	    if (pathStart > pathEnd) {
+	      this.pathname = prePath === "" ? "/" : prePath;
+	      return;
+	    }
+
+	    var path;
+	    if (escape) {
+	      path = this._getComponentEscaped(str, pathStart, pathEnd, false);
+	    }
+	    else {
+	      path = str.slice(pathStart, pathEnd + 1);
+	    }
+	    this.pathname = prePath === ""
+	      ? (this._prependSlash ? "/" + path : path)
+	      : prePath + path;
+	  };
+
+	Url.prototype._parseQuery = function Url$_parseQuery(str, start, end, disableAutoEscapeChars) {
+	  var queryStart = start;
+	  var queryEnd = end;
+	  var escape = false;
+	  var autoEscapeCharacters = this._autoEscapeCharacters;
+
+	  for (var i = start; i <= end; ++i) {
+	    var ch = str.charCodeAt(i);
+
+	    if (ch === 0x23 /*'#'*/) {
+	      this._parseHash(str, i, end, disableAutoEscapeChars);
+	      queryEnd = i - 1;
+	      break;
+	    }
+	    else if (!disableAutoEscapeChars && !escape && autoEscapeCharacters[ch] === 1) {
+	      escape = true;
+	    }
+	  }
+
+	  if (queryStart > queryEnd) {
+	    this.search = "";
+	    return;
+	  }
+
+	  var query;
+	  if (escape) {
+	    query = this._getComponentEscaped(str, queryStart, queryEnd, true);
+	  }
+	  else {
+	    query = str.slice(queryStart, queryEnd + 1);
+	  }
+	  this.search = query;
+	};
+
+	Url.prototype._parseHash = function Url$_parseHash(str, start, end, disableAutoEscapeChars) {
+	  if (start > end) {
+	    this.hash = "";
+	    return;
+	  }
+
+	  this.hash = disableAutoEscapeChars ?
+	    str.slice(start, end + 1) : this._getComponentEscaped(str, start, end, true);
+	};
+
+	Object.defineProperty(Url.prototype, "port", {
+	  get: function() {
+	    if (this._port >= 0) {
+	      return ("" + this._port);
+	    }
+	    return null;
+	  },
+	  set: function(v) {
+	    if (v == null) {
+	      this._port = -1;
+	    }
+	    else {
+	      this._port = parseInt(v, 10);
+	    }
+	  }
+	});
+
+	Object.defineProperty(Url.prototype, "query", {
+	  get: function() {
+	    var query = this._query;
+	    if (query != null) {
+	      return query;
+	    }
+	    var search = this.search;
+
+	    if (search) {
+	      if (search.charCodeAt(0) === 0x3F /*'?'*/) {
+	        search = search.slice(1);
+	      }
+	      if (search !== "") {
+	        this._query = search;
+	        return search;
+	      }
+	    }
+	    return search;
+	  },
+	  set: function(v) {
+	    this._query = v;
+	  }
+	});
+
+	Object.defineProperty(Url.prototype, "path", {
+	  get: function() {
+	    var p = this.pathname || "";
+	    var s = this.search || "";
+	    if (p || s) {
+	      return p + s;
+	    }
+	    return (p == null && s) ? ("/" + s) : null;
+	  },
+	  set: function() {}
+	});
+
+	Object.defineProperty(Url.prototype, "protocol", {
+	  get: function() {
+	    var proto = this._protocol;
+	    return proto ? proto + ":" : proto;
+	  },
+	  set: function(v) {
+	    if (typeof v === "string") {
+	      var end = v.length - 1;
+	      if (v.charCodeAt(end) === 0x3A /*':'*/) {
+	        this._protocol = v.slice(0, end);
+	      }
+	      else {
+	        this._protocol = v;
+	      }
+	    }
+	    else if (v == null) {
+	      this._protocol = null;
+	    }
+	  }
+	});
+
+	Object.defineProperty(Url.prototype, "href", {
+	  get: function() {
+	    var href = this._href;
+	    if (!href) {
+	      href = this._href = this.format();
+	    }
+	    return href;
+	  },
+	  set: function(v) {
+	    this._href = v;
+	  }
+	});
+
+	Url.parse = function Url$Parse(str, parseQueryString, hostDenotesSlash, disableAutoEscapeChars) {
+	  if (str instanceof Url) return str;
+	  var ret = new Url();
+	  ret.parse(str, !!parseQueryString, !!hostDenotesSlash, !!disableAutoEscapeChars);
+	  return ret;
+	};
+
+	Url.format = function Url$Format(obj) {
+	  if (typeof obj === "string") {
+	    obj = Url.parse(obj);
+	  }
+	  if (!(obj instanceof Url)) {
+	    return Url.prototype.format.call(obj);
+	  }
+	  return obj.format();
+	};
+
+	Url.resolve = function Url$Resolve(source, relative) {
+	  return Url.parse(source, false, true).resolve(relative);
+	};
+
+	Url.resolveObject = function Url$ResolveObject(source, relative) {
+	  if (!source) return relative;
+	  return Url.parse(source, false, true).resolveObject(relative);
+	};
+
+	function _escapePath(pathname) {
+	  return pathname.replace(/[?#]/g, function(match) {
+	    return encodeURIComponent(match);
+	  });
+	}
+
+	function _escapeSearch(search) {
+	  return search.replace(/#/g, function(match) {
+	    return encodeURIComponent(match);
+	  });
+	}
+
+	//Search `char1` (integer code for a character) in `string`
+	//starting from `fromIndex` and ending at `string.length - 1`
+	//or when a stop character is found
+	function containsCharacter(string, char1, fromIndex, stopCharacterTable) {
+	  var len = string.length;
+	  for (var i = fromIndex; i < len; ++i) {
+	    var ch = string.charCodeAt(i);
+
+	    if (ch === char1) {
+	      return true;
+	    }
+	    else if (stopCharacterTable[ch] === 1) {
+	      return false;
+	    }
+	  }
+	  return false;
+	}
+
+	//See if `char1` or `char2` (integer codes for characters)
+	//is contained in `string`
+	function containsCharacter2(string, char1, char2) {
+	  for (var i = 0, len = string.length; i < len; ++i) {
+	    var ch = string.charCodeAt(i);
+	    if (ch === char1 || ch === char2) return true;
+	  }
+	  return false;
+	}
+
+	//Makes an array of 128 uint8's which represent boolean values.
+	//Spec is an array of ascii code points or ascii code point ranges
+	//ranges are expressed as [start, end]
+
+	//Create a table with the characters 0x30-0x39 (decimals '0' - '9') and
+	//0x7A (lowercaseletter 'z') as `true`:
+	//
+	//var a = makeAsciiTable([[0x30, 0x39], 0x7A]);
+	//a[0x30]; //1
+	//a[0x15]; //0
+	//a[0x35]; //1
+	function makeAsciiTable(spec) {
+	  var ret = new Uint8Array(128);
+	  spec.forEach(function(item){
+	    if (typeof item === "number") {
+	      ret[item] = 1;
+	    }
+	    else {
+	      var start = item[0];
+	      var end = item[1];
+	      for (var j = start; j <= end; ++j) {
+	        ret[j] = 1;
+	      }
+	    }
+	  });
+
+	  return ret;
+	}
+
+
+	var autoEscape = ["<", ">", "\"", "`", " ", "\r", "\n",
+	  "\t", "{", "}", "|", "\\", "^", "`", "'"];
+
+	var autoEscapeMap = new Array(128);
+
+
+
+	for (var i = 0, len = autoEscapeMap.length; i < len; ++i) {
+	  autoEscapeMap[i] = "";
+	}
+
+	for (var i = 0, len = autoEscape.length; i < len; ++i) {
+	  var c = autoEscape[i];
+	  var esc = encodeURIComponent(c);
+	  if (esc === c) {
+	    esc = escape(c);
+	  }
+	  autoEscapeMap[c.charCodeAt(0)] = esc;
+	}
+	var afterQueryAutoEscapeMap = autoEscapeMap.slice();
+	autoEscapeMap[0x5C /*'\'*/] = "/";
+
+	var slashProtocols = Url.prototype._slashProtocols = {
+	  http: true,
+	  https: true,
+	  gopher: true,
+	  file: true,
+	  ftp: true,
+
+	  "http:": true,
+	  "https:": true,
+	  "gopher:": true,
+	  "file:": true,
+	  "ftp:": true
+	};
+
+	Url.prototype._protocolCharacters = makeAsciiTable([
+	  [0x61 /*'a'*/, 0x7A /*'z'*/],
+	  [0x41 /*'A'*/, 0x5A /*'Z'*/],
+	  0x2E /*'.'*/, 0x2B /*'+'*/, 0x2D /*'-'*/
+	]);
+
+	Url.prototype._hostEndingCharacters = makeAsciiTable([
+	  0x23 /*'#'*/, 0x3F /*'?'*/, 0x2F /*'/'*/, 0x5C /*'\'*/
+	]);
+
+	Url.prototype._autoEscapeCharacters = makeAsciiTable(
+	  autoEscape.map(function(v) {
+	    return v.charCodeAt(0);
+	  })
+	);
+
+	//If these characters end a host name, the path will not be prepended a /
+	Url.prototype._noPrependSlashHostEnders = makeAsciiTable(
+	  [
+	    "<", ">", "'", "`", " ", "\r",
+	    "\n", "\t", "{", "}", "|",
+	    "^", "`", "\"", "%", ";"
+	  ].map(function(v) {
+	    return v.charCodeAt(0);
+	  })
+	);
+
+	Url.prototype._autoEscapeMap = autoEscapeMap;
+	Url.prototype._afterQueryAutoEscapeMap = afterQueryAutoEscapeMap;
+
 	// configs
 
 	var HEADER_BYTE_LENGTH = 16;
@@ -7638,8 +8961,11 @@
 
 	  // API
 	  options = options || {};
-	  var s3Key = options.s3Key;
-	  var rootDirectory = options.rootDirectory;
+	  var url = options.url;
+
+	  var parsedUrl = Url.parse(url);
+	  var rootDir = pathUtil.parse(parsedUrl.path || '').dir;
+	  var origin = parsedUrl.protocol + '//' + parsedUrl.host;
 
 	  // check buffer type
 	  if (!buffer) {
@@ -7656,11 +8982,6 @@
 	  var structureByteLength = headerArray[2];
 	  var payloadByteLength = headerArray[3];
 	  var expectedFileByteLength = HEADER_BYTE_LENGTH + structureByteLength + payloadByteLength;
-
-	  // add trailing slash to root dir
-	  if (rootDirectory && rootDirectory[rootDirectory.length - 1] !== '/') {
-	    rootDirectory += '/';
-	  }
 
 	  // validation warnings
 
@@ -7696,12 +9017,10 @@
 	  traverseData3d(structure.data3d, function (data3d) {
 
 	    // map typed arrays to payload area in file buffer
-	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, s3Key);
+	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url);
 
 	    //  convert relative material keys into absolute once
-	    if (rootDirectory && data3d.materials) {
-	      convertTextureKeys(data3d, rootDirectory);
-	    }
+	    if (origin && data3d.materials) convertTextureKeys(data3d, origin, rootDir);
 
 	  });
 
@@ -7738,8 +9057,8 @@
 	  }
 	}
 
-	function convertTextureKeys (data3d, rootDirectory) {
-
+	function convertTextureKeys (data3d, origin, rootDir) {
+	  
 	  var i, l, i2, l2, m, materialKeys = data3d.materialKeys || Object.keys(data3d.materials || {}), texturePathKey;
 
 	  for (i = 0, l = materialKeys.length; i < l; i++) {
@@ -7748,8 +9067,14 @@
 	    // hi-res textures
 	    for (i2 = 0, l2 = TEXTURE_PATH_KEYS.length; i2 < l2; i2++) {
 	      texturePathKey = TEXTURE_PATH_KEYS[i2];
-	      if (m[texturePathKey] && m[texturePathKey][0] !== '/') {
-	        m[texturePathKey] = rootDirectory + m[texturePathKey];
+	      if (m[texturePathKey]) {
+	        if (m[texturePathKey][0] === '/') {
+	          // absolute path
+	          m[texturePathKey] = origin + m[texturePathKey];
+	        } else {
+	          // relative path
+	          m[texturePathKey] = origin + rootDir +'/'+ m[texturePathKey];
+	        }
 	      }
 	    }
 
@@ -7757,7 +9082,7 @@
 
 	}
 
-	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, s3Key) {
+	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url) {
 
 	  var mesh, i, l, meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
 
@@ -7787,9 +9112,7 @@
 	    }
 
 	    // add cache key
-	    if (s3Key) {
-	      mesh.cacheKey = s3Key + ':' + meshKeys[i];
-	    }
+	    if (url) mesh.cacheKey = url + ':' + meshKeys[i];
 
 	  }
 
@@ -7826,7 +9149,7 @@
 	  return fetch$1(url, options).then(function(res){
 	    return res.arrayBuffer()
 	  }).then(function(buffer){
-	    return decodeBuffer(buffer)
+	    return decodeBuffer(buffer, { url: url })
 	  })
 	}
 
@@ -8652,9 +9975,9 @@
 	var methods = ("join pop push shift unshift slice filter forEach some " +
 	    "every map indexOf lastIndexOf reduce reduceRight sort reverse").split(" ");
 
-	for (var i = 0; i < methods.length; ++i) {
-	    if (typeof Array.prototype[methods[i]] === "function") {
-	        AggregateError.prototype[methods[i]] = Array.prototype[methods[i]];
+	for (var i$1 = 0; i$1 < methods.length; ++i$1) {
+	    if (typeof Array.prototype[methods[i$1]] === "function") {
+	        AggregateError.prototype[methods[i$1]] = Array.prototype[methods[i$1]];
 	    }
 	}
 
@@ -13755,6 +15078,8 @@
 	  },
 	  utils: {
 	    uuid: uuid,
+	    path: pathUtil,
+	    url: Url
 	  },
 	  runtime: runtime
 
