@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Base for Aframe</title>
+  <meta name="description" content="BASE components for aframe demo">
+  <!-- aframe library -->
+  <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
+  <!-- base library. distributed via 'npm run dist' in https://github.com/archilogic-com/base-query -->
+  <script src="../../../../build/base-query.js"></script>
+  <!-- base components -->
+  <script src="./components/data3d.js"></script>
+</head>
+<body>
+<a-scene>
+
+  <!-- data3d files specified by BASE-store-key key or URL -->
+  <a-entity base-data3d="key:/fd72bf39-9d3a-471f-a4ff-ecaa3f5ff30b/bake/2017-04-15_22-45-14_XsiltX/regular/lighting.gz.data3d.buffer" position="0 -5 -6"></a-entity>
+
+</a-scene>
+</body>
+</html>
