@@ -30,7 +30,7 @@ run([
     if (ugly.error) return Promise.reject(ugly.error)
     fs.writeFileSync(`dist/${distName}.min.js`, ugly.code)
     fs.writeFileSync(`dist/${distName}.min.js.map`, ugly.map)
-  }
+  },
   // gzip uglified files
   `gzip -9 dist/${distName}.min.js dist/${distName}.min.js.map`,
   // remove .gz extension
