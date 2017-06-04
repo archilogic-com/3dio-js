@@ -11,9 +11,13 @@ export default {
   plugins: [
     json(),
     commonjs({
-      // will be loaded from node_module dependencies in node environment and
-      // doesn't need to be included in browser environments
-      exclude: [ 'node_modules/node-fetch/**' ]
+      // only modules used in browser need to be bundled.
+      // modules only used in node envirenments will be loaded
+      // during runtime using require
+      include: [
+        'node_modules/js-logger/**',
+        'node_modules/bluebird/**'
+      ]
     }),
     resolve()
   ],
