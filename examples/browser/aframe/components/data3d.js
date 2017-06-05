@@ -15,7 +15,7 @@
 
     init: function () {
       this.model = new THREE.Object3D()
-      this.data3dView = new BASE.three.View({ parent: this.model })
+      this.data3dView = new BASE.three.Data3dView({ parent: this.model })
     },
 
     update: function () {
