@@ -1,7 +1,7 @@
 /**
  * @preserve
  * @name base-query
- * @version 0.0.5-alpha.5
+ * @version 0.0.5-alpha.6
  * @description Parse and edit building data using simple APIs.
  * @see http://base-query.org/
  * @tutorial https://github.com/archilogic-com/base-query
@@ -5921,7 +5921,7 @@
 	}
 
 	var name = "base-query";
-	var version = "0.0.5-alpha.5";
+	var version = "0.0.5-alpha.6";
 
 	var homepage = "http://base-query.org/";
 
@@ -15046,7 +15046,7 @@
 	  // high-level / convenience
 
 	  three: {
-	    View: View
+	    Data3dView: View
 	  },
 	  data3d: {
 	    load: loadData3d,
