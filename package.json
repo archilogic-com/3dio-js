@@ -1,6 +1,6 @@
 {
   "name": "base-query",
-  "version": "0.0.5-alpha.5",
+  "version": "0.0.5-alpha.6",
   "description": "Parse and edit building data using simple APIs.",
   "homepage": "http://base-query.org/",
   "repository": "archilogic-com/base-query",
