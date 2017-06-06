@@ -635,7 +635,8 @@ dl.param-type {
   font-size: 36px;
   font-weight: 100;
   color: #bbb;
-  margin-left: 12px;
+  margin-left: 0px;
+  margin-top: 8px;
 }
 
 .overlay {

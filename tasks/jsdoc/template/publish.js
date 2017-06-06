@@ -342,7 +342,7 @@ function buildNav(members, packageInfo) {
   var seen = {}
   var seenTutorials = {}
 
-  nav.push(buildNavLink('home', '<a href="index.html"><span class="nav-title">'+packageInfo.name+'</span><span class="nav-title-version-number">'+packageInfo.version+'</span></a>'))
+  nav.push(buildNavLink('home', '<a href="index.html"><span class="nav-title">BASE</span><br><span class="nav-title-version-number">'+packageInfo.version+'</span></a>'))
 
   nav = nav.concat(buildMemberNav(members.tutorials, "Tutorials", seenTutorials, linktoTutorial))
   //nav = nav.concat(buildMemberNav(members.classes, "Classes", seen, linkto))

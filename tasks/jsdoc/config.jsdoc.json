@@ -4,12 +4,12 @@
     "dictionaries": ["jsdoc"]
   },
   "source": {
-    "include": ["src", "package.json", "docs/api.md"],
+    "include": ["lib", "package.json", "docs/api.md"],
     "includePattern": ".js$",
     "excludePattern": "(node_modules/|docs)"
   },
   "plugins": [
-    "../../dev/jsdoc/plugins/embed-file",
+    "../../tasks/jsdoc/plugins/embed-file",
     "../../node_modules/jsdoc/plugins/markdown"
   ],
   "templates": {
@@ -20,7 +20,7 @@
   },
   "opts": {
     "destination": "docs/api/",
-    "template": "dev/jsdoc/template",
+    "template": "tasks/jsdoc/template",
     "encoding": "utf8",
     "private": false,
     "recurse": true
