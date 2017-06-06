@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css?family=Droid+Sans+Mono');
+@import url('https://fonts.googleapis.com/css?family=Satisfy');
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    position: relative;
+    height: 100%;
+}
+
+body {
+
+    color: white;
+    font-family: 'Droid Sans Mono', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+
+    position: absolute;
+    height: 100%;
+    width: 100%;
+
+    padding: 30px;
+    margin: 0;
+    overflow: hidden;
+
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background: #6c6bc9;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(-45deg, #6a5ea5, #6c6bc9);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(140deg, #594a96, #6c6bc5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+
+#file-box {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    height: 300px;
+    width: 300px;
+    padding: 60px;
+}
