@@ -1,6 +1,7 @@
 uniform sampler2D map;
 uniform sampler2D lightMap;
 uniform vec3 color;
+uniform vec3 specular;
 uniform float opacity;
 
 varying vec2 vUv;
@@ -18,4 +19,6 @@ void main() {
     vec3 mapColor = texture2D(map, vUv, 0.0).rgb;
     gl_FragColor *= vec4(mapColor, 1.0) * 1.1;
   #endif
+
+  //gl_FragColor = vec4(specular, opacity);
 }
