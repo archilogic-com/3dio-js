@@ -3,24 +3,31 @@ import commonjs from 'rollup-plugin-commonjs'
 import resolve from 'rollup-plugin-node-resolve'
 const preamble = require('./preamble.js')
 
-// Source: https://gist.github.com/looeee/7556cfe286ba73a76fc65649ef5766d0
-const glsl = () => {
-  return {
-    transform( code, id ) {
+// Source: https://github.com/mrdoob/three.js/blob/86424d9b318f617254eb857b31be07502ea27ce9/rollup.config.js
+function glsl() {
 
-      if ( !/\.glsl$|\.vert$|\.frag$/.test( id ) ) return;
-      //
-      const res = glslify( code );
-      //
-      return 'export default ' + JSON.stringify(
-        res
-        .replace( /[ \t]*\/\/.*\n/g, '' )
-        .replace( /[ \t]*\/\*[\s\S]*?\*\//g, '' )
-        .replace( /\n{2,}/g, '\n' )
-      ) + ';';
-    },
-  };
-};
+	return {
+
+		transform( code, id ) {
+
+			if ( /\.glsl$/.test( id ) === false ) return;
+
+			var transformedCode = 'export default ' + JSON.stringify(
+				code
+					.replace( /[ \t]*\/\/.*\n/g, '' ) // remove //
+					.replace( /[ \t]*\/\*[\s\S]*?\*\//g, '' ) // remove /* */
+					.replace( /\n{2,}/g, '\n' ) // # \n+ to \n
+			) + ';';
+			return {
+				code: transformedCode,
+				map: { mappings: '' }
+			};
+
+		}
+
+	};
+
+}
 
 // https://github.com/rollup/rollup/wiki/JavaScript-API#rolluprollup-options-
 export default {
