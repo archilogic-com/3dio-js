@@ -1,14 +1,12 @@
-attribute vec2 uv2;
-
-varying vec2 vUv;
-varying vec2 vUv2;
+#include <uv_pars_vertex>
+#include <uv2_pars_vertex>
 
 void main()
 {
-  vUv = uv;
-  #if defined( USE_LIGHTMAP )
-    vUv2 = uv2;
-  #endif
+//  vUv = uv;
+  #include <uv_vertex>
+  #include <uv2_vertex>
+
   vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
   gl_Position = projectionMatrix * mvPosition;
 }
