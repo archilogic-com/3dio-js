@@ -1,25 +1,35 @@
-uniform sampler2D map;
+#include <map_pars_fragment>
+
 uniform sampler2D lightMap;
 uniform vec3 color;
 uniform vec3 specular;
 uniform float opacity;
 
-varying vec2 vUv;
-varying vec2 vUv2;
+#include <uv_pars_fragment>
+#include <uv2_pars_fragment>
 
 void main() {
-  #if defined( USE_LIGHTMAP )
-    //gl_FragColor = vec4(vUv2[0], vUv2[1], 0.0, 1.0);
-    gl_FragColor = texture2D(lightMap, vUv2);
-  #else
-    gl_FragColor = vec4(color, opacity);
-  #endif
+  //vec3 diffuse = vec3(0.5, 0.5, 0.9);
+  vec3 diffuse = vec3(1.0, 1.0, 1.0);
+  vec4 diffuseColor = vec4( diffuse, opacity );
 
-  #if defined( USE_MAP )
-    vec3 mapColor = texture2D(map, vUv, 0.0).rgb;
-    gl_FragColor *= vec4(mapColor, 1.0) * 1.1;
-  #endif
-  //gl_FragColor = vec4( vec3( 1.0 ), opacity );
-  //gl_FragColor = vec4(specular, opacity);
+
+  #include <map_fragment>
+
+ gl_FragColor = diffuseColor;
+
+  /* ////////// custom
+   #if defined( USE_LIGHTMAP )
+     gl_FragColor = texture2D(lightMap, vUv2);
+   #else
+     gl_FragColor = vec4(color, opacity);
+   #endif
+
+   #if defined( USE_MAP )
+     vec3 mapColor = texture2D(map, vUv, 0.0).rgb;
+     gl_FragColor *= vec4(mapColor, 1.0) * 1.1;
+   #endif
+
+  */
 
 }
