@@ -17,7 +17,9 @@ void main()
   #include <defaultnormal_vertex> // Flip side + vec3 transformedNormal = normalMatrix * objectNormal;
 
   #ifndef FLAT_SHADED // Normal computed with derivatives when FLAT_SHADED
+
   	vNormal = normalize( transformedNormal );
+
   #endif
 
   #include <begin_vertex> // vec3 transformed = vec3( position );
