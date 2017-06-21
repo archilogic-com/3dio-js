@@ -1,6 +1,6 @@
-uniform vec3 diffuse; //-> diffuse color
+uniform vec3 diffuse;
 uniform vec3 emissive;
-uniform vec3 specular; // -> specular color
+uniform vec3 specular;
 uniform float shininess;
 uniform float opacity;
 
@@ -9,17 +9,19 @@ uniform float opacity;
 #include <uv2_pars_fragment>
 #include <map_pars_fragment>
 #include <alphamap_pars_fragment>
-//#include <lightmap_pars_fragment>
+
+// Replaces #include <lightmap_pars_fragment>
 #ifdef USE_LIGHTMAP
 	uniform sampler2D lightMap;
 	uniform float lightMapIntensity;
 	uniform float lightMapCenter;
 	uniform float lightMapFalloff;
 #endif
+
 #include <normalmap_pars_fragment>
 #include <specularmap_pars_fragment>
 
-#include <bsdfs> //??
+#include <bsdfs>
 #include <lights_pars>
 #include <lights_phong_pars_fragment>
 
@@ -42,7 +44,7 @@ void main() {
     // accumulation
     #include <lights_phong_fragment>
 
-    // include <light-template>
+    // Replaces #include <light-template>
     GeometricContext geometry;
 
     geometry.position = - vViewPosition;
@@ -165,19 +167,5 @@ void main() {
     vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;
 
     gl_FragColor = vec4( outgoingLight, diffuseColor.a );
-
-    /* ////////// custom
-    #if defined( USE_LIGHTMAP )
-        gl_FragColor = texture2D(lightMap, vUv2);
-    #else
-        gl_FragColor = vec4(color, opacity);
-    #endif
-
-    #if defined( USE_MAP )
-        vec3 mapColor = texture2D(map, vUv, 0.0).rgb;
-        gl_FragColor *= vec4(mapColor, 1.0) * 1.1;
-    #endif
-
-    */
 
 }

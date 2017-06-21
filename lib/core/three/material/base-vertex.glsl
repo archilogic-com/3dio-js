@@ -13,21 +13,17 @@ void main()
   #include <uv_vertex>
   #include <uv2_vertex>
 
-  #include <beginnormal_vertex> //vec3 objectNormal = vec3( normal );
-  #include <defaultnormal_vertex> // Flip side + vec3 transformedNormal = normalMatrix * objectNormal;
+  #include <beginnormal_vertex>
+  #include <defaultnormal_vertex>
 
   #ifndef FLAT_SHADED
     // Normal computed with derivatives when FLAT_SHADED
   	vNormal = normalize( transformedNormal );
   #endif
 
-  #include <begin_vertex> // vec3 transformed = vec3( position );
-  #include <project_vertex> //vec4 mvPosition = modelViewMatrix * vec4( transformed, 1.0 ); set gl_position
+  #include <begin_vertex>
+  #include <project_vertex>
 
   vViewPosition = - mvPosition.xyz;
 
-
-  /*////////// custom
-  vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-  gl_Position = projectionMatrix * mvPosition;*/
 }
