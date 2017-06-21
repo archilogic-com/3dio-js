@@ -130,7 +130,13 @@ void main() {
 
         #ifdef USE_LIGHTMAP
 
-            vec3 lightMapIrradiance = texture2D( lightMap, vUv2 ).xyz * lightMapIntensity;
+            // compute the light value
+            vec3 unit = vec3(1.0);
+            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapCenter * unit);
+            // compute the light intensity modifier
+            vec3 modifier = -lightMapFalloff * light * light + unit;
+            // apply light
+            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;
 
             #ifndef PHYSICALLY_CORRECT_LIGHTS
 
