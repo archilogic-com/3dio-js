@@ -9,7 +9,13 @@ uniform float opacity;
 #include <uv2_pars_fragment>
 #include <map_pars_fragment>
 #include <alphamap_pars_fragment>
-#include <lightmap_pars_fragment>
+//#include <lightmap_pars_fragment>
+#ifdef USE_LIGHTMAP
+	uniform sampler2D lightMap;
+	uniform float lightMapIntensity;
+	uniform float lightMapCenter;
+	uniform float lightMapFalloff;
+#endif
 #include <normalmap_pars_fragment>
 #include <specularmap_pars_fragment>
 
