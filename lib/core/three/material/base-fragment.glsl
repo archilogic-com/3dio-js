@@ -44,7 +44,7 @@ void main() {
     // accumulation
     #include <lights_phong_fragment>
 
-    // Replaces <light-template>
+    // Start of <light-template> replace block
     GeometricContext geometry;
 
     geometry.position = - vViewPosition;
@@ -163,6 +163,7 @@ void main() {
         RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );
 
     #endif
+    // End of <light-template> replace block
 
     vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;
 
