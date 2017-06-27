@@ -10,7 +10,8 @@ uniform float opacity;
 #include <map_pars_fragment>
 #include <alphamap_pars_fragment>
 
-// Replaces #include <lightmap_pars_fragment>
+// Replaces <lightmap_pars_fragment>;
+
 #ifdef USE_LIGHTMAP
 	uniform sampler2D lightMap;
 	uniform float lightMapIntensity;
@@ -44,7 +45,7 @@ void main() {
     // accumulation
     #include <lights_phong_fragment>
 
-    // Replaces #include <light-template>
+    // Replaces <light-template>
     GeometricContext geometry;
 
     geometry.position = - vViewPosition;
