@@ -34,7 +34,6 @@ void main() {
 
     vec3 totalEmissiveRadiance = emissive;
 
-    #include <logdepthbuf_fragment>
     #include <map_fragment>
     #include <alphamap_fragment>
     #include <alphatest_fragment>
