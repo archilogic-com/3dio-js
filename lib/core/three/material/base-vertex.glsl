@@ -6,6 +6,7 @@ varying vec3 vViewPosition;
 
 #include <uv_pars_vertex>
 #include <uv2_pars_vertex>
+#include <shadowmap_pars_vertex>
 
 void main()
 {
@@ -25,5 +26,8 @@ void main()
   #include <project_vertex>
 
   vViewPosition = - mvPosition.xyz;
+
+  #include <worldpos_vertex>
+  #include <shadowmap_vertex>
 
 }
