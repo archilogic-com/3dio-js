@@ -14,7 +14,7 @@ Parse and Edit building data in base format using simple APIs.
 
 ## Questions
 
-For questions and support, [ask on StackOverflow](https://stackoverflow.com/questions/ask/?tags=aframe,%20archilogic).
+For questions and support, [ask on StackOverflow](https://stackoverflow.com/questions/ask/?tags=archilogic).
 
 ## Contribute
 
