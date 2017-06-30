@@ -23,6 +23,7 @@
 	  && Object.prototype.toString.call(process) === '[object process]'
 	  && process.title.indexOf('node') !== -1
 	);
+	var isBrowser = !isNode && typeof window !== 'undefined';
 	var webGlInfo = getWebGlInfo();
 
 	// create runtime object
@@ -32,6 +33,7 @@
 	  isDebugMode: false,
 	  isMobile: detectMobile(),
 	  isNode: isNode,
+	  isBrowser: isBrowser,
 
 	  has: {
 	    webGl: !!webGlInfo
@@ -40,8 +42,6 @@
 	  webGl: webGlInfo
 
 	};
-
-	// helpers
 
 	function getWebGlInfo () {
 
@@ -5850,8 +5850,6 @@
 	  self.fetch.polyfill = true;
 	})(typeof self !== 'undefined' ? self : global);
 
-	// Promise API polyfill for IE11
-	// fetch API polyfill for old browsers
 	if (!console.time || !console.timeEnd) {
 	  var timers = {};
 	  console.time = function(key) {
@@ -6185,7 +6183,6 @@
 	}(commonjsGlobal));
 	});
 
-	// Bootstrap logger
 	logger.useDefaults();
 
 	// print header to console in browser environment
@@ -6301,9 +6298,6 @@
 	  })
 	}
 
-	// internals
-
-	// graphic card max supported texture size
 	var MAX_TEXTURE_SIZE = runtime.has.webGl ? runtime.webGl.maxTextureSize || 2048 : 2048;
 
 	// helpers
@@ -6693,8 +6687,6 @@
 	  })
 	}
 
-	// main
-
 	function request(args) {
 	  // API
 	  var url = args.url || args.uri;
@@ -6849,10 +6841,6 @@
 	 ask tomas-polach if you have questions
 
 	*/
-
-	// static method, @memberof View
-
-	// constants
 
 	var THREEJS_TEXTURE_TYPES_MAP = {
 	  // hi-res textures
@@ -7082,9 +7070,9 @@
 	  if (textureCount) {
 
 	    promise = Promise.all(texturePromises).then(function (textures) {
-	      
+
 	      // assign textures
-	      wrap = WEBGL_WRAP_TYPES[ _attributes.wrap ] || WEBGL_WRAP_TYPES[ 'repeat' ];
+	      wrap = WEBGL_WRAP_TYPES[ _attributes.wrap ] || WEBGL_WRAP_TYPES[ 'repeat' ];
 	      for (i = 0; i < textureCount; i++) {
 	        // FIXME:
 	        // if (
@@ -7093,7 +7081,7 @@
 	        //   // filter texture loading errors
 	        // (textures[i] instanceof THREE.CompressedTexture || textures[i] instanceof THREE.Texture)
 	        // ){
-	          
+
 	          // cache
 	          countTextureReference(textures[ i ].url);
 	          textures[ i ].disposeIfPossible = disposeIfPossible;
@@ -7108,6 +7096,7 @@
 	          }
 	          // add new texture
 	          material3d[ texture3dKeys[ i ] ] = textures[ i ];
+	          material3d.uniforms[ texture3dKeys[ i ] ].value = textures[ i ];
 	          material3d[ texture3dKeys[ i ] ].needsUpdate = true;
 	        // }
 	      }
@@ -7148,10 +7137,6 @@
 
 	*/
 
-	// static method, @memberof View
-
-	// constants
-
 	var HI_RES_TEXTURE_TYPES = {
 	  UV1: [ 'mapDiffuse', 'mapSpecular', 'mapNormal', 'mapAlpha' ],
 	  UV2: 'mapLight'
@@ -7167,6 +7152,7 @@
 
 	function setMaterial (args) {
 
+	  // Args
 	  var vm = args.vm;
 	  var material3d = args.material3d;
 	  var mesh3d = args.mesh3d;
@@ -7175,45 +7161,48 @@
 	  var loadingQueuePrefix = args.loadingQueuePrefix;
 	  var onFirstTextureSetLoaded = args.onFirstTextureSetLoaded;
 
+
 	  // transparency
 
-	//     material3d.transparent = true
-	//     material3d.opacity = 0.55
+	  //     material3d.transparent = true
+	  //     material3d.opacity = 0.55
 
 	  // depth buffer
-	//    if (material3d.opacity < 1) {
-	//      material3d.depthWrite = false
-	//      var alphaTest = material3d.opacity - 0.001
-	//      if (alphaTest < 0) alphaTest = 0
-	//      material3d.alphaTest = alphaTest
-	//    }
+	  //    if (material3d.opacity < 1) {
+	  //      material3d.depthWrite = false
+	  //      var alphaTest = material3d.opacity - 0.001
+	  //      if (alphaTest < 0) alphaTest = 0
+	  //      material3d.alphaTest = alphaTest
+	  //    }
 
 	  // specular coefficient
 
-	  material3d.shininess = _attributes.specularCoef !== undefined ? _attributes.specularCoef : 0.1;
+	  material3d.shininess = (_attributes.specularCoef !== undefined) ? (_attributes.specularCoef ) : 0.1;
+	  material3d.uniforms.shininess.value = material3d.shininess;
 
 	  // colors
-
+	  var diffuse = {};
 	  if (_attributes.colorDiffuse) {
-	    material3d.color.r = _attributes.colorDiffuse[ 0 ];
-	    material3d.color.g = _attributes.colorDiffuse[ 1 ];
-	    material3d.color.b = _attributes.colorDiffuse[ 2 ];
+	    diffuse.r = _attributes.colorDiffuse[ 0 ];
+	    diffuse.g = _attributes.colorDiffuse[ 1 ];
+	    diffuse.b = _attributes.colorDiffuse[ 2 ];
 	  } else if (reset) {
-	    if (_attributes.mapDiffuse) {
+	    if (_attributes.mapDiffuse ) {
 	      // has diffuse texture
-	      material3d.color.r = 1;
-	      material3d.color.g = 1;
-	      material3d.color.b = 1;
+	      diffuse.r = 1;
+	      diffuse.g = 1;
+	      diffuse.b = 1;
 	    } else {
 	      // has NO diffuse texture
-	      material3d.color.r = 0.85;
-	      material3d.color.g = 0.85;
-	      material3d.color.b = 0.85;
+	      diffuse.r = 0.85;
+	      diffuse.g = 0.85;
+	      diffuse.b = 0.85;
 	    }
-
 	  }
+	  material3d.diffuse = diffuse;
+	  material3d.uniforms.diffuse.value = new THREE.Color(diffuse.r, diffuse.g, diffuse.b);
 
-	  if (_attributes.colorAmbient) {
+	  /*if (_attributes.colorAmbient) {
 	    // material3d.ambient.r = _attributes.colorAmbient[ 0 ]
 	    // material3d.ambient.g = _attributes.colorAmbient[ 1 ]
 	    // material3d.ambient.b = _attributes.colorAmbient[ 2 ]
@@ -7224,40 +7213,57 @@
 	    // material3d.ambient.r = material3d.color.r
 	    // material3d.ambient.g = material3d.color.g
 	    // material3d.ambient.b = material3d.color.b
-	  }
+	  }*/
 
+	  var specular = {};
 	  if (_attributes.colorSpecular) {
-	    material3d.specular.r = _attributes.colorSpecular[ 0 ];
-	    material3d.specular.g = _attributes.colorSpecular[ 1 ];
-	    material3d.specular.b = _attributes.colorSpecular[ 2 ];
+	    specular.r = _attributes.colorSpecular[ 0 ];
+	    specular.g = _attributes.colorSpecular[ 1 ];
+	    specular.b = _attributes.colorSpecular[ 2 ];
 	  } else if (reset) {
-	    if (!material3d.specular) {
-	      material3d.specular = new THREE.Color();
-	    }
-	    material3d.specular.r = 0.25;
-	    material3d.specular.g = 0.25;
-	    material3d.specular.b = 0.25;
+	    specular.r = 0.25;
+	    specular.g = 0.25;
+	    specular.b = 0.25;
 	  }
+	  material3d.specular = specular;
+	  material3d.uniforms.specular.value = new THREE.Color(specular.r, specular.g, specular.b);
 
+	  var emissive = {};
 	  if (_attributes.colorEmissive) {
-	    material3d.emissive.r = _attributes.colorEmissive[ 0 ];
-	    material3d.emissive.g = _attributes.colorEmissive[ 1 ];
-	    material3d.emissive.b = _attributes.colorEmissive[ 2 ];
-	  } else if (reset) {
-	    if (!material3d.emissive) {
-	      material3d.emissive = new THREE.Color();
+	    emissive.r = _attributes.colorEmissive[ 0 ];
+	    emissive.g = _attributes.colorEmissive[ 1 ];
+	    emissive.b = _attributes.colorEmissive[ 2 ];
+	  } else if (_attributes.lightEmissionCoef) {
+	    var emissiveIntensity = _attributes.lightEmissionCoef / 10;
+	    if (_attributes.colorDiffuse) {
+	      emissive.r = _attributes.colorDiffuse[ 0 ];
+	      emissive.g = _attributes.colorDiffuse[ 1 ];
+	      emissive.b = _attributes.colorDiffuse[ 2 ];
+	    } else {
+	      emissive.r = 1.0;
+	      emissive.g = 1.0;
+	      emissive.b = 1.0;
 	    }
-	    material3d.emissive.r = 0;
-	    material3d.emissive.g = 0;
-	    material3d.emissive.b = 0;
+	    emissive.r *= emissiveIntensity;
+	    emissive.g *= emissiveIntensity;
+	    emissive.b *= emissiveIntensity;
+
+	  } else if (reset) {
+	    emissive.r = 0;
+	    emissive.g = 0;
+	    emissive.b = 0;
 	  }
+	  material3d.emissive = emissive;
+	  material3d.uniforms.emissive.value = new THREE.Color(emissive.r, emissive.g, emissive.b);
 
 	  // lightmap settings
 	  if (_attributes.mapLight || _attributes.mapLightPreview) {
-	    material3d.enhancedLightMap = material3d.enhancedLightMap || {};
-	    material3d.enhancedLightMap.intensity = (_attributes.mapLightIntensity !== undefined) ? _attributes.mapLightIntensity : 1;
-	    material3d.enhancedLightMap.center = (_attributes.mapLightCenter !== undefined) ? _attributes.mapLightCenter : 0.5;
-	    material3d.enhancedLightMap.falloff = (_attributes.mapLightFalloff !== undefined) ? _attributes.mapLightFalloff : 0.5;
+	    material3d.lightMapIntensity = (_attributes.mapLightIntensity !== undefined) ? _attributes.mapLightIntensity : 1.0;
+	    material3d.lightMapCenter = (_attributes.mapLightCenter !== undefined) ? _attributes.mapLightCenter : 0.5;
+	    material3d.lightMapFalloff = (_attributes.mapLightFalloff !== undefined) ? _attributes.mapLightFalloff : 0.5;
+	    material3d.uniforms.lightMapIntensity.value = material3d.lightMapIntensity;
+	    material3d.uniforms.lightMapFalloff.value = material3d.lightMapCenter;
+	    material3d.uniforms.lightMapCenter.value = material3d.lightMapFalloff;
 	  }
 
 	  // shadows
@@ -7301,8 +7307,8 @@
 	    loadingTexturesPromise,
 	    loadingQueue,
 	    isLoadingLoResTextures,
-	    hasLoResTextures = _attributes.mapDiffusePreview || _attributes.mapSpecularPreview || _attributes.mapNormalPreview || _attributes.mapAlphaPreview || _attributes.mapLightPreview,
-	//      hasHiResTextures = _attributes.mapDiffuse || _attributes.mapSpecular || _attributes.mapNormal || _attributes.mapAlpha || _attributes.mapLight,
+	    hasLoResTextures = _attributes.mapDiffusePreview || _attributes.mapSpecularPreview || _attributes.mapNormalPreview || _attributes.mapAlphaPreview || _attributes.mapLightPreview,
+	    // hasHiResTextures = _attributes.mapDiffuse || _attributes.mapSpecular || _attributes.mapNormal || _attributes.mapAlpha || _attributes.mapLight,
 	    // TODO: readd hiResTextures configs
 	    // hiResTexturesEnabled = !configs.isMobile && vm.viewport.a.hiResTextures && configs.compatibility.webglCompressedTextures
 	    hiResTexturesEnabled = !runtime.isMobile && runtime.webGl.supportsDds;
@@ -7337,6 +7343,7 @@
 	      material3d.transparent = false;
 	      material3d.opacity = 1;
 	    }
+	    material3d.uniforms.opacity = { value: material3d.opacity };
 
 	    // trigger callback
 	    if (onFirstTextureSetLoaded) onFirstTextureSetLoaded();
@@ -7359,7 +7366,6 @@
 	  // return texture loading promise
 
 	  return loadingTexturesPromise
-
 	}
 
 	// static class, @memberof View
@@ -7469,6 +7475,44 @@
 
 	};
 
+	var fragmentShader = "uniform vec3 diffuse;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapCenter;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( diffuse, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #include <normal_flip>\n    #include <normal_fragment>\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapCenter * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}";
+
+	var vertexShader = "varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n}";
+
+	function BaseMaterial( params ) {
+	  THREE.ShaderMaterial.call( this, params );
+
+	  var params = params || {};
+	  this.lightMapCenter = params.lightMapCenter || 0.5;
+	  this.lightMapFalloff = params.lightMapFalloff || 0.5;
+
+	  this.uniforms = THREE.UniformsUtils.merge( [
+	    THREE.UniformsLib[ "lights" ],
+	    { diffuse: { value: params.diffuse || new THREE.Color(1.0, 1.0, 1.0) },
+	      map: { value: params.map || null },
+	      specularMap: { value: params.specularMap || null },
+	      alphaMap: { value: params.alphaMap || null },
+	      lightMap: { value: params.lightMap || null },
+	      lightMapIntensity: { value: params.lightMapIntensity || 1.0 },
+	      lightMapFalloff: { value: params.lightMapCenter || 0.5 },
+	      lightMapCenter: { value: params.lightMapCenter || 0.5 },
+	      normalMap: { value: params.normalMap || null },
+	      shininess: { value: params.shininess || 1.0 },
+	      specular: { value: params.specular || new THREE.Color(0.25, 0.25, 0.25) },
+	      emissive: { value: params.emissive || new THREE.Color(0.0, 0.0, 0.0) },
+	      opacity: { value: params.opacity || 1 },
+	      offsetRepeat: { value: params.offsetRepeat || new THREE.Vector4( 0, 0, 1, 1) }
+	    }
+	  ]);
+
+	  this.vertexShader = vertexShader;
+	  this.fragmentShader = fragmentShader;
+	  this.lights = true;
+	}
+
+	BaseMaterial.prototype = Object.create(THREE.ShaderMaterial.prototype);
+	BaseMaterial.prototype.constructor = BaseMaterial;
+
 	// constants
 
 	var WEBGL_SIDE = {
@@ -7482,49 +7526,12 @@
 
 	var geometry3dCache = {};
 
-	// helpers
-
-	function createOrReuseGeometry3d( key ) {
-	    if (key) {
-	      // use cache
-	      if (geometry3dCache[ key ]) {
-	        geometry3dCache[ key ].refCount++;
-	      } else {
-	        geometry3dCache[ key ] = {
-	          geometry3d: new THREE.BufferGeometry(),
-	          refCount: 1
-	        };
-	      }
-	      return geometry3dCache[ key ].geometry3d
-	    } else {
-	      // no key no cache
-	      return new THREE.BufferGeometry()
-	    }
-	  }
-
-	function disposeGeometry3dIfNotUsedElsewhere( key, geometry3d ) {
-	    if (key) {
-	      // involve cache
-	      if (geometry3dCache[ key ]) {
-	        geometry3dCache[ key ].refCount--;
-	        if (geometry3dCache[ key ].refCount < 1) {
-	          geometry3dCache[ key ].geometry3d.dispose();
-	          delete geometry3dCache[ key ];
-	        }
-	      } else {
-	        // (2017/01/09) See comment in ThreeView.set()
-	        // if (geometry3d.attributes.pickingColor)
-	        //  delete geometry3d.attributes['pickingColor'];
-	        geometry3d.dispose();
-	      }
-	    } else {
-	      // no key bo cache
-	      // (2017/01/09) See comment in ThreeView.set()
-	      // if (geometry3d.attributes.pickingColor)
-	      //   delete geometry3d.attributes['pickingColor'];
-	      geometry3d.dispose();
-	    }
-	  }
+	/**
+	 * @function three.Data3dView
+	 * @memberof BASE
+	 * @param options
+	 * @constructor
+	 */
 
 	function View (options) {
 
@@ -7547,7 +7554,7 @@
 	  set: function (data3d, options) {
 
 	    // API
-	    options = options || {};
+	    options = options || {};
 	    var
 	      meshes = data3d.meshes || this.meshes,
 	      meshKeys = data3d.meshKeys,
@@ -7591,7 +7598,8 @@
 	        // three.js materials
 	        if (!self._materials3d[ meshId ]) {
 	          // (one material pro mesh, because some of our mesh properties are material properties and it does not matter performance wise)
-	          material3d = new THREE.MeshPhongMaterial({ opacity: 0.5, transparent: true });
+	          //material3d = new THREE.MeshPhongMaterial({ opacity: 0.5, transparent: true})
+	          material3d = new BaseMaterial();
 	          material3d.name = materialId;
 	          if (!materials) {
 	            // there is no material properties. using default properties
@@ -7730,7 +7738,6 @@
 	          }
 	          */
 	          // destroy geometry
-	          console.log(self._meshes3d, meshId);
 	          var geometry3d = self._meshes3d[ meshId ].geometry;
 	          disposeGeometry3dIfNotUsedElsewhere(self.meshes[ meshId ].cacheKey, geometry3d);
 	          // destroy threejs mesh
@@ -7854,6 +7861,50 @@
 	  }
 
 	};
+
+	// helpers
+
+	function createOrReuseGeometry3d( key ) {
+	  if (key) {
+	    // use cache
+	    if (geometry3dCache[ key ]) {
+	      geometry3dCache[ key ].refCount++;
+	    } else {
+	      geometry3dCache[ key ] = {
+	        geometry3d: new THREE.BufferGeometry(),
+	        refCount: 1
+	      };
+	    }
+	    return geometry3dCache[ key ].geometry3d
+	  } else {
+	    // no key no cache
+	    return new THREE.BufferGeometry()
+	  }
+	}
+
+	function disposeGeometry3dIfNotUsedElsewhere( key, geometry3d ) {
+	  if (key) {
+	    // involve cache
+	    if (geometry3dCache[ key ]) {
+	      geometry3dCache[ key ].refCount--;
+	      if (geometry3dCache[ key ].refCount < 1) {
+	        geometry3dCache[ key ].geometry3d.dispose();
+	        delete geometry3dCache[ key ];
+	      }
+	    } else {
+	      // (2017/01/09) See comment in ThreeView.set()
+	      // if (geometry3d.attributes.pickingColor)
+	      //  delete geometry3d.attributes['pickingColor'];
+	      geometry3d.dispose();
+	    }
+	  } else {
+	    // no key bo cache
+	    // (2017/01/09) See comment in ThreeView.set()
+	    // if (geometry3d.attributes.pickingColor)
+	    //   delete geometry3d.attributes['pickingColor'];
+	    geometry3d.dispose();
+	  }
+	}
 
 	// from https://github.com/jbgutierrez/path-parse
 	// Split a filename into [root, dir, basename, ext], unix version
@@ -8897,6 +8948,7 @@
 	  "ftp:": true
 	};
 
+	//Optimize back from normalized object caused by non-identifier keys
 	Url.prototype._protocolCharacters = makeAsciiTable([
 	  [0x61 /*'a'*/, 0x7A /*'z'*/],
 	  [0x41 /*'A'*/, 0x5A /*'Z'*/],
@@ -8926,8 +8978,6 @@
 
 	Url.prototype._autoEscapeMap = autoEscapeMap;
 	Url.prototype._afterQueryAutoEscapeMap = afterQueryAutoEscapeMap;
-
-	// configs
 
 	var HEADER_BYTE_LENGTH = 16;
 	var MAGIC_NUMBER = 0x41443344; // AD3D encoded as ASCII characters in hex
@@ -9152,33 +9202,6 @@
 	    return decodeBuffer(buffer, { url: url })
 	  })
 	}
-
-	var PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-
-	/**
-	 * Generate an UUID as specified in RFC4122
-	 */
-
-	var uuid = {};
-
-	uuid.generate = function generateUuid () {
-	  var d = Date.now();
-	  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-	    var r = (d + Math.random() * 16) % 16 | 0;
-	    d = Math.floor(d / 16);
-	    return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-	  });
-	  return uuid
-	};
-
-	/**
-	 * Validates UUID as specified in RFC4122
-	 */
-
-	uuid.validate = function validateUuid (str) {
-	  if (!str || typeof str !== "string") return false
-	  return PATTERN.test(str)
-	};
 
 	var es5 = createCommonjsModule(function (module) {
 	var isES5 = (function(){
@@ -14700,7 +14723,46 @@
 	bluebird$2.noConflict = noConflict;
 	var bluebird_1 = bluebird$2;
 
-	// main
+	var FormData_;
+	if (runtime.isNode) {
+	  FormData_ = require('form-data');
+	} else if (typeof FormData !== 'undefined') {
+	  FormData_ = FormData;
+	} else {
+	  console.warn('Missing FormData API.');
+	  FormData_ = function FormDataError () {
+	    throw new Error('Missing FormData API.')
+	  };
+	}
+
+	var FormData$1 = FormData_;
+
+	var PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+	/**
+	 * Generate an UUID as specified in RFC4122
+	 */
+
+	var uuid = {};
+
+	uuid.generate = function generateUuid () {
+	  var d = Date.now();
+	  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+	    var r = (d + Math.random() * 16) % 16 | 0;
+	    d = Math.floor(d / 16);
+	    return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+	  });
+	  return uuid
+	};
+
+	/**
+	 * Validates UUID as specified in RFC4122
+	 */
+
+	uuid.validate = function validateUuid (str) {
+	  if (!str || typeof str !== "string") return false
+	  return PATTERN.test(str)
+	};
 
 	function JsonRpc2Client () {
 
@@ -14809,9 +14871,6 @@
 
 	};
 
-	// import cache from './common/promise-cache.js'
-
-	// configs
 	var DEFAULT_API_URL = 'https://spaces.archilogic.com/api/v2';
 
 	// internals
@@ -14851,6 +14910,8 @@
 
 	}
 
+	// private
+
 	function sendHttpRequest (rpcRequest) {
 	  // send request
 	  fetch$1(DEFAULT_API_URL, {
@@ -14868,7 +14929,413 @@
 
 	}
 
-	// constants
+	var FALLBACK_MIME_TYPE = 'application/octet-stream';
+	var EXTENSION_TO_MIME_TYPE = {
+	    obj: 'text/plain',
+	    dds: 'application/octet-stream',
+	    dwg: 'application/acad',
+	    dxf: 'application/dxf',
+	    jpg: 'image/jpeg',
+	    jpeg: 'image/jpeg',
+	    png: 'image/png',
+	    gif: 'image/gif',
+	    txt: 'text/plain',
+	    log: 'text/plain',
+	    svg: 'svg+xml',
+	    html: 'text/html',
+	    htm: 'text/html',
+	    js: 'application/javascript',
+	    json: 'application/json',
+	    md: 'text/markdown',
+	    csv: 'text/csv',
+	    gz:	'application/x-gzip',
+	    gzip:	'application/x-gzip',
+	    zip:'application/x-zip',
+	    pdf: 'application/pdf',
+	    '3ds': 'application/x-3ds'
+	  };
+
+	function getMimeTypeFromFileName (filename) {
+	  var
+	    result = FALLBACK_MIME_TYPE,
+	    extension;
+
+	  // get extension if file has one
+	  if (filename.indexOf('.') > -1) {
+	    extension = filename.split('.').pop().toLowerCase();
+	    if (EXTENSION_TO_MIME_TYPE[extension]) {
+	      // set mime type if it exists in the map
+	      result = EXTENSION_TO_MIME_TYPE[extension];
+	    }
+	  }
+
+	  return result
+	}
+
+	function putToStore (files, options) {
+
+	  if (!Array.isArray(files)) {
+
+	    // upload single file
+
+	    return putSingleFileToStore(files, options)
+
+	  } else {
+
+	    // upload multiple files and bundle progress events
+
+	    var totalSize_ = 0;
+	    var progress_ = [];
+	    var onProgress_ = options.onProgress;
+
+	    return bluebird_1.map(files, function(file, i){
+	      totalSize_ += file.size;
+	      return putSingleFileToStore(file, {
+	        onProgress: function(progress, total){
+	          progress_[i] = progress;
+	          onProgress_(progress_.reduce(function(a, b) { return a+b; }, 0), totalSize_);
+	        }
+	      })
+	    })
+
+	  }
+
+	}
+
+	// private
+
+	function putSingleFileToStore (file, options) {
+
+	  options = options || {};
+	  var fileName = file.name || options.fileName || 'unnamed.txt';
+	  var onProgress = options.onProgress;
+
+	  // get credentials for S3
+	  return callService('S3.getCredentials', {
+	    contentLength: file.size || file.length,
+	    contentType: getMimeTypeFromFileName(fileName),
+	    fileName: fileName
+	  }).then(function (credentials) {
+
+	    // upload directly to S3 using credentials
+	    var fd = new FormData$1();
+	    fd.append('key', credentials.key);
+	    fd.append('AWSAccessKeyId', credentials.AWSAccessKeyId);
+	    fd.append('acl', credentials.acl);
+	    fd.append('Content-Type', credentials.contentType);
+	    fd.append('policy', credentials.policy);
+	    fd.append('signature', credentials.signature);
+	    fd.append('success_action_status', '201');
+	    if (credentials.contentEncoding) {
+	      fd.append('Content-Encoding', credentials.contentEncoding);
+	    }
+	    //fd.append('success_action_redirect', 'http://google.com')
+	    //fd.append('expiration',s3Credetials.plainPolicy.expiration)
+	    fd.append('file', file);
+
+	    if (runtime.isBrowser) {
+
+	      // upload using XHR (gets progress info)
+	      return new bluebird_1(function(resolve, reject){
+	        var xhr = new XMLHttpRequest();
+	        xhr.crossOrigin = 'Anonymous';
+	        xhr.onload = function (event) {
+	          if (xhr.status >= 200 && xhr.status < 300) {
+	            var key = getKeyFromS3Response(xhr.responseText);
+	            key ? resolve(key) : reject ('Error Uploading File: '+xhr.responseText);
+	          } else {
+	            reject ('Error Uploading File: '+xhr.responseText);
+	          }
+	        };
+	        xhr.onerror = function (event) {
+	          reject(event);
+	        };
+	        if (onProgress) {
+	          xhr.upload.addEventListener('progress', function(e){
+	            onProgress(e.loaded, e.total);
+	          }, false);
+	        }
+	        xhr.open('POST', credentials.url, true);
+	        xhr.send(fd);
+	      })
+
+	    } else {
+
+	      // upload using fetch
+	      return fetch$1(credentials.url, {method: 'POST', body: fd}).then(function (res) {
+	        return res.text()
+	      }).then(function(str){
+	        return getKeyFromS3Response(str) || bluebird_1.reject('Error Uploading File: '+str)
+	      })
+
+	    }
+
+	  })
+
+	}
+
+	function getKeyFromS3Response (str) {
+	  // get file key from response
+	  var s = /<Key>(.*)<\/Key>/gi.exec(str);
+	  return s ? '/'+s[1] : false
+	}
+
+	var EXTENSION_WHITE_LIST = [
+	  // generic
+	  '.json', '.buffer', '.js', '.md', '.txt', '.csv',
+	  // 3d formats
+	  '.obj', '.mtl', '.ifc', '.fbx', '.gltf', '.bin',
+	  // 2d formats
+	  '.jpg', '.jpeg', '.jpe', '.png', '.gif', '.tga', '.dds', '.svg', '.pdf', '.dxf'
+	];
+
+	// themes
+
+	var THEME = {
+	  bright: {
+	    box: 'background-color: rgba(255, 255, 255, 0.2); border: 1px dashed rgba(255, 255, 255, 0.7); border-radius: 2px;',
+	    over: 'background-color: rgba(255, 255, 255, 0.3); border: 1px dashed rgba(255, 255, 255, 1); border-radius: 2px;'
+	  },
+	  dark: {
+	    box: 'background-color: rgba(0, 0, 0, 0.2); border: 1px dashed rgba(0, 0, 0, 0.7); border-radius: 2px;',
+	    over: 'background-color: rgba(0, 0, 0, 0.3); border: 1px dashed rgba(0, 0, 0, 1); border-radius: 2px;'
+	  }
+	};
+
+	// main
+
+	function createFileDrop (args) {
+
+	  var elementId = args.elementId;
+	  var onDrop = args.onDrop;
+	  var upload = args.upload !== undefined ? args.upload : true;
+	  var theme = args.theme !== undefined ? args.theme : 'bright';
+	  var onProgress = args.onProgress;
+
+	  var el = document.getElementById(elementId);
+	  if (THEME[theme]) el.setAttribute('style', THEME[theme].box);
+
+	  function dragEnter (event) {
+	    doNothing(event);
+	    if (THEME[theme]) el.setAttribute('style', THEME[theme].over);
+	  }
+
+	  function dragLeave (event) {
+	    doNothing(event);
+	    if (THEME[theme]) el.setAttribute('style', THEME[theme].box);
+	  }
+
+	  function drop (event) {
+	    doNothing(event);
+	    getFilesFromDragAndDropEvent(event).then(function (files) {
+	      if (!upload) {
+	        // return files
+	        onDrop(files);
+	      } else {
+	        // return keys & files
+	        return putToStore(files, { onProgress: onProgress }).then(function(keys){
+	          onDrop(keys, files);
+	        })
+	      }
+	    }).catch(console.error);
+	  }
+
+	  /* events fired on the draggable target */
+	  // document.addEventListener("drag", function( event ) {}, false)
+	  // document.addEventListener("dragstart", function( event ) {}, false)
+	  // document.addEventListener("dragend", function( event ) {}, false)
+	  // prevent events on window drop
+	  window.addEventListener('dragover', doNothing, false);
+	  window.addEventListener('drop', doNothing, false);
+	  /* events fired on the drop targets */
+	  el.addEventListener('dragover', function (event) {
+	    doNothing(event);
+	    event.dataTransfer.dropEffect = 'copy'; // set cursor style
+	  }, false);
+	  el.addEventListener('dragenter', dragEnter, false);
+	  el.addEventListener('dragleave', dragLeave, false);
+	  el.addEventListener('dragend', dragLeave, false);
+	  el.addEventListener('drop', drop, false);
+
+	}
+
+	// helpers
+
+	function doNothing (event) {
+	  event.stopPropagation();
+	  event.preventDefault();
+	}
+
+	function getFilesFromDragAndDropEvent (event, options) {
+	  // compatibility function to extract files
+
+	  // API
+	  options = options || {};
+	  var warningCallback = options.onWarning || function () {};
+
+	  // internals
+	  var result;
+	  var dataTransfer = event.dataTransfer || event.originalEvent.dataTransfer;
+
+	  if (dataTransfer.items && dataTransfer.items.length) {
+	    // more sophisticated drop API, supporting folders structures
+	    // works in webkit browsers only
+	    // get files with directories
+	    //http://code.flickr.net/2012/12/10/drag-n-drop/
+	    result = getFlatFileArrayFromItems(dataTransfer.items).then(function (files) {
+	      return removeRootDir(filterValidFiles(files, warningCallback))
+	    });
+
+	  } else if (dataTransfer.files) {
+	    // "classic" drag and drop api, not supporting folders
+	    // check if user tries to dragdrop a folder = only one "file" with no extension
+	    var isFolder = dataTransfer.files.length === 0 || (dataTransfer.files.length === 1 && dataTransfer.files[0].name.indexOf('.') < 0);
+	    if (isFolder) {
+	      result = bluebird_1.reject('Sorry, but this browser doesn\'t support drag&drop of folders. (use Chrome)');
+	    } else {
+	      // create Blobs from Files because in File name property is read only.
+	      // but we may want file.name to be writable later.
+	      var i, l, _file, file, files = [];
+	      for (i = 0, l = dataTransfer.files.length; i < l; i++) {
+	        _file = dataTransfer.files[i];
+	        file = new Blob([_file], {type: _file.type});
+	        file.name = _file.name;
+	        files.push(file);
+	      }
+	      result = bluebird_1.resolve(filterValidFiles(files, warningCallback));
+
+	    }
+
+	  } else {
+
+	    result = bluebird_1.reject('Event does not contain "items" nor "files" property.');
+
+	  }
+
+	  return result
+
+	}
+
+	// helpers
+
+	function getFlatFileArrayFromItems (items) {
+
+	  // get entries from items
+	  var entries = [], item;
+	  for (var i = 0, l = items.length; i < l; i++) {
+	    item = items[i];
+	    entries[entries.length] = item.webkitGetAsEntry ? item.webkitGetAsEntry() : item.getAsFile();
+	  }
+
+	  // recursively parse directories and collect files
+	  var files = [];
+	  return recursivelyParseEntries(entries, files).then(function () {
+	    return files
+	  })
+
+	}
+
+	function recursivelyParseEntries (entries, resultArray) {
+	  return bluebird_1.all(
+	    entries.map(function (entry) {
+
+	      if (entry.isFile) {
+
+	        // convert File into Blob
+	        return new bluebird_1(function (resolve, reject) {
+	          // add file to file array
+	          entry
+	            .file(function (_file) {
+	              // create Blob from File because in File name property is read only.
+	              // but we want file.name to include path so we need to overwrite it.
+	              var file = new Blob([_file], {type: _file.type});
+	              file.name = entry.fullPath.substring(1);
+	              resultArray[resultArray.length] = file;
+	              resolve();
+	            });
+	        })
+
+	      } else if (entry instanceof File) {
+
+	        // create Blob from File because in File name property is read only.
+	        // but we want file.name to include path so we need to overwrite it.
+	        var file = new Blob([entry], {type: entry.type});
+	        file.name = entry.name;
+	        // add file to file array
+	        resultArray[resultArray.length] = file;
+
+	      } else if (entry.isDirectory) {
+
+	        // read directory
+	        return new bluebird_1(function (resolve, reject) {
+	          entry
+	            .createReader()
+	            .readEntries(function (_entries) {
+	              resolve(recursivelyParseEntries(_entries, resultArray));
+	            });
+	        })
+
+	      }
+	    })
+	  )
+	}
+
+	function filterValidFiles (_files, warningCallback) {
+	  var file, fileName, extension, hasValidExtension, filteredFiles = [];
+	  for (var i = 0, l = _files.length; i < l; i++) {
+	    file = _files[i];
+	    fileName = file.name;
+	    if (typeof fileName === 'string') {
+	      // ignore system files
+	      if (fileName[0] === '.' || fileName.substring(0, 9) === '__MACOSX/') {
+	        continue
+	      }
+	      // check extensions
+	      extension = fileName.split('.').length > 1 ? '.' + fileName.split('.').pop().toLowerCase() : null;
+	      if (!extension) {
+	        console.error('File ' + fileName + ' has no extension and will be ignored.');
+	        warningCallback('File ' + fileName + ' has no extension and will be ignored.');
+	      } else {
+	        hasValidExtension = EXTENSION_WHITE_LIST.indexOf(extension) > -1;
+	        if (!hasValidExtension) {
+	          console.error('File ' + fileName + ' is not supported and will be ignored.');
+	          warningCallback('File ' + fileName + ' is not supported and will be ignored.');
+	        } else {
+	          filteredFiles[filteredFiles.length] = file;
+	        }
+	      }
+	    }
+	  }
+	  return filteredFiles
+	}
+
+	function removeRootDir (files) {
+	  // get root dir from first file
+	  var rootDir, i, l;
+	  if (files.length && files[0].name && files[0].name.indexOf('/') > -1) {
+	    rootDir = files[0].name.split('/')[0];
+	  } else {
+	    return files
+	  }
+
+	  // check if all files have the same root dir
+	  var hasSameRootDir;
+	  for (i = 1, l = files.length; i < l; i++) {
+	    hasSameRootDir = files[i].name && files[i].name.indexOf('/') > -1 && files[i].name.split('/')[0] === rootDir;
+	    if (!hasSameRootDir) {
+	      return files
+	    }
+	  }
+
+	  // remove root dir from file names
+	  for (i = 0, l = files.length; i < l; i++) {
+	    files[i].name = files[i].name.substring(rootDir.length + 1);
+	  }
+
+	  // iterate recursively until all equal leading directories are removed
+	  return removeRootDir(files)
+
+	}
 
 	var CDN_DOMAIN = 'dnvf9esa6v418.cloudfront.net';
 	var BUCKET = 'archilogic-content-beta';
@@ -14919,111 +15386,6 @@
 	  return url
 	}
 
-	var FormData_;
-	if (runtime.isNode) {
-	  FormData_ = require('form-data');
-	} else if (typeof FormData !== 'undefined') {
-	  FormData_ = FormData;
-	} else {
-	  console.warn('Missing FormData API.');
-	  FormData_ = function FormDataError () {
-	    throw new Error('Missing FormData API.')
-	  };
-	}
-
-	var FormData$1 = FormData_;
-
-	var FALLBACK_MIME_TYPE = 'application/octet-stream';
-	var EXTENSION_TO_MIME_TYPE = {
-	    obj: 'text/plain',
-	    dds: 'application/octet-stream',
-	    dwg: 'application/acad',
-	    dxf: 'application/dxf',
-	    jpg: 'image/jpeg',
-	    jpeg: 'image/jpeg',
-	    png: 'image/png',
-	    gif: 'image/gif',
-	    txt: 'text/plain',
-	    log: 'text/plain',
-	    svg: 'svg+xml',
-	    html: 'text/html',
-	    htm: 'text/html',
-	    js: 'application/javascript',
-	    json: 'application/json',
-	    md: 'text/markdown',
-	    csv: 'text/csv',
-	    gz:	'application/x-gzip',
-	    gzip:	'application/x-gzip',
-	    zip:'application/x-zip',
-	    pdf: 'application/pdf',
-	    '3ds': 'application/x-3ds'
-	  };
-
-	function getMimeTypeFromFileName (filename) {
-	  var
-	    result = FALLBACK_MIME_TYPE,
-	    extension;
-
-	  // get extension if file has one
-	  if (filename.indexOf('.') > -1) {
-	    extension = filename.split('.').pop().toLowerCase();
-	    if (EXTENSION_TO_MIME_TYPE[extension]) {
-	      // set mime type if it exists in the map
-	      result = EXTENSION_TO_MIME_TYPE[extension];
-	    }
-	  }
-
-	  return result
-	}
-
-	// constants
-
-	var KEY_PATTERN = /<Key>(.*)<\/Key>/gi;
-
-	// main
-
-	function putToStore (file, options) {
-
-	  options = options || {};
-	  var fileName = file.name || options.fileName || 'unnamed.txt';
-
-	  // get credentials for S3
-	  return callService('S3.getCredentials', {
-	    contentLength: file.size || file.length,
-	    contentType: getMimeTypeFromFileName(fileName),
-	    fileName: fileName
-	  }).then(function (credentials) {
-
-	    // upload directly to S3 using credentials
-	    var fd = new FormData$1();
-	    fd.append('key', credentials.key);
-	    fd.append('AWSAccessKeyId', credentials.AWSAccessKeyId);
-	    fd.append('acl', credentials.acl);
-	    fd.append('Content-Type', credentials.contentType);
-	    fd.append('policy', credentials.policy);
-	    fd.append('signature', credentials.signature);
-	    fd.append('success_action_status', '201');
-	    if (credentials.contentEncoding) {
-	      fd.append('Content-Encoding', credentials.contentEncoding);
-	    }
-	    //fd.append('success_action_redirect', 'http://google.com')
-	    //fd.append('expiration',s3Credetials.plainPolicy.expiration)
-	    fd.append('file', file);
-
-	    // upload to S3
-	    return fetch$1(credentials.url, {method: 'POST', body: fd})
-	      .then(function (res) {
-	        return res.text()
-	      }).then(function (s3Response) {
-	        // get file key from response
-	        var s = KEY_PATTERN.exec(s3Response);
-	        return s ? '/'+s[1] : Promise.reject('Error Uploading File: '+s3Response)
-	      })
-
-	  })
-
-	}
-
 	function getProduct (id) {
 	  // FIMXE: use proper argument name
 	  return callService('Product.read', { id:id }).then(function(productInfo){
@@ -15034,17 +15396,14 @@
 	  })
 	}
 
-	/**
-	 * @description a-base library object
-	 * @namespace BASE
-	 * */
-
-	// TODO: methods: bake, furnish, analyze ??
-
 	var BASE = {
 
 	  // high-level / convenience
 
+	  /**
+	   * @namespace three
+	   * @memberof BASE
+	   */
 	  three: {
 	    Data3dView: View
 	  },
@@ -15063,7 +15422,7 @@
 	    call: callService
 	  },
 	  ui: {
-	    getFilesFromDragAndDropEvent: loadData3d
+	    createFileDrop: createFileDrop
 	  },
 	  // scene: {},
 	  // space: {},
