@@ -5,6 +5,7 @@ uniform float shininess;
 uniform float opacity;
 
 #include <common>
+#include <packing>
 #include <uv_pars_fragment>
 #include <uv2_pars_fragment>
 #include <map_pars_fragment>
@@ -25,6 +26,7 @@ uniform float opacity;
 #include <bsdfs>
 #include <lights_pars>
 #include <lights_phong_pars_fragment>
+#include <shadowmap_pars_fragment>
 
 
 void main() {
