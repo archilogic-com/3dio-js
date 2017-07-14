@@ -1,4 +1,4 @@
-# 3dio.js
+# 3dio.js BETA
 toolkit for interior apps
 
 http://3d.io/docs/1/
