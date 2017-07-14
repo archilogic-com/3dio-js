@@ -3,6 +3,32 @@ import commonjs from 'rollup-plugin-commonjs'
 import resolve from 'rollup-plugin-node-resolve'
 const preamble = require('./preamble.js')
 
+// Source: https://github.com/mrdoob/three.js/blob/86424d9b318f617254eb857b31be07502ea27ce9/rollup.config.js
+function glsl() {
+
+	return {
+
+		transform( code, id ) {
+
+			if ( /\.glsl$/.test( id ) === false ) return;
+
+			var transformedCode = 'export default ' + JSON.stringify(
+				code
+					.replace( /[ \t]*\/\/.*\n/g, '' ) // remove //
+					.replace( /[ \t]*\/\*[\s\S]*?\*\//g, '' ) // remove /* */
+					.replace( /\n{2,}/g, '\n' ) // # \n+ to \n
+			) + ';';
+			return {
+				code: transformedCode,
+				map: { mappings: '' }
+			};
+
+		}
+
+	};
+
+}
+
 // https://github.com/rollup/rollup/wiki/JavaScript-API#rolluprollup-options-
 export default {
   entry: 'src/3d-io.js',
@@ -10,6 +36,7 @@ export default {
   sourceMap: true,
   plugins: [
     json(),
+    glsl(),
     commonjs({
       // only modules used in browser need to be bundled.
       // modules only used in node envirenments will be loaded

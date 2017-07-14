@@ -29,6 +29,7 @@ var LO_RES_TEXTURE_TYPES = {
 
 export default function setMaterial (args) {
 
+  // Args
   var vm = args.vm
   var material3d = args.material3d
   var mesh3d = args.mesh3d
@@ -37,45 +38,48 @@ export default function setMaterial (args) {
   var loadingQueuePrefix = args.loadingQueuePrefix
   var onFirstTextureSetLoaded = args.onFirstTextureSetLoaded
 
+
   // transparency
 
-//     material3d.transparent = true
-//     material3d.opacity = 0.55
+  //     material3d.transparent = true
+  //     material3d.opacity = 0.55
 
   // depth buffer
-//    if (material3d.opacity < 1) {
-//      material3d.depthWrite = false
-//      var alphaTest = material3d.opacity - 0.001
-//      if (alphaTest < 0) alphaTest = 0
-//      material3d.alphaTest = alphaTest
-//    }
+  //    if (material3d.opacity < 1) {
+  //      material3d.depthWrite = false
+  //      var alphaTest = material3d.opacity - 0.001
+  //      if (alphaTest < 0) alphaTest = 0
+  //      material3d.alphaTest = alphaTest
+  //    }
 
   // specular coefficient
 
-  material3d.shininess = _attributes.specularCoef !== undefined ? _attributes.specularCoef : 0.1
+  material3d.shininess = (_attributes.specularCoef !== undefined) ? (_attributes.specularCoef ) : 0.1
+  material3d.uniforms.shininess.value = material3d.shininess
 
   // colors
-
+  var diffuse = {}
   if (_attributes.colorDiffuse) {
-    material3d.color.r = _attributes.colorDiffuse[ 0 ]
-    material3d.color.g = _attributes.colorDiffuse[ 1 ]
-    material3d.color.b = _attributes.colorDiffuse[ 2 ]
+    diffuse.r = _attributes.colorDiffuse[ 0 ]
+    diffuse.g = _attributes.colorDiffuse[ 1 ]
+    diffuse.b = _attributes.colorDiffuse[ 2 ]
   } else if (reset) {
-    if (_attributes.mapDiffuse) {
+    if (_attributes.mapDiffuse ) {
       // has diffuse texture
-      material3d.color.r = 1
-      material3d.color.g = 1
-      material3d.color.b = 1
+      diffuse.r = 1
+      diffuse.g = 1
+      diffuse.b = 1
     } else {
       // has NO diffuse texture
-      material3d.color.r = 0.85
-      material3d.color.g = 0.85
-      material3d.color.b = 0.85
+      diffuse.r = 0.85
+      diffuse.g = 0.85
+      diffuse.b = 0.85
     }
-
   }
+  material3d.diffuse = diffuse
+  material3d.uniforms.diffuse.value = new THREE.Color(diffuse.r, diffuse.g, diffuse.b)
 
-  if (_attributes.colorAmbient) {
+  /*if (_attributes.colorAmbient) {
     // material3d.ambient.r = _attributes.colorAmbient[ 0 ]
     // material3d.ambient.g = _attributes.colorAmbient[ 1 ]
     // material3d.ambient.b = _attributes.colorAmbient[ 2 ]
@@ -86,40 +90,57 @@ export default function setMaterial (args) {
     // material3d.ambient.r = material3d.color.r
     // material3d.ambient.g = material3d.color.g
     // material3d.ambient.b = material3d.color.b
-  }
+  }*/
 
+  var specular = {}
   if (_attributes.colorSpecular) {
-    material3d.specular.r = _attributes.colorSpecular[ 0 ]
-    material3d.specular.g = _attributes.colorSpecular[ 1 ]
-    material3d.specular.b = _attributes.colorSpecular[ 2 ]
+    specular.r = _attributes.colorSpecular[ 0 ]
+    specular.g = _attributes.colorSpecular[ 1 ]
+    specular.b = _attributes.colorSpecular[ 2 ]
   } else if (reset) {
-    if (!material3d.specular) {
-      material3d.specular = new THREE.Color()
-    }
-    material3d.specular.r = 0.25
-    material3d.specular.g = 0.25
-    material3d.specular.b = 0.25
+    specular.r = 0.25
+    specular.g = 0.25
+    specular.b = 0.25
   }
+  material3d.specular = specular
+  material3d.uniforms.specular.value = new THREE.Color(specular.r, specular.g, specular.b)
 
+  var emissive = {}
   if (_attributes.colorEmissive) {
-    material3d.emissive.r = _attributes.colorEmissive[ 0 ]
-    material3d.emissive.g = _attributes.colorEmissive[ 1 ]
-    material3d.emissive.b = _attributes.colorEmissive[ 2 ]
-  } else if (reset) {
-    if (!material3d.emissive) {
-      material3d.emissive = new THREE.Color()
+    emissive.r = _attributes.colorEmissive[ 0 ]
+    emissive.g = _attributes.colorEmissive[ 1 ]
+    emissive.b = _attributes.colorEmissive[ 2 ]
+  } else if (_attributes.lightEmissionCoef) {
+    var emissiveIntensity = _attributes.lightEmissionCoef / 10
+    if (_attributes.colorDiffuse) {
+      emissive.r = _attributes.colorDiffuse[ 0 ]
+      emissive.g = _attributes.colorDiffuse[ 1 ]
+      emissive.b = _attributes.colorDiffuse[ 2 ]
+    } else {
+      emissive.r = 1.0
+      emissive.g = 1.0
+      emissive.b = 1.0
     }
-    material3d.emissive.r = 0
-    material3d.emissive.g = 0
-    material3d.emissive.b = 0
+    emissive.r *= emissiveIntensity
+    emissive.g *= emissiveIntensity
+    emissive.b *= emissiveIntensity
+
+  } else if (reset) {
+    emissive.r = 0
+    emissive.g = 0
+    emissive.b = 0
   }
+  material3d.emissive = emissive
+  material3d.uniforms.emissive.value = new THREE.Color(emissive.r, emissive.g, emissive.b)
 
   // lightmap settings
   if (_attributes.mapLight || _attributes.mapLightPreview) {
-    material3d.enhancedLightMap = material3d.enhancedLightMap || {}
-    material3d.enhancedLightMap.intensity = (_attributes.mapLightIntensity !== undefined) ? _attributes.mapLightIntensity : 1
-    material3d.enhancedLightMap.center = (_attributes.mapLightCenter !== undefined) ? _attributes.mapLightCenter : 0.5
-    material3d.enhancedLightMap.falloff = (_attributes.mapLightFalloff !== undefined) ? _attributes.mapLightFalloff : 0.5
+    material3d.lightMapIntensity = (_attributes.mapLightIntensity !== undefined) ? _attributes.mapLightIntensity : 1.0
+    material3d.lightMapCenter = (_attributes.mapLightCenter !== undefined) ? _attributes.mapLightCenter : 0.5
+    material3d.lightMapFalloff = (_attributes.mapLightFalloff !== undefined) ? _attributes.mapLightFalloff : 0.5
+    material3d.uniforms.lightMapIntensity.value = material3d.lightMapIntensity
+    material3d.uniforms.lightMapFalloff.value = material3d.lightMapCenter
+    material3d.uniforms.lightMapCenter.value = material3d.lightMapFalloff
   }
 
   // shadows
@@ -163,8 +184,8 @@ export default function setMaterial (args) {
     loadingTexturesPromise,
     loadingQueue,
     isLoadingLoResTextures,
-    hasLoResTextures = _attributes.mapDiffusePreview || _attributes.mapSpecularPreview || _attributes.mapNormalPreview || _attributes.mapAlphaPreview || _attributes.mapLightPreview,
-//      hasHiResTextures = _attributes.mapDiffuse || _attributes.mapSpecular || _attributes.mapNormal || _attributes.mapAlpha || _attributes.mapLight,
+    hasLoResTextures = _attributes.mapDiffusePreview || _attributes.mapSpecularPreview || _attributes.mapNormalPreview || _attributes.mapAlphaPreview || _attributes.mapLightPreview,
+    // hasHiResTextures = _attributes.mapDiffuse || _attributes.mapSpecular || _attributes.mapNormal || _attributes.mapAlpha || _attributes.mapLight,
     // TODO: readd hiResTextures configs
     // hiResTexturesEnabled = !configs.isMobile && vm.viewport.a.hiResTextures && configs.compatibility.webglCompressedTextures
     hiResTexturesEnabled = !runtime.isMobile && runtime.webGl.supportsDds
@@ -199,6 +220,7 @@ export default function setMaterial (args) {
       material3d.transparent = false
       material3d.opacity = 1
     }
+    material3d.uniforms.opacity = { value: material3d.opacity }
 
     // trigger callback
     if (onFirstTextureSetLoaded) onFirstTextureSetLoaded()
@@ -221,5 +243,4 @@ export default function setMaterial (args) {
   // return texture loading promise
 
   return loadingTexturesPromise
-
 }

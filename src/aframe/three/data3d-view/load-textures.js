@@ -241,9 +241,9 @@ export default function loadTextures ( queue, TEXTURE_TYPES, vm, _attributes, ma
   if (textureCount) {
 
     promise = Promise.all(texturePromises).then(function (textures) {
-      
+
       // assign textures
-      wrap = WEBGL_WRAP_TYPES[ _attributes.wrap ] || WEBGL_WRAP_TYPES[ 'repeat' ]
+      wrap = WEBGL_WRAP_TYPES[ _attributes.wrap ] || WEBGL_WRAP_TYPES[ 'repeat' ]
       for (i = 0; i < textureCount; i++) {
         // FIXME:
         // if (
@@ -252,7 +252,7 @@ export default function loadTextures ( queue, TEXTURE_TYPES, vm, _attributes, ma
         //   // filter texture loading errors
         // (textures[i] instanceof THREE.CompressedTexture || textures[i] instanceof THREE.Texture)
         // ){
-          
+
           // cache
           countTextureReference(textures[ i ].url)
           textures[ i ].disposeIfPossible = disposeIfPossible
@@ -267,6 +267,7 @@ export default function loadTextures ( queue, TEXTURE_TYPES, vm, _attributes, ma
           }
           // add new texture
           material3d[ texture3dKeys[ i ] ] = textures[ i ]
+          material3d.uniforms[ texture3dKeys[ i ] ].value = textures[ i ]
           material3d[ texture3dKeys[ i ] ].needsUpdate = true
         // }
       }

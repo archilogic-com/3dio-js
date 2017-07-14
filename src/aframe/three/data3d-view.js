@@ -1,5 +1,6 @@
 import setMaterial from './data3d-view/set-material.js'
 import Wireframe from './data3d-view/wireframe.js'
+import BaseMaterial from './material/base-material.js'
 
 // constants
 
@@ -44,7 +45,7 @@ Data3dView.prototype = {
   set: function (data3d, options) {
 
     // API
-    options = options || {}
+    options = options || {}
     var
       meshes = data3d.meshes || this.meshes,
       meshKeys = data3d.meshKeys,
@@ -88,7 +89,8 @@ Data3dView.prototype = {
         // three.js materials
         if (!self._materials3d[ meshId ]) {
           // (one material pro mesh, because some of our mesh properties are material properties and it does not matter performance wise)
-          material3d = new THREE.MeshPhongMaterial({ opacity: 0.5, transparent: true })
+          //material3d = new THREE.MeshPhongMaterial({ opacity: 0.5, transparent: true})
+          material3d = new BaseMaterial()
           material3d.name = materialId
           if (!materials) {
             // there is no material properties. using default properties
@@ -227,7 +229,6 @@ Data3dView.prototype = {
           }
           */
           // destroy geometry
-          console.log(self._meshes3d, meshId)
           var geometry3d = self._meshes3d[ meshId ].geometry
           disposeGeometry3dIfNotUsedElsewhere(self.meshes[ meshId ].cacheKey, geometry3d)
           // destroy threejs mesh
