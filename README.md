@@ -18,6 +18,10 @@
 </html>
 ```
 
+## Documentation
+
+http://3d.io/docs/1/
+
 ## Distribution
 
 * browser: `<script src="http://3d.io/releases/1.0.0-beta.2/3dio.min.js"></script>`
