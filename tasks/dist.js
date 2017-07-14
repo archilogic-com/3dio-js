@@ -24,9 +24,10 @@ const AWS = {
   secret: process.env.AWS_SECRET_ACCESS_KEY
 }
 
-function cleanBuildDir () {
+function cleanDistDir () {
   return del([dest]).then(function () {
-    fs.mkdirSync(process.cwd() + '/' + dest, 0744)
+    fs.mkdirSync(process.cwd() + `/${dest}`, 0744)
+    fs.mkdirSync(process.cwd() + `/${dest}/${version}`, 0744)
   })
 }
 
@@ -51,15 +52,15 @@ function uglify () {
     if (ugly.warnings) console.log('UGLIFY WARNINGS: ', ugly.warnings)
     if (ugly.error) return Promise.reject(ugly.error)
     // write files
-    fs.writeFileSync(`${cwd}/${dest}/${targetBasename}.min.js.map`, ugly.map)
-    fs.writeFileSync(`${cwd}/${dest}/${targetBasename}.min.js`, ugly.code)
+    fs.writeFileSync(`${cwd}/${dest}/${version}/${targetBasename}.min.js.map`, ugly.map)
+    fs.writeFileSync(`${cwd}/${dest}/${version}/${targetBasename}.min.js`, ugly.code)
     // gulp callback
     cb()
   }))
 }
 
 function publishCompressed () {
-  return gulp.src(`${dest}/**/**`)
+  return gulp.src(`${dest}/${version}/**/**`)
     .pipe(gzip({
       append: false, // do not append .gz extension
       threshold: false, // no file size treshold because all files will have gzip headers
@@ -80,4 +81,9 @@ function read (path) {
 
 // export
 
-module.exports = gulp.series(cleanBuildDir, uglify, publishCompressed)
+module.exports = gulp.series(
+  require('./build').build,
+  cleanDistDir,
+  uglify,
+  publishCompressed
+)
