@@ -39,7 +39,7 @@ function cleanBuildDir () {
 
 function bundleScripts () {
   var result = execSync(`node_modules/.bin/rollup -c tasks/rollup.config.js`).toString('utf8')
-  console.log(result)
+  if (result) console.log('Rollup: '+result)
   return Promise.resolve()
 }
 
