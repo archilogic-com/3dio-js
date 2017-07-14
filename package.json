@@ -12,8 +12,8 @@
   },
   "main": "build/3dio.js",
   "scripts": {
-    "dev": "npm install || true \n killall node || true \n node_modules/.bin/rollup -w -c tasks/rollup.config.js & \n node_modules/.bin/lite-server -c tasks/lite-server.config.js",
-    "node-example2": "npm run build \n node examples/node/main.js",
+    "dev": "npm install || true \n killall node || true \n gulp dev",
+    "node-example": "gulp node-example",
     "build": "gulp build",
     "dist": "gulp dist",
     "test": "gulp test"

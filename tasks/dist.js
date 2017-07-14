@@ -82,7 +82,7 @@ function read (path) {
 // export
 
 module.exports = gulp.series(
-  require('./build').build,
+  require('./build'),
   cleanDistDir,
   uglify,
   publishCompressed

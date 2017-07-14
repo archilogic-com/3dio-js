@@ -1,6 +1,7 @@
 // const Promise = require('bluebird')
 // const path = require('path')
 const execSync = require('child_process').execSync
+const spawn = require('child_process').spawn
 const gulp = require('gulp')
 const del = require('del')
 const rollup = require('gulp-better-rollup')
@@ -16,15 +17,6 @@ const gitCommitSha1 = execSync(`git rev-parse HEAD`).toString('utf8').replace('\
  * configs
  */
 
-const debug = true
-const src = {
-  // bundleEntries: [
-  //   'src/3d-io.js'
-  // ],
-  watch: [
-    'src/**/**'
-  ]
-}
 const dest = 'build'
 
 /*
@@ -35,23 +27,29 @@ function cleanBuildDir () {
   return del([dest])
 }
 
-// 1. bundle modules
-
 function bundleScripts () {
-  var result = execSync(`node_modules/.bin/rollup -c tasks/rollup.config.js`).toString('utf8')
-  if (result) console.log('Rollup: '+result)
-  return Promise.resolve()
-}
-
-function watch () {
-  gulp.watch(src.watch, bundleScripts)
+  return new Promise((resolve, reject) => {
+    const ls = spawn('./node_modules/.bin/rollup', ['-c','tasks/rollup.config.js'])
+    ls.stdout.on('data', (data) => {
+      console.log(`rollup out: ${data}`)
+    })
+    ls.stderr.on('data', (data) => {
+      console.log(`rollup err: ${data}`)
+    })
+    ls.on('close', (code) => {
+      if (code === 0) {
+        console.log(`rollup bundle: DONE`)
+        resolve()
+      } else {
+        console.error(`rollup exited with code ${code}`)
+        reject()
+      }
+    })
+  })
 }
 
 /*
  * export
  */
 
-module.exports = {
-  watch: watch,
-  build: gulp.series( cleanBuildDir, bundleScripts )
-}
+module.exports = gulp.series(cleanBuildDir, bundleScripts)
