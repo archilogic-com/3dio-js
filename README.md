@@ -1,6 +1,13 @@
-# 3d.io - toolkit for interior apps
+# 3dio.js
+toolkit for interior apps
 
-## Example: A-Frame app with content from 3d.io
+http://3d.io/docs/1/
+
+(work in progress)
+
+## Examples
+
+### A-Frame components loading content from 3d.io
 
 ```html
 <!DOCTYPE html>
