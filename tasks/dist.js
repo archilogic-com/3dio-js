@@ -18,7 +18,7 @@ const dest = 'dist'
 
 const AWS = {
   bucket: '3d.io',
-  dir: `js/dist/${version}/`,
+  dir: `releases/${version}/`,
   region: 'eu-west-1',
   key: process.env.AWS_ACCESS_KEY_ID,
   secret: process.env.AWS_SECRET_ACCESS_KEY
