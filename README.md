@@ -26,7 +26,7 @@ https://3d.io
 
 ## Documentation
 
-https://3d.io/docs/1/
+https://3d.io/docs/1/index.html
 
 ## Distribution
 
