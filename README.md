@@ -5,7 +5,7 @@
 ## Distribution
 
 * browser: `<script src="https://3d.io/js/dist/1.0.0-beta.1/3dio.js"></script>`
-* node: `npm install 3dio --save
+* node: `npm install 3dio --save`
 
 ## Contribute
 
