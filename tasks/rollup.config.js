@@ -31,7 +31,7 @@ function glsl() {
 
 // https://github.com/rollup/rollup/wiki/JavaScript-API#rolluprollup-options-
 export default {
-  entry: 'src/3d-io.js',
+  entry: 'src/3dio.js',
   indent: '\t',
   sourceMap: true,
   plugins: [
@@ -53,11 +53,11 @@ export default {
     {
       format: 'umd',
       banner: preamble,
-      moduleName: 'BASE', // and global object name in browser environment
+      moduleName: 'IO3D', // and global object name in browser environment
       globals: {
         THREE: 'THREE'
       },
-      dest: 'build/3d-io.js'
+      dest: 'build/3dio.js'
     }
   ],
   onwarn (warning) {

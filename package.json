@@ -1,18 +1,18 @@
 {
-  "name": "3d-io",
+  "name": "3dio",
   "version": "1.0.0-beta.1",
   "description": "toolkit for interior apps",
   "homepage": "http://3d.io",
-  "repository": "archilogic-com/3d-io-js",
+  "repository": "archilogic-com/3dio-js",
   "license": "MIT",
   "author": {
     "name": "archilogic",
     "email": "dev.rocks@archilogic.com",
     "url": "https://archilogic.com"
   },
-  "main": "build/base-query.js",
+  "main": "build/3dio.js",
   "scripts": {
-    "dev": "npm install || true \n killall node || true \n node_modules/.bin/rollup -w -c tasks/build/rollup.config.js & \n node_modules/.bin/lite-server -c tasks/dev/lite-server.config.js",
+    "dev": "npm install || true \n killall node || true \n node_modules/.bin/rollup -w -c tasks/rollup.config.js & \n node_modules/.bin/lite-server -c tasks/lite-server.config.js",
     "node-example2": "npm run build \n node examples/node/main.js",
     "build": "gulp build",
     "dist": "gulp dist",
