@@ -1,13 +1,13 @@
 # 3dio.js BETA
 toolkit for interior apps
 
-https://3d.io/docs/1/index.html
-
-(work in progress)
+https://3d.io
 
 ## Examples
+
 ### A-Frame Components Loading Content from 3d.io
 
+[Open example in jsFiddle](https://jsfiddle.net/3dio/5wgoq2u7/embedded/result,html/dark/)
 ```html
 <!DOCTYPE html>
 <html>
@@ -32,7 +32,3 @@ https://3d.io/docs/1/
 
 * browser: `<script src="https://3d.io/releases/1.0.0-beta.2/3dio.min.js"></script>`
 * node: `npm install 3dio --save`
-
-## Contribute
-
-&#9758; [Development page](docs/development.md)
