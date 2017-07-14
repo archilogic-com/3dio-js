@@ -20,7 +20,7 @@
 
 ## Documentation
 
-http://3d.io/docs/1/
+https://3d.io/docs/1/
 
 ## Distribution
 
