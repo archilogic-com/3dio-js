@@ -1,20 +1,11 @@
-# Making Buildings Editable
+# 3d.io - toolkit for interior apps
 
-`base-query.js`
+`3dio.js`
 
-Parse and Edit building data in base format using simple APIs.
+## Distribution
 
-* [API](docs/api/index.html)
-* [Examples](docs/examples/index.html)
-
-## Related Projects
-
-* GUI: [3D Base Viewer Web Component](https://github.com/archilogic-com/base-viewer)
-* Data Format: [Base](https://github.com/archilogic-com/base-format)
-
-## Questions
-
-For questions and support, [ask on StackOverflow](https://stackoverflow.com/questions/ask/?tags=archilogic).
+* browser: `<script src="https://3d.io/js/dist/1.0.0-beta.1/3dio.js"></script>`
+* node: `npm install 3dio --save
 
 ## Contribute
 
