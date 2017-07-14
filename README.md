@@ -6,8 +6,7 @@ https://3d.io/docs/1/
 (work in progress)
 
 ## Examples
-
-### A-Frame components loading content from 3d.io
+### A-Frame Components Loading Content from 3d.io
 
 ```html
 <!DOCTYPE html>
