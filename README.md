@@ -7,7 +7,7 @@ https://3d.io
 
 ### A-Frame Components Loading Content from 3d.io
 
-[Open example in jsFiddle](https://jsfiddle.net/3dio/5wgoq2u7/embedded/result,html/dark/)
+[Open in jsFiddle](https://jsfiddle.net/3dio/5wgoq2u7/embedded/result,html/dark/)
 ```html
 <!DOCTYPE html>
 <html>
