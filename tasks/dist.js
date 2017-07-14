@@ -15,7 +15,6 @@ var version = packageInfo.version
 // configs
 const src = 'build'
 const dest = 'dist'
-// const deployTargetDir = `dist`
 
 const AWS = {
   bucket: '3d.io',
