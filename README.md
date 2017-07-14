@@ -24,6 +24,14 @@ https://3d.io
 </html>
 ```
 
+## Use Cases
+
+https://3d.io/#use-cases
+
+## Features
+
+https://3d.io/#products
+
 ## Documentation
 
 https://3d.io/docs/1/index.html
