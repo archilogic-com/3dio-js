@@ -1,1 +1,1 @@
-module.exports = require('./build/3d-io')
+module.exports = require('./build/3dio')
