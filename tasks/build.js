@@ -34,14 +34,14 @@ function bundleScripts () {
       console.log(`rollup out: ${data}`)
     })
     ls.stderr.on('data', (data) => {
-      console.log(`rollup err: ${data}`)
+      console.error(`rollup err: ${data}`)
     })
     ls.on('close', (code) => {
       if (code === 0) {
         console.log(`rollup bundle: DONE`)
         resolve()
       } else {
-        console.error(`rollup exited with code ${code}`)
+        throw new Error(`rollup exited with code ${code}`)
         reject()
       }
     })

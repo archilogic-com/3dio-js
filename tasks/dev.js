@@ -46,14 +46,14 @@ var runNodeExample = gulp.series(
         console.log(`out: ${data}`)
       })
       ls.stderr.on('data', (data) => {
-        console.log(`err: ${data}`)
+        console.error(`err: ${data}`)
       })
       ls.on('close', (code) => {
         if (code === 0) {
           console.log(`example: DONE`)
           resolve()
         } else {
-          console.error(`example exited with code ${code}`)
+          throw new Error(`example exited with code ${code}`)
           reject()
         }
       })
