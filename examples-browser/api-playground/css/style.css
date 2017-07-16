@@ -1,0 +1,141 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    font-family: 'Dosis', sans-serif;
+    font-size: 18px;
+    background-color: #eee;
+    overflow: hidden;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+}
+
+h1 {
+    margin-left: 38px;
+    font-size: 42px;
+    font-weight: 200;
+    letter-spacing: 1px;
+}
+
+h2 {
+    margin: 30px 0 20px 0;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 1px;
+}
+
+.column {
+    position: absolute;
+    top: 110px;
+    bottom: 0px;
+    border-left: 1px dotted #bbb;
+    padding: 0 0 0 20px;
+    display: none;
+}
+
+#example-list {
+    position: absolute;
+    top: 50px;
+    left: 20px;
+    right: 0px;
+    bottom: 0px;
+    font-family: Monaco, Menlo, "Ubuntu Mono", Consolas, source-code-pro, monospaceace;
+    font-size: 12px;
+    overflow: hidden;
+    padding-bottom: 20px;
+}
+
+.example-item {
+    padding: 4px 0 4px 0;
+    cursor: pointer;
+}
+
+.example-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+#code-editor {
+    position: absolute;
+    top: 50px;
+    left: 20px;
+    right: 0px;
+    bottom: 0px;
+    background: #eee;
+}
+
+#log-output {
+    position: absolute;
+    top: 50px;
+    left: 20px;
+    right: 0px;
+    bottom: 0px;
+    padding-bottom: 20px;
+    font-family: Monaco, Menlo, "Ubuntu Mono", Consolas, source-code-pro, monospaceace;
+    font-size: 12px;
+    background: #eee;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.log-entry {
+    margin-bottom: 4px;
+    padding-bottom: 4px;
+    border-bottom: 1px dotted #b4b4b4;
+}
+
+.log-entry-details {
+    color: #b4b4b4;
+    margin-right: 8px;
+}
+
+.log-entry-info {
+    color: black;
+}
+
+.log-entry-debug {
+    color: black;
+}
+
+.log-entry-warn {
+    color: #ff9100;
+}
+
+.log-entry-error {
+    color: red;
+}
+
+#run-button {
+    position: absolute;
+    top: -2px;
+    left: 24px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    z-index: 200000;
+    cursor: pointer;
+    background-color: #82CA6D;
+    background-image: url("../img/run-icon.svg");
+    background-size: 16px 16px;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+#run-button:hover {
+    background-color: #64a151;
+}
+
+#run-button:active {
+    top: -1px;
+    left: 25px;
+}
+
+.ace_gutter-cell {
+    opacity: 0.3 !important;
+}
