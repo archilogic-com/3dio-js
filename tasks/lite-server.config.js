@@ -11,5 +11,5 @@ module.exports = {
     middleware: { 1: null }
   },
   scrollRestoreTechnique: 'cookie',
-  reloadDebounce: 10
+  reloadDebounce: 100
 }
