@@ -1,13 +1,17 @@
+// detect environment
 var isNode = !!(
   // detect node environment
   typeof module !== 'undefined'
   && module.exports
   && typeof process !== 'undefined'
   && Object.prototype.toString.call(process) === '[object process]'
-  && process.title.indexOf('node') !== -1
 )
 var isBrowser = !isNode && typeof window !== 'undefined' && Object.prototype.toString.call(window) === '[object Window]'
+// detect whether webgl is available
 var webGlInfo = getWebGlInfo()
+// detect whether aframe or webgl libs are avilable
+var aFrameReady = !!(isBrowser && window.AFRAME)
+var threeReady = !!(isBrowser && window.THREE)
 
 // create runtime object
 
@@ -19,7 +23,9 @@ var runtime = {
   isBrowser: isBrowser,
 
   has: {
-    webGl: !!webGlInfo
+    webGl: !!webGlInfo,
+    aFrame: aFrameReady,
+    three: threeReady
   },
 
   webGl: webGlInfo
