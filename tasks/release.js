@@ -10,19 +10,31 @@ const UglifyJS = require('uglify-js')
 const packageInfo = require('../package.json')
 const preamble = require('./preamble.js')
 
-var version = packageInfo.version
-
 // configs
-const src = 'build'
-const dest = 'dist'
 
-const AWS = {
+const src = 'build'
+const dest = 'release'
+const version = packageInfo.version
+const awsConfig = {
   bucket: '3d.io',
-  dir: `releases/${version}/`,
   region: 'eu-west-1',
   key: process.env.AWS_ACCESS_KEY_ID,
   secret: process.env.AWS_SECRET_ACCESS_KEY
 }
+const awsDir = {
+  version: `releases/3dio-js/${version}/`,
+  latestMinor: `releases/3dio-js/${getLatestMinor(version)}/`,
+  latestPatch: `releases/3dio-js/${getLatestPatch(version)}/`
+}
+
+// tasks
+
+const release = gulp.series(
+  require('./build'),
+  cleanDistDir,
+  uglify,
+  uploadCompressed
+)
 
 function cleanDistDir () {
   return del([dest]).then(function () {
@@ -59,18 +71,39 @@ function uglify () {
   }))
 }
 
-function publishCompressed () {
-  return gulp.src(`${dest}/${version}/**/**`)
+function uploadCompressed () {
+  const task = gulp.src(`${dest}/${version}/**/**`)
     .pipe(gzip({
       append: false, // do not append .gz extension
       threshold: false, // no file size treshold because all files will have gzip headers
       gzipOptions: {level: 9}
     }))
-    .pipe(s3(AWS, {
-      headers: {'Content-Encoding': 'gzip'},
-      uploadPath: AWS.dir,
+    .pipe(s3(awsConfig, {
+      uploadPath: awsDir.version,
+      headers: {
+        'Content-Encoding': 'gzip',
+        'Cache-Control': 'max-age=' + (60*60*24*365) // 1 year
+      },
       failOnError: true
     }))
+    .pipe(s3(awsConfig, {
+      uploadPath: awsDir.latestMinor,
+      headers: {
+        'Content-Encoding': 'gzip',
+        'Cache-Control': 'max-age=' + (60*60) // 1 hour
+      },
+      failOnError: true
+    }))
+    .pipe(s3(awsConfig, {
+      uploadPath: awsDir.latestPatch,
+      headers: {
+        'Content-Encoding': 'gzip',
+        'Cache-Control': 'max-age=' + (60*60) // 1 hour
+      },
+      failOnError: true
+    }))
+
+  return task
 }
 
 // helpers
@@ -79,11 +112,27 @@ function read (path) {
   return fs.readFileSync(path, `utf8`)
 }
 
+function getLatestMinor (version) {
+  return `${version.split('.')[0]}.x.x${getAppendix(version)}`
+}
+
+function getLatestPatch (version) {
+  const parts = version.split('.')
+  return `${parts[0]}.${parts[1]}.x${getAppendix(version)}`
+}
+
+function getAppendix (version) {
+  let appendix = ''
+  if (version.indexOf('-alpha') > -1) {
+    appendix = '-alpha'
+  } else if (version.indexOf('-beta') > -1) {
+    appendix = '-beta'
+  } else if (version.split('-')[1]) {
+    appendix = version.split('-').slice(1).join('-')
+  }
+  return appendix
+}
+
 // export
 
-module.exports = gulp.series(
-  require('./build'),
-  cleanDistDir,
-  uglify,
-  publishCompressed
-)
+module.exports = release

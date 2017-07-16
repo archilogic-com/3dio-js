@@ -28,6 +28,7 @@
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
+    "chalk": "^2.0.1",
     "del": "^3.0.0",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-better-rollup": "^1.1.1",

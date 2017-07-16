@@ -10,7 +10,7 @@ Logger.useDefaults()
 
 var isBrowser = typeof window !== 'undefined' && Object.prototype.toString.call(window) === '[object Window]'
 if (isBrowser) {
-  console.log(name+' v'+version+'\n'+homepage)
+  console.log(name+' v'+version+'\n'+homepage+'\nbranch: '+GIT_BRANCH+'\ncommit: '+GIT_COMMIT)
 }
 
 // global dependencies

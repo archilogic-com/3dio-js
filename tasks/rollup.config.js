@@ -1,7 +1,11 @@
 import json from 'rollup-plugin-json'
 import commonjs from 'rollup-plugin-commonjs'
 import resolve from 'rollup-plugin-node-resolve'
+const execSync = require('child_process').execSync
 const preamble = require('./preamble.js')
+
+const gitBranchName = process.env.TRAVIS_BRANCH || execSync(`git rev-parse --abbrev-ref HEAD`).toString('utf8').replace('\n', '')
+const gitCommitSha1 = execSync(`git rev-parse HEAD`).toString('utf8').replace('\n', '')
 
 // Source: https://github.com/mrdoob/three.js/blob/86424d9b318f617254eb857b31be07502ea27ce9/rollup.config.js
 function glsl() {
@@ -53,6 +57,7 @@ export default {
     {
       format: 'umd',
       banner: preamble,
+      intro: `var GIT_BRANCH = '${gitBranchName}', GIT_COMMIT = '${gitCommitSha1}'`,
       moduleName: 'IO3D', // and global object name in browser environment
       globals: {
         THREE: 'THREE'
