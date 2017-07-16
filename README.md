@@ -13,7 +13,7 @@ https://3d.io
 <html>
 <head>
   <script src="https://aframe.io/releases/0.6.0/aframe.min.js"></script>
-  <script src="https://3d.io/releases/3dio-js/1.0.0-beta.2/3dio.min.js"></script>
+  <script src="https://3d.io/libs/3dio-js/1.0.0-beta.2/3dio.min.js"></script>
 </head>
 <body>
 <a-scene>
@@ -38,5 +38,5 @@ https://3d.io/docs/1/index.html
 
 ## Distribution
 
-* browser: `<script src="https://3d.io/releases/3dio-js/1.0.0-beta.2/3dio.min.js"></script>`
+* browser: `<script src="https://3d.io/libs/3dio-js/1.0.0-beta.2/3dio.min.js"></script>`
 * node: `npm install 3dio --save`
