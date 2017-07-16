@@ -6,7 +6,7 @@ var isNode = !!(
   && Object.prototype.toString.call(process) === '[object process]'
   && process.title.indexOf('node') !== -1
 )
-var isBrowser = !isNode && typeof window !== 'undefined'
+var isBrowser = !isNode && typeof window !== 'undefined' && Object.prototype.toString.call(window) === '[object Window]'
 var webGlInfo = getWebGlInfo()
 
 // create runtime object
