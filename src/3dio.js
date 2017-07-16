@@ -3,19 +3,21 @@ import aFrame from './aframe.js'
 import furniture from './furniture.js'
 // import scene from './scene.js'
 import storage from './storage.js'
+import user from './user.js'
 
 var IO3D = {
 
   // products
-
   aFrame: aFrame,
   furniture: furniture,
-  // scene: scene,
   storage: storage,
 
-  // others
+  // non-products
+  user: user,
 
-  runtime: core.runtime
+  // app specific
+  runtime: core.runtime,
+  configs: core.configs
 
 }
 

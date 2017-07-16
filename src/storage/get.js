@@ -1,14 +1,15 @@
 import runtime from '../core/runtime.js'
+import configs from '../core/configs.js'
 import loadData3d from '../utils/data3d/load.js'
 
 // constants
 
-var CDN_DOMAIN = 'dnvf9esa6v418.cloudfront.net'
-var BUCKET = 'archilogic-content-beta'
+var CDN_DOMAIN = configs.storageDomain
+var BUCKET = configs.storageBucket
 
 // main
 
-export default function getFromStore (key, options) {
+export default function getFromStorage (key, options) {
 
   // WIP: for now, assume that this is only being used for data3d
   // TODO: use options.type or filename extension to specify loader

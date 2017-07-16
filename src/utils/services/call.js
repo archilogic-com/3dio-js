@@ -1,11 +1,12 @@
 import Promise from 'bluebird'
 import runtime from '../../core/runtime.js'
+import configs from '../../core/configs.js'
 import fetch from '../../utils/io/fetch.js'
 import JsonRpc2Client from './json-rpc2-client.js'
 // import cache from './common/promise-cache.js'
 
 // configs
-var DEFAULT_API_URL = 'https://spaces.archilogic.com/api/v2'
+var DEFAULT_API_URL = configs.servicesUrl
 
 // internals
 var rpcClient = new JsonRpc2Client()
@@ -80,7 +81,8 @@ function sendHttpRequest (rpcRequest) {
   fetch(DEFAULT_API_URL, {
     body: JSON.stringify(rpcRequest.message),
     method: 'POST',
-    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}
+    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+    credentials: 'include'
   }).then(function (response) {
     return response.json()
   }).then(function (data) {
