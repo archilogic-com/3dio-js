@@ -1,8 +1,8 @@
 {
   "name": "3dio",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "description": "toolkit for interior apps",
-  "homepage": "http://3d.io",
+  "homepage": "https://3d.io",
   "repository": "archilogic-com/3dio-js",
   "license": "MIT",
   "author": {
@@ -12,11 +12,11 @@
   },
   "main": "build/3dio.js",
   "scripts": {
-    "dev": "npm install || true \n killall node || true \n gulp dev",
-    "node-example": "gulp node-example",
+    "dev-browser": "npm install || true \n killall node || true \n gulp dev-browser",
+    "dev-node": "npm install || true \n gulp dev-node",
+    "test": "gulp test",
     "build": "gulp build",
-    "dist": "gulp dist",
-    "test": "gulp test"
+    "release": "gulp release"
   },
   "dependencies": {
     "bluebird": "^3.5.0",
@@ -37,6 +37,7 @@
     "gulp-s3": "^0.11.0",
     "gulp-sourcemaps": "^2.6.0",
     "lite-server": "^2.3.0",
+    "moment": "^2.18.1",
     "rollup": "^0.41.6",
     "rollup-plugin-commonjs": "^8.0.2",
     "rollup-plugin-json": "^2.1.1",

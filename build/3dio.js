@@ -1,9 +1,12 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.2
+ * @version 1.0.0-beta.3
+ * @date 2017/07/16 11:55
+ * @branch master
+ * @commit 0a3e75ae1341fc2c62262d498feddea32a820234
  * @description toolkit for interior apps
- * @see http://3d.io
+ * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
  * @author archilogic <dev.rocks@archilogic.com> (https://archilogic.com)
  * @license MIT
@@ -15,7 +18,7 @@
 	(global.IO3D = factory());
 }(this, (function () { 'use strict';
 
-	var GIT_BRANCH = 'HEAD', GIT_COMMIT = 'c134e4650ad886860580f185aef9a272544b82b9'
+	var BUILD_DATE='2017/07/16 11:55', GIT_BRANCH = 'master', GIT_COMMIT = '0a3e75ae1341fc2c62262d498feddea32a820234'
 
 	var isNode = !!(
 	  // detect node environment
@@ -5924,10 +5927,9 @@
 	  })();
 	}
 
-	var name = "3dio";
-	var version = "1.0.0-beta.2";
+	var version = "1.0.0-beta.3";
 
-	var homepage = "http://3d.io";
+	var homepage = "https://3d.io";
 
 	var logger = createCommonjsModule(function (module) {
 	/*!
@@ -6193,20 +6195,14 @@
 	logger.useDefaults();
 
 	// print header to console in browser environment
-
-	var isBrowser$1 = typeof window !== 'undefined' && Object.prototype.toString.call(window) === '[object Window]';
-	if (isBrowser$1) {
-	  console.log(name+' v'+version+'\n'+homepage+'\nbranch: '+GIT_BRANCH+'\ncommit: '+GIT_COMMIT);
+	if (runtime.isBrowser) {
+	  console.log(homepage+' - v'+version+' - build: '+BUILD_DATE+' branch: '+GIT_BRANCH+' commit: '+GIT_COMMIT.substr(0,8) );
 	}
 
 	// global dependencies
 
 	// three.js
-	if (runtime.isNode) {
-	  global.THREE = require('three');
-	} else if (typeof THREE === 'undefined') {
-	  throw new Error('Base query requires THREE.js library. Please add <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/85/three.min.js"></script> to your html file at top of <head> section.')
-	}
+	if (runtime.isNode) global.THREE = require('three');
 
 	// default configs values
 
@@ -14316,10 +14312,17 @@
 
 	// export
 
+	// TODO: check if threejs or aframe is available
+	//if (runtime.isNode) {
+	//  global.THREE = require('three')
+	//} else if (typeof THREE === 'undefined') {
+	//  throw new Error('Base query requires THREE.js library. Please add <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/85/three.min.js"></script> to your html file at top of <head> section.')
+	//}
+
 	var aframe = {
 	  registerComponents: registerComponents,
 	  three: {
-	    Data3dView: Data3dView,
+	    Datas3dView: Data3dView,
 	  },
 	  ui: {
 	    createFileDrop: createFileDrop
