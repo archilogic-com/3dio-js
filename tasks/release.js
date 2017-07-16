@@ -55,7 +55,7 @@ function uglify () {
     const ugly = UglifyJS.minify(inputFile.contents.toString(enc), {
       warnings: true, mangle: true, ie8: false,
       compress: {dead_code: true, toplevel: true, passes: 3},
-      output: {preamble: preamble, beautify: false},
+      output: {preamble: preamble.text, beautify: false},
       sourceMap: {
         content: read(`${src}/${sourceBasename}.js.map`),
         url: `${targetBasename}.min.js.map`
