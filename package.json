@@ -1,6 +1,6 @@
 {
   "name": "3dio",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "toolkit for interior apps",
   "homepage": "https://3d.io",
   "repository": "archilogic-com/3dio-js",
@@ -10,7 +10,7 @@
     "email": "dev.rocks@archilogic.com",
     "url": "https://archilogic.com"
   },
-  "main": "build/3dio.js",
+  "main": "index.js",
   "scripts": {
     "dev-browser": "npm install || true \n killall node || true \n gulp dev-browser",
     "dev-node": "npm install || true \n gulp dev-node",
