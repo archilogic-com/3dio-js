@@ -6,6 +6,7 @@ import configs from './core/configs.js'
 import aFrame from './aframe.js'
 import furniture from './furniture.js'
 // import scene from './scene.js'
+import utils from './utils.js'
 import storage from './storage.js'
 import user from './user.js'
 
@@ -21,7 +22,9 @@ var IO3D = {
 
   // app specific
   runtime: runtime,
-  configs: configs
+  configs: configs,
+
+  utils: utils
 
 }
 
