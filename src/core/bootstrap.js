@@ -8,7 +8,7 @@ Logger.useDefaults()
 
 // print header to console in browser environment
 if (runtime.isBrowser) {
-  console.log(homepage+' - v'+version+' - build: '+BUILD_DATE+' branch: '+GIT_BRANCH+' commit: '+GIT_COMMIT.substr(0,8) )
+  console.log(homepage+' '+version+' (@'+GIT_BRANCH+' #'+GIT_COMMIT.substr(0,7)+' '+BUILD_DATE+')' )
 }
 
 // global dependencies
