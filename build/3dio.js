@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.3
- * @date 2017/07/16 11:55
+ * @version 1.0.0-beta.5
+ * @date 2017/07/17 08:17
  * @branch master
- * @commit 0a3e75ae1341fc2c62262d498feddea32a820234
+ * @commit e0c850cd3b7c9834ab90f9f3e229e0c92d2af75f
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,18 +18,22 @@
 	(global.IO3D = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/07/16 11:55', GIT_BRANCH = 'master', GIT_COMMIT = '0a3e75ae1341fc2c62262d498feddea32a820234'
+	var BUILD_DATE='2017/07/17 08:17', GIT_BRANCH = 'master', GIT_COMMIT = 'e0c850cd3b7c9834ab90f9f3e229e0c92d2af75f'
 
+	// detect environment
 	var isNode = !!(
 	  // detect node environment
 	  typeof module !== 'undefined'
 	  && module.exports
 	  && typeof process !== 'undefined'
 	  && Object.prototype.toString.call(process) === '[object process]'
-	  && process.title.indexOf('node') !== -1
 	);
 	var isBrowser = !isNode && typeof window !== 'undefined' && Object.prototype.toString.call(window) === '[object Window]';
+	// detect whether webgl is available
 	var webGlInfo = getWebGlInfo();
+	// detect whether aframe or webgl libs are avilable
+	var aFrameReady = !!(isBrowser && window.AFRAME);
+	var threeReady = !!(isBrowser && window.THREE);
 
 	// create runtime object
 
@@ -41,7 +45,9 @@
 	  isBrowser: isBrowser,
 
 	  has: {
-	    webGl: !!webGlInfo
+	    webGl: !!webGlInfo,
+	    aFrame: aFrameReady,
+	    three: threeReady
 	  },
 
 	  webGl: webGlInfo
@@ -5927,7 +5933,7 @@
 	  })();
 	}
 
-	var version = "1.0.0-beta.3";
+	var version = "1.0.0-beta.5";
 
 	var homepage = "https://3d.io";
 
@@ -6196,7 +6202,7 @@
 
 	// print header to console in browser environment
 	if (runtime.isBrowser) {
-	  console.log(homepage+' - v'+version+' - build: '+BUILD_DATE+' branch: '+GIT_BRANCH+' commit: '+GIT_COMMIT.substr(0,8) );
+	  console.log(homepage+' '+version+' (@'+GIT_BRANCH+' #'+GIT_COMMIT.substr(0,7)+' '+BUILD_DATE+')' );
 	}
 
 	// global dependencies
@@ -6281,10 +6287,33 @@
 
 	configs(JSON.parse(JSON.stringify(defaults)));
 
-	var core = {
-	  runtime: runtime,
-	  configs:  configs
-	};
+	function checkDependencies (args, target) {
+
+	  if (args.three && !runtime.has.three) {
+	    return handleError(args.onError, target, 'Sorry: THREE not available.')
+	  } else if (args.aFrame && !runtime.has.aFrame) {
+	    return handleError(args.onError, target, 'Sorry: AFRAME not available.')
+	  } else {
+	    return typeof target === 'function' ? target() : target
+	  }
+
+	}
+
+	// helper
+
+	function handleError (errorCallback, target, message) {
+	  // call errorCallback if provided
+	  if (errorCallback) errorCallback(message);
+	  // based on target type...
+	  if (typeof target === 'function') {
+	    // return a function throwing an error to handle runtime access
+	    return function onError () {
+	      throw new Error(message)
+	    }
+	  } else {
+	    return false
+	  }
+	}
 
 	function sendBasicRequest (url, method, type, body){
 	  return new Promise(function (resolve, reject) {
@@ -7474,536 +7503,565 @@
 
 	// class
 
-	function Wireframe () {
+	var Wireframe = checkDependencies({
+	  three: true,
+	  aframe: false
+	}, function makeData3dView () {
 
-	  // internals
-	  this._wireframeGeometry = new THREE.BufferGeometry();
-	  this._wireframeGeometry.addAttribute( 'position', new THREE.BufferAttribute( new Float32Array(0), 3 ) );
-	  this._wireframeMaterial = new THREE.LineBasicMaterial();
+	  function Wireframe () {
 
-	  this._positions = null;
-	  this._buffer = null;
-	  this._thresholdAngle = 10;
-	  this._thickness = 1;
-	  this._color = [0,0,0];
-	  this._opacity = 1;
+	    // internals
+	    this._wireframeGeometry = new THREE.BufferGeometry();
+	    this._wireframeGeometry.addAttribute( 'position', new THREE.BufferAttribute( new Float32Array(0), 3 ) );
+	    this._wireframeMaterial = new THREE.LineBasicMaterial();
 
-	  // init
-	  THREE.Line.call( this, this._wireframeGeometry, this._wireframeMaterial, THREE.LinePieces );
+	    this._positions = null;
+	    this._buffer = null;
+	    this._thresholdAngle = 10;
+	    this._thickness = 1;
+	    this._color = [0,0,0];
+	    this._opacity = 1;
 
-	}
-
-	// inherit from THREE Line prototype
-
-	Wireframe.prototype = Object.create( THREE.Line.prototype );
-	Wireframe.prototype.constructor = Wireframe;
-
-	// extend with own methods
-
-	Wireframe.prototype.update = function (options) {
-
-	  // API
-	  var positions = options.positions;
-	  //var normals = options.normals
-	  var thresholdAngle = options.thresholdAngle === undefined ? this._thresholdAngle : options.thresholdAngle;
-	  var thickness = options.thickness === undefined ? this._thickness : options.thickness;
-	  var color = options.color === undefined ? this._color : options.color;
-	  var opacity = options.opacity === undefined ? this._opacity : options.opacity;
-
-
-	  if (thickness === 0) {
-
-	    this.visible = false;
-
-	  } else {
-	    
-	    // take care of line buffer
-	    var regenerateBuffer = (!this._buffer || thresholdAngle !== this._thresholdAngle || !compareArrays(this._positions, positions));
-	    if (regenerateBuffer) {
-
-	      // generate new buffer from positions
-	      //var newBuffer = generateWireframeBuffer( positions, thresholdAngle )
-	      var newBuffer = new Float32Array(27);
-	      if (newBuffer.length) {
-	        this._wireframeGeometry.attributes.position.array = newBuffer;
-	        this._wireframeGeometry.attributes.position.needsUpdate = true;
-	        this.visible = true;
-	      } else {
-	        this.visible = false;
-	      }
-	      // remember settings
-	      this._buffer = newBuffer;
-	      this._positions = positions;
-	      this._thresholdAngle = thresholdAngle;
-
-	    } else if (this._thickness === 0) {
-
-	      // was hidden
-	      this.visible = true;
-
-	    }
-
-	    // update material
-	    this._wireframeMaterial.color.r = color[ 0 ];
-	    this._wireframeMaterial.color.g = color[ 1 ];
-	    this._wireframeMaterial.color.b = color[ 2 ];
-	    this._wireframeMaterial.opacity = opacity;
-	    this._wireframeMaterial.linewidth = thickness;
-	    // remember settings
-	    this._color = color;
-	    this._opacity = opacity;
+	    // init
+	    THREE.Line.call( this, this._wireframeGeometry, this._wireframeMaterial, THREE.LinePieces );
 
 	  }
 
-	  this._thickness = thickness;
+	// inherit from THREE Line prototype
 
-	};
+	  Wireframe.prototype = Object.create( THREE.Line.prototype );
+	  Wireframe.prototype.constructor = Wireframe;
 
-	Wireframe.prototype.destroy = function () {
+	// extend with own methods
 
-	  this._wireframeGeometry = null;
-	  this._wireframeMaterial = null;
+	  Wireframe.prototype.update = function (options) {
 
-	  this._positions = null;
-	  this._buffer = null;
-	  this._thresholdAngle = null;
-	  this._thickness = null;
-	  this._color = null;
-	  this._opacity = null;
+	    // API
+	    var positions = options.positions;
+	    //var normals = options.normals
+	    var thresholdAngle = options.thresholdAngle === undefined ? this._thresholdAngle : options.thresholdAngle;
+	    var thickness = options.thickness === undefined ? this._thickness : options.thickness;
+	    var color = options.color === undefined ? this._color : options.color;
+	    var opacity = options.opacity === undefined ? this._opacity : options.opacity;
 
-	};
+
+	    if (thickness === 0) {
+
+	      this.visible = false;
+
+	    } else {
+
+	      // take care of line buffer
+	      var regenerateBuffer = (!this._buffer || thresholdAngle !== this._thresholdAngle || !compareArrays(this._positions, positions));
+	      if (regenerateBuffer) {
+
+	        // generate new buffer from positions
+	        //var newBuffer = generateWireframeBuffer( positions, thresholdAngle )
+	        var newBuffer = new Float32Array(27);
+	        if (newBuffer.length) {
+	          this._wireframeGeometry.attributes.position.array = newBuffer;
+	          this._wireframeGeometry.attributes.position.needsUpdate = true;
+	          this.visible = true;
+	        } else {
+	          this.visible = false;
+	        }
+	        // remember settings
+	        this._buffer = newBuffer;
+	        this._positions = positions;
+	        this._thresholdAngle = thresholdAngle;
+
+	      } else if (this._thickness === 0) {
+
+	        // was hidden
+	        this.visible = true;
+
+	      }
+
+	      // update material
+	      this._wireframeMaterial.color.r = color[ 0 ];
+	      this._wireframeMaterial.color.g = color[ 1 ];
+	      this._wireframeMaterial.color.b = color[ 2 ];
+	      this._wireframeMaterial.opacity = opacity;
+	      this._wireframeMaterial.linewidth = thickness;
+	      // remember settings
+	      this._color = color;
+	      this._opacity = opacity;
+
+	    }
+
+	    this._thickness = thickness;
+
+	  };
+
+	  Wireframe.prototype.destroy = function () {
+
+	    this._wireframeGeometry = null;
+	    this._wireframeMaterial = null;
+
+	    this._positions = null;
+	    this._buffer = null;
+	    this._thresholdAngle = null;
+	    this._thickness = null;
+	    this._color = null;
+	    this._opacity = null;
+
+	  };
+
+	  return Wireframe
+
+	});
 
 	var fragmentShader = "uniform vec3 diffuse;\r\nuniform vec3 emissive;\r\nuniform vec3 specular;\r\nuniform float shininess;\r\nuniform float opacity;\r\n\r\n#include <common>\r\n#include <packing>\r\n#include <uv_pars_fragment>\r\n#include <uv2_pars_fragment>\r\n#include <map_pars_fragment>\r\n#include <alphamap_pars_fragment>\r\n\r\n// Replaces <lightmap_pars_fragment>;\r\n\r\n#ifdef USE_LIGHTMAP\r\n\tuniform sampler2D lightMap;\r\n\tuniform float lightMapIntensity;\r\n\tuniform float lightMapCenter;\r\n\tuniform float lightMapFalloff;\r\n#endif\r\n\r\n#include <normalmap_pars_fragment>\r\n#include <specularmap_pars_fragment>\r\n\r\n#include <bsdfs>\r\n#include <lights_pars>\r\n#include <lights_phong_pars_fragment>\r\n#include <shadowmap_pars_fragment>\r\n\r\n\r\nvoid main() {\r\n\r\n    vec4 diffuseColor = vec4( diffuse, opacity );\r\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\r\n\r\n    vec3 totalEmissiveRadiance = emissive;\r\n\r\n    #include <map_fragment>\r\n    #include <alphamap_fragment>\r\n    #include <alphatest_fragment>\r\n    #include <specularmap_fragment>\r\n    #include <normal_flip>\r\n    #include <normal_fragment>\r\n\r\n    // accumulation\r\n    #include <lights_phong_fragment>\r\n\r\n    // Start of <light-template> replace block\r\n    GeometricContext geometry;\r\n\r\n    geometry.position = - vViewPosition;\r\n    geometry.normal = normal;\r\n    geometry.viewDir = normalize( vViewPosition );\r\n\r\n    IncidentLight directLight;\r\n\r\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        PointLight pointLight;\r\n\r\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\r\n\r\n            pointLight = pointLights[ i ];\r\n\r\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        SpotLight spotLight;\r\n\r\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\r\n\r\n            spotLight = spotLights[ i ];\r\n\r\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        DirectionalLight directionalLight;\r\n\r\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\r\n\r\n            directionalLight = directionalLights[ i ];\r\n\r\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\r\n\r\n        RectAreaLight rectAreaLight;\r\n\r\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\r\n\r\n            rectAreaLight = rectAreaLights[ i ];\r\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if defined( RE_IndirectDiffuse )\r\n\r\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\r\n\r\n        #ifdef USE_LIGHTMAP\r\n\r\n            // compute the light value\r\n            vec3 unit = vec3(1.0);\r\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapCenter * unit);\r\n            // compute the light intensity modifier\r\n            vec3 modifier = -lightMapFalloff * light * light + unit;\r\n            // apply light\r\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\r\n\r\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\r\n\r\n                lightMapIrradiance *= PI; // factor of PI should not be present; included here to prevent breakage\r\n\r\n            #endif\r\n\r\n            irradiance += lightMapIrradiance;\r\n\r\n        #endif\r\n\r\n        #if ( NUM_HEMI_LIGHTS > 0 )\r\n\r\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\r\n\r\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\r\n\r\n            }\r\n\r\n        #endif\r\n\r\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\r\n\r\n    #endif\r\n    // End of <light-template> replace block\r\n\r\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\r\n\r\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\r\n\r\n}";
 
 	var vertexShader = "varying vec3 vViewPosition;\r\n\r\n#ifndef FLAT_SHADED\r\n\tvarying vec3 vNormal;\r\n#endif\r\n\r\n#include <uv_pars_vertex>\r\n#include <uv2_pars_vertex>\r\n#include <shadowmap_pars_vertex>\r\n\r\nvoid main()\r\n{\r\n//  vUv = uv;\r\n  #include <uv_vertex>\r\n  #include <uv2_vertex>\r\n\r\n  #include <beginnormal_vertex>\r\n  #include <defaultnormal_vertex>\r\n\r\n  #ifndef FLAT_SHADED\r\n    // Normal computed with derivatives when FLAT_SHADED\r\n  \tvNormal = normalize( transformedNormal );\r\n  #endif\r\n\r\n  #include <begin_vertex>\r\n  #include <project_vertex>\r\n\r\n  vViewPosition = - mvPosition.xyz;\r\n\r\n  #include <worldpos_vertex>\r\n  #include <shadowmap_vertex>\r\n\r\n}";
 
-	function BaseMaterial( params ) {
-	  THREE.ShaderMaterial.call( this, params );
+	var BaseMaterial = checkDependencies ({
+	  three: true,
+	  aframe: false
+	}, function makeBaseMaterial () {
 
-	  var params = params || {};
-	  this.lightMapCenter = params.lightMapCenter || 0.5;
-	  this.lightMapFalloff = params.lightMapFalloff || 0.5;
+	  function BaseMaterial( params ) {
+	    THREE.ShaderMaterial.call( this, params );
 
-	  this.uniforms = THREE.UniformsUtils.merge( [
-	    THREE.UniformsLib[ "lights" ],
-	    THREE.UniformsLib[ "shadowmap" ],
-	    { diffuse: { value: params.diffuse || new THREE.Color(1.0, 1.0, 1.0) },
-	      map: { value: params.map || null },
-	      specularMap: { value: params.specularMap || null },
-	      alphaMap: { value: params.alphaMap || null },
-	      lightMap: { value: params.lightMap || null },
-	      lightMapIntensity: { value: params.lightMapIntensity || 1.0 },
-	      lightMapFalloff: { value: params.lightMapCenter || 0.5 },
-	      lightMapCenter: { value: params.lightMapCenter || 0.5 },
-	      normalMap: { value: params.normalMap || null },
-	      shininess: { value: params.shininess || 1.0 },
-	      specular: { value: params.specular || new THREE.Color(0.25, 0.25, 0.25) },
-	      emissive: { value: params.emissive || new THREE.Color(0.0, 0.0, 0.0) },
-	      opacity: { value: params.opacity || 1 },
-	      offsetRepeat: { value: params.offsetRepeat || new THREE.Vector4( 0, 0, 1, 1) }
-	    }
-	  ]);
+	    var params = params || {};
+	    this.lightMapCenter = params.lightMapCenter || 0.5;
+	    this.lightMapFalloff = params.lightMapFalloff || 0.5;
 
-	  this.vertexShader = vertexShader;
-	  this.fragmentShader = fragmentShader;
-	  this.lights = true;
-	}
+	    this.uniforms = THREE.UniformsUtils.merge( [
+	      THREE.UniformsLib[ "lights" ],
+	      THREE.UniformsLib[ "shadowmap" ],
+	      { diffuse: { value: params.diffuse || new THREE.Color(1.0, 1.0, 1.0) },
+	        map: { value: params.map || null },
+	        specularMap: { value: params.specularMap || null },
+	        alphaMap: { value: params.alphaMap || null },
+	        lightMap: { value: params.lightMap || null },
+	        lightMapIntensity: { value: params.lightMapIntensity || 1.0 },
+	        lightMapFalloff: { value: params.lightMapCenter || 0.5 },
+	        lightMapCenter: { value: params.lightMapCenter || 0.5 },
+	        normalMap: { value: params.normalMap || null },
+	        shininess: { value: params.shininess || 1.0 },
+	        specular: { value: params.specular || new THREE.Color(0.25, 0.25, 0.25) },
+	        emissive: { value: params.emissive || new THREE.Color(0.0, 0.0, 0.0) },
+	        opacity: { value: params.opacity || 1 },
+	        offsetRepeat: { value: params.offsetRepeat || new THREE.Vector4( 0, 0, 1, 1) }
+	      }
+	    ]);
 
-	BaseMaterial.prototype = Object.create(THREE.ShaderMaterial.prototype);
-	BaseMaterial.prototype.constructor = BaseMaterial;
+	    this.vertexShader = vertexShader;
+	    this.fragmentShader = fragmentShader;
+	    this.lights = true;
+	  }
+
+	  BaseMaterial.prototype = Object.create(THREE.ShaderMaterial.prototype);
+	  BaseMaterial.prototype.constructor = BaseMaterial;
+
+	  return BaseMaterial
+
+	});
 
 	// constants
 
-	var WEBGL_SIDE = {
-	  front: 0,
-	  back: 1,
-	  both: 2
-	};
+	var Data3dView = checkDependencies({
+	  three: true,
+	  aframe: false
+	}, function makeData3dView () {
+	  
+	  var WEBGL_SIDE = {
+	    front: 0,
+	    back: 1,
+	    both: 2
+	  };
 
-	var DEG_TO_RAD = Math.PI / 180;
+	  var DEG_TO_RAD = Math.PI / 180;
+	  var RAD_TO_DEG = 180 / Math.PI;
+
 	// shared variables
 
-	var geometry3dCache = {};
+	  var geometry3dCache = {};
 
-	/**
-	 * @name three.Data3dView
-	 * @memberof three
-	 * @param options
-	 * @constructor
-	 */
+	  /**
+	   * @name three.Data3dView
+	   * @memberof three
+	   * @param options
+	   * @constructor
+	   */
 
-	function Data3dView (options) {
-
-	  // API
-	  this.threeParent = options.parent;
-
-	  // internals
-	  this.meshKeys = [];
-	  this.meshes = {};
-	  this.materialKeys = [];
-	  this.materials = {};
-	  this._meshes3d = {}; // three meshes indexed by meshId
-	  this._wireframes3d = {}; // wireframe  three meshes indexed by meshId
-	  this._materials3d = {}; // three materials indexed by meshId
-
-	}
-
-	Data3dView.prototype = {
-
-	  set: function (data3d, options) {
+	  function Data3dView (options) {
 
 	    // API
-	    options = options || {};
-	    var
-	      meshes = data3d.meshes || this.meshes,
-	      meshKeys = data3d.meshKeys,
-	      materials = data3d.materials || this.materials,
-	      materialKeys = data3d.materialKeys,
-	      loadingQueuePrefix = data3d.loadingQueuePrefix || options.loadingQueuePrefix,
-	      onFirstTextureSetLoaded = options.onFirstTextureSetLoaded;
+	    this.threeParent = options.parent;
 
 	    // internals
-	    var self = this, meshId, mesh, materialId, wireframe3d, positions, uvs, uvs2, scale,
-	      normals, mesh3d, geometry3d, material3d, position, rotRad, rotDeg, i, l;
-
-	    // output
-	    var promise;
-
-	    ///////////////// meshes
-
-	    if (meshes) {
-
-	      // generate IDs if not provided
-	      if (!meshKeys) {
-	        meshKeys = Object.keys(meshes);
-	      }
-
-	      for (i = 0, l = meshKeys.length; i < l; i++) {
-
-	        meshId = meshKeys[ i ];
-	        mesh = meshes[ meshId ];
-
-	        // internals
-	        materialId = mesh.material;
-	        positions = mesh.positions;
-	        uvs = mesh.uvs;
-	        uvs2 = mesh.uvsLightmap;
-	        normals = mesh.normals;
-	        position = mesh.position;
-	        rotRad = mesh.rotRad;
-	        rotDeg = mesh.rotDeg;
-	        scale = mesh.scale;
-
-	        // three.js materials
-	        if (!self._materials3d[ meshId ]) {
-	          // (one material pro mesh, because some of our mesh properties are material properties and it does not matter performance wise)
-	          //material3d = new THREE.MeshPhongMaterial({ opacity: 0.5, transparent: true})
-	          material3d = new BaseMaterial();
-	          material3d.name = materialId;
-	          if (!materials) {
-	            // there is no material properties. using default properties
-	            setMaterial({ material3d: material3d });
-	          }
-	          self._materials3d[ meshId ] = material3d;
-	        }
-
-	        // set face side (a mesh property in our data structure, but a material property in three.js data structure)
-	        self._materials3d[ meshId ].side = WEBGL_SIDE[ meshes[ meshId ].side ] || WEBGL_SIDE['front'];
-
-	        // create three.js meshes
-
-	        if (!self._meshes3d[ meshId ]) {
-
-	          // create geometry
-	          geometry3d = createOrReuseGeometry3d( mesh.cacheKey );
-	          // create mesh
-	          mesh3d = new THREE.Mesh(geometry3d, material3d);
-	          mesh3d.userData = self.userData;
-	          // add to parent
-	          self.threeParent.add(mesh3d);
-	          // remembers
-	          self._meshes3d[ meshId ] = mesh3d;
-
-	          // create a separate geometry object for wireframes
-	          wireframe3d = new Wireframe();
-	          // add to parent
-	          //self._meshes3d[ meshId ].add(wireframe3d)
-	          // remember
-	          self._wireframes3d[ meshId ] = wireframe3d;
-
-	        } else {
-
-	          mesh3d = self._meshes3d[ meshId ];
-	          geometry3d = mesh3d.geometry;
-
-	        }
-
-	        // apply scale
-	        if (scale) {
-	          mesh3d.scale.set( scale[0] , scale[1], scale[2] );
-	        }
-
-	        // apply position
-	        if (rotRad) {
-	          mesh3d.rotation.set( rotRad[0] , rotRad[1], rotRad[2] );
-	        } else if (rotDeg) {
-	          mesh3d.rotation.set( rotDeg[0] * DEG_TO_RAD, rotDeg[1] * DEG_TO_RAD, rotDeg[2] * DEG_TO_RAD );
-	        }
-
-	        // apply buffers if they are different than current buffers
-	        if (geometry3d.attributes.position === undefined) {
-	          geometry3d.attributes.position = new THREE.BufferAttribute(positions, 3);
-	//              geometry3d.addAttribute( 'position', new THREE.BufferAttribute(positions, 3) )
-	          // The bounding box of the scene may need to be updated
-	          if (this.vm && this.vm.viewport && this.vm.viewport.webglView)
-	            self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true;
-	        } else if (geometry3d.attributes.position.array !== positions ) {
-	          geometry3d.attributes.position.array = positions;
-	          geometry3d.attributes.position.needsUpdate = true;
-	          // Three.js needs this to update
-	          geometry3d.computeBoundingSphere();
-	          // The bounding box of the scene may need to be updated
-	          if (this.vm && this.vm.viewport && this.vm.viewport.webglView)
-	            self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true;
-	        }
-	        if (geometry3d.attributes.normal === undefined) {
-	          geometry3d.attributes.normal = new THREE.BufferAttribute(normals, 3);
-	//              geometry3d.addAttribute( 'normal', new THREE.BufferAttribute(normals, 3) )
-	        } else if (geometry3d.attributes.normal.array !== normals ) {
-	          geometry3d.attributes.normal.array = normals;
-	          geometry3d.attributes.normal.needsUpdate = true;
-	        }
-	        // geometry3d.attributesKeys = ['position', 'normal']
-	        // set uvs channel 1 (material)
-	        if (uvs) {
-	          if (geometry3d.attributes.uv === undefined) {
-	            geometry3d.attributes.uv = new THREE.BufferAttribute(uvs, 2);
-	          } else if (geometry3d.attributes.uv.array !== uvs ) {
-	            geometry3d.attributes.uv.array = uvs;
-	            geometry3d.attributes.uv.needsUpdate = true;
-	            // remove previous scale settings
-	            delete geometry3d.attributes.uv._scaleU;
-	            delete geometry3d.attributes.uv._scaleV;
-	            delete geometry3d.attributes.uv._source;
-	          }
-	          // geometry3d.attributesKeys[ 2 ] = 'uv'
-	        } else if (geometry3d.attributes.uv) {
-	          delete geometry3d.attributes.uv;
-	        }
-	        if (uvs2) {
-	          if (geometry3d.attributes.uv2 === undefined) {
-	            geometry3d.attributes.uv2 = new THREE.BufferAttribute(uvs2, 2);
-	          } else if (geometry3d.attributes.uv2.array !== uvs2 ) {
-	            geometry3d.attributes.uv2.array = uvs2;
-	            geometry3d.attributes.uv2.needsUpdate = true;
-	          }
-	          // geometry3d.attributesKeys[ geometry3d.attributesKeys.length++ ] = 'uv2'
-	        } else if (geometry3d.attributes.uv2) {
-	          delete geometry3d.attributes.uv2;
-	        }
-
-	        // (2017/01/09) The WebGL buffer of the pickingColor attribute is erroneously deleted
-	        // by ThreeJS (r69) in deallocateGeometry(). ThreeJS doesn't seem to account for the fact
-	        // that the attribute is shared by multiple geometries. It then does not get recreated, because
-	        // this function was attempting to manually set BufferGeometry.attributesKeys, missing any
-	        // extra attributes such as pickingColor.
-	        geometry3d.attributesKeys = Object.keys(geometry3d.attributes);
-
-	        // update wireframe
-
-	        if (materials[ materialId ]) {
-	          self._wireframes3d[ meshId ].update({
-	            positions: positions,
-	            thickness: materials[ materialId ].wireframeThickness === undefined ? 0 : materials[ materialId ].wireframeThickness,
-	            thresholdAngle: materials[ materialId ].wireframeThresholdAngle,
-	            color: materials[ materialId ].wireframeColor,
-	            opacity: materials[ materialId ].wireframeOpacity
-	          });
-	        }
-
-	      }
-
-	      // remove obsolete three.js meshes
-	      var mesh, meshIds = Object.keys(self._meshes3d);
-	      meshIds.forEach(function(meshId, i){
-	        mesh = self._meshes3d[meshId];
-	        if (!meshes[ meshId ]) {
-	          // destroy wireframe geometry
-	          /*
-	          var wireframe3d = self._wireframes3d[ meshId ]
-	          if (wireframe3d.parent) {
-	            wireframe3d.parent.remove( wireframe3d )
-	            wireframe3d.geometry.dispose()
-	          }
-	          */
-	          // destroy geometry
-	          var geometry3d = self._meshes3d[ meshId ].geometry;
-	          disposeGeometry3dIfNotUsedElsewhere(self.meshes[ meshId ].cacheKey, geometry3d);
-	          // destroy threejs mesh
-	          var mesh3d = self._meshes3d[ meshId ];
-	          if (mesh3d.parent) {
-	            mesh3d.parent.remove( mesh3d );
-	          }
-	          // destroy material
-	          var material3d = self._materials3d[ meshId ];
-	          if (material3d.map) material3d.map.disposeIfPossible();
-	          if (material3d.specularMap) material3d.specularMap.disposeIfPossible();
-	          if (material3d.normalMap) material3d.normalMap.disposeIfPossible();
-	          if (material3d.alphaMap) material3d.alphaMap.disposeIfPossible();
-	          if (material3d.lightMap) material3d.lightMap.disposeIfPossible();
-	          material3d.dispose();
-	          // remove reference to destroyed 3d objects
-	          delete self._meshes3d[ meshId ];
-	          delete self._wireframes3d[ meshId ];
-	          delete self._materials3d[ meshId ];
-	        }
-	      });
-
-	      // update properties
-	      self.meshKeys = meshKeys;
-	      self.meshes = meshes;
-
-	    }
-
-	    ///////////////// materials
-
-	    if (materials) {
-
-	      var materialPromises = [], material;
-	      for (i = 0, l = self.meshKeys.length; i < l; i++) {
-	        meshId = self.meshKeys[ i ];
-	        materialId = self.meshes[ meshId ].material;
-
-	        // material attributes
-	        material = materials[ materialId ];
-	        if (material && Object.keys(material).length) {
-	          // set material
-	          materialPromises[ i ] = setMaterial({
-	            vm: self.vm,
-	            loadingQueuePrefix: loadingQueuePrefix,
-	            mesh3d: self._meshes3d[ meshId ],
-	            material3d: self._materials3d[ meshId ],
-	            attributes: materials[ materialId ],
-	            onFirstTextureSetLoaded: onFirstTextureSetLoaded
-	          });
-	        }
-
-	      }
-
-	      // output
-	      promise = Promise.all(materialPromises);
-
-	      // update properties
-	      self.materialKeys = materialKeys;
-	      self.materials = materials;
-
-	    }
-
-	    ///////////////// return
-
-	    if (!promise) {
-	      promise = Promise.resolve();
-	    }
-
-	    return promise.then(function(){
-	      if (self.isDestroyed) return
-	      //self.vm.viewport.render()
-	    })
-
-	  },
-
-	  hasMeshes: function hasMeshes() {
-	    return Object.keys(this._meshes3d).length > 0
-	  },
-
-	  setMeshes: function(meshes){
-	    this.set({
-	      meshes: meshes
-	    });
-	  },
-
-	  setMaterials: function(materials, options){
-	    this.set({
-	      materials: materials
-	    }, options);
-	  },
-
-	  reset: function(){
-
-	    this.set({
-	      meshes: {},
-	      materials: {}
-	    });
-
-	  },
-
-	  destroy: function(){
-
-	    this.isDestroyed = true;
-
-	    this.reset();
-
-	    this.vm = null;
-	    this.threeParent = null;
-	    this.userData = null;
-
-	    this.threeParent = null;
-
-	    // internals
-	    this.meshKeys = null;
-	    this.meshes = null;
-	    this.materialKeys = null;
-	    this.materials = null;
-	    this._meshes3d = null;
-	    this._materials3d = null;
+	    this.meshKeys = [];
+	    this.meshes = {};
+	    this.materialKeys = [];
+	    this.materials = {};
+	    this._meshes3d = {}; // three meshes indexed by meshId
+	    this._wireframes3d = {}; // wireframe  three meshes indexed by meshId
+	    this._materials3d = {}; // three materials indexed by meshId
 
 	  }
 
-	};
+	  Data3dView.prototype = {
+
+	    set: function (data3d, options) {
+
+	      // API
+	      options = options || {};
+	      var
+	        meshes = data3d.meshes || this.meshes,
+	        meshKeys = data3d.meshKeys,
+	        materials = data3d.materials || this.materials,
+	        materialKeys = data3d.materialKeys,
+	        loadingQueuePrefix = data3d.loadingQueuePrefix || options.loadingQueuePrefix,
+	        onFirstTextureSetLoaded = options.onFirstTextureSetLoaded;
+
+	      // internals
+	      var self = this, meshId, mesh, materialId, wireframe3d, positions, uvs, uvs2, scale,
+	        normals, mesh3d, geometry3d, material3d, position, rotRad, rotDeg, i, l;
+
+	      // output
+	      var promise;
+
+	      ///////////////// meshes
+
+	      if (meshes) {
+
+	        // generate IDs if not provided
+	        if (!meshKeys) {
+	          meshKeys = Object.keys(meshes);
+	        }
+
+	        for (i = 0, l = meshKeys.length; i < l; i++) {
+
+	          meshId = meshKeys[ i ];
+	          mesh = meshes[ meshId ];
+
+	          // internals
+	          materialId = mesh.material;
+	          positions = mesh.positions;
+	          uvs = mesh.uvs;
+	          uvs2 = mesh.uvsLightmap;
+	          normals = mesh.normals;
+	          position = mesh.position;
+	          rotRad = mesh.rotRad;
+	          rotDeg = mesh.rotDeg;
+	          scale = mesh.scale;
+
+	          // three.js materials
+	          if (!self._materials3d[ meshId ]) {
+	            // (one material pro mesh, because some of our mesh properties are material properties and it does not matter performance wise)
+	            //material3d = new THREE.MeshPhongMaterial({ opacity: 0.5, transparent: true})
+	            material3d = new BaseMaterial();
+	            material3d.name = materialId;
+	            if (!materials) {
+	              // there is no material properties. using default properties
+	              setMaterial({ material3d: material3d });
+	            }
+	            self._materials3d[ meshId ] = material3d;
+	          }
+
+	          // set face side (a mesh property in our data structure, but a material property in three.js data structure)
+	          self._materials3d[ meshId ].side = WEBGL_SIDE[ meshes[ meshId ].side ] || WEBGL_SIDE['front'];
+
+	          // create three.js meshes
+
+	          if (!self._meshes3d[ meshId ]) {
+
+	            // create geometry
+	            geometry3d = createOrReuseGeometry3d( mesh.cacheKey );
+	            // create mesh
+	            mesh3d = new THREE.Mesh(geometry3d, material3d);
+	            mesh3d.userData = self.userData;
+	            // add to parent
+	            self.threeParent.add(mesh3d);
+	            // remembers
+	            self._meshes3d[ meshId ] = mesh3d;
+
+	            // create a separate geometry object for wireframes
+	            wireframe3d = new Wireframe();
+	            // add to parent
+	            //self._meshes3d[ meshId ].add(wireframe3d)
+	            // remember
+	            self._wireframes3d[ meshId ] = wireframe3d;
+
+	          } else {
+
+	            mesh3d = self._meshes3d[ meshId ];
+	            geometry3d = mesh3d.geometry;
+
+	          }
+
+	          // apply scale
+	          if (scale) {
+	            mesh3d.scale.set( scale[0] , scale[1], scale[2] );
+	          }
+
+	          // apply position
+	          if (rotRad) {
+	            mesh3d.rotation.set( rotRad[0] , rotRad[1], rotRad[2] );
+	          } else if (rotDeg) {
+	            mesh3d.rotation.set( rotDeg[0] * DEG_TO_RAD, rotDeg[1] * DEG_TO_RAD, rotDeg[2] * DEG_TO_RAD );
+	          }
+
+	          // apply buffers if they are different than current buffers
+	          if (geometry3d.attributes.position === undefined) {
+	            geometry3d.attributes.position = new THREE.BufferAttribute(positions, 3);
+	//              geometry3d.addAttribute( 'position', new THREE.BufferAttribute(positions, 3) )
+	            // The bounding box of the scene may need to be updated
+	            if (this.vm && this.vm.viewport && this.vm.viewport.webglView)
+	              self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true;
+	          } else if (geometry3d.attributes.position.array !== positions ) {
+	            geometry3d.attributes.position.array = positions;
+	            geometry3d.attributes.position.needsUpdate = true;
+	            // Three.js needs this to update
+	            geometry3d.computeBoundingSphere();
+	            // The bounding box of the scene may need to be updated
+	            if (this.vm && this.vm.viewport && this.vm.viewport.webglView)
+	              self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true;
+	          }
+	          if (geometry3d.attributes.normal === undefined) {
+	            geometry3d.attributes.normal = new THREE.BufferAttribute(normals, 3);
+	//              geometry3d.addAttribute( 'normal', new THREE.BufferAttribute(normals, 3) )
+	          } else if (geometry3d.attributes.normal.array !== normals ) {
+	            geometry3d.attributes.normal.array = normals;
+	            geometry3d.attributes.normal.needsUpdate = true;
+	          }
+	          // geometry3d.attributesKeys = ['position', 'normal']
+	          // set uvs channel 1 (material)
+	          if (uvs) {
+	            if (geometry3d.attributes.uv === undefined) {
+	              geometry3d.attributes.uv = new THREE.BufferAttribute(uvs, 2);
+	            } else if (geometry3d.attributes.uv.array !== uvs ) {
+	              geometry3d.attributes.uv.array = uvs;
+	              geometry3d.attributes.uv.needsUpdate = true;
+	              // remove previous scale settings
+	              delete geometry3d.attributes.uv._scaleU;
+	              delete geometry3d.attributes.uv._scaleV;
+	              delete geometry3d.attributes.uv._source;
+	            }
+	            // geometry3d.attributesKeys[ 2 ] = 'uv'
+	          } else if (geometry3d.attributes.uv) {
+	            delete geometry3d.attributes.uv;
+	          }
+	          if (uvs2) {
+	            if (geometry3d.attributes.uv2 === undefined) {
+	              geometry3d.attributes.uv2 = new THREE.BufferAttribute(uvs2, 2);
+	            } else if (geometry3d.attributes.uv2.array !== uvs2 ) {
+	              geometry3d.attributes.uv2.array = uvs2;
+	              geometry3d.attributes.uv2.needsUpdate = true;
+	            }
+	            // geometry3d.attributesKeys[ geometry3d.attributesKeys.length++ ] = 'uv2'
+	          } else if (geometry3d.attributes.uv2) {
+	            delete geometry3d.attributes.uv2;
+	          }
+
+	          // (2017/01/09) The WebGL buffer of the pickingColor attribute is erroneously deleted
+	          // by ThreeJS (r69) in deallocateGeometry(). ThreeJS doesn't seem to account for the fact
+	          // that the attribute is shared by multiple geometries. It then does not get recreated, because
+	          // this function was attempting to manually set BufferGeometry.attributesKeys, missing any
+	          // extra attributes such as pickingColor.
+	          geometry3d.attributesKeys = Object.keys(geometry3d.attributes);
+
+	          // update wireframe
+
+	          if (materials[ materialId ]) {
+	            self._wireframes3d[ meshId ].update({
+	              positions: positions,
+	              thickness: materials[ materialId ].wireframeThickness === undefined ? 0 : materials[ materialId ].wireframeThickness,
+	              thresholdAngle: materials[ materialId ].wireframeThresholdAngle,
+	              color: materials[ materialId ].wireframeColor,
+	              opacity: materials[ materialId ].wireframeOpacity
+	            });
+	          }
+
+	        }
+
+	        // remove obsolete three.js meshes
+	        var mesh, meshIds = Object.keys(self._meshes3d);
+	        meshIds.forEach(function(meshId, i){
+	          mesh = self._meshes3d[meshId];
+	          if (!meshes[ meshId ]) {
+	            // destroy wireframe geometry
+	            /*
+	             var wireframe3d = self._wireframes3d[ meshId ]
+	             if (wireframe3d.parent) {
+	             wireframe3d.parent.remove( wireframe3d )
+	             wireframe3d.geometry.dispose()
+	             }
+	             */
+	            // destroy geometry
+	            var geometry3d = self._meshes3d[ meshId ].geometry;
+	            disposeGeometry3dIfNotUsedElsewhere(self.meshes[ meshId ].cacheKey, geometry3d);
+	            // destroy threejs mesh
+	            var mesh3d = self._meshes3d[ meshId ];
+	            if (mesh3d.parent) {
+	              mesh3d.parent.remove( mesh3d );
+	            }
+	            // destroy material
+	            var material3d = self._materials3d[ meshId ];
+	            if (material3d.map) material3d.map.disposeIfPossible();
+	            if (material3d.specularMap) material3d.specularMap.disposeIfPossible();
+	            if (material3d.normalMap) material3d.normalMap.disposeIfPossible();
+	            if (material3d.alphaMap) material3d.alphaMap.disposeIfPossible();
+	            if (material3d.lightMap) material3d.lightMap.disposeIfPossible();
+	            material3d.dispose();
+	            // remove reference to destroyed 3d objects
+	            delete self._meshes3d[ meshId ];
+	            delete self._wireframes3d[ meshId ];
+	            delete self._materials3d[ meshId ];
+	          }
+	        });
+
+	        // update properties
+	        self.meshKeys = meshKeys;
+	        self.meshes = meshes;
+
+	      }
+
+	      ///////////////// materials
+
+	      if (materials) {
+
+	        var materialPromises = [], material;
+	        for (i = 0, l = self.meshKeys.length; i < l; i++) {
+	          meshId = self.meshKeys[ i ];
+	          materialId = self.meshes[ meshId ].material;
+
+	          // material attributes
+	          material = materials[ materialId ];
+	          if (material && Object.keys(material).length) {
+	            // set material
+	            materialPromises[ i ] = setMaterial({
+	              vm: self.vm,
+	              loadingQueuePrefix: loadingQueuePrefix,
+	              mesh3d: self._meshes3d[ meshId ],
+	              material3d: self._materials3d[ meshId ],
+	              attributes: materials[ materialId ],
+	              onFirstTextureSetLoaded: onFirstTextureSetLoaded
+	            });
+	          }
+
+	        }
+
+	        // output
+	        promise = Promise.all(materialPromises);
+
+	        // update properties
+	        self.materialKeys = materialKeys;
+	        self.materials = materials;
+
+	      }
+
+	      ///////////////// return
+
+	      if (!promise) {
+	        promise = Promise.resolve();
+	      }
+
+	      return promise.then(function(){
+	        if (self.isDestroyed) return
+	        //self.vm.viewport.render()
+	      })
+
+	    },
+
+	    hasMeshes: function hasMeshes() {
+	      return Object.keys(this._meshes3d).length > 0
+	    },
+
+	    setMeshes: function(meshes){
+	      this.set({
+	        meshes: meshes
+	      });
+	    },
+
+	    setMaterials: function(materials, options){
+	      this.set({
+	        materials: materials
+	      }, options);
+	    },
+
+	    reset: function(){
+
+	      this.set({
+	        meshes: {},
+	        materials: {}
+	      });
+
+	    },
+
+	    destroy: function(){
+
+	      this.isDestroyed = true;
+
+	      this.reset();
+
+	      this.vm = null;
+	      this.threeParent = null;
+	      this.userData = null;
+
+	      this.threeParent = null;
+
+	      // internals
+	      this.meshKeys = null;
+	      this.meshes = null;
+	      this.materialKeys = null;
+	      this.materials = null;
+	      this._meshes3d = null;
+	      this._materials3d = null;
+
+	    }
+
+	  };
 
 	// helpers
 
-	function createOrReuseGeometry3d( key ) {
-	  if (key) {
-	    // use cache
-	    if (geometry3dCache[ key ]) {
-	      geometry3dCache[ key ].refCount++;
+	  function createOrReuseGeometry3d( key ) {
+	    if (key) {
+	      // use cache
+	      if (geometry3dCache[ key ]) {
+	        geometry3dCache[ key ].refCount++;
+	      } else {
+	        geometry3dCache[ key ] = {
+	          geometry3d: new THREE.BufferGeometry(),
+	          refCount: 1
+	        };
+	      }
+	      return geometry3dCache[ key ].geometry3d
 	    } else {
-	      geometry3dCache[ key ] = {
-	        geometry3d: new THREE.BufferGeometry(),
-	        refCount: 1
-	      };
+	      // no key no cache
+	      return new THREE.BufferGeometry()
 	    }
-	    return geometry3dCache[ key ].geometry3d
-	  } else {
-	    // no key no cache
-	    return new THREE.BufferGeometry()
 	  }
-	}
 
-	function disposeGeometry3dIfNotUsedElsewhere( key, geometry3d ) {
-	  if (key) {
-	    // involve cache
-	    if (geometry3dCache[ key ]) {
-	      geometry3dCache[ key ].refCount--;
-	      if (geometry3dCache[ key ].refCount < 1) {
-	        geometry3dCache[ key ].geometry3d.dispose();
-	        delete geometry3dCache[ key ];
+	  function disposeGeometry3dIfNotUsedElsewhere( key, geometry3d ) {
+	    if (key) {
+	      // involve cache
+	      if (geometry3dCache[ key ]) {
+	        geometry3dCache[ key ].refCount--;
+	        if (geometry3dCache[ key ].refCount < 1) {
+	          geometry3dCache[ key ].geometry3d.dispose();
+	          delete geometry3dCache[ key ];
+	        }
+	      } else {
+	        // (2017/01/09) See comment in ThreeView.set()
+	        // if (geometry3d.attributes.pickingColor)
+	        //  delete geometry3d.attributes['pickingColor'];
+	        geometry3d.dispose();
 	      }
 	    } else {
+	      // no key bo cache
 	      // (2017/01/09) See comment in ThreeView.set()
 	      // if (geometry3d.attributes.pickingColor)
-	      //  delete geometry3d.attributes['pickingColor'];
+	      //   delete geometry3d.attributes['pickingColor'];
 	      geometry3d.dispose();
 	    }
-	  } else {
-	    // no key bo cache
-	    // (2017/01/09) See comment in ThreeView.set()
-	    // if (geometry3d.attributes.pickingColor)
-	    //   delete geometry3d.attributes['pickingColor'];
-	    geometry3d.dispose();
 	  }
-	}
+
+	  return Data3dView
+
+	});
 
 	var es5 = createCommonjsModule(function (module) {
 	var isES5 = (function(){
@@ -13693,7 +13751,7 @@
 	// import cache from './common/promise-cache.js'
 
 	// configs
-	var DEFAULT_API_URL = configs.servicesUrl;
+	var API_URL = configs.servicesUrl;
 
 	// internals
 	var rpcClient = new JsonRpc2Client();
@@ -13734,7 +13792,7 @@
 
 	function sendHttpRequest (rpcRequest) {
 	  // send request
-	  fetch$1(DEFAULT_API_URL, {
+	  fetch$1(API_URL, {
 	    body: JSON.stringify(rpcRequest.message),
 	    method: 'POST',
 	    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
@@ -14191,10 +14249,10 @@
 
 	    // create new one
 	    this_.mesh = new THREE.Object3D();
-	    this_.data3dView = new IO3D.aFrame.three.Data3dView({ parent: this_.mesh });
+	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
 	    this.el.data3dView = this.data3dView
 	    // load 3d file
-	    ;(key ? IO3D.storage.get(key) : IO3D.data3d.load(url)).then(function(data3d){
+	    ;(key ? IO3D.storage.get(key) : IO3D.data3d.load(url)).then(function (data3d) {
 	      this_.el.data3d = data3d;
 	      // update view
 	      this_.data3dView.set(data3d);
@@ -14241,24 +14299,24 @@
 
 	    // create new one
 	    this_.mesh = new THREE.Object3D();
-	    this_.data3dView = new IO3D.aFrame.three.Data3dView({ parent: this_.mesh });
+	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
 
 	    // get product data
-	    IO3D.furniture.get(productId).then(function(result){
+	    IO3D.furniture.get(productId).then(function (result) {
 	      // Expose properties
 	      this_.productInfo = result;
 	      this_.data3d = result.data3d;
 
 	      // Parse & expose materials
 	      this_.availableMaterials = {};
-	      Object.keys(result.data3d.meshes).forEach(function eachMesh(meshName) {
+	      Object.keys(result.data3d.meshes).forEach(function eachMesh (meshName) {
 	        this_.availableMaterials[meshName] = result.data3d.alternativeMaterialsByMeshKey[meshName];
 
 	        //update material based on inspector
 	        var materialPropName = 'material_' + meshName.replace(/\s/g, '_');
-	        if(this_.data[materialPropName] !== undefined) {
+	        if (this_.data[materialPropName] !== undefined) {
 	          result.data3d.meshes[meshName].material = this_.data[materialPropName];
-	          this_.el.emit('material-changed', { mesh: meshName, material: this_.data[materialPropName] });
+	          this_.el.emit('material-changed', {mesh: meshName, material: this_.data[materialPropName]});
 	        } else {
 	          // register it as part of the schema for the inspector
 	          var prop = {};
@@ -14277,7 +14335,7 @@
 	      this_.el.data3d = result.data3d;
 	      this_.el.setObject3D('mesh', this_.mesh);
 	      // emit event
-	      if(this_._prevId !== productId) this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
+	      if (this_._prevId !== productId) this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
 	      this_._prevId = productId;
 	    });
 	  },
@@ -14297,32 +14355,22 @@
 
 	// initialize aframe components
 
-	if (typeof window !== 'undefined' && window.AFRAME) registerComponents();
-
-	// helpers
-
-	function registerComponents () {
-	  if (typeof window === 'undefined' || !window.AFRAME) {
-	    console.error('AFRAME not found');
-	    return
+	checkDependencies({
+	  three: false,
+	  aFrame: true,
+	  onError: function (){
+	    console.log('AFRAME library not found: related features will be disabled.');
 	  }
+	}, function registerComponents () {
 	  AFRAME.registerComponent('3dio-data3d', data3dComponent);
 	  AFRAME.registerComponent('3dio-furniture', furnitureComponent);
-	}
+	});
 
 	// export
 
-	// TODO: check if threejs or aframe is available
-	//if (runtime.isNode) {
-	//  global.THREE = require('three')
-	//} else if (typeof THREE === 'undefined') {
-	//  throw new Error('Base query requires THREE.js library. Please add <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/85/three.min.js"></script> to your html file at top of <head> section.')
-	//}
-
 	var aframe = {
-	  registerComponents: registerComponents,
 	  three: {
-	    Datas3dView: Data3dView,
+	    Data3dView: Data3dView,
 	  },
 	  ui: {
 	    createFileDrop: createFileDrop
@@ -15750,8 +15798,8 @@
 	  user: user,
 
 	  // app specific
-	  runtime: core.runtime,
-	  configs: core.configs
+	  runtime: runtime,
+	  configs: configs
 
 	};
 
