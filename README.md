@@ -38,5 +38,10 @@ https://3d.io/docs/1/index.html
 
 ## Distribution
 
-* browser: `<script src="https://3d.io/releases/3dio-js/1.x.x-beta/3dio.min.js"></script>`
+### Browser
+* Latest minor version: `https://3d.io/releases/3dio-js/1.x.x-beta/3dio.min.js`
+* Latest patch version: `https://3d.io/releases/3dio-js/1.0.x-beta/3dio.min.js`
+* Latest version: see https://3d.io/releases/
+
+### Node
 * node: `npm install 3dio --save`
