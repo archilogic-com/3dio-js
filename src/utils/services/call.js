@@ -6,7 +6,7 @@ import JsonRpc2Client from './json-rpc2-client.js'
 // import cache from './common/promise-cache.js'
 
 // configs
-var DEFAULT_API_URL = configs.servicesUrl
+var API_URL = configs.servicesUrl
 
 // internals
 var rpcClient = new JsonRpc2Client()
@@ -78,7 +78,7 @@ function handleIncomingMessage (event) {
 
 function sendHttpRequest (rpcRequest) {
   // send request
-  fetch(DEFAULT_API_URL, {
+  fetch(API_URL, {
     body: JSON.stringify(rpcRequest.message),
     method: 'POST',
     headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
