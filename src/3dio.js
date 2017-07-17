@@ -1,4 +1,8 @@
-import core from './core.js'
+import './core/polyfills.js'
+import './core/bootstrap.js'
+
+import runtime from './core/runtime.js'
+import configs from './core/configs.js'
 import aFrame from './aframe.js'
 import furniture from './furniture.js'
 // import scene from './scene.js'
@@ -16,8 +20,8 @@ var IO3D = {
   user: user,
 
   // app specific
-  runtime: core.runtime,
-  configs: core.configs
+  runtime: runtime,
+  configs: configs
 
 }
 
