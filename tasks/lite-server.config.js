@@ -10,6 +10,5 @@ module.exports = {
     // this is required to get directory listings (?bug?)
     middleware: { 1: null }
   },
-  scrollRestoreTechnique: 'cookie',
-  reloadDebounce: 100
+  scrollRestoreTechnique: 'cookie'
 }
