@@ -1,3 +1,5 @@
+import checkDependencies from '../check-dependencies.js'
+
 export default {
 
   schema: {
@@ -27,10 +29,10 @@ export default {
 
     // create new one
     this_.mesh = new THREE.Object3D()
-    this_.data3dView = new IO3D.aFrame.three.Data3dView({ parent: this_.mesh })
+    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh})
     this.el.data3dView = this.data3dView
     // load 3d file
-    ;(key ? IO3D.storage.get(key) : IO3D.data3d.load(url)).then(function(data3d){
+    ;(key ? IO3D.storage.get(key) : IO3D.data3d.load(url)).then(function (data3d) {
       this_.el.data3d = data3d
       // update view
       this_.data3dView.set(data3d)

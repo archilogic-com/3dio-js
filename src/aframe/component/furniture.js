@@ -1,3 +1,5 @@
+import checkDependencies from '../check-dependencies.js'
+
 export default {
 
   schema: {
@@ -22,24 +24,24 @@ export default {
 
     // create new one
     this_.mesh = new THREE.Object3D()
-    this_.data3dView = new IO3D.aFrame.three.Data3dView({ parent: this_.mesh })
+    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh})
 
     // get product data
-    IO3D.furniture.get(productId).then(function(result){
+    IO3D.furniture.get(productId).then(function (result) {
       // Expose properties
       this_.productInfo = result
       this_.data3d = result.data3d
 
       // Parse & expose materials
       this_.availableMaterials = {}
-      Object.keys(result.data3d.meshes).forEach(function eachMesh(meshName) {
+      Object.keys(result.data3d.meshes).forEach(function eachMesh (meshName) {
         this_.availableMaterials[meshName] = result.data3d.alternativeMaterialsByMeshKey[meshName]
 
         //update material based on inspector
         var materialPropName = 'material_' + meshName.replace(/\s/g, '_')
-        if(this_.data[materialPropName] !== undefined) {
+        if (this_.data[materialPropName] !== undefined) {
           result.data3d.meshes[meshName].material = this_.data[materialPropName]
-          this_.el.emit('material-changed', { mesh: meshName, material: this_.data[materialPropName] })
+          this_.el.emit('material-changed', {mesh: meshName, material: this_.data[materialPropName]})
         } else {
           // register it as part of the schema for the inspector
           var prop = {}
@@ -58,7 +60,7 @@ export default {
       this_.el.data3d = result.data3d
       this_.el.setObject3D('mesh', this_.mesh)
       // emit event
-      if(this_._prevId !== productId) this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
+      if (this_._prevId !== productId) this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
       this_._prevId = productId
     })
   },
