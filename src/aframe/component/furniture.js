@@ -35,7 +35,7 @@ export default {
       // Parse & expose materials
       this_.availableMaterials = {}
       Object.keys(result.data3d.meshes).forEach(function eachMesh (meshName) {
-        this_.availableMaterials[meshName] = result.data3d.alternativeMaterialsByMeshKey[meshName]
+        this_.availableMaterials[meshName] = result.data3d.alternativeMaterialsByMeshKey ? result.data3d.alternativeMaterialsByMeshKey[meshName] : result.data3d.meshes[meshName].material
 
         //update material based on inspector
         var materialPropName = 'material_' + meshName.replace(/\s/g, '_')
@@ -48,7 +48,7 @@ export default {
           prop[materialPropName] = {
             type: 'string',
             default: result.data3d.meshes[meshName].material,
-            oneOf: result.data3d.alternativeMaterialsByMeshKey[meshName]
+            oneOf: result.data3d.alternativeMaterialsByMeshKey ? result.data3d.alternativeMaterialsByMeshKey[meshName] : result.data3d.meshes[meshName].material
           }
           this_.extendSchema(prop)
           this_.data[materialPropName] = result.data3d.meshes[meshName].material
