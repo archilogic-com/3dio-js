@@ -1,6 +1,6 @@
 {
   "name": "3dio",
-  "version": "1.0.0-beta.8",
+  "version": "1.0.0-beta.10",
   "description": "toolkit for interior apps",
   "homepage": "https://3d.io",
   "repository": "archilogic-com/3dio-js",
@@ -32,6 +32,7 @@
     "del": "^3.0.0",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-better-rollup": "^1.1.1",
+    "gulp-git": "^2.4.1",
     "gulp-gzip": "^1.4.0",
     "gulp-less": "^3.3.2",
     "gulp-s3": "^0.11.0",
