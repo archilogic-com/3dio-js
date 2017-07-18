@@ -9,6 +9,11 @@ const Vinyl = require('vinyl')
 const UglifyJS = require('uglify-js')
 const packageInfo = require('../package.json')
 const preamble = require('./preamble.js')
+const execSync = require('child_process').execSync
+const git = require('gulp-git')
+
+//
+const latestNpmVersion = execSync(`npm view ${packageInfo.name} version`).toString('utf8').replace('\n', '')
 
 // configs
 
@@ -30,9 +35,12 @@ const awsDir = {
 // tasks
 
 const release = gulp.series(
+  checkNpmVersion,
   require('./build'),
   cleanDistDir,
   uglify,
+  commitBuild,
+  publishToNpm,
   uploadCompressed
 )
 
@@ -71,8 +79,26 @@ function uglify () {
   }))
 }
 
+function commitBuild () {
+  return gulp.src(['build/*', 'package.json'])
+    .pipe(git.commit('Build'))
+}
+
+function checkNpmVersion () {
+  if (latestNpmVersion === version ) {
+    throw new Error('Version '+version+' has been published to NPM already. Did you forget to bump version number?')
+  }
+  return Promise.resolve()
+}
+
+function publishToNpm () {
+  console.log('Publishing version '+version+' to NPM (latest: '+latestNpmVersion+')')
+  execSync(`npm publish`).toString('utf8').replace('\n', '')
+  return Promise.resolve()
+}
+
 function uploadCompressed () {
-  const task = gulp.src(`${dest}/${version}/**/**`)
+  return gulp.src(`${dest}/${version}/**/**`)
     .pipe(gzip({
       append: false, // do not append .gz extension
       threshold: false, // no file size treshold because all files will have gzip headers
@@ -102,8 +128,6 @@ function uploadCompressed () {
       },
       failOnError: true
     }))
-
-  return task
 }
 
 // helpers
