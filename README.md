@@ -34,7 +34,7 @@ https://3d.io/#products
 
 ## Documentation
 
-https://3d.io/docs/1/index.html
+https://3d.io/docs/1/
 
 ## Distribution
 
