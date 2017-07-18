@@ -13,8 +13,8 @@ checkDependencies({
     console.log('AFRAME library not found: related features will be disabled.')
   }
 }, function registerComponents () {
-  AFRAME.registerComponent('3dio-data3d', data3dComponent)
-  AFRAME.registerComponent('3dio-furniture', furnitureComponent)
+  AFRAME.registerComponent('io3d-data3d', data3dComponent)
+  AFRAME.registerComponent('io3d-furniture', furnitureComponent)
 })
 
 // export
