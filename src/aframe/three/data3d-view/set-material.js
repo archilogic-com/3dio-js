@@ -37,6 +37,8 @@ export default function setMaterial (args) {
   var reset = args.reset !== undefined ? args.reset : true
   var loadingQueuePrefix = args.loadingQueuePrefix
   var onFirstTextureSetLoaded = args.onFirstTextureSetLoaded
+  var lightMapIntensity = args.lightMapIntensity
+  var lightMapCenter = args.lightMapCenter
 
 
   // transparency
@@ -135,8 +137,23 @@ export default function setMaterial (args) {
 
   // lightmap settings
   if (_attributes.mapLight || _attributes.mapLightPreview) {
-    material3d.lightMapIntensity = (_attributes.mapLightIntensity !== undefined) ? _attributes.mapLightIntensity : 1.0
-    material3d.lightMapCenter = (_attributes.mapLightCenter !== undefined) ? _attributes.mapLightCenter : 0.5
+    var lmi = 1.0
+    var lmc = 0.5
+
+    if (lightMapIntensity !== undefined) {
+      lmi = lightMapIntensity
+    } else if (_attributes.mapLightIntensity !== undefined) {
+      lmi = _attributes.mapLightIntensity
+    }
+
+    if (lightMapCenter !== undefined) {
+      lmc = lightMapCenter
+    } else if (_attributes.mapLightCenter !== undefined) {
+      lmc = _attributes.mapLightCenter
+    }
+
+    material3d.lightMapIntensity = lmi
+    material3d.lightMapCenter = lmc
     material3d.lightMapFalloff = (_attributes.mapLightFalloff !== undefined) ? _attributes.mapLightFalloff : 0.5
     material3d.uniforms.lightMapIntensity.value = material3d.lightMapIntensity
     material3d.uniforms.lightMapFalloff.value = material3d.lightMapCenter

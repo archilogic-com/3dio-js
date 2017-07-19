@@ -58,7 +58,9 @@ export default checkDependencies({
         materials = data3d.materials || this.materials,
         materialKeys = data3d.materialKeys,
         loadingQueuePrefix = data3d.loadingQueuePrefix || options.loadingQueuePrefix,
-        onFirstTextureSetLoaded = options.onFirstTextureSetLoaded
+        onFirstTextureSetLoaded = options.onFirstTextureSetLoaded,
+        lightMapIntensity = options.lightMapIntensity,
+        lightMapCenter = options.lightMapCenter
 
       // internals
       var self = this, meshId, mesh, materialId, wireframe3d, positions, uvs, uvs2, scale,
@@ -282,7 +284,9 @@ export default checkDependencies({
               mesh3d: self._meshes3d[ meshId ],
               material3d: self._materials3d[ meshId ],
               attributes: materials[ materialId ],
-              onFirstTextureSetLoaded: onFirstTextureSetLoaded
+              onFirstTextureSetLoaded: onFirstTextureSetLoaded,
+              lightMapIntensity: lightMapIntensity,
+              lightMapCenter: lightMapCenter
             })
           }
 
