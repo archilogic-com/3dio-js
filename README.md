@@ -1,7 +1,13 @@
 <p align="center"><a href="https://3d.io" target="_blank"><img width="400" alt="toolkit for interior apps" src="3dio-logo.png"></a></p>
 
 <div align="center">
-  <a href="https://3d.io">Site</a>&mdash;<a href="https://3d.io/docs/1/">Docs</a>&mdash;<a href="https://3d.io/releases/">Releases</a>&mdash;<a href="https://3d.io/#features">Features</a>
+  <a href="https://3d.io">Site</a>
+  &mdash;
+  <a href="https://3d.io/docs/1/">Docs</a>
+  &mdash;
+  <a href="https://3d.io/releases/">Releases</a>
+  &mdash;
+  <a href="https://3d.io/#features">Features</a>
 </div>
 
 
