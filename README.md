@@ -7,7 +7,7 @@
   &mdash;
   <a href="https://3d.io/releases/">Releases</a>
   &mdash;
-  <a href="https://3d.io/#features">Features</a>
+  <a href="https://3d.io/#products">Features</a>
 </div>
 
 
