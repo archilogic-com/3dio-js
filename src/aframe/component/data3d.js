@@ -49,11 +49,7 @@ export default {
     ;(key ? IO3D.storage.get(key) : IO3D.data3d.load(url)).then(function (data3d) {
       this_.el.data3d = data3d
       // update view
-<<<<<<< HEAD
       this_.data3dView.set(data3d, { lightMapCenter: lightMapCenter, lightMapIntensity: lightMapIntensity })
-=======
-      this_.data3dView.set(data3d, {lightMapCenter: lightMapCenter, lightMapIntensity: lightMapIntensity})
->>>>>>> Draft lightMap controls in data3d view
       this_.el.setObject3D('mesh', this_.mesh)
       // emit event
       this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
