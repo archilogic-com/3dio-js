@@ -7,6 +7,7 @@ const s3 = require('gulp-s3')
 const through2 = require('through2')
 const Vinyl = require('vinyl')
 const UglifyJS = require('uglify-js')
+const build = require('./build')
 const packageInfo = require('../package.json')
 const preamble = require('./preamble.js')
 const execSync = require('child_process').execSync
@@ -19,8 +20,9 @@ const latestNpmVersion = execSync(`npm view ${packageInfo.name} version`).toStri
 
 // configs
 
-const src = 'build'
-const dest = 'release'
+const srcDir = 'build'
+const destDir = 'release'
+const gitCommitMessage = 'Release '+version
 const awsConfig = {
   bucket: '3d.io',
   region: 'eu-west-1',
@@ -36,24 +38,26 @@ const awsDir = {
 // tasks
 
 const release = gulp.series(
-  checkNpmVersion,
-  require('./build'),
-  cleanDistDir,
+  npmCheckVersion,
+  build,
+  cleanDestDir,
   uglify,
-  commitBuild,
-  publishToNpm,
-  uploadCompressed
+  gitTag,
+  gitCommit,
+  gitPush,
+  npmPublish,
+  s3Upload
 )
 
-function cleanDistDir () {
-  return del([dest]).then(function () {
-    fs.mkdirSync(process.cwd() + `/${dest}`, 0744)
-    fs.mkdirSync(process.cwd() + `/${dest}/${version}`, 0744)
+function cleanDestDir () {
+  return del([destDir]).then(function () {
+    fs.mkdirSync(process.cwd() + `/${destDir}`, 0744)
+    fs.mkdirSync(process.cwd() + `/${destDir}/${version}`, 0744)
   })
 }
 
 function uglify () {
-  return gulp.src(src + '/*.js').pipe(through2.obj((inputFile, enc, cb) => {
+  return gulp.src(srcDir + '/*.js').pipe(through2.obj((inputFile, enc, cb) => {
     // process files only
     if (!inputFile.isBuffer()) return
     // get filename without extension
@@ -66,40 +70,58 @@ function uglify () {
       compress: {dead_code: true, toplevel: true, passes: 3},
       output: {preamble: preamble.text, beautify: false},
       sourceMap: {
-        content: read(`${src}/${sourceBasename}.js.map`),
+        content: read(`${srcDir}/${sourceBasename}.js.map`),
         url: `${targetBasename}.min.js.map`
       }
     })
     if (ugly.warnings) console.log('UGLIFY WARNINGS: ', ugly.warnings)
     if (ugly.error) return Promise.reject(ugly.error)
     // write files
-    fs.writeFileSync(`${cwd}/${dest}/${version}/${targetBasename}.min.js.map`, ugly.map)
-    fs.writeFileSync(`${cwd}/${dest}/${version}/${targetBasename}.min.js`, ugly.code)
+    fs.writeFileSync(`${cwd}/${destDir}/${version}/${targetBasename}.min.js.map`, ugly.map)
+    fs.writeFileSync(`${cwd}/${destDir}/${version}/${targetBasename}.min.js`, ugly.code)
     // gulp callback
     cb()
   }))
 }
 
-function commitBuild () {
-  return gulp.src(['build/*', 'package.json'])
-    .pipe(git.commit('Build'))
+function gitTag () {
+  return new Promise(function (resolve, reject) {
+    git.tag('v'+version, '', function (err) {
+      if (err) throw err
+      resolve()
+    })
+  })
 }
 
-function checkNpmVersion () {
+function gitCommit () {
+  return gulp.src(['build/*', 'package.json'])
+    .pipe(git.commit(gitCommitMessage))
+}
+
+function gitPush () {
+  return new Promise(function (resolve, reject) {
+    git.push('origin', ['master'], {args: " --tags"}, function (err) {
+      if (err) throw err
+      resolve()
+    })
+  })
+}
+
+function npmCheckVersion () {
   if (latestNpmVersion === version ) {
     throw new Error('Version '+version+' has been published to NPM already. Did you forget to bump version number?')
   }
   return Promise.resolve()
 }
 
-function publishToNpm () {
+function npmPublish () {
   console.log('Publishing version '+version+' to NPM (latest: '+latestNpmVersion+')')
   execSync(`npm publish`).toString('utf8').replace('\n', '')
   return Promise.resolve()
 }
 
-function uploadCompressed () {
-  return gulp.src(`${dest}/${version}/**/**`)
+function s3Upload () {
+  return gulp.src(`${destDir}/${version}/**/**`)
     .pipe(gzip({
       append: false, // do not append .gz extension
       threshold: false, // no file size treshold because all files will have gzip headers
