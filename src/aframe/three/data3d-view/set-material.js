@@ -140,13 +140,13 @@ export default function setMaterial (args) {
     var lmi = 1.0
     var lmc = 0.5
 
-    if (lightMapIntensity !== undefined) {
+    if (lightMapIntensity !== undefined && lightMapIntensity != null) {
       lmi = lightMapIntensity
     } else if (_attributes.mapLightIntensity !== undefined) {
       lmi = _attributes.mapLightIntensity
     }
 
-    if (lightMapCenter !== undefined) {
+    if (lightMapCenter !== undefined && lightMapCenter != null) {
       lmc = lightMapCenter
     } else if (_attributes.mapLightCenter !== undefined) {
       lmc = _attributes.mapLightCenter

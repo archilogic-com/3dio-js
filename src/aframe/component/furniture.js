@@ -6,6 +6,24 @@ export default {
     id: {
       type: 'string',
       default: '10344b13-d981-47a0-90ac-f048ee2780a6'
+    },
+    lightMapIntensity: {
+      default: [],
+      parse: function (value) {
+        if (value > 0) {
+          return value;
+        }
+        return null;
+      }
+    },
+    lightMapCenter: {
+      default: [],
+      parse: function (value) {
+        if (value > 0) {
+          return value;
+        }
+        return null;
+      }
     }
   },
 
@@ -15,6 +33,8 @@ export default {
   update: function () {
     var this_ = this
     var productId = this_.data.id
+    var lightMapIntensity = this_.data.lightMapIntensity
+    var lightMapCenter = this_.data.lightMapCenter
 
     // check params
     if (!productId || productId === '') return
@@ -56,7 +76,7 @@ export default {
       })
 
       // update view
-      this_.data3dView.set(result.data3d)
+      this_.data3dView.set(result.data3d, { lightMapCenter: lightMapCenter, lightMapIntensity: lightMapIntensity })
       this_.el.data3d = result.data3d
       this_.el.setObject3D('mesh', this_.mesh)
       // emit event
