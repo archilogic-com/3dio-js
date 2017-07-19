@@ -12,14 +12,15 @@ const preamble = require('./preamble.js')
 const execSync = require('child_process').execSync
 const git = require('gulp-git')
 
-//
+// internals
+
+const version = packageInfo.version
 const latestNpmVersion = execSync(`npm view ${packageInfo.name} version`).toString('utf8').replace('\n', '')
 
 // configs
 
 const src = 'build'
 const dest = 'release'
-const version = packageInfo.version
 const awsConfig = {
   bucket: '3d.io',
   region: 'eu-west-1',
