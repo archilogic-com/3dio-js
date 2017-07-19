@@ -1,7 +1,6 @@
 # 3dio.js BETA
-javaScript toolkit for interior apps
 
-https://3d.io
+<a href="https://3d.io" target="_blank">![3d.io - javaScript toolkit for interior apps](3dio-logo.png)</a>
 
 ## Examples
 
@@ -24,14 +23,6 @@ https://3d.io
 </html>
 ```
 
-## Use Cases
-
-https://3d.io/#use-cases
-
-## Features
-
-https://3d.io/#products
-
 ## Documentation
 
 https://3d.io/docs/1/
@@ -45,3 +36,11 @@ https://3d.io/docs/1/
 
 ### Node
 * node: `npm install 3dio --save`
+
+## Features
+
+https://3d.io/#products
+
+## Use Cases
+
+https://3d.io/#use-cases
