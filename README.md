@@ -13,7 +13,7 @@
 
 ## Basic Example
 
-[Open Demo](https://3dio-aframe.glitch.me)
+[Run Demo](https://3dio-aframe.glitch.me)
 ```html
 <!DOCTYPE html>
 <html>
@@ -35,15 +35,21 @@
 
 https://3d.io/docs/1/
 
-## Distribution
+## Installation
 
 ### Browser
-* Latest minor version: https://3d.io/releases/3dio-js/1.x.x-beta/3dio.min.js
-* Latest patch version: https://3d.io/releases/3dio-js/1.0.x-beta/3dio.min.js
-* Latest version, check out: https://3d.io/releases/
 
-### Node
-* node: `npm install 3dio --save`
+Install latest minor version:
+```html
+<head>
+  <script src="https://3d.io/releases/3dio-js/1.x.x-beta/3dio.min.js"></script>
+</head>
+```
+Older versions: https://3d.io/releases/
+
+### Server (Node)
+
+Run: `npm install 3dio --save`
 
 ## Features
 
