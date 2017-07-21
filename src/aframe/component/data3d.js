@@ -19,7 +19,7 @@ export default {
         return value
       }
     },
-    lightMapCenter: {
+    lightMapExposure: {
       // type is array so that we can fallback to value specified in data3d file
       type: []
     }
@@ -33,7 +33,7 @@ export default {
     var url = this_.data.url || this_.data.URL
     var key = this_.data.key || this_.data.KEY
     var lightMapIntensity = this_.data.lightMapIntensity
-    var lightMapCenter = this_.data.lightMapCenter
+    var lightMapExposure = this_.data.lightMapExposure
 
     // check params
     if ((!url || url === '') && (!key || key === '')) return
@@ -49,7 +49,7 @@ export default {
     ;(key ? IO3D.storage.get(key) : IO3D.data3d.load(url)).then(function (data3d) {
       this_.el.data3d = data3d
       // update view
-      this_.data3dView.set(data3d, { lightMapCenter: lightMapCenter, lightMapIntensity: lightMapIntensity })
+      this_.data3dView.set(data3d, { lightMapIntensity: lightMapIntensity, lightMapExposure: lightMapExposure })
       this_.el.setObject3D('mesh', this_.mesh)
       // emit event
       this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});

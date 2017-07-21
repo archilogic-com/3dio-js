@@ -60,7 +60,7 @@ export default checkDependencies({
         loadingQueuePrefix = data3d.loadingQueuePrefix || options.loadingQueuePrefix,
         onFirstTextureSetLoaded = options.onFirstTextureSetLoaded,
         lightMapIntensity = options.lightMapIntensity,
-        lightMapCenter = options.lightMapCenter
+        lightMapExposure = options.lightMapExposure
 
       // internals
       var self = this, meshId, mesh, materialId, wireframe3d, positions, uvs, uvs2, scale,
@@ -286,7 +286,7 @@ export default checkDependencies({
               attributes: materials[ materialId ],
               onFirstTextureSetLoaded: onFirstTextureSetLoaded,
               lightMapIntensity: lightMapIntensity,
-              lightMapCenter: lightMapCenter
+              lightMapExposure: lightMapExposure
             })
           }
 

@@ -15,7 +15,7 @@ export default {
         return value
       }
     },
-    lightMapCenter: {
+    lightMapExposure: {
       // type is array so that we can fallback to value specified in data3d file
       type: []
     }
@@ -28,7 +28,7 @@ export default {
     var this_ = this
     var productId = this_.data.id
     var lightMapIntensity = this_.data.lightMapIntensity
-    var lightMapCenter = this_.data.lightMapCenter
+    var lightMapExposure = this_.data.lightMapExposure
 
     // check params
     if (!productId || productId === '') return
@@ -70,7 +70,7 @@ export default {
       })
 
       // update view
-      this_.data3dView.set(result.data3d, { lightMapCenter: lightMapCenter, lightMapIntensity: lightMapIntensity })
+      this_.data3dView.set(result.data3d, { lightMapIntensity: lightMapIntensity, lightMapExposure: lightMapExposure })
       this_.el.data3d = result.data3d
       this_.el.setObject3D('mesh', this_.mesh)
       // emit event
