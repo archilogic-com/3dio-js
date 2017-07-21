@@ -137,6 +137,7 @@ export default function setMaterial (args) {
 
   // lightmap settings
   if (_attributes.mapLight || _attributes.mapLightPreview) {
+    // Fallback lightmap intensity and exposure values
     var lmi = 1.0
     var lme = 0.5
 
