@@ -8,16 +8,16 @@ export default {
       default: '10344b13-d981-47a0-90ac-f048ee2780a6'
     },
     lightMapIntensity: {
-      type: 'number',
-      default: 1,
+      // type is array so that we can fallback to value specified in data3d file
+      type: [],
       parse: function (value) {
-        if (value < 0) return 0
+        if (value < 0) return null // = fallback to value from data3d file
         return value
       }
     },
     lightMapCenter: {
-      type: 'number',
-      default: 0.5
+      // type is array so that we can fallback to value specified in data3d file
+      type: []
     }
   },
 
