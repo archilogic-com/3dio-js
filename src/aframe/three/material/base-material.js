@@ -23,7 +23,7 @@ export default checkDependencies ({
         alphaMap: { value: params.alphaMap || null },
         lightMap: { value: params.lightMap || null },
         lightMapIntensity: { value: params.lightMapIntensity || 1.0 },
-        lightMapFalloff: { value: params.lightMapCenter || 0.5 },
+        lightMapFalloff: { value: params.lightMapFalloff || 0.5 },
         lightMapCenter: { value: params.lightMapCenter || 0.5 },
         normalMap: { value: params.normalMap || null },
         shininess: { value: params.shininess || 1.0 },

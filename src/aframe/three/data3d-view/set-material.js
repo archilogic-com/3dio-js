@@ -158,8 +158,8 @@ export default function setMaterial (args) {
     material3d.lightMapCenter = lme
     material3d.lightMapFalloff = (_attributes.mapLightFalloff !== undefined) ? _attributes.mapLightFalloff : 0.5
     material3d.uniforms.lightMapIntensity.value = material3d.lightMapIntensity
-    material3d.uniforms.lightMapFalloff.value = material3d.lightMapCenter
-    material3d.uniforms.lightMapCenter.value = material3d.lightMapFalloff
+    material3d.uniforms.lightMapCenter.value = material3d.lightMapCenter
+    material3d.uniforms.lightMapFalloff.value = material3d.lightMapFalloff
   }
 
   // shadows
