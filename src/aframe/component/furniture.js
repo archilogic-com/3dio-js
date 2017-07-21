@@ -8,22 +8,16 @@ export default {
       default: '10344b13-d981-47a0-90ac-f048ee2780a6'
     },
     lightMapIntensity: {
-      default: [],
+      type: 'number',
+      default: 1,
       parse: function (value) {
-        if (value > 0) {
-          return value;
-        }
-        return null;
+        if (value < 0) return 0
+        return value
       }
     },
     lightMapCenter: {
-      default: [],
-      parse: function (value) {
-        if (value > 0) {
-          return value;
-        }
-        return null;
-      }
+      type: 'number',
+      default: 0.5
     }
   },
 

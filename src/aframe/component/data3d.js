@@ -12,22 +12,16 @@ export default {
       default: ''
     },
     lightMapIntensity: {
-      default: [],
+      type: 'number',
+      default: 1,
       parse: function (value) {
-        if (value > 0) {
-          return value;
-        }
-        return null;
+        if (value < 0) return 0
+        return value
       }
     },
     lightMapCenter: {
-      default: [],
-      parse: function (value) {
-        if (value > 0) {
-          return value;
-        }
-        return null;
-      }
+      type: 'number',
+      default: 0.5
     }
   },
 
