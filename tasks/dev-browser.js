@@ -19,7 +19,7 @@ const runBrowserDevEnvironment = gulp.series(
 
 function runLiteServer () {
   return new Promise((resolve, reject) => {
-    const ls = spawn('node_modules/.bin/lite-server', ['-c', 'tasks/lite-server.config.js'])
+    const ls = spawn('lite-server', ['-c', 'tasks/lite-server.config.js'], {shell: true})
     ls.stdout.on('data', (data) => {
       console.log(`lite-server: ${data}`)
     })

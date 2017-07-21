@@ -24,7 +24,7 @@ function cleanBuildDir () {
 
 function bundleScripts () {
   return new Promise((resolve, reject) => {
-    const ls = spawn('./node_modules/.bin/rollup', ['-c','tasks/rollup.config.js'])
+    const ls = spawn('rollup', ['-c','tasks/rollup.config.js'], {shell: true} )
     ls.stdout.on('data', (data) => {
       console.log(`rollup: ${data}`)
     })

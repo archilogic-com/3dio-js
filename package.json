@@ -12,8 +12,8 @@
   },
   "main": "index.js",
   "scripts": {
-    "dev-browser": "npm install || true \n killall node || true \n gulp dev-browser",
-    "dev-node": "npm install || true \n gulp dev-node",
+    "dev-browser": "gulp dev-browser",
+    "dev-node": "gulp dev-node",
     "test": "gulp test",
     "build": "gulp build",
     "release": "gulp release"
