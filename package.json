@@ -12,6 +12,8 @@
   },
   "main": "index.js",
   "scripts": {
+    "preinstall": "npm install rollup -g",
+    "postinstall": "gulp build",
     "dev-browser": "gulp dev-browser",
     "dev-node": "gulp dev-node",
     "test": "gulp test",
