@@ -87,7 +87,11 @@ function uglify () {
 function gitTag () {
   return new Promise(function (resolve, reject) {
     git.tag('v'+version, '', function (err) {
-      if (err) throw err
+      if (err) {
+        // graceful error handling because not critical. i.e. tag may already exist when
+        // a previous release failed at a later step and the release has to be repeated.
+        console.warn('Git tag error: ', err)
+      }
       resolve()
     })
   })
