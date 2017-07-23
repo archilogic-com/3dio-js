@@ -6,7 +6,7 @@ var defaults = Object.freeze({
   logLevel:      'warn',
   servicesUrl:   'https://spaces.archilogic.com/api/v2',
   storageDomain: 'storage.3d.io',
-  storageBucket: 'archilogic-content-beta'
+  storageDomainNoCdn: 'storage-nocdn.3d.io'
 })
 
 // constants

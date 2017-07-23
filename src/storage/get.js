@@ -5,7 +5,7 @@ import loadData3d from '../utils/data3d/load.js'
 // constants
 
 var CDN_DOMAIN = configs.storageDomain
-var BUCKET = configs.storageBucket
+var NO_CDN_DOMAIN = configs.storageDomainNoCdn
 
 // main
 
@@ -29,7 +29,7 @@ function convertKeyToUrl (key, options) {
   //   return keyToUrlCache[ key + cdn + encode ]
   // }
   // internals
-  var url, processedKey = key
+  var processedKey = key
   // remove leading slash
   var startsWithSlash = /^\/(.*)$/.exec(processedKey)
   if (startsWithSlash) {
@@ -40,14 +40,7 @@ function convertKeyToUrl (key, options) {
     processedKey = encodeURIComponent(processedKey)
   }
   // compose url
-  if (cdn) {
-    url = 'https://'+CDN_DOMAIN+'/' + processedKey
-  } else {
-    // http://s3-eu-west-1.amazonaws.com/<bucket-name>/<s3-key>
-    // http://<bucket-name>.s3-website-eu-west-1.amazonaws.com // has index.html functionality
-    // http://<bucket-name>.s3.amazon.com/<s3-key>
-    url = 'https://'+BUCKET+'.s3.amazonaws.com/' + processedKey
-  }
+  var url = 'https://'+(cdn ? CDN_DOMAIN : NO_CDN_DOMAIN)+'/' + processedKey
   // add to cache
   // keyToUrlCache[ key + cdn + encode ] = url
   return url
