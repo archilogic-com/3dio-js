@@ -51,6 +51,7 @@ https://3d.io/docs/1/
 ### Server
 
 `npm install 3dio --save`
+Installation tutorial for beginners: https://www.npmjs.com/package/3dio/tutorial
 
 ## Features
 
