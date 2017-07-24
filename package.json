@@ -13,7 +13,6 @@
   "main": "index.js",
   "scripts": {
     "preinstall": "npm install rollup -g \n npm install lite-server -g",
-    "postinstall": "gulp build",
     "dev-browser": "gulp dev-browser",
     "dev-node": "gulp dev-node",
     "test": "gulp test",
