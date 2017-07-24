@@ -1,6 +1,6 @@
 {
   "name": "3dio",
-  "version": "1.0.0-beta.17",
+  "version": "1.0.0-beta.18",
   "description": "toolkit for interior apps",
   "homepage": "https://3d.io",
   "repository": "archilogic-com/3dio-js",
@@ -12,7 +12,6 @@
   },
   "main": "index.js",
   "scripts": {
-    "preinstall": "npm install rollup -g \n npm install lite-server -g",
     "dev-browser": "gulp dev-browser",
     "dev-node": "gulp dev-node",
     "test": "gulp test",
