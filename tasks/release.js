@@ -143,7 +143,7 @@ function s3Upload () {
       uploadPath: awsDir.latestMinor,
       headers: {
         'Content-Encoding': 'gzip',
-        'Cache-Control': 'max-age=' + (60*60) // 1 hour
+        'Cache-Control': 'max-age=' + (60*5) // 5 minutes
       },
       failOnError: true
     }))
@@ -151,7 +151,7 @@ function s3Upload () {
       uploadPath: awsDir.latestPatch,
       headers: {
         'Content-Encoding': 'gzip',
-        'Cache-Control': 'max-age=' + (60*60) // 1 hour
+        'Cache-Control': 'max-age=' + (60*5) // 5 minutes
       },
       failOnError: true
     }))
