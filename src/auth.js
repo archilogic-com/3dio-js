@@ -3,7 +3,7 @@ import log from 'js-logger'
 
 /**
  * Login in user using credentials
- * @function IO3D.user.logIn
+ * @function IO3D.auth.logIn
  * @param {object} args
  * @param {string} args.name     - User email or username
  * @param {string} args.password - User password
@@ -21,15 +21,18 @@ function logIn (args) {
       password:     password
     })
 
-  }).then(function (result) {
-    log.debug('API: User "' + result.user.displayName + '" logged in successfully.')
-    return result.user
+  }).then(function onSuccess(session) {
+    log.debug('API: User "' + session.user.displayName + '" logged in successfully.')
+    return normalizeSession(session)
+  }, function onError(error){
+    log.debug('API: Could not log in user "' + args.name + '".', error)
+    return Promise.reject(error)
   })
 }
 
 /**
  * Log out currently authenticated user.
- * @function IO3D.user.logOut
+ * @function IO3D.auth.logOut
  */
 function logOut () {
   log.debug('Sending API log out request...')
@@ -41,19 +44,32 @@ function logOut () {
 
 /**
  * Get information about the current session.
- * @function IO3D.user.getSession
+ * @function IO3D.auth.getSession
  */
 function getSession () {
   log.debug('Sending API session request...')
   return callServices('User.getSession').then(function (session) {
     log.debug('API: session data:\n', session)
-    if (session.isAuthenticated) {
-      session.user.id = session.user.resourceId
-      delete session.user.resourceId
-    }
-    return session
+    return normalizeSession(session)
   })
 }
+
+// helpers
+
+function normalizeSession(session) {
+  if (session.isAuthenticated) {
+    var user = session.user
+    // use 'id' instead of 'resourceId'
+    user.id = user.resourceId
+    delete user.resourceId
+    // make sure every user has a role array
+    if (!user.roles) user.roles = []
+  }
+  return session
+}
+
+
+// export
 
 export default {
   logIn:      logIn,

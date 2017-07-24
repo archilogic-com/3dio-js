@@ -2,7 +2,7 @@ import FormData from '../utils/io/form-data'
 import runtime from '../core/runtime.js'
 import callServices from '../utils/services/call.js'
 import getShortId from '../utils/short-id.js'
-import user from '../user.js'
+import auth from '../auth.js'
 import Promise from 'bluebird'
 import fetch from '../utils/io/fetch.js'
 import getMimeTypeFromFileName from '../utils/get-mime-type-from-filename.js'
@@ -78,7 +78,7 @@ function resolveKey (key, dir, fileName) {
   if (key && !isTemplateKey) return Promise.resolve(key)
 
   // get user id
-  return user.getSession().then(function(session){
+  return auth.getSession().then(function(session){
     if (isTemplateKey) {
       if (session.isAuthenticated) {
         // replace user id in template key

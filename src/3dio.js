@@ -8,7 +8,7 @@ import furniture from './furniture.js'
 // import scene from './scene.js'
 import utils from './utils.js'
 import storage from './storage.js'
-import user from './user.js'
+import auth from './auth.js'
 
 var IO3D = {
 
@@ -18,7 +18,7 @@ var IO3D = {
   storage: storage,
 
   // non-products
-  user: user,
+  auth: auth,
 
   // app specific
   runtime: runtime,
