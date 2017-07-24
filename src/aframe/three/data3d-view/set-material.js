@@ -141,13 +141,13 @@ export default function setMaterial (args) {
     var lmi = 1.0
     var lme = 0.5
 
-    if (lightMapIntensity !== undefined && lightMapIntensity != null && lightMapIntensity !== -1) {
+    if (lightMapIntensity !== undefined && lightMapIntensity != null && lightMapIntensity !== -100) {
       lmi = lightMapIntensity
     } else if (_attributes.mapLightIntensity !== undefined) {
       lmi = _attributes.mapLightIntensity
     }
 
-    if (lightMapExposure !== undefined && lightMapExposure != null && lightMapExposure !== -1) {
+    if (lightMapExposure !== undefined && lightMapExposure != null && lightMapExposure !== -100) {
       lme = lightMapExposure
     } else if (_attributes.mapLightCenter !== undefined) {
       // in data3d lightMapExposure is mapLightCenter

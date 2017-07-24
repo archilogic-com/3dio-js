@@ -12,16 +12,26 @@ export default {
       default: ''
     },
     lightMapIntensity: {
-      // type is array so that we can fallback to value specified in data3d file
-      default: [],
+      // default is -100 to trigger fallback to value specified in data3d file
+      type:'float',
+      default: -100,
       parse: function (value) {
-        if (value < 0) return null // = fallback to value from data3d file
-        return value
+        if (value >= 0.0) {
+          return value
+        }
+        return -100 // = fallback to value from data3d file
       }
     },
     lightMapExposure: {
-      // type is array so that we can fallback to value specified in data3d file
-      default: []
+      // default is -100 to trigger fallback to value specified in data3d file
+      type:'float',
+      default: -100,
+      parse: function (value) {
+        if (value > -100) {
+          return value
+        }
+        return -100 // = fallback to value from data3d file
+      }
     }
   },
 
