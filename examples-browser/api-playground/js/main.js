@@ -3,10 +3,22 @@ var LIB_PATH = '../../build/3dio.js'
 $(function () {
 
   // list of example files referenced by title
-  var examples = {
-    'Login on login': 'login-another-user.js',
-    'Create a new model': 'model-create.js'
-  }
+  var examples = [{
+    title: '[autosave]',
+    key: '[autosave]'
+  }, {
+    title: 'Upload single file',
+    file: 'upload-single-file.js'
+  }, {
+    title: 'Upload file with key',
+    file: 'upload-file-with-key.js'
+  }, {
+    title: 'Upload multiple files',
+    file: 'upload-multiple-files.js'
+  }, {
+    title: 'Login on login',
+    file: 'login-another-user.js'
+  }]
 
   // example path can be specified in URL
   var examplePathFromUrl = getExamplePathFromUrl()
@@ -30,19 +42,37 @@ $(function () {
     fontSize: "12px"
   })
 
+  // save to local storage
+  var saveToLocalStorage = true
+  codeEditor.on('change', function onEditorChange(){
+    var key = localStorage['3dio_API_playground_currentKey'] ||'autosave'
+    if (saveToLocalStorage) {
+      localStorage.setItem('3dio_API_playground_code_'+key, codeEditor.getValue())
+    }
+  })
+
   // create example list
-  Object.keys(examples).forEach(function (title) {
+  examples.forEach(function (item) {
     $('<div>', {
-      text: title,
+      text: item.title,
       class: 'example-item',
       click: function () {
-        loadExample(examples[title])
+        loadExample(item)
       }
     }).appendTo($exampleList)
   })
 
-  // load first example (from URL or first in list)
-  loadExample(examplePathFromUrl || examples[Object.keys(examples)[0]])
+  // load code
+  // 1. from local storage
+  // 2. or from URL
+  // 3. or first in list
+  if (examplePathFromUrl) {
+    loadExample({
+      file: examplePathFromUrl
+    })
+  } else {
+    loadExample(examples[0])
+  }
 
   // bind run button
   $runButton.on('click', function () {
@@ -133,24 +163,38 @@ $(function () {
     return hash && hash !== '' && hash !== '#' ? hash.substring(1) : undefined
   }
 
-  function loadExample (path) {
+  function loadExample (item) {
     // clear log output
     $logOutput.empty()
-    return $.ajax({
-      type: 'GET',
-      dataType: 'text',
-      url: './js/examples/' + path + '?cacheBust=' + Date.now()
+
+    return Promise.resolve().then(function(){
+      if (item.key) {
+        // load from storage
+        localStorage.setItem('3dio_API_playground_currentKey', item.key)
+        return localStorage['3dio_API_playground_code_'+item.key]
+      } else {
+        // load from file
+        return $.ajax({
+          type: 'GET',
+          dataType: 'text',
+          url: './js/examples/' + item.file+ '?cacheBust=' + Date.now()
+        })
+      }
     }).then(function (text) {
       // update editor
-      codeEditor.setValue(text, 1)
+      saveToLocalStorage = false
+      codeEditor.setValue(text || '', 1)
+      saveToLocalStorage = true
       // update URL
-      window.location.hash = encodeURI(path)
+      window.location.hash = item.file ? encodeURI(item.file) : ''
     }).catch(function (error) {
       // update editor
+      saveToLocalStorage = false
       codeEditor.setValue('', 1)
+      saveToLocalStorage = true
       // update URL
       window.location.hash = ''
-      console.error('Could not load example "' + path + '" ', error)
+      console.error('Could not load example ', error)
     })
   }
 

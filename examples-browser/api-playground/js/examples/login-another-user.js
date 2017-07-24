@@ -7,12 +7,12 @@ IO3D.configs({
   logLevel: 'debug'
 })
 
-IO3D.user.logIn(user1).then(function () {
+IO3D.auth.logIn(user1).then(function () {
 
-  return IO3D.user.logIn(user2)
+  return IO3D.auth.logIn(user2)
 
 }).then(function () {
 
-  return IO3D.user.getSession()
+  return IO3D.auth.getSession()
 
 })
