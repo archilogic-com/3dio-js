@@ -45,9 +45,13 @@ function logOut () {
  */
 function getSession () {
   log.debug('Sending API session request...')
-  return callServices('User.getSession').then(function (result) {
-    log.debug('API: session data:\n', result)
-    return result
+  return callServices('User.getSession').then(function (session) {
+    log.debug('API: session data:\n', session)
+    if (session.isAuthenticated) {
+      session.user.id = session.user.resourceId
+      delete session.user.resourceId
+    }
+    return session
   })
 }
 
