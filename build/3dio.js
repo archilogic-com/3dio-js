@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.18
- * @date 2017/07/24 10:32
+ * @date 2017/07/24 18:43
  * @branch master
- * @commit 451f22af6baa76f9768b1b70d0a940d5b6e472e8
+ * @commit 027475cd4a33bd4501945a6c4cbaab37239d4029
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.IO3D = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/07/24 10:32', GIT_BRANCH = 'master', GIT_COMMIT = '451f22af6baa76f9768b1b70d0a940d5b6e472e8'
+	var BUILD_DATE='2017/07/24 18:43', GIT_BRANCH = 'master', GIT_COMMIT = '027475cd4a33bd4501945a6c4cbaab37239d4029'
 
 	// detect environment
 	var isNode = !!(
@@ -13967,7 +13967,7 @@
 	        dir: options.dir,
 	        onProgress: function(progress, total){
 	          progress_[i] = progress;
-	          onProgress_(progress_.reduce(function(a, b) { return a+b; }, 0), totalSize_);
+	          if (onProgress_) onProgress_(progress_.reduce(function(a, b) { return a+b; }, 0), totalSize_);
 	        }
 	      })
 	    })
@@ -13989,7 +13989,7 @@
 	  return resolveKey(key, dir, fileName)
 	    .then(validateKey)
 	    .then(function (key) {
-	      return getCredentials(file, key)
+	      return getCredentials(file, key, fileName)
 	    })
 	    .then(function (credentials) {
 	      return uploadFile(file, credentials, onProgress)
@@ -14000,7 +14000,7 @@
 	function resolveKey (key, dir, fileName) {
 	  // prefer key. fallback to dir + fileName
 	  key = key ? key : (dir ? (dir[dir.length - 1] === '/' ? dir : dir + '/') + fileName : null);
-	  var isTemplateKey = key && key.indexOf(KEY_USER_ID_PLACEHOLDER) > -1;
+	  var isTemplateKey = !!(key && key.indexOf(KEY_USER_ID_PLACEHOLDER) > -1);
 
 	  // full key including userId provided
 	  if (key && !isTemplateKey) return bluebird_1.resolve(key)
@@ -14024,7 +14024,8 @@
 	        return '/' + session.user.id + '/' + uploadFolder + '/' + fileName
 	      } else {
 	        // construct anonymous key
-	        return '/' + ANONYMOUS_USER_ID + '/' + uploadFolder + '/' + fileName
+	        var k = '/' + ANONYMOUS_USER_ID + '/' + uploadFolder + '/' + fileName;
+	        return null
 	      }
 	    }
 	  })
@@ -14032,7 +14033,9 @@
 
 	var keyValidationRegex = /^\/([a-zA-Z0-9\.\-\_]+\/)+([a-zA-Z0-9\.\-\_]+)$/;
 	function validateKey (key) {
-	  if (keyValidationRegex.test(key)) {
+	  if (!key) {
+	    return bluebird_1.resolve(null)
+	  } else if (keyValidationRegex.test(key)) {
 	    return bluebird_1.resolve(key)
 	  } else {
 	    return bluebird_1.reject(
@@ -14042,21 +14045,29 @@
 	      + '- must start with a slash\n'
 	      + '- must not end with a slash\n'
 	      + '- must have one or more directories\n'
-	      + '- must not include doulbleslashes like: "//"\n'
+	      + '- must not include double slashes like: "//"\n'
 	      + '- allowed characters are: a-z A-Z 0-9 _ - . /'
 	    )
 	  }
 	}
 
-	function getCredentials (file, key) {
+	function getCredentials (file, key, fileName) {
 	  // strip leading slash
-	  if (key[0] === '/') key = key.substring(1);
+	  if (key && key[0] === '/') key = key.substring(1);
 	  // get credentials for upload
-	  return callService('S3.getCredentials', {
-	    contentLength: file.size || file.length,
-	    contentType: getMimeTypeFromFileName(key),
-	    key: key
-	  })
+	  var params = {
+	    contentLength: file.size || file.length
+	  };
+	  if (key) {
+	    params.contentType = getMimeTypeFromFileName(key);
+	    params.key = key;
+	  } else if (fileName) {
+	    params.contentType = getMimeTypeFromFileName(fileName);
+	    params.fileName = fileName;
+	  } else {
+	    return bluebird_1.reject('Key or fileName param must be provided.')
+	  }
+	  return callService('S3.getCredentials', params)
 	}
 
 	function uploadFile (file, credentials, onProgress) {
