@@ -39,7 +39,7 @@ export default function putToStore (files, options) {
         dir: options.dir,
         onProgress: function(progress, total){
           progress_[i] = progress
-          onProgress_(progress_.reduce(function(a, b) { return a+b; }, 0), totalSize_)
+          if (onProgress_) onProgress_(progress_.reduce(function(a, b) { return a+b; }, 0), totalSize_)
         }
       })
     })
@@ -61,7 +61,7 @@ function putSingleFileToStore (file, options) {
   return resolveKey(key, dir, fileName)
     .then(validateKey)
     .then(function (key) {
-      return getCredentials(file, key)
+      return getCredentials(file, key, fileName)
     })
     .then(function (credentials) {
       return uploadFile(file, credentials, onProgress)
@@ -72,7 +72,7 @@ function putSingleFileToStore (file, options) {
 function resolveKey (key, dir, fileName) {
   // prefer key. fallback to dir + fileName
   key = key ? key : (dir ? (dir[dir.length - 1] === '/' ? dir : dir + '/') + fileName : null)
-  var isTemplateKey = key && key.indexOf(KEY_USER_ID_PLACEHOLDER) > -1
+  var isTemplateKey = !!(key && key.indexOf(KEY_USER_ID_PLACEHOLDER) > -1)
 
   // full key including userId provided
   if (key && !isTemplateKey) return Promise.resolve(key)
@@ -96,7 +96,8 @@ function resolveKey (key, dir, fileName) {
         return '/' + session.user.id + '/' + uploadFolder + '/' + fileName
       } else {
         // construct anonymous key
-        return '/' + ANONYMOUS_USER_ID + '/' + uploadFolder + '/' + fileName
+        var k = '/' + ANONYMOUS_USER_ID + '/' + uploadFolder + '/' + fileName
+        return null
       }
     }
   })
@@ -104,7 +105,9 @@ function resolveKey (key, dir, fileName) {
 
 var keyValidationRegex = /^\/([a-zA-Z0-9\.\-\_]+\/)+([a-zA-Z0-9\.\-\_]+)$/
 function validateKey (key) {
-  if (keyValidationRegex.test(key)) {
+  if (!key) {
+    return Promise.resolve(null)
+  } else if (keyValidationRegex.test(key)) {
     return Promise.resolve(key)
   } else {
     return Promise.reject(
@@ -120,15 +123,23 @@ function validateKey (key) {
   }
 }
 
-function getCredentials (file, key) {
+function getCredentials (file, key, fileName) {
   // strip leading slash
-  if (key[0] === '/') key = key.substring(1)
+  if (key && key[0] === '/') key = key.substring(1)
   // get credentials for upload
-  return callServices('S3.getCredentials', {
-    contentLength: file.size || file.length,
-    contentType: getMimeTypeFromFileName(key),
-    key: key
-  })
+  var params = {
+    contentLength: file.size || file.length
+  }
+  if (key) {
+    params.contentType = getMimeTypeFromFileName(key)
+    params.key = key
+  } else if (fileName) {
+    params.contentType = getMimeTypeFromFileName(fileName)
+    params.fileName = fileName
+  } else {
+    return Promise.reject('Key or fileName param must be provided.')
+  }
+  return callServices('S3.getCredentials', params)
 }
 
 function uploadFile (file, credentials, onProgress) {
