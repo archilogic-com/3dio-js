@@ -9,13 +9,25 @@ export default {
     },
     lightMapIntensity: {
       // default is -100 to trigger fallback to value specified in data3d file
-      type:'float',
-      default: -100
+      type: 'float',
+      default:-100.0,
+      parse: function (value) {
+        if (parseFloat(value) >= 0.0) {
+          return parseFloat(value)
+        }
+        return -100.0 // = fallback to value from data3d file
+      }
     },
     lightMapExposure: {
       // default is -100 to trigger fallback to value specified in data3d file
-      type:'float',
-      default: -100
+      type: 'float',
+      default: -100.0,
+      parse: function (value) {
+        if (parseFloat(value)) {
+          return parseFloat(value)
+        }
+        return -100.0 // = fallback to value from data3d file
+      }
     }
   },
 
