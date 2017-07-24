@@ -12,6 +12,7 @@
   },
   "main": "index.js",
   "scripts": {
+    "start": "gulp dev-browser",
     "dev-browser": "gulp dev-browser",
     "dev-node": "gulp dev-node",
     "test": "gulp test",
