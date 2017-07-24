@@ -50,7 +50,7 @@ https://3d.io/docs/1/
 
 ### Server
 
-Run: `npm install 3dio --save`
+`npm install 3dio --save`
 
 ## Features
 
