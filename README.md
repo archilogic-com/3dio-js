@@ -35,19 +35,18 @@
 
 https://3d.io/docs/1/
 
-## Installation
+## Install
 
 ### Browser
 
-Install latest minor version:
 ```html
 <head>
+  <!-- latest minor version -->
   <script src="https://3d.io/releases/3dio-js/1.x.x-beta/3dio.min.js"></script>
 </head>
 ```
-Older versions: https://3d.io/releases/
 
-### Server (Node)
+### Server
 
 Run: `npm install 3dio --save`
 
@@ -58,3 +57,12 @@ https://3d.io/#products
 ## Use Cases
 
 https://3d.io/#use-cases
+
+## Contribute
+
+Install local dev environment:
+
+1. Clone repository: `git clone https://github.com/archilogic-com/3dio-js.git ; cd ./3dio-js`
+2. Install global packages: `npm install rollup -g ; npm install lite-server -g`
+3. Install local packages: `npm install`
+4. Run local dev server: `npm start`
