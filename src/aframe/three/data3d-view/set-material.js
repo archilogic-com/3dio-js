@@ -158,7 +158,7 @@ export default function setMaterial (args) {
       lme = _attributes.mapLightCenter
     }
 
-    material3d.lightMapIntensity = lmi
+    material3d.lightMapIntensity = (lmi >= 0.0) ? lmi : 0.0
     material3d.lightMapExposure = lme
     material3d.lightMapFalloff = (_attributes.mapLightFalloff !== undefined) ? _attributes.mapLightFalloff : DEFAULT_LIGHT_MAP_FALLOFF
     material3d.uniforms.lightMapIntensity.value = material3d.lightMapIntensity
