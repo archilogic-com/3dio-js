@@ -4,6 +4,7 @@ import request                      from './utils/io/request.js'
 import fetch                        from './utils/io/fetch.js'
 import getMimeTypeFromFilename      from './utils/get-mime-type-from-filename.js'
 import uuid                         from './utils/uuid.js'
+import getShortId                   from './utils/short-id.js'
 import url                          from './utils/url.js'
 import path                         from './utils/path.js'
 import wait                         from './utils/wait.js'
@@ -25,6 +26,7 @@ var utils = {
   getMimeTypeFromFilename: getMimeTypeFromFilename,
   url: url,
   uuid: uuid,
+  getShortId: getShortId,
   path: path,
   wait: wait
 
