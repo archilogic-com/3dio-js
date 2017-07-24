@@ -114,7 +114,7 @@ function validateKey (key) {
       + '- must start with a slash\n'
       + '- must not end with a slash\n'
       + '- must have one or more directories\n'
-      + '- must not include doulbleslashes like: "//"\n'
+      + '- must not include double slashes like: "//"\n'
       + '- allowed characters are: a-z A-Z 0-9 _ - . /'
     )
   }
