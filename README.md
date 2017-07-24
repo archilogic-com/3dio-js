@@ -5,9 +5,11 @@
   &mdash;
   <a href="https://3d.io/docs/1/">Docs</a>
   &mdash;
+  <a href="#install">Install</a>
+  &mdash;
   <a href="https://3d.io/releases/">Releases</a>
   &mdash;
-  <a href="https://3d.io/#products">Features</a>
+  <a href="#contribute">Contribute</a>
 </div>
 
 
