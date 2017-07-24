@@ -23,6 +23,10 @@ var LO_RES_TEXTURE_TYPES = {
   UV2: 'mapLightPreview'
 }
 
+var DEFAULT_LIGHT_MAP_INTENSITY = 1
+var DEFAULT_LIGHT_MAP_EXPOSURE = 0.5
+var DEFAULT_LIGHT_MAP_FALLOFF = 0
+
 // RepeatWrapping: 1000 / ClampToEdgeWrapping: 1001 / MirroredRepeatWrapping: 1002
 
 // function
@@ -138,8 +142,8 @@ export default function setMaterial (args) {
   // lightmap settings
   if (_attributes.mapLight || _attributes.mapLightPreview) {
     // Fallback lightmap intensity and exposure values
-    var lmi = 1.0
-    var lme = 0.5
+    var lmi = DEFAULT_LIGHT_MAP_INTENSITY
+    var lme = DEFAULT_LIGHT_MAP_EXPOSURE
 
     if (lightMapIntensity !== undefined && lightMapIntensity != null && lightMapIntensity !== -100) {
       lmi = lightMapIntensity
@@ -155,10 +159,10 @@ export default function setMaterial (args) {
     }
 
     material3d.lightMapIntensity = lmi
-    material3d.lightMapCenter = lme
-    material3d.lightMapFalloff = (_attributes.mapLightFalloff !== undefined) ? _attributes.mapLightFalloff : 0
+    material3d.lightMapExposure = lme
+    material3d.lightMapFalloff = (_attributes.mapLightFalloff !== undefined) ? _attributes.mapLightFalloff : DEFAULT_LIGHT_MAP_FALLOFF
     material3d.uniforms.lightMapIntensity.value = material3d.lightMapIntensity
-    material3d.uniforms.lightMapCenter.value = material3d.lightMapCenter
+    material3d.uniforms.lightMapExposure.value = material3d.lightMapExposure
     material3d.uniforms.lightMapFalloff.value = material3d.lightMapFalloff
   }
 

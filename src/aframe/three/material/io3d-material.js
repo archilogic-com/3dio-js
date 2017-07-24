@@ -5,7 +5,7 @@ import vertexShader from './io3d-vertex.glsl'
 // CONFIGS
 
 var DEFAULT_LIGHT_MAP_INTENSITY = 1
-var DEFAULT_LIGHT_MAP_CENTER = 0.5
+var DEFAULT_LIGHT_MAP_EXPOSURE = 0.5
 var DEFAULT_LIGHT_MAP_FALLOFF = 0
 
 export default checkDependencies ({
@@ -17,7 +17,7 @@ export default checkDependencies ({
     THREE.ShaderMaterial.call( this, params )
 
     var params = params || {}
-    this.lightMapCenter = params.lightMapCenter || DEFAULT_LIGHT_MAP_CENTER
+    this.lightMapExposure = params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE
     this.lightMapFalloff = params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF
 
     this.uniforms = THREE.UniformsUtils.merge( [
@@ -30,7 +30,7 @@ export default checkDependencies ({
         lightMap: { value: params.lightMap || null },
         lightMapIntensity: { value: params.lightMapIntensity || DEFAULT_LIGHT_MAP_INTENSITY },
         lightMapFalloff: { value: params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF },
-        lightMapCenter: { value: params.lightMapCenter || DEFAULT_LIGHT_MAP_CENTER },
+        lightMapExposure: { value: params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE },
         normalMap: { value: params.normalMap || null },
         shininess: { value: params.shininess || 1.0 },
         specular: { value: params.specular || new THREE.Color(0.25, 0.25, 0.25) },
