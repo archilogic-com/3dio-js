@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.18
- * @date 2017/07/24 18:43
+ * @version 1.0.0-beta.19
+ * @date 2017/07/25 13:21
  * @branch master
- * @commit 027475cd4a33bd4501945a6c4cbaab37239d4029
+ * @commit 99cf917bed56a364459857f05bd44513080c4817
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.IO3D = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/07/24 18:43', GIT_BRANCH = 'master', GIT_COMMIT = '027475cd4a33bd4501945a6c4cbaab37239d4029'
+	var BUILD_DATE='2017/07/25 13:21', GIT_BRANCH = 'master', GIT_COMMIT = '99cf917bed56a364459857f05bd44513080c4817'
 
 	// detect environment
 	var isNode = !!(
@@ -5933,7 +5933,7 @@
 	  })();
 	}
 
-	var version = "1.0.0-beta.18";
+	var version = "1.0.0-beta.19";
 
 	var homepage = "https://3d.io";
 
@@ -13824,7 +13824,7 @@
 	 * @param {string} args.password - User password
 	 */
 	function logIn (args) {
-	  var name = args.name || args.email; // can be email or username (officially: username = userResourceName)
+	  var name = args.username || args.name || args.email; // can be email or username (officially: username = userResourceName)
 	  var password = args.password;
 
 	  logger.debug('Sending API login request for user "' + name + '" ...');
