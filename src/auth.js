@@ -9,7 +9,7 @@ import log from 'js-logger'
  * @param {string} args.password - User password
  */
 function logIn (args) {
-  var name = args.name || args.email // can be email or username (officially: username = userResourceName)
+  var name = args.username || args.name || args.email // can be email or username (officially: username = userResourceName)
   var password = args.password
 
   log.debug('Sending API login request for user "' + name + '" ...')
