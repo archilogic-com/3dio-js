@@ -11,9 +11,9 @@ var DEFAULT_LIGHT_MAP_FALLOFF = 0
 export default checkDependencies ({
   three: true,
   aframe: false
-}, function makeBaseMaterial () {
+}, function makeIo3dMaterial () {
 
-  function BaseMaterial( params ) {
+  function Io3dMaterial( params ) {
     THREE.ShaderMaterial.call( this, params )
 
     var params = params || {}
@@ -45,9 +45,9 @@ export default checkDependencies ({
     this.lights = true
   }
 
-  BaseMaterial.prototype = Object.create(THREE.ShaderMaterial.prototype)
-  BaseMaterial.prototype.constructor = BaseMaterial
+  Io3dMaterial.prototype = Object.create(THREE.ShaderMaterial.prototype)
+  Io3dMaterial.prototype.constructor = Io3dMaterial
 
-  return BaseMaterial
+  return Io3dMaterial
 
 })
