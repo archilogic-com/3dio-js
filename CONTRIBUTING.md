@@ -2,7 +2,7 @@
 
 ## Bug Reports
 
-Plaese provide the following information:
+Please provide the following information:
 * **How to Reproduce**<br>
   Describe in a few steps the actions to make the bug appear. Plaese provide a URL so that know where to start from. This information is crutial for us in order to reproduce the bug and localize it.
 * **Actual Result**<br>
