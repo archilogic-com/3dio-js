@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.19
- * @date 2017/07/28 07:30
+ * @version 1.0.0-beta.21
+ * @date 2017/07/28 13:35
  * @branch master
- * @commit 391c7d72208b160f188fa948405ef05dcafa84df
+ * @commit c36090dbe4d7742f57e4678ad7a3febfbc97aa25
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.IO3D = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/07/28 07:30', GIT_BRANCH = 'master', GIT_COMMIT = '391c7d72208b160f188fa948405ef05dcafa84df'
+	var BUILD_DATE='2017/07/28 13:35', GIT_BRANCH = 'master', GIT_COMMIT = 'c36090dbe4d7742f57e4678ad7a3febfbc97aa25'
 
 	// detect environment
 	var isNode = !!(
@@ -5933,7 +5933,7 @@
 	  })();
 	}
 
-	var version = "1.0.0-beta.19";
+	var version = "1.0.0-beta.21";
 
 	var homepage = "https://3d.io";
 
@@ -7273,6 +7273,10 @@
 	  UV2: 'mapLightPreview'
 	};
 
+	var DEFAULT_LIGHT_MAP_INTENSITY = 1.2;
+	var DEFAULT_LIGHT_MAP_EXPOSURE = 0.6;
+	var DEFAULT_LIGHT_MAP_FALLOFF = 0;
+
 	// RepeatWrapping: 1000 / ClampToEdgeWrapping: 1001 / MirroredRepeatWrapping: 1002
 
 	// function
@@ -7287,6 +7291,8 @@
 	  var reset = args.reset !== undefined ? args.reset : true;
 	  var loadingQueuePrefix = args.loadingQueuePrefix;
 	  var onFirstTextureSetLoaded = args.onFirstTextureSetLoaded;
+	  var lightMapIntensity = args.lightMapIntensity;
+	  var lightMapExposure = args.lightMapExposure;
 
 
 	  // transparency
@@ -7385,12 +7391,29 @@
 
 	  // lightmap settings
 	  if (_attributes.mapLight || _attributes.mapLightPreview) {
-	    material3d.lightMapIntensity = (_attributes.mapLightIntensity !== undefined) ? _attributes.mapLightIntensity : 1.0;
-	    material3d.lightMapCenter = (_attributes.mapLightCenter !== undefined) ? _attributes.mapLightCenter : 0.5;
-	    material3d.lightMapFalloff = (_attributes.mapLightFalloff !== undefined) ? _attributes.mapLightFalloff : 0.5;
+	    // Fallback lightmap intensity and exposure values
+	    var lmi = DEFAULT_LIGHT_MAP_INTENSITY;
+	    var lme = DEFAULT_LIGHT_MAP_EXPOSURE;
+
+	    if (lightMapIntensity !== undefined && lightMapIntensity != null && lightMapIntensity !== -100) {
+	      lmi = lightMapIntensity;
+	    } else if (_attributes.mapLightIntensity !== undefined) {
+	      lmi = _attributes.mapLightIntensity;
+	    }
+
+	    if (lightMapExposure !== undefined && lightMapExposure != null && lightMapExposure !== -100) {
+	      lme = lightMapExposure;
+	    } else if (_attributes.mapLightCenter !== undefined) {
+	      // in data3d lightMapExposure is mapLightCenter
+	      lme = _attributes.mapLightCenter;
+	    }
+
+	    material3d.lightMapIntensity = (lmi >= 0.0) ? lmi : 0.0;
+	    material3d.lightMapExposure = lme;
+	    material3d.lightMapFalloff = (_attributes.mapLightFalloff !== undefined) ? _attributes.mapLightFalloff : DEFAULT_LIGHT_MAP_FALLOFF;
 	    material3d.uniforms.lightMapIntensity.value = material3d.lightMapIntensity;
-	    material3d.uniforms.lightMapFalloff.value = material3d.lightMapCenter;
-	    material3d.uniforms.lightMapCenter.value = material3d.lightMapFalloff;
+	    material3d.uniforms.lightMapExposure.value = material3d.lightMapExposure;
+	    material3d.uniforms.lightMapFalloff.value = material3d.lightMapFalloff;
 	  }
 
 	  // shadows
@@ -7611,21 +7634,27 @@
 
 	});
 
-	var fragmentShader = "uniform vec3 diffuse;\r\nuniform vec3 emissive;\r\nuniform vec3 specular;\r\nuniform float shininess;\r\nuniform float opacity;\r\n\r\n#include <common>\r\n#include <packing>\r\n#include <uv_pars_fragment>\r\n#include <uv2_pars_fragment>\r\n#include <map_pars_fragment>\r\n#include <alphamap_pars_fragment>\r\n\r\n// Replaces <lightmap_pars_fragment>;\r\n\r\n#ifdef USE_LIGHTMAP\r\n\tuniform sampler2D lightMap;\r\n\tuniform float lightMapIntensity;\r\n\tuniform float lightMapCenter;\r\n\tuniform float lightMapFalloff;\r\n#endif\r\n\r\n#include <normalmap_pars_fragment>\r\n#include <specularmap_pars_fragment>\r\n\r\n#include <bsdfs>\r\n#include <lights_pars>\r\n#include <lights_phong_pars_fragment>\r\n#include <shadowmap_pars_fragment>\r\n\r\n\r\nvoid main() {\r\n\r\n    vec4 diffuseColor = vec4( diffuse, opacity );\r\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\r\n\r\n    vec3 totalEmissiveRadiance = emissive;\r\n\r\n    #include <map_fragment>\r\n    #include <alphamap_fragment>\r\n    #include <alphatest_fragment>\r\n    #include <specularmap_fragment>\r\n    #include <normal_flip>\r\n    #include <normal_fragment>\r\n\r\n    // accumulation\r\n    #include <lights_phong_fragment>\r\n\r\n    // Start of <light-template> replace block\r\n    GeometricContext geometry;\r\n\r\n    geometry.position = - vViewPosition;\r\n    geometry.normal = normal;\r\n    geometry.viewDir = normalize( vViewPosition );\r\n\r\n    IncidentLight directLight;\r\n\r\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        PointLight pointLight;\r\n\r\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\r\n\r\n            pointLight = pointLights[ i ];\r\n\r\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        SpotLight spotLight;\r\n\r\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\r\n\r\n            spotLight = spotLights[ i ];\r\n\r\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        DirectionalLight directionalLight;\r\n\r\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\r\n\r\n            directionalLight = directionalLights[ i ];\r\n\r\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\r\n\r\n        RectAreaLight rectAreaLight;\r\n\r\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\r\n\r\n            rectAreaLight = rectAreaLights[ i ];\r\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if defined( RE_IndirectDiffuse )\r\n\r\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\r\n\r\n        #ifdef USE_LIGHTMAP\r\n\r\n            // compute the light value\r\n            vec3 unit = vec3(1.0);\r\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapCenter * unit);\r\n            // compute the light intensity modifier\r\n            vec3 modifier = -lightMapFalloff * light * light + unit;\r\n            // apply light\r\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\r\n\r\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\r\n\r\n                lightMapIrradiance *= PI; // factor of PI should not be present; included here to prevent breakage\r\n\r\n            #endif\r\n\r\n            irradiance += lightMapIrradiance;\r\n\r\n        #endif\r\n\r\n        #if ( NUM_HEMI_LIGHTS > 0 )\r\n\r\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\r\n\r\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\r\n\r\n            }\r\n\r\n        #endif\r\n\r\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\r\n\r\n    #endif\r\n    // End of <light-template> replace block\r\n\r\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\r\n\r\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\r\n\r\n}";
+	var fragmentShader = "uniform vec3 diffuse;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapExposure;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\n#include <shadowmap_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( diffuse, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #include <normal_flip>\n    #include <normal_fragment>\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}";
 
-	var vertexShader = "varying vec3 vViewPosition;\r\n\r\n#ifndef FLAT_SHADED\r\n\tvarying vec3 vNormal;\r\n#endif\r\n\r\n#include <uv_pars_vertex>\r\n#include <uv2_pars_vertex>\r\n#include <shadowmap_pars_vertex>\r\n\r\nvoid main()\r\n{\r\n//  vUv = uv;\r\n  #include <uv_vertex>\r\n  #include <uv2_vertex>\r\n\r\n  #include <beginnormal_vertex>\r\n  #include <defaultnormal_vertex>\r\n\r\n  #ifndef FLAT_SHADED\r\n    // Normal computed with derivatives when FLAT_SHADED\r\n  \tvNormal = normalize( transformedNormal );\r\n  #endif\r\n\r\n  #include <begin_vertex>\r\n  #include <project_vertex>\r\n\r\n  vViewPosition = - mvPosition.xyz;\r\n\r\n  #include <worldpos_vertex>\r\n  #include <shadowmap_vertex>\r\n\r\n}";
+	var vertexShader = "varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}";
 
-	var BaseMaterial = checkDependencies ({
+	// CONFIGS
+
+	var DEFAULT_LIGHT_MAP_INTENSITY$1 = 1.2;
+	var DEFAULT_LIGHT_MAP_EXPOSURE$1 = 0.6;
+	var DEFAULT_LIGHT_MAP_FALLOFF$1 = 0;
+
+	var Io3dMaterial = checkDependencies ({
 	  three: true,
 	  aframe: false
-	}, function makeBaseMaterial () {
+	}, function makeIo3dMaterial () {
 
-	  function BaseMaterial( params ) {
+	  function Io3dMaterial( params ) {
 	    THREE.ShaderMaterial.call( this, params );
 
 	    var params = params || {};
-	    this.lightMapCenter = params.lightMapCenter || 0.5;
-	    this.lightMapFalloff = params.lightMapFalloff || 0.5;
+	    this.lightMapExposure = params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1;
+	    this.lightMapFalloff = params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1;
 
 	    this.uniforms = THREE.UniformsUtils.merge( [
 	      THREE.UniformsLib[ "lights" ],
@@ -7635,9 +7664,9 @@
 	        specularMap: { value: params.specularMap || null },
 	        alphaMap: { value: params.alphaMap || null },
 	        lightMap: { value: params.lightMap || null },
-	        lightMapIntensity: { value: params.lightMapIntensity || 1.0 },
-	        lightMapFalloff: { value: params.lightMapCenter || 0.5 },
-	        lightMapCenter: { value: params.lightMapCenter || 0.5 },
+	        lightMapIntensity: { value: params.lightMapIntensity || DEFAULT_LIGHT_MAP_INTENSITY$1 },
+	        lightMapFalloff: { value: params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1 },
+	        lightMapExposure: { value: params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1 },
 	        normalMap: { value: params.normalMap || null },
 	        shininess: { value: params.shininess || 1.0 },
 	        specular: { value: params.specular || new THREE.Color(0.25, 0.25, 0.25) },
@@ -7652,10 +7681,10 @@
 	    this.lights = true;
 	  }
 
-	  BaseMaterial.prototype = Object.create(THREE.ShaderMaterial.prototype);
-	  BaseMaterial.prototype.constructor = BaseMaterial;
+	  Io3dMaterial.prototype = Object.create(THREE.ShaderMaterial.prototype);
+	  Io3dMaterial.prototype.constructor = Io3dMaterial;
 
-	  return BaseMaterial
+	  return Io3dMaterial
 
 	});
 
@@ -7714,7 +7743,9 @@
 	        materials = data3d.materials || this.materials,
 	        materialKeys = data3d.materialKeys,
 	        loadingQueuePrefix = data3d.loadingQueuePrefix || options.loadingQueuePrefix,
-	        onFirstTextureSetLoaded = options.onFirstTextureSetLoaded;
+	        onFirstTextureSetLoaded = options.onFirstTextureSetLoaded,
+	        lightMapIntensity = options.lightMapIntensity,
+	        lightMapExposure = options.lightMapExposure;
 
 	      // internals
 	      var self = this, meshId, mesh, materialId, wireframe3d, positions, uvs, uvs2, scale,
@@ -7752,7 +7783,7 @@
 	          if (!self._materials3d[ meshId ]) {
 	            // (one material pro mesh, because some of our mesh properties are material properties and it does not matter performance wise)
 	            //material3d = new THREE.MeshPhongMaterial({ opacity: 0.5, transparent: true})
-	            material3d = new BaseMaterial();
+	            material3d = new Io3dMaterial();
 	            material3d.name = materialId;
 	            if (!materials) {
 	              // there is no material properties. using default properties
@@ -7938,7 +7969,9 @@
 	              mesh3d: self._meshes3d[ meshId ],
 	              material3d: self._materials3d[ meshId ],
 	              attributes: materials[ materialId ],
-	              onFirstTextureSetLoaded: onFirstTextureSetLoaded
+	              onFirstTextureSetLoaded: onFirstTextureSetLoaded,
+	              lightMapIntensity: lightMapIntensity,
+	              lightMapExposure: lightMapExposure
 	            });
 	          }
 
@@ -14412,6 +14445,26 @@
 	    key: {
 	      type: 'string',
 	      default: ''
+	    },
+	    lightMapIntensity: {
+	      type: 'float',
+	      default: 1.2,
+	      parse: function (value) {
+	        if (parseFloat(value) >= 0.0) {
+	          return parseFloat(value)
+	        }
+	        return -100.0 // = fallback to value from data3d file
+	      }
+	    },
+	    lightMapExposure: {
+	      type: 'float',
+	      default: 0.6,
+	      parse: function (value) {
+	        if (parseFloat(value)) {
+	          return parseFloat(value)
+	        }
+	        return -100.0 // = fallback to value from data3d file
+	      }
 	    }
 	  },
 
@@ -14422,6 +14475,8 @@
 	    var this_ = this;
 	    var url = this_.data.url || this_.data.URL;
 	    var key = this_.data.key || this_.data.KEY;
+	    var lightMapIntensity = this_.data.lightMapIntensity;
+	    var lightMapExposure = this_.data.lightMapExposure;
 
 	    // check params
 	    if ((!url || url === '') && (!key || key === '')) return
@@ -14437,7 +14492,7 @@
 	    ;(key ? IO3D.storage.get(key) : IO3D.data3d.load(url)).then(function (data3d) {
 	      this_.el.data3d = data3d;
 	      // update view
-	      this_.data3dView.set(data3d);
+	      this_.data3dView.set(data3d, { lightMapIntensity: lightMapIntensity, lightMapExposure: lightMapExposure });
 	      this_.el.setObject3D('mesh', this_.mesh);
 	      // emit event
 	      this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
