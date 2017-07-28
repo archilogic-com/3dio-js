@@ -16,7 +16,7 @@ uniform float opacity;
 #ifdef USE_LIGHTMAP
 	uniform sampler2D lightMap;
 	uniform float lightMapIntensity;
-	uniform float lightMapCenter;
+	uniform float lightMapExposure;
 	uniform float lightMapFalloff;
 #endif
 
@@ -136,7 +136,7 @@ void main() {
 
             // compute the light value
             vec3 unit = vec3(1.0);
-            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapCenter * unit);
+            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);
             // compute the light intensity modifier
             vec3 modifier = -lightMapFalloff * light * light + unit;
             // apply light

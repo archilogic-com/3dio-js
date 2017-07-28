@@ -1,7 +1,7 @@
 import checkDependencies from '../check-dependencies.js'
 import setMaterial from './data3d-view/set-material.js'
 import Wireframe from './data3d-view/wireframe.js'
-import BaseMaterial from './material/base-material.js'
+import Io3dMaterial from './material/io3d-material.js'
 
 // constants
 
@@ -58,7 +58,9 @@ export default checkDependencies({
         materials = data3d.materials || this.materials,
         materialKeys = data3d.materialKeys,
         loadingQueuePrefix = data3d.loadingQueuePrefix || options.loadingQueuePrefix,
-        onFirstTextureSetLoaded = options.onFirstTextureSetLoaded
+        onFirstTextureSetLoaded = options.onFirstTextureSetLoaded,
+        lightMapIntensity = options.lightMapIntensity,
+        lightMapExposure = options.lightMapExposure
 
       // internals
       var self = this, meshId, mesh, materialId, wireframe3d, positions, uvs, uvs2, scale,
@@ -96,7 +98,7 @@ export default checkDependencies({
           if (!self._materials3d[ meshId ]) {
             // (one material pro mesh, because some of our mesh properties are material properties and it does not matter performance wise)
             //material3d = new THREE.MeshPhongMaterial({ opacity: 0.5, transparent: true})
-            material3d = new BaseMaterial()
+            material3d = new Io3dMaterial()
             material3d.name = materialId
             if (!materials) {
               // there is no material properties. using default properties
@@ -282,7 +284,9 @@ export default checkDependencies({
               mesh3d: self._meshes3d[ meshId ],
               material3d: self._materials3d[ meshId ],
               attributes: materials[ materialId ],
-              onFirstTextureSetLoaded: onFirstTextureSetLoaded
+              onFirstTextureSetLoaded: onFirstTextureSetLoaded,
+              lightMapIntensity: lightMapIntensity,
+              lightMapExposure: lightMapExposure
             })
           }
 

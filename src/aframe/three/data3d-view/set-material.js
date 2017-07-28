@@ -23,6 +23,10 @@ var LO_RES_TEXTURE_TYPES = {
   UV2: 'mapLightPreview'
 }
 
+var DEFAULT_LIGHT_MAP_INTENSITY = 1.2
+var DEFAULT_LIGHT_MAP_EXPOSURE = 0.6
+var DEFAULT_LIGHT_MAP_FALLOFF = 0
+
 // RepeatWrapping: 1000 / ClampToEdgeWrapping: 1001 / MirroredRepeatWrapping: 1002
 
 // function
@@ -37,6 +41,8 @@ export default function setMaterial (args) {
   var reset = args.reset !== undefined ? args.reset : true
   var loadingQueuePrefix = args.loadingQueuePrefix
   var onFirstTextureSetLoaded = args.onFirstTextureSetLoaded
+  var lightMapIntensity = args.lightMapIntensity
+  var lightMapExposure = args.lightMapExposure
 
 
   // transparency
@@ -135,12 +141,29 @@ export default function setMaterial (args) {
 
   // lightmap settings
   if (_attributes.mapLight || _attributes.mapLightPreview) {
-    material3d.lightMapIntensity = (_attributes.mapLightIntensity !== undefined) ? _attributes.mapLightIntensity : 1.0
-    material3d.lightMapCenter = (_attributes.mapLightCenter !== undefined) ? _attributes.mapLightCenter : 0.5
-    material3d.lightMapFalloff = (_attributes.mapLightFalloff !== undefined) ? _attributes.mapLightFalloff : 0.5
+    // Fallback lightmap intensity and exposure values
+    var lmi = DEFAULT_LIGHT_MAP_INTENSITY
+    var lme = DEFAULT_LIGHT_MAP_EXPOSURE
+
+    if (lightMapIntensity !== undefined && lightMapIntensity != null && lightMapIntensity !== -100) {
+      lmi = lightMapIntensity
+    } else if (_attributes.mapLightIntensity !== undefined) {
+      lmi = _attributes.mapLightIntensity
+    }
+
+    if (lightMapExposure !== undefined && lightMapExposure != null && lightMapExposure !== -100) {
+      lme = lightMapExposure
+    } else if (_attributes.mapLightCenter !== undefined) {
+      // in data3d lightMapExposure is mapLightCenter
+      lme = _attributes.mapLightCenter
+    }
+
+    material3d.lightMapIntensity = (lmi >= 0.0) ? lmi : 0.0
+    material3d.lightMapExposure = lme
+    material3d.lightMapFalloff = (_attributes.mapLightFalloff !== undefined) ? _attributes.mapLightFalloff : DEFAULT_LIGHT_MAP_FALLOFF
     material3d.uniforms.lightMapIntensity.value = material3d.lightMapIntensity
-    material3d.uniforms.lightMapFalloff.value = material3d.lightMapCenter
-    material3d.uniforms.lightMapCenter.value = material3d.lightMapFalloff
+    material3d.uniforms.lightMapExposure.value = material3d.lightMapExposure
+    material3d.uniforms.lightMapFalloff.value = material3d.lightMapFalloff
   }
 
   // shadows
