@@ -13,7 +13,7 @@ Plaese provide the following information:
 
 ## Documentation
 
-### Writing Style
+### Wording
 * User centric
   * Imagine you are speaking to a beginner, helping him to achieve a simple useful task.
   * Prefer popular terms over technicaly correct ones
@@ -25,7 +25,7 @@ Plaese provide the following information:
 * Add links whenever possible. 
 
 ### Examples
-* Every exemple should be executable without modification
+* Every example should be executable without modification
   * Do not use fake ids (i.e. "12345")
   * Avoid template like placeholders (i.e. "/<your-folder>/index.html")
 * Isomorphic code should be presented in generic examples.
