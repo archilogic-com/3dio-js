@@ -3,7 +3,7 @@
 <div align="center">
   <a href="https://3d.io">Site</a>
   &mdash;
-  <a href="https://3d.io/docs/1/">Docs</a>
+  <a href="https://3d.io/docs/api/1/">Docs</a>
   &mdash;
   <a href="#install">Install</a>
   &mdash;
@@ -35,7 +35,7 @@
 
 ## Documentation
 
-https://3d.io/docs/1/
+https://3d.io/docs/api/1/
 
 ## Install
 

@@ -21,9 +21,9 @@ function logIn (args) {
       password:     password
     })
 
-  }).then(function onSuccess(session) {
-    log.debug('API: User "' + session.user.displayName + '" logged in successfully.')
-    return normalizeSession(session)
+  }).then(normalizeSession).then(function onSuccess(session) {
+    log.debug('API: User "' + session.user.username + '" logged in successfully.')
+    return session
   }, function onError(error){
     log.debug('API: Could not log in user "' + args.name + '".', error)
     return Promise.reject(error)
@@ -48,24 +48,32 @@ function logOut () {
  */
 function getSession () {
   log.debug('Sending API session request...')
-  return callServices('User.getSession').then(function (session) {
+  return callServices('User.getSession').then(normalizeSession).then(function (session) {
     log.debug('API: session data:\n', session)
-    return normalizeSession(session)
+    return session
   })
 }
 
 // helpers
 
-function normalizeSession(session) {
-  if (session.isAuthenticated) {
-    var user = session.user
-    // use 'id' instead of 'resourceId'
-    user.id = user.resourceId
-    delete user.resourceId
-    // make sure every user has a role array
-    if (!user.roles) user.roles = []
+function normalizeSession(session_) {
+
+  var isAuthenticated = !!session_.isAuthenticated
+  var user = {}
+
+  // populate user object if authenticated
+  if (session_.isAuthenticated) {
+    user.id = session_.user.resourceId
+    user.username = session_.user.resourceName
+    user.email = session_.user.email
+    user.roles = session_.user.roles || []
   }
-  return session
+
+  return {
+    isAuthenticated: isAuthenticated,
+    user: user
+  }
+
 }
 
 
