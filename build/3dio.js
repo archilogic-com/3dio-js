@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.19
- * @date 2017/07/25 13:21
+ * @date 2017/07/28 07:30
  * @branch master
- * @commit 99cf917bed56a364459857f05bd44513080c4817
+ * @commit 391c7d72208b160f188fa948405ef05dcafa84df
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.IO3D = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/07/25 13:21', GIT_BRANCH = 'master', GIT_COMMIT = '99cf917bed56a364459857f05bd44513080c4817'
+	var BUILD_DATE='2017/07/28 07:30', GIT_BRANCH = 'master', GIT_COMMIT = '391c7d72208b160f188fa948405ef05dcafa84df'
 
 	// detect environment
 	var isNode = !!(
@@ -13836,9 +13836,9 @@
 	      password:     password
 	    })
 
-	  }).then(function onSuccess(session) {
-	    logger.debug('API: User "' + session.user.displayName + '" logged in successfully.');
-	    return normalizeSession(session)
+	  }).then(normalizeSession).then(function onSuccess(session) {
+	    logger.debug('API: User "' + session.user.username + '" logged in successfully.');
+	    return session
 	  }, function onError(error){
 	    logger.debug('API: Could not log in user "' + args.name + '".', error);
 	    return Promise.reject(error)
@@ -13863,24 +13863,32 @@
 	 */
 	function getSession () {
 	  logger.debug('Sending API session request...');
-	  return callService('User.getSession').then(function (session) {
+	  return callService('User.getSession').then(normalizeSession).then(function (session) {
 	    logger.debug('API: session data:\n', session);
-	    return normalizeSession(session)
+	    return session
 	  })
 	}
 
 	// helpers
 
-	function normalizeSession(session) {
-	  if (session.isAuthenticated) {
-	    var user = session.user;
-	    // use 'id' instead of 'resourceId'
-	    user.id = user.resourceId;
-	    delete user.resourceId;
-	    // make sure every user has a role array
-	    if (!user.roles) user.roles = [];
+	function normalizeSession(session_) {
+
+	  var isAuthenticated = !!session_.isAuthenticated;
+	  var user = {};
+
+	  // populate user object if authenticated
+	  if (session_.isAuthenticated) {
+	    user.id = session_.user.resourceId;
+	    user.username = session_.user.resourceName;
+	    user.email = session_.user.email;
+	    user.roles = session_.user.roles || [];
 	  }
-	  return session
+
+	  return {
+	    isAuthenticated: isAuthenticated,
+	    user: user
+	  }
+
 	}
 
 
