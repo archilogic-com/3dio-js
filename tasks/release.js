@@ -40,7 +40,7 @@ const awsDir = {
 
 const release = gulp.series(
   checkBranchName,
-  npmCheckVersion
+  npmCheckVersion,
   build,
   cleanDestDir,
   uglify,
