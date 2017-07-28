@@ -4,8 +4,8 @@ import vertexShader from './io3d-vertex.glsl'
 
 // CONFIGS
 
-var DEFAULT_LIGHT_MAP_INTENSITY = 1
-var DEFAULT_LIGHT_MAP_EXPOSURE = 0.5
+var DEFAULT_LIGHT_MAP_INTENSITY = 1.2
+var DEFAULT_LIGHT_MAP_EXPOSURE = 0.6
 var DEFAULT_LIGHT_MAP_FALLOFF = 0
 
 export default checkDependencies ({

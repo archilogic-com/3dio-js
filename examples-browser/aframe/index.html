@@ -8,7 +8,6 @@
 </head>
 <body>
 <a-scene>
-
   <!-- data3d files specified by IO3D-store-key key or URL -->
   <!-- object shadow attributes
        receive - toggle object receives realtime shadow (true or false, valid for entire object)
@@ -16,9 +15,9 @@
        note: realtime shadows require at least one light source that casts shadows
        note: fallback to material attribute from data3d file if not set
   -->
-  <a-entity io3d-data3d="key:/fd72bf39-9d3a-471f-a4ff-ecaa3f5ff30b/bake/2017-04-15_22-45-14_XsiltX/regular/lighting.gz.data3d.buffer; lightMapIntensity:1.0; lightMapExposure:0.5" position="0 -5 -6" shadow="receive: true"></a-entity>
-  <a-entity io3d-furniture="id:10a54bcf-3b9c-4518-b7ea-81c4251cf5a4" position="-0.85 -5 -5.4" shadow="cast: true" ></a-entity>
-  <a-entity io3d-furniture="id:e1ac1efb-7505-449a-b493-680fcfb2f3a6" position="-0.82 -5 -0.6" shadow="cast: true" rotation="0.0 180.0 0.0"></a-entity>
+  <a-entity id="apartment" io3d-data3d="key:/535e624259ee6b0200000484/bake/2017-07-25_14-03-12_lXOHrN/lighting.gz.data3d.buffer" position="0 -5 0" shadow="receive: true"></a-entity>
+  <a-entity id="couch" io3d-furniture="id:e1ac1efb-7505-449a-b493-680fcfb2f3a6" position="0.8 -5 -1.6" rotation="0 -90 0" shadow="cast: true" ></a-entity>
+  <a-entity id="vase" io3d-furniture="id:10a54bcf-3b9c-4518-b7ea-81c4251cf5a4" position="0.8 -5 -2.7" shadow="cast: true" rotation="0.0 180.0 0.0"></a-entity>
 
   <!-- light attributes
        castShadow:{true, false} - influence shadow receiving/casting objects
@@ -26,11 +25,7 @@
        intensity - Light strength
        distance - Distance where intensity becomes 0. If distance is 0, then the point light does not decay with distance
   -->
-  <a-entity light="type:directional; intensity: 0.75; castShadow:false;" position="1 1 1"></a-entity>
-  <a-entity light="type: point; intensity: 2; distance: 5; decay: 2; castShadow:true" position="-2.7 -2.2 -6.6"></a-entity>
-
-  <a-sphere position="-4 -3.5 -5" radius="1.25" color="#EF2D5E" shadow="cast: true; receive: true"></a-sphere>
-  <a-cylinder position="-0.4 -4 -3" radius="0.5" height="1.5" color="#FFC65D" shadow="cast: true; receive: true"></a-cylinder>
+  
 </a-scene>
 </body>
 </html>
