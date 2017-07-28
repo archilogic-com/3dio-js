@@ -14,7 +14,7 @@ var utils = {
 
   data3d: {
     load: loadData3d,
-    decodeBuffer: decodeBuffer,
+    decodeBuffer: decodeBuffer
   },
   io: {
     fetch: fetch,
