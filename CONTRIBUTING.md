@@ -30,3 +30,4 @@ Please provide the following information:
   * Avoid template like placeholders (i.e. "/<your-folder>/index.html")
 * Isomorphic code should be presented in generic examples.
 * Examples for specific environments should be declared as such explicitely.
+* Distinguish secret and public keys and always explicitely declare them as such.
