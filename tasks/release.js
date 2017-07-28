@@ -16,6 +16,7 @@ const git = require('gulp-git')
 // internals
 
 const version = packageInfo.version
+const branchName = preamble.gitBranchName
 const latestNpmVersion = execSync(`npm view ${packageInfo.name} version`).toString('utf8').replace('\n', '')
 
 // configs
@@ -38,7 +39,8 @@ const awsDir = {
 // tasks
 
 const release = gulp.series(
-  npmCheckVersion,
+  checkBranchName,
+  npmCheckVersion
   build,
   cleanDestDir,
   uglify,
@@ -48,6 +50,14 @@ const release = gulp.series(
   npmPublish,
   s3Upload
 )
+
+function checkBranchName () {
+  if (branchName !== 'master') {
+    throw 'ERROR: Releasing is only allowed from master branch.'
+  } else {
+    return Promise.resolve()
+  }
+}
 
 function cleanDestDir () {
   return del([destDir]).then(function () {
