@@ -6,28 +6,6 @@ export default {
     id: {
       type: 'string',
       default: '10344b13-d981-47a0-90ac-f048ee2780a6'
-    },
-    lightMapIntensity: {
-      // default is -100 to trigger fallback to value specified in data3d file
-      type: 'float',
-      default:-100.0,
-      parse: function (value) {
-        if (parseFloat(value) >= 0.0) {
-          return parseFloat(value)
-        }
-        return -100.0 // = fallback to value from data3d file
-      }
-    },
-    lightMapExposure: {
-      // default is -100 to trigger fallback to value specified in data3d file
-      type: 'float',
-      default: -100.0,
-      parse: function (value) {
-        if (parseFloat(value)) {
-          return parseFloat(value)
-        }
-        return -100.0 // = fallback to value from data3d file
-      }
     }
   },
 
@@ -37,8 +15,6 @@ export default {
   update: function () {
     var this_ = this
     var productId = this_.data.id
-    var lightMapIntensity = this_.data.lightMapIntensity
-    var lightMapExposure = this_.data.lightMapExposure
 
     // check params
     if (!productId || productId === '') return
@@ -80,7 +56,7 @@ export default {
       })
 
       // update view
-      this_.data3dView.set(result.data3d, { lightMapIntensity: lightMapIntensity, lightMapExposure: lightMapExposure })
+      this_.data3dView.set(result.data3d)
       this_.el.data3d = result.data3d
       this_.el.setObject3D('mesh', this_.mesh)
       // emit event
