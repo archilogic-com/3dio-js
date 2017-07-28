@@ -1,5 +1,5 @@
 import Promise from 'bluebird'
-import putToStore from '../../storage/put.js'
+import putToStore from '../storage/put.js'
 
 // configs
 

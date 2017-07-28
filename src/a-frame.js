@@ -1,8 +1,7 @@
-import checkDependencies from './aframe/check-dependencies.js'
-import Data3dView from './aframe/three/data3d-view.js'
-import createFileDrop from './aframe/ui/create-file-drop.js'
-import data3dComponent from './aframe/component/data3d.js'
-import furnitureComponent from './aframe/component/furniture.js'
+import checkDependencies from './a-frame/check-dependencies.js'
+import Data3dView from './a-frame/three/data3d-view.js'
+import data3dComponent from './a-frame/component/data3d.js'
+import furnitureComponent from './a-frame/component/furniture.js'
 
 // initialize aframe components
 
@@ -19,13 +18,10 @@ checkDependencies({
 
 // export
 
-var aframe = {
+var aFrame = {
   three: {
     Data3dView: Data3dView,
-  },
-  ui: {
-    createFileDrop: createFileDrop
   }
 }
 
-export default aframe
+export default aFrame

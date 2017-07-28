@@ -3,12 +3,13 @@ import './core/bootstrap.js'
 
 import runtime from './core/runtime.js'
 import configs from './core/configs.js'
-import aFrame from './aframe.js'
+
+import aFrame from './a-frame.js'
 import furniture from './furniture.js'
-// import scene from './scene.js'
-import utils from './utils.js'
 import storage from './storage.js'
 import auth from './auth.js'
+import ui from './ui.js'
+import utils from './utils.js'
 
 var IO3D = {
 
@@ -19,12 +20,12 @@ var IO3D = {
 
   // non-products
   auth: auth,
+  ui: ui,
+  utils: utils,
 
   // app specific
   runtime: runtime,
-  configs: configs,
-
-  utils: utils
+  configs: configs
 
 }
 

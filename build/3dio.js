@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.21
- * @date 2017/07/28 13:35
+ * @date 2017/07/28 13:56
  * @branch master
- * @commit c36090dbe4d7742f57e4678ad7a3febfbc97aa25
+ * @commit 07ce959a144c243b1b674cbec1a958d78cad6f39
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.IO3D = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/07/28 13:35', GIT_BRANCH = 'master', GIT_COMMIT = 'c36090dbe4d7742f57e4678ad7a3febfbc97aa25'
+	var BUILD_DATE='2017/07/28 13:56', GIT_BRANCH = 'master', GIT_COMMIT = '07ce959a144c243b1b674cbec1a958d78cad6f39'
 
 	// detect environment
 	var isNode = !!(
@@ -8096,6 +8096,182 @@
 
 	});
 
+	var data3dComponent = {
+
+	  schema: {
+	    url: {
+	      type: 'string',
+	      default: ''
+	    },
+	    key: {
+	      type: 'string',
+	      default: ''
+	    },
+	    lightMapIntensity: {
+	      type: 'float',
+	      default: 1.2,
+	      parse: function (value) {
+	        if (parseFloat(value) >= 0.0) {
+	          return parseFloat(value)
+	        }
+	        return -100.0 // = fallback to value from data3d file
+	      }
+	    },
+	    lightMapExposure: {
+	      type: 'float',
+	      default: 0.6,
+	      parse: function (value) {
+	        if (parseFloat(value)) {
+	          return parseFloat(value)
+	        }
+	        return -100.0 // = fallback to value from data3d file
+	      }
+	    }
+	  },
+
+	  init: function () {
+	  },
+
+	  update: function () {
+	    var this_ = this;
+	    var url = this_.data.url || this_.data.URL;
+	    var key = this_.data.key || this_.data.KEY;
+	    var lightMapIntensity = this_.data.lightMapIntensity;
+	    var lightMapExposure = this_.data.lightMapExposure;
+
+	    // check params
+	    if ((!url || url === '') && (!key || key === '')) return
+
+	    // remove old mesh
+	    this_.remove();
+
+	    // create new one
+	    this_.mesh = new THREE.Object3D();
+	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
+	    this.el.data3dView = this.data3dView
+	    // load 3d file
+	    ;(key ? IO3D.storage.get(key) : IO3D.data3d.load(url)).then(function (data3d) {
+	      this_.el.data3d = data3d;
+	      // update view
+	      this_.data3dView.set(data3d, { lightMapIntensity: lightMapIntensity, lightMapExposure: lightMapExposure });
+	      this_.el.setObject3D('mesh', this_.mesh);
+	      // emit event
+	      this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
+	    });
+	  },
+
+	  remove: function () {
+	    if (this.data3dView) {
+	      this.data3dView.destroy();
+	      this.data3dView = null;
+	    }
+	    if (this.mesh) {
+	      this.el.removeObject3D('mesh');
+	      this.mesh = null;
+	    }
+	  }
+
+	};
+
+	var furnitureComponent = {
+
+	  schema: {
+	    id: {
+	      type: 'string',
+	      default: '10344b13-d981-47a0-90ac-f048ee2780a6'
+	    }
+	  },
+
+	  init: function () {
+	  },
+
+	  update: function () {
+	    var this_ = this;
+	    var productId = this_.data.id;
+
+	    // check params
+	    if (!productId || productId === '') return
+
+	    // remove old mesh
+	    this_.remove();
+
+	    // create new one
+	    this_.mesh = new THREE.Object3D();
+	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
+
+	    // get product data
+	    IO3D.furniture.get(productId).then(function (result) {
+	      // Expose properties
+	      this_.productInfo = result;
+	      this_.data3d = result.data3d;
+
+	      // Parse & expose materials
+	      this_.availableMaterials = {};
+	      Object.keys(result.data3d.meshes).forEach(function eachMesh (meshName) {
+	        this_.availableMaterials[meshName] = result.data3d.alternativeMaterialsByMeshKey ? result.data3d.alternativeMaterialsByMeshKey[meshName] : result.data3d.meshes[meshName].material;
+
+	        //update material based on inspector
+	        var materialPropName = 'material_' + meshName.replace(/\s/g, '_');
+	        if (this_.data[materialPropName] !== undefined) {
+	          result.data3d.meshes[meshName].material = this_.data[materialPropName];
+	          this_.el.emit('material-changed', {mesh: meshName, material: this_.data[materialPropName]});
+	        } else {
+	          // register it as part of the schema for the inspector
+	          var prop = {};
+	          prop[materialPropName] = {
+	            type: 'string',
+	            default: result.data3d.meshes[meshName].material,
+	            oneOf: result.data3d.alternativeMaterialsByMeshKey ? result.data3d.alternativeMaterialsByMeshKey[meshName] : result.data3d.meshes[meshName].material
+	          };
+	          this_.extendSchema(prop);
+	          this_.data[materialPropName] = result.data3d.meshes[meshName].material;
+	        }
+	      });
+
+	      // update view
+	      this_.data3dView.set(result.data3d);
+	      this_.el.data3d = result.data3d;
+	      this_.el.setObject3D('mesh', this_.mesh);
+	      // emit event
+	      if (this_._prevId !== productId) this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
+	      this_._prevId = productId;
+	    });
+	  },
+
+	  remove: function () {
+	    if (this.data3dView) {
+	      this.data3dView.destroy();
+	      this.data3dView = null;
+	    }
+	    if (this.mesh) {
+	      this.el.removeObject3D('mesh');
+	      this.mesh = null;
+	    }
+	  }
+
+	};
+
+	// initialize aframe components
+
+	checkDependencies({
+	  three: false,
+	  aFrame: true,
+	  onError: function (){
+	    console.log('AFRAME library not found: related features will be disabled.');
+	  }
+	}, function registerComponents () {
+	  AFRAME.registerComponent('io3d-data3d', data3dComponent);
+	  AFRAME.registerComponent('io3d-furniture', furnitureComponent);
+	});
+
+	// export
+
+	var aFrame = {
+	  three: {
+	    Data3dView: Data3dView,
+	  }
+	};
+
 	var es5 = createCommonjsModule(function (module) {
 	var isES5 = (function(){
 	    "use strict";
@@ -13616,20 +13792,6 @@
 	bluebird$2.noConflict = noConflict;
 	var bluebird_1 = bluebird$2;
 
-	var FormData_;
-	if (runtime.isNode) {
-	  FormData_ = require('form-data');
-	} else if (typeof FormData !== 'undefined') {
-	  FormData_ = FormData;
-	} else {
-	  console.warn('Missing FormData API.');
-	  FormData_ = function FormDataError () {
-	    throw new Error('Missing FormData API.')
-	  };
-	}
-
-	var FormData$1 = FormData_;
-
 	var fetch$1 = (function(){
 
 	  if (runtime.isNode) {
@@ -13840,779 +14002,6 @@
 	  });
 
 	}
-
-	function getShortId (length) {
-	  length = length || 6;
-	  var shortId = '';
-	  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	  for (var i = 0; i < length; i++) shortId += possible.charAt(Math.floor(Math.random() * possible.length));
-	  return shortId
-	}
-
-	/**
-	 * Login in user using credentials
-	 * @function IO3D.auth.logIn
-	 * @param {object} args
-	 * @param {string} args.name     - User email or username
-	 * @param {string} args.password - User password
-	 */
-	function logIn (args) {
-	  var name = args.username || args.name || args.email; // can be email or username (officially: username = userResourceName)
-	  var password = args.password;
-
-	  logger.debug('Sending API login request for user "' + name + '" ...');
-	  // always log out first
-	  return callService('User.logOut').then(function () {
-	    // then send the actual log in request
-	    return callService('User.logIn', {
-	      resourceName: name,
-	      password:     password
-	    })
-
-	  }).then(normalizeSession).then(function onSuccess(session) {
-	    logger.debug('API: User "' + session.user.username + '" logged in successfully.');
-	    return session
-	  }, function onError(error){
-	    logger.debug('API: Could not log in user "' + args.name + '".', error);
-	    return Promise.reject(error)
-	  })
-	}
-
-	/**
-	 * Log out currently authenticated user.
-	 * @function IO3D.auth.logOut
-	 */
-	function logOut () {
-	  logger.debug('Sending API log out request...');
-	  return callService('User.logOut').then(function (result) {
-	    logger.debug('API: Log out successful.');
-	    return true
-	  })
-	}
-
-	/**
-	 * Get information about the current session.
-	 * @function IO3D.auth.getSession
-	 */
-	function getSession () {
-	  logger.debug('Sending API session request...');
-	  return callService('User.getSession').then(normalizeSession).then(function (session) {
-	    logger.debug('API: session data:\n', session);
-	    return session
-	  })
-	}
-
-	// helpers
-
-	function normalizeSession(session_) {
-
-	  var isAuthenticated = !!session_.isAuthenticated;
-	  var user = {};
-
-	  // populate user object if authenticated
-	  if (session_.isAuthenticated) {
-	    user.id = session_.user.resourceId;
-	    user.username = session_.user.resourceName;
-	    user.email = session_.user.email;
-	    user.roles = session_.user.roles || [];
-	  }
-
-	  return {
-	    isAuthenticated: isAuthenticated,
-	    user: user
-	  }
-
-	}
-
-
-	// export
-
-	var auth = {
-	  logIn:      logIn,
-	  logOut:     logOut,
-	  getSession: getSession
-	};
-
-	var FALLBACK_MIME_TYPE = 'application/octet-stream';
-	var EXTENSION_TO_MIME_TYPE = {
-	    obj: 'text/plain',
-	    dds: 'application/octet-stream',
-	    dwg: 'application/acad',
-	    dxf: 'application/dxf',
-	    jpg: 'image/jpeg',
-	    jpeg: 'image/jpeg',
-	    png: 'image/png',
-	    gif: 'image/gif',
-	    txt: 'text/plain',
-	    log: 'text/plain',
-	    svg: 'svg+xml',
-	    html: 'text/html',
-	    htm: 'text/html',
-	    js: 'application/javascript',
-	    json: 'application/json',
-	    md: 'text/markdown',
-	    csv: 'text/csv',
-	    gz:	'application/x-gzip',
-	    gzip:	'application/x-gzip',
-	    zip:'application/x-zip',
-	    pdf: 'application/pdf',
-	    '3ds': 'application/x-3ds'
-	  };
-
-	function getMimeTypeFromFileName (filename) {
-	  var
-	    result = FALLBACK_MIME_TYPE,
-	    extension;
-
-	  // get extension if file has one
-	  if (filename.indexOf('.') > -1) {
-	    extension = filename.split('.').pop().toLowerCase();
-	    if (EXTENSION_TO_MIME_TYPE[extension]) {
-	      // set mime type if it exists in the map
-	      result = EXTENSION_TO_MIME_TYPE[extension];
-	    }
-	  }
-
-	  return result
-	}
-
-	// configs
-
-	var ANONYMOUS_USER_ID = 'anonymous-uploads';
-	var KEY_USER_ID_PLACEHOLDER = '{{userId}}';
-
-	// main
-
-	function putToStore (files, options) {
-
-	  options = options || {};
-
-	  if (!Array.isArray(files)) {
-
-	    // upload single file
-
-	    return putSingleFileToStore(files, options)
-
-	  } else {
-
-	    // upload multiple files and bundle progress events
-	    // TODO: add dir option
-
-	    var totalSize_ = 0;
-	    var progress_ = [];
-	    var onProgress_ = options.onProgress;
-
-	    return bluebird_1.map(files, function(file, i){
-	      totalSize_ += file.size;
-	      return putSingleFileToStore(file, {
-	        dir: options.dir,
-	        onProgress: function(progress, total){
-	          progress_[i] = progress;
-	          if (onProgress_) onProgress_(progress_.reduce(function(a, b) { return a+b; }, 0), totalSize_);
-	        }
-	      })
-	    })
-
-	  }
-
-	}
-
-	// private
-
-	function putSingleFileToStore (file, options) {
-
-	  // API
-	  var key = options.key;
-	  var dir = options.dir;
-	  var fileName = options.filename || options.fileName || file.name || 'unnamed.txt';
-	  var onProgress = options.onProgress;
-
-	  return resolveKey(key, dir, fileName)
-	    .then(validateKey)
-	    .then(function (key) {
-	      return getCredentials(file, key, fileName)
-	    })
-	    .then(function (credentials) {
-	      return uploadFile(file, credentials, onProgress)
-	    })
-
-	}
-
-	function resolveKey (key, dir, fileName) {
-	  // prefer key. fallback to dir + fileName
-	  key = key ? key : (dir ? (dir[dir.length - 1] === '/' ? dir : dir + '/') + fileName : null);
-	  var isTemplateKey = !!(key && key.indexOf(KEY_USER_ID_PLACEHOLDER) > -1);
-
-	  // full key including userId provided
-	  if (key && !isTemplateKey) return bluebird_1.resolve(key)
-
-	  // get user id
-	  return auth.getSession().then(function(session){
-	    if (isTemplateKey) {
-	      if (session.isAuthenticated) {
-	        // replace user id in template key
-	        return key.replace( '{{userId}}', session.user.id )
-	      } else {
-	        console.error('Using key parameter with template syntax requires authentication.');
-	        // reject with user friendly error message
-	        return bluebird_1.reject('Please log in to upload file.')
-	      }
-	    } else {
-	      // key not provided
-	      var uploadFolder = getFormattedDate() + '_' + getShortId();
-	      if (session.isAuthenticated) {
-	        // construct new user specific key
-	        return '/' + session.user.id + '/' + uploadFolder + '/' + fileName
-	      } else {
-	        // construct anonymous key
-	        var k = '/' + ANONYMOUS_USER_ID + '/' + uploadFolder + '/' + fileName;
-	        return null
-	      }
-	    }
-	  })
-	}
-
-	var keyValidationRegex = /^\/([a-zA-Z0-9\.\-\_]+\/)+([a-zA-Z0-9\.\-\_]+)$/;
-	function validateKey (key) {
-	  if (!key) {
-	    return bluebird_1.resolve(null)
-	  } else if (keyValidationRegex.test(key)) {
-	    return bluebird_1.resolve(key)
-	  } else {
-	    return bluebird_1.reject(
-	      'Key format validation failed.\n'
-	      + key + '\n'
-	      + 'Key must match the following pattern\n'
-	      + '- must start with a slash\n'
-	      + '- must not end with a slash\n'
-	      + '- must have one or more directories\n'
-	      + '- must not include double slashes like: "//"\n'
-	      + '- allowed characters are: a-z A-Z 0-9 _ - . /'
-	    )
-	  }
-	}
-
-	function getCredentials (file, key, fileName) {
-	  // strip leading slash
-	  if (key && key[0] === '/') key = key.substring(1);
-	  // get credentials for upload
-	  var params = {
-	    contentLength: file.size || file.length
-	  };
-	  if (key) {
-	    params.contentType = getMimeTypeFromFileName(key);
-	    params.key = key;
-	  } else if (fileName) {
-	    params.contentType = getMimeTypeFromFileName(fileName);
-	    params.fileName = fileName;
-	  } else {
-	    return bluebird_1.reject('Key or fileName param must be provided.')
-	  }
-	  return callService('S3.getCredentials', params)
-	}
-
-	function uploadFile (file, credentials, onProgress) {
-	  // upload directly to S3 using credentials
-	  var fd = new FormData$1();
-	  fd.append('key', credentials.key);
-	  fd.append('AWSAccessKeyId', credentials.AWSAccessKeyId);
-	  fd.append('acl', credentials.acl);
-	  fd.append('Content-Type', credentials.contentType);
-	  fd.append('policy', credentials.policy);
-	  fd.append('signature', credentials.signature);
-	  fd.append('success_action_status', '201');
-	  if (credentials.contentEncoding) {
-	    fd.append('Content-Encoding', credentials.contentEncoding);
-	  }
-	  fd.append('file', file);
-
-	  if (runtime.isBrowser) {
-
-	    // upload using XHR (in order to provide progress info)
-	    return new bluebird_1(function(resolve, reject){
-	      var xhr = new XMLHttpRequest();
-	      xhr.crossOrigin = 'Anonymous';
-	      xhr.onload = function (event) {
-	        if (xhr.status >= 200 && xhr.status < 300) {
-	          var key = getKeyFromS3Response(xhr.responseText);
-	          key ? resolve(key) : reject ('Error Uploading File: '+xhr.responseText);
-	        } else {
-	          reject ('Error Uploading File: '+xhr.responseText);
-	        }
-	      };
-	      xhr.onerror = function (event) {
-	        reject(event);
-	      };
-	      if (onProgress) {
-	        xhr.upload.addEventListener('progress', function(e){
-	          onProgress(e.loaded, e.total);
-	        }, false);
-	      }
-	      xhr.open('POST', credentials.url, true);
-	      xhr.send(fd);
-	    })
-
-	  } else {
-
-	    // node environment: upload using fetch
-	    return fetch$1(credentials.url, {method: 'POST', body: fd}).then(function (res) {
-	      return res.text()
-	    }).then(function(str){
-	      return getKeyFromS3Response(str) || bluebird_1.reject('Error Uploading File: '+str)
-	    })
-
-	  }
-	}
-
-	function getKeyFromS3Response (str) {
-	  // get file key from response
-	  var s = /<Key>(.*)<\/Key>/gi.exec(str);
-	  return s ? '/'+s[1] : false
-	}
-
-	function getFormattedDate() {
-	  var d = new Date();
-	  return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
-	    + '_' + d.getHours() + '-' + d.getMinutes() // + '-' + d.getSeconds()
-	}
-
-	// configs
-
-	var EXTENSION_WHITE_LIST = [
-	  // generic
-	  '.json', '.buffer', '.js', '.md', '.txt', '.csv',
-	  // 3d formats
-	  '.obj', '.mtl', '.ifc', '.fbx', '.gltf', '.bin',
-	  // 2d formats
-	  '.jpg', '.jpeg', '.jpe', '.png', '.gif', '.tga', '.dds', '.svg', '.pdf', '.dxf'
-	];
-
-	// themes
-
-	var THEME = {
-	  bright: {
-	    box: 'background-color: rgba(255, 255, 255, 0.2); border: 1px dashed rgba(255, 255, 255, 0.7); border-radius: 2px;',
-	    over: 'background-color: rgba(255, 255, 255, 0.3); border: 1px dashed rgba(255, 255, 255, 1); border-radius: 2px;'
-	  },
-	  dark: {
-	    box: 'background-color: rgba(0, 0, 0, 0.2); border: 1px dashed rgba(0, 0, 0, 0.7); border-radius: 2px;',
-	    over: 'background-color: rgba(0, 0, 0, 0.3); border: 1px dashed rgba(0, 0, 0, 1); border-radius: 2px;'
-	  }
-	};
-
-	// main
-
-	function createFileDrop (args) {
-
-	  var elementId = args.elementId;
-	  var onDrop = args.onDrop;
-	  var upload = args.upload !== undefined ? args.upload : true;
-	  var theme = args.theme !== undefined ? args.theme : 'bright';
-	  var onProgress = args.onProgress;
-
-	  var el = document.getElementById(elementId);
-	  if (THEME[theme]) el.setAttribute('style', THEME[theme].box);
-
-	  function dragEnter (event) {
-	    doNothing(event);
-	    if (THEME[theme]) el.setAttribute('style', THEME[theme].over);
-	  }
-
-	  function dragLeave (event) {
-	    doNothing(event);
-	    if (THEME[theme]) el.setAttribute('style', THEME[theme].box);
-	  }
-
-	  function drop (event) {
-	    doNothing(event);
-	    getFilesFromDragAndDropEvent(event).then(function (files) {
-	      if (!upload) {
-	        // return files
-	        onDrop(files);
-	      } else {
-	        // return keys & files
-	        return putToStore(files, { onProgress: onProgress }).then(function(keys){
-	          onDrop(keys, files);
-	        })
-	      }
-	    }).catch(console.error);
-	  }
-
-	  /* events fired on the draggable target */
-	  // document.addEventListener("drag", function( event ) {}, false)
-	  // document.addEventListener("dragstart", function( event ) {}, false)
-	  // document.addEventListener("dragend", function( event ) {}, false)
-	  // prevent events on window drop
-	  window.addEventListener('dragover', doNothing, false);
-	  window.addEventListener('drop', doNothing, false);
-	  /* events fired on the drop targets */
-	  el.addEventListener('dragover', function (event) {
-	    doNothing(event);
-	    event.dataTransfer.dropEffect = 'copy'; // set cursor style
-	  }, false);
-	  el.addEventListener('dragenter', dragEnter, false);
-	  el.addEventListener('dragleave', dragLeave, false);
-	  el.addEventListener('dragend', dragLeave, false);
-	  el.addEventListener('drop', drop, false);
-
-	}
-
-	// helpers
-
-	function doNothing (event) {
-	  event.stopPropagation();
-	  event.preventDefault();
-	}
-
-	function getFilesFromDragAndDropEvent (event, options) {
-	  // compatibility function to extract files
-
-	  // API
-	  options = options || {};
-	  var warningCallback = options.onWarning || function () {};
-
-	  // internals
-	  var result;
-	  var dataTransfer = event.dataTransfer || event.originalEvent.dataTransfer;
-
-	  if (dataTransfer.items && dataTransfer.items.length) {
-	    // more sophisticated drop API, supporting folders structures
-	    // works in webkit browsers only
-	    // get files with directories
-	    //http://code.flickr.net/2012/12/10/drag-n-drop/
-	    result = getFlatFileArrayFromItems(dataTransfer.items).then(function (files) {
-	      return removeRootDir(filterValidFiles(files, warningCallback))
-	    });
-
-	  } else if (dataTransfer.files) {
-	    // "classic" drag and drop api, not supporting folders
-	    // check if user tries to dragdrop a folder = only one "file" with no extension
-	    var isFolder = dataTransfer.files.length === 0 || (dataTransfer.files.length === 1 && dataTransfer.files[0].name.indexOf('.') < 0);
-	    if (isFolder) {
-	      result = bluebird_1.reject('Sorry, but this browser doesn\'t support drag&drop of folders. (use Chrome)');
-	    } else {
-	      // create Blobs from Files because in File name property is read only.
-	      // but we may want file.name to be writable later.
-	      var i, l, _file, file, files = [];
-	      for (i = 0, l = dataTransfer.files.length; i < l; i++) {
-	        _file = dataTransfer.files[i];
-	        file = new Blob([_file], {type: _file.type});
-	        file.name = _file.name;
-	        files.push(file);
-	      }
-	      result = bluebird_1.resolve(filterValidFiles(files, warningCallback));
-
-	    }
-
-	  } else {
-
-	    result = bluebird_1.reject('Event does not contain "items" nor "files" property.');
-
-	  }
-
-	  return result
-
-	}
-
-	// helpers
-
-	function getFlatFileArrayFromItems (items) {
-
-	  // get entries from items
-	  var entries = [], item;
-	  for (var i = 0, l = items.length; i < l; i++) {
-	    item = items[i];
-	    entries[entries.length] = item.webkitGetAsEntry ? item.webkitGetAsEntry() : item.getAsFile();
-	  }
-
-	  // recursively parse directories and collect files
-	  var files = [];
-	  return recursivelyParseEntries(entries, files).then(function () {
-	    return files
-	  })
-
-	}
-
-	function recursivelyParseEntries (entries, resultArray) {
-	  return bluebird_1.all(
-	    entries.map(function (entry) {
-
-	      if (entry.isFile) {
-
-	        // convert File into Blob
-	        return new bluebird_1(function (resolve, reject) {
-	          // add file to file array
-	          entry
-	            .file(function (_file) {
-	              // create Blob from File because in File name property is read only.
-	              // but we want file.name to include path so we need to overwrite it.
-	              var file = new Blob([_file], {type: _file.type});
-	              file.name = entry.fullPath.substring(1);
-	              resultArray[resultArray.length] = file;
-	              resolve();
-	            });
-	        })
-
-	      } else if (entry instanceof File) {
-
-	        // create Blob from File because in File name property is read only.
-	        // but we want file.name to include path so we need to overwrite it.
-	        var file = new Blob([entry], {type: entry.type});
-	        file.name = entry.name;
-	        // add file to file array
-	        resultArray[resultArray.length] = file;
-
-	      } else if (entry.isDirectory) {
-
-	        // read directory
-	        return new bluebird_1(function (resolve, reject) {
-	          entry
-	            .createReader()
-	            .readEntries(function (_entries) {
-	              resolve(recursivelyParseEntries(_entries, resultArray));
-	            });
-	        })
-
-	      }
-	    })
-	  )
-	}
-
-	function filterValidFiles (_files, warningCallback) {
-	  var file, fileName, extension, hasValidExtension, filteredFiles = [];
-	  for (var i = 0, l = _files.length; i < l; i++) {
-	    file = _files[i];
-	    fileName = file.name;
-	    if (typeof fileName === 'string') {
-	      // ignore system files
-	      if (fileName[0] === '.' || fileName.substring(0, 9) === '__MACOSX/') {
-	        continue
-	      }
-	      // check extensions
-	      extension = fileName.split('.').length > 1 ? '.' + fileName.split('.').pop().toLowerCase() : null;
-	      if (!extension) {
-	        console.error('File ' + fileName + ' has no extension and will be ignored.');
-	        warningCallback('File ' + fileName + ' has no extension and will be ignored.');
-	      } else {
-	        hasValidExtension = EXTENSION_WHITE_LIST.indexOf(extension) > -1;
-	        if (!hasValidExtension) {
-	          console.error('File ' + fileName + ' is not supported and will be ignored.');
-	          warningCallback('File ' + fileName + ' is not supported and will be ignored.');
-	        } else {
-	          filteredFiles[filteredFiles.length] = file;
-	        }
-	      }
-	    }
-	  }
-	  return filteredFiles
-	}
-
-	function removeRootDir (files) {
-	  // get root dir from first file
-	  var rootDir, i, l;
-	  if (files.length && files[0].name && files[0].name.indexOf('/') > -1) {
-	    rootDir = files[0].name.split('/')[0];
-	  } else {
-	    return files
-	  }
-
-	  // check if all files have the same root dir
-	  var hasSameRootDir;
-	  for (i = 1, l = files.length; i < l; i++) {
-	    hasSameRootDir = files[i].name && files[i].name.indexOf('/') > -1 && files[i].name.split('/')[0] === rootDir;
-	    if (!hasSameRootDir) {
-	      return files
-	    }
-	  }
-
-	  // remove root dir from file names
-	  for (i = 0, l = files.length; i < l; i++) {
-	    files[i].name = files[i].name.substring(rootDir.length + 1);
-	  }
-
-	  // iterate recursively until all equal leading directories are removed
-	  return removeRootDir(files)
-
-	}
-
-	var data3dComponent = {
-
-	  schema: {
-	    url: {
-	      type: 'string',
-	      default: ''
-	    },
-	    key: {
-	      type: 'string',
-	      default: ''
-	    },
-	    lightMapIntensity: {
-	      type: 'float',
-	      default: 1.2,
-	      parse: function (value) {
-	        if (parseFloat(value) >= 0.0) {
-	          return parseFloat(value)
-	        }
-	        return -100.0 // = fallback to value from data3d file
-	      }
-	    },
-	    lightMapExposure: {
-	      type: 'float',
-	      default: 0.6,
-	      parse: function (value) {
-	        if (parseFloat(value)) {
-	          return parseFloat(value)
-	        }
-	        return -100.0 // = fallback to value from data3d file
-	      }
-	    }
-	  },
-
-	  init: function () {
-	  },
-
-	  update: function () {
-	    var this_ = this;
-	    var url = this_.data.url || this_.data.URL;
-	    var key = this_.data.key || this_.data.KEY;
-	    var lightMapIntensity = this_.data.lightMapIntensity;
-	    var lightMapExposure = this_.data.lightMapExposure;
-
-	    // check params
-	    if ((!url || url === '') && (!key || key === '')) return
-
-	    // remove old mesh
-	    this_.remove();
-
-	    // create new one
-	    this_.mesh = new THREE.Object3D();
-	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
-	    this.el.data3dView = this.data3dView
-	    // load 3d file
-	    ;(key ? IO3D.storage.get(key) : IO3D.data3d.load(url)).then(function (data3d) {
-	      this_.el.data3d = data3d;
-	      // update view
-	      this_.data3dView.set(data3d, { lightMapIntensity: lightMapIntensity, lightMapExposure: lightMapExposure });
-	      this_.el.setObject3D('mesh', this_.mesh);
-	      // emit event
-	      this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
-	    });
-	  },
-
-	  remove: function () {
-	    if (this.data3dView) {
-	      this.data3dView.destroy();
-	      this.data3dView = null;
-	    }
-	    if (this.mesh) {
-	      this.el.removeObject3D('mesh');
-	      this.mesh = null;
-	    }
-	  }
-
-	};
-
-	var furnitureComponent = {
-
-	  schema: {
-	    id: {
-	      type: 'string',
-	      default: '10344b13-d981-47a0-90ac-f048ee2780a6'
-	    }
-	  },
-
-	  init: function () {
-	  },
-
-	  update: function () {
-	    var this_ = this;
-	    var productId = this_.data.id;
-
-	    // check params
-	    if (!productId || productId === '') return
-
-	    // remove old mesh
-	    this_.remove();
-
-	    // create new one
-	    this_.mesh = new THREE.Object3D();
-	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
-
-	    // get product data
-	    IO3D.furniture.get(productId).then(function (result) {
-	      // Expose properties
-	      this_.productInfo = result;
-	      this_.data3d = result.data3d;
-
-	      // Parse & expose materials
-	      this_.availableMaterials = {};
-	      Object.keys(result.data3d.meshes).forEach(function eachMesh (meshName) {
-	        this_.availableMaterials[meshName] = result.data3d.alternativeMaterialsByMeshKey ? result.data3d.alternativeMaterialsByMeshKey[meshName] : result.data3d.meshes[meshName].material;
-
-	        //update material based on inspector
-	        var materialPropName = 'material_' + meshName.replace(/\s/g, '_');
-	        if (this_.data[materialPropName] !== undefined) {
-	          result.data3d.meshes[meshName].material = this_.data[materialPropName];
-	          this_.el.emit('material-changed', {mesh: meshName, material: this_.data[materialPropName]});
-	        } else {
-	          // register it as part of the schema for the inspector
-	          var prop = {};
-	          prop[materialPropName] = {
-	            type: 'string',
-	            default: result.data3d.meshes[meshName].material,
-	            oneOf: result.data3d.alternativeMaterialsByMeshKey ? result.data3d.alternativeMaterialsByMeshKey[meshName] : result.data3d.meshes[meshName].material
-	          };
-	          this_.extendSchema(prop);
-	          this_.data[materialPropName] = result.data3d.meshes[meshName].material;
-	        }
-	      });
-
-	      // update view
-	      this_.data3dView.set(result.data3d);
-	      this_.el.data3d = result.data3d;
-	      this_.el.setObject3D('mesh', this_.mesh);
-	      // emit event
-	      if (this_._prevId !== productId) this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
-	      this_._prevId = productId;
-	    });
-	  },
-
-	  remove: function () {
-	    if (this.data3dView) {
-	      this.data3dView.destroy();
-	      this.data3dView = null;
-	    }
-	    if (this.mesh) {
-	      this.el.removeObject3D('mesh');
-	      this.mesh = null;
-	    }
-	  }
-
-	};
-
-	// initialize aframe components
-
-	checkDependencies({
-	  three: false,
-	  aFrame: true,
-	  onError: function (){
-	    console.log('AFRAME library not found: related features will be disabled.');
-	  }
-	}, function registerComponents () {
-	  AFRAME.registerComponent('io3d-data3d', data3dComponent);
-	  AFRAME.registerComponent('io3d-furniture', furnitureComponent);
-	});
-
-	// export
-
-	var aframe = {
-	  three: {
-	    Data3dView: Data3dView,
-	  },
-	  ui: {
-	    createFileDrop: createFileDrop
-	  }
-	};
 
 	// from https://github.com/jbgutierrez/path-parse
 	// Split a filename into [root, dir, basename, ext], unix version
@@ -15955,6 +15344,625 @@
 	  get: getProduct
 	};
 
+	var FormData_;
+	if (runtime.isNode) {
+	  FormData_ = require('form-data');
+	} else if (typeof FormData !== 'undefined') {
+	  FormData_ = FormData;
+	} else {
+	  console.warn('Missing FormData API.');
+	  FormData_ = function FormDataError () {
+	    throw new Error('Missing FormData API.')
+	  };
+	}
+
+	var FormData$1 = FormData_;
+
+	function getShortId (length) {
+	  length = length || 6;
+	  var shortId = '';
+	  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	  for (var i = 0; i < length; i++) shortId += possible.charAt(Math.floor(Math.random() * possible.length));
+	  return shortId
+	}
+
+	/**
+	 * Login in user using credentials
+	 * @function IO3D.auth.logIn
+	 * @param {object} args
+	 * @param {string} args.name     - User email or username
+	 * @param {string} args.password - User password
+	 */
+	function logIn (args) {
+	  var name = args.username || args.name || args.email; // can be email or username (officially: username = userResourceName)
+	  var password = args.password;
+
+	  logger.debug('Sending API login request for user "' + name + '" ...');
+	  // always log out first
+	  return callService('User.logOut').then(function () {
+	    // then send the actual log in request
+	    return callService('User.logIn', {
+	      resourceName: name,
+	      password:     password
+	    })
+
+	  }).then(normalizeSession).then(function onSuccess(session) {
+	    logger.debug('API: User "' + session.user.username + '" logged in successfully.');
+	    return session
+	  }, function onError(error){
+	    logger.debug('API: Could not log in user "' + args.name + '".', error);
+	    return Promise.reject(error)
+	  })
+	}
+
+	/**
+	 * Log out currently authenticated user.
+	 * @function IO3D.auth.logOut
+	 */
+	function logOut () {
+	  logger.debug('Sending API log out request...');
+	  return callService('User.logOut').then(function (result) {
+	    logger.debug('API: Log out successful.');
+	    return true
+	  })
+	}
+
+	/**
+	 * Get information about the current session.
+	 * @function IO3D.auth.getSession
+	 */
+	function getSession () {
+	  logger.debug('Sending API session request...');
+	  return callService('User.getSession').then(normalizeSession).then(function (session) {
+	    logger.debug('API: session data:\n', session);
+	    return session
+	  })
+	}
+
+	// helpers
+
+	function normalizeSession(session_) {
+
+	  var isAuthenticated = !!session_.isAuthenticated;
+	  var user = {};
+
+	  // populate user object if authenticated
+	  if (session_.isAuthenticated) {
+	    user.id = session_.user.resourceId;
+	    user.username = session_.user.resourceName;
+	    user.email = session_.user.email;
+	    user.roles = session_.user.roles || [];
+	  }
+
+	  return {
+	    isAuthenticated: isAuthenticated,
+	    user: user
+	  }
+
+	}
+
+
+	// export
+
+	var auth = {
+	  logIn:      logIn,
+	  logOut:     logOut,
+	  getSession: getSession
+	};
+
+	var FALLBACK_MIME_TYPE = 'application/octet-stream';
+	var EXTENSION_TO_MIME_TYPE = {
+	    obj: 'text/plain',
+	    dds: 'application/octet-stream',
+	    dwg: 'application/acad',
+	    dxf: 'application/dxf',
+	    jpg: 'image/jpeg',
+	    jpeg: 'image/jpeg',
+	    png: 'image/png',
+	    gif: 'image/gif',
+	    txt: 'text/plain',
+	    log: 'text/plain',
+	    svg: 'svg+xml',
+	    html: 'text/html',
+	    htm: 'text/html',
+	    js: 'application/javascript',
+	    json: 'application/json',
+	    md: 'text/markdown',
+	    csv: 'text/csv',
+	    gz:	'application/x-gzip',
+	    gzip:	'application/x-gzip',
+	    zip:'application/x-zip',
+	    pdf: 'application/pdf',
+	    '3ds': 'application/x-3ds'
+	  };
+
+	function getMimeTypeFromFileName (filename) {
+	  var
+	    result = FALLBACK_MIME_TYPE,
+	    extension;
+
+	  // get extension if file has one
+	  if (filename.indexOf('.') > -1) {
+	    extension = filename.split('.').pop().toLowerCase();
+	    if (EXTENSION_TO_MIME_TYPE[extension]) {
+	      // set mime type if it exists in the map
+	      result = EXTENSION_TO_MIME_TYPE[extension];
+	    }
+	  }
+
+	  return result
+	}
+
+	// configs
+
+	var ANONYMOUS_USER_ID = 'anonymous-uploads';
+	var KEY_USER_ID_PLACEHOLDER = '{{userId}}';
+
+	// main
+
+	function putToStore (files, options) {
+
+	  options = options || {};
+
+	  if (!Array.isArray(files)) {
+
+	    // upload single file
+
+	    return putSingleFileToStore(files, options)
+
+	  } else {
+
+	    // upload multiple files and bundle progress events
+	    // TODO: add dir option
+
+	    var totalSize_ = 0;
+	    var progress_ = [];
+	    var onProgress_ = options.onProgress;
+
+	    return bluebird_1.map(files, function(file, i){
+	      totalSize_ += file.size;
+	      return putSingleFileToStore(file, {
+	        dir: options.dir,
+	        onProgress: function(progress, total){
+	          progress_[i] = progress;
+	          if (onProgress_) onProgress_(progress_.reduce(function(a, b) { return a+b; }, 0), totalSize_);
+	        }
+	      })
+	    })
+
+	  }
+
+	}
+
+	// private
+
+	function putSingleFileToStore (file, options) {
+
+	  // API
+	  var key = options.key;
+	  var dir = options.dir;
+	  var fileName = options.filename || options.fileName || file.name || 'unnamed.txt';
+	  var onProgress = options.onProgress;
+
+	  return resolveKey(key, dir, fileName)
+	    .then(validateKey)
+	    .then(function (key) {
+	      return getCredentials(file, key, fileName)
+	    })
+	    .then(function (credentials) {
+	      return uploadFile(file, credentials, onProgress)
+	    })
+
+	}
+
+	function resolveKey (key, dir, fileName) {
+	  // prefer key. fallback to dir + fileName
+	  key = key ? key : (dir ? (dir[dir.length - 1] === '/' ? dir : dir + '/') + fileName : null);
+	  var isTemplateKey = !!(key && key.indexOf(KEY_USER_ID_PLACEHOLDER) > -1);
+
+	  // full key including userId provided
+	  if (key && !isTemplateKey) return bluebird_1.resolve(key)
+
+	  // get user id
+	  return auth.getSession().then(function(session){
+	    if (isTemplateKey) {
+	      if (session.isAuthenticated) {
+	        // replace user id in template key
+	        return key.replace( '{{userId}}', session.user.id )
+	      } else {
+	        console.error('Using key parameter with template syntax requires authentication.');
+	        // reject with user friendly error message
+	        return bluebird_1.reject('Please log in to upload file.')
+	      }
+	    } else {
+	      // key not provided
+	      var uploadFolder = getFormattedDate() + '_' + getShortId();
+	      if (session.isAuthenticated) {
+	        // construct new user specific key
+	        return '/' + session.user.id + '/' + uploadFolder + '/' + fileName
+	      } else {
+	        // construct anonymous key
+	        var k = '/' + ANONYMOUS_USER_ID + '/' + uploadFolder + '/' + fileName;
+	        return null
+	      }
+	    }
+	  })
+	}
+
+	var keyValidationRegex = /^\/([a-zA-Z0-9\.\-\_]+\/)+([a-zA-Z0-9\.\-\_]+)$/;
+	function validateKey (key) {
+	  if (!key) {
+	    return bluebird_1.resolve(null)
+	  } else if (keyValidationRegex.test(key)) {
+	    return bluebird_1.resolve(key)
+	  } else {
+	    return bluebird_1.reject(
+	      'Key format validation failed.\n'
+	      + key + '\n'
+	      + 'Key must match the following pattern\n'
+	      + '- must start with a slash\n'
+	      + '- must not end with a slash\n'
+	      + '- must have one or more directories\n'
+	      + '- must not include double slashes like: "//"\n'
+	      + '- allowed characters are: a-z A-Z 0-9 _ - . /'
+	    )
+	  }
+	}
+
+	function getCredentials (file, key, fileName) {
+	  // strip leading slash
+	  if (key && key[0] === '/') key = key.substring(1);
+	  // get credentials for upload
+	  var params = {
+	    contentLength: file.size || file.length
+	  };
+	  if (key) {
+	    params.contentType = getMimeTypeFromFileName(key);
+	    params.key = key;
+	  } else if (fileName) {
+	    params.contentType = getMimeTypeFromFileName(fileName);
+	    params.fileName = fileName;
+	  } else {
+	    return bluebird_1.reject('Key or fileName param must be provided.')
+	  }
+	  return callService('S3.getCredentials', params)
+	}
+
+	function uploadFile (file, credentials, onProgress) {
+	  // upload directly to S3 using credentials
+	  var fd = new FormData$1();
+	  fd.append('key', credentials.key);
+	  fd.append('AWSAccessKeyId', credentials.AWSAccessKeyId);
+	  fd.append('acl', credentials.acl);
+	  fd.append('Content-Type', credentials.contentType);
+	  fd.append('policy', credentials.policy);
+	  fd.append('signature', credentials.signature);
+	  fd.append('success_action_status', '201');
+	  if (credentials.contentEncoding) {
+	    fd.append('Content-Encoding', credentials.contentEncoding);
+	  }
+	  fd.append('file', file);
+
+	  if (runtime.isBrowser) {
+
+	    // upload using XHR (in order to provide progress info)
+	    return new bluebird_1(function(resolve, reject){
+	      var xhr = new XMLHttpRequest();
+	      xhr.crossOrigin = 'Anonymous';
+	      xhr.onload = function (event) {
+	        if (xhr.status >= 200 && xhr.status < 300) {
+	          var key = getKeyFromS3Response(xhr.responseText);
+	          key ? resolve(key) : reject ('Error Uploading File: '+xhr.responseText);
+	        } else {
+	          reject ('Error Uploading File: '+xhr.responseText);
+	        }
+	      };
+	      xhr.onerror = function (event) {
+	        reject(event);
+	      };
+	      if (onProgress) {
+	        xhr.upload.addEventListener('progress', function(e){
+	          onProgress(e.loaded, e.total);
+	        }, false);
+	      }
+	      xhr.open('POST', credentials.url, true);
+	      xhr.send(fd);
+	    })
+
+	  } else {
+
+	    // node environment: upload using fetch
+	    return fetch$1(credentials.url, {method: 'POST', body: fd}).then(function (res) {
+	      return res.text()
+	    }).then(function(str){
+	      return getKeyFromS3Response(str) || bluebird_1.reject('Error Uploading File: '+str)
+	    })
+
+	  }
+	}
+
+	function getKeyFromS3Response (str) {
+	  // get file key from response
+	  var s = /<Key>(.*)<\/Key>/gi.exec(str);
+	  return s ? '/'+s[1] : false
+	}
+
+	function getFormattedDate() {
+	  var d = new Date();
+	  return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+	    + '_' + d.getHours() + '-' + d.getMinutes() // + '-' + d.getSeconds()
+	}
+
+	var storage = {
+	  get: getFromStorage,
+	  put: putToStore
+	};
+
+	// configs
+
+	var EXTENSION_WHITE_LIST = [
+	  // generic
+	  '.json', '.buffer', '.js', '.md', '.txt', '.csv',
+	  // 3d formats
+	  '.obj', '.mtl', '.ifc', '.fbx', '.gltf', '.bin',
+	  // 2d formats
+	  '.jpg', '.jpeg', '.jpe', '.png', '.gif', '.tga', '.dds', '.svg', '.pdf', '.dxf'
+	];
+
+	// themes
+
+	var THEME = {
+	  bright: {
+	    box: 'background-color: rgba(255, 255, 255, 0.2); border: 1px dashed rgba(255, 255, 255, 0.7); border-radius: 2px;',
+	    over: 'background-color: rgba(255, 255, 255, 0.3); border: 1px dashed rgba(255, 255, 255, 1); border-radius: 2px;'
+	  },
+	  dark: {
+	    box: 'background-color: rgba(0, 0, 0, 0.2); border: 1px dashed rgba(0, 0, 0, 0.7); border-radius: 2px;',
+	    over: 'background-color: rgba(0, 0, 0, 0.3); border: 1px dashed rgba(0, 0, 0, 1); border-radius: 2px;'
+	  }
+	};
+
+	// main
+
+	function createFileDrop (args) {
+
+	  var elementId = args.elementId;
+	  var onDrop = args.onDrop;
+	  var upload = args.upload !== undefined ? args.upload : true;
+	  var theme = args.theme !== undefined ? args.theme : 'bright';
+	  var onProgress = args.onProgress;
+
+	  var el = document.getElementById(elementId);
+	  if (THEME[theme]) el.setAttribute('style', THEME[theme].box);
+
+	  function dragEnter (event) {
+	    doNothing(event);
+	    if (THEME[theme]) el.setAttribute('style', THEME[theme].over);
+	  }
+
+	  function dragLeave (event) {
+	    doNothing(event);
+	    if (THEME[theme]) el.setAttribute('style', THEME[theme].box);
+	  }
+
+	  function drop (event) {
+	    doNothing(event);
+	    getFilesFromDragAndDropEvent(event).then(function (files) {
+	      if (!upload) {
+	        // return files
+	        onDrop(files);
+	      } else {
+	        // return keys & files
+	        return putToStore(files, { onProgress: onProgress }).then(function(keys){
+	          onDrop(keys, files);
+	        })
+	      }
+	    }).catch(console.error);
+	  }
+
+	  /* events fired on the draggable target */
+	  // document.addEventListener("drag", function( event ) {}, false)
+	  // document.addEventListener("dragstart", function( event ) {}, false)
+	  // document.addEventListener("dragend", function( event ) {}, false)
+	  // prevent events on window drop
+	  window.addEventListener('dragover', doNothing, false);
+	  window.addEventListener('drop', doNothing, false);
+	  /* events fired on the drop targets */
+	  el.addEventListener('dragover', function (event) {
+	    doNothing(event);
+	    event.dataTransfer.dropEffect = 'copy'; // set cursor style
+	  }, false);
+	  el.addEventListener('dragenter', dragEnter, false);
+	  el.addEventListener('dragleave', dragLeave, false);
+	  el.addEventListener('dragend', dragLeave, false);
+	  el.addEventListener('drop', drop, false);
+
+	}
+
+	// helpers
+
+	function doNothing (event) {
+	  event.stopPropagation();
+	  event.preventDefault();
+	}
+
+	function getFilesFromDragAndDropEvent (event, options) {
+	  // compatibility function to extract files
+
+	  // API
+	  options = options || {};
+	  var warningCallback = options.onWarning || function () {};
+
+	  // internals
+	  var result;
+	  var dataTransfer = event.dataTransfer || event.originalEvent.dataTransfer;
+
+	  if (dataTransfer.items && dataTransfer.items.length) {
+	    // more sophisticated drop API, supporting folders structures
+	    // works in webkit browsers only
+	    // get files with directories
+	    //http://code.flickr.net/2012/12/10/drag-n-drop/
+	    result = getFlatFileArrayFromItems(dataTransfer.items).then(function (files) {
+	      return removeRootDir(filterValidFiles(files, warningCallback))
+	    });
+
+	  } else if (dataTransfer.files) {
+	    // "classic" drag and drop api, not supporting folders
+	    // check if user tries to dragdrop a folder = only one "file" with no extension
+	    var isFolder = dataTransfer.files.length === 0 || (dataTransfer.files.length === 1 && dataTransfer.files[0].name.indexOf('.') < 0);
+	    if (isFolder) {
+	      result = bluebird_1.reject('Sorry, but this browser doesn\'t support drag&drop of folders. (use Chrome)');
+	    } else {
+	      // create Blobs from Files because in File name property is read only.
+	      // but we may want file.name to be writable later.
+	      var i, l, _file, file, files = [];
+	      for (i = 0, l = dataTransfer.files.length; i < l; i++) {
+	        _file = dataTransfer.files[i];
+	        file = new Blob([_file], {type: _file.type});
+	        file.name = _file.name;
+	        files.push(file);
+	      }
+	      result = bluebird_1.resolve(filterValidFiles(files, warningCallback));
+
+	    }
+
+	  } else {
+
+	    result = bluebird_1.reject('Event does not contain "items" nor "files" property.');
+
+	  }
+
+	  return result
+
+	}
+
+	// helpers
+
+	function getFlatFileArrayFromItems (items) {
+
+	  // get entries from items
+	  var entries = [], item;
+	  for (var i = 0, l = items.length; i < l; i++) {
+	    item = items[i];
+	    entries[entries.length] = item.webkitGetAsEntry ? item.webkitGetAsEntry() : item.getAsFile();
+	  }
+
+	  // recursively parse directories and collect files
+	  var files = [];
+	  return recursivelyParseEntries(entries, files).then(function () {
+	    return files
+	  })
+
+	}
+
+	function recursivelyParseEntries (entries, resultArray) {
+	  return bluebird_1.all(
+	    entries.map(function (entry) {
+
+	      if (entry.isFile) {
+
+	        // convert File into Blob
+	        return new bluebird_1(function (resolve, reject) {
+	          // add file to file array
+	          entry
+	            .file(function (_file) {
+	              // create Blob from File because in File name property is read only.
+	              // but we want file.name to include path so we need to overwrite it.
+	              var file = new Blob([_file], {type: _file.type});
+	              file.name = entry.fullPath.substring(1);
+	              resultArray[resultArray.length] = file;
+	              resolve();
+	            });
+	        })
+
+	      } else if (entry instanceof File) {
+
+	        // create Blob from File because in File name property is read only.
+	        // but we want file.name to include path so we need to overwrite it.
+	        var file = new Blob([entry], {type: entry.type});
+	        file.name = entry.name;
+	        // add file to file array
+	        resultArray[resultArray.length] = file;
+
+	      } else if (entry.isDirectory) {
+
+	        // read directory
+	        return new bluebird_1(function (resolve, reject) {
+	          entry
+	            .createReader()
+	            .readEntries(function (_entries) {
+	              resolve(recursivelyParseEntries(_entries, resultArray));
+	            });
+	        })
+
+	      }
+	    })
+	  )
+	}
+
+	function filterValidFiles (_files, warningCallback) {
+	  var file, fileName, extension, hasValidExtension, filteredFiles = [];
+	  for (var i = 0, l = _files.length; i < l; i++) {
+	    file = _files[i];
+	    fileName = file.name;
+	    if (typeof fileName === 'string') {
+	      // ignore system files
+	      if (fileName[0] === '.' || fileName.substring(0, 9) === '__MACOSX/') {
+	        continue
+	      }
+	      // check extensions
+	      extension = fileName.split('.').length > 1 ? '.' + fileName.split('.').pop().toLowerCase() : null;
+	      if (!extension) {
+	        console.error('File ' + fileName + ' has no extension and will be ignored.');
+	        warningCallback('File ' + fileName + ' has no extension and will be ignored.');
+	      } else {
+	        hasValidExtension = EXTENSION_WHITE_LIST.indexOf(extension) > -1;
+	        if (!hasValidExtension) {
+	          console.error('File ' + fileName + ' is not supported and will be ignored.');
+	          warningCallback('File ' + fileName + ' is not supported and will be ignored.');
+	        } else {
+	          filteredFiles[filteredFiles.length] = file;
+	        }
+	      }
+	    }
+	  }
+	  return filteredFiles
+	}
+
+	function removeRootDir (files) {
+	  // get root dir from first file
+	  var rootDir, i, l;
+	  if (files.length && files[0].name && files[0].name.indexOf('/') > -1) {
+	    rootDir = files[0].name.split('/')[0];
+	  } else {
+	    return files
+	  }
+
+	  // check if all files have the same root dir
+	  var hasSameRootDir;
+	  for (i = 1, l = files.length; i < l; i++) {
+	    hasSameRootDir = files[i].name && files[i].name.indexOf('/') > -1 && files[i].name.split('/')[0] === rootDir;
+	    if (!hasSameRootDir) {
+	      return files
+	    }
+	  }
+
+	  // remove root dir from file names
+	  for (i = 0, l = files.length; i < l; i++) {
+	    files[i].name = files[i].name.substring(rootDir.length + 1);
+	  }
+
+	  // iterate recursively until all equal leading directories are removed
+	  return removeRootDir(files)
+
+	}
+
+	// export
+
+	var ui = {
+	  createFileDrop: createFileDrop
+	};
+
 	// function
 
 	function wait(duration, passThroughValue) {
@@ -15987,27 +15995,21 @@
 
 	};
 
-	var storage = {
-	  get: getFromStorage,
-	  put: putToStore
-	};
-
-	// import scene from './scene.js'
 	var IO3D$1 = {
 
 	  // products
-	  aFrame: aframe,
+	  aFrame: aFrame,
 	  furniture: furniture,
 	  storage: storage,
 
 	  // non-products
 	  auth: auth,
+	  ui: ui,
+	  utils: utils,
 
 	  // app specific
 	  runtime: runtime,
-	  configs: configs,
-
-	  utils: utils
+	  configs: configs
 
 	};
 
