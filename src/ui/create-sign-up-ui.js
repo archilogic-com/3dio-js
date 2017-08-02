@@ -123,6 +123,12 @@ export default function createSignUpUi (credentials, options) {
     updateGoButton()
 
     function onConfirm () {
+
+      if (!validateEmail(emailEl.val())) {
+        message.error('Please provide a valid email.')
+        return
+      }
+
       // show loading screen
       emailTabEl.hide()
       loadingTabEl.show()
@@ -142,10 +148,10 @@ export default function createSignUpUi (credentials, options) {
           if (waitForActivation) return pollForActivation()
           // or show error if signup rejected
         }, function(error){
+          message.error(error)
           // catch specific errors
           if (error.indexOf('User with this email already exists') > -1) {
             // switch to log in tab
-            message.error(error)
             destroy(function(){
               createLogInUi({ email: emailEl.val() }).then(resolve, reject)
             })
@@ -183,4 +189,11 @@ export default function createSignUpUi (credentials, options) {
     }
 
   })
+}
+
+// helpers
+
+function validateEmail(email) {
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  return re.test(email)
 }
