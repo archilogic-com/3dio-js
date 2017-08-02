@@ -68,11 +68,18 @@ export default function createDevDashboardUi () {
       var emailEl = el.add('input', {type: 'text'}).appendTo(mainTabEl)
       emailEl.val(session.user.email)
 
-      el.add('p', {text: 'Private API key:', class: 'hint'}).appendTo(mainTabEl)
+      var privateApiKeyElTitle = el.add('p', {text: 'Private API key:', class: 'hint'}).appendTo(mainTabEl)
       var privateApiKeyEl = el.add('input', {type: 'text'}).appendTo(mainTabEl)
-      getPrivateApiKey().then(function (key) {
-        privateApiKeyEl.val(key)
-      })
+      var revealButtonEl = el.add('div', {
+        text: 'reveal',
+        class: 'reveal-api-key-button',
+        click: function () {
+          revealButtonEl.hide()
+          getPrivateApiKey().then(function (key) {
+            privateApiKeyEl.val(key)
+          })
+        }
+      }).appendTo(privateApiKeyElTitle)
 
       // register ESC key
 

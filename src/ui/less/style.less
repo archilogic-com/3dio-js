@@ -129,6 +129,7 @@
             font-weight: 200;
         }
         .hint {
+            position: relative;
             margin: 1em 0 0 0;
             color: @text-color-gray;
             font-size: @font-size-text;
@@ -210,6 +211,19 @@
             margin: 0;
         }
 
+        .reveal-api-key-button {
+            cursor: pointer;
+            position: absolute;
+            background: hsla(0,0,100%,0.1);
+            border-radius: 2px;
+            top: 30px;
+            padding: 0.1em 0.2em 0.2em 0.2em;
+            line-height: 20px;
+            &:hover {
+                color: white;
+            }
+            transition: color 600ms;
+        }
 
     }
 
