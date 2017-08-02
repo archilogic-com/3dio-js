@@ -39,6 +39,7 @@ const awsDir = {
 // tasks
 
 const release = gulp.series(
+  checkLocalEnv,
   checkBranchName,
   npmCheckVersion,
   build,
@@ -50,6 +51,16 @@ const release = gulp.series(
   npmPublish,
   s3Upload
 )
+
+function checkLocalEnv() {
+  if(!awsConfig.key || !awsConfig.secret) throw 'ERROR: You need to set $AWS_ACCESS_KEY_ID and $AWS_SECRET_ACCESS_KEY to be able to upload to S3'
+  try {
+    execSync('npm who')
+  } catch(e) {
+    throw 'ERROR: You need to be logged in with npm to release! Run "npm login" first.'
+  }
+  return Promise.resolve()
+}
 
 function checkBranchName () {
   if (branchName !== 'master') {
