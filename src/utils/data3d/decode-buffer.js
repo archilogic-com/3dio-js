@@ -1,5 +1,7 @@
-import pathUtil   from '../path.js'
-import urlUtil    from '../url.js'
+import Promise from 'bluebird'
+import runtime from '../../core/runtime.js'
+import pathUtil from '../path.js'
+import urlUtil from '../url.js'
 
 // configs
 
@@ -27,7 +29,7 @@ var TEXTURE_PATH_KEYS = [
   'mapLightPreview'
 ]
 // TODO: use StringDecoder in Node environment
-var textDecoder = window && window.TextDecoder ? new window.TextDecoder('utf-16') : makeUtf16Decoder()
+var textDecoder = runtime.isBrowser && window.TextDecoder ? new window.TextDecoder('utf-16') : makeUtf16Decoder()
 
 // public methods
 
