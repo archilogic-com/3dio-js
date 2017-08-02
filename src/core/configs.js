@@ -40,7 +40,7 @@ var configs = function configs (args) {
     if (defaults[key] !== undefined) {
       configs[key] = args[key]
     } else {
-      log.warn('Unknown config param "' + key + '"')
+      log.warn('Unknown config param "' + key + '". Available params are: ' + Object.keys(defaults).join(', '))
     }
   }
 
