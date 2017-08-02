@@ -11,7 +11,7 @@ import auth from './auth.js'
 import ui from './ui.js'
 import utils from './utils.js'
 
-var IO3D = {
+var io3d = {
 
   // products
   aFrame: aFrame,
@@ -29,4 +29,7 @@ var IO3D = {
 
 }
 
-export default IO3D
+// create upper case alias in browser environment
+if (runtime.isBrowser) window.IO3D = io3d
+
+export default io3d

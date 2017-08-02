@@ -118,7 +118,7 @@ h2 {
     width: 26px;
     height: 26px;
     border-radius: 50%;
-    z-index: 200000;
+    z-index: 20000;
     cursor: pointer;
     background-color: #82CA6D;
     background-image: url("../img/run-icon.svg");

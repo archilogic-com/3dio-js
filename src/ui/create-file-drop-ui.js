@@ -1,4 +1,5 @@
 import Promise from 'bluebird'
+import runtime from '../core/runtime.js'
 import putToStore from '../storage/put.js'
 
 // configs
@@ -27,7 +28,8 @@ var THEME = {
 
 // main
 
-export default function createFileDrop (args) {
+export default function createFileDropUi (args) {
+  runtime.assertBrowser()
 
   var elementId = args.elementId
   var onDrop = args.onDrop
