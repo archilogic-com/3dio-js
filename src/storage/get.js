@@ -2,11 +2,6 @@ import runtime from '../core/runtime.js'
 import configs from '../core/configs.js'
 import loadData3d from '../utils/data3d/load.js'
 
-// constants
-
-var CDN_DOMAIN = configs.storageDomain
-var NO_CDN_DOMAIN = configs.storageDomainNoCdn
-
 // main
 
 export default function getFromStorage (key, options) {
@@ -40,7 +35,7 @@ function convertKeyToUrl (key, options) {
     processedKey = encodeURIComponent(processedKey)
   }
   // compose url
-  var url = 'https://'+(cdn ? CDN_DOMAIN : NO_CDN_DOMAIN)+'/' + processedKey
+  var url = 'https://'+(cdn ? configs.storageDomain : configs.storageDomainNoCdn)+'/' + processedKey
   // add to cache
   // keyToUrlCache[ key + cdn + encode ] = url
   return url
