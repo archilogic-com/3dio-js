@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.26
- * @date 2017/08/02 17:55
+ * @version 1.0.0-beta.27
+ * @date 2017/08/02 18:19
  * @branch master
- * @commit f74dd0e7d3691ed862491a5a6b99df2b440b51ea
+ * @commit 9bc8e5f49d2b35e4422c4c3f83cacc9fc49ece4b
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/02 17:55', GIT_BRANCH = 'master', GIT_COMMIT = 'f74dd0e7d3691ed862491a5a6b99df2b440b51ea'
+	var BUILD_DATE='2017/08/02 18:19', GIT_BRANCH = 'master', GIT_COMMIT = '9bc8e5f49d2b35e4422c4c3f83cacc9fc49ece4b'
 
 	/**
 	 * @license RequireJS domReady 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
@@ -7318,7 +7318,7 @@
 	  })();
 	}
 
-	var version = "1.0.0-beta.26";
+	var version = "1.0.0-beta.27";
 
 	var homepage = "https://3d.io";
 
@@ -17416,7 +17416,7 @@
 	    class: 'message'
 	  }).prependTo(mainEl).hide();
 	  el.add('div',{
-	    text: message,
+	    html: message,
 	    class: 'text '+type
 	  }).appendTo(messageEl);
 
@@ -18330,8 +18330,8 @@
 	  return getSession().then(function (session) {
 	    if (!session.isAuthenticated) {
 	      // show login screen
-	      message.error('Please log in to access your dashboard.');
-	      return createLogInUi().then(function () {
+	      message('Please sign up or log in to<br>access your dev dashboard.');
+	      return createSignUpUi().then(function () {
 	        return createDevDashboardUi()
 	      })
 	    }
