@@ -1,5 +1,3 @@
-var LIB_PATH = '../../build/3dio.js'
-
 $(function () {
 
   // list of example files referenced by title
@@ -66,15 +64,12 @@ $(function () {
   // 1. from local storage
   // 2. or from URL
   // 3. or first in list
-  if (examplePathFromUrl) {
-    loadExample({
-      file: examplePathFromUrl
-    })
-  } else {
-    loadExample(examples[0])
-  }
+  var initialExample = examplePathFromUrl ? { file: examplePathFromUrl } : examples[0]
+  loadExample(initialExample).then(function(code){
+    if (code) runExample(code)
+  })
 
-  // bind run button
+    // bind run button
   $runButton.on('click', function () {
     runExample(codeEditor.getValue())
   })
@@ -147,16 +142,7 @@ $(function () {
     $logOutput.scrollTop($logOutput[0].scrollHeight)
   }
 
-  // load archilogic lib
-  loadArchilogicLibrary()
-
   // other methods
-
-  function loadArchilogicLibrary () {
-    var libScript = document.createElement('script')
-    libScript.setAttribute('src', LIB_PATH + '?cacheBust=' + Date.now())
-    document.head.appendChild(libScript)
-  }
 
   function getExamplePathFromUrl() {
     var hash = window.location.hash
@@ -187,6 +173,8 @@ $(function () {
       saveToLocalStorage = true
       // update URL
       window.location.hash = item.file ? encodeURI(item.file) : ''
+      // return code text
+      return text
     }).catch(function (error) {
       // update editor
       saveToLocalStorage = false
@@ -195,6 +183,8 @@ $(function () {
       // update URL
       window.location.hash = ''
       console.error('Could not load example ', error)
+      // return false
+      return false
     })
   }
 
