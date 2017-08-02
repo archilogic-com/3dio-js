@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.22
- * @date 2017/08/02 10:16
+ * @version 1.0.0-beta.23
+ * @date 2017/08/02 17:18
  * @branch master
- * @commit 274adf04fd843e9827af4c32a7d5cef7bfa60bbe
+ * @commit fa4fffff7d1ef16d6a238092eb1131da7815aee1
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -15,10 +15,1343 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
-	(global.IO3D = factory());
+	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/02 10:16', GIT_BRANCH = 'master', GIT_COMMIT = '274adf04fd843e9827af4c32a7d5cef7bfa60bbe'
+	var BUILD_DATE='2017/08/02 17:18', GIT_BRANCH = 'master', GIT_COMMIT = 'fa4fffff7d1ef16d6a238092eb1131da7815aee1'
+
+	/**
+	 * @license RequireJS domReady 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
+	 * Available via the MIT or new BSD license.
+	 * see: http://github.com/requirejs/domReady for details
+	 */
+	/*jslint */
+	/*global require: false, define: false, requirejs: false,
+	 window: false, clearInterval: false, document: false,
+	 self: false, setInterval: false */
+
+	var isTop;
+	var testDiv;
+	var scrollIntervalId;
+	var isBrowser$1 = typeof window !== "undefined" && window.document;
+	var isPageLoaded = !isBrowser$1;
+	var doc = isBrowser$1 ? document : null;
+	var readyCalls = [];
+
+	var resolve;
+	var readyPromise = new Promise(function(resolve_){
+	  resolve = resolve_;
+	});
+
+	function runCallbacks(callbacks) {
+	  var i;
+	  for (i = 0; i < callbacks.length; i += 1) {
+	    callbacks[i](doc);
+	  }
+	}
+
+	function callReady() {
+	  var callbacks = readyCalls;
+
+	  if (isPageLoaded) {
+	    //Call the DOM ready callbacks
+	    if (callbacks.length) {
+	      readyCalls = [];
+	      runCallbacks(callbacks);
+	    }
+	    // resolves promise
+	    resolve(doc);
+	  }
+	}
+
+	/**
+	 * Sets the page as loaded.
+	 */
+	function pageLoaded() {
+	  if (!isPageLoaded) {
+	    isPageLoaded = true;
+	    if (scrollIntervalId) {
+	      clearInterval(scrollIntervalId);
+	    }
+
+	    callReady();
+	  }
+	}
+
+	if (isBrowser$1) {
+	  if (document.addEventListener) {
+	    //Standards. Hooray! Assumption here that if standards based,
+	    //it knows about DOMContentLoaded.
+	    document.addEventListener("DOMContentLoaded", pageLoaded, false);
+	    window.addEventListener("load", pageLoaded, false);
+	  } else if (window.attachEvent) {
+	    window.attachEvent("onload", pageLoaded);
+
+	    testDiv = document.createElement('div');
+	    try {
+	      isTop = window.frameElement === null;
+	    } catch (e) {}
+
+	    //DOMContentLoaded approximation that uses a doScroll, as found by
+	    //Diego Perini: http://javascript.nwbox.com/IEContentLoaded/,
+	    //but modified by other contributors, including jdalton
+	    if (testDiv.doScroll && isTop && window.external) {
+	      scrollIntervalId = setInterval(function () {
+	        try {
+	          testDiv.doScroll();
+	          pageLoaded();
+	        } catch (e) {}
+	      }, 30);
+	    }
+	  }
+
+	  //Check if document already complete, and if so, just trigger page load
+	  //listeners. Latest webkit browsers also use "interactive", and
+	  //will fire the onDOMContentLoaded before "interactive" but not after
+	  //entering "interactive" or "complete". More details:
+	  //http://dev.w3.org/html5/spec/the-end.html#the-end
+	  //http://stackoverflow.com/questions/3665561/document-readystate-of-interactive-vs-ondomcontentloaded
+	  //Hmm, this is more complicated on further use, see "firing too early"
+	  //bug: https://github.com/requirejs/domReady/issues/1
+	  //so removing the || document.readyState === "interactive" test.
+	  //There is still a window.onload binding that should get fired if
+	  //DOMContentLoaded is missed.
+	  if (document.readyState === "complete") {
+	    pageLoaded();
+	  }
+	}
+
+	/** PUBLIC API **/
+
+	/**
+	 * Registers a callback for DOM ready. If DOM is already ready, the
+	 * callback is called immediately.
+	 * @param {Function} callback
+	 */
+	function domReady(callback) {
+	  if (!isBrowser$1) {
+	    console.error('runtime.domReady requires a browser environment and will be ignored.');
+	    return
+	  }
+	  if (isPageLoaded) {
+	    callback(doc);
+	  } else {
+	    readyCalls.push(callback);
+	  }
+	  return readyPromise
+	}
+
+	var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+
+
+
+
+	function createCommonjsModule(fn, module) {
+		return module = { exports: {} }, fn(module, module.exports), module.exports;
+	}
+
+	// CommonJS / Node have global context exposed as "global" variable.
+	// We don't want to include the whole node.d.ts this this compilation unit so we'll just fake
+	// the global "global" var for now.
+	var __window = typeof window !== 'undefined' && window;
+	var __self = typeof self !== 'undefined' && typeof WorkerGlobalScope !== 'undefined' &&
+	    self instanceof WorkerGlobalScope && self;
+	var __global = typeof commonjsGlobal !== 'undefined' && commonjsGlobal;
+	var _root = __window || __global || __self;
+	var root_1 = _root;
+	// Workaround Closure Compiler restriction: The body of a goog.module cannot use throw.
+	// This is needed when used with angular/tsickle which inserts a goog.module statement.
+	// Wrap in IIFE
+	(function () {
+	    if (!_root) {
+	        throw new Error('RxJS could not find any global context (window, self, global)');
+	    }
+	})();
+
+
+	var root = {
+		root: root_1
+	};
+
+	function isFunction(x) {
+	    return typeof x === 'function';
+	}
+	var isFunction_2 = isFunction;
+
+
+	var isFunction_1 = {
+		isFunction: isFunction_2
+	};
+
+	var isArray_1 = Array.isArray || (function (x) { return x && typeof x.length === 'number'; });
+
+
+	var isArray = {
+		isArray: isArray_1
+	};
+
+	function isObject(x) {
+	    return x != null && typeof x === 'object';
+	}
+	var isObject_2 = isObject;
+
+
+	var isObject_1 = {
+		isObject: isObject_2
+	};
+
+	// typeof any so that it we don't have to cast when comparing a result to the error object
+	var errorObject_1 = { e: {} };
+
+
+	var errorObject = {
+		errorObject: errorObject_1
+	};
+
+	var tryCatchTarget;
+	function tryCatcher() {
+	    try {
+	        return tryCatchTarget.apply(this, arguments);
+	    }
+	    catch (e) {
+	        errorObject.errorObject.e = e;
+	        return errorObject.errorObject;
+	    }
+	}
+	function tryCatch(fn) {
+	    tryCatchTarget = fn;
+	    return tryCatcher;
+	}
+	var tryCatch_2 = tryCatch;
+
+
+
+	var tryCatch_1 = {
+		tryCatch: tryCatch_2
+	};
+
+	var __extends$3 = (commonjsGlobal && commonjsGlobal.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	/**
+	 * An error thrown when one or more errors have occurred during the
+	 * `unsubscribe` of a {@link Subscription}.
+	 */
+	var UnsubscriptionError = (function (_super) {
+	    __extends$3(UnsubscriptionError, _super);
+	    function UnsubscriptionError(errors) {
+	        _super.call(this);
+	        this.errors = errors;
+	        var err = Error.call(this, errors ?
+	            errors.length + " errors occurred during unsubscription:\n  " + errors.map(function (err, i) { return ((i + 1) + ") " + err.toString()); }).join('\n  ') : '');
+	        this.name = err.name = 'UnsubscriptionError';
+	        this.stack = err.stack;
+	        this.message = err.message;
+	    }
+	    return UnsubscriptionError;
+	}(Error));
+	var UnsubscriptionError_2 = UnsubscriptionError;
+
+
+	var UnsubscriptionError_1 = {
+		UnsubscriptionError: UnsubscriptionError_2
+	};
+
+	/**
+	 * Represents a disposable resource, such as the execution of an Observable. A
+	 * Subscription has one important method, `unsubscribe`, that takes no argument
+	 * and just disposes the resource held by the subscription.
+	 *
+	 * Additionally, subscriptions may be grouped together through the `add()`
+	 * method, which will attach a child Subscription to the current Subscription.
+	 * When a Subscription is unsubscribed, all its children (and its grandchildren)
+	 * will be unsubscribed as well.
+	 *
+	 * @class Subscription
+	 */
+	var Subscription = (function () {
+	    /**
+	     * @param {function(): void} [unsubscribe] A function describing how to
+	     * perform the disposal of resources when the `unsubscribe` method is called.
+	     */
+	    function Subscription(unsubscribe) {
+	        /**
+	         * A flag to indicate whether this Subscription has already been unsubscribed.
+	         * @type {boolean}
+	         */
+	        this.closed = false;
+	        this._parent = null;
+	        this._parents = null;
+	        this._subscriptions = null;
+	        if (unsubscribe) {
+	            this._unsubscribe = unsubscribe;
+	        }
+	    }
+	    /**
+	     * Disposes the resources held by the subscription. May, for instance, cancel
+	     * an ongoing Observable execution or cancel any other type of work that
+	     * started when the Subscription was created.
+	     * @return {void}
+	     */
+	    Subscription.prototype.unsubscribe = function () {
+	        var hasErrors = false;
+	        var errors;
+	        if (this.closed) {
+	            return;
+	        }
+	        var _a = this, _parent = _a._parent, _parents = _a._parents, _unsubscribe = _a._unsubscribe, _subscriptions = _a._subscriptions;
+	        this.closed = true;
+	        this._parent = null;
+	        this._parents = null;
+	        // null out _subscriptions first so any child subscriptions that attempt
+	        // to remove themselves from this subscription will noop
+	        this._subscriptions = null;
+	        var index = -1;
+	        var len = _parents ? _parents.length : 0;
+	        // if this._parent is null, then so is this._parents, and we
+	        // don't have to remove ourselves from any parent subscriptions.
+	        while (_parent) {
+	            _parent.remove(this);
+	            // if this._parents is null or index >= len,
+	            // then _parent is set to null, and the loop exits
+	            _parent = ++index < len && _parents[index] || null;
+	        }
+	        if (isFunction_1.isFunction(_unsubscribe)) {
+	            var trial = tryCatch_1.tryCatch(_unsubscribe).call(this);
+	            if (trial === errorObject.errorObject) {
+	                hasErrors = true;
+	                errors = errors || (errorObject.errorObject.e instanceof UnsubscriptionError_1.UnsubscriptionError ?
+	                    flattenUnsubscriptionErrors(errorObject.errorObject.e.errors) : [errorObject.errorObject.e]);
+	            }
+	        }
+	        if (isArray.isArray(_subscriptions)) {
+	            index = -1;
+	            len = _subscriptions.length;
+	            while (++index < len) {
+	                var sub = _subscriptions[index];
+	                if (isObject_1.isObject(sub)) {
+	                    var trial = tryCatch_1.tryCatch(sub.unsubscribe).call(sub);
+	                    if (trial === errorObject.errorObject) {
+	                        hasErrors = true;
+	                        errors = errors || [];
+	                        var err = errorObject.errorObject.e;
+	                        if (err instanceof UnsubscriptionError_1.UnsubscriptionError) {
+	                            errors = errors.concat(flattenUnsubscriptionErrors(err.errors));
+	                        }
+	                        else {
+	                            errors.push(err);
+	                        }
+	                    }
+	                }
+	            }
+	        }
+	        if (hasErrors) {
+	            throw new UnsubscriptionError_1.UnsubscriptionError(errors);
+	        }
+	    };
+	    /**
+	     * Adds a tear down to be called during the unsubscribe() of this
+	     * Subscription.
+	     *
+	     * If the tear down being added is a subscription that is already
+	     * unsubscribed, is the same reference `add` is being called on, or is
+	     * `Subscription.EMPTY`, it will not be added.
+	     *
+	     * If this subscription is already in an `closed` state, the passed
+	     * tear down logic will be executed immediately.
+	     *
+	     * @param {TeardownLogic} teardown The additional logic to execute on
+	     * teardown.
+	     * @return {Subscription} Returns the Subscription used or created to be
+	     * added to the inner subscriptions list. This Subscription can be used with
+	     * `remove()` to remove the passed teardown logic from the inner subscriptions
+	     * list.
+	     */
+	    Subscription.prototype.add = function (teardown) {
+	        if (!teardown || (teardown === Subscription.EMPTY)) {
+	            return Subscription.EMPTY;
+	        }
+	        if (teardown === this) {
+	            return this;
+	        }
+	        var subscription = teardown;
+	        switch (typeof teardown) {
+	            case 'function':
+	                subscription = new Subscription(teardown);
+	            case 'object':
+	                if (subscription.closed || typeof subscription.unsubscribe !== 'function') {
+	                    return subscription;
+	                }
+	                else if (this.closed) {
+	                    subscription.unsubscribe();
+	                    return subscription;
+	                }
+	                else if (typeof subscription._addParent !== 'function' /* quack quack */) {
+	                    var tmp = subscription;
+	                    subscription = new Subscription();
+	                    subscription._subscriptions = [tmp];
+	                }
+	                break;
+	            default:
+	                throw new Error('unrecognized teardown ' + teardown + ' added to Subscription.');
+	        }
+	        var subscriptions = this._subscriptions || (this._subscriptions = []);
+	        subscriptions.push(subscription);
+	        subscription._addParent(this);
+	        return subscription;
+	    };
+	    /**
+	     * Removes a Subscription from the internal list of subscriptions that will
+	     * unsubscribe during the unsubscribe process of this Subscription.
+	     * @param {Subscription} subscription The subscription to remove.
+	     * @return {void}
+	     */
+	    Subscription.prototype.remove = function (subscription) {
+	        var subscriptions = this._subscriptions;
+	        if (subscriptions) {
+	            var subscriptionIndex = subscriptions.indexOf(subscription);
+	            if (subscriptionIndex !== -1) {
+	                subscriptions.splice(subscriptionIndex, 1);
+	            }
+	        }
+	    };
+	    Subscription.prototype._addParent = function (parent) {
+	        var _a = this, _parent = _a._parent, _parents = _a._parents;
+	        if (!_parent || _parent === parent) {
+	            // If we don't have a parent, or the new parent is the same as the
+	            // current parent, then set this._parent to the new parent.
+	            this._parent = parent;
+	        }
+	        else if (!_parents) {
+	            // If there's already one parent, but not multiple, allocate an Array to
+	            // store the rest of the parent Subscriptions.
+	            this._parents = [parent];
+	        }
+	        else if (_parents.indexOf(parent) === -1) {
+	            // Only add the new parent to the _parents list if it's not already there.
+	            _parents.push(parent);
+	        }
+	    };
+	    Subscription.EMPTY = (function (empty) {
+	        empty.closed = true;
+	        return empty;
+	    }(new Subscription()));
+	    return Subscription;
+	}());
+	var Subscription_2 = Subscription;
+	function flattenUnsubscriptionErrors(errors) {
+	    return errors.reduce(function (errs, err) { return errs.concat((err instanceof UnsubscriptionError_1.UnsubscriptionError) ? err.errors : err); }, []);
+	}
+
+
+	var Subscription_1 = {
+		Subscription: Subscription_2
+	};
+
+	var empty = {
+	    closed: true,
+	    next: function (value) { },
+	    error: function (err) { throw err; },
+	    complete: function () { }
+	};
+
+
+	var Observer = {
+		empty: empty
+	};
+
+	var rxSubscriber = createCommonjsModule(function (module, exports) {
+	"use strict";
+
+	var Symbol = root.root.Symbol;
+	exports.rxSubscriber = (typeof Symbol === 'function' && typeof Symbol.for === 'function') ?
+	    Symbol.for('rxSubscriber') : '@@rxSubscriber';
+	/**
+	 * @deprecated use rxSubscriber instead
+	 */
+	exports.$$rxSubscriber = exports.rxSubscriber;
+
+	});
+
+	var __extends$2 = (commonjsGlobal && commonjsGlobal.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+
+
+
+
+	/**
+	 * Implements the {@link Observer} interface and extends the
+	 * {@link Subscription} class. While the {@link Observer} is the public API for
+	 * consuming the values of an {@link Observable}, all Observers get converted to
+	 * a Subscriber, in order to provide Subscription-like capabilities such as
+	 * `unsubscribe`. Subscriber is a common type in RxJS, and crucial for
+	 * implementing operators, but it is rarely used as a public API.
+	 *
+	 * @class Subscriber<T>
+	 */
+	var Subscriber = (function (_super) {
+	    __extends$2(Subscriber, _super);
+	    /**
+	     * @param {Observer|function(value: T): void} [destinationOrNext] A partially
+	     * defined Observer or a `next` callback function.
+	     * @param {function(e: ?any): void} [error] The `error` callback of an
+	     * Observer.
+	     * @param {function(): void} [complete] The `complete` callback of an
+	     * Observer.
+	     */
+	    function Subscriber(destinationOrNext, error, complete) {
+	        _super.call(this);
+	        this.syncErrorValue = null;
+	        this.syncErrorThrown = false;
+	        this.syncErrorThrowable = false;
+	        this.isStopped = false;
+	        switch (arguments.length) {
+	            case 0:
+	                this.destination = Observer.empty;
+	                break;
+	            case 1:
+	                if (!destinationOrNext) {
+	                    this.destination = Observer.empty;
+	                    break;
+	                }
+	                if (typeof destinationOrNext === 'object') {
+	                    if (destinationOrNext instanceof Subscriber) {
+	                        this.destination = destinationOrNext;
+	                        this.destination.add(this);
+	                    }
+	                    else {
+	                        this.syncErrorThrowable = true;
+	                        this.destination = new SafeSubscriber(this, destinationOrNext);
+	                    }
+	                    break;
+	                }
+	            default:
+	                this.syncErrorThrowable = true;
+	                this.destination = new SafeSubscriber(this, destinationOrNext, error, complete);
+	                break;
+	        }
+	    }
+	    Subscriber.prototype[rxSubscriber.rxSubscriber] = function () { return this; };
+	    /**
+	     * A static factory for a Subscriber, given a (potentially partial) definition
+	     * of an Observer.
+	     * @param {function(x: ?T): void} [next] The `next` callback of an Observer.
+	     * @param {function(e: ?any): void} [error] The `error` callback of an
+	     * Observer.
+	     * @param {function(): void} [complete] The `complete` callback of an
+	     * Observer.
+	     * @return {Subscriber<T>} A Subscriber wrapping the (partially defined)
+	     * Observer represented by the given arguments.
+	     */
+	    Subscriber.create = function (next, error, complete) {
+	        var subscriber = new Subscriber(next, error, complete);
+	        subscriber.syncErrorThrowable = false;
+	        return subscriber;
+	    };
+	    /**
+	     * The {@link Observer} callback to receive notifications of type `next` from
+	     * the Observable, with a value. The Observable may call this method 0 or more
+	     * times.
+	     * @param {T} [value] The `next` value.
+	     * @return {void}
+	     */
+	    Subscriber.prototype.next = function (value) {
+	        if (!this.isStopped) {
+	            this._next(value);
+	        }
+	    };
+	    /**
+	     * The {@link Observer} callback to receive notifications of type `error` from
+	     * the Observable, with an attached {@link Error}. Notifies the Observer that
+	     * the Observable has experienced an error condition.
+	     * @param {any} [err] The `error` exception.
+	     * @return {void}
+	     */
+	    Subscriber.prototype.error = function (err) {
+	        if (!this.isStopped) {
+	            this.isStopped = true;
+	            this._error(err);
+	        }
+	    };
+	    /**
+	     * The {@link Observer} callback to receive a valueless notification of type
+	     * `complete` from the Observable. Notifies the Observer that the Observable
+	     * has finished sending push-based notifications.
+	     * @return {void}
+	     */
+	    Subscriber.prototype.complete = function () {
+	        if (!this.isStopped) {
+	            this.isStopped = true;
+	            this._complete();
+	        }
+	    };
+	    Subscriber.prototype.unsubscribe = function () {
+	        if (this.closed) {
+	            return;
+	        }
+	        this.isStopped = true;
+	        _super.prototype.unsubscribe.call(this);
+	    };
+	    Subscriber.prototype._next = function (value) {
+	        this.destination.next(value);
+	    };
+	    Subscriber.prototype._error = function (err) {
+	        this.destination.error(err);
+	        this.unsubscribe();
+	    };
+	    Subscriber.prototype._complete = function () {
+	        this.destination.complete();
+	        this.unsubscribe();
+	    };
+	    Subscriber.prototype._unsubscribeAndRecycle = function () {
+	        var _a = this, _parent = _a._parent, _parents = _a._parents;
+	        this._parent = null;
+	        this._parents = null;
+	        this.unsubscribe();
+	        this.closed = false;
+	        this.isStopped = false;
+	        this._parent = _parent;
+	        this._parents = _parents;
+	        return this;
+	    };
+	    return Subscriber;
+	}(Subscription_1.Subscription));
+	var Subscriber_2 = Subscriber;
+	/**
+	 * We need this JSDoc comment for affecting ESDoc.
+	 * @ignore
+	 * @extends {Ignored}
+	 */
+	var SafeSubscriber = (function (_super) {
+	    __extends$2(SafeSubscriber, _super);
+	    function SafeSubscriber(_parentSubscriber, observerOrNext, error, complete) {
+	        _super.call(this);
+	        this._parentSubscriber = _parentSubscriber;
+	        var next;
+	        var context = this;
+	        if (isFunction_1.isFunction(observerOrNext)) {
+	            next = observerOrNext;
+	        }
+	        else if (observerOrNext) {
+	            next = observerOrNext.next;
+	            error = observerOrNext.error;
+	            complete = observerOrNext.complete;
+	            if (observerOrNext !== Observer.empty) {
+	                context = Object.create(observerOrNext);
+	                if (isFunction_1.isFunction(context.unsubscribe)) {
+	                    this.add(context.unsubscribe.bind(context));
+	                }
+	                context.unsubscribe = this.unsubscribe.bind(this);
+	            }
+	        }
+	        this._context = context;
+	        this._next = next;
+	        this._error = error;
+	        this._complete = complete;
+	    }
+	    SafeSubscriber.prototype.next = function (value) {
+	        if (!this.isStopped && this._next) {
+	            var _parentSubscriber = this._parentSubscriber;
+	            if (!_parentSubscriber.syncErrorThrowable) {
+	                this.__tryOrUnsub(this._next, value);
+	            }
+	            else if (this.__tryOrSetError(_parentSubscriber, this._next, value)) {
+	                this.unsubscribe();
+	            }
+	        }
+	    };
+	    SafeSubscriber.prototype.error = function (err) {
+	        if (!this.isStopped) {
+	            var _parentSubscriber = this._parentSubscriber;
+	            if (this._error) {
+	                if (!_parentSubscriber.syncErrorThrowable) {
+	                    this.__tryOrUnsub(this._error, err);
+	                    this.unsubscribe();
+	                }
+	                else {
+	                    this.__tryOrSetError(_parentSubscriber, this._error, err);
+	                    this.unsubscribe();
+	                }
+	            }
+	            else if (!_parentSubscriber.syncErrorThrowable) {
+	                this.unsubscribe();
+	                throw err;
+	            }
+	            else {
+	                _parentSubscriber.syncErrorValue = err;
+	                _parentSubscriber.syncErrorThrown = true;
+	                this.unsubscribe();
+	            }
+	        }
+	    };
+	    SafeSubscriber.prototype.complete = function () {
+	        var _this = this;
+	        if (!this.isStopped) {
+	            var _parentSubscriber = this._parentSubscriber;
+	            if (this._complete) {
+	                var wrappedComplete = function () { return _this._complete.call(_this._context); };
+	                if (!_parentSubscriber.syncErrorThrowable) {
+	                    this.__tryOrUnsub(wrappedComplete);
+	                    this.unsubscribe();
+	                }
+	                else {
+	                    this.__tryOrSetError(_parentSubscriber, wrappedComplete);
+	                    this.unsubscribe();
+	                }
+	            }
+	            else {
+	                this.unsubscribe();
+	            }
+	        }
+	    };
+	    SafeSubscriber.prototype.__tryOrUnsub = function (fn, value) {
+	        try {
+	            fn.call(this._context, value);
+	        }
+	        catch (err) {
+	            this.unsubscribe();
+	            throw err;
+	        }
+	    };
+	    SafeSubscriber.prototype.__tryOrSetError = function (parent, fn, value) {
+	        try {
+	            fn.call(this._context, value);
+	        }
+	        catch (err) {
+	            parent.syncErrorValue = err;
+	            parent.syncErrorThrown = true;
+	            return true;
+	        }
+	        return false;
+	    };
+	    SafeSubscriber.prototype._unsubscribe = function () {
+	        var _parentSubscriber = this._parentSubscriber;
+	        this._context = null;
+	        this._parentSubscriber = null;
+	        _parentSubscriber.unsubscribe();
+	    };
+	    return SafeSubscriber;
+	}(Subscriber));
+
+
+	var Subscriber_1 = {
+		Subscriber: Subscriber_2
+	};
+
+	function toSubscriber(nextOrObserver, error, complete) {
+	    if (nextOrObserver) {
+	        if (nextOrObserver instanceof Subscriber_1.Subscriber) {
+	            return nextOrObserver;
+	        }
+	        if (nextOrObserver[rxSubscriber.rxSubscriber]) {
+	            return nextOrObserver[rxSubscriber.rxSubscriber]();
+	        }
+	    }
+	    if (!nextOrObserver && !error && !complete) {
+	        return new Subscriber_1.Subscriber(Observer.empty);
+	    }
+	    return new Subscriber_1.Subscriber(nextOrObserver, error, complete);
+	}
+	var toSubscriber_2 = toSubscriber;
+
+
+	var toSubscriber_1 = {
+		toSubscriber: toSubscriber_2
+	};
+
+	var observable = createCommonjsModule(function (module, exports) {
+	"use strict";
+
+	function getSymbolObservable(context) {
+	    var $$observable;
+	    var Symbol = context.Symbol;
+	    if (typeof Symbol === 'function') {
+	        if (Symbol.observable) {
+	            $$observable = Symbol.observable;
+	        }
+	        else {
+	            $$observable = Symbol('observable');
+	            Symbol.observable = $$observable;
+	        }
+	    }
+	    else {
+	        $$observable = '@@observable';
+	    }
+	    return $$observable;
+	}
+	exports.getSymbolObservable = getSymbolObservable;
+	exports.observable = getSymbolObservable(root.root);
+	/**
+	 * @deprecated use observable instead
+	 */
+	exports.$$observable = exports.observable;
+
+	});
+
+	/**
+	 * A representation of any set of values over any amount of time. This the most basic building block
+	 * of RxJS.
+	 *
+	 * @class Observable<T>
+	 */
+	var Observable = (function () {
+	    /**
+	     * @constructor
+	     * @param {Function} subscribe the function that is  called when the Observable is
+	     * initially subscribed to. This function is given a Subscriber, to which new values
+	     * can be `next`ed, or an `error` method can be called to raise an error, or
+	     * `complete` can be called to notify of a successful completion.
+	     */
+	    function Observable(subscribe) {
+	        this._isScalar = false;
+	        if (subscribe) {
+	            this._subscribe = subscribe;
+	        }
+	    }
+	    /**
+	     * Creates a new Observable, with this Observable as the source, and the passed
+	     * operator defined as the new observable's operator.
+	     * @method lift
+	     * @param {Operator} operator the operator defining the operation to take on the observable
+	     * @return {Observable} a new observable with the Operator applied
+	     */
+	    Observable.prototype.lift = function (operator) {
+	        var observable$$1 = new Observable();
+	        observable$$1.source = this;
+	        observable$$1.operator = operator;
+	        return observable$$1;
+	    };
+	    /**
+	     * Invokes an execution of an Observable and registers Observer handlers for notifications it will emit.
+	     *
+	     * <span class="informal">Use it when you have all these Observables, but still nothing is happening.</span>
+	     *
+	     * `subscribe` is not a regular operator, but a method that calls Observables internal `subscribe` function. It
+	     * might be for example a function that you passed to a {@link create} static factory, but most of the time it is
+	     * a library implementation, which defines what and when will be emitted by an Observable. This means that calling
+	     * `subscribe` is actually the moment when Observable starts its work, not when it is created, as it is often
+	     * thought.
+	     *
+	     * Apart from starting the execution of an Observable, this method allows you to listen for values
+	     * that an Observable emits, as well as for when it completes or errors. You can achieve this in two
+	     * following ways.
+	     *
+	     * The first way is creating an object that implements {@link Observer} interface. It should have methods
+	     * defined by that interface, but note that it should be just a regular JavaScript object, which you can create
+	     * yourself in any way you want (ES6 class, classic function constructor, object literal etc.). In particular do
+	     * not attempt to use any RxJS implementation details to create Observers - you don't need them. Remember also
+	     * that your object does not have to implement all methods. If you find yourself creating a method that doesn't
+	     * do anything, you can simply omit it. Note however, that if `error` method is not provided, all errors will
+	     * be left uncaught.
+	     *
+	     * The second way is to give up on Observer object altogether and simply provide callback functions in place of its methods.
+	     * This means you can provide three functions as arguments to `subscribe`, where first function is equivalent
+	     * of a `next` method, second of an `error` method and third of a `complete` method. Just as in case of Observer,
+	     * if you do not need to listen for something, you can omit a function, preferably by passing `undefined` or `null`,
+	     * since `subscribe` recognizes these functions by where they were placed in function call. When it comes
+	     * to `error` function, just as before, if not provided, errors emitted by an Observable will be thrown.
+	     *
+	     * Whatever style of calling `subscribe` you use, in both cases it returns a Subscription object.
+	     * This object allows you to call `unsubscribe` on it, which in turn will stop work that an Observable does and will clean
+	     * up all resources that an Observable used. Note that cancelling a subscription will not call `complete` callback
+	     * provided to `subscribe` function, which is reserved for a regular completion signal that comes from an Observable.
+	     *
+	     * Remember that callbacks provided to `subscribe` are not guaranteed to be called asynchronously.
+	     * It is an Observable itself that decides when these functions will be called. For example {@link of}
+	     * by default emits all its values synchronously. Always check documentation for how given Observable
+	     * will behave when subscribed and if its default behavior can be modified with a {@link Scheduler}.
+	     *
+	     * @example <caption>Subscribe with an Observer</caption>
+	     * const sumObserver = {
+	     *   sum: 0,
+	     *   next(value) {
+	     *     console.log('Adding: ' + value);
+	     *     this.sum = this.sum + value;
+	     *   },
+	     *   error() { // We actually could just remote this method,
+	     *   },        // since we do not really care about errors right now.
+	     *   complete() {
+	     *     console.log('Sum equals: ' + this.sum);
+	     *   }
+	     * };
+	     *
+	     * Rx.Observable.of(1, 2, 3) // Synchronously emits 1, 2, 3 and then completes.
+	     * .subscribe(sumObserver);
+	     *
+	     * // Logs:
+	     * // "Adding: 1"
+	     * // "Adding: 2"
+	     * // "Adding: 3"
+	     * // "Sum equals: 6"
+	     *
+	     *
+	     * @example <caption>Subscribe with functions</caption>
+	     * let sum = 0;
+	     *
+	     * Rx.Observable.of(1, 2, 3)
+	     * .subscribe(
+	     *   function(value) {
+	     *     console.log('Adding: ' + value);
+	     *     sum = sum + value;
+	     *   },
+	     *   undefined,
+	     *   function() {
+	     *     console.log('Sum equals: ' + sum);
+	     *   }
+	     * );
+	     *
+	     * // Logs:
+	     * // "Adding: 1"
+	     * // "Adding: 2"
+	     * // "Adding: 3"
+	     * // "Sum equals: 6"
+	     *
+	     *
+	     * @example <caption>Cancel a subscription</caption>
+	     * const subscription = Rx.Observable.interval(1000).subscribe(
+	     *   num => console.log(num),
+	     *   undefined,
+	     *   () => console.log('completed!') // Will not be called, even
+	     * );                                // when cancelling subscription
+	     *
+	     *
+	     * setTimeout(() => {
+	     *   subscription.unsubscribe();
+	     *   console.log('unsubscribed!');
+	     * }, 2500);
+	     *
+	     * // Logs:
+	     * // 0 after 1s
+	     * // 1 after 2s
+	     * // "unsubscribed!" after 2,5s
+	     *
+	     *
+	     * @param {Observer|Function} observerOrNext (optional) Either an observer with methods to be called,
+	     *  or the first of three possible handlers, which is the handler for each value emitted from the subscribed
+	     *  Observable.
+	     * @param {Function} error (optional) A handler for a terminal event resulting from an error. If no error handler is provided,
+	     *  the error will be thrown as unhandled.
+	     * @param {Function} complete (optional) A handler for a terminal event resulting from successful completion.
+	     * @return {ISubscription} a subscription reference to the registered handlers
+	     * @method subscribe
+	     */
+	    Observable.prototype.subscribe = function (observerOrNext, error, complete) {
+	        var operator = this.operator;
+	        var sink = toSubscriber_1.toSubscriber(observerOrNext, error, complete);
+	        if (operator) {
+	            operator.call(sink, this.source);
+	        }
+	        else {
+	            sink.add(this.source ? this._subscribe(sink) : this._trySubscribe(sink));
+	        }
+	        if (sink.syncErrorThrowable) {
+	            sink.syncErrorThrowable = false;
+	            if (sink.syncErrorThrown) {
+	                throw sink.syncErrorValue;
+	            }
+	        }
+	        return sink;
+	    };
+	    Observable.prototype._trySubscribe = function (sink) {
+	        try {
+	            return this._subscribe(sink);
+	        }
+	        catch (err) {
+	            sink.syncErrorThrown = true;
+	            sink.syncErrorValue = err;
+	            sink.error(err);
+	        }
+	    };
+	    /**
+	     * @method forEach
+	     * @param {Function} next a handler for each value emitted by the observable
+	     * @param {PromiseConstructor} [PromiseCtor] a constructor function used to instantiate the Promise
+	     * @return {Promise} a promise that either resolves on observable completion or
+	     *  rejects with the handled error
+	     */
+	    Observable.prototype.forEach = function (next, PromiseCtor) {
+	        var _this = this;
+	        if (!PromiseCtor) {
+	            if (root.root.Rx && root.root.Rx.config && root.root.Rx.config.Promise) {
+	                PromiseCtor = root.root.Rx.config.Promise;
+	            }
+	            else if (root.root.Promise) {
+	                PromiseCtor = root.root.Promise;
+	            }
+	        }
+	        if (!PromiseCtor) {
+	            throw new Error('no Promise impl found');
+	        }
+	        return new PromiseCtor(function (resolve, reject) {
+	            // Must be declared in a separate statement to avoid a RefernceError when
+	            // accessing subscription below in the closure due to Temporal Dead Zone.
+	            var subscription;
+	            subscription = _this.subscribe(function (value) {
+	                if (subscription) {
+	                    // if there is a subscription, then we can surmise
+	                    // the next handling is asynchronous. Any errors thrown
+	                    // need to be rejected explicitly and unsubscribe must be
+	                    // called manually
+	                    try {
+	                        next(value);
+	                    }
+	                    catch (err) {
+	                        reject(err);
+	                        subscription.unsubscribe();
+	                    }
+	                }
+	                else {
+	                    // if there is NO subscription, then we're getting a nexted
+	                    // value synchronously during subscription. We can just call it.
+	                    // If it errors, Observable's `subscribe` will ensure the
+	                    // unsubscription logic is called, then synchronously rethrow the error.
+	                    // After that, Promise will trap the error and send it
+	                    // down the rejection path.
+	                    next(value);
+	                }
+	            }, reject, resolve);
+	        });
+	    };
+	    Observable.prototype._subscribe = function (subscriber) {
+	        return this.source.subscribe(subscriber);
+	    };
+	    /**
+	     * An interop point defined by the es7-observable spec https://github.com/zenparsing/es-observable
+	     * @method Symbol.observable
+	     * @return {Observable} this instance of the observable
+	     */
+	    Observable.prototype[observable.observable] = function () {
+	        return this;
+	    };
+	    // HACK: Since TypeScript inherits static properties too, we have to
+	    // fight against TypeScript here so Subject can have a different static create signature
+	    /**
+	     * Creates a new cold Observable by calling the Observable constructor
+	     * @static true
+	     * @owner Observable
+	     * @method create
+	     * @param {Function} subscribe? the subscriber function to be passed to the Observable constructor
+	     * @return {Observable} a new cold observable
+	     */
+	    Observable.create = function (subscribe) {
+	        return new Observable(subscribe);
+	    };
+	    return Observable;
+	}());
+	var Observable_2 = Observable;
+
+
+	var Observable_1 = {
+		Observable: Observable_2
+	};
+
+	var __extends$4 = (commonjsGlobal && commonjsGlobal.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	/**
+	 * An error thrown when an action is invalid because the object has been
+	 * unsubscribed.
+	 *
+	 * @see {@link Subject}
+	 * @see {@link BehaviorSubject}
+	 *
+	 * @class ObjectUnsubscribedError
+	 */
+	var ObjectUnsubscribedError = (function (_super) {
+	    __extends$4(ObjectUnsubscribedError, _super);
+	    function ObjectUnsubscribedError() {
+	        var err = _super.call(this, 'object unsubscribed');
+	        this.name = err.name = 'ObjectUnsubscribedError';
+	        this.stack = err.stack;
+	        this.message = err.message;
+	    }
+	    return ObjectUnsubscribedError;
+	}(Error));
+	var ObjectUnsubscribedError_2 = ObjectUnsubscribedError;
+
+
+	var ObjectUnsubscribedError_1 = {
+		ObjectUnsubscribedError: ObjectUnsubscribedError_2
+	};
+
+	var __extends$5 = (commonjsGlobal && commonjsGlobal.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+
+	/**
+	 * We need this JSDoc comment for affecting ESDoc.
+	 * @ignore
+	 * @extends {Ignored}
+	 */
+	var SubjectSubscription = (function (_super) {
+	    __extends$5(SubjectSubscription, _super);
+	    function SubjectSubscription(subject, subscriber) {
+	        _super.call(this);
+	        this.subject = subject;
+	        this.subscriber = subscriber;
+	        this.closed = false;
+	    }
+	    SubjectSubscription.prototype.unsubscribe = function () {
+	        if (this.closed) {
+	            return;
+	        }
+	        this.closed = true;
+	        var subject = this.subject;
+	        var observers = subject.observers;
+	        this.subject = null;
+	        if (!observers || observers.length === 0 || subject.isStopped || subject.closed) {
+	            return;
+	        }
+	        var subscriberIndex = observers.indexOf(this.subscriber);
+	        if (subscriberIndex !== -1) {
+	            observers.splice(subscriberIndex, 1);
+	        }
+	    };
+	    return SubjectSubscription;
+	}(Subscription_1.Subscription));
+	var SubjectSubscription_2 = SubjectSubscription;
+
+
+	var SubjectSubscription_1 = {
+		SubjectSubscription: SubjectSubscription_2
+	};
+
+	var __extends$1 = (commonjsGlobal && commonjsGlobal.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+
+
+
+
+
+
+	/**
+	 * @class SubjectSubscriber<T>
+	 */
+	var SubjectSubscriber = (function (_super) {
+	    __extends$1(SubjectSubscriber, _super);
+	    function SubjectSubscriber(destination) {
+	        _super.call(this, destination);
+	        this.destination = destination;
+	    }
+	    return SubjectSubscriber;
+	}(Subscriber_1.Subscriber));
+	var SubjectSubscriber_1 = SubjectSubscriber;
+	/**
+	 * @class Subject<T>
+	 */
+	var Subject = (function (_super) {
+	    __extends$1(Subject, _super);
+	    function Subject() {
+	        _super.call(this);
+	        this.observers = [];
+	        this.closed = false;
+	        this.isStopped = false;
+	        this.hasError = false;
+	        this.thrownError = null;
+	    }
+	    Subject.prototype[rxSubscriber.rxSubscriber] = function () {
+	        return new SubjectSubscriber(this);
+	    };
+	    Subject.prototype.lift = function (operator) {
+	        var subject = new AnonymousSubject(this, this);
+	        subject.operator = operator;
+	        return subject;
+	    };
+	    Subject.prototype.next = function (value) {
+	        if (this.closed) {
+	            throw new ObjectUnsubscribedError_1.ObjectUnsubscribedError();
+	        }
+	        if (!this.isStopped) {
+	            var observers = this.observers;
+	            var len = observers.length;
+	            var copy = observers.slice();
+	            for (var i = 0; i < len; i++) {
+	                copy[i].next(value);
+	            }
+	        }
+	    };
+	    Subject.prototype.error = function (err) {
+	        if (this.closed) {
+	            throw new ObjectUnsubscribedError_1.ObjectUnsubscribedError();
+	        }
+	        this.hasError = true;
+	        this.thrownError = err;
+	        this.isStopped = true;
+	        var observers = this.observers;
+	        var len = observers.length;
+	        var copy = observers.slice();
+	        for (var i = 0; i < len; i++) {
+	            copy[i].error(err);
+	        }
+	        this.observers.length = 0;
+	    };
+	    Subject.prototype.complete = function () {
+	        if (this.closed) {
+	            throw new ObjectUnsubscribedError_1.ObjectUnsubscribedError();
+	        }
+	        this.isStopped = true;
+	        var observers = this.observers;
+	        var len = observers.length;
+	        var copy = observers.slice();
+	        for (var i = 0; i < len; i++) {
+	            copy[i].complete();
+	        }
+	        this.observers.length = 0;
+	    };
+	    Subject.prototype.unsubscribe = function () {
+	        this.isStopped = true;
+	        this.closed = true;
+	        this.observers = null;
+	    };
+	    Subject.prototype._trySubscribe = function (subscriber) {
+	        if (this.closed) {
+	            throw new ObjectUnsubscribedError_1.ObjectUnsubscribedError();
+	        }
+	        else {
+	            return _super.prototype._trySubscribe.call(this, subscriber);
+	        }
+	    };
+	    Subject.prototype._subscribe = function (subscriber) {
+	        if (this.closed) {
+	            throw new ObjectUnsubscribedError_1.ObjectUnsubscribedError();
+	        }
+	        else if (this.hasError) {
+	            subscriber.error(this.thrownError);
+	            return Subscription_1.Subscription.EMPTY;
+	        }
+	        else if (this.isStopped) {
+	            subscriber.complete();
+	            return Subscription_1.Subscription.EMPTY;
+	        }
+	        else {
+	            this.observers.push(subscriber);
+	            return new SubjectSubscription_1.SubjectSubscription(this, subscriber);
+	        }
+	    };
+	    Subject.prototype.asObservable = function () {
+	        var observable = new Observable_1.Observable();
+	        observable.source = this;
+	        return observable;
+	    };
+	    Subject.create = function (destination, source) {
+	        return new AnonymousSubject(destination, source);
+	    };
+	    return Subject;
+	}(Observable_1.Observable));
+	var Subject_2 = Subject;
+	/**
+	 * @class AnonymousSubject<T>
+	 */
+	var AnonymousSubject = (function (_super) {
+	    __extends$1(AnonymousSubject, _super);
+	    function AnonymousSubject(destination, source) {
+	        _super.call(this);
+	        this.destination = destination;
+	        this.source = source;
+	    }
+	    AnonymousSubject.prototype.next = function (value) {
+	        var destination = this.destination;
+	        if (destination && destination.next) {
+	            destination.next(value);
+	        }
+	    };
+	    AnonymousSubject.prototype.error = function (err) {
+	        var destination = this.destination;
+	        if (destination && destination.error) {
+	            this.destination.error(err);
+	        }
+	    };
+	    AnonymousSubject.prototype.complete = function () {
+	        var destination = this.destination;
+	        if (destination && destination.complete) {
+	            this.destination.complete();
+	        }
+	    };
+	    AnonymousSubject.prototype._subscribe = function (subscriber) {
+	        var source = this.source;
+	        if (source) {
+	            return this.source.subscribe(subscriber);
+	        }
+	        else {
+	            return Subscription_1.Subscription.EMPTY;
+	        }
+	    };
+	    return AnonymousSubject;
+	}(Subject));
+	var AnonymousSubject_1 = AnonymousSubject;
+
+
+	var Subject_1 = {
+		SubjectSubscriber: SubjectSubscriber_1,
+		Subject: Subject_2,
+		AnonymousSubject: AnonymousSubject_1
+	};
+
+	var __extends = (commonjsGlobal && commonjsGlobal.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+
+
+	/**
+	 * @class BehaviorSubject<T>
+	 */
+	var BehaviorSubject = (function (_super) {
+	    __extends(BehaviorSubject, _super);
+	    function BehaviorSubject(_value) {
+	        _super.call(this);
+	        this._value = _value;
+	    }
+	    Object.defineProperty(BehaviorSubject.prototype, "value", {
+	        get: function () {
+	            return this.getValue();
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    BehaviorSubject.prototype._subscribe = function (subscriber) {
+	        var subscription = _super.prototype._subscribe.call(this, subscriber);
+	        if (subscription && !subscription.closed) {
+	            subscriber.next(this._value);
+	        }
+	        return subscription;
+	    };
+	    BehaviorSubject.prototype.getValue = function () {
+	        if (this.hasError) {
+	            throw this.thrownError;
+	        }
+	        else if (this.closed) {
+	            throw new ObjectUnsubscribedError_1.ObjectUnsubscribedError();
+	        }
+	        else {
+	            return this._value;
+	        }
+	    };
+	    BehaviorSubject.prototype.next = function (value) {
+	        _super.prototype.next.call(this, this._value = value);
+	    };
+	    return BehaviorSubject;
+	}(Subject_1.Subject));
+	var BehaviorSubject_2 = BehaviorSubject;
+
+
+	var BehaviorSubject_1 = {
+		BehaviorSubject: BehaviorSubject_2
+	};
 
 	// detect environment
 	var isNode = !!(
@@ -35,14 +1368,24 @@
 	var aFrameReady = !!(isBrowser && window.AFRAME);
 	var threeReady = !!(isBrowser && window.THREE);
 
+	var isVisible$ = new BehaviorSubject_1.BehaviorSubject();
+	var isFocused$ = new BehaviorSubject_1.BehaviorSubject();
+
 	// create runtime object
 
 	var runtime = {
 
 	  isDebugMode: false,
-	  isMobile: detectMobile(),
 	  isNode: isNode,
+
+	  // browser specific
+
 	  isBrowser: isBrowser,
+	  assertBrowser: assertBrowser,
+	  isMobile: detectMobile(),
+	  domReady: domReady,
+	  isVisible$: isVisible$,
+	  isFocused$: isFocused$,
 
 	  has: {
 	    webGl: !!webGlInfo,
@@ -55,6 +1398,10 @@
 	};
 
 	// helpers
+
+	function assertBrowser() {
+	  if (!isBrowser) throw ('Sorry this feature requires a browser environment.')
+	}
 
 	function getWebGlInfo () {
 
@@ -95,14 +1442,52 @@
 	  return /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(hint)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(hint.substr(0,4))
 	}
 
-	var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+	// isVisible
 
+	if (isBrowser) {
+	  domReady(function(doc){
+	    // get initial tab visible state
+	    isVisible$.next(getTabVisibleState());
+	    // bind tab visibility event
+	    var visibilityEventName;
+	    if (typeof document.hidden !== "undefined") {
+	      visibilityEventName = "visibilitychange";
+	    } else if (typeof document.mozHidden !== "undefined") {
+	      visibilityEventName = "mozvisibilitychange";
+	    } else if (typeof document.msHidden !== "undefined") {
+	      visibilityEventName = "msvisibilitychange";
+	    } else if (typeof document.webkitHidden !== "undefined") {
+	      visibilityEventName = "webkitvisibilitychange";
+	    }
+	    doc.addEventListener(visibilityEventName, function onTabVisibilityChange () {
+	      isVisible$.next(getTabVisibleState());
+	    }, false);
+	  });
+	}
 
+	function getTabVisibleState () {
+	  if (document.hidden !== undefined) return !document.hidden
+	  if (document.webkitHidden !== undefined) return !document.webkitHidden
+	  if (document.mozHidden !== undefined) return !document.mozHidden
+	  if (document.msHidden !== undefined) return !document.msHidden
+	  return undefined
+	}
 
+	// isFocused
 
+	if (isBrowser) {
+	  domReady(function(){
+	    // get initial state
+	    isFocused$.next(document.hasFocus());
+	    // bind events
+	    window.onfocus = function () {
+	      isFocused$.next(true);
+	    };
+	    window.onblur = function () {
+	      isFocused$.next(false);
+	    };
+	  });
 
-	function createCommonjsModule(fn, module) {
-		return module = { exports: {} }, fn(module, module.exports), module.exports;
 	}
 
 	var bluebird = createCommonjsModule(function (module, exports) {
@@ -5933,7 +7318,7 @@
 	  })();
 	}
 
-	var version = "1.0.0-beta.22";
+	var version = "1.0.0-beta.23";
 
 	var homepage = "https://3d.io";
 
@@ -6250,7 +7635,7 @@
 	    if (defaults[key] !== undefined) {
 	      configs[key] = args[key];
 	    } else {
-	      logger.warn('Unknown config param "' + key + '"');
+	      logger.warn('Unknown config param "' + key + '". Available params are: ' + Object.keys(defaults).join(', '));
 	    }
 	  }
 
@@ -6314,1787 +7699,6 @@
 	    return false
 	  }
 	}
-
-	function sendBasicRequest (url, method, type, body){
-	  return new Promise(function (resolve, reject) {
-
-	    var xhr = new XMLHttpRequest();
-	    xhr.onload = function (event) {
-	      if (xhr.status >= 200 && xhr.status < 300) {
-	        resolve(xhr.response);
-	      } else {
-	        reject('Http request to '+url+' returned status: '+xhr.status+'. Body:\n'+xhr.response);
-	      }
-	    };
-	    xhr.onerror = function (event) {
-	      reject('Http request error. URL: '+url);
-	    };
-	    xhr.open(method, url, true);
-	    xhr.crossOrigin = 'Anonymous';
-	    xhr.responseType = type.toLowerCase();
-	    xhr.send(body);
-
-	  })
-	}
-
-	function sendJsonRequest(url, method, type, data){
-	  return new Promise(function (resolve, reject) {
-
-	    // internals
-	    var jsonString = null;
-	    var triedPreflightWorkaround = false;
-
-	    // preprocess data
-	    if (data) {
-	      try {
-	        jsonString = JSON.stringify(data);
-	      } catch (e) {
-	        reject('Error creating JSON string.');
-	      }
-	    }
-
-	    // create request
-	    var xhr = new XMLHttpRequest();
-	    xhr.crossOrigin = 'Anonymous';
-
-	    xhr.onload = function (event) {
-	      // parse data
-	      var json;
-	      try {
-	        json = JSON.parse(xhr.responseText);
-	      } catch (e) {
-	        reject({
-	          message: 'Http Request failed: Error parsing response JSON',
-	          url: url,
-	          status: xhr.status,
-	          headers: xhr.getAllResponseHeaders(),
-	          event: event
-	        });
-	        return
-	      }
-	      if (xhr.status >= 200 && xhr.status < 300) {
-	        resolve(json);
-	      } else {
-	        reject(json);
-	      }
-	    };
-	    xhr.onerror = function (event) {
-
-	      // When CORS preflight fails then xhr.status is 0
-	      if (!triedPreflightWorkaround && xhr.status === 0) {
-
-	        // try again with simple header to avoid OPTIONS preflight
-	        triedPreflightWorkaround = true;
-	        xhr.open(method, url, true);
-	        xhr.setRequestHeader('Content-Type', 'text/plain');
-	        xhr.send(jsonString);
-
-	      } else {
-
-	        reject({
-	          message: 'Http Request error',
-	          url: url,
-	          status: xhr.status,
-	          headers: xhr.getAllResponseHeaders(),
-	          event: event
-	        });
-
-	      }
-
-	    };
-
-	    xhr.open(method, url, true);
-	      if (method !== 'GET') {
-	          xhr.setRequestHeader('Content-Type', 'application/json');
-	      }
-	    xhr.send(jsonString);
-	    
-	  })
-	}
-
-	// internals
-
-	// graphic card max supported texture size
-	var MAX_TEXTURE_SIZE = runtime.has.webGl ? runtime.webGl.maxTextureSize || 2048 : 2048;
-
-	// helpers
-
-	function checkPowerOfTwo (value) {
-	  return ( value & ( value - 1 ) ) === 0 && value !== 0
-	}
-
-	function nearestPowerOfTwoOrMaxTextureSize (n) {
-	  // max texture size supported by vga
-	    if (n > MAX_TEXTURE_SIZE) {
-	        return MAX_TEXTURE_SIZE
-	    }
-	  // next best power of two
-	  var l = Math.log(n) / Math.LN2;
-	  return Math.pow(2, Math.round(l))
-	}
-
-	function resizeImage (image, url) {
-
-	  var width = nearestPowerOfTwoOrMaxTextureSize(image.width);
-	  var height = nearestPowerOfTwoOrMaxTextureSize(image.height);
-
-	  var canvas = document.createElement('canvas');
-	  canvas.width = width;
-	  canvas.height = height;
-	  canvas.getContext('2d').drawImage(image, 0, 0, width, height);
-
-	  console.log('Image size not compatible. Image has been resized from ' + image.width + 'x' + image.height + 'px to ' + canvas.width + 'x' + canvas.height +
-	  'px.\n' + url);
-
-	  return canvas
-	}
-
-	// function
-
-	function sendTextureRequest (url, type, dataType, data, progress, s3Key) {
-	  return new Promise(function (resolve, reject) {
-	    
-	    var image = document.createElement('img');
-	    image.crossOrigin = 'Anonymous';
-
-	    image.onload = function () {
-	      
-	      var texture = new THREE.Texture();
-
-	      texture.sourceFile = url;
-	      texture.url = url;
-
-	      // image size compatibility check
-
-	      var isPowerOfTwo = (checkPowerOfTwo(image.width) && checkPowerOfTwo(image.height));
-	      var isNotTooBig = (image.width <= MAX_TEXTURE_SIZE && image.height <= MAX_TEXTURE_SIZE);
-
-	      if (isPowerOfTwo && isNotTooBig) {
-
-	        // use image as it is
-	        texture.image = image;
-
-	      } else {
-
-	        // resize image to make it compatible
-	        texture.image = resizeImage(image, url);
-	        // add url reference
-	        texture.image.src = url;
-
-	      }
-	      
-	      resolve(texture);
-
-	    };
-
-	    var triedWithCacheBust = false;
-	    image.onerror = function () {
-	      if(triedWithCacheBust) {
-	        reject('Error loading texture ' + url);
-	      } else {
-	        // try again with cache busting to avoid things like #1510
-	        triedWithCacheBust = true;
-	        if (url.indexOf('?') === -1) {
-	          url += '?cacheBust=' + new Date().getTime();
-	        } else {
-	          url += '&cacheBust=' + new Date().getTime();
-	        }
-	        image.src = url;
-	      }
-	    };
-
-	    // initiate image loading
-	    image.src = url;
-
-	  })
-	}
-
-	var DDS_MAGIC = 0x20534444;
-
-	var DDSD_MIPMAPCOUNT = 0x20000;
-
-	var DDSCAPS2_CUBEMAP = 0x200;
-
-	var DDPF_FOURCC = 0x4;
-
-	// internals
-
-	var FOURCC_DXT1 = fourCCToInt32("DXT1");
-	var FOURCC_DXT3 = fourCCToInt32("DXT3");
-	var FOURCC_DXT5 = fourCCToInt32("DXT5");
-
-	// functions
-
-	function fourCCToInt32 (value) {
-
-	  return value.charCodeAt(0) +
-	    (value.charCodeAt(1) << 8) +
-	    (value.charCodeAt(2) << 16) +
-	    (value.charCodeAt(3) << 24);
-
-	}
-
-	function int32ToFourCC (value) {
-
-	  return String.fromCharCode(
-	    value & 0xff,
-	    (value >> 8) & 0xff,
-	    (value >> 16) & 0xff,
-	    (value >> 24) & 0xff
-	  );
-	}
-
-	function loadARGBMip (buffer, dataOffset, width, height) {
-	  var dataLength = width * height * 4;
-	  var srcBuffer = new Uint8Array(buffer, dataOffset, dataLength);
-	  var byteArray = new Uint8Array(dataLength);
-	  var dst = 0;
-	  var src = 0;
-	  for (var y = 0; y < height; y++) {
-	    for (var x = 0; x < width; x++) {
-	      var b = srcBuffer[ src ];
-	      src++;
-	      var g = srcBuffer[ src ];
-	      src++;
-	      var r = srcBuffer[ src ];
-	      src++;
-	      var a = srcBuffer[ src ];
-	      src++;
-	      byteArray[ dst ] = r;
-	      dst++;  //r
-	      byteArray[ dst ] = g;
-	      dst++;  //g
-	      byteArray[ dst ] = b;
-	      dst++;  //b
-	      byteArray[ dst ] = a;
-	      dst++;  //a
-	    }
-	  }
-	  return byteArray;
-	}
-
-	function parse (buffer, loadMipmaps) {
-
-	  var dds = { mipmaps: [], width: 0, height: 0, format: null, mipmapCount: 1 };
-
-	  var headerLengthInt = 31; // The header length in 32 bit ints
-
-	  // Offsets into the header array
-
-	  var off_magic = 0;
-
-	  var off_size = 1;
-	  var off_flags = 2;
-	  var off_height = 3;
-	  var off_width = 4;
-
-	  var off_mipmapCount = 7;
-
-	  var off_pfFlags = 20;
-	  var off_pfFourCC = 21;
-	  var off_RGBBitCount = 22;
-	  var off_RBitMask = 23;
-	  var off_GBitMask = 24;
-	  var off_BBitMask = 25;
-	  var off_ABitMask = 26;
-
-	  var off_caps = 27;
-	  var off_caps2 = 28;
-	  var off_caps3 = 29;
-	  var off_caps4 = 30;
-
-	  // Parse header
-
-	  var header = new Int32Array(buffer, 0, headerLengthInt);
-
-	  if (header[ off_magic ] !== DDS_MAGIC) {
-
-	    console.error('THREE.DDSLoader.parse: Invalid magic number in DDS header.');
-	    return dds;
-
-	  }
-
-	  if (!header[ off_pfFlags ] & DDPF_FOURCC) {
-
-	    console.error('THREE.DDSLoader.parse: Unsupported format, must contain a FourCC code.');
-	    return dds;
-
-	  }
-
-	  var blockBytes;
-
-	  var fourCC = header[ off_pfFourCC ];
-
-	  var isRGBAUncompressed = false;
-
-	  switch (fourCC) {
-
-	    case FOURCC_DXT1:
-
-	      blockBytes = 8;
-	      dds.format = THREE.RGB_S3TC_DXT1_Format;
-	      break;
-
-	    case FOURCC_DXT3:
-
-	      blockBytes = 16;
-	      dds.format = THREE.RGBA_S3TC_DXT3_Format;
-	      break;
-
-	    case FOURCC_DXT5:
-
-	      blockBytes = 16;
-	      dds.format = THREE.RGBA_S3TC_DXT5_Format;
-	      break;
-
-	    default:
-
-	      if (header[ off_RGBBitCount ] == 32
-	        && header[ off_RBitMask ] & 0xff0000
-	        && header[ off_GBitMask ] & 0xff00
-	        && header[ off_BBitMask ] & 0xff
-	        && header[ off_ABitMask ] & 0xff000000) {
-	        isRGBAUncompressed = true;
-	        blockBytes = 64;
-	        dds.format = THREE.RGBAFormat;
-	      } else {
-	        console.error('THREE.DDSLoader.parse: Unsupported FourCC code ', int32ToFourCC(fourCC));
-	        return dds;
-	      }
-	  }
-
-	  dds.mipmapCount = 1;
-
-	  if (header[ off_flags ] & DDSD_MIPMAPCOUNT && loadMipmaps !== false) {
-
-	    dds.mipmapCount = Math.max(1, header[ off_mipmapCount ]);
-
-	  }
-
-	  //TODO: Verify that all faces of the cubemap are present with DDSCAPS2_CUBEMAP_POSITIVEX, etc.
-
-	  dds.isCubemap = header[ off_caps2 ] & DDSCAPS2_CUBEMAP ? true : false;
-
-	  dds.width = header[ off_width ];
-	  dds.height = header[ off_height ];
-
-	  var dataOffset = header[ off_size ] + 4;
-
-	  // Extract mipmaps buffers
-
-	  var width = dds.width;
-	  var height = dds.height;
-
-	  var faces = dds.isCubemap ? 6 : 1;
-
-	  for (var face = 0; face < faces; face++) {
-
-	    for (var i = 0; i < dds.mipmapCount; i++) {
-
-	      var byteArray, dataLength;
-	      if (isRGBAUncompressed) {
-	        byteArray = loadARGBMip(buffer, dataOffset, width, height);
-	        dataLength = byteArray.length;
-	      } else {
-	        dataLength = Math.max(4, width) / 4 * Math.max(4, height) / 4 * blockBytes;
-	        byteArray = new Uint8Array(buffer, dataOffset, dataLength);
-	      }
-
-	      var mipmap = { "data": byteArray, "width": width, "height": height };
-	      dds.mipmaps.push(mipmap);
-
-	      dataOffset += dataLength;
-
-	      width = Math.max(width * 0.5, 1);
-	      height = Math.max(height * 0.5, 1);
-
-	    }
-
-	    width = dds.width;
-	    height = dds.height;
-
-	  }
-
-	  return dds;
-
-	}
-
-	function log2 (x) {
-	  return Math.log(x) / Math.LN2
-	}
-
-	// load function
-
-	function sendDdsTextureRequest (url, type, dataType, data, progress, s3Key) {
-	  return new Promise(function (resolve, reject) {
-
-	    var xhr = new XMLHttpRequest();
-
-	    xhr.onload = function (event) {
-
-	      if (xhr.status >= 200 && xhr.status < 300) {
-
-	        var buffer = xhr.response,
-	          dds;
-
-	        // parse data
-	        try {
-	          dds = parse(buffer, true);
-	        } catch (e) {
-	          var message = 'Error Loading DDS Texture\n' + url + '\n' + e.name + ': ' + e.message;
-	          console.error(message);
-	          reject(message);
-	          return
-	        }
-
-	        // See OpenGL ES 2.0.25 p. 81 paragraph 1 for the number of required mipmaps.
-	        var mipmapCount = log2(Math.max(dds.width, dds.height)) + 1;
-	        if (dds.mipmapCount != mipmapCount) {
-	          console.error('Reading DDS texture failed: ' + url + '\nmipmaps counted: ' + dds.mipmapCount + ', should be: ' + mipmapCount +
-	            '\nPlease make sure you have mipmap generation enabled when creating DDS textures from images.');
-	          reject('Error parsing DDS. Wrong mipmaps count. ' + url);
-	          return
-	        }
-
-	        // create compressed texture
-	        var texture = new THREE.CompressedTexture();
-
-	        texture.format = dds.format;
-	        texture.mipmaps = dds.mipmaps;
-	        texture.image.width = dds.width;
-	        texture.image.height = dds.height;
-	        texture.image.src = url;
-	        texture.sourceFile = url;
-	        texture.url = url;
-	        texture.bufferByteLength = buffer.byteLength;
-
-	        // gl.generateMipmap fails for compressed textures
-	        // mipmaps must be embedded in the DDS file
-	        // or texture filters must not use mipmapping
-	        texture.generateMipmaps = false;
-
-	        resolve(texture);
-
-	      } else {
-	        reject({
-	          message: 'Http Request error',
-	          url: url,
-	          status: xhr.status,
-	          headers: xhr.getAllResponseHeaders(),
-	          event: event
-	        });
-	      }
-
-	    };
-	    xhr.onerror = function (event) {
-	      reject({
-	        message: 'Http Request error',
-	        url: url,
-	        status: xhr.status,
-	        headers: xhr.getAllResponseHeaders(),
-	        event: event
-	      });
-	    };
-
-	    xhr.open('GET', url, true);
-	    xhr.crossOrigin = "Anonymous";
-	    xhr.responseType = 'arraybuffer';
-	    xhr.send(null);
-
-	  })
-	}
-
-	// main
-
-	function request(args) {
-	  // API
-	  var url = args.url || args.uri;
-	  var method = args.method || 'GET';
-	  var body = args.body;
-	  var type = getType(args.type, url, body);
-	  
-	  // TODO: add support for additional params
-	  //var headers = args.headers || {}
-	  //var qs = args.qs
-
-	  //var noCache = !!args.noCache
-
-	  // TODO: validate params
-	  if (sendRequestByType[type]) {
-	    return sendRequestByType[type](url, method, type, body)
-	  } else {
-	    return Promise.reject('Type '+type+' not supported.')
-	  }
-
-	}
-
-	// shortcuts
-
-	request.get = function get (url) {
-	  return request({
-	    method: 'GET',
-	    url: url
-	  })
-	};
-
-	request.getTexture = function getTexture (url) {
-	  return request({
-	    method: 'GET',
-	    type: 'texture',
-	    url: url
-	  })
-
-	};
-
-	// private properties and methods
-
-	var sendRequestByType = {
-	  'text': sendBasicRequest,
-	  'arrayBuffer': sendBasicRequest,
-	  'blob': sendBasicRequest,
-	  'json': sendJsonRequest, // IE11 does not support responseType=json
-	  //'ddsTexture': getDdsTexture,
-	  'imageTexture': sendTextureRequest,
-	  'ddsTexture': sendDdsTextureRequest
-	  // TODO: add support for following types
-	  //'document': sendDocumentRequest,
-	  //'urlEncoded': sendUrlEncodedRequest,
-	  //'formData': sendFormDataRequest,
-	  //'img': sendImgRequest
-	};
-
-	var typeByExtension = {
-	  'buffer': 'arrayBuffer',
-	  'txt': 'text',
-	  'json': 'json'
-	  // TODO: enable these once support for those types is provided
-	  //'jpg': 'img',
-	  //'jpeg': 'img',
-	  //'jpe': 'img',
-	  //'png': 'img',
-	  //'gif': 'img',
-	  //'xml': 'document',
-	  //'html': 'document',
-	  //'svg': 'document'
-	};
-
-	var textureTypeByExtension = {
-	  '.dds': 'ddsTexture',
-	  '.jpg': 'imageTexture',
-	  '.jpeg': 'imageTexture',
-	  '.jpe': 'imageTexture',
-	  '.png': 'imageTexture',
-	  '.gif': 'imageTexture',
-	  '.svg': 'imageTexture'
-	};
-
-	function getType (type, url, data) {
-	  if (!url) return 'text'
-	  var fileName = url.split('/').pop();
-	  var extension = fileName.split('.').pop();
-
-	  if (!type) {
-
-	    if (data) {
-	      // estimate dataType from data
-	      if (data instanceof FormData) {
-	        type = 'form-data';
-	      } else if (_.isObject(data)) {
-	        type = 'url-encoded';
-	      }
-	    } else {
-	      // estimate dataType from URL
-	      type = dataTypeFromUrl(url);
-	    }
-
-	    // fallback to text request
-	    if (!type) {
-	      type = 'text';
-	    }
-
-	  } else if (type === 'texture') {
-
-	    // estimate texture type from URL
-	    type = getTextureTypeFromUrl(url);
-
-	  }
-
-	  return type
-	}
-
-	var typeByExtensionKeys = Object.keys(typeByExtension);
-	function dataTypeFromUrl (url) {
-
-	  var extension, i, l, urlLow = url.toLowerCase();
-
-	  for (i= 0, l=typeByExtensionKeys.length; i<l; i++ ) {
-	    extension = typeByExtensionKeys[i];
-	    if (urlLow.substring( urlLow.length - extension.length ) === extension) {
-	      return typeByExtension[ extension ]
-	    }
-	  }
-
-	  return 'text'
-
-	}
-
-	function getTextureTypeFromUrl (url, isTexture) {
-
-	  // get file extension
-	  var search = url.match(/\.[A-Za-z]+(?=\?|$)/i);
-
-	  if (search) {
-	    var extension = search[ 0 ].toLowerCase();
-	    return textureTypeByExtension[ extension ]
-	  } else {
-	    return false
-	  }
-
-	}
-
-	/*
-
-	 PERFORMANCE CRITICAL CODE
-
-	 readability may suffer from performance optimization
-	 ask tomas-polach if you have questions
-
-	*/
-
-	// static method, @memberof View
-
-	// constants
-
-	var THREEJS_TEXTURE_TYPES_MAP = {
-	  // hi-res textures
-	  'mapDiffuse': 'map',
-	  'mapSpecular': 'specularMap',
-	  'mapNormal':'normalMap',
-	  'mapAlpha':'alphaMap',
-	  'mapLight':'lightMap',
-	  // lo-res textures
-	  'mapDiffusePreview': 'map',
-	  'mapSpecularPreview': 'specularMap',
-	  'mapNormalPreview':'normalMap',
-	  'mapAlphaPreview':'alphaMap',
-	  'mapLightPreview':'lightMap'
-	};
-	var WEBGL_WRAP_TYPES = {
-	  repeat: 1000,
-	  mirror: 1002,
-	  clamp: 1001
-	};
-	// RepeatWrapping: 1000 / ClampToEdgeWrapping: 1001 / MirroredRepeatWrapping: 1002
-
-	// helpers
-
-	function onError (e) {
-	  console.error('Texture could not been loaded: ', e);
-	}
-
-	var textureRefCount = {};
-
-	function countTextureReference ( key ) {
-	  if ( key !== undefined ) {
-	    if (textureRefCount[ key ]) {
-	      textureRefCount[ key ]++;
-	    } else {
-	      textureRefCount[ key ] = 1;
-	    }
-	  }
-	}
-
-	function disposeIfPossible () {
-	  var texture3d = this;
-	  var key = this.url;
-	  if (key) {
-	    if (textureRefCount[ key ]) {
-	      textureRefCount[ key ]--;
-	      if (textureRefCount[ key ] === 0) {
-	//          console.log('dispose texture', texture3d.url)
-	        texture3d.dispose();
-	//          texture3d.needsUpdate = true
-	      }
-	    } else {
-	//        console.warn('texture not in cache ' + key)
-	      texture3d.dispose();
-	    }
-	  } else {
-	    texture3d.dispose();
-	//      texture3d.needsUpdate = true
-	  }
-	}
-
-	// class
-
-	function loadTextures ( queue, TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, resetTexturesOnLoadStart) {
-
-	  // new textures
-
-	  var
-	    texture3dKeys = [],
-	    textureKeys = [],
-	    texturePromises = [],
-	    textureCount = 0,
-	    textureS3Key,
-	    texture3d,
-	    textureType3d,
-	    textureType,
-	    needsUpdate,
-	    hasUv1Textures = false,
-	    geometry3d = mesh3d ? mesh3d.geometry : null,
-	    attributes3d = geometry3d ? geometry3d.attributes : null,
-	    hasUvVertices = attributes3d && attributes3d.uv && attributes3d.uv.count > 0,
-	    hasUv2Vertices = attributes3d && attributes3d.uv2 && attributes3d.uv2.count > 0,
-	    i,
-	    l;
-
-	  // UV1 textures
-
-	  for (i = 0, l = TEXTURE_TYPES.UV1.length; i < l; i++) {
-	    textureType = TEXTURE_TYPES.UV1[ i ];
-	    textureS3Key = _attributes[ textureType ];
-	    textureType3d = THREEJS_TEXTURE_TYPES_MAP[ textureType ];
-	    texture3d = material3d[ textureType3d ];
-
-	    if (textureS3Key) {
-	      if (hasUvVertices) {
-	        hasUv1Textures = true;
-	      } else {
-	        console.error('Texture ' + textureS3Key + ' could not be assigned because geometry has no UV vertices.');
-	        continue
-	      }
-	    }
-
-	    if (textureS3Key) {
-
-	      needsUpdate = true;
-
-	      // update wrap
-	      wrap = WEBGL_WRAP_TYPES[ _attributes.wrap ] || WEBGL_WRAP_TYPES[ 'repeat' ];
-	      if (texture3d && wrap !== texture3d.wrapS) {
-	        texture3d.wrapS = wrap;
-	        texture3d.wrapT = wrap;
-	        texture3d.needsUpdate = true;
-	      }
-
-	      // don't reload texture if files are of same origin
-	      if (
-	        texture3d
-	        && texture3d.url
-	        && textureS3Key === texture3d.url
-	      ) {
-	        needsUpdate = false;
-	      }
-
-	      if (needsUpdate && texture3d && resetTexturesOnLoadStart) {
-	        // dispose old texture
-	        if (material3d[ textureType3d ] && material3d[ textureType3d ].disposeIfPossible) {
-	          material3d[ textureType3d ].disposeIfPossible();
-	        }
-	        material3d[ textureType3d ] = null;
-	      }
-
-	      if (needsUpdate) {
-	        // load new texture
-	        texturePromises[ textureCount ] = request.getTexture(textureS3Key, { queue: queue }).catch(onError);
-	        textureKeys[ textureCount ] = textureType;
-	        texture3dKeys[ textureCount ] = textureType3d;
-	        textureCount++;
-	        material3d.needsUpdate = true;
-	      }
-
-	    } else if (material3d[ textureType3d ]) {
-
-	      // no new texture: just dispose old texture
-	      if (material3d[ textureType3d ] && material3d[ textureType3d ].disposeIfPossible) {
-	        material3d[ textureType3d ].disposeIfPossible();
-	      }
-	      material3d[ textureType3d ] = null;
-	      material3d.needsUpdate = true;
-
-	    }
-
-	  }
-
-	  // UV1 vectors
-
-	  if (attributes3d) {
-
-	    // UV channel 1
-
-	    if (hasUv1Textures) {
-
-	      // resize UV array
-
-	      if (_attributes.size) {
-
-	        var
-	          targetScaleU = _attributes.size[ 0 ],
-	          targetScaleV = _attributes.size[ 1 ],
-	          currentScaleU = attributes3d.uv._scaleU || 1,
-	          currentScaleV = attributes3d.uv._scaleV || 1;
-	        // check if uv recalculation is needed
-	        if (targetScaleU !== currentScaleU || targetScaleV !== currentScaleV) {
-	          // remember original uv array
-	          if (!attributes3d.uv._source) {
-	            attributes3d.uv._source = attributes3d.uv.array;
-	          }
-	          // internals
-	          var
-	            sourceUVs = attributes3d.uv._source,
-	            resizedUVs = new Float32Array(sourceUVs.length);
-	          // resize array
-	          for (var i = 0, l = resizedUVs.length; i < l; i += 2) {
-	            resizedUVs[ i ] = sourceUVs[ i ] / targetScaleU;
-	            resizedUVs[ i + 1 ] = sourceUVs[ i + 1 ] / targetScaleV;
-	          }
-	          // set resized array
-	          attributes3d.uv.array = resizedUVs;
-	          // remember size
-	          attributes3d.uv._scaleU = targetScaleU;
-	          attributes3d.uv._scaleV = targetScaleV;
-	          // set update flag
-	          attributes3d.uv.needsUpdate = true;
-	        }
-
-	      }
-
-	    }
-
-	    // UV channel 2
-
-	    if (_attributes[ TEXTURE_TYPES.UV2 ]) {
-
-	      // check uv count
-	      if (hasUv2Vertices) {
-
-	        // everything ok - load lightmap
-	        textureType = TEXTURE_TYPES.UV2;
-	        textureS3Key = _attributes[ textureType ];
-	        texturePromises[ textureCount ] = request.getTexture(textureS3Key, { queue: queue }).catch(onError);
-	        textureKeys[ textureCount ] = textureType;
-	        texture3dKeys[ textureCount ] = THREEJS_TEXTURE_TYPES_MAP[ textureType ];
-	        textureCount++;
-
-	      } else {
-
-	        console.error('Lightmap ' + _attributes[ TEXTURE_TYPES.UV2 ] + ' could not be assigned because geometry has no lightmap UV (UV2) vertices.');
-
-	      }
-
-	    }
-
-	  }
-
-	  // load textures
-
-	  var promise, wrap;
-	  if (textureCount) {
-
-	    promise = Promise.all(texturePromises).then(function (textures) {
-
-	      // assign textures
-	      wrap = WEBGL_WRAP_TYPES[ _attributes.wrap ] || WEBGL_WRAP_TYPES[ 'repeat' ];
-	      for (i = 0; i < textureCount; i++) {
-	        // FIXME:
-	        // if (
-	        //   // avoid racing conditions
-	        // textures[ i ] && textures[ i ].url === material3d._texturesToBeLoaded[ textureKeys[i] ] &&
-	        //   // filter texture loading errors
-	        // (textures[i] instanceof THREE.CompressedTexture || textures[i] instanceof THREE.Texture)
-	        // ){
-
-	          // cache
-	          countTextureReference(textures[ i ].url);
-	          textures[ i ].disposeIfPossible = disposeIfPossible;
-
-	          // set texture settings
-	          textures[ i ].wrapS = wrap;
-	          textures[ i ].wrapT = wrap;
-	          textures[ i ].anisotropy = 2;
-	          // dispose previous texture
-	          if (material3d[ texture3dKeys[ i ] ] && material3d[ texture3dKeys[ i ] ].disposeIfPossible) {
-	            material3d[ texture3dKeys[ i ] ].disposeIfPossible();
-	          }
-	          // add new texture
-	          material3d[ texture3dKeys[ i ] ] = textures[ i ];
-	          material3d.uniforms[ texture3dKeys[ i ] ].value = textures[ i ];
-	          material3d[ texture3dKeys[ i ] ].needsUpdate = true;
-	        // }
-	      }
-	      // update material
-	      material3d.needsUpdate = true;
-
-	      // to prevent warnings: "GL ERROR :GL_INVALID_OPERATION : glDrawElements: attempt to access out of range vertices in attribute 1 "
-	      // this happens when switching from a material without texture to a material with texture or vice versa
-	      if ( mesh3d && mesh3d.geometry ) {
-	        mesh3d.geometry.buffersNeedUpdate = true;
-	        mesh3d.geometry.uvsNeedUpdate = true;
-	      }
-
-	      // render
-	      if (vm) vm.viewport.render();
-
-	    });
-
-	  } else {
-
-	    promise = Promise.resolve();
-
-	    // render
-	    if (vm) vm.viewport.render();
-
-	  }
-
-	  return promise
-
-	}
-
-	/*
-
-	 PERFORMANCE CRITICAL CODE
-
-	 readability may suffer from performance optimization
-	 ask tomas-polach if you have questions
-
-	*/
-
-	// static method, @memberof View
-
-	// constants
-
-	var HI_RES_TEXTURE_TYPES = {
-	  UV1: [ 'mapDiffuse', 'mapSpecular', 'mapNormal', 'mapAlpha' ],
-	  UV2: 'mapLight'
-	};
-	var LO_RES_TEXTURE_TYPES = {
-	  UV1: [ 'mapDiffusePreview', 'mapSpecularPreview', 'mapNormalPreview', 'mapAlphaPreview' ],
-	  UV2: 'mapLightPreview'
-	};
-
-	var DEFAULT_LIGHT_MAP_INTENSITY = 1.2;
-	var DEFAULT_LIGHT_MAP_EXPOSURE = 0.6;
-	var DEFAULT_LIGHT_MAP_FALLOFF = 0;
-
-	// RepeatWrapping: 1000 / ClampToEdgeWrapping: 1001 / MirroredRepeatWrapping: 1002
-
-	// function
-
-	function setMaterial (args) {
-
-	  // Args
-	  var vm = args.vm;
-	  var material3d = args.material3d;
-	  var mesh3d = args.mesh3d;
-	  var _attributes = args.attributes || {};
-	  var reset = args.reset !== undefined ? args.reset : true;
-	  var loadingQueuePrefix = args.loadingQueuePrefix;
-	  var onFirstTextureSetLoaded = args.onFirstTextureSetLoaded;
-	  var lightMapIntensity = args.lightMapIntensity;
-	  var lightMapExposure = args.lightMapExposure;
-
-
-	  // transparency
-
-	  //     material3d.transparent = true
-	  //     material3d.opacity = 0.55
-
-	  // depth buffer
-	  //    if (material3d.opacity < 1) {
-	  //      material3d.depthWrite = false
-	  //      var alphaTest = material3d.opacity - 0.001
-	  //      if (alphaTest < 0) alphaTest = 0
-	  //      material3d.alphaTest = alphaTest
-	  //    }
-
-	  // specular coefficient
-
-	  material3d.shininess = (_attributes.specularCoef !== undefined) ? (_attributes.specularCoef ) : 0.1;
-	  material3d.uniforms.shininess.value = material3d.shininess;
-
-	  // colors
-	  var diffuse = {};
-	  if (_attributes.colorDiffuse) {
-	    diffuse.r = _attributes.colorDiffuse[ 0 ];
-	    diffuse.g = _attributes.colorDiffuse[ 1 ];
-	    diffuse.b = _attributes.colorDiffuse[ 2 ];
-	  } else if (reset) {
-	    if (_attributes.mapDiffuse ) {
-	      // has diffuse texture
-	      diffuse.r = 1;
-	      diffuse.g = 1;
-	      diffuse.b = 1;
-	    } else {
-	      // has NO diffuse texture
-	      diffuse.r = 0.85;
-	      diffuse.g = 0.85;
-	      diffuse.b = 0.85;
-	    }
-	  }
-	  material3d.diffuse = diffuse;
-	  material3d.uniforms.diffuse.value = new THREE.Color(diffuse.r, diffuse.g, diffuse.b);
-
-	  /*if (_attributes.colorAmbient) {
-	    // material3d.ambient.r = _attributes.colorAmbient[ 0 ]
-	    // material3d.ambient.g = _attributes.colorAmbient[ 1 ]
-	    // material3d.ambient.b = _attributes.colorAmbient[ 2 ]
-	  } else if (reset) {
-	    // if (!material3d.ambient) {
-	    //   material3d.ambient = new THREE.Color()
-	    // }
-	    // material3d.ambient.r = material3d.color.r
-	    // material3d.ambient.g = material3d.color.g
-	    // material3d.ambient.b = material3d.color.b
-	  }*/
-
-	  var specular = {};
-	  if (_attributes.colorSpecular) {
-	    specular.r = _attributes.colorSpecular[ 0 ];
-	    specular.g = _attributes.colorSpecular[ 1 ];
-	    specular.b = _attributes.colorSpecular[ 2 ];
-	  } else if (reset) {
-	    specular.r = 0.25;
-	    specular.g = 0.25;
-	    specular.b = 0.25;
-	  }
-	  material3d.specular = specular;
-	  material3d.uniforms.specular.value = new THREE.Color(specular.r, specular.g, specular.b);
-
-	  var emissive = {};
-	  if (_attributes.colorEmissive) {
-	    emissive.r = _attributes.colorEmissive[ 0 ];
-	    emissive.g = _attributes.colorEmissive[ 1 ];
-	    emissive.b = _attributes.colorEmissive[ 2 ];
-	  } else if (_attributes.lightEmissionCoef) {
-	    var emissiveIntensity = _attributes.lightEmissionCoef / 10;
-	    if (_attributes.colorDiffuse) {
-	      emissive.r = _attributes.colorDiffuse[ 0 ];
-	      emissive.g = _attributes.colorDiffuse[ 1 ];
-	      emissive.b = _attributes.colorDiffuse[ 2 ];
-	    } else {
-	      emissive.r = 1.0;
-	      emissive.g = 1.0;
-	      emissive.b = 1.0;
-	    }
-	    emissive.r *= emissiveIntensity;
-	    emissive.g *= emissiveIntensity;
-	    emissive.b *= emissiveIntensity;
-
-	  } else if (reset) {
-	    emissive.r = 0;
-	    emissive.g = 0;
-	    emissive.b = 0;
-	  }
-	  material3d.emissive = emissive;
-	  material3d.uniforms.emissive.value = new THREE.Color(emissive.r, emissive.g, emissive.b);
-
-	  // lightmap settings
-	  if (_attributes.mapLight || _attributes.mapLightPreview) {
-	    // Fallback lightmap intensity and exposure values
-	    var lmi = DEFAULT_LIGHT_MAP_INTENSITY;
-	    var lme = DEFAULT_LIGHT_MAP_EXPOSURE;
-
-	    if (lightMapIntensity !== undefined && lightMapIntensity != null && lightMapIntensity !== -100) {
-	      lmi = lightMapIntensity;
-	    } else if (_attributes.mapLightIntensity !== undefined) {
-	      lmi = _attributes.mapLightIntensity;
-	    }
-
-	    if (lightMapExposure !== undefined && lightMapExposure != null && lightMapExposure !== -100) {
-	      lme = lightMapExposure;
-	    } else if (_attributes.mapLightCenter !== undefined) {
-	      // in data3d lightMapExposure is mapLightCenter
-	      lme = _attributes.mapLightCenter;
-	    }
-
-	    material3d.lightMapIntensity = (lmi >= 0.0) ? lmi : 0.0;
-	    material3d.lightMapExposure = lme;
-	    material3d.lightMapFalloff = (_attributes.mapLightFalloff !== undefined) ? _attributes.mapLightFalloff : DEFAULT_LIGHT_MAP_FALLOFF;
-	    material3d.uniforms.lightMapIntensity.value = material3d.lightMapIntensity;
-	    material3d.uniforms.lightMapExposure.value = material3d.lightMapExposure;
-	    material3d.uniforms.lightMapFalloff.value = material3d.lightMapFalloff;
-	  }
-
-	  // shadows
-
-	  if (mesh3d) {
-	    // (2017/04/05) Interiors are currently not shadow receivers, as this
-	    // would produce many artifacts. However, flat and thin objects laying
-	    // very close to the floor (such as carpets) need to be excepted from
-	    // that rule. This is a temporary way to achieve that.
-	    if (!mesh3d.geometry.boundingBox)
-	      mesh3d.geometry.computeBoundingBox();
-	    var boundingBox = mesh3d.geometry.boundingBox;
-	    var position    = boundingBox.min.clone();
-	    position.applyMatrix4(mesh3d.matrixWorld);
-	    var meshIsFlat          = boundingBox.max.y - boundingBox.min.y < 0.05;
-	    var meshIsOnGroundLevel = position.y < 0.1;
-	    mesh3d.castShadow    = !(meshIsFlat && meshIsOnGroundLevel) && _attributes.castRealTimeShadows;
-	    mesh3d.receiveShadow =  (meshIsFlat && meshIsOnGroundLevel) || _attributes.receiveRealTimeShadows;
-	    mesh3d.material.needsUpdate = true; // without this, receiveShadow does not become effective
-	  }
-
-	  // load textures
-
-	  // remember current textures (avoiding racing conditions between texture loading and material updates)
-	  material3d._texturesToBeLoaded = {
-	    // hires textures
-	    mapDiffuse: _attributes.mapDiffuse,
-	    mapSpecular: _attributes.mapSpecular,
-	    mapNormal: _attributes.mapNormal,
-	    mapAlpha: _attributes.mapAlpha,
-	    mapLight: _attributes.mapLight,
-	    // lores textures
-	    mapDiffusePreview: _attributes.mapDiffusePreview,
-	    mapSpecularPreview: _attributes.mapSpecularPreview,
-	    mapNormalPreview: _attributes.mapNormalPreview,
-	    mapAlphaPreview: _attributes.mapAlphaPreview,
-	    mapLightPreview: _attributes.mapLightPreview
-	  };
-
-	  var
-	    loadingTexturesPromise,
-	    loadingQueue,
-	    isLoadingLoResTextures,
-	    hasLoResTextures = _attributes.mapDiffusePreview || _attributes.mapSpecularPreview || _attributes.mapNormalPreview || _attributes.mapAlphaPreview || _attributes.mapLightPreview,
-	    // hasHiResTextures = _attributes.mapDiffuse || _attributes.mapSpecular || _attributes.mapNormal || _attributes.mapAlpha || _attributes.mapLight,
-	    // TODO: readd hiResTextures configs
-	    // hiResTexturesEnabled = !configs.isMobile && vm.viewport.a.hiResTextures && configs.compatibility.webglCompressedTextures
-	    hiResTexturesEnabled = !runtime.isMobile && runtime.webGl.supportsDds;
-
-	  if (!hiResTexturesEnabled || (hasLoResTextures && !material3d.firstTextureLoaded)) {
-	    if (loadingQueuePrefix) {
-	      loadingQueue = loadingQueuePrefix + 'TexturesLoRes';
-	    }
-	    loadingTexturesPromise = loadTextures(loadingQueue, LO_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
-	    isLoadingLoResTextures = true;
-	  } else {
-	    if (loadingQueuePrefix) {
-	      loadingQueue = loadingQueuePrefix + 'TexturesHiRes';
-	    }
-	    loadingTexturesPromise = loadTextures(loadingQueue, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
-	    isLoadingLoResTextures = false;
-	  }
-
-
-	  // set opacity after textures have loaded
-	  loadingTexturesPromise.then(function(){
-
-	    if (_attributes.opacity !== undefined && _attributes.opacity < 1) {
-	      // 0 = fully transparent, 1 = non-transparent
-	      material3d.transparent = true;
-	      material3d.opacity = _attributes.opacity;
-	    } else if (_attributes.mapAlpha) {
-	      // has alpha map
-	      material3d.transparent = true;
-	      material3d.opacity = 1;
-	    } else {
-	      material3d.transparent = false;
-	      material3d.opacity = 1;
-	    }
-	    material3d.uniforms.opacity = { value: material3d.opacity };
-
-	    // trigger callback
-	    if (onFirstTextureSetLoaded) onFirstTextureSetLoaded();
-
-	    // set onFirstTextureLoaded
-	    if (hasLoResTextures) material3d.firstTextureLoaded = true;
-
-	  });
-
-	  // 2. load hi-res textures (if: material has preview texture set, not on mobile, hi-res enabled and supported)
-	  if (isLoadingLoResTextures && hiResTexturesEnabled) {
-	    loadingTexturesPromise.then(function(){
-	      if (loadingQueuePrefix) {
-	        loadingQueue = loadingQueuePrefix + 'TexturesHiRes';
-	      }
-	      loadTextures(loadingQueue, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
-	    });
-	  }
-
-	  // return texture loading promise
-
-	  return loadingTexturesPromise
-	}
-
-	// static class, @memberof View
-
-	// TODO: add dependencies
-	// * compareArrays
-	// * generateWireframeBuffer
-
-	// class
-
-	var Wireframe = checkDependencies({
-	  three: true,
-	  aframe: false
-	}, function makeData3dView () {
-
-	  function Wireframe () {
-
-	    // internals
-	    this._wireframeGeometry = new THREE.BufferGeometry();
-	    this._wireframeGeometry.addAttribute( 'position', new THREE.BufferAttribute( new Float32Array(0), 3 ) );
-	    this._wireframeMaterial = new THREE.LineBasicMaterial();
-
-	    this._positions = null;
-	    this._buffer = null;
-	    this._thresholdAngle = 10;
-	    this._thickness = 1;
-	    this._color = [0,0,0];
-	    this._opacity = 1;
-
-	    // init
-	    THREE.Line.call( this, this._wireframeGeometry, this._wireframeMaterial, THREE.LinePieces );
-
-	  }
-
-	// inherit from THREE Line prototype
-
-	  Wireframe.prototype = Object.create( THREE.Line.prototype );
-	  Wireframe.prototype.constructor = Wireframe;
-
-	// extend with own methods
-
-	  Wireframe.prototype.update = function (options) {
-
-	    // API
-	    var positions = options.positions;
-	    //var normals = options.normals
-	    var thresholdAngle = options.thresholdAngle === undefined ? this._thresholdAngle : options.thresholdAngle;
-	    var thickness = options.thickness === undefined ? this._thickness : options.thickness;
-	    var color = options.color === undefined ? this._color : options.color;
-	    var opacity = options.opacity === undefined ? this._opacity : options.opacity;
-
-
-	    if (thickness === 0) {
-
-	      this.visible = false;
-
-	    } else {
-
-	      // take care of line buffer
-	      var regenerateBuffer = (!this._buffer || thresholdAngle !== this._thresholdAngle || !compareArrays(this._positions, positions));
-	      if (regenerateBuffer) {
-
-	        // generate new buffer from positions
-	        //var newBuffer = generateWireframeBuffer( positions, thresholdAngle )
-	        var newBuffer = new Float32Array(27);
-	        if (newBuffer.length) {
-	          this._wireframeGeometry.attributes.position.array = newBuffer;
-	          this._wireframeGeometry.attributes.position.needsUpdate = true;
-	          this.visible = true;
-	        } else {
-	          this.visible = false;
-	        }
-	        // remember settings
-	        this._buffer = newBuffer;
-	        this._positions = positions;
-	        this._thresholdAngle = thresholdAngle;
-
-	      } else if (this._thickness === 0) {
-
-	        // was hidden
-	        this.visible = true;
-
-	      }
-
-	      // update material
-	      this._wireframeMaterial.color.r = color[ 0 ];
-	      this._wireframeMaterial.color.g = color[ 1 ];
-	      this._wireframeMaterial.color.b = color[ 2 ];
-	      this._wireframeMaterial.opacity = opacity;
-	      this._wireframeMaterial.linewidth = thickness;
-	      // remember settings
-	      this._color = color;
-	      this._opacity = opacity;
-
-	    }
-
-	    this._thickness = thickness;
-
-	  };
-
-	  Wireframe.prototype.destroy = function () {
-
-	    this._wireframeGeometry = null;
-	    this._wireframeMaterial = null;
-
-	    this._positions = null;
-	    this._buffer = null;
-	    this._thresholdAngle = null;
-	    this._thickness = null;
-	    this._color = null;
-	    this._opacity = null;
-
-	  };
-
-	  return Wireframe
-
-	});
-
-	var fragmentShader = "uniform vec3 diffuse;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapExposure;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\n#include <shadowmap_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( diffuse, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #include <normal_flip>\n    #include <normal_fragment>\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}";
-
-	var vertexShader = "varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}";
-
-	// CONFIGS
-
-	var DEFAULT_LIGHT_MAP_INTENSITY$1 = 1.2;
-	var DEFAULT_LIGHT_MAP_EXPOSURE$1 = 0.6;
-	var DEFAULT_LIGHT_MAP_FALLOFF$1 = 0;
-
-	var Io3dMaterial = checkDependencies ({
-	  three: true,
-	  aframe: false
-	}, function makeIo3dMaterial () {
-
-	  function Io3dMaterial( params ) {
-	    THREE.ShaderMaterial.call( this, params );
-
-	    var params = params || {};
-	    this.lightMapExposure = params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1;
-	    this.lightMapFalloff = params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1;
-
-	    this.uniforms = THREE.UniformsUtils.merge( [
-	      THREE.UniformsLib[ "lights" ],
-	      THREE.UniformsLib[ "shadowmap" ],
-	      { diffuse: { value: params.diffuse || new THREE.Color(1.0, 1.0, 1.0) },
-	        map: { value: params.map || null },
-	        specularMap: { value: params.specularMap || null },
-	        alphaMap: { value: params.alphaMap || null },
-	        lightMap: { value: params.lightMap || null },
-	        lightMapIntensity: { value: params.lightMapIntensity || DEFAULT_LIGHT_MAP_INTENSITY$1 },
-	        lightMapFalloff: { value: params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1 },
-	        lightMapExposure: { value: params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1 },
-	        normalMap: { value: params.normalMap || null },
-	        shininess: { value: params.shininess || 1.0 },
-	        specular: { value: params.specular || new THREE.Color(0.25, 0.25, 0.25) },
-	        emissive: { value: params.emissive || new THREE.Color(0.0, 0.0, 0.0) },
-	        opacity: { value: params.opacity || 1 },
-	        offsetRepeat: { value: params.offsetRepeat || new THREE.Vector4( 0, 0, 1, 1) }
-	      }
-	    ]);
-
-	    this.vertexShader = vertexShader;
-	    this.fragmentShader = fragmentShader;
-	    this.lights = true;
-	  }
-
-	  Io3dMaterial.prototype = Object.create(THREE.ShaderMaterial.prototype);
-	  Io3dMaterial.prototype.constructor = Io3dMaterial;
-
-	  return Io3dMaterial
-
-	});
-
-	// constants
-
-	var Data3dView = checkDependencies({
-	  three: true,
-	  aframe: false
-	}, function makeData3dView () {
-	  
-	  var WEBGL_SIDE = {
-	    front: 0,
-	    back: 1,
-	    both: 2
-	  };
-
-	  var DEG_TO_RAD = Math.PI / 180;
-	  var RAD_TO_DEG = 180 / Math.PI;
-
-	// shared variables
-
-	  var geometry3dCache = {};
-
-	  /**
-	   * @name three.Data3dView
-	   * @memberof three
-	   * @param options
-	   * @constructor
-	   */
-
-	  function Data3dView (options) {
-
-	    // API
-	    this.threeParent = options.parent;
-
-	    // internals
-	    this.meshKeys = [];
-	    this.meshes = {};
-	    this.materialKeys = [];
-	    this.materials = {};
-	    this._meshes3d = {}; // three meshes indexed by meshId
-	    this._wireframes3d = {}; // wireframe  three meshes indexed by meshId
-	    this._materials3d = {}; // three materials indexed by meshId
-
-	  }
-
-	  Data3dView.prototype = {
-
-	    set: function (data3d, options) {
-
-	      // API
-	      options = options || {};
-	      var
-	        meshes = data3d.meshes || this.meshes,
-	        meshKeys = data3d.meshKeys,
-	        materials = data3d.materials || this.materials,
-	        materialKeys = data3d.materialKeys,
-	        loadingQueuePrefix = data3d.loadingQueuePrefix || options.loadingQueuePrefix,
-	        onFirstTextureSetLoaded = options.onFirstTextureSetLoaded,
-	        lightMapIntensity = options.lightMapIntensity,
-	        lightMapExposure = options.lightMapExposure;
-
-	      // internals
-	      var self = this, meshId, mesh, materialId, wireframe3d, positions, uvs, uvs2, scale,
-	        normals, mesh3d, geometry3d, material3d, position, rotRad, rotDeg, i, l;
-
-	      // output
-	      var promise;
-
-	      ///////////////// meshes
-
-	      if (meshes) {
-
-	        // generate IDs if not provided
-	        if (!meshKeys) {
-	          meshKeys = Object.keys(meshes);
-	        }
-
-	        for (i = 0, l = meshKeys.length; i < l; i++) {
-
-	          meshId = meshKeys[ i ];
-	          mesh = meshes[ meshId ];
-
-	          // internals
-	          materialId = mesh.material;
-	          positions = mesh.positions;
-	          uvs = mesh.uvs;
-	          uvs2 = mesh.uvsLightmap;
-	          normals = mesh.normals;
-	          position = mesh.position;
-	          rotRad = mesh.rotRad;
-	          rotDeg = mesh.rotDeg;
-	          scale = mesh.scale;
-
-	          // three.js materials
-	          if (!self._materials3d[ meshId ]) {
-	            // (one material pro mesh, because some of our mesh properties are material properties and it does not matter performance wise)
-	            //material3d = new THREE.MeshPhongMaterial({ opacity: 0.5, transparent: true})
-	            material3d = new Io3dMaterial();
-	            material3d.name = materialId;
-	            if (!materials) {
-	              // there is no material properties. using default properties
-	              setMaterial({ material3d: material3d });
-	            }
-	            self._materials3d[ meshId ] = material3d;
-	          }
-
-	          // set face side (a mesh property in our data structure, but a material property in three.js data structure)
-	          self._materials3d[ meshId ].side = WEBGL_SIDE[ meshes[ meshId ].side ] || WEBGL_SIDE['front'];
-
-	          // create three.js meshes
-
-	          if (!self._meshes3d[ meshId ]) {
-
-	            // create geometry
-	            geometry3d = createOrReuseGeometry3d( mesh.cacheKey );
-	            // create mesh
-	            mesh3d = new THREE.Mesh(geometry3d, material3d);
-	            mesh3d.userData = self.userData;
-	            // add to parent
-	            self.threeParent.add(mesh3d);
-	            // remembers
-	            self._meshes3d[ meshId ] = mesh3d;
-
-	            // create a separate geometry object for wireframes
-	            wireframe3d = new Wireframe();
-	            // add to parent
-	            //self._meshes3d[ meshId ].add(wireframe3d)
-	            // remember
-	            self._wireframes3d[ meshId ] = wireframe3d;
-
-	          } else {
-
-	            mesh3d = self._meshes3d[ meshId ];
-	            geometry3d = mesh3d.geometry;
-
-	          }
-
-	          // apply scale
-	          if (scale) {
-	            mesh3d.scale.set( scale[0] , scale[1], scale[2] );
-	          }
-
-	          // apply position
-	          if (rotRad) {
-	            mesh3d.rotation.set( rotRad[0] , rotRad[1], rotRad[2] );
-	          } else if (rotDeg) {
-	            mesh3d.rotation.set( rotDeg[0] * DEG_TO_RAD, rotDeg[1] * DEG_TO_RAD, rotDeg[2] * DEG_TO_RAD );
-	          }
-
-	          // apply buffers if they are different than current buffers
-	          if (geometry3d.attributes.position === undefined) {
-	            geometry3d.attributes.position = new THREE.BufferAttribute(positions, 3);
-	//              geometry3d.addAttribute( 'position', new THREE.BufferAttribute(positions, 3) )
-	            // The bounding box of the scene may need to be updated
-	            if (this.vm && this.vm.viewport && this.vm.viewport.webglView)
-	              self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true;
-	          } else if (geometry3d.attributes.position.array !== positions ) {
-	            geometry3d.attributes.position.array = positions;
-	            geometry3d.attributes.position.needsUpdate = true;
-	            // Three.js needs this to update
-	            geometry3d.computeBoundingSphere();
-	            // The bounding box of the scene may need to be updated
-	            if (this.vm && this.vm.viewport && this.vm.viewport.webglView)
-	              self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true;
-	          }
-	          if (geometry3d.attributes.normal === undefined) {
-	            geometry3d.attributes.normal = new THREE.BufferAttribute(normals, 3);
-	//              geometry3d.addAttribute( 'normal', new THREE.BufferAttribute(normals, 3) )
-	          } else if (geometry3d.attributes.normal.array !== normals ) {
-	            geometry3d.attributes.normal.array = normals;
-	            geometry3d.attributes.normal.needsUpdate = true;
-	          }
-	          // geometry3d.attributesKeys = ['position', 'normal']
-	          // set uvs channel 1 (material)
-	          if (uvs) {
-	            if (geometry3d.attributes.uv === undefined) {
-	              geometry3d.attributes.uv = new THREE.BufferAttribute(uvs, 2);
-	            } else if (geometry3d.attributes.uv.array !== uvs ) {
-	              geometry3d.attributes.uv.array = uvs;
-	              geometry3d.attributes.uv.needsUpdate = true;
-	              // remove previous scale settings
-	              delete geometry3d.attributes.uv._scaleU;
-	              delete geometry3d.attributes.uv._scaleV;
-	              delete geometry3d.attributes.uv._source;
-	            }
-	            // geometry3d.attributesKeys[ 2 ] = 'uv'
-	          } else if (geometry3d.attributes.uv) {
-	            delete geometry3d.attributes.uv;
-	          }
-	          if (uvs2) {
-	            if (geometry3d.attributes.uv2 === undefined) {
-	              geometry3d.attributes.uv2 = new THREE.BufferAttribute(uvs2, 2);
-	            } else if (geometry3d.attributes.uv2.array !== uvs2 ) {
-	              geometry3d.attributes.uv2.array = uvs2;
-	              geometry3d.attributes.uv2.needsUpdate = true;
-	            }
-	            // geometry3d.attributesKeys[ geometry3d.attributesKeys.length++ ] = 'uv2'
-	          } else if (geometry3d.attributes.uv2) {
-	            delete geometry3d.attributes.uv2;
-	          }
-
-	          // (2017/01/09) The WebGL buffer of the pickingColor attribute is erroneously deleted
-	          // by ThreeJS (r69) in deallocateGeometry(). ThreeJS doesn't seem to account for the fact
-	          // that the attribute is shared by multiple geometries. It then does not get recreated, because
-	          // this function was attempting to manually set BufferGeometry.attributesKeys, missing any
-	          // extra attributes such as pickingColor.
-	          geometry3d.attributesKeys = Object.keys(geometry3d.attributes);
-
-	          // update wireframe
-
-	          if (materials[ materialId ]) {
-	            self._wireframes3d[ meshId ].update({
-	              positions: positions,
-	              thickness: materials[ materialId ].wireframeThickness === undefined ? 0 : materials[ materialId ].wireframeThickness,
-	              thresholdAngle: materials[ materialId ].wireframeThresholdAngle,
-	              color: materials[ materialId ].wireframeColor,
-	              opacity: materials[ materialId ].wireframeOpacity
-	            });
-	          }
-
-	        }
-
-	        // remove obsolete three.js meshes
-	        var mesh, meshIds = Object.keys(self._meshes3d);
-	        meshIds.forEach(function(meshId, i){
-	          mesh = self._meshes3d[meshId];
-	          if (!meshes[ meshId ]) {
-	            // destroy wireframe geometry
-	            /*
-	             var wireframe3d = self._wireframes3d[ meshId ]
-	             if (wireframe3d.parent) {
-	             wireframe3d.parent.remove( wireframe3d )
-	             wireframe3d.geometry.dispose()
-	             }
-	             */
-	            // destroy geometry
-	            var geometry3d = self._meshes3d[ meshId ].geometry;
-	            disposeGeometry3dIfNotUsedElsewhere(self.meshes[ meshId ].cacheKey, geometry3d);
-	            // destroy threejs mesh
-	            var mesh3d = self._meshes3d[ meshId ];
-	            if (mesh3d.parent) {
-	              mesh3d.parent.remove( mesh3d );
-	            }
-	            // destroy material
-	            var material3d = self._materials3d[ meshId ];
-	            if (material3d.map) material3d.map.disposeIfPossible();
-	            if (material3d.specularMap) material3d.specularMap.disposeIfPossible();
-	            if (material3d.normalMap) material3d.normalMap.disposeIfPossible();
-	            if (material3d.alphaMap) material3d.alphaMap.disposeIfPossible();
-	            if (material3d.lightMap) material3d.lightMap.disposeIfPossible();
-	            material3d.dispose();
-	            // remove reference to destroyed 3d objects
-	            delete self._meshes3d[ meshId ];
-	            delete self._wireframes3d[ meshId ];
-	            delete self._materials3d[ meshId ];
-	          }
-	        });
-
-	        // update properties
-	        self.meshKeys = meshKeys;
-	        self.meshes = meshes;
-
-	      }
-
-	      ///////////////// materials
-
-	      if (materials) {
-
-	        var materialPromises = [], material;
-	        for (i = 0, l = self.meshKeys.length; i < l; i++) {
-	          meshId = self.meshKeys[ i ];
-	          materialId = self.meshes[ meshId ].material;
-
-	          // material attributes
-	          material = materials[ materialId ];
-	          if (material && Object.keys(material).length) {
-	            // set material
-	            materialPromises[ i ] = setMaterial({
-	              vm: self.vm,
-	              loadingQueuePrefix: loadingQueuePrefix,
-	              mesh3d: self._meshes3d[ meshId ],
-	              material3d: self._materials3d[ meshId ],
-	              attributes: materials[ materialId ],
-	              onFirstTextureSetLoaded: onFirstTextureSetLoaded,
-	              lightMapIntensity: lightMapIntensity,
-	              lightMapExposure: lightMapExposure
-	            });
-	          }
-
-	        }
-
-	        // output
-	        promise = Promise.all(materialPromises);
-
-	        // update properties
-	        self.materialKeys = materialKeys;
-	        self.materials = materials;
-
-	      }
-
-	      ///////////////// return
-
-	      if (!promise) {
-	        promise = Promise.resolve();
-	      }
-
-	      return promise.then(function(){
-	        if (self.isDestroyed) return
-	        //self.vm.viewport.render()
-	      })
-
-	    },
-
-	    hasMeshes: function hasMeshes() {
-	      return Object.keys(this._meshes3d).length > 0
-	    },
-
-	    setMeshes: function(meshes){
-	      this.set({
-	        meshes: meshes
-	      });
-	    },
-
-	    setMaterials: function(materials, options){
-	      this.set({
-	        materials: materials
-	      }, options);
-	    },
-
-	    reset: function(){
-
-	      this.set({
-	        meshes: {},
-	        materials: {}
-	      });
-
-	    },
-
-	    destroy: function(){
-
-	      this.isDestroyed = true;
-
-	      this.reset();
-
-	      this.vm = null;
-	      this.threeParent = null;
-	      this.userData = null;
-
-	      this.threeParent = null;
-
-	      // internals
-	      this.meshKeys = null;
-	      this.meshes = null;
-	      this.materialKeys = null;
-	      this.materials = null;
-	      this._meshes3d = null;
-	      this._materials3d = null;
-
-	    }
-
-	  };
-
-	// helpers
-
-	  function createOrReuseGeometry3d( key ) {
-	    if (key) {
-	      // use cache
-	      if (geometry3dCache[ key ]) {
-	        geometry3dCache[ key ].refCount++;
-	      } else {
-	        geometry3dCache[ key ] = {
-	          geometry3d: new THREE.BufferGeometry(),
-	          refCount: 1
-	        };
-	      }
-	      return geometry3dCache[ key ].geometry3d
-	    } else {
-	      // no key no cache
-	      return new THREE.BufferGeometry()
-	    }
-	  }
-
-	  function disposeGeometry3dIfNotUsedElsewhere( key, geometry3d ) {
-	    if (key) {
-	      // involve cache
-	      if (geometry3dCache[ key ]) {
-	        geometry3dCache[ key ].refCount--;
-	        if (geometry3dCache[ key ].refCount < 1) {
-	          geometry3dCache[ key ].geometry3d.dispose();
-	          delete geometry3dCache[ key ];
-	        }
-	      } else {
-	        // (2017/01/09) See comment in ThreeView.set()
-	        // if (geometry3d.attributes.pickingColor)
-	        //  delete geometry3d.attributes['pickingColor'];
-	        geometry3d.dispose();
-	      }
-	    } else {
-	      // no key bo cache
-	      // (2017/01/09) See comment in ThreeView.set()
-	      // if (geometry3d.attributes.pickingColor)
-	      //   delete geometry3d.attributes['pickingColor'];
-	      geometry3d.dispose();
-	    }
-	  }
-
-	  return Data3dView
-
-	});
 
 	var es5 = createCommonjsModule(function (module) {
 	var isES5 = (function(){
@@ -8182,25 +7786,25 @@
 	var canEvaluate = typeof navigator == "undefined";
 
 	var errorObj = {e: {}};
-	var tryCatchTarget;
+	var tryCatchTarget$1;
 	var globalObject = typeof self !== "undefined" ? self :
 	    typeof window !== "undefined" ? window :
 	    typeof commonjsGlobal !== "undefined" ? commonjsGlobal :
 	    commonjsGlobal !== undefined ? commonjsGlobal : null;
 
-	function tryCatcher() {
+	function tryCatcher$1() {
 	    try {
-	        var target = tryCatchTarget;
-	        tryCatchTarget = null;
+	        var target = tryCatchTarget$1;
+	        tryCatchTarget$1 = null;
 	        return target.apply(this, arguments);
 	    } catch (e) {
 	        errorObj.e = e;
 	        return errorObj;
 	    }
 	}
-	function tryCatch(fn) {
-	    tryCatchTarget = fn;
-	    return tryCatcher;
+	function tryCatch$1(fn) {
+	    tryCatchTarget$1 = fn;
+	    return tryCatcher$1;
 	}
 
 	var inherits = function(Child, Parent) {
@@ -8229,7 +7833,7 @@
 
 	}
 
-	function isObject(value) {
+	function isObject$1(value) {
 	    return typeof value === "function" ||
 	           typeof value === "object" && value !== null;
 	}
@@ -8521,11 +8125,11 @@
 	    asArray: asArray,
 	    notEnumerableProp: notEnumerableProp,
 	    isPrimitive: isPrimitive,
-	    isObject: isObject,
+	    isObject: isObject$1,
 	    isError: isError,
 	    canEvaluate: canEvaluate,
 	    errorObj: errorObj,
-	    tryCatch: tryCatch,
+	    tryCatch: tryCatch$1,
 	    inherits: inherits,
 	    withAppended: withAppended,
 	    maybeWrapAsError: maybeWrapAsError,
@@ -8970,9 +8574,9 @@
 	};
 
 	var thenables = function(Promise, INTERNAL) {
-	var util$$1 = util;
-	var errorObj = util$$1.errorObj;
-	var isObject = util$$1.isObject;
+	var util$$2 = util;
+	var errorObj = util$$2.errorObj;
+	var isObject = util$$2.isObject;
 
 	function tryConvertToPromise(obj, context) {
 	    if (isObject(obj)) {
@@ -9030,7 +8634,7 @@
 	    promise._captureStackTrace();
 	    if (context) context._popContext();
 	    var synchronous = true;
-	    var result = util$$1.tryCatch(then).call(x, resolve, reject);
+	    var result = util$$2.tryCatch(then).call(x, resolve, reject);
 	    synchronous = false;
 
 	    if (promise && result === errorObj) {
@@ -9057,8 +8661,8 @@
 
 	var promise_array = function(Promise, INTERNAL, tryConvertToPromise,
 	    apiRejection, Proxyable) {
-	var util$$1 = util;
-	var isArray = util$$1.isArray;
+	var util$$2 = util;
+	var isArray = util$$2.isArray;
 
 	function toResolutionValue(val) {
 	    switch(val) {
@@ -9079,7 +8683,7 @@
 	    this._totalResolved = 0;
 	    this._init(undefined, -2);
 	}
-	util$$1.inherits(PromiseArray, Proxyable);
+	util$$2.inherits(PromiseArray, Proxyable);
 
 	PromiseArray.prototype.length = function () {
 	    return this._length;
@@ -9114,10 +8718,10 @@
 	            return this._cancel();
 	        }
 	    }
-	    values = util$$1.asArray(values);
+	    values = util$$2.asArray(values);
 	    if (values === null) {
 	        var err = apiRejection(
-	            "expecting an array or an iterable object but got " + util$$1.classString(values)).reason();
+	            "expecting an array or an iterable object but got " + util$$2.classString(values)).reason();
 	        this._promise._rejectCallback(err, false);
 	        return;
 	    }
@@ -9313,8 +8917,8 @@
 	var getDomain = Promise._getDomain;
 	var async = Promise._async;
 	var Warning = errors.Warning;
-	var util$$1 = util;
-	var canAttachTrace = util$$1.canAttachTrace;
+	var util$$2 = util;
+	var canAttachTrace = util$$2.canAttachTrace;
 	var unhandledRejectionHandled;
 	var possiblyUnhandledRejection;
 	var bluebirdFramePattern =
@@ -9325,19 +8929,19 @@
 	var formatStack = null;
 	var indentStackFrames = false;
 	var printWarning;
-	var debugging = !!(util$$1.env("BLUEBIRD_DEBUG") != 0 &&
+	var debugging = !!(util$$2.env("BLUEBIRD_DEBUG") != 0 &&
 	                        (false ||
-	                         util$$1.env("BLUEBIRD_DEBUG") ||
-	                         util$$1.env("NODE_ENV") === "development"));
+	                         util$$2.env("BLUEBIRD_DEBUG") ||
+	                         util$$2.env("NODE_ENV") === "development"));
 
-	var warnings = !!(util$$1.env("BLUEBIRD_WARNINGS") != 0 &&
-	    (debugging || util$$1.env("BLUEBIRD_WARNINGS")));
+	var warnings = !!(util$$2.env("BLUEBIRD_WARNINGS") != 0 &&
+	    (debugging || util$$2.env("BLUEBIRD_WARNINGS")));
 
-	var longStackTraces = !!(util$$1.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
-	    (debugging || util$$1.env("BLUEBIRD_LONG_STACK_TRACES")));
+	var longStackTraces = !!(util$$2.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
+	    (debugging || util$$2.env("BLUEBIRD_LONG_STACK_TRACES")));
 
-	var wForgottenReturn = util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
-	    (warnings || !!util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
+	var wForgottenReturn = util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
+	    (warnings || !!util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
 
 	Promise.prototype.suppressUnhandledRejections = function() {
 	    var target = this._target();
@@ -9409,7 +9013,7 @@
 	    var domain = getDomain();
 	    possiblyUnhandledRejection =
 	        typeof fn === "function" ? (domain === null ?
-	                                            fn : util$$1.domainBind(domain, fn))
+	                                            fn : util$$2.domainBind(domain, fn))
 	                                 : undefined;
 	};
 
@@ -9417,7 +9021,7 @@
 	    var domain = getDomain();
 	    unhandledRejectionHandled =
 	        typeof fn === "function" ? (domain === null ?
-	                                            fn : util$$1.domainBind(domain, fn))
+	                                            fn : util$$2.domainBind(domain, fn))
 	                                 : undefined;
 	};
 
@@ -9455,33 +9059,33 @@
 	    try {
 	        if (typeof CustomEvent === "function") {
 	            var event = new CustomEvent("CustomEvent");
-	            util$$1.global.dispatchEvent(event);
+	            util$$2.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = new CustomEvent(name.toLowerCase(), {
 	                    detail: event,
 	                    cancelable: true
 	                });
-	                return !util$$1.global.dispatchEvent(domEvent);
+	                return !util$$2.global.dispatchEvent(domEvent);
 	            };
 	        } else if (typeof Event === "function") {
 	            var event = new Event("CustomEvent");
-	            util$$1.global.dispatchEvent(event);
+	            util$$2.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = new Event(name.toLowerCase(), {
 	                    cancelable: true
 	                });
 	                domEvent.detail = event;
-	                return !util$$1.global.dispatchEvent(domEvent);
+	                return !util$$2.global.dispatchEvent(domEvent);
 	            };
 	        } else {
 	            var event = document.createEvent("CustomEvent");
 	            event.initCustomEvent("testingtheevent", false, true, {});
-	            util$$1.global.dispatchEvent(event);
+	            util$$2.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = document.createEvent("CustomEvent");
 	                domEvent.initCustomEvent(name.toLowerCase(), false, true,
 	                    event);
-	                return !util$$1.global.dispatchEvent(domEvent);
+	                return !util$$2.global.dispatchEvent(domEvent);
 	            };
 	        }
 	    } catch (e) {}
@@ -9491,21 +9095,21 @@
 	})();
 
 	var fireGlobalEvent = (function() {
-	    if (util$$1.isNode) {
+	    if (util$$2.isNode) {
 	        return function() {
 	            return process.emit.apply(process, arguments);
 	        };
 	    } else {
-	        if (!util$$1.global) {
+	        if (!util$$2.global) {
 	            return function() {
 	                return false;
 	            };
 	        }
 	        return function(name) {
 	            var methodName = "on" + name.toLowerCase();
-	            var method = util$$1.global[methodName];
+	            var method = util$$2.global[methodName];
 	            if (!method) return false;
-	            method.apply(util$$1.global, [].slice.call(arguments, 1));
+	            method.apply(util$$2.global, [].slice.call(arguments, 1));
 	            return true;
 	        };
 	    }
@@ -9568,7 +9172,7 @@
 	        config.warnings = !!warningsOption;
 	        wForgottenReturn = config.warnings;
 
-	        if (util$$1.isObject(warningsOption)) {
+	        if (util$$2.isObject(warningsOption)) {
 	            if ("wForgottenReturn" in warningsOption) {
 	                wForgottenReturn = !!warningsOption.wForgottenReturn;
 	            }
@@ -9631,7 +9235,7 @@
 	        executor(resolve, reject, function(onCancel) {
 	            if (typeof onCancel !== "function") {
 	                throw new TypeError("onCancel must be a function, got: " +
-	                                    util$$1.toString(onCancel));
+	                                    util$$2.toString(onCancel));
 	            }
 	            promise._attachCancellationCallback(onCancel);
 	        });
@@ -9645,7 +9249,7 @@
 
 	    var previousOnCancel = this._onCancel();
 	    if (previousOnCancel !== undefined) {
-	        if (util$$1.isArray(previousOnCancel)) {
+	        if (util$$2.isArray(previousOnCancel)) {
 	            previousOnCancel.push(onCancel);
 	        } else {
 	            this._setOnCancel([previousOnCancel, onCancel]);
@@ -9717,9 +9321,9 @@
 	            trace.attachExtraTrace(error);
 	        } else if (!error.__stackCleaned__) {
 	            var parsed = parseStackAndMessage(error);
-	            util$$1.notEnumerableProp(error, "stack",
+	            util$$2.notEnumerableProp(error, "stack",
 	                parsed.message + "\n" + parsed.stack.join("\n"));
-	            util$$1.notEnumerableProp(error, "__stackCleaned__", true);
+	            util$$2.notEnumerableProp(error, "__stackCleaned__", true);
 	        }
 	    }
 	}
@@ -9890,7 +9494,7 @@
 	function formatAndLogError(error, title, isSoft) {
 	    if (typeof console !== "undefined") {
 	        var message;
-	        if (util$$1.isObject(error)) {
+	        if (util$$2.isObject(error)) {
 	            var stack = error.stack;
 	            message = title + formatStack(stack, error);
 	        } else {
@@ -9937,7 +9541,7 @@
 	            "]";
 	    } else {
 	        str = obj && typeof obj.toString === "function"
-	            ? obj.toString() : util$$1.toString(obj);
+	            ? obj.toString() : util$$2.toString(obj);
 	        var ruselessToString = /\[object [a-zA-Z0-9$_]+\]/;
 	        if (ruselessToString.test(str)) {
 	            try {
@@ -10028,7 +9632,7 @@
 	    captureStackTrace(this, CapturedTrace);
 	    if (length > 32) this.uncycle();
 	}
-	util$$1.inherits(CapturedTrace, Error);
+	util$$2.inherits(CapturedTrace, Error);
 	Context.CapturedTrace = CapturedTrace;
 
 	CapturedTrace.prototype.uncycle = function() {
@@ -10093,8 +9697,8 @@
 	    }
 	    removeCommonRoots(stacks);
 	    removeDuplicateOrEmptyJumps(stacks);
-	    util$$1.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
-	    util$$1.notEnumerableProp(error, "__stackCleaned__", true);
+	    util$$2.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
+	    util$$2.notEnumerableProp(error, "__stackCleaned__", true);
 	};
 
 	var captureStackTrace = (function stackDetection() {
@@ -10174,12 +9778,12 @@
 	    printWarning = function (message) {
 	        console.warn(message);
 	    };
-	    if (util$$1.isNode && process.stderr.isTTY) {
+	    if (util$$2.isNode && process.stderr.isTTY) {
 	        printWarning = function(message, isSoft) {
 	            var color = isSoft ? "\u001b[33m" : "\u001b[31m";
 	            console.warn(color + message + "\u001b[0m\n");
 	        };
-	    } else if (!util$$1.isNode && typeof (new Error().stack) === "string") {
+	    } else if (!util$$2.isNode && typeof (new Error().stack) === "string") {
 	        printWarning = function(message, isSoft) {
 	            console.warn("%c" + message,
 	                        isSoft ? "color: darkorange" : "color: red");
@@ -10226,10 +9830,10 @@
 	};
 
 	var catch_filter = function(NEXT_FILTER) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var getKeys = es5.keys;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 
 	function catchFilter(instances, cb, promise) {
 	    return function(e) {
@@ -10249,7 +9853,7 @@
 	                } else if (matchesPredicate) {
 	                    return tryCatch(cb).call(boundTo, e);
 	                }
-	            } else if (util$$1.isObject(e)) {
+	            } else if (util$$2.isObject(e)) {
 	                var keys = getKeys(item);
 	                for (var j = 0; j < keys.length; ++j) {
 	                    var key = keys[j];
@@ -10268,9 +9872,9 @@
 	};
 
 	var _finally = function(Promise, tryConvertToPromise, NEXT_FILTER) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var CancellationError = Promise.CancellationError;
-	var errorObj = util$$1.errorObj;
+	var errorObj = util$$2.errorObj;
 	var catchFilter = catch_filter(NEXT_FILTER);
 
 	function PassThroughHandlerContext(promise, type, handler) {
@@ -10391,12 +9995,12 @@
 	            j = 0, i;
 	        for (i = 0; i < len - 1; ++i) {
 	            var item = arguments[i];
-	            if (util$$1.isObject(item)) {
+	            if (util$$2.isObject(item)) {
 	                catchInstances[j++] = item;
 	            } else {
 	                return Promise.reject(new TypeError(
 	                    "tapCatch statement predicate: "
-	                    + "expecting an object but got " + util$$1.classString(item)
+	                    + "expecting an object but got " + util$$2.classString(item)
 	                ));
 	            }
 	        }
@@ -10465,12 +10069,12 @@
 
 	var method =
 	function(Promise, INTERNAL, tryConvertToPromise, apiRejection, debug) {
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
 
 	Promise.method = function (fn) {
 	    if (typeof fn !== "function") {
-	        throw new Promise.TypeError("expecting a function but got " + util$$1.classString(fn));
+	        throw new Promise.TypeError("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    return function () {
 	        var ret = new Promise(INTERNAL);
@@ -10487,7 +10091,7 @@
 
 	Promise.attempt = Promise["try"] = function (fn) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    var ret = new Promise(INTERNAL);
 	    ret._captureStackTrace();
@@ -10497,7 +10101,7 @@
 	        debug.deprecated("calling Promise.try with more than 1 argument");
 	        var arg = arguments[1];
 	        var ctx = arguments[2];
-	        value = util$$1.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
+	        value = util$$2.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
 	                                  : tryCatch(fn).call(ctx, arg);
 	    } else {
 	        value = tryCatch(fn)();
@@ -10510,7 +10114,7 @@
 	};
 
 	Promise.prototype._resolveFromSyncValue = function (value) {
-	    if (value === util$$1.errorObj) {
+	    if (value === util$$2.errorObj) {
 	        this._rejectCallback(value.e, false);
 	    } else {
 	        this._resolveCallback(value, true);
@@ -10586,9 +10190,9 @@
 	};
 
 	var cancel = function(Promise, PromiseArray, apiRejection, debug) {
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 	var async = Promise._async;
 
 	Promise.prototype["break"] = Promise.prototype.cancel = function() {
@@ -10676,7 +10280,7 @@
 	};
 
 	Promise.prototype._doInvokeOnCancel = function(onCancelCallback, internalOnly) {
-	    if (util$$1.isArray(onCancelCallback)) {
+	    if (util$$2.isArray(onCancelCallback)) {
 	        for (var i = 0; i < onCancelCallback.length; ++i) {
 	            this._doInvokeOnCancel(onCancelCallback[i], internalOnly);
 	        }
@@ -10866,10 +10470,10 @@
 	var join =
 	function(Promise, PromiseArray, tryConvertToPromise, INTERNAL, async,
 	         getDomain) {
-	var util$$1 = util;
-	var canEvaluate = util$$1.canEvaluate;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var util$$2 = util;
+	var canEvaluate = util$$2.canEvaluate;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 	var reject;
 
 	{
@@ -11013,7 +10617,7 @@
 	                    if (holder.asyncNeeded) {
 	                        var domain = getDomain();
 	                        if (domain !== null) {
-	                            holder.fn = util$$1.domainBind(domain, holder.fn);
+	                            holder.fn = util$$2.domainBind(domain, holder.fn);
 	                        }
 	                    }
 	                    ret._setAsyncGuaranteed();
@@ -11038,16 +10642,16 @@
 	                          INTERNAL,
 	                          debug) {
 	var getDomain = Promise._getDomain;
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 	var async = Promise._async;
 
 	function MappingPromiseArray(promises, fn, limit, _filter) {
 	    this.constructor$(promises);
 	    this._promise._captureStackTrace();
 	    var domain = getDomain();
-	    this._callback = domain === null ? fn : util$$1.domainBind(domain, fn);
+	    this._callback = domain === null ? fn : util$$2.domainBind(domain, fn);
 	    this._preservedValues = _filter === INTERNAL
 	        ? new Array(this.length())
 	        : null;
@@ -11056,7 +10660,7 @@
 	    this._queue = [];
 	    async.invoke(this._asyncInit, this, undefined);
 	}
-	util$$1.inherits(MappingPromiseArray, PromiseArray);
+	util$$2.inherits(MappingPromiseArray, PromiseArray);
 
 	MappingPromiseArray.prototype._asyncInit = function() {
 	    this._init$(undefined, -2);
@@ -11165,7 +10769,7 @@
 
 	function map(promises, fn, options, _filter) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	    }
 
 	    var limit = 0;
@@ -11174,13 +10778,13 @@
 	            if (typeof options.concurrency !== "number") {
 	                return Promise.reject(
 	                    new TypeError("'concurrency' must be a number but it is " +
-	                                    util$$1.classString(options.concurrency)));
+	                                    util$$2.classString(options.concurrency)));
 	            }
 	            limit = options.concurrency;
 	        } else {
 	            return Promise.reject(new TypeError(
 	                            "options argument must be an object but it is " +
-	                             util$$1.classString(options)));
+	                             util$$2.classString(options)));
 	        }
 	    }
 	    limit = typeof limit === "number" &&
@@ -11207,9 +10811,9 @@
 	}
 
 	var call_get = function(Promise) {
-	var util$$1 = util;
-	var canEvaluate = util$$1.canEvaluate;
-	var isIdentifier = util$$1.isIdentifier;
+	var util$$2 = util;
+	var canEvaluate = util$$2.canEvaluate;
+	var isIdentifier = util$$2.isIdentifier;
 
 	var getMethodCaller;
 	var getGetter;
@@ -11270,8 +10874,8 @@
 	    var fn;
 	    if (obj != null) fn = obj[methodName];
 	    if (typeof fn !== "function") {
-	        var message = "Object " + util$$1.classString(obj) + " has no method '" +
-	            util$$1.toString(methodName) + "'";
+	        var message = "Object " + util$$2.classString(obj) + " has no method '" +
+	            util$$2.toString(methodName) + "'";
 	        throw new Promise.TypeError(message);
 	    }
 	    return fn;
@@ -11324,11 +10928,11 @@
 
 	var using = function (Promise, apiRejection, tryConvertToPromise,
 	    createContext, INTERNAL, debug) {
-	    var util$$1 = util;
+	    var util$$2 = util;
 	    var TypeError = errors.TypeError;
 	    var inherits = util.inherits;
-	    var errorObj = util$$1.errorObj;
-	    var tryCatch = util$$1.tryCatch;
+	    var errorObj = util$$2.errorObj;
+	    var tryCatch = util$$2.tryCatch;
 	    var NULL = {};
 
 	    function thrower(e) {
@@ -11451,7 +11055,7 @@
 	                        "you must pass at least 2 arguments to Promise.using");
 	        var fn = arguments[len - 1];
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	        }
 	        var input;
 	        var spreadArgs = true;
@@ -11549,7 +11153,7 @@
 	};
 
 	var timers$1 = function(Promise, INTERNAL, debug) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var TimeoutError = Promise.TimeoutError;
 
 	function HandleWrapper(handle)  {
@@ -11597,7 +11201,7 @@
 	    } else {
 	        err = new TimeoutError(message);
 	    }
-	    util$$1.markAsOriginatingFromRejection(err);
+	    util$$2.markAsOriginatingFromRejection(err);
 	    promise._attachExtraTrace(err);
 	    promise._reject(err);
 
@@ -11647,11 +11251,11 @@
 	                          tryConvertToPromise,
 	                          Proxyable,
 	                          debug) {
-	var errors$$1 = errors;
-	var TypeError = errors$$1.TypeError;
-	var util$$1 = util;
-	var errorObj = util$$1.errorObj;
-	var tryCatch = util$$1.tryCatch;
+	var errors$$2 = errors;
+	var TypeError = errors$$2.TypeError;
+	var util$$2 = util;
+	var errorObj = util$$2.errorObj;
+	var tryCatch = util$$2.tryCatch;
 	var yieldHandlers = [];
 
 	function promiseFromYieldHandler(value, yieldHandlers, traceParent) {
@@ -11694,7 +11298,7 @@
 	    this._yieldedPromise = null;
 	    this._cancellationPhase = false;
 	}
-	util$$1.inherits(PromiseSpawn, Proxyable);
+	util$$2.inherits(PromiseSpawn, Proxyable);
 
 	PromiseSpawn.prototype._isResolved = function() {
 	    return this._promise === null;
@@ -11847,7 +11451,7 @@
 
 	Promise.coroutine.addYieldHandler = function(fn) {
 	    if (typeof fn !== "function") {
-	        throw new TypeError("expecting a function but got " + util$$1.classString(fn));
+	        throw new TypeError("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    yieldHandlers.push(fn);
 	};
@@ -11865,14 +11469,14 @@
 	};
 
 	var nodeify = function(Promise) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var async = Promise._async;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 
 	function spreadAdapter(val, nodeback) {
 	    var promise = this;
-	    if (!util$$1.isArray(val)) return successAdapter.call(promise, val, nodeback);
+	    if (!util$$2.isArray(val)) return successAdapter.call(promise, val, nodeback);
 	    var ret =
 	        tryCatch(nodeback).apply(promise._boundValue(), [null].concat(val));
 	    if (ret === errorObj) {
@@ -11924,11 +11528,11 @@
 
 	var promisify = function(Promise, INTERNAL) {
 	var THIS = {};
-	var util$$1 = util;
+	var util$$2 = util;
 	var nodebackForPromise = nodeback;
-	var withAppended = util$$1.withAppended;
-	var maybeWrapAsError = util$$1.maybeWrapAsError;
-	var canEvaluate = util$$1.canEvaluate;
+	var withAppended = util$$2.withAppended;
+	var maybeWrapAsError = util$$2.maybeWrapAsError;
+	var canEvaluate = util$$2.canEvaluate;
 	var TypeError = errors.TypeError;
 	var defaultSuffix = "Async";
 	var defaultPromisified = {__isPromisified__: true};
@@ -11944,7 +11548,7 @@
 	var noCopyPropsPattern = new RegExp("^(?:" + noCopyProps.join("|") + ")$");
 
 	var defaultFilter = function(name) {
-	    return util$$1.isIdentifier(name) &&
+	    return util$$2.isIdentifier(name) &&
 	        name.charAt(0) !== "_" &&
 	        name !== "constructor";
 	};
@@ -11963,7 +11567,7 @@
 	}
 
 	function hasPromisified(obj, key, suffix) {
-	    var val = util$$1.getDataPropertyOrDefault(obj, key + suffix,
+	    var val = util$$2.getDataPropertyOrDefault(obj, key + suffix,
 	                                            defaultPromisified);
 	    return val ? isPromisified(val) : false;
 	}
@@ -11983,7 +11587,7 @@
 	}
 
 	function promisifiableMethods(obj, suffix, suffixRegexp, filter) {
-	    var keys = util$$1.inheritedDataKeys(obj);
+	    var keys = util$$2.inheritedDataKeys(obj);
 	    var ret = [];
 	    for (var i = 0; i < keys.length; ++i) {
 	        var key = keys[i];
@@ -12020,11 +11624,11 @@
 	};
 
 	var argumentSequence = function(argumentCount) {
-	    return util$$1.filledRange(argumentCount, "_arg", "");
+	    return util$$2.filledRange(argumentCount, "_arg", "");
 	};
 
 	var parameterDeclaration = function(parameterCount) {
-	    return util$$1.filledRange(
+	    return util$$2.filledRange(
 	        Math.max(parameterCount, 3), "_arg", "");
 	};
 
@@ -12121,9 +11725,9 @@
 	                    withAppended,
 	                    maybeWrapAsError,
 	                    nodebackForPromise,
-	                    util$$1.tryCatch,
-	                    util$$1.errorObj,
-	                    util$$1.notEnumerableProp,
+	                    util$$2.tryCatch,
+	                    util$$2.errorObj,
+	                    util$$2.notEnumerableProp,
 	                    INTERNAL);
 	};
 	}
@@ -12150,7 +11754,7 @@
 	        if (!promise._isFateSealed()) promise._setAsyncGuaranteed();
 	        return promise;
 	    }
-	    util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
+	    util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
 	    return promisified;
 	}
 
@@ -12175,11 +11779,11 @@
 	                return makeNodePromisified(key, THIS, key,
 	                                           fn, suffix, multiArgs);
 	            });
-	            util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
+	            util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
 	            obj[promisifiedKey] = promisified;
 	        }
 	    }
-	    util$$1.toFastProperties(obj);
+	    util$$2.toFastProperties(obj);
 	    return obj;
 	}
 
@@ -12190,7 +11794,7 @@
 
 	Promise.promisify = function (fn, options) {
 	    if (typeof fn !== "function") {
-	        throw new TypeError("expecting a function but got " + util$$1.classString(fn));
+	        throw new TypeError("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    if (isPromisified(fn)) {
 	        return fn;
@@ -12199,7 +11803,7 @@
 	    var receiver = options.context === undefined ? THIS : options.context;
 	    var multiArgs = !!options.multiArgs;
 	    var ret = promisify(fn, receiver, multiArgs);
-	    util$$1.copyDescriptors(fn, ret, propsFilter);
+	    util$$2.copyDescriptors(fn, ret, propsFilter);
 	    return ret;
 	};
 
@@ -12216,15 +11820,15 @@
 	    var promisifier = options.promisifier;
 	    if (typeof promisifier !== "function") promisifier = makeNodePromisified;
 
-	    if (!util$$1.isIdentifier(suffix)) {
+	    if (!util$$2.isIdentifier(suffix)) {
 	        throw new RangeError("suffix must be a valid identifier\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
 	    }
 
-	    var keys = util$$1.inheritedDataKeys(target);
+	    var keys = util$$2.inheritedDataKeys(target);
 	    for (var i = 0; i < keys.length; ++i) {
 	        var value = target[keys[i]];
 	        if (keys[i] !== "constructor" &&
-	            util$$1.isClass(value)) {
+	            util$$2.isClass(value)) {
 	            promisifyAll(value.prototype, suffix, filter, promisifier,
 	                multiArgs);
 	            promisifyAll(value, suffix, filter, promisifier, multiArgs);
@@ -12237,9 +11841,9 @@
 
 	var props = function(
 	    Promise, PromiseArray, tryConvertToPromise, apiRejection) {
-	var util$$1 = util;
-	var isObject = util$$1.isObject;
-	var es5$$1 = es5;
+	var util$$2 = util;
+	var isObject = util$$2.isObject;
+	var es5$$2 = es5;
 	var Es6Map;
 	if (typeof Map === "function") Es6Map = Map;
 
@@ -12280,7 +11884,7 @@
 	        entries = mapToEntries(obj);
 	        isMap = true;
 	    } else {
-	        var keys = es5$$1.keys(obj);
+	        var keys = es5$$2.keys(obj);
 	        var len = keys.length;
 	        entries = new Array(len * 2);
 	        for (var i = 0; i < len; ++i) {
@@ -12293,7 +11897,7 @@
 	    this._isMap = isMap;
 	    this._init$(undefined, isMap ? -6 : -3);
 	}
-	util$$1.inherits(PropertiesPromiseArray, PromiseArray);
+	util$$2.inherits(PropertiesPromiseArray, PromiseArray);
 
 	PropertiesPromiseArray.prototype._init = function () {};
 
@@ -12355,7 +11959,7 @@
 
 	var race = function(
 	    Promise, INTERNAL, tryConvertToPromise, apiRejection) {
-	var util$$1 = util;
+	var util$$2 = util;
 
 	var raceLater = function (promise) {
 	    return promise.then(function(array) {
@@ -12369,9 +11973,9 @@
 	    if (maybePromise instanceof Promise) {
 	        return raceLater(maybePromise);
 	    } else {
-	        promises = util$$1.asArray(promises);
+	        promises = util$$2.asArray(promises);
 	        if (promises === null)
-	            return apiRejection("expecting an array or an iterable object but got " + util$$1.classString(promises));
+	            return apiRejection("expecting an array or an iterable object but got " + util$$2.classString(promises));
 	    }
 
 	    var ret = new Promise(INTERNAL);
@@ -12409,13 +12013,13 @@
 	                          INTERNAL,
 	                          debug) {
 	var getDomain = Promise._getDomain;
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
 
 	function ReductionPromiseArray(promises, fn, initialValue, _each) {
 	    this.constructor$(promises);
 	    var domain = getDomain();
-	    this._fn = domain === null ? fn : util$$1.domainBind(domain, fn);
+	    this._fn = domain === null ? fn : util$$2.domainBind(domain, fn);
 	    if (initialValue !== undefined) {
 	        initialValue = Promise.resolve(initialValue);
 	        initialValue._attachCancellationCallback(this);
@@ -12432,7 +12036,7 @@
 	    this._promise._captureStackTrace();
 	    this._init$(undefined, -5);
 	}
-	util$$1.inherits(ReductionPromiseArray, PromiseArray);
+	util$$2.inherits(ReductionPromiseArray, PromiseArray);
 
 	ReductionPromiseArray.prototype._gotAccum = function(accum) {
 	    if (this._eachValues !== undefined && 
@@ -12530,7 +12134,7 @@
 
 	function reduce(promises, fn, initialValue, _each) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    var array = new ReductionPromiseArray(promises, fn, initialValue, _each);
 	    return array.promise();
@@ -12577,12 +12181,12 @@
 	var settle =
 	    function(Promise, PromiseArray, debug) {
 	var PromiseInspection = Promise.PromiseInspection;
-	var util$$1 = util;
+	var util$$2 = util;
 
 	function SettledPromiseArray(values) {
 	    this.constructor$(values);
 	}
-	util$$1.inherits(SettledPromiseArray, PromiseArray);
+	util$$2.inherits(SettledPromiseArray, PromiseArray);
 
 	SettledPromiseArray.prototype._promiseResolved = function (index, inspection) {
 	    this._values[index] = inspection;
@@ -12619,10 +12223,10 @@
 
 	var some =
 	function(Promise, PromiseArray, apiRejection) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var RangeError = errors.RangeError;
 	var AggregateError = errors.AggregateError;
-	var isArray = util$$1.isArray;
+	var isArray = util$$2.isArray;
 	var CANCELLATION = {};
 
 
@@ -12632,7 +12236,7 @@
 	    this._unwrap = false;
 	    this._initialized = false;
 	}
-	util$$1.inherits(SomePromiseArray, PromiseArray);
+	util$$2.inherits(SomePromiseArray, PromiseArray);
 
 	SomePromiseArray.prototype._init = function () {
 	    if (!this._initialized) {
@@ -13616,6 +13220,1787 @@
 	bluebird$2.noConflict = noConflict;
 	var bluebird_1 = bluebird$2;
 
+	function sendBasicRequest (url, method, type, body){
+	  return new bluebird_1(function (resolve, reject) {
+
+	    var xhr = new XMLHttpRequest();
+	    xhr.onload = function (event) {
+	      if (xhr.status >= 200 && xhr.status < 300) {
+	        resolve(xhr.response);
+	      } else {
+	        reject('Http request to '+url+' returned status: '+xhr.status+'. Body:\n'+xhr.response);
+	      }
+	    };
+	    xhr.onerror = function (event) {
+	      reject('Http request error. URL: '+url);
+	    };
+	    xhr.open(method, url, true);
+	    xhr.crossOrigin = 'Anonymous';
+	    xhr.responseType = type.toLowerCase();
+	    xhr.send(body);
+
+	  })
+	}
+
+	function sendJsonRequest(url, method, type, data){
+	  return new bluebird_1(function (resolve, reject) {
+
+	    // internals
+	    var jsonString = null;
+	    var triedPreflightWorkaround = false;
+
+	    // preprocess data
+	    if (data) {
+	      try {
+	        jsonString = JSON.stringify(data);
+	      } catch (e) {
+	        reject('Error creating JSON string.');
+	      }
+	    }
+
+	    // create request
+	    var xhr = new XMLHttpRequest();
+	    xhr.crossOrigin = 'Anonymous';
+
+	    xhr.onload = function (event) {
+	      // parse data
+	      var json;
+	      try {
+	        json = JSON.parse(xhr.responseText);
+	      } catch (e) {
+	        reject({
+	          message: 'Http Request failed: Error parsing response JSON',
+	          url: url,
+	          status: xhr.status,
+	          headers: xhr.getAllResponseHeaders(),
+	          event: event
+	        });
+	        return
+	      }
+	      if (xhr.status >= 200 && xhr.status < 300) {
+	        resolve(json);
+	      } else {
+	        reject(json);
+	      }
+	    };
+	    xhr.onerror = function (event) {
+
+	      // When CORS preflight fails then xhr.status is 0
+	      if (!triedPreflightWorkaround && xhr.status === 0) {
+
+	        // try again with simple header to avoid OPTIONS preflight
+	        triedPreflightWorkaround = true;
+	        xhr.open(method, url, true);
+	        xhr.setRequestHeader('Content-Type', 'text/plain');
+	        xhr.send(jsonString);
+
+	      } else {
+
+	        reject({
+	          message: 'Http Request error',
+	          url: url,
+	          status: xhr.status,
+	          headers: xhr.getAllResponseHeaders(),
+	          event: event
+	        });
+
+	      }
+
+	    };
+
+	    xhr.open(method, url, true);
+	      if (method !== 'GET') {
+	          xhr.setRequestHeader('Content-Type', 'application/json');
+	      }
+	    xhr.send(jsonString);
+	    
+	  })
+	}
+
+	// internals
+
+	// graphic card max supported texture size
+	var MAX_TEXTURE_SIZE = runtime.has.webGl ? runtime.webGl.maxTextureSize || 2048 : 2048;
+
+	// helpers
+
+	function checkPowerOfTwo (value) {
+	  return ( value & ( value - 1 ) ) === 0 && value !== 0
+	}
+
+	function nearestPowerOfTwoOrMaxTextureSize (n) {
+	  // max texture size supported by vga
+	    if (n > MAX_TEXTURE_SIZE) {
+	        return MAX_TEXTURE_SIZE
+	    }
+	  // next best power of two
+	  var l = Math.log(n) / Math.LN2;
+	  return Math.pow(2, Math.round(l))
+	}
+
+	function resizeImage (image, url) {
+
+	  var width = nearestPowerOfTwoOrMaxTextureSize(image.width);
+	  var height = nearestPowerOfTwoOrMaxTextureSize(image.height);
+
+	  var canvas = document.createElement('canvas');
+	  canvas.width = width;
+	  canvas.height = height;
+	  canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+
+	  console.log('Image size not compatible. Image has been resized from ' + image.width + 'x' + image.height + 'px to ' + canvas.width + 'x' + canvas.height +
+	  'px.\n' + url);
+
+	  return canvas
+	}
+
+	// function
+
+	function sendTextureRequest (url, type, dataType, data, progress, s3Key) {
+	  return new bluebird_1(function (resolve, reject) {
+	    
+	    var image = document.createElement('img');
+	    image.crossOrigin = 'Anonymous';
+
+	    image.onload = function () {
+	      
+	      var texture = new THREE.Texture();
+
+	      texture.sourceFile = url;
+	      texture.url = url;
+
+	      // image size compatibility check
+
+	      var isPowerOfTwo = (checkPowerOfTwo(image.width) && checkPowerOfTwo(image.height));
+	      var isNotTooBig = (image.width <= MAX_TEXTURE_SIZE && image.height <= MAX_TEXTURE_SIZE);
+
+	      if (isPowerOfTwo && isNotTooBig) {
+
+	        // use image as it is
+	        texture.image = image;
+
+	      } else {
+
+	        // resize image to make it compatible
+	        texture.image = resizeImage(image, url);
+	        // add url reference
+	        texture.image.src = url;
+
+	      }
+	      
+	      resolve(texture);
+
+	    };
+
+	    var triedWithCacheBust = false;
+	    image.onerror = function () {
+	      if(triedWithCacheBust) {
+	        reject('Error loading texture ' + url);
+	      } else {
+	        // try again with cache busting to avoid things like #1510
+	        triedWithCacheBust = true;
+	        if (url.indexOf('?') === -1) {
+	          url += '?cacheBust=' + new Date().getTime();
+	        } else {
+	          url += '&cacheBust=' + new Date().getTime();
+	        }
+	        image.src = url;
+	      }
+	    };
+
+	    // initiate image loading
+	    image.src = url;
+
+	  })
+	}
+
+	var DDS_MAGIC = 0x20534444;
+
+	var DDSD_MIPMAPCOUNT = 0x20000;
+
+	var DDSCAPS2_CUBEMAP = 0x200;
+
+	var DDPF_FOURCC = 0x4;
+
+	// internals
+
+	var FOURCC_DXT1 = fourCCToInt32("DXT1");
+	var FOURCC_DXT3 = fourCCToInt32("DXT3");
+	var FOURCC_DXT5 = fourCCToInt32("DXT5");
+
+	// functions
+
+	function fourCCToInt32 (value) {
+
+	  return value.charCodeAt(0) +
+	    (value.charCodeAt(1) << 8) +
+	    (value.charCodeAt(2) << 16) +
+	    (value.charCodeAt(3) << 24);
+
+	}
+
+	function int32ToFourCC (value) {
+
+	  return String.fromCharCode(
+	    value & 0xff,
+	    (value >> 8) & 0xff,
+	    (value >> 16) & 0xff,
+	    (value >> 24) & 0xff
+	  );
+	}
+
+	function loadARGBMip (buffer, dataOffset, width, height) {
+	  var dataLength = width * height * 4;
+	  var srcBuffer = new Uint8Array(buffer, dataOffset, dataLength);
+	  var byteArray = new Uint8Array(dataLength);
+	  var dst = 0;
+	  var src = 0;
+	  for (var y = 0; y < height; y++) {
+	    for (var x = 0; x < width; x++) {
+	      var b = srcBuffer[ src ];
+	      src++;
+	      var g = srcBuffer[ src ];
+	      src++;
+	      var r = srcBuffer[ src ];
+	      src++;
+	      var a = srcBuffer[ src ];
+	      src++;
+	      byteArray[ dst ] = r;
+	      dst++;  //r
+	      byteArray[ dst ] = g;
+	      dst++;  //g
+	      byteArray[ dst ] = b;
+	      dst++;  //b
+	      byteArray[ dst ] = a;
+	      dst++;  //a
+	    }
+	  }
+	  return byteArray;
+	}
+
+	function parse (buffer, loadMipmaps) {
+
+	  var dds = { mipmaps: [], width: 0, height: 0, format: null, mipmapCount: 1 };
+
+	  var headerLengthInt = 31; // The header length in 32 bit ints
+
+	  // Offsets into the header array
+
+	  var off_magic = 0;
+
+	  var off_size = 1;
+	  var off_flags = 2;
+	  var off_height = 3;
+	  var off_width = 4;
+
+	  var off_mipmapCount = 7;
+
+	  var off_pfFlags = 20;
+	  var off_pfFourCC = 21;
+	  var off_RGBBitCount = 22;
+	  var off_RBitMask = 23;
+	  var off_GBitMask = 24;
+	  var off_BBitMask = 25;
+	  var off_ABitMask = 26;
+
+	  var off_caps = 27;
+	  var off_caps2 = 28;
+	  var off_caps3 = 29;
+	  var off_caps4 = 30;
+
+	  // Parse header
+
+	  var header = new Int32Array(buffer, 0, headerLengthInt);
+
+	  if (header[ off_magic ] !== DDS_MAGIC) {
+
+	    console.error('THREE.DDSLoader.parse: Invalid magic number in DDS header.');
+	    return dds;
+
+	  }
+
+	  if (!header[ off_pfFlags ] & DDPF_FOURCC) {
+
+	    console.error('THREE.DDSLoader.parse: Unsupported format, must contain a FourCC code.');
+	    return dds;
+
+	  }
+
+	  var blockBytes;
+
+	  var fourCC = header[ off_pfFourCC ];
+
+	  var isRGBAUncompressed = false;
+
+	  switch (fourCC) {
+
+	    case FOURCC_DXT1:
+
+	      blockBytes = 8;
+	      dds.format = THREE.RGB_S3TC_DXT1_Format;
+	      break;
+
+	    case FOURCC_DXT3:
+
+	      blockBytes = 16;
+	      dds.format = THREE.RGBA_S3TC_DXT3_Format;
+	      break;
+
+	    case FOURCC_DXT5:
+
+	      blockBytes = 16;
+	      dds.format = THREE.RGBA_S3TC_DXT5_Format;
+	      break;
+
+	    default:
+
+	      if (header[ off_RGBBitCount ] == 32
+	        && header[ off_RBitMask ] & 0xff0000
+	        && header[ off_GBitMask ] & 0xff00
+	        && header[ off_BBitMask ] & 0xff
+	        && header[ off_ABitMask ] & 0xff000000) {
+	        isRGBAUncompressed = true;
+	        blockBytes = 64;
+	        dds.format = THREE.RGBAFormat;
+	      } else {
+	        console.error('THREE.DDSLoader.parse: Unsupported FourCC code ', int32ToFourCC(fourCC));
+	        return dds;
+	      }
+	  }
+
+	  dds.mipmapCount = 1;
+
+	  if (header[ off_flags ] & DDSD_MIPMAPCOUNT && loadMipmaps !== false) {
+
+	    dds.mipmapCount = Math.max(1, header[ off_mipmapCount ]);
+
+	  }
+
+	  //TODO: Verify that all faces of the cubemap are present with DDSCAPS2_CUBEMAP_POSITIVEX, etc.
+
+	  dds.isCubemap = header[ off_caps2 ] & DDSCAPS2_CUBEMAP ? true : false;
+
+	  dds.width = header[ off_width ];
+	  dds.height = header[ off_height ];
+
+	  var dataOffset = header[ off_size ] + 4;
+
+	  // Extract mipmaps buffers
+
+	  var width = dds.width;
+	  var height = dds.height;
+
+	  var faces = dds.isCubemap ? 6 : 1;
+
+	  for (var face = 0; face < faces; face++) {
+
+	    for (var i = 0; i < dds.mipmapCount; i++) {
+
+	      var byteArray, dataLength;
+	      if (isRGBAUncompressed) {
+	        byteArray = loadARGBMip(buffer, dataOffset, width, height);
+	        dataLength = byteArray.length;
+	      } else {
+	        dataLength = Math.max(4, width) / 4 * Math.max(4, height) / 4 * blockBytes;
+	        byteArray = new Uint8Array(buffer, dataOffset, dataLength);
+	      }
+
+	      var mipmap = { "data": byteArray, "width": width, "height": height };
+	      dds.mipmaps.push(mipmap);
+
+	      dataOffset += dataLength;
+
+	      width = Math.max(width * 0.5, 1);
+	      height = Math.max(height * 0.5, 1);
+
+	    }
+
+	    width = dds.width;
+	    height = dds.height;
+
+	  }
+
+	  return dds;
+
+	}
+
+	function log2 (x) {
+	  return Math.log(x) / Math.LN2
+	}
+
+	// load function
+
+	function sendDdsTextureRequest (url, type, dataType, data, progress, s3Key) {
+	  return new bluebird_1(function (resolve, reject) {
+
+	    var xhr = new XMLHttpRequest();
+
+	    xhr.onload = function (event) {
+
+	      if (xhr.status >= 200 && xhr.status < 300) {
+
+	        var buffer = xhr.response,
+	          dds;
+
+	        // parse data
+	        try {
+	          dds = parse(buffer, true);
+	        } catch (e) {
+	          var message = 'Error Loading DDS Texture\n' + url + '\n' + e.name + ': ' + e.message;
+	          console.error(message);
+	          reject(message);
+	          return
+	        }
+
+	        // See OpenGL ES 2.0.25 p. 81 paragraph 1 for the number of required mipmaps.
+	        var mipmapCount = log2(Math.max(dds.width, dds.height)) + 1;
+	        if (dds.mipmapCount != mipmapCount) {
+	          console.error('Reading DDS texture failed: ' + url + '\nmipmaps counted: ' + dds.mipmapCount + ', should be: ' + mipmapCount +
+	            '\nPlease make sure you have mipmap generation enabled when creating DDS textures from images.');
+	          reject('Error parsing DDS. Wrong mipmaps count. ' + url);
+	          return
+	        }
+
+	        // create compressed texture
+	        var texture = new THREE.CompressedTexture();
+
+	        texture.format = dds.format;
+	        texture.mipmaps = dds.mipmaps;
+	        texture.image.width = dds.width;
+	        texture.image.height = dds.height;
+	        texture.image.src = url;
+	        texture.sourceFile = url;
+	        texture.url = url;
+	        texture.bufferByteLength = buffer.byteLength;
+
+	        // gl.generateMipmap fails for compressed textures
+	        // mipmaps must be embedded in the DDS file
+	        // or texture filters must not use mipmapping
+	        texture.generateMipmaps = false;
+
+	        resolve(texture);
+
+	      } else {
+	        reject({
+	          message: 'Http Request error',
+	          url: url,
+	          status: xhr.status,
+	          headers: xhr.getAllResponseHeaders(),
+	          event: event
+	        });
+	      }
+
+	    };
+	    xhr.onerror = function (event) {
+	      reject({
+	        message: 'Http Request error',
+	        url: url,
+	        status: xhr.status,
+	        headers: xhr.getAllResponseHeaders(),
+	        event: event
+	      });
+	    };
+
+	    xhr.open('GET', url, true);
+	    xhr.crossOrigin = "Anonymous";
+	    xhr.responseType = 'arraybuffer';
+	    xhr.send(null);
+
+	  })
+	}
+
+	// main
+
+	function request(args) {
+	  // API
+	  var url = args.url || args.uri;
+	  var method = args.method || 'GET';
+	  var body = args.body;
+	  var type = getType(args.type, url, body);
+	  
+	  // TODO: add support for additional params
+	  //var headers = args.headers || {}
+	  //var qs = args.qs
+
+	  //var noCache = !!args.noCache
+
+	  // TODO: validate params
+	  if (sendRequestByType[type]) {
+	    return sendRequestByType[type](url, method, type, body)
+	  } else {
+	    return bluebird_1.reject('Type '+type+' not supported.')
+	  }
+
+	}
+
+	// shortcuts
+
+	request.get = function get (url) {
+	  return request({
+	    method: 'GET',
+	    url: url
+	  })
+	};
+
+	request.getTexture = function getTexture (url) {
+	  return request({
+	    method: 'GET',
+	    type: 'texture',
+	    url: url
+	  })
+
+	};
+
+	// private properties and methods
+
+	var sendRequestByType = {
+	  'text': sendBasicRequest,
+	  'arrayBuffer': sendBasicRequest,
+	  'blob': sendBasicRequest,
+	  'json': sendJsonRequest, // IE11 does not support responseType=json
+	  //'ddsTexture': getDdsTexture,
+	  'imageTexture': sendTextureRequest,
+	  'ddsTexture': sendDdsTextureRequest
+	  // TODO: add support for following types
+	  //'document': sendDocumentRequest,
+	  //'urlEncoded': sendUrlEncodedRequest,
+	  //'formData': sendFormDataRequest,
+	  //'img': sendImgRequest
+	};
+
+	var typeByExtension = {
+	  'buffer': 'arrayBuffer',
+	  'txt': 'text',
+	  'json': 'json'
+	  // TODO: enable these once support for those types is provided
+	  //'jpg': 'img',
+	  //'jpeg': 'img',
+	  //'jpe': 'img',
+	  //'png': 'img',
+	  //'gif': 'img',
+	  //'xml': 'document',
+	  //'html': 'document',
+	  //'svg': 'document'
+	};
+
+	var textureTypeByExtension = {
+	  '.dds': 'ddsTexture',
+	  '.jpg': 'imageTexture',
+	  '.jpeg': 'imageTexture',
+	  '.jpe': 'imageTexture',
+	  '.png': 'imageTexture',
+	  '.gif': 'imageTexture',
+	  '.svg': 'imageTexture'
+	};
+
+	function getType (type, url, data) {
+	  if (!url) return 'text'
+	  var fileName = url.split('/').pop();
+	  var extension = fileName.split('.').pop();
+
+	  if (!type) {
+
+	    if (data) {
+	      // estimate dataType from data
+	      if (data instanceof FormData) {
+	        type = 'form-data';
+	      } else if (_.isObject(data)) {
+	        type = 'url-encoded';
+	      }
+	    } else {
+	      // estimate dataType from URL
+	      type = dataTypeFromUrl(url);
+	    }
+
+	    // fallback to text request
+	    if (!type) {
+	      type = 'text';
+	    }
+
+	  } else if (type === 'texture') {
+
+	    // estimate texture type from URL
+	    type = getTextureTypeFromUrl(url);
+
+	  }
+
+	  return type
+	}
+
+	var typeByExtensionKeys = Object.keys(typeByExtension);
+	function dataTypeFromUrl (url) {
+
+	  var extension, i, l, urlLow = url.toLowerCase();
+
+	  for (i= 0, l=typeByExtensionKeys.length; i<l; i++ ) {
+	    extension = typeByExtensionKeys[i];
+	    if (urlLow.substring( urlLow.length - extension.length ) === extension) {
+	      return typeByExtension[ extension ]
+	    }
+	  }
+
+	  return 'text'
+
+	}
+
+	function getTextureTypeFromUrl (url, isTexture) {
+
+	  // get file extension
+	  var search = url.match(/\.[A-Za-z]+(?=\?|$)/i);
+
+	  if (search) {
+	    var extension = search[ 0 ].toLowerCase();
+	    return textureTypeByExtension[ extension ]
+	  } else {
+	    return false
+	  }
+
+	}
+
+	/*
+
+	 PERFORMANCE CRITICAL CODE
+
+	 readability may suffer from performance optimization
+	 ask tomas-polach if you have questions
+
+	*/
+
+	// static method, @memberof View
+
+	// constants
+
+	var THREEJS_TEXTURE_TYPES_MAP = {
+	  // hi-res textures
+	  'mapDiffuse': 'map',
+	  'mapSpecular': 'specularMap',
+	  'mapNormal':'normalMap',
+	  'mapAlpha':'alphaMap',
+	  'mapLight':'lightMap',
+	  // lo-res textures
+	  'mapDiffusePreview': 'map',
+	  'mapSpecularPreview': 'specularMap',
+	  'mapNormalPreview':'normalMap',
+	  'mapAlphaPreview':'alphaMap',
+	  'mapLightPreview':'lightMap'
+	};
+	var WEBGL_WRAP_TYPES = {
+	  repeat: 1000,
+	  mirror: 1002,
+	  clamp: 1001
+	};
+	// RepeatWrapping: 1000 / ClampToEdgeWrapping: 1001 / MirroredRepeatWrapping: 1002
+
+	// helpers
+
+	function onError (e) {
+	  console.error('Texture could not been loaded: ', e);
+	}
+
+	var textureRefCount = {};
+
+	function countTextureReference ( key ) {
+	  if ( key !== undefined ) {
+	    if (textureRefCount[ key ]) {
+	      textureRefCount[ key ]++;
+	    } else {
+	      textureRefCount[ key ] = 1;
+	    }
+	  }
+	}
+
+	function disposeIfPossible () {
+	  var texture3d = this;
+	  var key = this.url;
+	  if (key) {
+	    if (textureRefCount[ key ]) {
+	      textureRefCount[ key ]--;
+	      if (textureRefCount[ key ] === 0) {
+	//          console.log('dispose texture', texture3d.url)
+	        texture3d.dispose();
+	//          texture3d.needsUpdate = true
+	      }
+	    } else {
+	//        console.warn('texture not in cache ' + key)
+	      texture3d.dispose();
+	    }
+	  } else {
+	    texture3d.dispose();
+	//      texture3d.needsUpdate = true
+	  }
+	}
+
+	// class
+
+	function loadTextures ( queue, TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, resetTexturesOnLoadStart) {
+
+	  // new textures
+
+	  var
+	    texture3dKeys = [],
+	    textureKeys = [],
+	    texturePromises = [],
+	    textureCount = 0,
+	    textureS3Key,
+	    texture3d,
+	    textureType3d,
+	    textureType,
+	    needsUpdate,
+	    hasUv1Textures = false,
+	    geometry3d = mesh3d ? mesh3d.geometry : null,
+	    attributes3d = geometry3d ? geometry3d.attributes : null,
+	    hasUvVertices = attributes3d && attributes3d.uv && attributes3d.uv.count > 0,
+	    hasUv2Vertices = attributes3d && attributes3d.uv2 && attributes3d.uv2.count > 0,
+	    i,
+	    l;
+
+	  // UV1 textures
+
+	  for (i = 0, l = TEXTURE_TYPES.UV1.length; i < l; i++) {
+	    textureType = TEXTURE_TYPES.UV1[ i ];
+	    textureS3Key = _attributes[ textureType ];
+	    textureType3d = THREEJS_TEXTURE_TYPES_MAP[ textureType ];
+	    texture3d = material3d[ textureType3d ];
+
+	    if (textureS3Key) {
+	      if (hasUvVertices) {
+	        hasUv1Textures = true;
+	      } else {
+	        console.error('Texture ' + textureS3Key + ' could not be assigned because geometry has no UV vertices.');
+	        continue
+	      }
+	    }
+
+	    if (textureS3Key) {
+
+	      needsUpdate = true;
+
+	      // update wrap
+	      wrap = WEBGL_WRAP_TYPES[ _attributes.wrap ] || WEBGL_WRAP_TYPES[ 'repeat' ];
+	      if (texture3d && wrap !== texture3d.wrapS) {
+	        texture3d.wrapS = wrap;
+	        texture3d.wrapT = wrap;
+	        texture3d.needsUpdate = true;
+	      }
+
+	      // don't reload texture if files are of same origin
+	      if (
+	        texture3d
+	        && texture3d.url
+	        && textureS3Key === texture3d.url
+	      ) {
+	        needsUpdate = false;
+	      }
+
+	      if (needsUpdate && texture3d && resetTexturesOnLoadStart) {
+	        // dispose old texture
+	        if (material3d[ textureType3d ] && material3d[ textureType3d ].disposeIfPossible) {
+	          material3d[ textureType3d ].disposeIfPossible();
+	        }
+	        material3d[ textureType3d ] = null;
+	      }
+
+	      if (needsUpdate) {
+	        // load new texture
+	        texturePromises[ textureCount ] = request.getTexture(textureS3Key, { queue: queue }).catch(onError);
+	        textureKeys[ textureCount ] = textureType;
+	        texture3dKeys[ textureCount ] = textureType3d;
+	        textureCount++;
+	        material3d.needsUpdate = true;
+	      }
+
+	    } else if (material3d[ textureType3d ]) {
+
+	      // no new texture: just dispose old texture
+	      if (material3d[ textureType3d ] && material3d[ textureType3d ].disposeIfPossible) {
+	        material3d[ textureType3d ].disposeIfPossible();
+	      }
+	      material3d[ textureType3d ] = null;
+	      material3d.needsUpdate = true;
+
+	    }
+
+	  }
+
+	  // UV1 vectors
+
+	  if (attributes3d) {
+
+	    // UV channel 1
+
+	    if (hasUv1Textures) {
+
+	      // resize UV array
+
+	      if (_attributes.size) {
+
+	        var
+	          targetScaleU = _attributes.size[ 0 ],
+	          targetScaleV = _attributes.size[ 1 ],
+	          currentScaleU = attributes3d.uv._scaleU || 1,
+	          currentScaleV = attributes3d.uv._scaleV || 1;
+	        // check if uv recalculation is needed
+	        if (targetScaleU !== currentScaleU || targetScaleV !== currentScaleV) {
+	          // remember original uv array
+	          if (!attributes3d.uv._source) {
+	            attributes3d.uv._source = attributes3d.uv.array;
+	          }
+	          // internals
+	          var
+	            sourceUVs = attributes3d.uv._source,
+	            resizedUVs = new Float32Array(sourceUVs.length);
+	          // resize array
+	          for (var i = 0, l = resizedUVs.length; i < l; i += 2) {
+	            resizedUVs[ i ] = sourceUVs[ i ] / targetScaleU;
+	            resizedUVs[ i + 1 ] = sourceUVs[ i + 1 ] / targetScaleV;
+	          }
+	          // set resized array
+	          attributes3d.uv.array = resizedUVs;
+	          // remember size
+	          attributes3d.uv._scaleU = targetScaleU;
+	          attributes3d.uv._scaleV = targetScaleV;
+	          // set update flag
+	          attributes3d.uv.needsUpdate = true;
+	        }
+
+	      }
+
+	    }
+
+	    // UV channel 2
+
+	    if (_attributes[ TEXTURE_TYPES.UV2 ]) {
+
+	      // check uv count
+	      if (hasUv2Vertices) {
+
+	        // everything ok - load lightmap
+	        textureType = TEXTURE_TYPES.UV2;
+	        textureS3Key = _attributes[ textureType ];
+	        texturePromises[ textureCount ] = request.getTexture(textureS3Key, { queue: queue }).catch(onError);
+	        textureKeys[ textureCount ] = textureType;
+	        texture3dKeys[ textureCount ] = THREEJS_TEXTURE_TYPES_MAP[ textureType ];
+	        textureCount++;
+
+	      } else {
+
+	        console.error('Lightmap ' + _attributes[ TEXTURE_TYPES.UV2 ] + ' could not be assigned because geometry has no lightmap UV (UV2) vertices.');
+
+	      }
+
+	    }
+
+	  }
+
+	  // load textures
+
+	  var promise, wrap;
+	  if (textureCount) {
+
+	    promise = bluebird_1.all(texturePromises).then(function (textures) {
+
+	      // assign textures
+	      wrap = WEBGL_WRAP_TYPES[ _attributes.wrap ] || WEBGL_WRAP_TYPES[ 'repeat' ];
+	      for (i = 0; i < textureCount; i++) {
+	        // FIXME:
+	        // if (
+	        //   // avoid racing conditions
+	        // textures[ i ] && textures[ i ].url === material3d._texturesToBeLoaded[ textureKeys[i] ] &&
+	        //   // filter texture loading errors
+	        // (textures[i] instanceof THREE.CompressedTexture || textures[i] instanceof THREE.Texture)
+	        // ){
+
+	          // cache
+	          countTextureReference(textures[ i ].url);
+	          textures[ i ].disposeIfPossible = disposeIfPossible;
+
+	          // set texture settings
+	          textures[ i ].wrapS = wrap;
+	          textures[ i ].wrapT = wrap;
+	          textures[ i ].anisotropy = 2;
+	          // dispose previous texture
+	          if (material3d[ texture3dKeys[ i ] ] && material3d[ texture3dKeys[ i ] ].disposeIfPossible) {
+	            material3d[ texture3dKeys[ i ] ].disposeIfPossible();
+	          }
+	          // add new texture
+	          material3d[ texture3dKeys[ i ] ] = textures[ i ];
+	          material3d.uniforms[ texture3dKeys[ i ] ].value = textures[ i ];
+	          material3d[ texture3dKeys[ i ] ].needsUpdate = true;
+	        // }
+	      }
+	      // update material
+	      material3d.needsUpdate = true;
+
+	      // to prevent warnings: "GL ERROR :GL_INVALID_OPERATION : glDrawElements: attempt to access out of range vertices in attribute 1 "
+	      // this happens when switching from a material without texture to a material with texture or vice versa
+	      if ( mesh3d && mesh3d.geometry ) {
+	        mesh3d.geometry.buffersNeedUpdate = true;
+	        mesh3d.geometry.uvsNeedUpdate = true;
+	      }
+
+	      // render
+	      if (vm) vm.viewport.render();
+
+	    });
+
+	  } else {
+
+	    promise = bluebird_1.resolve();
+
+	    // render
+	    if (vm) vm.viewport.render();
+
+	  }
+
+	  return promise
+
+	}
+
+	/*
+
+	 PERFORMANCE CRITICAL CODE
+
+	 readability may suffer from performance optimization
+	 ask tomas-polach if you have questions
+
+	*/
+
+	// static method, @memberof View
+
+	// constants
+
+	var HI_RES_TEXTURE_TYPES = {
+	  UV1: [ 'mapDiffuse', 'mapSpecular', 'mapNormal', 'mapAlpha' ],
+	  UV2: 'mapLight'
+	};
+	var LO_RES_TEXTURE_TYPES = {
+	  UV1: [ 'mapDiffusePreview', 'mapSpecularPreview', 'mapNormalPreview', 'mapAlphaPreview' ],
+	  UV2: 'mapLightPreview'
+	};
+
+	var DEFAULT_LIGHT_MAP_INTENSITY = 1.2;
+	var DEFAULT_LIGHT_MAP_EXPOSURE = 0.6;
+	var DEFAULT_LIGHT_MAP_FALLOFF = 0;
+
+	// RepeatWrapping: 1000 / ClampToEdgeWrapping: 1001 / MirroredRepeatWrapping: 1002
+
+	// function
+
+	function setMaterial (args) {
+
+	  // Args
+	  var vm = args.vm;
+	  var material3d = args.material3d;
+	  var mesh3d = args.mesh3d;
+	  var _attributes = args.attributes || {};
+	  var reset = args.reset !== undefined ? args.reset : true;
+	  var loadingQueuePrefix = args.loadingQueuePrefix;
+	  var onFirstTextureSetLoaded = args.onFirstTextureSetLoaded;
+	  var lightMapIntensity = args.lightMapIntensity;
+	  var lightMapExposure = args.lightMapExposure;
+
+
+	  // transparency
+
+	  //     material3d.transparent = true
+	  //     material3d.opacity = 0.55
+
+	  // depth buffer
+	  //    if (material3d.opacity < 1) {
+	  //      material3d.depthWrite = false
+	  //      var alphaTest = material3d.opacity - 0.001
+	  //      if (alphaTest < 0) alphaTest = 0
+	  //      material3d.alphaTest = alphaTest
+	  //    }
+
+	  // specular coefficient
+
+	  material3d.shininess = (_attributes.specularCoef !== undefined) ? (_attributes.specularCoef ) : 0.1;
+	  material3d.uniforms.shininess.value = material3d.shininess;
+
+	  // colors
+	  var diffuse = {};
+	  if (_attributes.colorDiffuse) {
+	    diffuse.r = _attributes.colorDiffuse[ 0 ];
+	    diffuse.g = _attributes.colorDiffuse[ 1 ];
+	    diffuse.b = _attributes.colorDiffuse[ 2 ];
+	  } else if (reset) {
+	    if (_attributes.mapDiffuse ) {
+	      // has diffuse texture
+	      diffuse.r = 1;
+	      diffuse.g = 1;
+	      diffuse.b = 1;
+	    } else {
+	      // has NO diffuse texture
+	      diffuse.r = 0.85;
+	      diffuse.g = 0.85;
+	      diffuse.b = 0.85;
+	    }
+	  }
+	  material3d.diffuse = diffuse;
+	  material3d.uniforms.diffuse.value = new THREE.Color(diffuse.r, diffuse.g, diffuse.b);
+
+	  /*if (_attributes.colorAmbient) {
+	    // material3d.ambient.r = _attributes.colorAmbient[ 0 ]
+	    // material3d.ambient.g = _attributes.colorAmbient[ 1 ]
+	    // material3d.ambient.b = _attributes.colorAmbient[ 2 ]
+	  } else if (reset) {
+	    // if (!material3d.ambient) {
+	    //   material3d.ambient = new THREE.Color()
+	    // }
+	    // material3d.ambient.r = material3d.color.r
+	    // material3d.ambient.g = material3d.color.g
+	    // material3d.ambient.b = material3d.color.b
+	  }*/
+
+	  var specular = {};
+	  if (_attributes.colorSpecular) {
+	    specular.r = _attributes.colorSpecular[ 0 ];
+	    specular.g = _attributes.colorSpecular[ 1 ];
+	    specular.b = _attributes.colorSpecular[ 2 ];
+	  } else if (reset) {
+	    specular.r = 0.25;
+	    specular.g = 0.25;
+	    specular.b = 0.25;
+	  }
+	  material3d.specular = specular;
+	  material3d.uniforms.specular.value = new THREE.Color(specular.r, specular.g, specular.b);
+
+	  var emissive = {};
+	  if (_attributes.colorEmissive) {
+	    emissive.r = _attributes.colorEmissive[ 0 ];
+	    emissive.g = _attributes.colorEmissive[ 1 ];
+	    emissive.b = _attributes.colorEmissive[ 2 ];
+	  } else if (_attributes.lightEmissionCoef) {
+	    var emissiveIntensity = _attributes.lightEmissionCoef / 10;
+	    if (_attributes.colorDiffuse) {
+	      emissive.r = _attributes.colorDiffuse[ 0 ];
+	      emissive.g = _attributes.colorDiffuse[ 1 ];
+	      emissive.b = _attributes.colorDiffuse[ 2 ];
+	    } else {
+	      emissive.r = 1.0;
+	      emissive.g = 1.0;
+	      emissive.b = 1.0;
+	    }
+	    emissive.r *= emissiveIntensity;
+	    emissive.g *= emissiveIntensity;
+	    emissive.b *= emissiveIntensity;
+
+	  } else if (reset) {
+	    emissive.r = 0;
+	    emissive.g = 0;
+	    emissive.b = 0;
+	  }
+	  material3d.emissive = emissive;
+	  material3d.uniforms.emissive.value = new THREE.Color(emissive.r, emissive.g, emissive.b);
+
+	  // lightmap settings
+	  if (_attributes.mapLight || _attributes.mapLightPreview) {
+	    // Fallback lightmap intensity and exposure values
+	    var lmi = DEFAULT_LIGHT_MAP_INTENSITY;
+	    var lme = DEFAULT_LIGHT_MAP_EXPOSURE;
+
+	    if (lightMapIntensity !== undefined && lightMapIntensity != null && lightMapIntensity !== -100) {
+	      lmi = lightMapIntensity;
+	    } else if (_attributes.mapLightIntensity !== undefined) {
+	      lmi = _attributes.mapLightIntensity;
+	    }
+
+	    if (lightMapExposure !== undefined && lightMapExposure != null && lightMapExposure !== -100) {
+	      lme = lightMapExposure;
+	    } else if (_attributes.mapLightCenter !== undefined) {
+	      // in data3d lightMapExposure is mapLightCenter
+	      lme = _attributes.mapLightCenter;
+	    }
+
+	    material3d.lightMapIntensity = (lmi >= 0.0) ? lmi : 0.0;
+	    material3d.lightMapExposure = lme;
+	    material3d.lightMapFalloff = (_attributes.mapLightFalloff !== undefined) ? _attributes.mapLightFalloff : DEFAULT_LIGHT_MAP_FALLOFF;
+	    material3d.uniforms.lightMapIntensity.value = material3d.lightMapIntensity;
+	    material3d.uniforms.lightMapExposure.value = material3d.lightMapExposure;
+	    material3d.uniforms.lightMapFalloff.value = material3d.lightMapFalloff;
+	  }
+
+	  // shadows
+
+	  if (mesh3d) {
+	    // (2017/04/05) Interiors are currently not shadow receivers, as this
+	    // would produce many artifacts. However, flat and thin objects laying
+	    // very close to the floor (such as carpets) need to be excepted from
+	    // that rule. This is a temporary way to achieve that.
+	    if (!mesh3d.geometry.boundingBox)
+	      mesh3d.geometry.computeBoundingBox();
+	    var boundingBox = mesh3d.geometry.boundingBox;
+	    var position    = boundingBox.min.clone();
+	    position.applyMatrix4(mesh3d.matrixWorld);
+	    var meshIsFlat          = boundingBox.max.y - boundingBox.min.y < 0.05;
+	    var meshIsOnGroundLevel = position.y < 0.1;
+	    mesh3d.castShadow    = !(meshIsFlat && meshIsOnGroundLevel) && _attributes.castRealTimeShadows;
+	    mesh3d.receiveShadow =  (meshIsFlat && meshIsOnGroundLevel) || _attributes.receiveRealTimeShadows;
+	    mesh3d.material.needsUpdate = true; // without this, receiveShadow does not become effective
+	  }
+
+	  // load textures
+
+	  // remember current textures (avoiding racing conditions between texture loading and material updates)
+	  material3d._texturesToBeLoaded = {
+	    // hires textures
+	    mapDiffuse: _attributes.mapDiffuse,
+	    mapSpecular: _attributes.mapSpecular,
+	    mapNormal: _attributes.mapNormal,
+	    mapAlpha: _attributes.mapAlpha,
+	    mapLight: _attributes.mapLight,
+	    // lores textures
+	    mapDiffusePreview: _attributes.mapDiffusePreview,
+	    mapSpecularPreview: _attributes.mapSpecularPreview,
+	    mapNormalPreview: _attributes.mapNormalPreview,
+	    mapAlphaPreview: _attributes.mapAlphaPreview,
+	    mapLightPreview: _attributes.mapLightPreview
+	  };
+
+	  var
+	    loadingTexturesPromise,
+	    loadingQueue,
+	    isLoadingLoResTextures,
+	    hasLoResTextures = _attributes.mapDiffusePreview || _attributes.mapSpecularPreview || _attributes.mapNormalPreview || _attributes.mapAlphaPreview || _attributes.mapLightPreview,
+	    // hasHiResTextures = _attributes.mapDiffuse || _attributes.mapSpecular || _attributes.mapNormal || _attributes.mapAlpha || _attributes.mapLight,
+	    // TODO: readd hiResTextures configs
+	    // hiResTexturesEnabled = !configs.isMobile && vm.viewport.a.hiResTextures && configs.compatibility.webglCompressedTextures
+	    hiResTexturesEnabled = !runtime.isMobile && runtime.webGl.supportsDds;
+
+	  if (!hiResTexturesEnabled || (hasLoResTextures && !material3d.firstTextureLoaded)) {
+	    if (loadingQueuePrefix) {
+	      loadingQueue = loadingQueuePrefix + 'TexturesLoRes';
+	    }
+	    loadingTexturesPromise = loadTextures(loadingQueue, LO_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
+	    isLoadingLoResTextures = true;
+	  } else {
+	    if (loadingQueuePrefix) {
+	      loadingQueue = loadingQueuePrefix + 'TexturesHiRes';
+	    }
+	    loadingTexturesPromise = loadTextures(loadingQueue, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
+	    isLoadingLoResTextures = false;
+	  }
+
+
+	  // set opacity after textures have loaded
+	  loadingTexturesPromise.then(function(){
+
+	    if (_attributes.opacity !== undefined && _attributes.opacity < 1) {
+	      // 0 = fully transparent, 1 = non-transparent
+	      material3d.transparent = true;
+	      material3d.opacity = _attributes.opacity;
+	    } else if (_attributes.mapAlpha) {
+	      // has alpha map
+	      material3d.transparent = true;
+	      material3d.opacity = 1;
+	    } else {
+	      material3d.transparent = false;
+	      material3d.opacity = 1;
+	    }
+	    material3d.uniforms.opacity = { value: material3d.opacity };
+
+	    // trigger callback
+	    if (onFirstTextureSetLoaded) onFirstTextureSetLoaded();
+
+	    // set onFirstTextureLoaded
+	    if (hasLoResTextures) material3d.firstTextureLoaded = true;
+
+	  });
+
+	  // 2. load hi-res textures (if: material has preview texture set, not on mobile, hi-res enabled and supported)
+	  if (isLoadingLoResTextures && hiResTexturesEnabled) {
+	    loadingTexturesPromise.then(function(){
+	      if (loadingQueuePrefix) {
+	        loadingQueue = loadingQueuePrefix + 'TexturesHiRes';
+	      }
+	      loadTextures(loadingQueue, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
+	    });
+	  }
+
+	  // return texture loading promise
+
+	  return loadingTexturesPromise
+	}
+
+	// static class, @memberof View
+
+	// TODO: add dependencies
+	// * compareArrays
+	// * generateWireframeBuffer
+
+	// class
+
+	var Wireframe = checkDependencies({
+	  three: true,
+	  aframe: false
+	}, function makeData3dView () {
+
+	  function Wireframe () {
+
+	    // internals
+	    this._wireframeGeometry = new THREE.BufferGeometry();
+	    this._wireframeGeometry.addAttribute( 'position', new THREE.BufferAttribute( new Float32Array(0), 3 ) );
+	    this._wireframeMaterial = new THREE.LineBasicMaterial();
+
+	    this._positions = null;
+	    this._buffer = null;
+	    this._thresholdAngle = 10;
+	    this._thickness = 1;
+	    this._color = [0,0,0];
+	    this._opacity = 1;
+
+	    // init
+	    THREE.Line.call( this, this._wireframeGeometry, this._wireframeMaterial, THREE.LinePieces );
+
+	  }
+
+	// inherit from THREE Line prototype
+
+	  Wireframe.prototype = Object.create( THREE.Line.prototype );
+	  Wireframe.prototype.constructor = Wireframe;
+
+	// extend with own methods
+
+	  Wireframe.prototype.update = function (options) {
+
+	    // API
+	    var positions = options.positions;
+	    //var normals = options.normals
+	    var thresholdAngle = options.thresholdAngle === undefined ? this._thresholdAngle : options.thresholdAngle;
+	    var thickness = options.thickness === undefined ? this._thickness : options.thickness;
+	    var color = options.color === undefined ? this._color : options.color;
+	    var opacity = options.opacity === undefined ? this._opacity : options.opacity;
+
+
+	    if (thickness === 0) {
+
+	      this.visible = false;
+
+	    } else {
+
+	      // take care of line buffer
+	      var regenerateBuffer = (!this._buffer || thresholdAngle !== this._thresholdAngle || !compareArrays(this._positions, positions));
+	      if (regenerateBuffer) {
+
+	        // generate new buffer from positions
+	        //var newBuffer = generateWireframeBuffer( positions, thresholdAngle )
+	        var newBuffer = new Float32Array(27);
+	        if (newBuffer.length) {
+	          this._wireframeGeometry.attributes.position.array = newBuffer;
+	          this._wireframeGeometry.attributes.position.needsUpdate = true;
+	          this.visible = true;
+	        } else {
+	          this.visible = false;
+	        }
+	        // remember settings
+	        this._buffer = newBuffer;
+	        this._positions = positions;
+	        this._thresholdAngle = thresholdAngle;
+
+	      } else if (this._thickness === 0) {
+
+	        // was hidden
+	        this.visible = true;
+
+	      }
+
+	      // update material
+	      this._wireframeMaterial.color.r = color[ 0 ];
+	      this._wireframeMaterial.color.g = color[ 1 ];
+	      this._wireframeMaterial.color.b = color[ 2 ];
+	      this._wireframeMaterial.opacity = opacity;
+	      this._wireframeMaterial.linewidth = thickness;
+	      // remember settings
+	      this._color = color;
+	      this._opacity = opacity;
+
+	    }
+
+	    this._thickness = thickness;
+
+	  };
+
+	  Wireframe.prototype.destroy = function () {
+
+	    this._wireframeGeometry = null;
+	    this._wireframeMaterial = null;
+
+	    this._positions = null;
+	    this._buffer = null;
+	    this._thresholdAngle = null;
+	    this._thickness = null;
+	    this._color = null;
+	    this._opacity = null;
+
+	  };
+
+	  return Wireframe
+
+	});
+
+	var fragmentShader = "uniform vec3 diffuse;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapExposure;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\n#include <shadowmap_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( diffuse, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #include <normal_flip>\n    #include <normal_fragment>\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}";
+
+	var vertexShader = "varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}";
+
+	// CONFIGS
+
+	var DEFAULT_LIGHT_MAP_INTENSITY$1 = 1.2;
+	var DEFAULT_LIGHT_MAP_EXPOSURE$1 = 0.6;
+	var DEFAULT_LIGHT_MAP_FALLOFF$1 = 0;
+
+	var Io3dMaterial = checkDependencies ({
+	  three: true,
+	  aframe: false
+	}, function makeIo3dMaterial () {
+
+	  function Io3dMaterial( params ) {
+	    THREE.ShaderMaterial.call( this, params );
+
+	    var params = params || {};
+	    this.lightMapExposure = params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1;
+	    this.lightMapFalloff = params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1;
+
+	    this.uniforms = THREE.UniformsUtils.merge( [
+	      THREE.UniformsLib[ "lights" ],
+	      THREE.UniformsLib[ "shadowmap" ],
+	      { diffuse: { value: params.diffuse || new THREE.Color(1.0, 1.0, 1.0) },
+	        map: { value: params.map || null },
+	        specularMap: { value: params.specularMap || null },
+	        alphaMap: { value: params.alphaMap || null },
+	        lightMap: { value: params.lightMap || null },
+	        lightMapIntensity: { value: params.lightMapIntensity || DEFAULT_LIGHT_MAP_INTENSITY$1 },
+	        lightMapFalloff: { value: params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1 },
+	        lightMapExposure: { value: params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1 },
+	        normalMap: { value: params.normalMap || null },
+	        shininess: { value: params.shininess || 1.0 },
+	        specular: { value: params.specular || new THREE.Color(0.25, 0.25, 0.25) },
+	        emissive: { value: params.emissive || new THREE.Color(0.0, 0.0, 0.0) },
+	        opacity: { value: params.opacity || 1 },
+	        offsetRepeat: { value: params.offsetRepeat || new THREE.Vector4( 0, 0, 1, 1) }
+	      }
+	    ]);
+
+	    this.vertexShader = vertexShader;
+	    this.fragmentShader = fragmentShader;
+	    this.lights = true;
+	  }
+
+	  Io3dMaterial.prototype = Object.create(THREE.ShaderMaterial.prototype);
+	  Io3dMaterial.prototype.constructor = Io3dMaterial;
+
+	  return Io3dMaterial
+
+	});
+
+	// constants
+
+	var Data3dView = checkDependencies({
+	  three: true,
+	  aframe: false
+	}, function makeData3dView () {
+	  
+	  var WEBGL_SIDE = {
+	    front: 0,
+	    back: 1,
+	    both: 2
+	  };
+
+	  var DEG_TO_RAD = Math.PI / 180;
+	  var RAD_TO_DEG = 180 / Math.PI;
+
+	// shared variables
+
+	  var geometry3dCache = {};
+
+	  /**
+	   * @name three.Data3dView
+	   * @memberof three
+	   * @param options
+	   * @constructor
+	   */
+
+	  function Data3dView (options) {
+
+	    // API
+	    this.threeParent = options.parent;
+
+	    // internals
+	    this.meshKeys = [];
+	    this.meshes = {};
+	    this.materialKeys = [];
+	    this.materials = {};
+	    this._meshes3d = {}; // three meshes indexed by meshId
+	    this._wireframes3d = {}; // wireframe  three meshes indexed by meshId
+	    this._materials3d = {}; // three materials indexed by meshId
+
+	  }
+
+	  Data3dView.prototype = {
+
+	    set: function (data3d, options) {
+
+	      // API
+	      options = options || {};
+	      var
+	        meshes = data3d.meshes || this.meshes,
+	        meshKeys = data3d.meshKeys,
+	        materials = data3d.materials || this.materials,
+	        materialKeys = data3d.materialKeys,
+	        loadingQueuePrefix = data3d.loadingQueuePrefix || options.loadingQueuePrefix,
+	        onFirstTextureSetLoaded = options.onFirstTextureSetLoaded,
+	        lightMapIntensity = options.lightMapIntensity,
+	        lightMapExposure = options.lightMapExposure;
+
+	      // internals
+	      var self = this, meshId, mesh, materialId, wireframe3d, positions, uvs, uvs2, scale,
+	        normals, mesh3d, geometry3d, material3d, position, rotRad, rotDeg, i, l;
+
+	      // output
+	      var promise;
+
+	      ///////////////// meshes
+
+	      if (meshes) {
+
+	        // generate IDs if not provided
+	        if (!meshKeys) {
+	          meshKeys = Object.keys(meshes);
+	        }
+
+	        for (i = 0, l = meshKeys.length; i < l; i++) {
+
+	          meshId = meshKeys[ i ];
+	          mesh = meshes[ meshId ];
+
+	          // internals
+	          materialId = mesh.material;
+	          positions = mesh.positions;
+	          uvs = mesh.uvs;
+	          uvs2 = mesh.uvsLightmap;
+	          normals = mesh.normals;
+	          position = mesh.position;
+	          rotRad = mesh.rotRad;
+	          rotDeg = mesh.rotDeg;
+	          scale = mesh.scale;
+
+	          // three.js materials
+	          if (!self._materials3d[ meshId ]) {
+	            // (one material pro mesh, because some of our mesh properties are material properties and it does not matter performance wise)
+	            //material3d = new THREE.MeshPhongMaterial({ opacity: 0.5, transparent: true})
+	            material3d = new Io3dMaterial();
+	            material3d.name = materialId;
+	            if (!materials) {
+	              // there is no material properties. using default properties
+	              setMaterial({ material3d: material3d });
+	            }
+	            self._materials3d[ meshId ] = material3d;
+	          }
+
+	          // set face side (a mesh property in our data structure, but a material property in three.js data structure)
+	          self._materials3d[ meshId ].side = WEBGL_SIDE[ meshes[ meshId ].side ] || WEBGL_SIDE['front'];
+
+	          // create three.js meshes
+
+	          if (!self._meshes3d[ meshId ]) {
+
+	            // create geometry
+	            geometry3d = createOrReuseGeometry3d( mesh.cacheKey );
+	            // create mesh
+	            mesh3d = new THREE.Mesh(geometry3d, material3d);
+	            mesh3d.userData = self.userData;
+	            // add to parent
+	            self.threeParent.add(mesh3d);
+	            // remembers
+	            self._meshes3d[ meshId ] = mesh3d;
+
+	            // create a separate geometry object for wireframes
+	            wireframe3d = new Wireframe();
+	            // add to parent
+	            //self._meshes3d[ meshId ].add(wireframe3d)
+	            // remember
+	            self._wireframes3d[ meshId ] = wireframe3d;
+
+	          } else {
+
+	            mesh3d = self._meshes3d[ meshId ];
+	            geometry3d = mesh3d.geometry;
+
+	          }
+
+	          // apply scale
+	          if (scale) {
+	            mesh3d.scale.set( scale[0] , scale[1], scale[2] );
+	          }
+
+	          // apply position
+	          if (rotRad) {
+	            mesh3d.rotation.set( rotRad[0] , rotRad[1], rotRad[2] );
+	          } else if (rotDeg) {
+	            mesh3d.rotation.set( rotDeg[0] * DEG_TO_RAD, rotDeg[1] * DEG_TO_RAD, rotDeg[2] * DEG_TO_RAD );
+	          }
+
+	          // apply buffers if they are different than current buffers
+	          if (geometry3d.attributes.position === undefined) {
+	            geometry3d.attributes.position = new THREE.BufferAttribute(positions, 3);
+	//              geometry3d.addAttribute( 'position', new THREE.BufferAttribute(positions, 3) )
+	            // The bounding box of the scene may need to be updated
+	            if (this.vm && this.vm.viewport && this.vm.viewport.webglView)
+	              self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true;
+	          } else if (geometry3d.attributes.position.array !== positions ) {
+	            geometry3d.attributes.position.array = positions;
+	            geometry3d.attributes.position.needsUpdate = true;
+	            // Three.js needs this to update
+	            geometry3d.computeBoundingSphere();
+	            // The bounding box of the scene may need to be updated
+	            if (this.vm && this.vm.viewport && this.vm.viewport.webglView)
+	              self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true;
+	          }
+	          if (geometry3d.attributes.normal === undefined) {
+	            geometry3d.attributes.normal = new THREE.BufferAttribute(normals, 3);
+	//              geometry3d.addAttribute( 'normal', new THREE.BufferAttribute(normals, 3) )
+	          } else if (geometry3d.attributes.normal.array !== normals ) {
+	            geometry3d.attributes.normal.array = normals;
+	            geometry3d.attributes.normal.needsUpdate = true;
+	          }
+	          // geometry3d.attributesKeys = ['position', 'normal']
+	          // set uvs channel 1 (material)
+	          if (uvs) {
+	            if (geometry3d.attributes.uv === undefined) {
+	              geometry3d.attributes.uv = new THREE.BufferAttribute(uvs, 2);
+	            } else if (geometry3d.attributes.uv.array !== uvs ) {
+	              geometry3d.attributes.uv.array = uvs;
+	              geometry3d.attributes.uv.needsUpdate = true;
+	              // remove previous scale settings
+	              delete geometry3d.attributes.uv._scaleU;
+	              delete geometry3d.attributes.uv._scaleV;
+	              delete geometry3d.attributes.uv._source;
+	            }
+	            // geometry3d.attributesKeys[ 2 ] = 'uv'
+	          } else if (geometry3d.attributes.uv) {
+	            delete geometry3d.attributes.uv;
+	          }
+	          if (uvs2) {
+	            if (geometry3d.attributes.uv2 === undefined) {
+	              geometry3d.attributes.uv2 = new THREE.BufferAttribute(uvs2, 2);
+	            } else if (geometry3d.attributes.uv2.array !== uvs2 ) {
+	              geometry3d.attributes.uv2.array = uvs2;
+	              geometry3d.attributes.uv2.needsUpdate = true;
+	            }
+	            // geometry3d.attributesKeys[ geometry3d.attributesKeys.length++ ] = 'uv2'
+	          } else if (geometry3d.attributes.uv2) {
+	            delete geometry3d.attributes.uv2;
+	          }
+
+	          // (2017/01/09) The WebGL buffer of the pickingColor attribute is erroneously deleted
+	          // by ThreeJS (r69) in deallocateGeometry(). ThreeJS doesn't seem to account for the fact
+	          // that the attribute is shared by multiple geometries. It then does not get recreated, because
+	          // this function was attempting to manually set BufferGeometry.attributesKeys, missing any
+	          // extra attributes such as pickingColor.
+	          geometry3d.attributesKeys = Object.keys(geometry3d.attributes);
+
+	          // update wireframe
+
+	          if (materials[ materialId ]) {
+	            self._wireframes3d[ meshId ].update({
+	              positions: positions,
+	              thickness: materials[ materialId ].wireframeThickness === undefined ? 0 : materials[ materialId ].wireframeThickness,
+	              thresholdAngle: materials[ materialId ].wireframeThresholdAngle,
+	              color: materials[ materialId ].wireframeColor,
+	              opacity: materials[ materialId ].wireframeOpacity
+	            });
+	          }
+
+	        }
+
+	        // remove obsolete three.js meshes
+	        var mesh, meshIds = Object.keys(self._meshes3d);
+	        meshIds.forEach(function(meshId, i){
+	          mesh = self._meshes3d[meshId];
+	          if (!meshes[ meshId ]) {
+	            // destroy wireframe geometry
+	            /*
+	             var wireframe3d = self._wireframes3d[ meshId ]
+	             if (wireframe3d.parent) {
+	             wireframe3d.parent.remove( wireframe3d )
+	             wireframe3d.geometry.dispose()
+	             }
+	             */
+	            // destroy geometry
+	            var geometry3d = self._meshes3d[ meshId ].geometry;
+	            disposeGeometry3dIfNotUsedElsewhere(self.meshes[ meshId ].cacheKey, geometry3d);
+	            // destroy threejs mesh
+	            var mesh3d = self._meshes3d[ meshId ];
+	            if (mesh3d.parent) {
+	              mesh3d.parent.remove( mesh3d );
+	            }
+	            // destroy material
+	            var material3d = self._materials3d[ meshId ];
+	            if (material3d.map) material3d.map.disposeIfPossible();
+	            if (material3d.specularMap) material3d.specularMap.disposeIfPossible();
+	            if (material3d.normalMap) material3d.normalMap.disposeIfPossible();
+	            if (material3d.alphaMap) material3d.alphaMap.disposeIfPossible();
+	            if (material3d.lightMap) material3d.lightMap.disposeIfPossible();
+	            material3d.dispose();
+	            // remove reference to destroyed 3d objects
+	            delete self._meshes3d[ meshId ];
+	            delete self._wireframes3d[ meshId ];
+	            delete self._materials3d[ meshId ];
+	          }
+	        });
+
+	        // update properties
+	        self.meshKeys = meshKeys;
+	        self.meshes = meshes;
+
+	      }
+
+	      ///////////////// materials
+
+	      if (materials) {
+
+	        var materialPromises = [], material;
+	        for (i = 0, l = self.meshKeys.length; i < l; i++) {
+	          meshId = self.meshKeys[ i ];
+	          materialId = self.meshes[ meshId ].material;
+
+	          // material attributes
+	          material = materials[ materialId ];
+	          if (material && Object.keys(material).length) {
+	            // set material
+	            materialPromises[ i ] = setMaterial({
+	              vm: self.vm,
+	              loadingQueuePrefix: loadingQueuePrefix,
+	              mesh3d: self._meshes3d[ meshId ],
+	              material3d: self._materials3d[ meshId ],
+	              attributes: materials[ materialId ],
+	              onFirstTextureSetLoaded: onFirstTextureSetLoaded,
+	              lightMapIntensity: lightMapIntensity,
+	              lightMapExposure: lightMapExposure
+	            });
+	          }
+
+	        }
+
+	        // output
+	        promise = bluebird_1.all(materialPromises);
+
+	        // update properties
+	        self.materialKeys = materialKeys;
+	        self.materials = materials;
+
+	      }
+
+	      ///////////////// return
+
+	      if (!promise) {
+	        promise = bluebird_1.resolve();
+	      }
+
+	      return promise.then(function(){
+	        if (self.isDestroyed) return
+	        //self.vm.viewport.render()
+	      })
+
+	    },
+
+	    hasMeshes: function hasMeshes() {
+	      return Object.keys(this._meshes3d).length > 0
+	    },
+
+	    setMeshes: function(meshes){
+	      this.set({
+	        meshes: meshes
+	      });
+	    },
+
+	    setMaterials: function(materials, options){
+	      this.set({
+	        materials: materials
+	      }, options);
+	    },
+
+	    reset: function(){
+
+	      this.set({
+	        meshes: {},
+	        materials: {}
+	      });
+
+	    },
+
+	    destroy: function(){
+
+	      this.isDestroyed = true;
+
+	      this.reset();
+
+	      this.vm = null;
+	      this.threeParent = null;
+	      this.userData = null;
+
+	      this.threeParent = null;
+
+	      // internals
+	      this.meshKeys = null;
+	      this.meshes = null;
+	      this.materialKeys = null;
+	      this.materials = null;
+	      this._meshes3d = null;
+	      this._materials3d = null;
+
+	    }
+
+	  };
+
+	// helpers
+
+	  function createOrReuseGeometry3d( key ) {
+	    if (key) {
+	      // use cache
+	      if (geometry3dCache[ key ]) {
+	        geometry3dCache[ key ].refCount++;
+	      } else {
+	        geometry3dCache[ key ] = {
+	          geometry3d: new THREE.BufferGeometry(),
+	          refCount: 1
+	        };
+	      }
+	      return geometry3dCache[ key ].geometry3d
+	    } else {
+	      // no key no cache
+	      return new THREE.BufferGeometry()
+	    }
+	  }
+
+	  function disposeGeometry3dIfNotUsedElsewhere( key, geometry3d ) {
+	    if (key) {
+	      // involve cache
+	      if (geometry3dCache[ key ]) {
+	        geometry3dCache[ key ].refCount--;
+	        if (geometry3dCache[ key ].refCount < 1) {
+	          geometry3dCache[ key ].geometry3d.dispose();
+	          delete geometry3dCache[ key ];
+	        }
+	      } else {
+	        // (2017/01/09) See comment in ThreeView.set()
+	        // if (geometry3d.attributes.pickingColor)
+	        //  delete geometry3d.attributes['pickingColor'];
+	        geometry3d.dispose();
+	      }
+	    } else {
+	      // no key bo cache
+	      // (2017/01/09) See comment in ThreeView.set()
+	      // if (geometry3d.attributes.pickingColor)
+	      //   delete geometry3d.attributes['pickingColor'];
+	      geometry3d.dispose();
+	    }
+	  }
+
+	  return Data3dView
+
+	});
+
 	var fetch$1 = (function(){
 
 	  if (runtime.isNode) {
@@ -13769,9 +15154,6 @@
 
 	// import cache from './common/promise-cache.js'
 
-	// configs
-	var API_URL = configs.servicesUrl;
-
 	// internals
 	var rpcClient = new JsonRpc2Client();
 
@@ -13811,7 +15193,7 @@
 
 	function sendHttpRequest (rpcRequest) {
 	  // send request
-	  fetch$1(API_URL, {
+	  fetch$1(configs.servicesUrl, {
 	    body: JSON.stringify(rpcRequest.message),
 	    method: 'POST',
 	    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
@@ -15132,7 +16514,7 @@
 	  'mapLightPreview'
 	];
 	// TODO: use StringDecoder in Node environment
-	var textDecoder = window && window.TextDecoder ? new window.TextDecoder('utf-16') : makeUtf16Decoder();
+	var textDecoder = runtime.isBrowser && window.TextDecoder ? new window.TextDecoder('utf-16') : makeUtf16Decoder();
 
 	// public methods
 
@@ -15140,15 +16522,15 @@
 
 	  // API
 	  options = options || {};
-	  var url = options.url;
+	  var url$$1 = options.url;
 
-	  var parsedUrl = Url.parse(url);
+	  var parsedUrl = Url.parse(url$$1);
 	  var rootDir = path.parse(parsedUrl.path || '').dir;
 	  var origin = parsedUrl.protocol + '//' + parsedUrl.host;
 
 	  // check buffer type
 	  if (!buffer) {
-	    return Promise.reject('Missing buffer parameter.')
+	    return bluebird_1.reject('Missing buffer parameter.')
 	  } else if (typeof Buffer !== 'undefined' && buffer instanceof Buffer) {
 	    // convert node buffer to arrayBuffer
 	    buffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
@@ -15176,7 +16558,7 @@
 	  if (buffer.byteLength !== expectedFileByteLength) {
 	    var errorMessage = 'Can not parse Data3d buffer. Wrong buffer size: ' + buffer.byteLength + ' Expected: ' + expectedFileByteLength;
 	    console.error(errorMessage);
-	    return Promise.reject(errorMessage)
+	    return bluebird_1.reject(errorMessage)
 	  }
 
 	  // parse structure info
@@ -15187,7 +16569,7 @@
 	  try {
 	    structure = JSON.parse(structureString);
 	  } catch (e) {
-	    return Promise.reject(e)
+	    return bluebird_1.reject(e)
 	  }
 
 	  // add geometry arrays to data3d
@@ -15196,14 +16578,14 @@
 	  traverseData3d(structure.data3d, function (data3d) {
 
 	    // map typed arrays to payload area in file buffer
-	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url);
+	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url$$1);
 
 	    //  convert relative material keys into absolute once
 	    if (origin && data3d.materials) convertTextureKeys(data3d, origin, rootDir);
 
 	  });
 
-	  return Promise.resolve(structure.data3d)
+	  return bluebird_1.resolve(structure.data3d)
 
 	}
 
@@ -15261,7 +16643,7 @@
 
 	}
 
-	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url) {
+	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url$$1) {
 
 	  var mesh, i, l, meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
 
@@ -15291,7 +16673,7 @@
 	    }
 
 	    // add cache key
-	    if (url) mesh.cacheKey = url + ':' + meshKeys[i];
+	    if (url$$1) mesh.cacheKey = url$$1 + ':' + meshKeys[i];
 
 	  }
 
@@ -15316,11 +16698,6 @@
 	    return decodeBuffer(buffer, { url: url })
 	  })
 	}
-
-	// constants
-
-	var CDN_DOMAIN = configs.storageDomain;
-	var NO_CDN_DOMAIN = configs.storageDomainNoCdn;
 
 	// main
 
@@ -15355,7 +16732,7 @@
 	    processedKey = encodeURIComponent(processedKey);
 	  }
 	  // compose url
-	  var url = 'https://'+(cdn ? CDN_DOMAIN : NO_CDN_DOMAIN)+'/' + processedKey;
+	  var url = 'https://'+(cdn ? configs.storageDomain : configs.storageDomainNoCdn)+'/' + processedKey;
 	  // add to cache
 	  // keyToUrlCache[ key + cdn + encode ] = url
 	  return url
@@ -15398,67 +16775,49 @@
 	}
 
 	/**
-	 * Login in user using credentials
-	 * @function IO3D.auth.logIn
+	 * Sign up: Create a new user
+	 * @function IO3D.auth.signUp
 	 * @param {object} args
-	 * @param {string} args.name     - User email or username
-	 * @param {string} args.password - User password
+	 * @param {string} args.email
+	 * @param {string} args.password (optional)
 	 */
-	function logIn (args) {
-	  var name = args.username || args.name || args.email; // can be email or username (officially: username = userResourceName)
-	  var password = args.password;
+	function signUp (args) {
 
-	  logger.debug('Sending API login request for user "' + name + '" ...');
-	  // always log out first
-	  return callService('User.logOut').then(function () {
-	    // then send the actual log in request
-	    return callService('User.logIn', {
-	      resourceName: name,
-	      password:     password
-	    })
+	  var credentials = {
+	    email: args.email,
+	    password: args.password || uuid.generate()
+	  };
 
-	  }).then(normalizeSession).then(function onSuccess(session) {
-	    logger.debug('API: User "' + session.user.username + '" logged in successfully.');
-	    return session
-	  }, function onError(error){
-	    logger.debug('API: Could not log in user "' + args.name + '".', error);
-	    return Promise.reject(error)
+	  // log out first
+	  return callService('User.logOut').then(function(){
+
+	    // send sign up request
+	    logger.debug('Sending API sign up request for email "' + credentials.email + '" ...');
+	    return callService('User.create', credentials)
+
+	  }).then(function onSignUpSuccess(result) {
+
+	    // success
+	    logger.debug('API: User sign up with email "' + credentials.email + '" was successful.');
+	    return bluebird_1.resolve()
+
+	  }, function onSignUpError(error){
+
+	    // denied
+	    logger.debug('API: Could not sign up using email "' + credentials.email + '".', error);
+	    return bluebird_1.reject(error.message)
+
 	  })
-	}
 
-	/**
-	 * Log out currently authenticated user.
-	 * @function IO3D.auth.logOut
-	 */
-	function logOut () {
-	  logger.debug('Sending API log out request...');
-	  return callService('User.logOut').then(function (result) {
-	    logger.debug('API: Log out successful.');
-	    return true
-	  })
 	}
-
-	/**
-	 * Get information about the current session.
-	 * @function IO3D.auth.getSession
-	 */
-	function getSession () {
-	  logger.debug('Sending API session request...');
-	  return callService('User.getSession').then(normalizeSession).then(function (session) {
-	    logger.debug('API: session data:\n', session);
-	    return session
-	  })
-	}
-
-	// helpers
 
 	function normalizeSession(session_) {
 
-	  var isAuthenticated = !!session_.isAuthenticated;
+	  var isAuthenticated = !!session_.user;
 	  var user = {};
 
 	  // populate user object if authenticated
-	  if (session_.isAuthenticated) {
+	  if (isAuthenticated) {
 	    user.id = session_.user.resourceId;
 	    user.username = session_.user.resourceName;
 	    user.email = session_.user.email;
@@ -15472,13 +16831,254 @@
 
 	}
 
+	/**
+	 * Creates a session stream
+	 * @function IO3D.auth.session$
+	 */
+
+	var session$ = new BehaviorSubject_1.BehaviorSubject(normalizeSession({}));
+
+	// init
+	getSession();
+
+	// update session state every time when tab becomes visible
+	if (runtime.isBrowser) {
+	  runtime.isFocused$.subscribe(function(isFocused){
+	    if (isFocused) getSession();
+	  });
+	}
+
+	// export
+
+	/**
+	 * Get information about the current session.
+	 * @function IO3D.auth.getSession
+	 */
+	function getSession () {
+	  logger.debug('Sending API session request...');
+	  return callService('User.getSession')
+	    .then(normalizeSession)
+	    .then(function onSuccess (session) {
+	      logger.debug('API: session data:\n', session);
+	      // stream session object
+	      session$.next(session);
+	      // return result
+	      return session
+	    }, function onError (error) {
+	      logger.debug('API: error receiving session data.', error);
+	      return bluebird_1.reject(error.message)
+	    })
+	}
+
+	/**
+	 * Set password for a specific user
+	 * @function IO3D.auth.setPassword
+	 * @param {object} args
+	 * @param {string} args.token
+	 * @param {string} args.password
+	 */
+	function setPassword (args) {
+
+	  var credentials = {
+	    token: args.token,
+	    password: args.password
+	  };
+
+	  // log out first
+	  return callService('User.logOut').then(function(){
+
+	    // send sign up request
+	    logger.debug('Setting new password ...');
+	    return callService('User.changePassword', {
+	      token: credentials.token,
+	      oldPassword: null,
+	      newPassword: password
+	    })
+
+	  }).then(function onSuccess(result) {
+
+	    // success
+	    logger.debug('API: setting password successful.');
+	    return getSession()
+
+	  }, function onError(error){
+
+	    // denied
+	    logger.debug('API: setting password failed.', error);
+	    return bluebird_1.reject(error.message)
+
+	  })
+
+	}
+
+	/**
+	 * Request password reset for a specific user
+	 * @function IO3D.auth.requestPasswordReset
+	 * @param {object} args
+	 * @param {string} args.email
+	 */
+	function requestPasswordReset (args) {
+
+	  var credentials = {
+	    email: args.email
+	  };
+
+	  logger.debug('Sending password reset request to API ...');
+	  return callService('User.requestPasswordReset', credentials)
+	    .then(function onSuccess(result) {
+
+	      // success
+	      logger.debug('API: requesting password reset successful.');
+	      return bluebird_1.resolve()
+
+	    }, function onError(error){
+
+	      // denied
+	      logger.debug('API: requesting password reset failed.', error);
+	      return bluebird_1.reject(error.message)
+
+	    })
+
+	}
+
+	/**
+	 * Resend activation email
+	 * @function IO3D.auth.resendActivationEmail
+	 * @param {object} args
+	 * @param {string} args.email
+	 */
+	function resendActivationEmail (args) {
+
+	  var credentials = {
+	    email: args.email
+	  };
+
+	  //
+	  logger.debug('Sending account activation request to API ...');
+	  return callService('User.requestAccountActivation', credentials)
+	    .then(function onSuccess(result) {
+
+	      // success
+	      logger.debug('API: requesting account activation successful.');
+	      return bluebird_1.resolve()
+
+	    }, function onError(error){
+
+	      // denied
+	      logger.debug('API: requesting account activation failed.', error);
+	      return bluebird_1.reject(error.message)
+
+	    })
+
+
+	}
+
+	/**
+	 * Login in user using credentials
+	 * @function IO3D.auth.logIn
+	 * @param {object} args
+	 * @param {string} args.email - User email or username
+	 * @param {string} args.password - User password
+	 */
+
+	function logIn (args) {
+
+	  var credentials = {
+	    email: args.email,
+	    password: args.password || uuid.generate()
+	  };
+
+	  // log out first
+	  logger.debug('Sending API login request for user "' + credentials.email + '" ...');
+	  return callService('User.logOut').then(function(){
+
+	    // send log in request
+	    return callService('User.logIn', {
+	      resourceName: credentials.email,
+	      password: credentials.password
+	    })
+
+	  }).then(normalizeSession).then(function onSuccess(session) {
+
+	    // success
+	    logger.debug('API: User "' + session.user.email + '" logged in successfully.');
+	    return session
+
+	  }, function onError(error){
+
+	    // denied
+	    logger.debug('API: Could not log in user "' + credentials.email + '".', error);
+	    return bluebird_1.reject(error.message)
+
+	  })
+
+	}
+
+	/**
+	 * Log out currently authenticated user.
+	 * @function IO3D.auth.logOut
+	 */
+	function logOut () {
+	  logger.debug('Sending API log out request...');
+	  return callService('User.logOut').then(function onSuccess (result) {
+	    logger.debug('API: Log out successful.');
+	    return getSession()
+	  }, function onError (error) {
+	    logger.debug('Log out error.', error);
+	    return bluebird_1.reject(error.message)
+	  })
+	}
+
+	/**
+	 * Reenerate private API key
+	 */
+
+	function regeneratePublicKey () {
+	  logger.debug('Sending API request to generate private API key ...');
+	  return callService('Organization.generateApiKey').then(function onSuccess(key) {
+	    logger.debug('API: Generating private API key successful: ', key);
+	    return key
+	  }, function onReject(error) {
+	    logger.error('API: Error Generating public key.', error);
+	    return bluebird_1.reject(error.message)
+	  })
+	}
+
+	/**
+	 * Get private API key
+	 * @function IO3D.auth.getPrivateApiKey
+	 */
+
+	function getPrivateApiKey () {
+	  logger.debug('Sent API request reading private key ...');
+	  return callService('Organization.read').then(function onSuccess (result) {
+	    if (result.apiKey) {
+	      logger.debug('Received private API key from API');
+	      return result.apiKey
+	    } else {
+	      // user has no private key yet: generate one
+	      logger.debug('User has no private key. Sent request to generate one.');
+	      return regeneratePublicKey()
+	    }
+	  }, function onError (error) {
+	    logger.debug('Error receiving private API key');
+	    return Promise.reject(error.message)
+	  })
+	}
 
 	// export
 
 	var auth = {
-	  logIn:      logIn,
-	  logOut:     logOut,
-	  getSession: getSession
+	  getSession: getSession,
+	  session$: session$,
+	  signUp: signUp,
+	  logIn: logIn,
+	  logOut: logOut,
+	  setPassword: setPassword,
+	  requestPasswordReset: requestPasswordReset,
+	  resendActivationEmail: resendActivationEmail,
+	  getPrivateApiKey: getPrivateApiKey,
+	  regeneratePrivateApiKey: regeneratePublicKey
 	};
 
 	var FALLBACK_MIME_TYPE = 'application/octet-stream';
@@ -15729,6 +17329,135 @@
 	  put: putToStore
 	};
 
+	var css = ".io3d-message-list {\n  z-index: 100001;\n  position: fixed;\n  top: 0;\n  left: 50%;\n  margin-left: -200px;\n  width: 400px;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-size: 18px;\n  letter-spacing: 1px;\n  line-height: 1.3;\n  text-align: center;\n}\n.io3d-message-list .message {\n  display: block;\n  margin-top: 10px;\n}\n.io3d-message-list .message .text {\n  display: inline-block;\n  padding: 10px 12px 10px 12px;\n  border-radius: 3px;\n  color: white;\n}\n.io3d-message-list .message .neutral {\n  background: linear-gradient(50deg, rgba(0, 0, 0, 0.9), rgba(64, 64, 64, 0.9));\n}\n.io3d-message-list .message .success {\n  background: linear-gradient(50deg, rgba(35, 165, 9, 0.93), rgba(102, 194, 10, 0.93));\n}\n.io3d-message-list .message .warning {\n  background: linear-gradient(50deg, rgba(165, 113, 9, 0.93), rgba(194, 169, 10, 0.93));\n}\n.io3d-message-list .message .error {\n  background: linear-gradient(50deg, rgba(165, 9, 22, 0.93), rgba(194, 56, 10, 0.93));\n}\n.io3d-overlay {\n  -webkit-box-sizing: border-box;\n  /* Safari/Chrome, other WebKit */\n  -moz-box-sizing: border-box;\n  /* Firefox, other Gecko */\n  box-sizing: border-box;\n  /* Opera/IE 8+ */\n  z-index: 100000;\n  position: absolute;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-size: 18px;\n  letter-spacing: 1px;\n  color: white;\n  text-align: center;\n  line-height: 1.3;\n  background: linear-gradient(70deg, rgba(20, 17, 34, 0.93), rgba(51, 68, 77, 0.93));\n}\n@keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n.io3d-overlay .centered-content {\n  display: inline-block;\n  position: relative;\n  top: 50%;\n  text-align: left;\n}\n.io3d-overlay .centered-content .button {\n  margin-right: 4px;\n  margin-top: 1.5em;\n}\n.io3d-overlay .bottom-content {\n  display: inline-block;\n  position: absolute;\n  bottom: 1em;\n  color: rgba(255, 255, 255, 0.35);\n  transform: translateX(-100%);\n  text-align: left;\n}\n.io3d-overlay .bottom-content .clickable {\n  cursor: pointer;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-content .clickable:hover {\n  color: white;\n}\n@keyframes content-slide-in {\n  0% {\n    transform: translateY(-33%);\n  }\n  100% {\n    transform: translateY(-50%);\n  }\n}\n@keyframes content-slide-out {\n  0% {\n    transform: translateY(-50%);\n  }\n  100% {\n    transform: translateY(-33%);\n  }\n}\n.io3d-overlay h1 {\n  margin: 0 0 0.5em 0;\n  color: white;\n}\n.io3d-overlay p {\n  margin: 1em 0 0 0;\n}\n.io3d-overlay .hint {\n  margin: 1em 0 0 0;\n  color: rgba(255, 255, 255, 0.35);\n}\n.io3d-overlay .button {\n  cursor: pointer;\n  display: inline-block;\n  color: rgba(255, 255, 255, 0.35);\n  width: 40px;\n  height: 40px;\n  line-height: 32px;\n  border: 2px solid rgba(255, 255, 255, 0.35);\n  border-radius: 50%;\n  text-align: center;\n  transition: opacity 300ms, color 300ms;\n}\n.io3d-overlay .button:hover {\n  background-color: rgba(255, 255, 255, 0.1);\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .button-highlighted {\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .close-button {\n  display: block;\n  position: absolute;\n  top: 20px;\n  right: 20px;\n}\n.io3d-overlay input,\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay textarea {\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-size: 24px;\n  font-weight: normal;\n  letter-spacing: 1px;\n  outline: none;\n  margin: 0 0 0 0;\n  color: white;\n}\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay input:not([type='checkbox']):not([type='range']) {\n  padding: 0.2em 0 0.4em 0;\n  width: 100%;\n  line-height: 20px;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  border-radius: 0px;\n  border: 0px;\n  background: transparent;\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n  transition: border-color 1s;\n}\n.io3d-overlay select:focus,\n.io3d-overlay option:focus,\n.io3d-overlay input:not([type='checkbox']):not([type='range']):focus {\n  border-color: white;\n}\n.io3d-overlay textarea {\n  min-height: 60px;\n}\n.io3d-overlay input[type='checkbox'] {\n  position: relative;\n  height: 20px;\n  vertical-align: bottom;\n  margin: 0;\n}\n";
+
+	var el = {};
+
+	el.add = function addElement (type, attrs) {
+	  runtime.assertBrowser();
+
+	  var el = document.createElement(type);
+
+	  if (attrs) Object.keys(attrs).forEach(function (key) {
+	    if (key === 'text') {
+	      // text
+	      el.appendChild(document.createTextNode(attrs.text));
+	    } else if (key === 'html') {
+	      // html
+	      el.innerHTML = attrs.html;
+	    } else if (key === 'click' || key === 'keyup') {
+	      // events
+	      el.addEventListener(key, attrs[key]);
+	    } else {
+	      // any other attributes
+	      el.setAttribute(key, attrs[key]);
+	    }
+	  });
+
+	  el.remove = function removeElement (child) {
+	    child ? el.removeChild(child) : el.parentNode.removeChild(el);
+	    return el
+	  };
+	  el.appendTo = function appendToElement (parentEl) {
+	    parentEl === 'body' ? document.body.appendChild(el) : parentEl.appendChild(el);
+	    return el
+	  };
+	  el.prependTo = function prependToElement (parentEl) {
+	    parentEl === 'body' ? document.body.prepend(el) : parentEl.prepend(el);
+	    return el
+	  };
+	  el.val = function handleValue (str) {
+	    str ? el.setAttribute('value', str) : null;
+	    return el.value
+	  };
+	  el.addClass = function addCssClass (str) {
+	    el.classList.add(str);
+	    return el
+	  };
+	  el.removeClass = function removeCssClass (str) {
+	    el.classList.remove(str);
+	    return el
+	  };
+	  el.hide = function hideElement () {
+	    el.___originalStyleDisplay = el.style.display;
+	    el.style.display = 'none';
+	    return el
+	  };
+	  el.show = function showElement () {
+	    el.style.display = el.___originalStyleDisplay && el.___originalStyleDisplay !== '' ? el.___originalStyleDisplay : 'block';
+	    return el
+	  };
+
+	  return el
+	};
+
+	// container DOM element
+	var mainEl;
+	if (runtime.isBrowser) runtime.domReady(function(){
+	  mainEl = el.add('div',{ class: 'io3d-message-list' }).appendTo('body');
+	});
+
+	// main
+	function message (message, expire, type) {
+	  runtime.assertBrowser();
+
+	  // do nothing if there is no message
+	  if (!message || message === '') return
+	  // default expire value is 4 secs
+	  var expire = expire !== undefined ? expire : 4000; // ms
+	  // default message type
+	  var type = type || 'neutral'; // can be: neutral, success, warning, error
+
+	  // internals
+	  var isClosed = false;
+
+	  // create html elements
+	  var messageEl = el.add('div',{
+	    class: 'message'
+	  }).prependTo(mainEl).hide();
+	  el.add('div',{
+	    text: message,
+	    class: 'text '+type
+	  }).appendTo(messageEl);
+
+	  // create message object
+	  var resolve;
+	  var result = new bluebird_1(function(resolve_, reject_){
+	    resolve = resolve_;
+	  });
+
+	  // close method
+	  result.close = function close () {
+	    if (isClosed) return
+	    isClosed = true;
+	    //messageEl.slideUp()
+	    messageEl.hide();
+	    resolve();
+	  };
+
+	  // init
+	  //messageEl.slideDown()
+	  messageEl.show();
+
+	  // close message on expire
+	  if (expire) setTimeout(result.close, expire);
+
+	  // expose message object
+	  return result
+
+	}
+
+	// shortcuts for convenience
+	message.success = function createErrorMessage (str, expire) {
+	  return message (str, expire, 'success')
+	};
+	message.warning = function createErrorMessage (str, expire) {
+	  return message (str, expire, 'warning')
+	};
+	message.error = function createErrorMessage (str, expire) {
+	  return message (str, expire, 'error')
+	};
+
 	// configs
 
 	var EXTENSION_WHITE_LIST = [
@@ -15755,7 +17484,8 @@
 
 	// main
 
-	function createFileDrop (args) {
+	function createFileDropUi (args) {
+	  runtime.assertBrowser();
 
 	  var elementId = args.elementId;
 	  var onDrop = args.onDrop;
@@ -15988,10 +17718,703 @@
 
 	}
 
+	// main
+
+	function createOverlay () {
+	  runtime.assertBrowser();
+
+	  // DOM
+	  var mainEl = el.add('div', { class: 'io3d-overlay' }).appendTo(document.body);
+	  var centerEl = el.add('div', { class: 'centered-content' }).appendTo(mainEl);
+	  var bottomEl = el.add('div', { class: 'bottom-content' }).appendTo(mainEl);
+
+	  // overlay object
+	  var result = {
+	    isDestroyed: false,
+	    isVisible: false,
+	    mainEl: mainEl,
+	    centerEl: centerEl,
+	    bottomEl: bottomEl,
+	    show: show,
+	    hide: hide,
+	    destroy: destroy
+	  };
+
+	  // methods
+
+	  function show (callback) {
+	    if (result.isVisible) return
+	    result.isVisible = true;
+
+	    mainEl.style.opacity = 0;
+	    mainEl.style.display = 'block';
+	    mainEl.style.animation = '1100ms ease-out 0s 1 normal forwards running overlay-fade-in';
+	    centerEl.style.animation = '900ms cubic-bezier(0.2, 0.80, 0.5, 1) 0s 1 normal forwards running content-slide-in';
+
+	    if (callback && typeof callback === 'function') setTimeout(function(){
+	      callback();
+	    }, 500);
+
+	    return result
+	  }
+
+	  function hide (callback) {
+	    if (!result.isVisible) return
+	    result.isVisible = false;
+
+	    mainEl.style.animation = '600ms ease-out 0s 1 normal forwards running overlay-fade-out';
+	    centerEl.style.animation = '600ms ease-in 0s 1 normal forwards running content-slide-out';
+
+	    // remove element
+	    setTimeout(function(){
+	      mainEl.remove();
+	    }, 600);
+	    // trigger callback function
+	    setTimeout(function(){
+	      if (callback && typeof callback === 'function') callback();
+	    }, 300);
+
+	    return result
+	  }
+
+	  function destroy (callback) {
+	    if (result.isDestroyed) return
+	    hide(function () {
+	      result.isDestroyed = true;
+	      if (callback && typeof callback === 'function') callback();
+	    });
+	    return result
+	  }
+
+	  // expose overlay object
+
+	  return result
+
+	}
+
+	// main
+
+	function createResetPasswordUi (credentials, options) {
+	  runtime.assertBrowser();
+	  return new bluebird_1(function (resolve, reject){
+
+	    credentials = credentials || {};
+	    var email = credentials.email;
+
+	    // overlay
+	    var overlay = createOverlay().show();
+
+	    // DOM
+
+	    el.add('div',{
+	      text: 'x',
+	      class: 'button close-button',
+	      click: function onCancel () {
+	        destroy(function(){
+	          reject('User canceled action.');
+	        });
+	      }
+	    }).appendTo(overlay.mainEl);
+
+	    // centered content
+
+	    var centerEl = el.add('div', { style: 'width:300px;' }).appendTo(overlay.centerEl);
+
+	    // tab with email input
+
+	    var emailTabEl = el.add('div').appendTo(centerEl);
+
+	    el.add('h1',{ text: 'Reset Password' }).appendTo(emailTabEl);
+
+	    el.add('p', { text:'email:', class:'hint' }).appendTo(emailTabEl);
+	    var emailEl = el.add('input',{ type: 'text' }).appendTo(emailTabEl);
+	    if (email) emailEl.val(email);
+	    emailEl.focus();
+	    function onEmailElKeyup (e) {
+	      if (e.which === 13) passwordEl.focus();
+	    }
+	    emailEl.addEventListener('keyup', onEmailElKeyup);
+	    emailEl.addEventListener('input', updateGoButton);
+
+	    var goButtonEl = el.add('div',{
+	      text: 'go',
+	      class: 'button',
+	      click: onConfirm
+	    }).appendTo(emailTabEl);
+
+	    // tab with loading screen
+
+	    var loadingTabEl = el.add('div', {
+	      text: '...'
+	    }).appendTo(centerEl).hide();
+
+	    // tab with action message
+
+	    var requestSentTabEl = el.add('div').hide().appendTo(centerEl);
+
+	    el.add('p',{
+	      html: 'Check your email for<br>support@archilogic.com<br>and follow instructions.'
+	    }).appendTo(requestSentTabEl);
+
+	    var goButton2El = el.add('div',{
+	      text: 'ok',
+	      class: 'button',
+	      click: function(){
+	        destroy(function(){
+	          resolve();
+	        });
+	      }
+	    }).appendTo(requestSentTabEl);
+
+	    // stuff at the bottom
+
+	    var bottomEl = el.add('div',{
+	      text: 'Resend activation email.',
+	      style: 'width:300px;',
+	      class: 'clickable',
+	      click: function(){
+	        destroy(function(){
+	          createSignUpUi(
+	            {email: emailEl.val()},
+	            {resendActivation: true}
+	          ).then(resolve, reject);
+	        });
+	      }
+	    }).appendTo(overlay.bottomEl);
+
+	    var bottomEl = el.add('div',{
+	      text: 'Already have an account? Log in.',
+	      style: 'width:300px;',
+	      class: 'clickable',
+	      click: function(){
+	        destroy(function(){
+	          createLogInUi({ email: emailEl.val() }).then(resolve, reject);
+	        });
+	      }
+	    }).appendTo(overlay.bottomEl);
+
+	    // register ESC key
+
+	    function onKeyUp(e) {
+	      if (e.keyCode === 27) {
+	        destroy(function(){
+	          reject('User canceled action.');
+	        });
+	      }
+	    }
+	    document.body.addEventListener('keyup', onKeyUp);
+
+	    // methods
+
+	    function updateGoButton () {
+	      // highlight button if email has entry
+	      emailEl.val() !== ''
+	        ? goButtonEl.addClass('button-highlighted')
+	        : goButtonEl.removeClass('button-highlighted');
+	    }
+	    updateGoButton();
+
+	    function onConfirm () {
+	      // show loading screen
+	      emailTabEl.hide();
+	      loadingTabEl.show();
+	      requestPasswordReset({ email: emailEl.val() }).then(function(){
+	        // show tab saying that email has been sent
+	        loadingTabEl.hide();
+	        requestSentTabEl.show();
+	      }).then();
+	    }
+
+	    function destroy (callback) {
+	      // unbind events
+	      document.body.removeEventListener('keyup', onKeyUp);
+	      emailEl.removeEventListener('keyup', onEmailElKeyup);
+	      emailEl.removeEventListener('input', updateGoButton);
+	      // remove DOM elements
+	      overlay.destroy(callback);
+	    }
+
+	  })
+	}
+
+	// main
+
+	function createLogInUi (args) {
+	  runtime.assertBrowser();
+	  return new bluebird_1(function (resolve, reject) {
+
+	    // params
+
+	    args = args || {};
+	    var credentials = {
+	      email: args.email,
+	      password: args.password
+	    };
+
+	    // DOM
+
+	    var overlay = createOverlay().show();
+
+	    // close button
+	    el.add('div', {
+	      text: 'x',
+	      class: 'button close-button',
+	      click: function cancel () {
+	        destroy(function () {
+	          reject('User canceled action.');
+	        });
+	      }
+	    }).appendTo(overlay.mainEl);
+
+	    // stuff at the bottom
+
+	    el.add('div', {
+	      text: 'New? Sign up now.',
+	      style: 'width:300px;',
+	      class: 'clickable',
+	      click: function () {
+	        destroy(function () {
+	          createSignUpUi({email: emailEl.val()}).then(resolve, reject);
+	        });
+	      }
+	    }).appendTo(overlay.bottomEl);
+
+	    el.add('div', {
+	      text: 'Lost Password? Get a new one.',
+	      style: 'width:300px;',
+	      class: 'clickable',
+	      click: function () {
+	        destroy(function () {
+	          createResetPasswordUi({email: emailEl.val()}).then(resolve, reject);
+	        });
+	      }
+	    }).appendTo(overlay.bottomEl);
+
+	    // centered content
+
+	    var centerEl = el.add('div', {style: 'width:300px;'}).appendTo(overlay.centerEl);
+
+	    el.add('h1', {
+	      text: 'Log In'
+	    }).appendTo(centerEl);
+
+	    // email field
+
+	    el.add('p', {text: 'email:', class: 'hint'}).appendTo(centerEl);
+	    var emailEl = el.add('input', {type: 'text'}).appendTo(centerEl);
+	    if (credentials.email) emailEl.val(credentials.email);
+	    function onEmailElKeyup (e) {
+	      if (e.which === 13) passwordEl.focus();
+	    }
+	    emailEl.addEventListener('keyup', onEmailElKeyup);
+	    emailEl.addEventListener('input', updateGoButton);
+
+	    // password field
+
+	    el.add('p', {text: 'password:', class: 'hint'}).appendTo(centerEl);
+	    var passwordEl = el.add('input', {type: 'password'}).appendTo(centerEl);
+	    if (credentials.password) passwordEl.val(credentials.password);
+	    function onPasswordElKeyup (e) {
+	      if (e.which === 13) confirm();
+	    }
+	    passwordEl.addEventListener('keyup', onPasswordElKeyup);
+	    passwordEl.addEventListener('input', updateGoButton);
+
+	    // focus input field
+
+	    if (!credentials.email) {
+	      emailEl.focus();
+	    } else if (!credentials.password) {
+	      passwordEl.focus();
+	    }
+
+	    var goButtonEl = el.add('div', {
+	      text: 'go',
+	      class: 'button',
+	      click: confirm
+	    }).appendTo(centerEl);
+
+	    // register ESC key
+
+	    function onKeyUp (e) {
+	      if (e.keyCode === 27) {
+	        destroy(function () {
+	          reject('User canceled action.');
+	        });
+	      }
+	    }
+	    document.body.addEventListener('keyup', onKeyUp);
+
+	    // methods
+
+	    function updateGoButton () {
+	      // highlight button if email and password have entries
+	      emailEl.val() !== '' && passwordEl.val() !== ''
+	        ? goButtonEl.addClass('button-highlighted')
+	        : goButtonEl.removeClass('button-highlighted');
+	    }
+
+	    updateGoButton();
+
+	    function confirm () {
+	      // TODO: show loading or provide other visual feedback
+	      logIn({
+	        email: emailEl.val(),
+	        password: passwordEl.val()
+	      }).then(function onLogInSuccess () {
+	        // log in successful
+	        destroy(resolve);
+	      }, function onLogInReject (error) {
+	        // show message
+	        message.error(error);
+	        // offer to resend activation email
+	        if (error.indexOf('check your email and activate your account first') > -1) {
+	          destroy(function () {
+	            createSignUpUi(
+	              {email: emailEl.val()},
+	              {resendActivation: true}
+	            ).then(resolve, reject);
+	          });
+	        }
+	      });
+
+	    }
+
+	    function destroy (callback) {
+	      // unbind events
+	      document.body.removeEventListener('keyup', onKeyUp);
+	      emailEl.removeEventListener('keyup', onEmailElKeyup);
+	      emailEl.removeEventListener('input', updateGoButton);
+	      passwordEl.removeEventListener('keyup', onPasswordElKeyup);
+	      passwordEl.removeEventListener('input', updateGoButton);
+	      // remove DOM elements
+	      overlay.destroy(callback);
+	    }
+
+	  })
+	}
+
+	function poll(callback, options) {
+
+	  // API
+	  options = options || {};
+	  var timeout = options.timeout || 10 * 60 * 1000;
+	  var minInterval = options.minInterval || 1000;
+	  var maxInterval = options.maxInterval || 5000;
+	  var intervalIncreaseFactor = options.intervalIncreaseFactor || 1.05;
+
+	  return new bluebird_1(function( fulfill, reject, onCancel ){
+	    var flags = { isCancelled: false };
+	    // cancellation is supported in bluebird version > 3.x
+	    // enable cancellation in Promise.config as it is off by default
+	    if (onCancel) onCancel(function(){ flags.isCancelled = true; });
+	    // start recursive poll
+	    recursivePoll(callback, fulfill, reject, minInterval, maxInterval, intervalIncreaseFactor, 0, timeout, flags);
+	  })
+
+	}
+
+	// helper
+
+	function recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags) {
+
+	  // return if poll has been cancelled in meanwhile
+	  if (flags.isCancelled) return reject('Poll request has been cancelled')
+	  // increase interval
+	  if (interval < maxInterval) interval *= intervalIncreaseFactor;
+	  // check timeout
+	  if (timeElapsed > timeout) return reject('Poll request timed out')
+	  // count time
+	  timeElapsed += interval;
+	  // call
+	  callback(fulfill, reject, function next() {
+	    window.setTimeout(function(){
+	      recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags);
+	    }, interval);
+	  });
+
+	}
+
+	// main
+
+	function createSignUpUi (credentials, options) {
+	  runtime.assertBrowser();
+	  return new bluebird_1(function (resolve, reject){
+
+	    credentials = credentials || {};
+	    options = options || {};
+	    var email = credentials.email;
+	    var resendActivation = !!options.resendActivation;
+	    var waitForActivation = options.waitForActivation !== undefined ? options.waitForActivation : true;
+
+	    // DOM
+
+	    var overlay = createOverlay().show();
+
+	    el.add('div',{
+	      text: 'x',
+	      class: 'button close-button',
+	      click: function onCancel () {
+	        destroy(function(){
+	          reject('User canceled action.');
+	        });
+	      }
+	    }).appendTo(overlay.mainEl);
+
+	    // stuff at the bottom
+
+	    var bottomEl = el.add('div',{
+	      text: 'Already have an account? Log in.',
+	      style: 'width:300px;',
+	      class: 'clickable',
+	      click: function(){
+	        destroy(function(){
+	          createLogInUi({ email: emailEl.val() }).then(resolve, reject);
+	        });
+	      }
+	    }).appendTo(overlay.bottomEl);
+
+	    var bottomEl = el.add('div',{
+	      text: 'Lost Password? Get a new one.',
+	      style: 'width:300px;',
+	      class: 'clickable',
+	      click: function(){
+	        destroy(function(){
+	          createResetPasswordUi({ email: emailEl.val() }).then(resolve, reject);
+	        });
+	      }
+	    }).appendTo(overlay.bottomEl);
+
+	    // centered content
+
+	    var centerEl = el.add('div', { style: 'width:300px;' }).appendTo(overlay.centerEl);
+
+	    // tab with email input
+
+	    var emailTabEl = el.add('div').appendTo(centerEl);
+
+	    el.add('h1',{
+	      text: resendActivation ? 'Resend Activation Email' : 'Sign Up'
+	    }).appendTo(emailTabEl);
+
+	    el.add('p', { text:'email:', class:'hint' }).appendTo(emailTabEl);
+	    var emailEl = el.add('input',{ type: 'text' }).appendTo(emailTabEl);
+	    if (email) emailEl.val(email);
+	    emailEl.focus();
+	    function onEmailElKeyup (e) {
+	      if (e.which === 13) onConfirm();
+	    }
+	    emailEl.addEventListener('keyup', onEmailElKeyup);
+	    emailEl.addEventListener('input', updateGoButton);
+
+	    var goButtonEl = el.add('div',{
+	      text: 'go',
+	      class: 'button',
+	      click: onConfirm
+	    }).appendTo(emailTabEl);
+
+	    // register ESC key
+
+	    function onKeyUp (e) {
+	      if (e.keyCode === 27) {
+	        destroy(function () {
+	          reject('User canceled action.');
+	        });
+	      }
+	    }
+	    document.body.addEventListener('keyup', onKeyUp);
+
+	    // tab with loading screen
+
+	    var loadingTabEl = el.add('div', { text: '...' }).appendTo(centerEl).hide();
+
+	    // tab with activation message
+
+	    var activationTabEl = el.add('div').hide().appendTo(centerEl);
+
+	    el.add('p',{
+	      html: 'Check your email for<br>support@archilogic.com<br>and set your password.<br><br>Then simply return here ;)'
+	    }).appendTo(activationTabEl);
+
+	    // methods
+
+	    function updateGoButton () {
+	      // highlight button if email has entry
+	      emailEl.val() !== ''
+	        ? goButtonEl.addClass('button-highlighted')
+	        : goButtonEl.removeClass('button-highlighted');
+	    }
+	    updateGoButton();
+
+	    function onConfirm () {
+	      // show loading screen
+	      emailTabEl.hide();
+	      loadingTabEl.show();
+
+	      logOut()
+	        .then(function(){
+	          if (resendActivation) {
+	            // resend activation email
+	            return resendActivationEmail({ email: emailEl.val() })
+	          } else {
+	            // sign up
+	            return signUp({ email: emailEl.val() })
+	          }
+	        })
+	        .then(function(){
+	          // wait for activation
+	          if (waitForActivation) return pollForActivation()
+	          // or show error if signup rejected
+	        }, function(error){
+	          // catch specific errors
+	          if (error.indexOf('User with this email already exists') > -1) {
+	            // switch to log in tab
+	            message.error(error);
+	            destroy(function(){
+	              createLogInUi({ email: emailEl.val() }).then(resolve, reject);
+	            });
+	          } else {
+	            loadingTabEl.hide();
+	            emailTabEl.show();
+	            return bluebird_1.reject(error)
+	          }
+	        })
+	        .then(function(){
+	          // all done
+	          destroy(resolve);
+	        });
+	    }
+
+	    function pollForActivation () {
+	      emailTabEl.hide();
+	      loadingTabEl.hide();
+	      activationTabEl.show();
+
+	      return poll(function(resolve, reject, next){
+	        getSession().then(function(session){
+	          session.isAuthenticated ? resolve(session) : next();
+	        });
+	      })
+	    }
+
+	    function destroy (callback) {
+	      // unbind events
+	      document.body.removeEventListener('keyup', onKeyUp);
+	      emailEl.removeEventListener('keyup', onEmailElKeyup);
+	      emailEl.removeEventListener('input', updateGoButton);
+	      // remove DOM elements
+	      overlay.destroy(callback);
+	    }
+
+	  })
+	}
+
+	// main
+
+	function createDevDashboardUi () {
+	  runtime.assertBrowser();
+
+	  return getSession().then(function (session) {
+	    if (!session.isAuthenticated) {
+	      // show login screen
+	      message.error('Please log in to access your dashboard.');
+	      return createLogInUi().then(function () {
+	        return createDevDashboardUi()
+	      })
+	    }
+
+	    // create dashboard promise
+	    return new bluebird_1(function (resolve, reject) {
+
+	      // DOM
+
+	      // overlay
+	      var overlay = createOverlay().show();
+
+	      // close button
+	      el.add('div', {
+	        text: 'x',
+	        class: 'button close-button',
+	        click: function () {
+	          destroy(function () {
+	            resolve();
+	          });
+	        }
+	      }).appendTo(overlay.mainEl);
+
+	      // centered
+
+	      var centerEl = el.add('div', {style: 'width:450px;'}).appendTo(overlay.centerEl);
+
+	      el.add('h1', {text: 'Dev Dashboard'}).appendTo(centerEl);
+
+	      // stuff at the bottom
+
+	      var bottomEl = el.add('div', {
+	        text: 'Don\'t like your password? Get a new one.',
+	        style: 'width:450px;',
+	        class: 'clickable',
+	        click: function () {
+	          destroy(function () {
+	            createResetPasswordUi({email: emailEl.val()}).then(resolve, reject);
+	          });
+	        }
+	      }).appendTo(overlay.bottomEl);
+
+	      // main tab
+
+	      var mainTabEl = el.add('div').appendTo(centerEl);
+
+	      el.add('p', {text: 'Email:', class: 'hint'}).appendTo(mainTabEl);
+	      var emailEl = el.add('input', {type: 'text'}).appendTo(mainTabEl);
+	      emailEl.val(session.user.email);
+
+	      el.add('p', {text: 'Private API key:', class: 'hint'}).appendTo(mainTabEl);
+	      var privateApiKeyEl = el.add('input', {type: 'text'}).appendTo(mainTabEl);
+	      getPrivateApiKey().then(function (key) {
+	        privateApiKeyEl.val(key);
+	      });
+
+	      // register ESC key
+
+	      function onKeyUp (e) {
+	        if (e.keyCode === 27) destroy(resolve);
+	      }
+	      document.body.addEventListener('key', onKeyUp);
+
+	      // methods
+
+	      function destroy (callback) {
+	        // unbind events
+	        document.body.removeEventListener('keyup', onKeyUp);
+	        // remove DOM elements
+	        overlay.destroy(callback);
+	      }
+
+	    })
+	  })
+	}
+
+	// add css to page
+	if (runtime.isBrowser) {
+	  var style = document.createElement('style');
+	  style.setAttribute('media', 'screen');
+	  //style.innerHTML = css
+	  style.appendChild(document.createTextNode(css));
+	  document.head.appendChild(style);
+	}
+
 	// export
 
 	var ui = {
-	  createFileDrop: createFileDrop
+	  fileDrop: createFileDropUi,
+	  // authentication
+	  signUp: createSignUpUi,
+	  logIn: createLogInUi,
+	  requestPasswordReset: createResetPasswordUi,
+	  devDashboard: createDevDashboardUi,
+	  // messages
+	  message: message
 	};
 
 	// function
@@ -16008,7 +18431,7 @@
 
 	  data3d: {
 	    load: loadData3d,
-	    decodeBuffer: decodeBuffer,
+	    decodeBuffer: decodeBuffer
 	  },
 	  io: {
 	    fetch: fetch$1,
@@ -16026,7 +18449,7 @@
 
 	};
 
-	var IO3D$1 = {
+	var io3d = {
 
 	  // products
 	  aFrame: aFrame,
@@ -16044,7 +18467,10 @@
 
 	};
 
-	return IO3D$1;
+	// create upper case alias in browser environment
+	if (runtime.isBrowser) window.IO3D = io3d;
+
+	return io3d;
 
 })));
 //# sourceMappingURL=3dio.js.map
