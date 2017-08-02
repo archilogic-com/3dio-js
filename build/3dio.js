@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.25
- * @date 2017/08/02 17:46
+ * @version 1.0.0-beta.26
+ * @date 2017/08/02 17:55
  * @branch master
- * @commit 051919b4d11fdf75754000bcf3ae376ea5a3915f
+ * @commit f74dd0e7d3691ed862491a5a6b99df2b440b51ea
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/02 17:46', GIT_BRANCH = 'master', GIT_COMMIT = '051919b4d11fdf75754000bcf3ae376ea5a3915f'
+	var BUILD_DATE='2017/08/02 17:55', GIT_BRANCH = 'master', GIT_COMMIT = 'f74dd0e7d3691ed862491a5a6b99df2b440b51ea'
 
 	/**
 	 * @license RequireJS domReady 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
@@ -7318,7 +7318,7 @@
 	  })();
 	}
 
-	var version = "1.0.0-beta.25";
+	var version = "1.0.0-beta.26";
 
 	var homepage = "https://3d.io";
 
@@ -18247,6 +18247,12 @@
 	    updateGoButton();
 
 	    function onConfirm () {
+
+	      if (!validateEmail(emailEl.val())) {
+	        message.error('Please provide a valid email.');
+	        return
+	      }
+
 	      // show loading screen
 	      emailTabEl.hide();
 	      loadingTabEl.show();
@@ -18266,10 +18272,10 @@
 	          if (waitForActivation) return pollForActivation()
 	          // or show error if signup rejected
 	        }, function(error){
+	          message.error(error);
 	          // catch specific errors
 	          if (error.indexOf('User with this email already exists') > -1) {
 	            // switch to log in tab
-	            message.error(error);
 	            destroy(function(){
 	              createLogInUi({ email: emailEl.val() }).then(resolve, reject);
 	            });
@@ -18307,6 +18313,13 @@
 	    }
 
 	  })
+	}
+
+	// helpers
+
+	function validateEmail(email) {
+	  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	  return re.test(email)
 	}
 
 	// main
