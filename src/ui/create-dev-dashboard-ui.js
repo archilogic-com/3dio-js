@@ -1,6 +1,6 @@
 import el from './common/dom-el.js'
 import createOverlay from './common/create-overlay.js'
-import createLogInUi from './create-log-in-ui.js'
+import createSignUpUi from './create-sign-up-ui.js'
 import createResetPasswordUi from './create-password-reset-request-ui.js'
 import message from './create-message-ui.js'
 import runtime from '../core/runtime.js'
@@ -16,8 +16,8 @@ export default function createDevDashboardUi () {
   return getSession().then(function (session) {
     if (!session.isAuthenticated) {
       // show login screen
-      message.error('Please log in to access your dashboard.')
-      return createLogInUi().then(function () {
+      message('Please sign up or log in to<br>access your dev dashboard.')
+      return createSignUpUi().then(function () {
         return createDevDashboardUi()
       })
     }
