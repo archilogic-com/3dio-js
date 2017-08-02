@@ -27,7 +27,7 @@ function message (message, expire, type) {
     class: 'message'
   }).prependTo(mainEl).hide()
   el.add('div',{
-    text: message,
+    html: message,
     class: 'text '+type
   }).appendTo(messageEl)
 
