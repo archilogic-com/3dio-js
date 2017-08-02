@@ -1,4 +1,3 @@
-import Promise from 'bluebird'
 import runtime from '../../core/runtime.js'
 import configs from '../../core/configs.js'
 import fetch from '../../utils/io/fetch.js'

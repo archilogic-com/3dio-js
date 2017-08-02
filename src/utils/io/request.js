@@ -2,6 +2,7 @@ import sendBasicRequest from './request/basic.js'
 import sendJsonRequest from './request/json.js'
 import sendTextureRequest from './request/texture.js'
 import sendDdsTextureRequest from './request/dds-texture.js'
+import Promise from 'bluebird'
 
 // main
 

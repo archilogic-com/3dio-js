@@ -1,3 +1,5 @@
+import Promise from 'bluebird'
+
 export default function sendJsonRequest(url, method, type, data){
   return new Promise(function (resolve, reject) {
 

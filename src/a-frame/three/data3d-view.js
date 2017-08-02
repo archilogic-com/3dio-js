@@ -2,6 +2,7 @@ import checkDependencies from '../check-dependencies.js'
 import setMaterial from './data3d-view/set-material.js'
 import Wireframe from './data3d-view/wireframe.js'
 import Io3dMaterial from './material/io3d-material.js'
+import Promise from 'bluebird'
 
 // constants
 

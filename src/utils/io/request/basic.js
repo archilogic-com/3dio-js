@@ -1,3 +1,5 @@
+import Promise from 'bluebird'
+
 export default function sendBasicRequest (url, method, type, body){
   return new Promise(function (resolve, reject) {
 

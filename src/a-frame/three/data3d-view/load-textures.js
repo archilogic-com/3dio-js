@@ -8,6 +8,7 @@
 */
 
 import request from '../../../utils/io/request.js'
+import Promise from 'bluebird'
 
 // static method, @memberof View
 

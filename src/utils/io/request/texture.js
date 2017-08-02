@@ -1,3 +1,4 @@
+import Promise from 'bluebird'
 import runtime from '../../../core/runtime.js'
 
 // internals

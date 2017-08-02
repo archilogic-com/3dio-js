@@ -1,3 +1,5 @@
+import Promise from 'bluebird'
+
 var DDS_MAGIC = 0x20534444;
 
 var DDSD_CAPS = 0x1,
