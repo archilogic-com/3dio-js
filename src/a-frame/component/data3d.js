@@ -1,4 +1,5 @@
 import checkDependencies from '../check-dependencies.js'
+import callService from '../../utils/services/call'
 
 export default {
 
@@ -8,6 +9,10 @@ export default {
       default: ''
     },
     key: {
+      type: 'string',
+      default: ''
+    },
+    scene: {
       type: 'string',
       default: ''
     },
@@ -40,8 +45,35 @@ export default {
     var this_ = this
     var url = this_.data.url || this_.data.URL
     var key = this_.data.key || this_.data.KEY
+    var scene = this_.data.scene
     var lightMapIntensity = this_.data.lightMapIntensity
     var lightMapExposure = this_.data.lightMapExposure
+
+    if(scene !== '') {
+      callService('Model.read', {arguments: { resourceId: scene}}).then(function onResult(result) {
+        var level = result.modelStructure.children.filter(function(item) { return item.type === 'level' })[0]
+        if (!level) {
+          console.error('Unable to load data3d from scene ' + scene + ': The scene does not contain data in the expected format. Error was: No level found.')
+          return
+        }
+        if (!level.bakedModelUrl) {
+          console.error('Unable to load data3d from scene ' + scene + ': The scene is not baked. Enable realistic lighting on this scene. Error was: No baked data3d present.')
+          return
+        }
+        var bakedModel = level.bakedModelUrl
+        if (bakedModel.split('.')[bakedModel.split('.').length - 1] !== 'buffer') {
+          console.error('Unable to load data3d from scene ' + scene + ': The scene is not in Data3D format. Disable and enable realistic lighting on this scene. Error was: No buffer3d found.')
+          return
+        }
+        this_.data.key = bakedModel
+        key = bakedModel
+        console.log('Loading scene', key)
+        this_.data.scene = ''
+        this_.update()
+      }).catch(function onApiError(err) {
+        console.error('Unable to load data3d from scene ' + scene + ': The API returned an error. Error was:', err)
+      })
+    }
 
     // check params
     if ((!url || url === '') && (!key || key === '')) return
