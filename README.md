@@ -70,3 +70,5 @@ Install local dev environment:
 2. Install global packages: `npm install rollup -g ; npm install lite-server -g`
 3. Install local packages: `npm install`
 4. Run local dev server: `npm start`
+
+[Contributing guidelines](CONTRIBUTING.md)
