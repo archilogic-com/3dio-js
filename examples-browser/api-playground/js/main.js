@@ -74,6 +74,15 @@ $(function () {
     runExample(codeEditor.getValue())
   })
 
+  // bind key events
+  $(window).on('keydown', function(event){
+    var keyCode = event.keyCode ? event.keyCode : event.which
+    if (event.ctrlKey || event.metaKey) {
+      // ctrl + enter
+      if (keyCode === 13) runExample(codeEditor.getValue())
+    }
+  })
+
   // proxy console
   var actualConsole = window.console
   window.console = {
