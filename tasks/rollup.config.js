@@ -44,7 +44,7 @@ function glsl () {
 
 // https://github.com/rollup/rollup/wiki/JavaScript-API#rolluprollup-options-
 export default {
-  entry: 'src/3dio.js',
+  entry: 'src/io3d.js',
   indent: '\t',
   sourceMap: true,
   plugins: [
