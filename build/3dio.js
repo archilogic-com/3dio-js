@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.29
- * @date 2017/08/02 23:27
+ * @date 2017/08/03 15:12
  * @branch master
- * @commit 1381ab9457680359299dc6828aba0fbea365175d
+ * @commit 9e12e808197c3c07326d2b4204d7c99c36a1376e
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/02 23:27', GIT_BRANCH = 'master', GIT_COMMIT = '1381ab9457680359299dc6828aba0fbea365175d'
+	var BUILD_DATE='2017/08/03 15:12', GIT_BRANCH = 'master', GIT_COMMIT = '9e12e808197c3c07326d2b4204d7c99c36a1376e'
 
 	/**
 	 * @license RequireJS domReady 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
@@ -7319,6 +7319,7 @@
 	}
 
 	var version = "1.0.0-beta.29";
+
 
 	var homepage = "https://3d.io";
 
@@ -17072,8 +17073,11 @@
 	  getSession: getSession,
 	  session$: session$,
 	  signUp: signUp,
+	  signup: signUp, // alias
 	  logIn: logIn,
+	  login: logIn, // alias
 	  logOut: logOut,
+	  logout: logOut, // alias
 	  setPassword: setPassword,
 	  requestPasswordReset: requestPasswordReset,
 	  resendActivationEmail: resendActivationEmail,
@@ -17331,13 +17335,43 @@
 
 	var css = ".io3d-message-list {\n  z-index: 100001;\n  position: fixed;\n  top: 0;\n  left: 50%;\n  margin-left: -200px;\n  width: 400px;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: normal;\n  letter-spacing: 1px;\n  line-height: 1.3;\n  text-align: center;\n}\n.io3d-message-list .message {\n  display: block;\n  margin-top: 10px;\n}\n.io3d-message-list .message .text {\n  display: inline-block;\n  padding: 10px 12px 10px 12px;\n  border-radius: 3px;\n  color: white;\n  font-size: 18px;\n}\n.io3d-message-list .message .neutral {\n  background: rgba(0, 0, 0, 0.9);\n}\n.io3d-message-list .message .success {\n  background: linear-gradient(50deg, rgba(35, 165, 9, 0.93), rgba(102, 194, 10, 0.93));\n}\n.io3d-message-list .message .warning {\n  background: linear-gradient(50deg, rgba(165, 113, 9, 0.93), rgba(194, 169, 10, 0.93));\n}\n.io3d-message-list .message .error {\n  background: linear-gradient(50deg, rgba(165, 9, 22, 0.93), rgba(194, 56, 10, 0.93));\n}\n.io3d-overlay {\n  -webkit-box-sizing: border-box;\n  /* Safari/Chrome, other WebKit */\n  -moz-box-sizing: border-box;\n  /* Firefox, other Gecko */\n  box-sizing: border-box;\n  /* Opera/IE 8+ */\n  z-index: 100000;\n  position: fixed;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: 200;\n  font-size: 18px;\n  letter-spacing: 1px;\n  color: white;\n  text-align: center;\n  line-height: 1.3;\n  background: linear-gradient(70deg, rgba(20, 17, 34, 0.93), rgba(51, 68, 77, 0.93));\n}\n@keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n.io3d-overlay .centered-content {\n  display: inline-block;\n  position: relative;\n  top: 50%;\n  text-align: left;\n}\n.io3d-overlay .centered-content .button {\n  margin-right: 4px;\n  margin-top: 1.5em;\n}\n.io3d-overlay .bottom-content {\n  display: inline-block;\n  position: absolute;\n  bottom: 1em;\n  color: rgba(255, 255, 255, 0.35);\n  transform: translateX(-100%);\n  text-align: left;\n}\n.io3d-overlay .bottom-content .clickable {\n  cursor: pointer;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-content .clickable:hover {\n  color: white;\n}\n@keyframes content-slide-in {\n  0% {\n    transform: translateY(-33%);\n  }\n  100% {\n    transform: translateY(-50%);\n  }\n}\n@keyframes content-slide-out {\n  0% {\n    transform: translateY(-50%);\n  }\n  100% {\n    transform: translateY(-33%);\n  }\n}\n.io3d-overlay h1 {\n  margin: 0 0 0.5em 0;\n  font-size: 42px;\n  font-weight: 200;\n  color: white;\n}\n.io3d-overlay p {\n  margin: 1em 0 0 0;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint {\n  position: relative;\n  margin: 1em 0 0 0;\n  color: rgba(255, 255, 255, 0.35);\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .button {\n  cursor: pointer;\n  display: inline-block;\n  color: rgba(255, 255, 255, 0.35);\n  width: 40px;\n  height: 40px;\n  line-height: 32px;\n  border: 2px solid rgba(255, 255, 255, 0.35);\n  border-radius: 50%;\n  text-align: center;\n  font-size: 18px;\n  font-weight: 200;\n  transition: opacity 300ms, color 300ms;\n}\n.io3d-overlay .button:hover {\n  background-color: rgba(255, 255, 255, 0.1);\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .button-highlighted {\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .close-button {\n  display: block;\n  position: absolute;\n  top: 20px;\n  right: 20px;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay input,\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay textarea {\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-size: 24px;\n  font-weight: normal;\n  letter-spacing: 1px;\n  outline: none;\n  margin: 0 0 0 0;\n  color: white;\n}\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay input:not([type='checkbox']):not([type='range']) {\n  padding: 0.2em 0 0.4em 0;\n  width: 100%;\n  line-height: 20px;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  border-radius: 0px;\n  border: 0px;\n  background: transparent;\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n  transition: border-color 1s;\n}\n.io3d-overlay select:focus,\n.io3d-overlay option:focus,\n.io3d-overlay input:not([type='checkbox']):not([type='range']):focus {\n  border-color: white;\n}\n.io3d-overlay textarea {\n  min-height: 60px;\n}\n.io3d-overlay input[type='checkbox'] {\n  position: relative;\n  height: 20px;\n  vertical-align: bottom;\n  margin: 0;\n}\n.io3d-overlay .reveal-api-key-button {\n  cursor: pointer;\n  position: absolute;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 2px;\n  top: 30px;\n  padding: 0.1em 0.2em 0.2em 0.2em;\n  line-height: 20px;\n  transition: color 600ms;\n}\n.io3d-overlay .reveal-api-key-button:hover {\n  color: white;\n}\n";
 
-	var el = {};
+	// basic element utils for convenience inspired by jquery API
 
-	el.add = function addElement (type, attrs) {
+	var elementStringRegex = /^<(\S+)>$/i;
+
+	// main
+
+	var el = function (x, attributes) {
 	  runtime.assertBrowser();
 
+	  if (x) {
+	    if (typeof x === 'string') {
+	      // create element
+	      var tagSearch = elementStringRegex.exec(x);
+	      var tag = tagSearch ? tagSearch[1] : null;
+	      if (tag) {
+	        return addElement(tag, attributes)
+	      } else {
+	        throw 'Only basic tags like "<div>" without attributes are currently supported. (No queries and no HTML strings)'
+	      }
+	    } else if (isElement(x)) {
+	      // only add convenience methods
+	      extendWithConvenienceMethods(x);
+	    } else {
+	      throw 'Please provide html element string (i.e. "<div>") or element object as first argument.'
+	    }
+	  }
+	};
+
+	// helpers
+
+	function addElement (type, attrs) {
+	  runtime.assertBrowser();
+
+	  // create element
 	  var el = document.createElement(type);
 
+	  // add attributes
 	  if (attrs) Object.keys(attrs).forEach(function (key) {
 	    if (key === 'text') {
 	      // text
@@ -17354,6 +17388,12 @@
 	    }
 	  });
 
+	  extendWithConvenienceMethods(el);
+
+	  return el
+	}
+
+	function extendWithConvenienceMethods (el) {
 	  el.remove = function removeElement (child) {
 	    child ? el.removeChild(child) : el.parentNode.removeChild(el);
 	    return el
@@ -17387,14 +17427,21 @@
 	    el.style.display = el.___originalStyleDisplay && el.___originalStyleDisplay !== '' ? el.___originalStyleDisplay : 'block';
 	    return el
 	  };
+	}
 
-	  return el
-	};
+	// Returns true if it is a DOM element
+	// https://stackoverflow.com/a/384380/2835973
+	function isElement(o){
+	  return (
+	    typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
+	      o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
+	  );
+	}
 
 	// container DOM element
 	var mainEl;
 	if (runtime.isBrowser) runtime.domReady(function(){
-	  mainEl = el.add('div',{ class: 'io3d-message-list' }).appendTo('body');
+	  mainEl = el('<div>',{ class: 'io3d-message-list' }).appendTo('body');
 	});
 
 	// main
@@ -17412,10 +17459,10 @@
 	  var isClosed = false;
 
 	  // create html elements
-	  var messageEl = el.add('div',{
+	  var messageEl = el('<div>',{
 	    class: 'message'
 	  }).prependTo(mainEl).hide();
-	  el.add('div',{
+	  el('<div>',{
 	    html: message,
 	    class: 'text '+type
 	  }).appendTo(messageEl);
@@ -17724,9 +17771,9 @@
 	  runtime.assertBrowser();
 
 	  // DOM
-	  var mainEl = el.add('div', { class: 'io3d-overlay' }).appendTo(document.body);
-	  var centerEl = el.add('div', { class: 'centered-content' }).appendTo(mainEl);
-	  var bottomEl = el.add('div', { class: 'bottom-content' }).appendTo(mainEl);
+	  var mainEl = el('<div>', { class: 'io3d-overlay' }).appendTo(document.body);
+	  var centerEl = el('<div>', { class: 'centered-content' }).appendTo(mainEl);
+	  var bottomEl = el('<div>', { class: 'bottom-content' }).appendTo(mainEl);
 
 	  // overlay object
 	  var result = {
@@ -17806,7 +17853,7 @@
 
 	    // DOM
 
-	    el.add('div',{
+	    el('<div>',{
 	      text: 'x',
 	      class: 'button close-button',
 	      click: function onCancel () {
@@ -17818,16 +17865,16 @@
 
 	    // centered content
 
-	    var centerEl = el.add('div', { style: 'width:300px;' }).appendTo(overlay.centerEl);
+	    var centerEl = el('<div>', { style: 'width:300px;' }).appendTo(overlay.centerEl);
 
 	    // tab with email input
 
-	    var emailTabEl = el.add('div').appendTo(centerEl);
+	    var emailTabEl = el('<div>').appendTo(centerEl);
 
-	    el.add('h1',{ text: 'Reset Password' }).appendTo(emailTabEl);
+	    el('<h1>',{ text: 'Reset Password' }).appendTo(emailTabEl);
 
-	    el.add('p', { text:'email:', class:'hint' }).appendTo(emailTabEl);
-	    var emailEl = el.add('input',{ type: 'text' }).appendTo(emailTabEl);
+	    el('<p>', { text:'email:', class:'hint' }).appendTo(emailTabEl);
+	    var emailEl = el('<input>',{ type: 'text' }).appendTo(emailTabEl);
 	    if (email) emailEl.val(email);
 	    emailEl.focus();
 	    function onEmailElKeyup (e) {
@@ -17836,7 +17883,7 @@
 	    emailEl.addEventListener('keyup', onEmailElKeyup);
 	    emailEl.addEventListener('input', updateGoButton);
 
-	    var goButtonEl = el.add('div',{
+	    var goButtonEl = el('<div>',{
 	      text: 'go',
 	      class: 'button',
 	      click: onConfirm
@@ -17844,19 +17891,19 @@
 
 	    // tab with loading screen
 
-	    var loadingTabEl = el.add('div', {
+	    var loadingTabEl = el('<div>', {
 	      text: '...'
 	    }).appendTo(centerEl).hide();
 
 	    // tab with action message
 
-	    var requestSentTabEl = el.add('div').hide().appendTo(centerEl);
+	    var requestSentTabEl = el('<div>').hide().appendTo(centerEl);
 
-	    el.add('p',{
+	    el('<p>',{
 	      html: 'Check your email for<br>support@archilogic.com<br>and follow instructions.'
 	    }).appendTo(requestSentTabEl);
 
-	    var goButton2El = el.add('div',{
+	    var goButton2El = el('<div>',{
 	      text: 'ok',
 	      class: 'button',
 	      click: function(){
@@ -17868,7 +17915,7 @@
 
 	    // stuff at the bottom
 
-	    var bottomEl = el.add('div',{
+	    var bottomEl = el('<div>',{
 	      text: 'Resend activation email.',
 	      style: 'width:300px;',
 	      class: 'clickable',
@@ -17882,7 +17929,7 @@
 	      }
 	    }).appendTo(overlay.bottomEl);
 
-	    var bottomEl = el.add('div',{
+	    var bottomEl = el('<div>',{
 	      text: 'Already have an account? Log in.',
 	      style: 'width:300px;',
 	      class: 'clickable',
@@ -17896,6 +17943,7 @@
 	    // register ESC key
 
 	    function onKeyUp(e) {
+	      // ESC
 	      if (e.keyCode === 27) {
 	        destroy(function(){
 	          reject('User canceled action.');
@@ -17956,7 +18004,7 @@
 	    var overlay = createOverlay().show();
 
 	    // close button
-	    el.add('div', {
+	    el('<div>', {
 	      text: 'x',
 	      class: 'button close-button',
 	      click: function cancel () {
@@ -17968,7 +18016,7 @@
 
 	    // stuff at the bottom
 
-	    el.add('div', {
+	    el('<div>', {
 	      text: 'New? Sign up now.',
 	      style: 'width:300px;',
 	      class: 'clickable',
@@ -17979,7 +18027,7 @@
 	      }
 	    }).appendTo(overlay.bottomEl);
 
-	    el.add('div', {
+	    el('<div>', {
 	      text: 'Lost Password? Get a new one.',
 	      style: 'width:300px;',
 	      class: 'clickable',
@@ -17992,16 +18040,16 @@
 
 	    // centered content
 
-	    var centerEl = el.add('div', {style: 'width:300px;'}).appendTo(overlay.centerEl);
+	    var centerEl = el('<div>', {style: 'width:300px;'}).appendTo(overlay.centerEl);
 
-	    el.add('h1', {
+	    el('<h1>', {
 	      text: 'Log In'
 	    }).appendTo(centerEl);
 
 	    // email field
 
-	    el.add('p', {text: 'email:', class: 'hint'}).appendTo(centerEl);
-	    var emailEl = el.add('input', {type: 'text'}).appendTo(centerEl);
+	    el('<p>', {text: 'email:', class: 'hint'}).appendTo(centerEl);
+	    var emailEl = el('<input>', {type: 'text'}).appendTo(centerEl);
 	    if (credentials.email) emailEl.val(credentials.email);
 	    function onEmailElKeyup (e) {
 	      if (e.which === 13) passwordEl.focus();
@@ -18011,8 +18059,8 @@
 
 	    // password field
 
-	    el.add('p', {text: 'password:', class: 'hint'}).appendTo(centerEl);
-	    var passwordEl = el.add('input', {type: 'password'}).appendTo(centerEl);
+	    el('<p>', {text: 'password:', class: 'hint'}).appendTo(centerEl);
+	    var passwordEl = el('<input>', {type: 'password'}).appendTo(centerEl);
 	    if (credentials.password) passwordEl.val(credentials.password);
 	    function onPasswordElKeyup (e) {
 	      if (e.which === 13) confirm();
@@ -18028,7 +18076,7 @@
 	      passwordEl.focus();
 	    }
 
-	    var goButtonEl = el.add('div', {
+	    var goButtonEl = el('<div>', {
 	      text: 'go',
 	      class: 'button',
 	      click: confirm
@@ -18037,6 +18085,7 @@
 	    // register ESC key
 
 	    function onKeyUp (e) {
+	      // ESC
 	      if (e.keyCode === 27) {
 	        destroy(function () {
 	          reject('User canceled action.');
@@ -18151,7 +18200,7 @@
 
 	    var overlay = createOverlay().show();
 
-	    el.add('div',{
+	    el('<div>',{
 	      text: 'x',
 	      class: 'button close-button',
 	      click: function onCancel () {
@@ -18163,7 +18212,7 @@
 
 	    // stuff at the bottom
 
-	    var bottomEl = el.add('div',{
+	    var bottomEl = el('<div>',{
 	      text: 'Already have an account? Log in.',
 	      style: 'width:300px;',
 	      class: 'clickable',
@@ -18174,7 +18223,7 @@
 	      }
 	    }).appendTo(overlay.bottomEl);
 
-	    var bottomEl = el.add('div',{
+	    var bottomEl = el('<div>',{
 	      text: 'Lost Password? Get a new one.',
 	      style: 'width:300px;',
 	      class: 'clickable',
@@ -18187,18 +18236,18 @@
 
 	    // centered content
 
-	    var centerEl = el.add('div', { style: 'width:300px;' }).appendTo(overlay.centerEl);
+	    var centerEl = el('<div>', { style: 'width:300px;' }).appendTo(overlay.centerEl);
 
 	    // tab with email input
 
-	    var emailTabEl = el.add('div').appendTo(centerEl);
+	    var emailTabEl = el('<div>').appendTo(centerEl);
 
-	    el.add('h1',{
+	    el('<h1>',{
 	      text: resendActivation ? 'Resend Activation Email' : 'Sign Up'
 	    }).appendTo(emailTabEl);
 
-	    el.add('p', { text:'email:', class:'hint' }).appendTo(emailTabEl);
-	    var emailEl = el.add('input',{ type: 'text' }).appendTo(emailTabEl);
+	    el('<p>', { text:'email:', class:'hint' }).appendTo(emailTabEl);
+	    var emailEl = el('<input>',{ type: 'text' }).appendTo(emailTabEl);
 	    if (email) emailEl.val(email);
 	    emailEl.focus();
 	    function onEmailElKeyup (e) {
@@ -18207,7 +18256,7 @@
 	    emailEl.addEventListener('keyup', onEmailElKeyup);
 	    emailEl.addEventListener('input', updateGoButton);
 
-	    var goButtonEl = el.add('div',{
+	    var goButtonEl = el('<div>',{
 	      text: 'go',
 	      class: 'button',
 	      click: onConfirm
@@ -18216,6 +18265,7 @@
 	    // register ESC key
 
 	    function onKeyUp (e) {
+	      // ESC
 	      if (e.keyCode === 27) {
 	        destroy(function () {
 	          reject('User canceled action.');
@@ -18226,13 +18276,13 @@
 
 	    // tab with loading screen
 
-	    var loadingTabEl = el.add('div', { text: '...' }).appendTo(centerEl).hide();
+	    var loadingTabEl = el('<div>', { text: '...' }).appendTo(centerEl).hide();
 
 	    // tab with activation message
 
-	    var activationTabEl = el.add('div').hide().appendTo(centerEl);
+	    var activationTabEl = el('<div>').hide().appendTo(centerEl);
 
-	    el.add('p',{
+	    el('<p>',{
 	      html: 'Check your email for<br>support@archilogic.com<br>and set your password.<br><br>Then simply return here ;)'
 	    }).appendTo(activationTabEl);
 
@@ -18345,7 +18395,7 @@
 	      var overlay = createOverlay().show();
 
 	      // close button
-	      el.add('div', {
+	      el('<div>', {
 	        text: 'x',
 	        class: 'button close-button',
 	        click: function () {
@@ -18357,13 +18407,13 @@
 
 	      // centered
 
-	      var centerEl = el.add('div', {style: 'width:450px;'}).appendTo(overlay.centerEl);
+	      var centerEl = el('<div>', {style: 'width:450px;'}).appendTo(overlay.centerEl);
 
-	      el.add('h1', {text: 'Dev Dashboard'}).appendTo(centerEl);
+	      el('<h1>', {text: 'Dev Dashboard'}).appendTo(centerEl);
 
 	      // stuff at the bottom
 
-	      var bottomEl = el.add('div', {
+	      var bottomEl = el('<div>', {
 	        text: 'Don\'t like your password? Get a new one.',
 	        style: 'width:450px;',
 	        class: 'clickable',
@@ -18376,15 +18426,15 @@
 
 	      // main tab
 
-	      var mainTabEl = el.add('div').appendTo(centerEl);
+	      var mainTabEl = el('<div>').appendTo(centerEl);
 
-	      el.add('p', {text: 'Email:', class: 'hint'}).appendTo(mainTabEl);
-	      var emailEl = el.add('input', {type: 'text'}).appendTo(mainTabEl);
+	      el('<p>', {text: 'Email:', class: 'hint'}).appendTo(mainTabEl);
+	      var emailEl = el('<input>', {type: 'text'}).appendTo(mainTabEl);
 	      emailEl.val(session.user.email);
 
-	      var privateApiKeyElTitle = el.add('p', {text: 'Private API key:', class: 'hint'}).appendTo(mainTabEl);
-	      var privateApiKeyEl = el.add('input', {type: 'text'}).appendTo(mainTabEl);
-	      var revealButtonEl = el.add('div', {
+	      var privateApiKeyElTitle = el('<p>', {text: 'Private API key:', class: 'hint'}).appendTo(mainTabEl);
+	      var privateApiKeyEl = el('<input>', {type: 'text'}).appendTo(mainTabEl);
+	      var revealButtonEl = el('<div>', {
 	        text: 'reveal',
 	        class: 'reveal-api-key-button',
 	        click: function () {
@@ -18398,6 +18448,7 @@
 	      // register ESC key
 
 	      function onKeyUp (e) {
+	        // ESC
 	        if (e.keyCode === 27) destroy(resolve);
 	      }
 	      document.body.addEventListener('key', onKeyUp);
@@ -18430,7 +18481,9 @@
 	  fileDrop: createFileDropUi,
 	  // authentication
 	  signUp: createSignUpUi,
+	  signup: createSignUpUi, // alias
 	  logIn: createLogInUi,
+	  login: createLogInUi, // alias
 	  requestPasswordReset: createResetPasswordUi,
 	  devDashboard: createDevDashboardUi,
 	  // messages
