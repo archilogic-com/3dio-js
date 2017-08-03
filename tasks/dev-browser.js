@@ -2,6 +2,7 @@ const gulp = require('gulp')
 const build = require('./build')
 const chalk = require('chalk')
 const spawn = require('child_process').spawn
+const watch = require('gulp-watch')
 
 // tasks
 
@@ -10,7 +11,9 @@ const runBrowserDevEnvironment = gulp.series(
   gulp.parallel(
     // watch source folder -> rebuild
     function watchSource () {
-      gulp.watch('src/**/*.js', build)
+      watch('src/**/*.js', build).on('error', function(e){
+        console.error('ERROR: ',e)
+      })
     },
     // watch build folder -> update browser
     runLiteServer
