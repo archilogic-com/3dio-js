@@ -16,8 +16,11 @@ var auth = {
   getSession: getSession,
   session$: session$,
   signUp: signUp,
+  signup: signUp, // alias
   logIn: logIn,
+  login: logIn, // alias
   logOut: logOut,
+  logout: logOut, // alias
   setPassword: setPassword,
   requestPasswordReset: requestPasswordReset,
   resendActivationEmail: resendActivationEmail,

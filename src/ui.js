@@ -22,7 +22,9 @@ var ui = {
   fileDrop: createFileDropUi,
   // authentication
   signUp: createSignUpUi,
+  signup: createSignUpUi, // alias
   logIn: createLogInUi,
+  login: createLogInUi, // alias
   requestPasswordReset: requestPasswordResetUi,
   devDashboard: createDevDashboardUi,
   // messages
