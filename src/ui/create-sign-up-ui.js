@@ -27,7 +27,7 @@ export default function createSignUpUi (credentials, options) {
 
     var overlay = createOverlay().show()
 
-    el.add('div',{
+    el('<div>',{
       text: 'x',
       class: 'button close-button',
       click: function onCancel () {
@@ -39,7 +39,7 @@ export default function createSignUpUi (credentials, options) {
 
     // stuff at the bottom
 
-    var bottomEl = el.add('div',{
+    var bottomEl = el('<div>',{
       text: 'Already have an account? Log in.',
       style: 'width:300px;',
       class: 'clickable',
@@ -50,7 +50,7 @@ export default function createSignUpUi (credentials, options) {
       }
     }).appendTo(overlay.bottomEl)
 
-    var bottomEl = el.add('div',{
+    var bottomEl = el('<div>',{
       text: 'Lost Password? Get a new one.',
       style: 'width:300px;',
       class: 'clickable',
@@ -63,18 +63,18 @@ export default function createSignUpUi (credentials, options) {
 
     // centered content
 
-    var centerEl = el.add('div', { style: 'width:300px;' }).appendTo(overlay.centerEl)
+    var centerEl = el('<div>', { style: 'width:300px;' }).appendTo(overlay.centerEl)
 
     // tab with email input
 
-    var emailTabEl = el.add('div').appendTo(centerEl)
+    var emailTabEl = el('<div>').appendTo(centerEl)
 
-    el.add('h1',{
+    el('<h1>',{
       text: resendActivation ? 'Resend Activation Email' : 'Sign Up'
     }).appendTo(emailTabEl)
 
-    el.add('p', { text:'email:', class:'hint' }).appendTo(emailTabEl)
-    var emailEl = el.add('input',{ type: 'text' }).appendTo(emailTabEl)
+    el('<p>', { text:'email:', class:'hint' }).appendTo(emailTabEl)
+    var emailEl = el('<input>',{ type: 'text' }).appendTo(emailTabEl)
     if (email) emailEl.val(email)
     emailEl.focus()
     function onEmailElKeyup (e) {
@@ -83,7 +83,7 @@ export default function createSignUpUi (credentials, options) {
     emailEl.addEventListener('keyup', onEmailElKeyup)
     emailEl.addEventListener('input', updateGoButton)
 
-    var goButtonEl = el.add('div',{
+    var goButtonEl = el('<div>',{
       text: 'go',
       class: 'button',
       click: onConfirm
@@ -92,6 +92,7 @@ export default function createSignUpUi (credentials, options) {
     // register ESC key
 
     function onKeyUp (e) {
+      // ESC
       if (e.keyCode === 27) {
         destroy(function () {
           reject('User canceled action.')
@@ -102,13 +103,13 @@ export default function createSignUpUi (credentials, options) {
 
     // tab with loading screen
 
-    var loadingTabEl = el.add('div', { text: '...' }).appendTo(centerEl).hide()
+    var loadingTabEl = el('<div>', { text: '...' }).appendTo(centerEl).hide()
 
     // tab with activation message
 
-    var activationTabEl = el.add('div').hide().appendTo(centerEl)
+    var activationTabEl = el('<div>').hide().appendTo(centerEl)
 
-    el.add('p',{
+    el('<p>',{
       html: 'Check your email for<br>support@archilogic.com<br>and set your password.<br><br>Then simply return here ;)'
     }).appendTo(activationTabEl)
 

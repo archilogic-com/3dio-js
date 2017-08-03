@@ -5,7 +5,7 @@ import Promise from 'bluebird'
 // container DOM element
 var mainEl
 if (runtime.isBrowser) runtime.domReady(function(){
-  mainEl = el.add('div',{ class: 'io3d-message-list' }).appendTo('body')
+  mainEl = el('<div>',{ class: 'io3d-message-list' }).appendTo('body')
 })
 
 // main
@@ -23,10 +23,10 @@ function message (message, expire, type) {
   var isClosed = false
 
   // create html elements
-  var messageEl = el.add('div',{
+  var messageEl = el('<div>',{
     class: 'message'
   }).prependTo(mainEl).hide()
-  el.add('div',{
+  el('<div>',{
     html: message,
     class: 'text '+type
   }).appendTo(messageEl)

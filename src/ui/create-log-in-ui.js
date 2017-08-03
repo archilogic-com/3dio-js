@@ -26,7 +26,7 @@ export default function createLogInUi (args) {
     var overlay = createOverlay().show()
 
     // close button
-    el.add('div', {
+    el('<div>', {
       text: 'x',
       class: 'button close-button',
       click: function cancel () {
@@ -38,7 +38,7 @@ export default function createLogInUi (args) {
 
     // stuff at the bottom
 
-    el.add('div', {
+    el('<div>', {
       text: 'New? Sign up now.',
       style: 'width:300px;',
       class: 'clickable',
@@ -49,7 +49,7 @@ export default function createLogInUi (args) {
       }
     }).appendTo(overlay.bottomEl)
 
-    el.add('div', {
+    el('<div>', {
       text: 'Lost Password? Get a new one.',
       style: 'width:300px;',
       class: 'clickable',
@@ -62,16 +62,16 @@ export default function createLogInUi (args) {
 
     // centered content
 
-    var centerEl = el.add('div', {style: 'width:300px;'}).appendTo(overlay.centerEl)
+    var centerEl = el('<div>', {style: 'width:300px;'}).appendTo(overlay.centerEl)
 
-    el.add('h1', {
+    el('<h1>', {
       text: 'Log In'
     }).appendTo(centerEl)
 
     // email field
 
-    el.add('p', {text: 'email:', class: 'hint'}).appendTo(centerEl)
-    var emailEl = el.add('input', {type: 'text'}).appendTo(centerEl)
+    el('<p>', {text: 'email:', class: 'hint'}).appendTo(centerEl)
+    var emailEl = el('<input>', {type: 'text'}).appendTo(centerEl)
     if (credentials.email) emailEl.val(credentials.email)
     function onEmailElKeyup (e) {
       if (e.which === 13) passwordEl.focus()
@@ -81,8 +81,8 @@ export default function createLogInUi (args) {
 
     // password field
 
-    el.add('p', {text: 'password:', class: 'hint'}).appendTo(centerEl)
-    var passwordEl = el.add('input', {type: 'password'}).appendTo(centerEl)
+    el('<p>', {text: 'password:', class: 'hint'}).appendTo(centerEl)
+    var passwordEl = el('<input>', {type: 'password'}).appendTo(centerEl)
     if (credentials.password) passwordEl.val(credentials.password)
     function onPasswordElKeyup (e) {
       if (e.which === 13) confirm()
@@ -98,7 +98,7 @@ export default function createLogInUi (args) {
       passwordEl.focus()
     }
 
-    var goButtonEl = el.add('div', {
+    var goButtonEl = el('<div>', {
       text: 'go',
       class: 'button',
       click: confirm
@@ -107,6 +107,7 @@ export default function createLogInUi (args) {
     // register ESC key
 
     function onKeyUp (e) {
+      // ESC
       if (e.keyCode === 27) {
         destroy(function () {
           reject('User canceled action.')

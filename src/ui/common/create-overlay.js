@@ -7,9 +7,9 @@ export default function createOverlay () {
   runtime.assertBrowser()
 
   // DOM
-  var mainEl = el.add('div', { class: 'io3d-overlay' }).appendTo(document.body)
-  var centerEl = el.add('div', { class: 'centered-content' }).appendTo(mainEl)
-  var bottomEl = el.add('div', { class: 'bottom-content' }).appendTo(mainEl)
+  var mainEl = el('<div>', { class: 'io3d-overlay' }).appendTo(document.body)
+  var centerEl = el('<div>', { class: 'centered-content' }).appendTo(mainEl)
+  var bottomEl = el('<div>', { class: 'bottom-content' }).appendTo(mainEl)
 
   // overlay object
   var result = {

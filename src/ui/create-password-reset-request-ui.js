@@ -20,7 +20,7 @@ export default function createResetPasswordUi (credentials, options) {
 
     // DOM
 
-    el.add('div',{
+    el('<div>',{
       text: 'x',
       class: 'button close-button',
       click: function onCancel () {
@@ -32,16 +32,16 @@ export default function createResetPasswordUi (credentials, options) {
 
     // centered content
 
-    var centerEl = el.add('div', { style: 'width:300px;' }).appendTo(overlay.centerEl)
+    var centerEl = el('<div>', { style: 'width:300px;' }).appendTo(overlay.centerEl)
 
     // tab with email input
 
-    var emailTabEl = el.add('div').appendTo(centerEl)
+    var emailTabEl = el('<div>').appendTo(centerEl)
 
-    el.add('h1',{ text: 'Reset Password' }).appendTo(emailTabEl)
+    el('<h1>',{ text: 'Reset Password' }).appendTo(emailTabEl)
 
-    el.add('p', { text:'email:', class:'hint' }).appendTo(emailTabEl)
-    var emailEl = el.add('input',{ type: 'text' }).appendTo(emailTabEl)
+    el('<p>', { text:'email:', class:'hint' }).appendTo(emailTabEl)
+    var emailEl = el('<input>',{ type: 'text' }).appendTo(emailTabEl)
     if (email) emailEl.val(email)
     emailEl.focus()
     function onEmailElKeyup (e) {
@@ -50,7 +50,7 @@ export default function createResetPasswordUi (credentials, options) {
     emailEl.addEventListener('keyup', onEmailElKeyup)
     emailEl.addEventListener('input', updateGoButton)
 
-    var goButtonEl = el.add('div',{
+    var goButtonEl = el('<div>',{
       text: 'go',
       class: 'button',
       click: onConfirm
@@ -58,19 +58,19 @@ export default function createResetPasswordUi (credentials, options) {
 
     // tab with loading screen
 
-    var loadingTabEl = el.add('div', {
+    var loadingTabEl = el('<div>', {
       text: '...'
     }).appendTo(centerEl).hide()
 
     // tab with action message
 
-    var requestSentTabEl = el.add('div').hide().appendTo(centerEl)
+    var requestSentTabEl = el('<div>').hide().appendTo(centerEl)
 
-    el.add('p',{
+    el('<p>',{
       html: 'Check your email for<br>support@archilogic.com<br>and follow instructions.'
     }).appendTo(requestSentTabEl)
 
-    var goButton2El = el.add('div',{
+    var goButton2El = el('<div>',{
       text: 'ok',
       class: 'button',
       click: function(){
@@ -82,7 +82,7 @@ export default function createResetPasswordUi (credentials, options) {
 
     // stuff at the bottom
 
-    var bottomEl = el.add('div',{
+    var bottomEl = el('<div>',{
       text: 'Resend activation email.',
       style: 'width:300px;',
       class: 'clickable',
@@ -96,7 +96,7 @@ export default function createResetPasswordUi (credentials, options) {
       }
     }).appendTo(overlay.bottomEl)
 
-    var bottomEl = el.add('div',{
+    var bottomEl = el('<div>',{
       text: 'Already have an account? Log in.',
       style: 'width:300px;',
       class: 'clickable',
@@ -110,6 +110,7 @@ export default function createResetPasswordUi (credentials, options) {
     // register ESC key
 
     function onKeyUp(e) {
+      // ESC
       if (e.keyCode === 27) {
         destroy(function(){
           reject('User canceled action.')

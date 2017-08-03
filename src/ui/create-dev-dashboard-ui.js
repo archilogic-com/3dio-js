@@ -31,7 +31,7 @@ export default function createDevDashboardUi () {
       var overlay = createOverlay().show()
 
       // close button
-      el.add('div', {
+      el('<div>', {
         text: 'x',
         class: 'button close-button',
         click: function () {
@@ -43,13 +43,13 @@ export default function createDevDashboardUi () {
 
       // centered
 
-      var centerEl = el.add('div', {style: 'width:450px;'}).appendTo(overlay.centerEl)
+      var centerEl = el('<div>', {style: 'width:450px;'}).appendTo(overlay.centerEl)
 
-      el.add('h1', {text: 'Dev Dashboard'}).appendTo(centerEl)
+      el('<h1>', {text: 'Dev Dashboard'}).appendTo(centerEl)
 
       // stuff at the bottom
 
-      var bottomEl = el.add('div', {
+      var bottomEl = el('<div>', {
         text: 'Don\'t like your password? Get a new one.',
         style: 'width:450px;',
         class: 'clickable',
@@ -62,15 +62,15 @@ export default function createDevDashboardUi () {
 
       // main tab
 
-      var mainTabEl = el.add('div').appendTo(centerEl)
+      var mainTabEl = el('<div>').appendTo(centerEl)
 
-      el.add('p', {text: 'Email:', class: 'hint'}).appendTo(mainTabEl)
-      var emailEl = el.add('input', {type: 'text'}).appendTo(mainTabEl)
+      el('<p>', {text: 'Email:', class: 'hint'}).appendTo(mainTabEl)
+      var emailEl = el('<input>', {type: 'text'}).appendTo(mainTabEl)
       emailEl.val(session.user.email)
 
-      var privateApiKeyElTitle = el.add('p', {text: 'Private API key:', class: 'hint'}).appendTo(mainTabEl)
-      var privateApiKeyEl = el.add('input', {type: 'text'}).appendTo(mainTabEl)
-      var revealButtonEl = el.add('div', {
+      var privateApiKeyElTitle = el('<p>', {text: 'Private API key:', class: 'hint'}).appendTo(mainTabEl)
+      var privateApiKeyEl = el('<input>', {type: 'text'}).appendTo(mainTabEl)
+      var revealButtonEl = el('<div>', {
         text: 'reveal',
         class: 'reveal-api-key-button',
         click: function () {
@@ -84,6 +84,7 @@ export default function createDevDashboardUi () {
       // register ESC key
 
       function onKeyUp (e) {
+        // ESC
         if (e.keyCode === 27) destroy(resolve)
       }
       document.body.addEventListener('key', onKeyUp)
