@@ -46,7 +46,7 @@ function addElement (type, attrs) {
     } else if (key === 'html') {
       // html
       el.innerHTML = attrs.html
-    } else if (key === 'click' || key === 'keyup') {
+    } else if (key === 'click' || key === 'keydown' || key === 'keyup') {
       // events
       el.addEventListener(key, attrs[key])
     } else {

@@ -73,10 +73,10 @@ export default function createLogInUi (args) {
     el('<p>', {text: 'email:', class: 'hint'}).appendTo(centerEl)
     var emailEl = el('<input>', {type: 'text'}).appendTo(centerEl)
     if (credentials.email) emailEl.val(credentials.email)
-    function onEmailElKeyup (e) {
+    function onEmailElKeyDown (e) {
       if (e.which === 13) passwordEl.focus()
     }
-    emailEl.addEventListener('keyup', onEmailElKeyup)
+    emailEl.addEventListener('keydown', onEmailElKeyDown)
     emailEl.addEventListener('input', updateGoButton)
 
     // password field
@@ -84,10 +84,10 @@ export default function createLogInUi (args) {
     el('<p>', {text: 'password:', class: 'hint'}).appendTo(centerEl)
     var passwordEl = el('<input>', {type: 'password'}).appendTo(centerEl)
     if (credentials.password) passwordEl.val(credentials.password)
-    function onPasswordElKeyup (e) {
+    function onPasswordElKeyDown (e) {
       if (e.which === 13) confirm()
     }
-    passwordEl.addEventListener('keyup', onPasswordElKeyup)
+    passwordEl.addEventListener('keydown', onPasswordElKeyDown)
     passwordEl.addEventListener('input', updateGoButton)
 
     // focus input field
@@ -106,7 +106,7 @@ export default function createLogInUi (args) {
 
     // register ESC key
 
-    function onKeyUp (e) {
+    function onKeyDown (e) {
       // ESC
       if (e.keyCode === 27) {
         destroy(function () {
@@ -114,7 +114,7 @@ export default function createLogInUi (args) {
         })
       }
     }
-    document.body.addEventListener('keyup', onKeyUp)
+    document.body.addEventListener('keydown', onKeyDown)
 
     // methods
 
@@ -153,10 +153,10 @@ export default function createLogInUi (args) {
 
     function destroy (callback) {
       // unbind events
-      document.body.removeEventListener('keyup', onKeyUp)
-      emailEl.removeEventListener('keyup', onEmailElKeyup)
+      document.body.removeEventListener('keydown', onKeyDown)
+      emailEl.removeEventListener('keydown', onEmailElKeyDown)
       emailEl.removeEventListener('input', updateGoButton)
-      passwordEl.removeEventListener('keyup', onPasswordElKeyup)
+      passwordEl.removeEventListener('keydown', onPasswordElKeyDown)
       passwordEl.removeEventListener('input', updateGoButton)
       // remove DOM elements
       overlay.destroy(callback)

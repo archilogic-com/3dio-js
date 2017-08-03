@@ -83,17 +83,17 @@ export default function createDevDashboardUi () {
 
       // register ESC key
 
-      function onKeyUp (e) {
+      function onKeyDown (e) {
         // ESC
         if (e.keyCode === 27) destroy(resolve)
       }
-      document.body.addEventListener('key', onKeyUp)
+      document.body.addEventListener('keydown', onKeyDown)
 
       // methods
 
       function destroy (callback) {
         // unbind events
-        document.body.removeEventListener('keyup', onKeyUp)
+        document.body.removeEventListener('keydown', onKeyDown)
         // remove DOM elements
         overlay.destroy(callback)
       }

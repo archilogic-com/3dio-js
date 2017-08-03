@@ -77,10 +77,10 @@ export default function createSignUpUi (credentials, options) {
     var emailEl = el('<input>',{ type: 'text' }).appendTo(emailTabEl)
     if (email) emailEl.val(email)
     emailEl.focus()
-    function onEmailElKeyup (e) {
+    function onEmailElKeyDown (e) {
       if (e.which === 13) onConfirm()
     }
-    emailEl.addEventListener('keyup', onEmailElKeyup)
+    emailEl.addEventListener('keydown', onEmailElKeyDown)
     emailEl.addEventListener('input', updateGoButton)
 
     var goButtonEl = el('<div>',{
@@ -91,7 +91,7 @@ export default function createSignUpUi (credentials, options) {
 
     // register ESC key
 
-    function onKeyUp (e) {
+    function onKeyDown (e) {
       // ESC
       if (e.keyCode === 27) {
         destroy(function () {
@@ -99,7 +99,7 @@ export default function createSignUpUi (credentials, options) {
         })
       }
     }
-    document.body.addEventListener('keyup', onKeyUp)
+    document.body.addEventListener('keydown', onKeyDown)
 
     // tab with loading screen
 
@@ -182,8 +182,8 @@ export default function createSignUpUi (credentials, options) {
 
     function destroy (callback) {
       // unbind events
-      document.body.removeEventListener('keyup', onKeyUp)
-      emailEl.removeEventListener('keyup', onEmailElKeyup)
+      document.body.removeEventListener('keydown', onKeyDown)
+      emailEl.removeEventListener('keydown', onEmailElKeyDown)
       emailEl.removeEventListener('input', updateGoButton)
       // remove DOM elements
       overlay.destroy(callback)
