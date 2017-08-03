@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.29
- * @date 2017/08/03 15:12
+ * @version 1.0.0-beta.30
+ * @date 2017/08/03 15:22
  * @branch master
- * @commit 9e12e808197c3c07326d2b4204d7c99c36a1376e
+ * @commit f176172478cbd2c835acbb71ca50c78ad7e2fb33
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/03 15:12', GIT_BRANCH = 'master', GIT_COMMIT = '9e12e808197c3c07326d2b4204d7c99c36a1376e'
+	var BUILD_DATE='2017/08/03 15:22', GIT_BRANCH = 'master', GIT_COMMIT = 'f176172478cbd2c835acbb71ca50c78ad7e2fb33'
 
 	/**
 	 * @license RequireJS domReady 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
@@ -7318,7 +7318,7 @@
 	  })();
 	}
 
-	var version = "1.0.0-beta.29";
+	var version = "1.0.0-beta.30";
 
 
 	var homepage = "https://3d.io";
