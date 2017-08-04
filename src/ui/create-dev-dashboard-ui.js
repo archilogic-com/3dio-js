@@ -41,12 +41,6 @@ export default function createDevDashboardUi () {
         }
       }).appendTo(overlay.mainEl)
 
-      // centered
-
-      var centerEl = el('<div>', {style: 'width:450px;'}).appendTo(overlay.centerEl)
-
-      el('<h1>', {text: 'Dev Dashboard'}).appendTo(centerEl)
-
       // stuff at the bottom
 
       var bottomEl = el('<div>', {
@@ -59,6 +53,12 @@ export default function createDevDashboardUi () {
           })
         }
       }).appendTo(overlay.bottomEl)
+
+      // centered
+
+      var centerEl = el('<div>', {style: 'width:460px;'}).appendTo(overlay.centerEl)
+
+      el('<h1>', {text: 'Dev Dashboard'}).appendTo(centerEl)
 
       // main tab
 
@@ -80,6 +80,12 @@ export default function createDevDashboardUi () {
           })
         }
       }).appendTo(privateApiKeyElTitle)
+
+      el('<p>', {
+        class: 'hint',
+        style: 'margin-top: 1.7em;',
+        html: 'Get started with a <a target="_blank" href="https://3dio-aframe.glitch.me/">basic example</a> or dive right into <a target="_blank" href="https://3d.io/docs/api/1/">documentation</a>.'
+      }).appendTo(mainTabEl)
 
       // register ESC key
 

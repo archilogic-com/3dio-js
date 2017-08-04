@@ -2,6 +2,7 @@
 
     @text-color: white;
     @text-color-gray: rgba(255,255,255,0.35);
+    @text-color-gray-link: rgba(255,255,255,0.35);
     @font-size-text: 18px;
 
     &-message-list {
@@ -134,6 +135,14 @@
             color: @text-color-gray;
             font-size: @font-size-text;
             font-weight: 200;
+            a {
+                color: @text-color-gray-link;
+                text-decoration: none;
+                &:hover {
+                    color: @text-color;
+                }
+                transition: color 600ms;
+            }
         }
 
         .button {
