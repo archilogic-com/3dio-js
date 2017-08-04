@@ -28,6 +28,9 @@ var el = function (x, attributes) {
   }
 }
 
+// utils
+el.isElement = isElement
+
 export default el
 
 // helpers

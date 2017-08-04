@@ -22,15 +22,17 @@ function message (message, expire, type) {
   // internals
   var isClosed = false
 
-  // create html elements
+  // create main html element
   var messageEl = el('<div>',{
     class: 'message'
   }).prependTo(mainEl).hide()
   el('<div>',{ class: 'spacer' }).appendTo(messageEl)
-  el('<div>',{
-    html: message,
+
+  // insert content
+  var contentEl = el('<div>',{
     class: 'text '+type
   }).appendTo(messageEl)
+  el.isElement(message) ? contentEl.append(message) : contentEl.innerHTML = message
 
   // create message object
   var resolve
