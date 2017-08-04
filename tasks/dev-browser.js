@@ -11,7 +11,7 @@ const runBrowserDevEnvironment = gulp.series(
   gulp.parallel(
     // watch source folder -> rebuild
     function watchSource () {
-      watch('src/**/*.js', build).on('error', function(e){
+      watch('src/**/*', build).on('error', function(e){
         console.error('ERROR: ',e)
       })
     },
