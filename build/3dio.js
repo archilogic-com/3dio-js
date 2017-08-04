@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.30
- * @date 2017/08/03 15:22
+ * @version 1.0.0-beta.31
+ * @date 2017/08/04 19:56
  * @branch master
- * @commit f176172478cbd2c835acbb71ca50c78ad7e2fb33
+ * @commit bcb51250274087b5a6b5b5665b93ff53a0bca927
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/03 15:22', GIT_BRANCH = 'master', GIT_COMMIT = 'f176172478cbd2c835acbb71ca50c78ad7e2fb33'
+	var BUILD_DATE='2017/08/04 19:56', GIT_BRANCH = 'master', GIT_COMMIT = 'bcb51250274087b5a6b5b5665b93ff53a0bca927'
 
 	/**
 	 * @license RequireJS domReady 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
@@ -7318,7 +7318,7 @@
 	  })();
 	}
 
-	var version = "1.0.0-beta.30";
+	var version = "1.0.0-beta.31";
 
 
 	var homepage = "https://3d.io";
@@ -17333,7 +17333,7 @@
 	  put: putToStore
 	};
 
-	var css = ".io3d-message-list {\n  z-index: 100001;\n  position: fixed;\n  top: 0;\n  left: 50%;\n  margin-left: -200px;\n  width: 400px;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: normal;\n  letter-spacing: 1px;\n  line-height: 1.3;\n  text-align: center;\n}\n.io3d-message-list .message {\n  display: block;\n  margin-top: 10px;\n}\n.io3d-message-list .message .text {\n  display: inline-block;\n  padding: 10px 12px 10px 12px;\n  border-radius: 3px;\n  color: white;\n  font-size: 18px;\n}\n.io3d-message-list .message .neutral {\n  background: rgba(0, 0, 0, 0.9);\n}\n.io3d-message-list .message .success {\n  background: linear-gradient(50deg, rgba(35, 165, 9, 0.93), rgba(102, 194, 10, 0.93));\n}\n.io3d-message-list .message .warning {\n  background: linear-gradient(50deg, rgba(165, 113, 9, 0.93), rgba(194, 169, 10, 0.93));\n}\n.io3d-message-list .message .error {\n  background: linear-gradient(50deg, rgba(165, 9, 22, 0.93), rgba(194, 56, 10, 0.93));\n}\n.io3d-overlay {\n  -webkit-box-sizing: border-box;\n  /* Safari/Chrome, other WebKit */\n  -moz-box-sizing: border-box;\n  /* Firefox, other Gecko */\n  box-sizing: border-box;\n  /* Opera/IE 8+ */\n  z-index: 100000;\n  position: fixed;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: 200;\n  font-size: 18px;\n  letter-spacing: 1px;\n  color: white;\n  text-align: center;\n  line-height: 1.3;\n  background: linear-gradient(70deg, rgba(20, 17, 34, 0.93), rgba(51, 68, 77, 0.93));\n}\n@keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n.io3d-overlay .centered-content {\n  display: inline-block;\n  position: relative;\n  top: 50%;\n  text-align: left;\n}\n.io3d-overlay .centered-content .button {\n  margin-right: 4px;\n  margin-top: 1.5em;\n}\n.io3d-overlay .bottom-content {\n  display: inline-block;\n  position: absolute;\n  bottom: 1em;\n  color: rgba(255, 255, 255, 0.35);\n  transform: translateX(-100%);\n  text-align: left;\n}\n.io3d-overlay .bottom-content .clickable {\n  cursor: pointer;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-content .clickable:hover {\n  color: white;\n}\n@keyframes content-slide-in {\n  0% {\n    transform: translateY(-33%);\n  }\n  100% {\n    transform: translateY(-50%);\n  }\n}\n@keyframes content-slide-out {\n  0% {\n    transform: translateY(-50%);\n  }\n  100% {\n    transform: translateY(-33%);\n  }\n}\n.io3d-overlay h1 {\n  margin: 0 0 0.5em 0;\n  font-size: 42px;\n  font-weight: 200;\n  color: white;\n}\n.io3d-overlay p {\n  margin: 1em 0 0 0;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint {\n  position: relative;\n  margin: 1em 0 0 0;\n  color: rgba(255, 255, 255, 0.35);\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .button {\n  cursor: pointer;\n  display: inline-block;\n  color: rgba(255, 255, 255, 0.35);\n  width: 40px;\n  height: 40px;\n  line-height: 32px;\n  border: 2px solid rgba(255, 255, 255, 0.35);\n  border-radius: 50%;\n  text-align: center;\n  font-size: 18px;\n  font-weight: 200;\n  transition: opacity 300ms, color 300ms;\n}\n.io3d-overlay .button:hover {\n  background-color: rgba(255, 255, 255, 0.1);\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .button-highlighted {\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .close-button {\n  display: block;\n  position: absolute;\n  top: 20px;\n  right: 20px;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay input,\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay textarea {\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-size: 24px;\n  font-weight: normal;\n  letter-spacing: 1px;\n  outline: none;\n  margin: 0 0 0 0;\n  color: white;\n}\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay input:not([type='checkbox']):not([type='range']) {\n  padding: 0.2em 0 0.4em 0;\n  width: 100%;\n  line-height: 20px;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  border-radius: 0px;\n  border: 0px;\n  background: transparent;\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n  transition: border-color 1s;\n}\n.io3d-overlay select:focus,\n.io3d-overlay option:focus,\n.io3d-overlay input:not([type='checkbox']):not([type='range']):focus {\n  border-color: white;\n}\n.io3d-overlay textarea {\n  min-height: 60px;\n}\n.io3d-overlay input[type='checkbox'] {\n  position: relative;\n  height: 20px;\n  vertical-align: bottom;\n  margin: 0;\n}\n.io3d-overlay .reveal-api-key-button {\n  cursor: pointer;\n  position: absolute;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 2px;\n  top: 30px;\n  padding: 0.1em 0.2em 0.2em 0.2em;\n  line-height: 20px;\n  transition: color 600ms;\n}\n.io3d-overlay .reveal-api-key-button:hover {\n  color: white;\n}\n";
+	var css = ".io3d-message-list {\n  z-index: 100001;\n  position: fixed;\n  top: 0;\n  left: 50%;\n  margin-left: -200px;\n  width: 400px;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: normal;\n  letter-spacing: 1px;\n  line-height: 1.3;\n  text-align: center;\n}\n.io3d-message-list .message {\n  display: block;\n  margin-top: 10px;\n}\n.io3d-message-list .message .text {\n  display: inline-block;\n  padding: 10px 12px 10px 12px;\n  border-radius: 3px;\n  color: white;\n  font-size: 18px;\n}\n.io3d-message-list .message .neutral {\n  background: rgba(0, 0, 0, 0.9);\n}\n.io3d-message-list .message .success {\n  background: linear-gradient(50deg, rgba(35, 165, 9, 0.93), rgba(102, 194, 10, 0.93));\n}\n.io3d-message-list .message .warning {\n  background: linear-gradient(50deg, rgba(165, 113, 9, 0.93), rgba(194, 169, 10, 0.93));\n}\n.io3d-message-list .message .error {\n  background: linear-gradient(50deg, rgba(165, 9, 22, 0.93), rgba(194, 56, 10, 0.93));\n}\n.io3d-overlay {\n  -webkit-box-sizing: border-box;\n  /* Safari/Chrome, other WebKit */\n  -moz-box-sizing: border-box;\n  /* Firefox, other Gecko */\n  box-sizing: border-box;\n  /* Opera/IE 8+ */\n  z-index: 100000;\n  position: fixed;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: 200;\n  font-size: 18px;\n  letter-spacing: 1px;\n  color: white;\n  text-align: center;\n  line-height: 1.3;\n  background: linear-gradient(70deg, rgba(20, 17, 34, 0.93), rgba(51, 68, 77, 0.93));\n}\n@keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n.io3d-overlay .centered-content {\n  display: inline-block;\n  position: relative;\n  top: 50%;\n  text-align: left;\n}\n.io3d-overlay .centered-content .button {\n  margin-right: 4px;\n  margin-top: 1.5em;\n}\n.io3d-overlay .bottom-content {\n  display: inline-block;\n  position: absolute;\n  bottom: 1em;\n  color: rgba(255, 255, 255, 0.35);\n  transform: translateX(-100%);\n  text-align: left;\n}\n.io3d-overlay .bottom-content .clickable {\n  cursor: pointer;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-content .clickable:hover {\n  color: white;\n}\n@keyframes content-slide-in {\n  0% {\n    transform: translateY(-33%);\n  }\n  100% {\n    transform: translateY(-50%);\n  }\n}\n@keyframes content-slide-out {\n  0% {\n    transform: translateY(-50%);\n  }\n  100% {\n    transform: translateY(-33%);\n  }\n}\n.io3d-overlay h1 {\n  margin: 0 0 0.5em 0;\n  font-size: 42px;\n  font-weight: 200;\n  color: white;\n}\n.io3d-overlay p {\n  margin: 1em 0 0 0;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint {\n  position: relative;\n  margin: 1em 0 0 0;\n  color: rgba(255, 255, 255, 0.35);\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  transition: color 600ms;\n}\n.io3d-overlay .hint a:hover {\n  color: white;\n}\n.io3d-overlay .button {\n  cursor: pointer;\n  display: inline-block;\n  color: rgba(255, 255, 255, 0.35);\n  width: 40px;\n  height: 40px;\n  line-height: 32px;\n  border: 2px solid rgba(255, 255, 255, 0.35);\n  border-radius: 50%;\n  text-align: center;\n  font-size: 18px;\n  font-weight: 200;\n  transition: opacity 300ms, color 300ms;\n}\n.io3d-overlay .button:hover {\n  background-color: rgba(255, 255, 255, 0.1);\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .button-highlighted {\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .close-button {\n  display: block;\n  position: absolute;\n  top: 20px;\n  right: 20px;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay input,\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay textarea {\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-size: 24px;\n  font-weight: normal;\n  letter-spacing: 1px;\n  outline: none;\n  margin: 0 0 0 0;\n  color: white;\n}\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay input:not([type='checkbox']):not([type='range']) {\n  padding: 0.2em 0 0.4em 0;\n  width: 100%;\n  line-height: 20px;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  border-radius: 0px;\n  border: 0px;\n  background: transparent;\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n  transition: border-color 1s;\n}\n.io3d-overlay select:focus,\n.io3d-overlay option:focus,\n.io3d-overlay input:not([type='checkbox']):not([type='range']):focus {\n  border-color: white;\n}\n.io3d-overlay textarea {\n  min-height: 60px;\n}\n.io3d-overlay input[type='checkbox'] {\n  position: relative;\n  height: 20px;\n  vertical-align: bottom;\n  margin: 0;\n}\n.io3d-overlay .reveal-api-key-button {\n  cursor: pointer;\n  position: absolute;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 2px;\n  top: 30px;\n  padding: 0.1em 0.2em 0.2em 0.2em;\n  line-height: 20px;\n  transition: color 600ms;\n}\n.io3d-overlay .reveal-api-key-button:hover {\n  color: white;\n}\n";
 
 	// basic element utils for convenience inspired by jquery API
 
@@ -17379,7 +17379,7 @@
 	    } else if (key === 'html') {
 	      // html
 	      el.innerHTML = attrs.html;
-	    } else if (key === 'click' || key === 'keyup') {
+	    } else if (key === 'click' || key === 'keydown' || key === 'keyup') {
 	      // events
 	      el.addEventListener(key, attrs[key]);
 	    } else {
@@ -17877,10 +17877,10 @@
 	    var emailEl = el('<input>',{ type: 'text' }).appendTo(emailTabEl);
 	    if (email) emailEl.val(email);
 	    emailEl.focus();
-	    function onEmailElKeyup (e) {
+	    function onEmailElKeyDown (e) {
 	      if (e.which === 13) passwordEl.focus();
 	    }
-	    emailEl.addEventListener('keyup', onEmailElKeyup);
+	    emailEl.addEventListener('keydown', onEmailElKeyDown);
 	    emailEl.addEventListener('input', updateGoButton);
 
 	    var goButtonEl = el('<div>',{
@@ -17942,7 +17942,7 @@
 
 	    // register ESC key
 
-	    function onKeyUp(e) {
+	    function onKeyDown(e) {
 	      // ESC
 	      if (e.keyCode === 27) {
 	        destroy(function(){
@@ -17950,7 +17950,7 @@
 	        });
 	      }
 	    }
-	    document.body.addEventListener('keyup', onKeyUp);
+	    document.body.addEventListener('keydown', onKeyDown);
 
 	    // methods
 
@@ -17975,8 +17975,8 @@
 
 	    function destroy (callback) {
 	      // unbind events
-	      document.body.removeEventListener('keyup', onKeyUp);
-	      emailEl.removeEventListener('keyup', onEmailElKeyup);
+	      document.body.removeEventListener('keydown', onKeyDown);
+	      emailEl.removeEventListener('keydown', onEmailElKeyDown);
 	      emailEl.removeEventListener('input', updateGoButton);
 	      // remove DOM elements
 	      overlay.destroy(callback);
@@ -18051,10 +18051,10 @@
 	    el('<p>', {text: 'email:', class: 'hint'}).appendTo(centerEl);
 	    var emailEl = el('<input>', {type: 'text'}).appendTo(centerEl);
 	    if (credentials.email) emailEl.val(credentials.email);
-	    function onEmailElKeyup (e) {
+	    function onEmailElKeyDown (e) {
 	      if (e.which === 13) passwordEl.focus();
 	    }
-	    emailEl.addEventListener('keyup', onEmailElKeyup);
+	    emailEl.addEventListener('keydown', onEmailElKeyDown);
 	    emailEl.addEventListener('input', updateGoButton);
 
 	    // password field
@@ -18062,10 +18062,10 @@
 	    el('<p>', {text: 'password:', class: 'hint'}).appendTo(centerEl);
 	    var passwordEl = el('<input>', {type: 'password'}).appendTo(centerEl);
 	    if (credentials.password) passwordEl.val(credentials.password);
-	    function onPasswordElKeyup (e) {
+	    function onPasswordElKeyDown (e) {
 	      if (e.which === 13) confirm();
 	    }
-	    passwordEl.addEventListener('keyup', onPasswordElKeyup);
+	    passwordEl.addEventListener('keydown', onPasswordElKeyDown);
 	    passwordEl.addEventListener('input', updateGoButton);
 
 	    // focus input field
@@ -18084,7 +18084,7 @@
 
 	    // register ESC key
 
-	    function onKeyUp (e) {
+	    function onKeyDown (e) {
 	      // ESC
 	      if (e.keyCode === 27) {
 	        destroy(function () {
@@ -18092,7 +18092,7 @@
 	        });
 	      }
 	    }
-	    document.body.addEventListener('keyup', onKeyUp);
+	    document.body.addEventListener('keydown', onKeyDown);
 
 	    // methods
 
@@ -18131,10 +18131,10 @@
 
 	    function destroy (callback) {
 	      // unbind events
-	      document.body.removeEventListener('keyup', onKeyUp);
-	      emailEl.removeEventListener('keyup', onEmailElKeyup);
+	      document.body.removeEventListener('keydown', onKeyDown);
+	      emailEl.removeEventListener('keydown', onEmailElKeyDown);
 	      emailEl.removeEventListener('input', updateGoButton);
-	      passwordEl.removeEventListener('keyup', onPasswordElKeyup);
+	      passwordEl.removeEventListener('keydown', onPasswordElKeyDown);
 	      passwordEl.removeEventListener('input', updateGoButton);
 	      // remove DOM elements
 	      overlay.destroy(callback);
@@ -18250,10 +18250,10 @@
 	    var emailEl = el('<input>',{ type: 'text' }).appendTo(emailTabEl);
 	    if (email) emailEl.val(email);
 	    emailEl.focus();
-	    function onEmailElKeyup (e) {
+	    function onEmailElKeyDown (e) {
 	      if (e.which === 13) onConfirm();
 	    }
-	    emailEl.addEventListener('keyup', onEmailElKeyup);
+	    emailEl.addEventListener('keydown', onEmailElKeyDown);
 	    emailEl.addEventListener('input', updateGoButton);
 
 	    var goButtonEl = el('<div>',{
@@ -18264,7 +18264,7 @@
 
 	    // register ESC key
 
-	    function onKeyUp (e) {
+	    function onKeyDown (e) {
 	      // ESC
 	      if (e.keyCode === 27) {
 	        destroy(function () {
@@ -18272,7 +18272,7 @@
 	        });
 	      }
 	    }
-	    document.body.addEventListener('keyup', onKeyUp);
+	    document.body.addEventListener('keydown', onKeyDown);
 
 	    // tab with loading screen
 
@@ -18355,8 +18355,8 @@
 
 	    function destroy (callback) {
 	      // unbind events
-	      document.body.removeEventListener('keyup', onKeyUp);
-	      emailEl.removeEventListener('keyup', onEmailElKeyup);
+	      document.body.removeEventListener('keydown', onKeyDown);
+	      emailEl.removeEventListener('keydown', onEmailElKeyDown);
 	      emailEl.removeEventListener('input', updateGoButton);
 	      // remove DOM elements
 	      overlay.destroy(callback);
@@ -18405,12 +18405,6 @@
 	        }
 	      }).appendTo(overlay.mainEl);
 
-	      // centered
-
-	      var centerEl = el('<div>', {style: 'width:450px;'}).appendTo(overlay.centerEl);
-
-	      el('<h1>', {text: 'Dev Dashboard'}).appendTo(centerEl);
-
 	      // stuff at the bottom
 
 	      var bottomEl = el('<div>', {
@@ -18423,6 +18417,12 @@
 	          });
 	        }
 	      }).appendTo(overlay.bottomEl);
+
+	      // centered
+
+	      var centerEl = el('<div>', {style: 'width:460px;'}).appendTo(overlay.centerEl);
+
+	      el('<h1>', {text: 'Dev Dashboard'}).appendTo(centerEl);
 
 	      // main tab
 
@@ -18445,19 +18445,25 @@
 	        }
 	      }).appendTo(privateApiKeyElTitle);
 
+	      el('<p>', {
+	        class: 'hint',
+	        style: 'margin-top: 1.7em;',
+	        html: 'Get started with a <a target="_blank" href="https://3dio-aframe.glitch.me/">basic example</a> or dive right into <a target="_blank" href="https://3d.io/docs/api/1/">documentation</a>.'
+	      }).appendTo(mainTabEl);
+
 	      // register ESC key
 
-	      function onKeyUp (e) {
+	      function onKeyDown (e) {
 	        // ESC
 	        if (e.keyCode === 27) destroy(resolve);
 	      }
-	      document.body.addEventListener('key', onKeyUp);
+	      document.body.addEventListener('keydown', onKeyDown);
 
 	      // methods
 
 	      function destroy (callback) {
 	        // unbind events
-	        document.body.removeEventListener('keyup', onKeyUp);
+	        document.body.removeEventListener('keydown', onKeyDown);
 	        // remove DOM elements
 	        overlay.destroy(callback);
 	      }
