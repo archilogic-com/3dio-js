@@ -1,6 +1,6 @@
 {
   "name": "3dio",
-  "version": "1.0.0-beta.30",
+  "version": "1.0.0-beta.31",
   "description": "toolkit for interior apps",
   "keywords": ["3d", "aframe", "cardboard", "components", "oculus", "vive", "rift", "vr", "WebVR", "WegGL", "three", "three.js", "3D model", "api", "visualization", "furniture", "real estate", "interior", "building", "architecture", "3d.io"],
   "homepage": "https://3d.io",
