@@ -26,6 +26,7 @@ function message (message, expire, type) {
   var messageEl = el('<div>',{
     class: 'message'
   }).prependTo(mainEl).hide()
+  el('<div>',{ class: 'spacer' }).appendTo(messageEl)
   el('<div>',{
     html: message,
     class: 'text '+type
@@ -41,14 +42,15 @@ function message (message, expire, type) {
   result.close = function close () {
     if (isClosed) return
     isClosed = true
-    //messageEl.slideUp()
-    messageEl.hide()
+    messageEl.toggleSlide()
+    setTimeout(function(){
+      messageEl.remove()
+    }, 500)
     resolve()
   }
 
   // init
-  //messageEl.slideDown()
-  messageEl.show()
+  messageEl.toggleSlide()
 
   // close message on expire
   if (expire) setTimeout(result.close, expire)
