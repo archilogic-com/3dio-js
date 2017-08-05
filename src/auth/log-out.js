@@ -13,7 +13,7 @@ export default function logOut () {
     log.debug('API: Log out successful.')
     return getSession()
   }, function onError (error) {
-    log.debug('Log out error.', error)
-    return Promise.reject(error.message)
+    log.error('Log out error.', error)
+    return Promise.reject(error.message ? error.message : error)
   })
 }
