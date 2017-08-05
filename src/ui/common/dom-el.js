@@ -68,6 +68,11 @@ function extendWithConvenienceMethods (el) {
     child ? el.removeChild(child) : el.parentNode.removeChild(el)
     return el
   }
+  el.___originalAppend = el.append
+  el.append = function append (o) {
+    if (o) isElement(o) ? el.___originalAppend : el.innerHTML = o
+    return el
+  }
   el.appendTo = function appendToElement (parentEl) {
     parentEl === 'body' ? document.body.appendChild(el) : parentEl.appendChild(el)
     return el
