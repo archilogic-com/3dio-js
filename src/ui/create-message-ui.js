@@ -13,7 +13,7 @@ function message (message, expire, type) {
   runtime.assertBrowser()
 
   // do nothing if there is no message
-  if (!message || message === '') return
+  if (!message || message === '') return Promise.resolve()
   // default expire value is 4 secs
   var expire = expire !== undefined ? expire : 4000 // ms
   // default message type
