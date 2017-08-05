@@ -1,13 +1,6 @@
-// const Promise = require('bluebird')
-// const path = require('path')
 const spawn = require('child_process').spawn
 const gulp = require('gulp')
 const del = require('del')
-const rollup = require('gulp-better-rollup')
-const sourcemaps = require('gulp-sourcemaps')
-const json = require('rollup-plugin-json')
-const commonjs = require('rollup-plugin-commonjs')
-const resolve = require('rollup-plugin-node-resolve')
 const chalk = require('chalk')
 
 // configs
