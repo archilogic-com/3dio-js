@@ -158,8 +158,8 @@ function toggleSlideEl (el) {
   } else {
     el_max_height = getHiddenElementHeight(el) + 'px';
     //el.style['-webkit-transition'] = 'background 0.5a linear, max-height 0.5s ease-in-out';
-    el.style['transition'] = 'opacity 0.5s linear, max-height 0.5s ease-in-out';
-    el.style.transition = 'opacity 0.5s linear, max-height 0.5s ease-in-out';
+    el.style['-webkit-transition'] = 'opacity 0.5s ease-out, max-height 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)';
+    el.style.transition = 'opacity 0.5s ease-out, max-height 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)';
     el.style.overflowY = 'hidden';
     el.style.maxHeight = '0';
     el.setAttribute('data-max-height', el_max_height);
