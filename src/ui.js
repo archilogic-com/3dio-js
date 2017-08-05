@@ -4,6 +4,7 @@ import createMessageUi from './ui/create-message-ui.js'
 import createFileDropUi from './ui/create-file-drop-ui.js'
 import createSignUpUi from './ui/create-sign-up-ui.js'
 import createLogInUi from './ui/create-log-in-ui.js'
+import createLogOutUi from './ui/create-log-out-ui.js'
 import requestPasswordResetUi from './ui/create-password-reset-request-ui.js'
 import createDevDashboardUi from './ui/create-dev-dashboard-ui.js'
 import createConfirmUi from './ui/create-confirm-ui.js'
@@ -27,6 +28,8 @@ var ui = {
   signup: createSignUpUi, // alias
   logIn: createLogInUi,
   login: createLogInUi, // alias
+  logOut: createLogOutUi,
+  logout: createLogOutUi, // alias
   requestPasswordReset: requestPasswordResetUi,
   devDashboard: createDevDashboardUi,
   // messages
