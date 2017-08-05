@@ -1,14 +1,10 @@
 import el from './common/dom-el.js'
 import createOverlay from './common/create-overlay.js'
-import createSignUpUi from './create-sign-up-ui.js'
-import createLogInUi from './create-log-in-ui.js'
-import requestPasswordReset from '../auth/request-password-reset.js'
 import runtime from '../core/runtime.js'
-import Promise from 'bluebird'
 
 // main
 
-export default function createAlertUi (a, b) {
+export default function createConfirmUi (a, b) {
   runtime.assertBrowser()
   return new Promise(function (resolve, reject){
 
@@ -19,7 +15,7 @@ export default function createAlertUi (a, b) {
     } else if (typeof a === 'object') {
       options = a
     } else {
-      throw 'Argument mismatch'
+      throw 'Argument mismatch https://3d.io/docs/api/1/ui.html'
     }
 
     var title = options.title
