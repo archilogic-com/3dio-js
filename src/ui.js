@@ -7,6 +7,7 @@ import createLogInUi from './ui/create-log-in-ui.js'
 import requestPasswordResetUi from './ui/create-password-reset-request-ui.js'
 import createDevDashboardUi from './ui/create-dev-dashboard-ui.js'
 import createConfirmUi from './ui/create-confirm-ui.js'
+import createAlertUi from './ui/create-alert-ui.js'
 
 // add css to page
 if (runtime.isBrowser) {
@@ -30,6 +31,7 @@ var ui = {
   devDashboard: createDevDashboardUi,
   // messages
   message: createMessageUi,
+  alert: createAlertUi,
   confirm: createConfirmUi
 }
 
