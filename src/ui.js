@@ -6,6 +6,7 @@ import createSignUpUi from './ui/create-sign-up-ui.js'
 import createLogInUi from './ui/create-log-in-ui.js'
 import requestPasswordResetUi from './ui/create-password-reset-request-ui.js'
 import createDevDashboardUi from './ui/create-dev-dashboard-ui.js'
+import createConfirmUi from './ui/create-confirm-ui.js'
 
 // add css to page
 if (runtime.isBrowser) {
@@ -28,7 +29,8 @@ var ui = {
   requestPasswordReset: requestPasswordResetUi,
   devDashboard: createDevDashboardUi,
   // messages
-  message: createMessageUi
+  message: createMessageUi,
+  confirm: createConfirmUi
 }
 
 export default ui
