@@ -6,6 +6,7 @@ export default function searchFurniture (query, options) {
   // API
   options = options || {}
   var limit = options.limit || 50
+  // TODO: add this param once #251 https://github.com/archilogic-com/services/issues/251 is resolved
   //var offset = options.offset || 0
 
   // internals
@@ -15,6 +16,7 @@ export default function searchFurniture (query, options) {
     return io3d.utils.services.call('Product.search', {
       searchQuery: {query: 'isPublished:true ' + query},
       limit: limit
+      // TODO: add this param once #251 https://github.com/archilogic-com/services/issues/251 is resolved
       //offset: offset
     }).then(function onSuccess (rawResults) {
       apiErrorCount = 0
