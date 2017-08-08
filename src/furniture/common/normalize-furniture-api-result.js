@@ -16,7 +16,7 @@ export default function normalizeFurnitureResult (rawItem) {
     tags: cleanUpArrays(rawItem.tags),
     styles: cleanUpArrays(rawItem.styles),
     categories: cleanUpArrays(rawItem.categories),
-    colours: cleanUpArrays(rawItem.colours),
+    colors: cleanUpArrays(rawItem.colours),
     // geometry
     boundingBox: rawItem.boundingBox,
     boundingPoints: rawItem.boundingPoints,
