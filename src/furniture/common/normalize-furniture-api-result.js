@@ -35,5 +35,6 @@ function convertKeyToUrl (key) {
 }
 
 function cleanUpArrays (arr) {
+  // TODO: remove this once #252 is resolved https://github.com/archilogic-com/services/issues/252
   return arr[0] === '' ? arr.slice(1) : arr
 }
