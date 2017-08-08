@@ -40,6 +40,7 @@ const awsDir = {
 
 const release = gulp.series(
   checkLocalEnv,
+  checkWorkingDirectoryClean,
   checkBranchName,
   npmCheckVersion,
   build,
@@ -60,6 +61,20 @@ function checkLocalEnv() {
     throw 'ERROR: You need to be logged in with npm to release! Run "npm login" first.'
   }
   return Promise.resolve()
+}
+
+function checkWorkingDirectoryClean() {
+  return new Promise(function (resolve, reject) {
+    git.status({ args: '--porcelain' }, function (err, status) {
+      if (status === '') {
+        resolve()
+      } else {
+        confirm('You have uncommitted changes. Do you want to continue with the relase WITHOUT these changes?', resolve, () => {
+          throw 'Uncommited changes. Aborting release.'
+        })
+      }
+    })
+  })
 }
 
 function checkBranchName () {
