@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.31
- * @date 2017/08/04 19:56
+ * @version 1.0.0-beta.32
+ * @date 2017/08/08 11:49
  * @branch master
- * @commit bcb51250274087b5a6b5b5665b93ff53a0bca927
+ * @commit 578c5468741f6bbd9bac8858bcd3aecc85351cce
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/04 19:56', GIT_BRANCH = 'master', GIT_COMMIT = 'bcb51250274087b5a6b5b5665b93ff53a0bca927'
+	var BUILD_DATE='2017/08/08 11:49', GIT_BRANCH = 'master', GIT_COMMIT = '578c5468741f6bbd9bac8858bcd3aecc85351cce'
 
 	/**
 	 * @license RequireJS domReady 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
@@ -7318,7 +7318,7 @@
 	  })();
 	}
 
-	var version = "1.0.0-beta.31";
+	var version = "1.0.0-beta.32";
 
 
 	var homepage = "https://3d.io";
@@ -8575,9 +8575,9 @@
 	};
 
 	var thenables = function(Promise, INTERNAL) {
-	var util$$2 = util;
-	var errorObj = util$$2.errorObj;
-	var isObject = util$$2.isObject;
+	var util$$1 = util;
+	var errorObj = util$$1.errorObj;
+	var isObject = util$$1.isObject;
 
 	function tryConvertToPromise(obj, context) {
 	    if (isObject(obj)) {
@@ -8635,7 +8635,7 @@
 	    promise._captureStackTrace();
 	    if (context) context._popContext();
 	    var synchronous = true;
-	    var result = util$$2.tryCatch(then).call(x, resolve, reject);
+	    var result = util$$1.tryCatch(then).call(x, resolve, reject);
 	    synchronous = false;
 
 	    if (promise && result === errorObj) {
@@ -8662,8 +8662,8 @@
 
 	var promise_array = function(Promise, INTERNAL, tryConvertToPromise,
 	    apiRejection, Proxyable) {
-	var util$$2 = util;
-	var isArray = util$$2.isArray;
+	var util$$1 = util;
+	var isArray = util$$1.isArray;
 
 	function toResolutionValue(val) {
 	    switch(val) {
@@ -8684,7 +8684,7 @@
 	    this._totalResolved = 0;
 	    this._init(undefined, -2);
 	}
-	util$$2.inherits(PromiseArray, Proxyable);
+	util$$1.inherits(PromiseArray, Proxyable);
 
 	PromiseArray.prototype.length = function () {
 	    return this._length;
@@ -8719,10 +8719,10 @@
 	            return this._cancel();
 	        }
 	    }
-	    values = util$$2.asArray(values);
+	    values = util$$1.asArray(values);
 	    if (values === null) {
 	        var err = apiRejection(
-	            "expecting an array or an iterable object but got " + util$$2.classString(values)).reason();
+	            "expecting an array or an iterable object but got " + util$$1.classString(values)).reason();
 	        this._promise._rejectCallback(err, false);
 	        return;
 	    }
@@ -8918,8 +8918,8 @@
 	var getDomain = Promise._getDomain;
 	var async = Promise._async;
 	var Warning = errors.Warning;
-	var util$$2 = util;
-	var canAttachTrace = util$$2.canAttachTrace;
+	var util$$1 = util;
+	var canAttachTrace = util$$1.canAttachTrace;
 	var unhandledRejectionHandled;
 	var possiblyUnhandledRejection;
 	var bluebirdFramePattern =
@@ -8930,19 +8930,19 @@
 	var formatStack = null;
 	var indentStackFrames = false;
 	var printWarning;
-	var debugging = !!(util$$2.env("BLUEBIRD_DEBUG") != 0 &&
+	var debugging = !!(util$$1.env("BLUEBIRD_DEBUG") != 0 &&
 	                        (false ||
-	                         util$$2.env("BLUEBIRD_DEBUG") ||
-	                         util$$2.env("NODE_ENV") === "development"));
+	                         util$$1.env("BLUEBIRD_DEBUG") ||
+	                         util$$1.env("NODE_ENV") === "development"));
 
-	var warnings = !!(util$$2.env("BLUEBIRD_WARNINGS") != 0 &&
-	    (debugging || util$$2.env("BLUEBIRD_WARNINGS")));
+	var warnings = !!(util$$1.env("BLUEBIRD_WARNINGS") != 0 &&
+	    (debugging || util$$1.env("BLUEBIRD_WARNINGS")));
 
-	var longStackTraces = !!(util$$2.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
-	    (debugging || util$$2.env("BLUEBIRD_LONG_STACK_TRACES")));
+	var longStackTraces = !!(util$$1.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
+	    (debugging || util$$1.env("BLUEBIRD_LONG_STACK_TRACES")));
 
-	var wForgottenReturn = util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
-	    (warnings || !!util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
+	var wForgottenReturn = util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
+	    (warnings || !!util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
 
 	Promise.prototype.suppressUnhandledRejections = function() {
 	    var target = this._target();
@@ -9014,7 +9014,7 @@
 	    var domain = getDomain();
 	    possiblyUnhandledRejection =
 	        typeof fn === "function" ? (domain === null ?
-	                                            fn : util$$2.domainBind(domain, fn))
+	                                            fn : util$$1.domainBind(domain, fn))
 	                                 : undefined;
 	};
 
@@ -9022,7 +9022,7 @@
 	    var domain = getDomain();
 	    unhandledRejectionHandled =
 	        typeof fn === "function" ? (domain === null ?
-	                                            fn : util$$2.domainBind(domain, fn))
+	                                            fn : util$$1.domainBind(domain, fn))
 	                                 : undefined;
 	};
 
@@ -9060,33 +9060,33 @@
 	    try {
 	        if (typeof CustomEvent === "function") {
 	            var event = new CustomEvent("CustomEvent");
-	            util$$2.global.dispatchEvent(event);
+	            util$$1.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = new CustomEvent(name.toLowerCase(), {
 	                    detail: event,
 	                    cancelable: true
 	                });
-	                return !util$$2.global.dispatchEvent(domEvent);
+	                return !util$$1.global.dispatchEvent(domEvent);
 	            };
 	        } else if (typeof Event === "function") {
 	            var event = new Event("CustomEvent");
-	            util$$2.global.dispatchEvent(event);
+	            util$$1.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = new Event(name.toLowerCase(), {
 	                    cancelable: true
 	                });
 	                domEvent.detail = event;
-	                return !util$$2.global.dispatchEvent(domEvent);
+	                return !util$$1.global.dispatchEvent(domEvent);
 	            };
 	        } else {
 	            var event = document.createEvent("CustomEvent");
 	            event.initCustomEvent("testingtheevent", false, true, {});
-	            util$$2.global.dispatchEvent(event);
+	            util$$1.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = document.createEvent("CustomEvent");
 	                domEvent.initCustomEvent(name.toLowerCase(), false, true,
 	                    event);
-	                return !util$$2.global.dispatchEvent(domEvent);
+	                return !util$$1.global.dispatchEvent(domEvent);
 	            };
 	        }
 	    } catch (e) {}
@@ -9096,21 +9096,21 @@
 	})();
 
 	var fireGlobalEvent = (function() {
-	    if (util$$2.isNode) {
+	    if (util$$1.isNode) {
 	        return function() {
 	            return process.emit.apply(process, arguments);
 	        };
 	    } else {
-	        if (!util$$2.global) {
+	        if (!util$$1.global) {
 	            return function() {
 	                return false;
 	            };
 	        }
 	        return function(name) {
 	            var methodName = "on" + name.toLowerCase();
-	            var method = util$$2.global[methodName];
+	            var method = util$$1.global[methodName];
 	            if (!method) return false;
-	            method.apply(util$$2.global, [].slice.call(arguments, 1));
+	            method.apply(util$$1.global, [].slice.call(arguments, 1));
 	            return true;
 	        };
 	    }
@@ -9173,7 +9173,7 @@
 	        config.warnings = !!warningsOption;
 	        wForgottenReturn = config.warnings;
 
-	        if (util$$2.isObject(warningsOption)) {
+	        if (util$$1.isObject(warningsOption)) {
 	            if ("wForgottenReturn" in warningsOption) {
 	                wForgottenReturn = !!warningsOption.wForgottenReturn;
 	            }
@@ -9236,7 +9236,7 @@
 	        executor(resolve, reject, function(onCancel) {
 	            if (typeof onCancel !== "function") {
 	                throw new TypeError("onCancel must be a function, got: " +
-	                                    util$$2.toString(onCancel));
+	                                    util$$1.toString(onCancel));
 	            }
 	            promise._attachCancellationCallback(onCancel);
 	        });
@@ -9250,7 +9250,7 @@
 
 	    var previousOnCancel = this._onCancel();
 	    if (previousOnCancel !== undefined) {
-	        if (util$$2.isArray(previousOnCancel)) {
+	        if (util$$1.isArray(previousOnCancel)) {
 	            previousOnCancel.push(onCancel);
 	        } else {
 	            this._setOnCancel([previousOnCancel, onCancel]);
@@ -9322,9 +9322,9 @@
 	            trace.attachExtraTrace(error);
 	        } else if (!error.__stackCleaned__) {
 	            var parsed = parseStackAndMessage(error);
-	            util$$2.notEnumerableProp(error, "stack",
+	            util$$1.notEnumerableProp(error, "stack",
 	                parsed.message + "\n" + parsed.stack.join("\n"));
-	            util$$2.notEnumerableProp(error, "__stackCleaned__", true);
+	            util$$1.notEnumerableProp(error, "__stackCleaned__", true);
 	        }
 	    }
 	}
@@ -9495,7 +9495,7 @@
 	function formatAndLogError(error, title, isSoft) {
 	    if (typeof console !== "undefined") {
 	        var message;
-	        if (util$$2.isObject(error)) {
+	        if (util$$1.isObject(error)) {
 	            var stack = error.stack;
 	            message = title + formatStack(stack, error);
 	        } else {
@@ -9542,7 +9542,7 @@
 	            "]";
 	    } else {
 	        str = obj && typeof obj.toString === "function"
-	            ? obj.toString() : util$$2.toString(obj);
+	            ? obj.toString() : util$$1.toString(obj);
 	        var ruselessToString = /\[object [a-zA-Z0-9$_]+\]/;
 	        if (ruselessToString.test(str)) {
 	            try {
@@ -9633,7 +9633,7 @@
 	    captureStackTrace(this, CapturedTrace);
 	    if (length > 32) this.uncycle();
 	}
-	util$$2.inherits(CapturedTrace, Error);
+	util$$1.inherits(CapturedTrace, Error);
 	Context.CapturedTrace = CapturedTrace;
 
 	CapturedTrace.prototype.uncycle = function() {
@@ -9698,8 +9698,8 @@
 	    }
 	    removeCommonRoots(stacks);
 	    removeDuplicateOrEmptyJumps(stacks);
-	    util$$2.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
-	    util$$2.notEnumerableProp(error, "__stackCleaned__", true);
+	    util$$1.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
+	    util$$1.notEnumerableProp(error, "__stackCleaned__", true);
 	};
 
 	var captureStackTrace = (function stackDetection() {
@@ -9779,12 +9779,12 @@
 	    printWarning = function (message) {
 	        console.warn(message);
 	    };
-	    if (util$$2.isNode && process.stderr.isTTY) {
+	    if (util$$1.isNode && process.stderr.isTTY) {
 	        printWarning = function(message, isSoft) {
 	            var color = isSoft ? "\u001b[33m" : "\u001b[31m";
 	            console.warn(color + message + "\u001b[0m\n");
 	        };
-	    } else if (!util$$2.isNode && typeof (new Error().stack) === "string") {
+	    } else if (!util$$1.isNode && typeof (new Error().stack) === "string") {
 	        printWarning = function(message, isSoft) {
 	            console.warn("%c" + message,
 	                        isSoft ? "color: darkorange" : "color: red");
@@ -9831,10 +9831,10 @@
 	};
 
 	var catch_filter = function(NEXT_FILTER) {
-	var util$$2 = util;
+	var util$$1 = util;
 	var getKeys = es5.keys;
-	var tryCatch = util$$2.tryCatch;
-	var errorObj = util$$2.errorObj;
+	var tryCatch = util$$1.tryCatch;
+	var errorObj = util$$1.errorObj;
 
 	function catchFilter(instances, cb, promise) {
 	    return function(e) {
@@ -9854,7 +9854,7 @@
 	                } else if (matchesPredicate) {
 	                    return tryCatch(cb).call(boundTo, e);
 	                }
-	            } else if (util$$2.isObject(e)) {
+	            } else if (util$$1.isObject(e)) {
 	                var keys = getKeys(item);
 	                for (var j = 0; j < keys.length; ++j) {
 	                    var key = keys[j];
@@ -9873,9 +9873,9 @@
 	};
 
 	var _finally = function(Promise, tryConvertToPromise, NEXT_FILTER) {
-	var util$$2 = util;
+	var util$$1 = util;
 	var CancellationError = Promise.CancellationError;
-	var errorObj = util$$2.errorObj;
+	var errorObj = util$$1.errorObj;
 	var catchFilter = catch_filter(NEXT_FILTER);
 
 	function PassThroughHandlerContext(promise, type, handler) {
@@ -9996,12 +9996,12 @@
 	            j = 0, i;
 	        for (i = 0; i < len - 1; ++i) {
 	            var item = arguments[i];
-	            if (util$$2.isObject(item)) {
+	            if (util$$1.isObject(item)) {
 	                catchInstances[j++] = item;
 	            } else {
 	                return Promise.reject(new TypeError(
 	                    "tapCatch statement predicate: "
-	                    + "expecting an object but got " + util$$2.classString(item)
+	                    + "expecting an object but got " + util$$1.classString(item)
 	                ));
 	            }
 	        }
@@ -10070,12 +10070,12 @@
 
 	var method =
 	function(Promise, INTERNAL, tryConvertToPromise, apiRejection, debug) {
-	var util$$2 = util;
-	var tryCatch = util$$2.tryCatch;
+	var util$$1 = util;
+	var tryCatch = util$$1.tryCatch;
 
 	Promise.method = function (fn) {
 	    if (typeof fn !== "function") {
-	        throw new Promise.TypeError("expecting a function but got " + util$$2.classString(fn));
+	        throw new Promise.TypeError("expecting a function but got " + util$$1.classString(fn));
 	    }
 	    return function () {
 	        var ret = new Promise(INTERNAL);
@@ -10092,7 +10092,7 @@
 
 	Promise.attempt = Promise["try"] = function (fn) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
 	    }
 	    var ret = new Promise(INTERNAL);
 	    ret._captureStackTrace();
@@ -10102,7 +10102,7 @@
 	        debug.deprecated("calling Promise.try with more than 1 argument");
 	        var arg = arguments[1];
 	        var ctx = arguments[2];
-	        value = util$$2.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
+	        value = util$$1.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
 	                                  : tryCatch(fn).call(ctx, arg);
 	    } else {
 	        value = tryCatch(fn)();
@@ -10115,7 +10115,7 @@
 	};
 
 	Promise.prototype._resolveFromSyncValue = function (value) {
-	    if (value === util$$2.errorObj) {
+	    if (value === util$$1.errorObj) {
 	        this._rejectCallback(value.e, false);
 	    } else {
 	        this._resolveCallback(value, true);
@@ -10191,9 +10191,9 @@
 	};
 
 	var cancel = function(Promise, PromiseArray, apiRejection, debug) {
-	var util$$2 = util;
-	var tryCatch = util$$2.tryCatch;
-	var errorObj = util$$2.errorObj;
+	var util$$1 = util;
+	var tryCatch = util$$1.tryCatch;
+	var errorObj = util$$1.errorObj;
 	var async = Promise._async;
 
 	Promise.prototype["break"] = Promise.prototype.cancel = function() {
@@ -10281,7 +10281,7 @@
 	};
 
 	Promise.prototype._doInvokeOnCancel = function(onCancelCallback, internalOnly) {
-	    if (util$$2.isArray(onCancelCallback)) {
+	    if (util$$1.isArray(onCancelCallback)) {
 	        for (var i = 0; i < onCancelCallback.length; ++i) {
 	            this._doInvokeOnCancel(onCancelCallback[i], internalOnly);
 	        }
@@ -10471,10 +10471,10 @@
 	var join =
 	function(Promise, PromiseArray, tryConvertToPromise, INTERNAL, async,
 	         getDomain) {
-	var util$$2 = util;
-	var canEvaluate = util$$2.canEvaluate;
-	var tryCatch = util$$2.tryCatch;
-	var errorObj = util$$2.errorObj;
+	var util$$1 = util;
+	var canEvaluate = util$$1.canEvaluate;
+	var tryCatch = util$$1.tryCatch;
+	var errorObj = util$$1.errorObj;
 	var reject;
 
 	{
@@ -10618,7 +10618,7 @@
 	                    if (holder.asyncNeeded) {
 	                        var domain = getDomain();
 	                        if (domain !== null) {
-	                            holder.fn = util$$2.domainBind(domain, holder.fn);
+	                            holder.fn = util$$1.domainBind(domain, holder.fn);
 	                        }
 	                    }
 	                    ret._setAsyncGuaranteed();
@@ -10643,16 +10643,16 @@
 	                          INTERNAL,
 	                          debug) {
 	var getDomain = Promise._getDomain;
-	var util$$2 = util;
-	var tryCatch = util$$2.tryCatch;
-	var errorObj = util$$2.errorObj;
+	var util$$1 = util;
+	var tryCatch = util$$1.tryCatch;
+	var errorObj = util$$1.errorObj;
 	var async = Promise._async;
 
 	function MappingPromiseArray(promises, fn, limit, _filter) {
 	    this.constructor$(promises);
 	    this._promise._captureStackTrace();
 	    var domain = getDomain();
-	    this._callback = domain === null ? fn : util$$2.domainBind(domain, fn);
+	    this._callback = domain === null ? fn : util$$1.domainBind(domain, fn);
 	    this._preservedValues = _filter === INTERNAL
 	        ? new Array(this.length())
 	        : null;
@@ -10661,7 +10661,7 @@
 	    this._queue = [];
 	    async.invoke(this._asyncInit, this, undefined);
 	}
-	util$$2.inherits(MappingPromiseArray, PromiseArray);
+	util$$1.inherits(MappingPromiseArray, PromiseArray);
 
 	MappingPromiseArray.prototype._asyncInit = function() {
 	    this._init$(undefined, -2);
@@ -10770,7 +10770,7 @@
 
 	function map(promises, fn, options, _filter) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
 	    }
 
 	    var limit = 0;
@@ -10779,13 +10779,13 @@
 	            if (typeof options.concurrency !== "number") {
 	                return Promise.reject(
 	                    new TypeError("'concurrency' must be a number but it is " +
-	                                    util$$2.classString(options.concurrency)));
+	                                    util$$1.classString(options.concurrency)));
 	            }
 	            limit = options.concurrency;
 	        } else {
 	            return Promise.reject(new TypeError(
 	                            "options argument must be an object but it is " +
-	                             util$$2.classString(options)));
+	                             util$$1.classString(options)));
 	        }
 	    }
 	    limit = typeof limit === "number" &&
@@ -10812,9 +10812,9 @@
 	}
 
 	var call_get = function(Promise) {
-	var util$$2 = util;
-	var canEvaluate = util$$2.canEvaluate;
-	var isIdentifier = util$$2.isIdentifier;
+	var util$$1 = util;
+	var canEvaluate = util$$1.canEvaluate;
+	var isIdentifier = util$$1.isIdentifier;
 
 	var getMethodCaller;
 	var getGetter;
@@ -10875,8 +10875,8 @@
 	    var fn;
 	    if (obj != null) fn = obj[methodName];
 	    if (typeof fn !== "function") {
-	        var message = "Object " + util$$2.classString(obj) + " has no method '" +
-	            util$$2.toString(methodName) + "'";
+	        var message = "Object " + util$$1.classString(obj) + " has no method '" +
+	            util$$1.toString(methodName) + "'";
 	        throw new Promise.TypeError(message);
 	    }
 	    return fn;
@@ -10929,11 +10929,11 @@
 
 	var using = function (Promise, apiRejection, tryConvertToPromise,
 	    createContext, INTERNAL, debug) {
-	    var util$$2 = util;
+	    var util$$1 = util;
 	    var TypeError = errors.TypeError;
 	    var inherits = util.inherits;
-	    var errorObj = util$$2.errorObj;
-	    var tryCatch = util$$2.tryCatch;
+	    var errorObj = util$$1.errorObj;
+	    var tryCatch = util$$1.tryCatch;
 	    var NULL = {};
 
 	    function thrower(e) {
@@ -11056,7 +11056,7 @@
 	                        "you must pass at least 2 arguments to Promise.using");
 	        var fn = arguments[len - 1];
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
 	        }
 	        var input;
 	        var spreadArgs = true;
@@ -11154,7 +11154,7 @@
 	};
 
 	var timers$1 = function(Promise, INTERNAL, debug) {
-	var util$$2 = util;
+	var util$$1 = util;
 	var TimeoutError = Promise.TimeoutError;
 
 	function HandleWrapper(handle)  {
@@ -11202,7 +11202,7 @@
 	    } else {
 	        err = new TimeoutError(message);
 	    }
-	    util$$2.markAsOriginatingFromRejection(err);
+	    util$$1.markAsOriginatingFromRejection(err);
 	    promise._attachExtraTrace(err);
 	    promise._reject(err);
 
@@ -11252,11 +11252,11 @@
 	                          tryConvertToPromise,
 	                          Proxyable,
 	                          debug) {
-	var errors$$2 = errors;
-	var TypeError = errors$$2.TypeError;
-	var util$$2 = util;
-	var errorObj = util$$2.errorObj;
-	var tryCatch = util$$2.tryCatch;
+	var errors$$1 = errors;
+	var TypeError = errors$$1.TypeError;
+	var util$$1 = util;
+	var errorObj = util$$1.errorObj;
+	var tryCatch = util$$1.tryCatch;
 	var yieldHandlers = [];
 
 	function promiseFromYieldHandler(value, yieldHandlers, traceParent) {
@@ -11299,7 +11299,7 @@
 	    this._yieldedPromise = null;
 	    this._cancellationPhase = false;
 	}
-	util$$2.inherits(PromiseSpawn, Proxyable);
+	util$$1.inherits(PromiseSpawn, Proxyable);
 
 	PromiseSpawn.prototype._isResolved = function() {
 	    return this._promise === null;
@@ -11452,7 +11452,7 @@
 
 	Promise.coroutine.addYieldHandler = function(fn) {
 	    if (typeof fn !== "function") {
-	        throw new TypeError("expecting a function but got " + util$$2.classString(fn));
+	        throw new TypeError("expecting a function but got " + util$$1.classString(fn));
 	    }
 	    yieldHandlers.push(fn);
 	};
@@ -11470,14 +11470,14 @@
 	};
 
 	var nodeify = function(Promise) {
-	var util$$2 = util;
+	var util$$1 = util;
 	var async = Promise._async;
-	var tryCatch = util$$2.tryCatch;
-	var errorObj = util$$2.errorObj;
+	var tryCatch = util$$1.tryCatch;
+	var errorObj = util$$1.errorObj;
 
 	function spreadAdapter(val, nodeback) {
 	    var promise = this;
-	    if (!util$$2.isArray(val)) return successAdapter.call(promise, val, nodeback);
+	    if (!util$$1.isArray(val)) return successAdapter.call(promise, val, nodeback);
 	    var ret =
 	        tryCatch(nodeback).apply(promise._boundValue(), [null].concat(val));
 	    if (ret === errorObj) {
@@ -11529,11 +11529,11 @@
 
 	var promisify = function(Promise, INTERNAL) {
 	var THIS = {};
-	var util$$2 = util;
+	var util$$1 = util;
 	var nodebackForPromise = nodeback;
-	var withAppended = util$$2.withAppended;
-	var maybeWrapAsError = util$$2.maybeWrapAsError;
-	var canEvaluate = util$$2.canEvaluate;
+	var withAppended = util$$1.withAppended;
+	var maybeWrapAsError = util$$1.maybeWrapAsError;
+	var canEvaluate = util$$1.canEvaluate;
 	var TypeError = errors.TypeError;
 	var defaultSuffix = "Async";
 	var defaultPromisified = {__isPromisified__: true};
@@ -11549,7 +11549,7 @@
 	var noCopyPropsPattern = new RegExp("^(?:" + noCopyProps.join("|") + ")$");
 
 	var defaultFilter = function(name) {
-	    return util$$2.isIdentifier(name) &&
+	    return util$$1.isIdentifier(name) &&
 	        name.charAt(0) !== "_" &&
 	        name !== "constructor";
 	};
@@ -11568,7 +11568,7 @@
 	}
 
 	function hasPromisified(obj, key, suffix) {
-	    var val = util$$2.getDataPropertyOrDefault(obj, key + suffix,
+	    var val = util$$1.getDataPropertyOrDefault(obj, key + suffix,
 	                                            defaultPromisified);
 	    return val ? isPromisified(val) : false;
 	}
@@ -11588,7 +11588,7 @@
 	}
 
 	function promisifiableMethods(obj, suffix, suffixRegexp, filter) {
-	    var keys = util$$2.inheritedDataKeys(obj);
+	    var keys = util$$1.inheritedDataKeys(obj);
 	    var ret = [];
 	    for (var i = 0; i < keys.length; ++i) {
 	        var key = keys[i];
@@ -11625,11 +11625,11 @@
 	};
 
 	var argumentSequence = function(argumentCount) {
-	    return util$$2.filledRange(argumentCount, "_arg", "");
+	    return util$$1.filledRange(argumentCount, "_arg", "");
 	};
 
 	var parameterDeclaration = function(parameterCount) {
-	    return util$$2.filledRange(
+	    return util$$1.filledRange(
 	        Math.max(parameterCount, 3), "_arg", "");
 	};
 
@@ -11726,9 +11726,9 @@
 	                    withAppended,
 	                    maybeWrapAsError,
 	                    nodebackForPromise,
-	                    util$$2.tryCatch,
-	                    util$$2.errorObj,
-	                    util$$2.notEnumerableProp,
+	                    util$$1.tryCatch,
+	                    util$$1.errorObj,
+	                    util$$1.notEnumerableProp,
 	                    INTERNAL);
 	};
 	}
@@ -11755,7 +11755,7 @@
 	        if (!promise._isFateSealed()) promise._setAsyncGuaranteed();
 	        return promise;
 	    }
-	    util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
+	    util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
 	    return promisified;
 	}
 
@@ -11780,11 +11780,11 @@
 	                return makeNodePromisified(key, THIS, key,
 	                                           fn, suffix, multiArgs);
 	            });
-	            util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
+	            util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
 	            obj[promisifiedKey] = promisified;
 	        }
 	    }
-	    util$$2.toFastProperties(obj);
+	    util$$1.toFastProperties(obj);
 	    return obj;
 	}
 
@@ -11795,7 +11795,7 @@
 
 	Promise.promisify = function (fn, options) {
 	    if (typeof fn !== "function") {
-	        throw new TypeError("expecting a function but got " + util$$2.classString(fn));
+	        throw new TypeError("expecting a function but got " + util$$1.classString(fn));
 	    }
 	    if (isPromisified(fn)) {
 	        return fn;
@@ -11804,7 +11804,7 @@
 	    var receiver = options.context === undefined ? THIS : options.context;
 	    var multiArgs = !!options.multiArgs;
 	    var ret = promisify(fn, receiver, multiArgs);
-	    util$$2.copyDescriptors(fn, ret, propsFilter);
+	    util$$1.copyDescriptors(fn, ret, propsFilter);
 	    return ret;
 	};
 
@@ -11821,15 +11821,15 @@
 	    var promisifier = options.promisifier;
 	    if (typeof promisifier !== "function") promisifier = makeNodePromisified;
 
-	    if (!util$$2.isIdentifier(suffix)) {
+	    if (!util$$1.isIdentifier(suffix)) {
 	        throw new RangeError("suffix must be a valid identifier\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
 	    }
 
-	    var keys = util$$2.inheritedDataKeys(target);
+	    var keys = util$$1.inheritedDataKeys(target);
 	    for (var i = 0; i < keys.length; ++i) {
 	        var value = target[keys[i]];
 	        if (keys[i] !== "constructor" &&
-	            util$$2.isClass(value)) {
+	            util$$1.isClass(value)) {
 	            promisifyAll(value.prototype, suffix, filter, promisifier,
 	                multiArgs);
 	            promisifyAll(value, suffix, filter, promisifier, multiArgs);
@@ -11842,9 +11842,9 @@
 
 	var props = function(
 	    Promise, PromiseArray, tryConvertToPromise, apiRejection) {
-	var util$$2 = util;
-	var isObject = util$$2.isObject;
-	var es5$$2 = es5;
+	var util$$1 = util;
+	var isObject = util$$1.isObject;
+	var es5$$1 = es5;
 	var Es6Map;
 	if (typeof Map === "function") Es6Map = Map;
 
@@ -11885,7 +11885,7 @@
 	        entries = mapToEntries(obj);
 	        isMap = true;
 	    } else {
-	        var keys = es5$$2.keys(obj);
+	        var keys = es5$$1.keys(obj);
 	        var len = keys.length;
 	        entries = new Array(len * 2);
 	        for (var i = 0; i < len; ++i) {
@@ -11898,7 +11898,7 @@
 	    this._isMap = isMap;
 	    this._init$(undefined, isMap ? -6 : -3);
 	}
-	util$$2.inherits(PropertiesPromiseArray, PromiseArray);
+	util$$1.inherits(PropertiesPromiseArray, PromiseArray);
 
 	PropertiesPromiseArray.prototype._init = function () {};
 
@@ -11960,7 +11960,7 @@
 
 	var race = function(
 	    Promise, INTERNAL, tryConvertToPromise, apiRejection) {
-	var util$$2 = util;
+	var util$$1 = util;
 
 	var raceLater = function (promise) {
 	    return promise.then(function(array) {
@@ -11974,9 +11974,9 @@
 	    if (maybePromise instanceof Promise) {
 	        return raceLater(maybePromise);
 	    } else {
-	        promises = util$$2.asArray(promises);
+	        promises = util$$1.asArray(promises);
 	        if (promises === null)
-	            return apiRejection("expecting an array or an iterable object but got " + util$$2.classString(promises));
+	            return apiRejection("expecting an array or an iterable object but got " + util$$1.classString(promises));
 	    }
 
 	    var ret = new Promise(INTERNAL);
@@ -12014,13 +12014,13 @@
 	                          INTERNAL,
 	                          debug) {
 	var getDomain = Promise._getDomain;
-	var util$$2 = util;
-	var tryCatch = util$$2.tryCatch;
+	var util$$1 = util;
+	var tryCatch = util$$1.tryCatch;
 
 	function ReductionPromiseArray(promises, fn, initialValue, _each) {
 	    this.constructor$(promises);
 	    var domain = getDomain();
-	    this._fn = domain === null ? fn : util$$2.domainBind(domain, fn);
+	    this._fn = domain === null ? fn : util$$1.domainBind(domain, fn);
 	    if (initialValue !== undefined) {
 	        initialValue = Promise.resolve(initialValue);
 	        initialValue._attachCancellationCallback(this);
@@ -12037,7 +12037,7 @@
 	    this._promise._captureStackTrace();
 	    this._init$(undefined, -5);
 	}
-	util$$2.inherits(ReductionPromiseArray, PromiseArray);
+	util$$1.inherits(ReductionPromiseArray, PromiseArray);
 
 	ReductionPromiseArray.prototype._gotAccum = function(accum) {
 	    if (this._eachValues !== undefined && 
@@ -12135,7 +12135,7 @@
 
 	function reduce(promises, fn, initialValue, _each) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
 	    }
 	    var array = new ReductionPromiseArray(promises, fn, initialValue, _each);
 	    return array.promise();
@@ -12182,12 +12182,12 @@
 	var settle =
 	    function(Promise, PromiseArray, debug) {
 	var PromiseInspection = Promise.PromiseInspection;
-	var util$$2 = util;
+	var util$$1 = util;
 
 	function SettledPromiseArray(values) {
 	    this.constructor$(values);
 	}
-	util$$2.inherits(SettledPromiseArray, PromiseArray);
+	util$$1.inherits(SettledPromiseArray, PromiseArray);
 
 	SettledPromiseArray.prototype._promiseResolved = function (index, inspection) {
 	    this._values[index] = inspection;
@@ -12224,10 +12224,10 @@
 
 	var some =
 	function(Promise, PromiseArray, apiRejection) {
-	var util$$2 = util;
+	var util$$1 = util;
 	var RangeError = errors.RangeError;
 	var AggregateError = errors.AggregateError;
-	var isArray = util$$2.isArray;
+	var isArray = util$$1.isArray;
 	var CANCELLATION = {};
 
 
@@ -12237,7 +12237,7 @@
 	    this._unwrap = false;
 	    this._initialized = false;
 	}
-	util$$2.inherits(SomePromiseArray, PromiseArray);
+	util$$1.inherits(SomePromiseArray, PromiseArray);
 
 	SomePromiseArray.prototype._init = function () {
 	    if (!this._initialized) {
@@ -16523,9 +16523,9 @@
 
 	  // API
 	  options = options || {};
-	  var url$$1 = options.url;
+	  var url = options.url;
 
-	  var parsedUrl = Url.parse(url$$1);
+	  var parsedUrl = Url.parse(url);
 	  var rootDir = path.parse(parsedUrl.path || '').dir;
 	  var origin = parsedUrl.protocol + '//' + parsedUrl.host;
 
@@ -16579,7 +16579,7 @@
 	  traverseData3d(structure.data3d, function (data3d) {
 
 	    // map typed arrays to payload area in file buffer
-	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url$$1);
+	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url);
 
 	    //  convert relative material keys into absolute once
 	    if (origin && data3d.materials) convertTextureKeys(data3d, origin, rootDir);
@@ -16644,7 +16644,7 @@
 
 	}
 
-	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url$$1) {
+	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url) {
 
 	  var mesh, i, l, meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
 
@@ -16674,7 +16674,7 @@
 	    }
 
 	    // add cache key
-	    if (url$$1) mesh.cacheKey = url$$1 + ':' + meshKeys[i];
+	    if (url) mesh.cacheKey = url + ':' + meshKeys[i];
 
 	  }
 
@@ -17025,8 +17025,8 @@
 	    logger.debug('API: Log out successful.');
 	    return getSession()
 	  }, function onError (error) {
-	    logger.debug('Log out error.', error);
-	    return bluebird_1.reject(error.message)
+	    logger.error('Log out error.', error);
+	    return bluebird_1.reject(error.message ? error.message : error)
 	  })
 	}
 
@@ -17333,7 +17333,7 @@
 	  put: putToStore
 	};
 
-	var css = ".io3d-message-list {\n  z-index: 100001;\n  position: fixed;\n  top: 0;\n  left: 50%;\n  margin-left: -200px;\n  width: 400px;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: normal;\n  letter-spacing: 1px;\n  line-height: 1.3;\n  text-align: center;\n}\n.io3d-message-list .message {\n  display: block;\n  margin-top: 10px;\n}\n.io3d-message-list .message .text {\n  display: inline-block;\n  padding: 10px 12px 10px 12px;\n  border-radius: 3px;\n  color: white;\n  font-size: 18px;\n}\n.io3d-message-list .message .neutral {\n  background: rgba(0, 0, 0, 0.9);\n}\n.io3d-message-list .message .success {\n  background: linear-gradient(50deg, rgba(35, 165, 9, 0.93), rgba(102, 194, 10, 0.93));\n}\n.io3d-message-list .message .warning {\n  background: linear-gradient(50deg, rgba(165, 113, 9, 0.93), rgba(194, 169, 10, 0.93));\n}\n.io3d-message-list .message .error {\n  background: linear-gradient(50deg, rgba(165, 9, 22, 0.93), rgba(194, 56, 10, 0.93));\n}\n.io3d-overlay {\n  -webkit-box-sizing: border-box;\n  /* Safari/Chrome, other WebKit */\n  -moz-box-sizing: border-box;\n  /* Firefox, other Gecko */\n  box-sizing: border-box;\n  /* Opera/IE 8+ */\n  z-index: 100000;\n  position: fixed;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: 200;\n  font-size: 18px;\n  letter-spacing: 1px;\n  color: white;\n  text-align: center;\n  line-height: 1.3;\n  background: linear-gradient(70deg, rgba(20, 17, 34, 0.93), rgba(51, 68, 77, 0.93));\n}\n@keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n.io3d-overlay .centered-content {\n  display: inline-block;\n  position: relative;\n  top: 50%;\n  text-align: left;\n}\n.io3d-overlay .centered-content .button {\n  margin-right: 4px;\n  margin-top: 1.5em;\n}\n.io3d-overlay .bottom-content {\n  display: inline-block;\n  position: absolute;\n  bottom: 1em;\n  color: rgba(255, 255, 255, 0.35);\n  transform: translateX(-100%);\n  text-align: left;\n}\n.io3d-overlay .bottom-content .clickable {\n  cursor: pointer;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-content .clickable:hover {\n  color: white;\n}\n@keyframes content-slide-in {\n  0% {\n    transform: translateY(-33%);\n  }\n  100% {\n    transform: translateY(-50%);\n  }\n}\n@keyframes content-slide-out {\n  0% {\n    transform: translateY(-50%);\n  }\n  100% {\n    transform: translateY(-33%);\n  }\n}\n.io3d-overlay h1 {\n  margin: 0 0 0.5em 0;\n  font-size: 42px;\n  font-weight: 200;\n  color: white;\n}\n.io3d-overlay p {\n  margin: 1em 0 0 0;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint {\n  position: relative;\n  margin: 1em 0 0 0;\n  color: rgba(255, 255, 255, 0.35);\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  transition: color 600ms;\n}\n.io3d-overlay .hint a:hover {\n  color: white;\n}\n.io3d-overlay .button {\n  cursor: pointer;\n  display: inline-block;\n  color: rgba(255, 255, 255, 0.35);\n  width: 40px;\n  height: 40px;\n  line-height: 32px;\n  border: 2px solid rgba(255, 255, 255, 0.35);\n  border-radius: 50%;\n  text-align: center;\n  font-size: 18px;\n  font-weight: 200;\n  transition: opacity 300ms, color 300ms;\n}\n.io3d-overlay .button:hover {\n  background-color: rgba(255, 255, 255, 0.1);\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .button-highlighted {\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .close-button {\n  display: block;\n  position: absolute;\n  top: 20px;\n  right: 20px;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay input,\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay textarea {\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-size: 24px;\n  font-weight: normal;\n  letter-spacing: 1px;\n  outline: none;\n  margin: 0 0 0 0;\n  color: white;\n}\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay input:not([type='checkbox']):not([type='range']) {\n  padding: 0.2em 0 0.4em 0;\n  width: 100%;\n  line-height: 20px;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  border-radius: 0px;\n  border: 0px;\n  background: transparent;\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n  transition: border-color 1s;\n}\n.io3d-overlay select:focus,\n.io3d-overlay option:focus,\n.io3d-overlay input:not([type='checkbox']):not([type='range']):focus {\n  border-color: white;\n}\n.io3d-overlay textarea {\n  min-height: 60px;\n}\n.io3d-overlay input[type='checkbox'] {\n  position: relative;\n  height: 20px;\n  vertical-align: bottom;\n  margin: 0;\n}\n.io3d-overlay .reveal-api-key-button {\n  cursor: pointer;\n  position: absolute;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 2px;\n  top: 30px;\n  padding: 0.1em 0.2em 0.2em 0.2em;\n  line-height: 20px;\n  transition: color 600ms;\n}\n.io3d-overlay .reveal-api-key-button:hover {\n  color: white;\n}\n";
+	var css = ".io3d-message-list {\n  z-index: 100001;\n  position: fixed;\n  top: 0;\n  left: 50%;\n  margin-left: -200px;\n  width: 400px;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: normal;\n  letter-spacing: 1px;\n  line-height: 1.3;\n  text-align: center;\n}\n.io3d-message-list .message {\n  display: block;\n  opacity: 0;\n}\n.io3d-message-list .message .spacer {\n  display: block;\n  height: 10px;\n}\n.io3d-message-list .message .text {\n  display: inline-block;\n  padding: 10px 12px 10px 12px;\n  border-radius: 3px;\n  color: white;\n  font-size: 18px;\n}\n.io3d-message-list .message .text a {\n  color: white;\n  text-decoration: none;\n  padding-bottom: 0px;\n  border-bottom: 2px solid white;\n}\n.io3d-message-list .message .neutral {\n  background: rgba(0, 0, 0, 0.9);\n}\n.io3d-message-list .message .success {\n  background: linear-gradient(50deg, rgba(35, 165, 9, 0.93), rgba(102, 194, 10, 0.93));\n}\n.io3d-message-list .message .warning {\n  background: linear-gradient(50deg, rgba(165, 113, 9, 0.93), rgba(194, 169, 10, 0.93));\n}\n.io3d-message-list .message .error {\n  background: linear-gradient(50deg, rgba(165, 9, 22, 0.93), rgba(194, 56, 10, 0.93));\n}\n.io3d-overlay {\n  -webkit-box-sizing: border-box;\n  /* Safari/Chrome, other WebKit */\n  -moz-box-sizing: border-box;\n  /* Firefox, other Gecko */\n  box-sizing: border-box;\n  /* Opera/IE 8+ */\n  z-index: 100000;\n  position: fixed;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: 200;\n  font-size: 18px;\n  letter-spacing: 1px;\n  color: white;\n  text-align: center;\n  line-height: 1.3;\n  background: linear-gradient(70deg, rgba(20, 17, 34, 0.93), rgba(51, 68, 77, 0.93));\n}\n@keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n.io3d-overlay .centered-content {\n  display: inline-block;\n  position: relative;\n  top: 50%;\n  text-align: left;\n}\n.io3d-overlay .centered-content .button {\n  margin-right: 4px;\n  margin-top: 1.5em;\n}\n.io3d-overlay .bottom-content {\n  display: inline-block;\n  position: absolute;\n  bottom: 1em;\n  color: rgba(255, 255, 255, 0.35);\n  transform: translateX(-100%);\n  text-align: left;\n}\n.io3d-overlay .bottom-content .clickable {\n  cursor: pointer;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-content .clickable:hover {\n  color: white;\n}\n@keyframes content-slide-in {\n  0% {\n    transform: translateY(-33%);\n  }\n  100% {\n    transform: translateY(-50%);\n  }\n}\n@keyframes content-slide-out {\n  0% {\n    transform: translateY(-50%);\n  }\n  100% {\n    transform: translateY(-33%);\n  }\n}\n.io3d-overlay h1 {\n  margin: 0 0 0.5em 0;\n  font-size: 42px;\n  font-weight: 200;\n  color: white;\n}\n.io3d-overlay p {\n  margin: 1em 0 0 0;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint {\n  position: relative;\n  margin: 1em 0 0 0;\n  color: rgba(255, 255, 255, 0.35);\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  transition: color 600ms;\n}\n.io3d-overlay .hint a:hover {\n  color: white;\n}\n.io3d-overlay .button {\n  cursor: pointer;\n  display: inline-block;\n  color: rgba(255, 255, 255, 0.35);\n  width: 40px;\n  height: 40px;\n  line-height: 32px;\n  border: 2px solid rgba(255, 255, 255, 0.35);\n  border-radius: 50%;\n  text-align: center;\n  font-size: 18px;\n  font-weight: 200;\n  transition: opacity 300ms, color 300ms;\n}\n.io3d-overlay .button:hover {\n  background-color: rgba(255, 255, 255, 0.1);\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .button-highlighted {\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .close-button {\n  display: block;\n  position: absolute;\n  top: 20px;\n  right: 20px;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay input,\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay textarea {\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-size: 24px;\n  font-weight: normal;\n  letter-spacing: 1px;\n  outline: none;\n  margin: 0 0 0 0;\n  color: white;\n}\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay input:not([type='checkbox']):not([type='range']) {\n  padding: 0.2em 0 0.4em 0;\n  width: 100%;\n  line-height: 20px;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  border-radius: 0px;\n  border: 0px;\n  background: transparent;\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n  transition: border-color 1s;\n}\n.io3d-overlay select:focus,\n.io3d-overlay option:focus,\n.io3d-overlay input:not([type='checkbox']):not([type='range']):focus {\n  border-color: white;\n}\n.io3d-overlay textarea {\n  min-height: 60px;\n}\n.io3d-overlay input[type='checkbox'] {\n  position: relative;\n  height: 20px;\n  vertical-align: bottom;\n  margin: 0;\n}\n.io3d-overlay .reveal-api-key-button {\n  cursor: pointer;\n  position: absolute;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 2px;\n  top: 30px;\n  padding: 0.1em 0.2em 0.2em 0.2em;\n  line-height: 20px;\n  transition: color 600ms;\n}\n.io3d-overlay .reveal-api-key-button:hover {\n  color: white;\n}\n";
 
 	// basic element utils for convenience inspired by jquery API
 
@@ -17362,6 +17362,9 @@
 	    }
 	  }
 	};
+
+	// utils
+	el.isElement = isElement;
 
 	// helpers
 
@@ -17398,6 +17401,10 @@
 	    child ? el.removeChild(child) : el.parentNode.removeChild(el);
 	    return el
 	  };
+	  el.append = function append (o) {
+	    if (o) isElement(o) ? el.appendChild(o) : el.innerHTML = o;
+	    return el
+	  };
 	  el.appendTo = function appendToElement (parentEl) {
 	    parentEl === 'body' ? document.body.appendChild(el) : parentEl.appendChild(el);
 	    return el
@@ -17427,6 +17434,9 @@
 	    el.style.display = el.___originalStyleDisplay && el.___originalStyleDisplay !== '' ? el.___originalStyleDisplay : 'block';
 	    return el
 	  };
+	  el.toggleSlide = function toggleSlide () {
+	    toggleSlideEl(el);
+	  };
 	}
 
 	// Returns true if it is a DOM element
@@ -17436,6 +17446,68 @@
 	    typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
 	      o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
 	  );
+	}
+
+	// https://stackoverflow.com/a/3797442/2835973
+	function getHiddenElementHeight (el) {
+	  var el_style = window.getComputedStyle(el),
+	    el_display = el_style.display,
+	    el_position = el_style.position,
+	    el_visibility = el_style.visibility,
+	    el_max_height = el_style.maxHeight.replace('px', '').replace('%', ''),
+
+	    wanted_height = 0;
+
+	  // if its not hidden we just return normal height
+	  if (el_display !== 'none' && el_max_height !== '0') {
+	    return el.offsetHeight;
+	  }
+
+	  // the element is hidden so:
+	  // making the el block so we can meassure its height but still be hidden
+	  el.style.position = 'absolute';
+	  el.style.visibility = 'hidden';
+	  el.style.display = 'block';
+
+	  wanted_height = el.offsetHeight;
+
+	  // reverting to the original values
+	  el.style.display = el_display;
+	  el.style.position = el_position;
+	  el.style.visibility = el_visibility;
+
+	  return wanted_height;
+	}
+
+	// https://stackoverflow.com/a/3797442/2835973
+	function toggleSlideEl (el) {
+	  var el_max_height = 0;
+
+	  if (el.getAttribute('data-max-height')) {
+	    // we've already used this before, so everything is setup
+	    if (el.style.maxHeight.replace('px', '').replace('%', '') === '0') {
+	      el.style.maxHeight = el.getAttribute('data-max-height');
+	      el.style.opacity = 1;
+	    } else {
+	      el.style.maxHeight = 0;
+	      el.style.opacity = 0;
+	    }
+	  } else {
+	    el_max_height = getHiddenElementHeight(el) + 'px';
+	    //el.style['-webkit-transition'] = 'background 0.5a linear, max-height 0.5s ease-in-out';
+	    el.style['-webkit-transition'] = 'opacity 0.5s ease-out, max-height 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)';
+	    el.style.transition = 'opacity 0.5s ease-out, max-height 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)';
+	    el.style.overflowY = 'hidden';
+	    el.style.maxHeight = '0';
+	    el.setAttribute('data-max-height', el_max_height);
+	    el.style.display = 'block';
+
+	    // we use setTimeout to modify maxHeight later than display (to we have the transition effect)
+	    setTimeout(function () {
+	      el.style.maxHeight = el_max_height;
+	      el.style.opacity = 1;
+	    }, 10);
+	  }
 	}
 
 	// container DOM element
@@ -17449,7 +17521,7 @@
 	  runtime.assertBrowser();
 
 	  // do nothing if there is no message
-	  if (!message || message === '') return
+	  if (!message || message === '') return bluebird_1.resolve()
 	  // default expire value is 4 secs
 	  var expire = expire !== undefined ? expire : 4000; // ms
 	  // default message type
@@ -17458,14 +17530,17 @@
 	  // internals
 	  var isClosed = false;
 
-	  // create html elements
+	  // create main html element
 	  var messageEl = el('<div>',{
 	    class: 'message'
 	  }).prependTo(mainEl).hide();
-	  el('<div>',{
-	    html: message,
+	  el('<div>',{ class: 'spacer' }).appendTo(messageEl);
+
+	  // insert content
+	  var contentEl = el('<div>',{
 	    class: 'text '+type
 	  }).appendTo(messageEl);
+	  el.isElement(message) ? contentEl.append(message) : contentEl.innerHTML = message;
 
 	  // create message object
 	  var resolve;
@@ -17477,14 +17552,15 @@
 	  result.close = function close () {
 	    if (isClosed) return
 	    isClosed = true;
-	    //messageEl.slideUp()
-	    messageEl.hide();
+	    messageEl.toggleSlide();
+	    setTimeout(function(){
+	      messageEl.remove();
+	    }, 500);
 	    resolve();
 	  };
 
 	  // init
-	  //messageEl.slideDown()
-	  messageEl.show();
+	  messageEl.toggleSlide();
 
 	  // close message on expire
 	  if (expire) setTimeout(result.close, expire);
@@ -18374,6 +18450,134 @@
 
 	// main
 
+	function createConfirmUi (a, b) {
+	  runtime.assertBrowser();
+	  return new Promise(function (resolve, reject){
+
+	    var options;
+	    if (el.isElement(a) || typeof a === 'string') {
+	      options = b || {};
+	      options.message = a;
+	    } else if (typeof a === 'object') {
+	      options = a;
+	    } else {
+	      throw 'Argument mismatch https://3d.io/docs/api/1/ui.html'
+	    }
+
+	    var title = options.title;
+	    var message = options.message;
+	    var bottom = options.bottom;
+	    var fixWidth = options.width && typeof options.width === 'number' ? options.width+'px' : options.width;
+	    var maxWidth = options.maxWidth && typeof options.maxWidth === 'number' ? options.maxWidth+'px' : options.maxWidth || '450px';
+	    var hasCloseButton = defaultTo(options.closeButton, true);
+	    var hasConfirmButton = defaultTo(options.confirmButton, true);
+	    var hasCancelButton = defaultTo(options.cancelButton, true);
+
+	    // internals
+	    var widthCss = fixWidth ? 'width:'+fixWidth+';max-width:'+maxWidth+';' : 'max-width:'+maxWidth+';';
+
+	    // overlay
+	    var overlay = createOverlay().show();
+
+	    // DOM
+
+	    if (hasCloseButton) el('<div>',{
+	      text: 'x',
+	      class: 'button close-button',
+	      click: cancel
+	    }).appendTo(overlay.mainEl);
+
+	    // centered content
+
+	    var centerEl = el('<div>', { style: widthCss }).appendTo(overlay.centerEl);
+
+	    if (title) el('<h1>').append(title).appendTo(centerEl);
+	    if (message) el('<div>').append(message).appendTo(centerEl);
+
+	    if (hasCancelButton) el('<div>', {
+	      text: 'x',
+	      class: 'button',
+	      click: cancel
+	    }).appendTo(centerEl);
+
+	    if (hasConfirmButton) el('<div>', {
+	      text: 'ok',
+	      class: 'button',
+	      click: confirm
+	    }).appendTo(centerEl);
+
+	    // stuff at the bottom
+
+	    if (bottom) el('<div>', { style: widthCss }).append(bottom).appendTo(overlay.centerEl);
+
+	    // register ESC key
+
+	    function onKeyDown(e) {
+	      if (e.keyCode === 27) cancel(); // ESC
+	    }
+	    document.body.addEventListener('keydown', onKeyDown);
+
+	    // methods
+
+	    function confirm () {
+	      destroy(function(){
+	        resolve(true);
+	      });
+	    }
+
+	    function cancel () {
+	      destroy(function(){
+	        resolve(false);
+	      });
+	    }
+
+	    function destroy (callback) {
+	      // unbind events
+	      document.body.removeEventListener('keydown', onKeyDown);
+	      // remove DOM elements
+	      overlay.destroy(callback);
+	    }
+
+	  })
+	}
+
+	// helper
+
+	function defaultTo (x, val) {
+	  return x !== undefined ? x : val
+	}
+
+	// main
+
+	function createAlertUi (a, b) {
+	  runtime.assertBrowser();
+
+	  if (el.isElement(a) || typeof a === 'string') {
+	    b = b || {};
+	    b.closeButton = false;
+	    b.cancelButton = false;
+	    b.confirmButton = true;
+	  } else if (typeof a === 'object') {
+	    a.closeButton = false;
+	    a.cancelButton = false;
+	    a.confirmButton = true;
+	  } else {
+	    throw 'Argument mismatch https://3d.io/docs/api/1/ui.html'
+	  }
+	  
+	  return createConfirmUi(a, b)
+	}
+
+	function createLogOutUi () {
+	  return logOut().then(function onSuccess(){
+	    return createAlertUi('Log out successful')
+	  }, function onReject(e) {
+	    return createAlertUi('Log out error:<br><br>'+e)
+	  })
+	}
+
+	// main
+
 	function createDevDashboardUi () {
 	  runtime.assertBrowser();
 
@@ -18490,10 +18694,14 @@
 	  signup: createSignUpUi, // alias
 	  logIn: createLogInUi,
 	  login: createLogInUi, // alias
+	  logOut: createLogOutUi,
+	  logout: createLogOutUi, // alias
 	  requestPasswordReset: createResetPasswordUi,
 	  devDashboard: createDevDashboardUi,
 	  // messages
-	  message: message
+	  message: message,
+	  alert: createAlertUi,
+	  confirm: createConfirmUi
 	};
 
 	// function
