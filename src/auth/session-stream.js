@@ -3,7 +3,7 @@ import Rx from 'rxjs/BehaviorSubject.js'
 
 /**
  * Creates a session stream
- * @function IO3D.auth.session$
+ * @function io3d.auth.session$
  */
 
 var session$ = new Rx.BehaviorSubject(normalizeSession({}))

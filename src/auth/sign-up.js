@@ -5,7 +5,7 @@ import log from 'js-logger'
 
 /**
  * Sign up: Create a new user
- * @function IO3D.auth.signUp
+ * @function io3d.auth.signUp
  * @param {object} args
  * @param {string} args.email
  * @param {string} args.password (optional)

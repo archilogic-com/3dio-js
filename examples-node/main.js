@@ -5,14 +5,14 @@ var key = '/fd72bf39-9d3a-471f-a4ff-ecaa3f5ff30b/bake/2017-04-15_22-45-14_XsiltX
 
 
 // get object from base store
-// IO3D.storage.get(key).then(function(data3d){
+// io3d.storage.get(key).then(function(data3d){
 //   console.log('materials: ', data3d.materials)
 // })
 
 
-// IO3D.furniture.get('d23062b7-6ec4-45c0-9cee-c96d835b5f54').then(console.log)
+// io3d.furniture.get('d23062b7-6ec4-45c0-9cee-c96d835b5f54').then(console.log)
 
 
-// IO3D.storage.put( Buffer.from('Hello World!', 'utf-8') ).then(function(key){
+// io3d.storage.put( Buffer.from('Hello World!', 'utf-8') ).then(function(key){
 //   console.log(key)
 // }).catch(console.error)

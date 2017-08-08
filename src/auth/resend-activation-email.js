@@ -4,7 +4,7 @@ import log from 'js-logger'
 
 /**
  * Resend activation email
- * @function IO3D.auth.resendActivationEmail
+ * @function io3d.auth.resendActivationEmail
  * @param {object} args
  * @param {string} args.email
  */

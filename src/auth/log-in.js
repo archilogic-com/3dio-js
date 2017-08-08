@@ -6,7 +6,7 @@ import log from 'js-logger'
 
 /**
  * Login in user using credentials
- * @function IO3D.auth.logIn
+ * @function io3d.auth.logIn
  * @param {object} args
  * @param {string} args.email - User email or username
  * @param {string} args.password - User password

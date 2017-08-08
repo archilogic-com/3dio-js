@@ -5,7 +5,7 @@ import Promise from 'bluebird'
 
 /**
  * Activate account by providing token and password
- * @function IO3D.auth.activateAccount
+ * @function io3d.auth.activateAccount
  * @param {object} args
  * @param {string} args.token - Token string provided by server
  * @param {string} args.password - New password

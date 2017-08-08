@@ -4,7 +4,7 @@ import log from 'js-logger'
 
 /**
  * Get private API key
- * @function IO3D.auth.getPrivateApiKey
+ * @function io3d.auth.getPrivateApiKey
  */
 
 export default function getPrivateApiKey () {

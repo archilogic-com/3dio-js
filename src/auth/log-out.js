@@ -5,7 +5,7 @@ import log from 'js-logger'
 
 /**
  * Log out currently authenticated user.
- * @function IO3D.auth.logOut
+ * @function io3d.auth.logOut
  */
 export default function logOut () {
   log.debug('Sending API log out request...')

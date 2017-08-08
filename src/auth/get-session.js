@@ -19,7 +19,7 @@ if (runtime.isBrowser) {
 
 /**
  * Get information about the current session.
- * @function IO3D.auth.getSession
+ * @function io3d.auth.getSession
  */
 export default function getSession () {
   log.debug('Sending API session request...')

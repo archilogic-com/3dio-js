@@ -2,18 +2,18 @@ var key = '/3f995099-d624-4c8e-ab6b-1fd5e3799173/170420-1105-7yb890/8db476b3-7eb
 
 
 // get object from base store
-// IO3D.storage.get(key).then(function(data3d){
+// io3d.storage.get(key).then(function(data3d){
 //   console.log('Data3d has '+Object.keys(data3d.materials).length+' materials.')
 // })
 
 // upload object to base store
 // var file = new Blob(['Hello World'], { type: 'text/plain' })
 // file.name = 'blob.txt'
-// IO3D.storage.put(file).then(function(key){
+// io3d.storage.put(file).then(function(key){
 //   console.log(key)
 // }).catch(console.log)
 
 // get product data
-// IO3D.furniture.get('d23062b7-6ec4-45c0-9cee-c96d835b5f54').then(function(result){
+// io3d.furniture.get('d23062b7-6ec4-45c0-9cee-c96d835b5f54').then(function(result){
 //   console.log('Data3d has '+Object.keys(result.data3d.materials).length+' materials.')
 // })

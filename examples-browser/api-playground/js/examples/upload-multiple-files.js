@@ -5,9 +5,9 @@ var files = [
   new Blob(['Hello World3'], { type: 'text/plain' })
 ]
 
-IO3D.auth.logIn(user).then(function (x) {
+io3d.auth.logIn(user).then(function (x) {
 
-  return IO3D.storage.put(files)
+  return io3d.storage.put(files)
 
 }).then(function(keys){
 

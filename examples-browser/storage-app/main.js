@@ -1,6 +1,6 @@
 var el = document.getElementById('file-box')
 
-IO3D.ui.createFileDrop({
+io3d.ui.createFileDrop({
   elementId: 'file-box',
   //upload: true,
   onDrop: function(keys){

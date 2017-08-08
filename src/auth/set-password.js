@@ -5,7 +5,7 @@ import log from 'js-logger'
 
 /**
  * Set password for a specific user
- * @function IO3D.auth.setPassword
+ * @function io3d.auth.setPassword
  * @param {object} args
  * @param {string} args.token
  * @param {string} args.password

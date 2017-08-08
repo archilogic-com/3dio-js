@@ -4,7 +4,7 @@ import log from 'js-logger'
 
 /**
  * Request password reset for a specific user
- * @function IO3D.auth.requestPasswordReset
+ * @function io3d.auth.requestPasswordReset
  * @param {object} args
  * @param {string} args.email
  */

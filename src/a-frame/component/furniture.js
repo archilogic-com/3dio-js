@@ -24,10 +24,10 @@ export default {
 
     // create new one
     this_.mesh = new THREE.Object3D()
-    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh})
+    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh})
 
     // get product data
-    IO3D.furniture.get(productId).then(function (result) {
+    io3d.furniture.get(productId).then(function (result) {
       // Expose properties
       this_.productInfo = result
       this_.data3d = result.data3d
