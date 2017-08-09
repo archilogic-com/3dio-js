@@ -33,6 +33,8 @@
 </html>
 ```
 
+Learn more about using 3d.io data at https://furniture.3d.io
+
 ## Documentation
 
 https://3d.io/docs/api/1/
