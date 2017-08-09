@@ -38,7 +38,7 @@ export default function setPassword (args) {
 
     // denied
     log.debug('API: setting password failed.', error)
-    return Promise.reject(error.message)
+    return Promise.reject(error)
 
   })
 

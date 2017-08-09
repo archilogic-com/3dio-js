@@ -34,7 +34,7 @@ export default function signUp (args) {
 
     // denied
     log.debug('API: Could not sign up using email "' + credentials.email + '".', error)
-    return Promise.reject(error.message)
+    return Promise.reject(error)
 
   })
 

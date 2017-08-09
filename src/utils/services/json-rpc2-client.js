@@ -82,7 +82,7 @@ JsonRpc2Client.prototype = {
       if (response.error) {
         if (response.error.message) {
           if (runtime.isDebugMode) console.error('API error response: ', response.error, '\nOriginal JSON-RPC2 request: ', request.message)
-          request._reject(response.error)
+          request._reject(response.error.message)
         } else {
           // has no error message (non-standard): log everything into browser console
           if (runtime.isDebugMode) console.error('API error response: ', response, '\nOriginal JSON-RPC2 request: ', request.message)

@@ -27,7 +27,7 @@ export default function resendActivationEmail (args) {
 
       // denied
       log.debug('API: requesting account activation failed.', error)
-      return Promise.reject(error.message)
+      return Promise.reject(error)
 
     })
 

@@ -33,6 +33,6 @@ export default function getSession () {
       return session
     }, function onError (error) {
       log.debug('API: error receiving session data.', error)
-      return Promise.reject(error.message)
+      return Promise.reject(error)
     })
 }

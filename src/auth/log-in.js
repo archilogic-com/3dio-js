@@ -39,7 +39,7 @@ export default function logIn (args) {
 
     // denied
     log.debug('API: Could not log in user "' + credentials.email + '".', error)
-    return Promise.reject(error.message)
+    return Promise.reject(error)
 
   })
 

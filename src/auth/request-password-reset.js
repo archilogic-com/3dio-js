@@ -26,7 +26,7 @@ export default function requestPasswordReset (args) {
 
       // denied
       log.debug('API: requesting password reset failed.', error)
-      return Promise.reject(error.message)
+      return Promise.reject(error)
 
     })
 

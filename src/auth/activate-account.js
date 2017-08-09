@@ -28,6 +28,6 @@ export default function activateAccount (args) {
       })
     }, function onError (error) {
       log.debug('Account activation failed.', error)
-      return Promise.reject(error.message)
+      return Promise.reject(error)
     })
 }

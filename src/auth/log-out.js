@@ -14,6 +14,6 @@ export default function logOut () {
     return getSession()
   }, function onError (error) {
     log.error('Log out error.', error)
-    return Promise.reject(error.message ? error.message : error)
+    return Promise.reject(error)
   })
 }
