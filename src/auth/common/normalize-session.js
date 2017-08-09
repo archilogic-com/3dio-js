@@ -8,7 +8,6 @@ export default function normalizeSession(session_) {
     user.id = session_.user.resourceId
     user.username = session_.user.resourceName
     user.email = session_.user.email
-    user.roles = session_.user.roles || []
   }
 
   return {

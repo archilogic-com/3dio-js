@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.34
- * @date 2017/08/09 14:03
+ * @date 2017/08/09 22:31
  * @branch master
- * @commit dc67ccd816ba7a4de743bbaceedc1986e1d08e7f
+ * @commit 0d63a0a27b5a9710d2442be0861bc1ade3739827
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/09 14:03', GIT_BRANCH = 'master', GIT_COMMIT = 'dc67ccd816ba7a4de743bbaceedc1986e1d08e7f'
+	var BUILD_DATE='2017/08/09 22:31', GIT_BRANCH = 'master', GIT_COMMIT = '0d63a0a27b5a9710d2442be0861bc1ade3739827'
 
 	/**
 	 * @license RequireJS domReady 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
@@ -15124,7 +15124,7 @@
 	      if (response.error) {
 	        if (response.error.message) {
 	          if (runtime.isDebugMode) console.error('API error response: ', response.error, '\nOriginal JSON-RPC2 request: ', request.message);
-	          request._reject(response.error);
+	          request._reject(response.error.message);
 	        } else {
 	          // has no error message (non-standard): log everything into browser console
 	          if (runtime.isDebugMode) console.error('API error response: ', response, '\nOriginal JSON-RPC2 request: ', request.message);
@@ -15163,7 +15163,7 @@
 	// TODO: add api.onMethod('methodName')
 	// TODO: add api.onNotification('methodName')
 
-	function callService (methodName, params) {
+	function callService (methodName, params, secretKey) {
 
 	  // API
 	  params = params || {};
@@ -15181,7 +15181,7 @@
 	  // internals
 	  var rpcRequest = rpcClient.createRequest(methodName, params);
 
-	  sendHttpRequest(rpcRequest);
+	  sendHttpRequest(rpcRequest, secretKey);
 
 	  // add to cache
 	  // if (useCache) {
@@ -15192,12 +15192,20 @@
 
 	}
 
-	function sendHttpRequest (rpcRequest) {
+	function sendHttpRequest (rpcRequest, secretKey) {
 	  // send request
+	  var headers = {
+	    'Content-Type': 'application/json',
+	    'Accept': 'application/json'
+	  };
+
+	  // add secret key if provided
+	  if (secretKey) headers['X-API-Key'] = secretKey;
+
 	  fetch$1(configs.servicesUrl, {
 	    body: JSON.stringify(rpcRequest.message),
 	    method: 'POST',
-	    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+	    headers: headers,
 	    credentials: 'include'
 	  }).then(function (response) {
 	    return response.json()
@@ -15205,7 +15213,7 @@
 	    rpcClient.handleResponse(data);
 	    return null
 	  }).catch(function (error) {
-	    rpcRequest.cancel('Sorry, HTTP error occured. Please check your internet connection.');
+	    rpcRequest.cancel('Sorry, HTTP error occured. Please check console for more information.');
 	  });
 
 	}
@@ -16881,7 +16889,7 @@
 
 	    // denied
 	    logger.debug('API: Could not sign up using email "' + credentials.email + '".', error);
-	    return bluebird_1.reject(error.message)
+	    return bluebird_1.reject(error)
 
 	  })
 
@@ -16897,7 +16905,6 @@
 	    user.id = session_.user.resourceId;
 	    user.username = session_.user.resourceName;
 	    user.email = session_.user.email;
-	    user.roles = session_.user.roles || [];
 	  }
 
 	  return {
@@ -16942,7 +16949,7 @@
 	      return session
 	    }, function onError (error) {
 	      logger.debug('API: error receiving session data.', error);
-	      return bluebird_1.reject(error.message)
+	      return bluebird_1.reject(error)
 	    })
 	}
 
@@ -16981,7 +16988,7 @@
 
 	    // denied
 	    logger.debug('API: setting password failed.', error);
-	    return bluebird_1.reject(error.message)
+	    return bluebird_1.reject(error)
 
 	  })
 
@@ -17011,7 +17018,7 @@
 
 	      // denied
 	      logger.debug('API: requesting password reset failed.', error);
-	      return bluebird_1.reject(error.message)
+	      return bluebird_1.reject(error)
 
 	    })
 
@@ -17042,7 +17049,7 @@
 
 	      // denied
 	      logger.debug('API: requesting account activation failed.', error);
-	      return bluebird_1.reject(error.message)
+	      return bluebird_1.reject(error)
 
 	    })
 
@@ -17084,7 +17091,7 @@
 
 	    // denied
 	    logger.debug('API: Could not log in user "' + credentials.email + '".', error);
-	    return bluebird_1.reject(error.message)
+	    return bluebird_1.reject(error)
 
 	  })
 
@@ -17101,44 +17108,44 @@
 	    return getSession()
 	  }, function onError (error) {
 	    logger.error('Log out error.', error);
-	    return bluebird_1.reject(error.message ? error.message : error)
+	    return bluebird_1.reject(error)
 	  })
 	}
 
 	/**
-	 * Reenerate private API key
+	 * Reenerate secret API key
 	 */
 
-	function regeneratePublicKey () {
-	  logger.debug('Sending API request to generate private API key ...');
-	  return callService('Organization.generateApiKey').then(function onSuccess(key) {
-	    logger.debug('API: Generating private API key successful: ', key);
+	function regenerateSecretApiKey () {
+	  logger.debug('Sending API request to generate secret API key ...');
+	  return callService('Organization.generateSecretApiKey').then(function onSuccess(key) {
+	    logger.debug('API: Generating secret API key successful: ', key);
 	    return key
 	  }, function onReject(error) {
-	    logger.error('API: Error Generating public key.', error);
-	    return bluebird_1.reject(error.message)
+	    logger.error('API: Error generating secret key.', error);
+	    return bluebird_1.reject(error)
 	  })
 	}
 
 	/**
-	 * Get private API key
-	 * @function io3d.auth.getPrivateApiKey
+	 * Get secret API key
+	 * @function io3d.auth.getSecretApiKey
 	 */
 
-	function getPrivateApiKey () {
-	  logger.debug('Sent API request reading private key ...');
+	function getSecretApiKey () {
+	  logger.debug('Sent API request reading secret key ...');
 	  return callService('Organization.read').then(function onSuccess (result) {
-	    if (result.apiKey) {
-	      logger.debug('Received private API key from API');
-	      return result.apiKey
+	    if (result.secretApiKey) {
+	      logger.debug('Received secret API key from API');
+	      return result.secretApiKey
 	    } else {
-	      // user has no private key yet: generate one
-	      logger.debug('User has no private key. Sent request to generate one.');
-	      return regeneratePublicKey()
+	      // user has no secret key yet: generate one
+	      logger.debug('User has no secret key. Sent request to generate one.');
+	      return regenerateSecretApiKey()
 	    }
 	  }, function onError (error) {
-	    logger.debug('Error receiving private API key');
-	    return Promise.reject(error.message)
+	    logger.debug('Error receiving secret API key');
+	    return Promise.reject(error)
 	  })
 	}
 
@@ -17156,8 +17163,8 @@
 	  setPassword: setPassword,
 	  requestPasswordReset: requestPasswordReset,
 	  resendActivationEmail: resendActivationEmail,
-	  getPrivateApiKey: getPrivateApiKey,
-	  regeneratePrivateApiKey: regeneratePublicKey
+	  getSecretApiKey: getSecretApiKey,
+	  regenerateSecretApiKey: regenerateSecretApiKey
 	};
 
 	var FALLBACK_MIME_TYPE = 'application/octet-stream';
@@ -18711,18 +18718,18 @@
 	      var emailEl = el('<input>', {type: 'text'}).appendTo(mainTabEl);
 	      emailEl.val(session.user.email);
 
-	      var privateApiKeyElTitle = el('<p>', {text: 'Private API key:', class: 'hint'}).appendTo(mainTabEl);
-	      var privateApiKeyEl = el('<input>', {type: 'text'}).appendTo(mainTabEl);
+	      var secretApiKeyElTitle = el('<p>', {text: 'Secret API key:', class: 'hint'}).appendTo(mainTabEl);
+	      var secretApiKeyEl = el('<input>', {type: 'text'}).appendTo(mainTabEl);
 	      var revealButtonEl = el('<div>', {
 	        text: 'reveal',
 	        class: 'reveal-api-key-button',
 	        click: function () {
 	          revealButtonEl.hide();
-	          getPrivateApiKey().then(function (key) {
-	            privateApiKeyEl.val(key);
+	          getSecretApiKey().then(function (key) {
+	            secretApiKeyEl.val(key);
 	          });
 	        }
-	      }).appendTo(privateApiKeyElTitle);
+	      }).appendTo(secretApiKeyElTitle);
 
 	      el('<p>', {
 	        class: 'hint',
