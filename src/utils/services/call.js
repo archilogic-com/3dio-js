@@ -78,7 +78,7 @@ function sendHttpRequest (rpcRequest) {
     body: JSON.stringify(rpcRequest.message),
     method: 'POST',
     headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-    credentials: 'include'
+    credentials: ( window.location.href.match(/^[^\:]+:\/\/([^\.]+\.)?(3d\.io|archilogic.com)(:\d+)?$/) ? 'include' : 'omit' ) //TODO: Find a way to allow this more broadly yet safely
   }).then(function (response) {
     return response.json()
   }).then(function (data) {
