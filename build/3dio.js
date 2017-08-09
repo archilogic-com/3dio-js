@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.34
- * @date 2017/08/09 22:31
+ * @version 1.0.0-beta.35
+ * @date 2017/08/09 22:39
  * @branch master
- * @commit 0d63a0a27b5a9710d2442be0861bc1ade3739827
+ * @commit 20a0ef7dee521b8b0218b048488017fe4a8ceb53
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/09 22:31', GIT_BRANCH = 'master', GIT_COMMIT = '0d63a0a27b5a9710d2442be0861bc1ade3739827'
+	var BUILD_DATE='2017/08/09 22:39', GIT_BRANCH = 'master', GIT_COMMIT = '20a0ef7dee521b8b0218b048488017fe4a8ceb53'
 
 	/**
 	 * @license RequireJS domReady 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
@@ -7318,7 +7318,7 @@
 	  })();
 	}
 
-	var version = "1.0.0-beta.34";
+	var version = "1.0.0-beta.35";
 
 
 	var homepage = "https://3d.io";
@@ -15163,7 +15163,7 @@
 	// TODO: add api.onMethod('methodName')
 	// TODO: add api.onNotification('methodName')
 
-	function callService (methodName, params, secretKey) {
+	function callService (methodName, params) {
 
 	  // API
 	  params = params || {};
@@ -15181,7 +15181,7 @@
 	  // internals
 	  var rpcRequest = rpcClient.createRequest(methodName, params);
 
-	  sendHttpRequest(rpcRequest, secretKey);
+	  sendHttpRequest(rpcRequest);
 
 	  // add to cache
 	  // if (useCache) {
@@ -15192,20 +15192,12 @@
 
 	}
 
-	function sendHttpRequest (rpcRequest, secretKey) {
+	function sendHttpRequest (rpcRequest) {
 	  // send request
-	  var headers = {
-	    'Content-Type': 'application/json',
-	    'Accept': 'application/json'
-	  };
-
-	  // add secret key if provided
-	  if (secretKey) headers['X-API-Key'] = secretKey;
-
 	  fetch$1(configs.servicesUrl, {
 	    body: JSON.stringify(rpcRequest.message),
 	    method: 'POST',
-	    headers: headers,
+	    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
 	    credentials: 'include'
 	  }).then(function (response) {
 	    return response.json()
@@ -15213,7 +15205,7 @@
 	    rpcClient.handleResponse(data);
 	    return null
 	  }).catch(function (error) {
-	    rpcRequest.cancel('Sorry, HTTP error occured. Please check console for more information.');
+	    rpcRequest.cancel('Sorry, HTTP error occured. Please check your internet connection.');
 	  });
 
 	}
