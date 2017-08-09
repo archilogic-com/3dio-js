@@ -5,7 +5,7 @@ import createResetPasswordUi from './create-password-reset-request-ui.js'
 import message from './create-message-ui.js'
 import runtime from '../core/runtime.js'
 import getSession from '../auth/get-session.js'
-import getPrivateApiKey from '../auth/get-private-api-key.js'
+import getSecretApiKey from '../auth/get-secret-api-key.js'
 import Promise from 'bluebird'
 
 // main
@@ -68,18 +68,18 @@ export default function createDevDashboardUi () {
       var emailEl = el('<input>', {type: 'text'}).appendTo(mainTabEl)
       emailEl.val(session.user.email)
 
-      var privateApiKeyElTitle = el('<p>', {text: 'Private API key:', class: 'hint'}).appendTo(mainTabEl)
-      var privateApiKeyEl = el('<input>', {type: 'text'}).appendTo(mainTabEl)
+      var secretApiKeyElTitle = el('<p>', {text: 'Secret API key:', class: 'hint'}).appendTo(mainTabEl)
+      var secretApiKeyEl = el('<input>', {type: 'text'}).appendTo(mainTabEl)
       var revealButtonEl = el('<div>', {
         text: 'reveal',
         class: 'reveal-api-key-button',
         click: function () {
           revealButtonEl.hide()
-          getPrivateApiKey().then(function (key) {
-            privateApiKeyEl.val(key)
+          getSecretApiKey().then(function (key) {
+            secretApiKeyEl.val(key)
           })
         }
-      }).appendTo(privateApiKeyElTitle)
+      }).appendTo(secretApiKeyElTitle)
 
       el('<p>', {
         class: 'hint',

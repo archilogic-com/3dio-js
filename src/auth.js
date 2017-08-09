@@ -5,8 +5,8 @@ import requestPasswordReset from './auth/request-password-reset.js'
 import resendActivationEmail from './auth/resend-activation-email.js'
 import logIn from './auth/log-in.js'
 import logOut from './auth/log-out.js'
-import getPrivateApiKey from './auth/get-private-api-key.js'
-import regeneratePrivateApiKey from './auth/regenerate-private-api-key.js'
+import getSecretApiKey from './auth/get-secret-api-key.js'
+import regenerateSecretApiKey from './auth/regenerate-secret-api-key.js'
 import getSession from './auth/get-session.js'
 import session$ from './auth/session-stream.js'
 
@@ -24,8 +24,8 @@ var auth = {
   setPassword: setPassword,
   requestPasswordReset: requestPasswordReset,
   resendActivationEmail: resendActivationEmail,
-  getPrivateApiKey: getPrivateApiKey,
-  regeneratePrivateApiKey: regeneratePrivateApiKey
+  getSecretApiKey: getSecretApiKey,
+  regenerateSecretApiKey: regenerateSecretApiKey
 }
 
 export default auth
