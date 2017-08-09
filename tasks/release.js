@@ -66,13 +66,7 @@ function checkLocalEnv() {
 function checkWorkingDirectoryClean() {
   return new Promise(function (resolve, reject) {
     git.status({ args: '--porcelain' }, function (err, status) {
-      if (status === '') {
-        resolve()
-      } else {
-        confirm('You have uncommitted changes. Do you want to continue with the relase WITHOUT these changes?', resolve, () => {
-          throw 'Uncommited changes. Aborting release.'
-        })
-      }
+      status === '' ? resolve() throw 'Aborting due to uncommitted changes:\n' + status
     })
   })
 }
