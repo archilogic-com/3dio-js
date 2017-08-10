@@ -1,4 +1,4 @@
-import callServices from '../utils/services/call.js'
+import callServices from '../services/call.js'
 import regenerateSecretApiKey from './regenerate-secret-api-key.js'
 import log from 'js-logger'
 

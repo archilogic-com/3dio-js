@@ -1,4 +1,4 @@
-import callServices from '../utils/services/call.js'
+import callServices from '../services/call.js'
 import getSession from './get-session.js'
 import Promise from 'bluebird'
 import log from 'js-logger'

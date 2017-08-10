@@ -1,11 +1,11 @@
+import runtime from '../../core/runtime.js'
+import getSession from '../auth/get-session.js'
+import getSecretApiKey from '../auth/get-secret-api-key.js'
 import el from './common/dom-el.js'
 import createOverlay from './common/create-overlay.js'
 import createSignUpUi from './create-sign-up-ui.js'
 import createResetPasswordUi from './create-password-reset-request-ui.js'
 import message from './create-message-ui.js'
-import runtime from '../core/runtime.js'
-import getSession from '../auth/get-session.js'
-import getSecretApiKey from '../auth/get-secret-api-key.js'
 import Promise from 'bluebird'
 
 // main

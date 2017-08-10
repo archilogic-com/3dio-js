@@ -1,6 +1,6 @@
+import runtime from '../../core/runtime.js'
 import el from './common/dom-el.js'
 import createOverlay from './common/create-overlay.js'
-import runtime from '../core/runtime.js'
 
 // main
 

@@ -1,10 +1,10 @@
+import runtime from '../../core/runtime.js'
+import logIn from '../auth/log-in.js'
 import el from './common/dom-el.js'
-import runtime from '../core/runtime.js'
 import createOverlay from './common/create-overlay.js'
 import createSignUpUi from './create-sign-up-ui.js'
 import createResetPasswordUi from './create-password-reset-request-ui.js'
 import message from './create-message-ui.js'
-import logIn from '../auth/log-in.js'
 import Promise from 'bluebird'
 
 // main

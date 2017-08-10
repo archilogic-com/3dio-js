@@ -1,4 +1,4 @@
-import runtime from '../../core/runtime.js'
+import runtime from '../../../core/runtime.js'
 
 // basic element utils for convenience inspired by jquery API
 

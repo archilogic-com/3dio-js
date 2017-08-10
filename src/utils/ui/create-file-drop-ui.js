@@ -1,6 +1,6 @@
+import runtime from '../../core/runtime.js'
+import putToStore from '../../storage/put.js'
 import Promise from 'bluebird'
-import runtime from '../core/runtime.js'
-import putToStore from '../storage/put.js'
 
 // configs
 

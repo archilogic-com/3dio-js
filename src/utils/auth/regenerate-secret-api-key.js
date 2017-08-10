@@ -1,5 +1,5 @@
+import callServices from '../services/call.js'
 import Promise from 'bluebird'
-import callServices from '../utils/services/call.js'
 import log from 'js-logger'
 
 /**

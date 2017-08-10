@@ -1,4 +1,4 @@
-import runtime from './core/runtime.js'
+import runtime from '../core/runtime.js'
 import css from './ui/less/style.less'
 import createMessageUi from './ui/create-message-ui.js'
 import createFileDropUi from './ui/create-file-drop-ui.js'

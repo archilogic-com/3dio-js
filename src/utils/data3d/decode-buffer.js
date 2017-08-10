@@ -1,7 +1,7 @@
-import Promise from 'bluebird'
 import runtime from '../../core/runtime.js'
 import pathUtil from '../path.js'
 import urlUtil from '../url.js'
+import Promise from 'bluebird'
 
 // configs
 

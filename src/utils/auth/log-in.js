@@ -1,9 +1,8 @@
-import getSession from './get-session.js'
-import callServices from '../utils/services/call.js'
-import uuid from '../utils/uuid.js'
 import Promise from 'bluebird'
 import log from 'js-logger'
-
+import callServices from '../services/call.js'
+import uuid from '../uuid.js'
+import getSession from './get-session.js'
 /**
  * Login in user using credentials
  * @function io3d.auth.logIn

@@ -1,5 +1,5 @@
+import runtime from '../../../core/runtime.js'
 import el from './dom-el.js'
-import runtime from '../../core/runtime.js'
 
 // main
 

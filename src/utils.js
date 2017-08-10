@@ -1,5 +1,7 @@
 import decodeBuffer                 from './utils/data3d/decode-buffer.js'
 import loadData3d                   from './utils/data3d/load.js'
+import ui                           from './utils/ui.js'
+import auth                         from './utils/auth.js'
 import request                      from './utils/io/request.js'
 import fetch                        from './utils/io/fetch.js'
 import getMimeTypeFromFilename      from './utils/get-mime-type-from-filename.js'
@@ -16,6 +18,8 @@ var utils = {
     load: loadData3d,
     decodeBuffer: decodeBuffer
   },
+  ui: ui,
+  auth: auth,
   io: {
     fetch: fetch,
     request: request

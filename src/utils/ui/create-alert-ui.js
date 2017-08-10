@@ -1,6 +1,6 @@
+import runtime from '../../core/runtime.js'
 import createConfirmUi from './create-confirm-ui.js'
 import el from './common/dom-el.js'
-import runtime from '../core/runtime.js'
 
 // main
 
