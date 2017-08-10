@@ -12,7 +12,7 @@ var rpcClient = new JsonRpc2Client()
 // TODO: add api.onMethod('methodName')
 // TODO: add api.onNotification('methodName')
 
-export default function callService (methodName, params) {
+export default function callService (methodName, params, secretKey) {
 
   // API
   params = params || {}
@@ -30,7 +30,7 @@ export default function callService (methodName, params) {
   // internals
   var rpcRequest = rpcClient.createRequest(methodName, params)
 
-  sendHttpRequest(rpcRequest)
+  sendHttpRequest(rpcRequest, secretKey)
 
   // add to cache
   // if (useCache) {
@@ -72,13 +72,20 @@ function handleIncomingMessage (event) {
   }
 }
 
-function sendHttpRequest (rpcRequest) {
+function sendHttpRequest (rpcRequest, secretKey) {
+
   var isTrustedOrigin = ( runtime.isBrowser && window.location.href.match(/^[^\:]+:\/\/([^\.]+\.)?(3d\.io|archilogic.com|localhost)(:\d+)?\//) )
+  var headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
+  if (secretKey) headers['X-Secret-Key'] = secretKey
+
   // send request
   fetch(configs.servicesUrl, {
     body: JSON.stringify(rpcRequest.message),
     method: 'POST',
-    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+    headers: headers,
     credentials: (isTrustedOrigin ? 'include' : 'omit' ) //TODO: Find a way to allow this more broadly yet safely
   }).then(function (response) {
     return response.json()
@@ -86,7 +93,7 @@ function sendHttpRequest (rpcRequest) {
     rpcClient.handleResponse(data)
     return null
   }).catch(function (error) {
-    rpcRequest.cancel('Sorry, HTTP error occured. Please check your internet connection.')
+    rpcRequest.cancel('Sorry, HTTP error occured. Please check console for more information.')
   })
 
 }
