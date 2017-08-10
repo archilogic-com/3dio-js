@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.36
- * @date 2017/08/09 23:12
+ * @version 1.0.0-beta.37
+ * @date 2017/08/10 18:02
  * @branch master
- * @commit efe17c9c0904d0faa3c27821e841cbaac43c259d
+ * @commit e26cab8af741b78d0eac813fc621500577b6ef51
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/09 23:12', GIT_BRANCH = 'master', GIT_COMMIT = 'efe17c9c0904d0faa3c27821e841cbaac43c259d'
+	var BUILD_DATE='2017/08/10 18:02', GIT_BRANCH = 'master', GIT_COMMIT = 'e26cab8af741b78d0eac813fc621500577b6ef51'
 
 	/**
 	 * @license RequireJS domReady 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
@@ -7318,7 +7318,7 @@
 	  })();
 	}
 
-	var version = "1.0.0-beta.36";
+	var version = "1.0.0-beta.37";
 
 
 	var homepage = "https://3d.io";
@@ -15193,12 +15193,13 @@
 	}
 
 	function sendHttpRequest (rpcRequest) {
+	  var isTrustedOrigin = ( runtime.isBrowser && window.location.href.match(/^[^\:]+:\/\/([^\.]+\.)?(3d\.io|archilogic.com|localhost)(:\d+)?\//) );
 	  // send request
 	  fetch$1(configs.servicesUrl, {
 	    body: JSON.stringify(rpcRequest.message),
 	    method: 'POST',
 	    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-	    credentials: ( window.location.href.match(/^[^\:]+:\/\/([^\.]+\.)?(3d\.io|archilogic.com)(:\d+)?$/) ? 'include' : 'omit' ) //TODO: Find a way to allow this more broadly yet safely
+	    credentials: (isTrustedOrigin ? 'include' : 'omit' ) //TODO: Find a way to allow this more broadly yet safely
 	  }).then(function (response) {
 	    return response.json()
 	  }).then(function (data) {
@@ -17069,8 +17070,10 @@
 
 	    // send log in request
 	    return callService('User.logIn', {
-	      resourceName: credentials.email,
-	      password: credentials.password
+	      loginData: {
+	        resourceName: credentials.email,
+	        password: credentials.password
+	      }
 	    })
 
 	  }).then(normalizeSession).then(function onSuccess(session) {
