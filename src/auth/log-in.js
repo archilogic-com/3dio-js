@@ -25,8 +25,10 @@ export default function logIn (args) {
 
     // send log in request
     return callServices('User.logIn', {
-      resourceName: credentials.email,
-      password: credentials.password
+      loginData: {
+        resourceName: credentials.email,
+        password: credentials.password
+      }
     })
 
   }).then(normalizeSession).then(function onSuccess(session) {
