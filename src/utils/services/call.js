@@ -12,10 +12,12 @@ var rpcClient = new JsonRpc2Client()
 // TODO: add api.onMethod('methodName')
 // TODO: add api.onNotification('methodName')
 
-export default function callService (methodName, params, secretKey) {
+export default function callService (methodName, params, options) {
 
   // API
   params = params || {}
+  options = options || {}
+  var secretKey = options.secretKey
 
   // try cache
   // var cacheKey
