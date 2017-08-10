@@ -1,4 +1,4 @@
-import normalizeSession from './common/normalize-session.js'
+import getSession from './get-session.js'
 import callServices from '../utils/services/call.js'
 import uuid from '../utils/uuid.js'
 import Promise from 'bluebird'
@@ -21,7 +21,7 @@ export default function logIn (args) {
 
   // log out first
   log.debug('Sending API login request for user "' + credentials.email + '" ...')
-  return callServices('User.logOut').then(function(){
+  return callServices('User.logOut').then(function onLogoutSuccess() {
 
     // send log in request
     return callServices('User.logIn', {
@@ -31,15 +31,23 @@ export default function logIn (args) {
       }
     })
 
-  }).then(normalizeSession).then(function onSuccess(session) {
+  }).then(function onLoginSuccess () {
 
-    // success
-    log.debug('API: User "' + session.user.email + '" logged in successfully.')
-    return session
+    // request session to verify login with a separate request
+    return getSession()
 
-  }, function onError(error){
+  }).then(function onSessionSuccess (session) {
 
-    // denied
+    if (session.isAuthenticated) {
+      log.debug('API: User "' + session.user.email + '" logged in successfully.')
+      return session
+    } else {
+      return Promise.reject('Log in error: Session could not been established.')
+    }
+
+  }).catch(function onError (error) {
+
+    // login failed
     log.debug('API: Could not log in user "' + credentials.email + '".', error)
     return Promise.reject(error)
 
