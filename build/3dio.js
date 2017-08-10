@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.39
- * @date 2017/08/10 20:49
+ * @date 2017/08/10 22:08
  * @branch master
- * @commit ecbd24c5356cac1b53172a1d697a6934542daf4b
+ * @commit 034bd01442fd74614bb05e8689e7431e6fd336ef
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/10 20:49', GIT_BRANCH = 'master', GIT_COMMIT = 'ecbd24c5356cac1b53172a1d697a6934542daf4b'
+	var BUILD_DATE='2017/08/10 22:08', GIT_BRANCH = 'master', GIT_COMMIT = '034bd01442fd74614bb05e8689e7431e6fd336ef'
 
 	/**
 	 * @license RequireJS domReady 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
@@ -15163,10 +15163,12 @@
 	// TODO: add api.onMethod('methodName')
 	// TODO: add api.onNotification('methodName')
 
-	function callService (methodName, params, secretKey) {
+	function callService (methodName, params, options) {
 
 	  // API
 	  params = params || {};
+	  options = options || {};
+	  var secretKey = options.secretKey;
 
 	  // try cache
 	  // var cacheKey
