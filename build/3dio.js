@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.38
- * @date 2017/08/10 20:00
+ * @date 2017/08/10 20:45
  * @branch master
- * @commit 02e23eb231617ef963fbf16c6c6d310e627b57da
+ * @commit 467ee53edb969ae757ac503564120fdb2964a0d7
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/10 20:00', GIT_BRANCH = 'master', GIT_COMMIT = '02e23eb231617ef963fbf16c6c6d310e627b57da'
+	var BUILD_DATE='2017/08/10 20:45', GIT_BRANCH = 'master', GIT_COMMIT = '467ee53edb969ae757ac503564120fdb2964a0d7'
 
 	/**
 	 * @license RequireJS domReady 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
@@ -17947,6 +17947,47 @@
 
 	}
 
+	function poll(callback, options) {
+
+	  // API
+	  options = options || {};
+	  var timeout = options.timeout || 10 * 60 * 1000;
+	  var minInterval = options.minInterval || 1000;
+	  var maxInterval = options.maxInterval || 5000;
+	  var intervalIncreaseFactor = options.intervalIncreaseFactor || 1.05;
+
+	  return new bluebird_1(function( fulfill, reject, onCancel ){
+	    var flags = { isCancelled: false };
+	    // cancellation is supported in bluebird version > 3.x
+	    // enable cancellation in Promise.config as it is off by default
+	    if (onCancel) onCancel(function(){ flags.isCancelled = true; });
+	    // start recursive poll
+	    recursivePoll(callback, fulfill, reject, minInterval, maxInterval, intervalIncreaseFactor, 0, timeout, flags);
+	  })
+
+	}
+
+	// helper
+
+	function recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags) {
+
+	  // return if poll has been cancelled in meanwhile
+	  if (flags.isCancelled) return reject('Poll request has been cancelled')
+	  // increase interval
+	  if (interval < maxInterval) interval *= intervalIncreaseFactor;
+	  // check timeout
+	  if (timeElapsed > timeout) return reject('Poll request timed out')
+	  // count time
+	  timeElapsed += interval;
+	  // call
+	  callback(fulfill, reject, function next() {
+	    window.setTimeout(function(){
+	      recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags);
+	    }, interval);
+	  });
+
+	}
+
 	// main
 
 	function createOverlay () {
@@ -18323,47 +18364,6 @@
 	    }
 
 	  })
-	}
-
-	function poll(callback, options) {
-
-	  // API
-	  options = options || {};
-	  var timeout = options.timeout || 10 * 60 * 1000;
-	  var minInterval = options.minInterval || 1000;
-	  var maxInterval = options.maxInterval || 5000;
-	  var intervalIncreaseFactor = options.intervalIncreaseFactor || 1.05;
-
-	  return new bluebird_1(function( fulfill, reject, onCancel ){
-	    var flags = { isCancelled: false };
-	    // cancellation is supported in bluebird version > 3.x
-	    // enable cancellation in Promise.config as it is off by default
-	    if (onCancel) onCancel(function(){ flags.isCancelled = true; });
-	    // start recursive poll
-	    recursivePoll(callback, fulfill, reject, minInterval, maxInterval, intervalIncreaseFactor, 0, timeout, flags);
-	  })
-
-	}
-
-	// helper
-
-	function recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags) {
-
-	  // return if poll has been cancelled in meanwhile
-	  if (flags.isCancelled) return reject('Poll request has been cancelled')
-	  // increase interval
-	  if (interval < maxInterval) interval *= intervalIncreaseFactor;
-	  // check timeout
-	  if (timeElapsed > timeout) return reject('Poll request timed out')
-	  // count time
-	  timeElapsed += interval;
-	  // call
-	  callback(fulfill, reject, function next() {
-	    window.setTimeout(function(){
-	      recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags);
-	    }, interval);
-	  });
-
 	}
 
 	// main
@@ -18826,6 +18826,8 @@
 	    load: loadData3d,
 	    decodeBuffer: decodeBuffer
 	  },
+	  ui: ui,
+	  auth: auth,
 	  io: {
 	    fetch: fetch$1,
 	    request: request
@@ -18844,23 +18846,23 @@
 
 	var io3d$1 = {
 
-	  // products
+	  // APIs
 	  aFrame: aFrame,
 	  furniture: furniture,
 	  storage: storage,
 
-	  // non-products
-	  auth: auth,
-	  ui: ui,
+	  // utils
+	  auth: utils.auth,
+	  ui: utils.ui,
 	  utils: utils,
 
-	  // app specific
+	  // core
 	  runtime: runtime,
 	  configs: configs
 
 	};
 
-	// create upper case alias in browser environment
+	// create upper case alias fro main lib object in browser environment
 	if (runtime.isBrowser) window.IO3D = io3d$1;
 
 	return io3d$1;
