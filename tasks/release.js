@@ -132,7 +132,7 @@ function gitTag () {
 }
 
 function gitCommit () {
-  return gulp.src(['build/*', 'package.json'])
+  return gulp.src(['build/*', 'package.json', 'package-lock.json'])
     .pipe(git.commit(gitCommitMessage))
 }
 
