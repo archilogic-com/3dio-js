@@ -23,7 +23,8 @@ var io3d = {
 
   // core
   runtime: runtime,
-  configs: configs
+  configs: configs,
+  config: configs  // alias
 
 }
 
