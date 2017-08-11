@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.42
- * @date 2017/08/12 00:32
+ * @version 1.0.0-beta.43
+ * @date 2017/08/12 01:23
  * @branch master
- * @commit c276345e5b1576f6185b1f79099ac05000a03be8
+ * @commit 4f6b8dfc2dd43444b79ef99227701d3e35838e5d
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/12 00:32', GIT_BRANCH = 'master', GIT_COMMIT = 'c276345e5b1576f6185b1f79099ac05000a03be8'
+	var BUILD_DATE='2017/08/12 01:23', GIT_BRANCH = 'master', GIT_COMMIT = '4f6b8dfc2dd43444b79ef99227701d3e35838e5d'
 
 	/**
 	 * @license RequireJS domReady 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
@@ -7318,7 +7318,7 @@
 	  })();
 	}
 
-	var version = "1.0.0-beta.42";
+	var version = "1.0.0-beta.43";
 
 
 	var homepage = "https://3d.io";
@@ -15171,8 +15171,8 @@
 	  // API
 	  params = params || {};
 	  options = options || {};
-	  var secretApiKey = options.secretApiKey;
-	  var publishableApiKey = options.publishableApiKey;
+	  var secretApiKey = options.secretApiKey || configs.secretApiKey;
+	  var publishableApiKey = options.publishableApiKey || configs.publishableApiKey;
 
 	  // try cache
 	  // var cacheKey
