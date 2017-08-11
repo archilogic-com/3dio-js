@@ -81,11 +81,12 @@ JsonRpc2Client.prototype = {
       // response to an open request
       if (response.error) {
         if (response.error.message) {
-          if (runtime.isDebugMode) console.error('API error response: ', response.error, '\nOriginal JSON-RPC2 request: ', request.message)
+          // valid JSON-RPC2 error message. log only in debug mode
+          if (runtime.isDebugMode) console.error('API error response: "'+response.error.message+'"\nResponse JSON-RPC2 ID: '+id+'\nOriginal JSON-RPC2 request: '+JSON.stringify(request.message, null, 2))
           request._reject(response.error.message)
         } else {
-          // has no error message (non-standard): log everything into browser console
-          if (runtime.isDebugMode) console.error('API error response: ', response, '\nOriginal JSON-RPC2 request: ', request.message)
+          // non-standard (unexpected) error: log everything into console
+          console.error('API error (not JSON-RPC2 standard): '+JSON.stringify(response)+'\nOriginal JSON-RPC2 request: '+JSON.stringify(request.message, null, 2))
           request._reject('Undefined Error. Check console for details.')
         }
       } else {

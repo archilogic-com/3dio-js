@@ -90,12 +90,16 @@ function sendHttpRequest (rpcRequest, secretKey) {
     headers: headers,
     credentials: (isTrustedOrigin ? 'include' : 'omit' ) //TODO: Find a way to allow this more broadly yet safely
   }).then(function (response) {
-    return response.json()
-  }).then(function (data) {
-    rpcClient.handleResponse(data)
-    return null
-  }).catch(function (error) {
-    rpcRequest.cancel('Sorry, HTTP error occured. Please check console for more information.')
+    // try to parse JSON in any case because valid JSON-RPC2 errors do have error status too
+    response.json().then(function onParsingSuccess(data){
+      // rpc client will handle JSON-RPC2 success messages and errors and resolve or reject prcRequest promise accordingly
+      rpcClient.handleResponse(data)
+    }).catch(function onParsingError(){
+      // response is not a valid json error message. (most likely a network error)
+      var errorMessage = 'API request to '+configs.servicesUrl+' failed: '+response.status+': '+response.statusText+'\nOriginal JSON-RPC2 request: '+JSON.stringify(rpcRequest.message, null, 2)
+      console.error(errorMessage)
+      rpcRequest.cancel(errorMessage)
+    })
   })
 
 }
