@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.40
- * @date 2017/08/10 22:12
+ * @date 2017/08/11 02:06
  * @branch master
- * @commit 525ff9d1037379a72a39211b775f3c226938076f
+ * @commit 6b419e149625df2e5515446bfaf9ec7d3f40a4b2
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/10 22:12', GIT_BRANCH = 'master', GIT_COMMIT = '525ff9d1037379a72a39211b775f3c226938076f'
+	var BUILD_DATE='2017/08/11 02:06', GIT_BRANCH = 'master', GIT_COMMIT = '6b419e149625df2e5515446bfaf9ec7d3f40a4b2'
 
 	/**
 	 * @license RequireJS domReady 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
@@ -15123,11 +15123,12 @@
 	      // response to an open request
 	      if (response.error) {
 	        if (response.error.message) {
-	          if (runtime.isDebugMode) console.error('API error response: ', response.error, '\nOriginal JSON-RPC2 request: ', request.message);
+	          // valid JSON-RPC2 error message. log only in debug mode
+	          if (runtime.isDebugMode) console.error('API error response: "'+response.error.message+'"\nResponse JSON-RPC2 ID: '+id+'\nOriginal JSON-RPC2 request: '+JSON.stringify(request.message, null, 2));
 	          request._reject(response.error.message);
 	        } else {
-	          // has no error message (non-standard): log everything into browser console
-	          if (runtime.isDebugMode) console.error('API error response: ', response, '\nOriginal JSON-RPC2 request: ', request.message);
+	          // non-standard (unexpected) error: log everything into console
+	          console.error('API error (not JSON-RPC2 standard): '+JSON.stringify(response)+'\nOriginal JSON-RPC2 request: '+JSON.stringify(request.message, null, 2));
 	          request._reject('Undefined Error. Check console for details.');
 	        }
 	      } else {
@@ -15210,12 +15211,16 @@
 	    headers: headers,
 	    credentials: (isTrustedOrigin ? 'include' : 'omit' ) //TODO: Find a way to allow this more broadly yet safely
 	  }).then(function (response) {
-	    return response.json()
-	  }).then(function (data) {
-	    rpcClient.handleResponse(data);
-	    return null
-	  }).catch(function (error) {
-	    rpcRequest.cancel('Sorry, HTTP error occured. Please check console for more information.');
+	    // try to parse JSON in any case because valid JSON-RPC2 errors do have error status too
+	    response.json().then(function onParsingSuccess(data){
+	      // rpc client will handle JSON-RPC2 success messages and errors and resolve or reject prcRequest promise accordingly
+	      rpcClient.handleResponse(data);
+	    }).catch(function onParsingError(){
+	      // response is not a valid json error message. (most likely a network error)
+	      var errorMessage = 'API request to '+configs.servicesUrl+' failed: '+response.status+': '+response.statusText+'\nOriginal JSON-RPC2 request: '+JSON.stringify(rpcRequest.message, null, 2);
+	      console.error(errorMessage);
+	      rpcRequest.cancel(errorMessage);
+	    });
 	  });
 
 	}
@@ -18860,7 +18865,8 @@
 
 	  // core
 	  runtime: runtime,
-	  configs: configs
+	  configs: configs,
+	  config: configs  // alias
 
 	};
 
