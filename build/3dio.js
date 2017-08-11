@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.41
- * @date 2017/08/11 02:08
+ * @date 2017/08/12 00:31
  * @branch master
- * @commit 1f6881d0cdf43a24b0e49997b72ba23e64444a39
+ * @commit 828b46cccd8cb206ef5299fbcf095d2f9be4a6eb
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/11 02:08', GIT_BRANCH = 'master', GIT_COMMIT = '1f6881d0cdf43a24b0e49997b72ba23e64444a39'
+	var BUILD_DATE='2017/08/12 00:31', GIT_BRANCH = 'master', GIT_COMMIT = '828b46cccd8cb206ef5299fbcf095d2f9be4a6eb'
 
 	/**
 	 * @license RequireJS domReady 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
@@ -7600,6 +7600,8 @@
 
 	var defaults = Object.freeze({
 	  logLevel:      'warn',
+	  publishableApiKey: null,
+	  secretApiKey: null,
 	  servicesUrl:   'https://spaces.archilogic.com/api/v2',
 	  storageDomain: 'storage.3d.io',
 	  storageDomainNoCdn: 'storage-nocdn.3d.io'
@@ -15169,7 +15171,8 @@
 	  // API
 	  params = params || {};
 	  options = options || {};
-	  var secretKey = options.secretKey;
+	  var secretApiKey = options.secretApiKey;
+	  var publishableApiKey = options.publishableApiKey;
 
 	  // try cache
 	  // var cacheKey
@@ -15184,7 +15187,7 @@
 	  // internals
 	  var rpcRequest = rpcClient.createRequest(methodName, params);
 
-	  sendHttpRequest(rpcRequest, secretKey);
+	  sendHttpRequest(rpcRequest, secretApiKey, publishableApiKey);
 
 	  // add to cache
 	  // if (useCache) {
@@ -15195,14 +15198,15 @@
 
 	}
 
-	function sendHttpRequest (rpcRequest, secretKey) {
+	function sendHttpRequest (rpcRequest, secretApiKey, publishableApiKey) {
 
 	  var isTrustedOrigin = ( runtime.isBrowser && window.location.href.match(/^[^\:]+:\/\/([^\.]+\.)?(3d\.io|archilogic.com|localhost)(:\d+)?\//) );
 	  var headers = {
 	    'Content-Type': 'application/json',
 	    'Accept': 'application/json'
 	  };
-	  if (secretKey) headers['X-Secret-Key'] = secretKey;
+	  if (secretApiKey) headers['X-Secret-Key'] = secretApiKey;
+	  if (publishableApiKey) headers['X-Publishable-Key'] = publishableApiKey;
 
 	  // send request
 	  fetch$1(configs.servicesUrl, {
@@ -15417,7 +15421,8 @@
 	  three: false,
 	  aFrame: true,
 	  onError: function (){
-	    console.log('AFRAME library not found: related features will be disabled.');
+	    // show aframe dependency warning, since it is unexpected to run aframe on server
+	    if (runtime.isBrowser) console.log('AFRAME library not found: related features will be disabled.');
 	  }
 	}, function registerComponents () {
 	  AFRAME.registerComponent('io3d-data3d', data3dComponent);
@@ -17180,9 +17185,87 @@
 	  })
 	}
 
+	/**
+	 * Generate publishable API key
+	 */
+
+	function generatePublishableApiKey (args) {
+
+	  var allowedDomains = args.allowedDomains;
+
+	  logger.debug('Sending API request to generate publishable API key ...');
+	  return callService('Organization.generatePublishableApiKey', {
+	    allowedDomains: allowedDomains
+	  }).then(function onSuccess(key) {
+	    logger.debug('API: Generating publishable API key successful: ', key);
+	    return key
+	  }, function onReject(error) {
+	    logger.error('API: Error generating publishable key.', error);
+	    return bluebird_1.reject(error)
+	  })
+	}
+
+	/**
+	 * List publishable API keys
+	 */
+
+	function listPublishableApiKeys () {
+	  logger.debug('Sending API request to list publishable API keys ...');
+	  return callService('Organization.listPublishableApiKeys').then(function onSuccess(keys) {
+	    logger.debug('API: Listing publishable API keys successful: ', keys);
+	    return keys
+	  }, function onReject(error) {
+	    logger.error('API: Error listing publishable keys.', error);
+	    return bluebird_1.reject(error)
+	  })
+	}
+
+	/**
+	 * Update publishable API key domains
+	 */
+
+	function updatePublishableApiKeyDomains (args) {
+
+	  var key = args.key;
+	  var allowedDomains = args.allowedDomains;
+
+	  logger.debug('Sending API request to update publishable API key domains ...');
+	  return callService('Organization.updatePublishableApiKeyDomains', {
+	    key: key,
+	    allowedDomains: allowedDomains
+	  }).then(function onSuccess(message) {
+	    logger.debug('API: Updating publishable API key domains successful: ', message);
+	    return message
+	  }, function onReject(error) {
+	    logger.error('API: Error updating publishable key domains.', error);
+	    return bluebird_1.reject(error)
+	  })
+	}
+
+	/**
+	 * Revoke publishable API key
+	 */
+
+	function revokePublishableApiKey (args) {
+
+	  var key = args.key;
+
+	  logger.debug('Sending API request to generate publishable API key ...');
+	  return callService('Organization.revokePublishableApiKey', {
+	    key: key
+	  }).then(function onSuccess(message) {
+	    logger.debug('API: Revoking publishable API key successful: ', message);
+	    return message
+	  }, function onReject(error) {
+	    logger.error('API: Error revoking publishable key.', error);
+	    return bluebird_1.reject(error)
+	  })
+	}
+
 	// export
 
 	var auth = {
+	  // user
 	  getSession: getSession,
 	  session$: session$,
 	  signUp: signUp,
@@ -17194,8 +17277,14 @@
 	  setPassword: setPassword,
 	  requestPasswordReset: requestPasswordReset,
 	  resendActivationEmail: resendActivationEmail,
+	  // secret api key
 	  getSecretApiKey: getSecretApiKey,
-	  regenerateSecretApiKey: regenerateSecretApiKey
+	  regenerateSecretApiKey: regenerateSecretApiKey,
+	  // publishable api keys
+	  generatePublishableApiKey: generatePublishableApiKey,
+	  listPublishableApiKeys: listPublishableApiKeys,
+	  updatePublishableApiKeyDomains: updatePublishableApiKeyDomains,
+	  revokePublishableApiKey: revokePublishableApiKey
 	};
 
 	var FALLBACK_MIME_TYPE = 'application/octet-stream';
