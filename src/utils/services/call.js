@@ -17,8 +17,8 @@ export default function callService (methodName, params, options) {
   // API
   params = params || {}
   options = options || {}
-  var secretApiKey = options.secretApiKey
-  var publishableApiKey = options.publishableApiKey
+  var secretApiKey = options.secretApiKey || configs.secretApiKey
+  var publishableApiKey = options.publishableApiKey || configs.publishableApiKey
 
   // try cache
   // var cacheKey
