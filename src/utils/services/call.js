@@ -17,7 +17,8 @@ export default function callService (methodName, params, options) {
   // API
   params = params || {}
   options = options || {}
-  var secretKey = options.secretKey
+  var secretApiKey = options.secretApiKey
+  var publishableApiKey = options.publishableApiKey
 
   // try cache
   // var cacheKey
@@ -32,7 +33,7 @@ export default function callService (methodName, params, options) {
   // internals
   var rpcRequest = rpcClient.createRequest(methodName, params)
 
-  sendHttpRequest(rpcRequest, secretKey)
+  sendHttpRequest(rpcRequest, secretApiKey, publishableApiKey)
 
   // add to cache
   // if (useCache) {
@@ -74,14 +75,15 @@ function handleIncomingMessage (event) {
   }
 }
 
-function sendHttpRequest (rpcRequest, secretKey) {
+function sendHttpRequest (rpcRequest, secretApiKey, publishableApiKey) {
 
   var isTrustedOrigin = ( runtime.isBrowser && window.location.href.match(/^[^\:]+:\/\/([^\.]+\.)?(3d\.io|archilogic.com|localhost)(:\d+)?\//) )
   var headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   }
-  if (secretKey) headers['X-Secret-Key'] = secretKey
+  if (secretApiKey) headers['X-Secret-Key'] = secretApiKey
+  if (publishableApiKey) headers['X-Publishable-Key'] = publishableApiKey
 
   // send request
   fetch(configs.servicesUrl, {

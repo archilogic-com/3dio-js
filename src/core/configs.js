@@ -4,6 +4,8 @@ import log from 'js-logger'
 
 var defaults = Object.freeze({
   logLevel:      'warn',
+  publishableApiKey: null,
+  secretApiKey: null,
   servicesUrl:   'https://spaces.archilogic.com/api/v2',
   storageDomain: 'storage.3d.io',
   storageDomainNoCdn: 'storage-nocdn.3d.io'
