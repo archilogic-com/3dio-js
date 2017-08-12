@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.43
- * @date 2017/08/12 01:23
+ * @date 2017/08/12 19:03
  * @branch master
- * @commit c709bcabfc35ac3f51ee55732a5361764e1171df
+ * @commit d7d2d3cb6c381649807eaedf6641db249573362a
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/12 01:23', GIT_BRANCH = 'master', GIT_COMMIT = 'c709bcabfc35ac3f51ee55732a5361764e1171df'
+	var BUILD_DATE='2017/08/12 19:03', GIT_BRANCH = 'master', GIT_COMMIT = 'd7d2d3cb6c381649807eaedf6641db249573362a'
 
 	/**
 	 * @license RequireJS domReady 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
@@ -15351,10 +15351,10 @@
 
 	  update: function () {
 	    var this_ = this;
-	    var productId = this_.data.id;
+	    var furnitureId = this_.data.id;
 
 	    // check params
-	    if (!productId || productId === '') return
+	    if (!furnitureId || furnitureId === '') return
 
 	    // remove old mesh
 	    this_.remove();
@@ -15363,11 +15363,11 @@
 	    this_.mesh = new THREE.Object3D();
 	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
 
-	    // get product data
-	    io3d.furniture.get(productId).then(function (result) {
+	    // get furniture data
+	    io3d.furniture.get(furnitureId).then(function (result) {
 	      // Expose properties
-	      this_.productInfo = result;
-	      this_.data3d = result.data3d;
+	      this_.info = result.info; // lightweight info like name, manufacturer, description ...
+	      this_.data3d = result.data3d; // geometries and materials
 
 	      // Parse & expose materials
 	      this_.availableMaterials = {};
@@ -15397,8 +15397,8 @@
 	      this_.el.data3d = result.data3d;
 	      this_.el.setObject3D('mesh', this_.mesh);
 	      // emit event
-	      if (this_._prevId !== productId) this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
-	      this_._prevId = productId;
+	      if (this_._prevId !== furnitureId) this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
+	      this_._prevId = furnitureId;
 	    });
 	  },
 
@@ -15437,31 +15437,32 @@
 	  }
 	};
 
-	function normalizeFurnitureResult (rawItem) {
+	function normalizeFurnitureInfo (rawInfo) {
 	  // normalizes furniture definitions from server side endpoints
 	  return {
 	    // main info
-	    id: rawItem.productResourceId,
-	    name: rawItem.productDisplayName,
-	    description: rawItem.description,
-	    manufacturer: rawItem.manufacturer,
-	    designer: rawItem.designer,
-	    indexImage: convertKeyToUrl(rawItem.preview),
-	    images: rawItem.images.map(convertKeyToUrl),
-	    url: rawItem.link,
-	    year: rawItem.year,
+	    id: rawInfo.productResourceId,
+	    name: rawInfo.productDisplayName,
+	    description: rawInfo.description,
+	    manufacturer: rawInfo.manufacturer,
+	    designer: rawInfo.designer,
+	    indexImage: convertKeyToUrl(rawInfo.preview),
+	    images: rawInfo.images.map(convertKeyToUrl),
+	    url: rawInfo.link,
+	    year: rawInfo.year,
 	    // grouping
-	    collectionIds: rawItem.productCollectionResourceIds,
-	    tags: cleanUpArrays(rawItem.tags),
-	    styles: cleanUpArrays(rawItem.styles),
-	    categories: cleanUpArrays(rawItem.categories),
-	    colors: cleanUpArrays(rawItem.colours),
+	    collectionIds: rawInfo.productCollectionResourceIds,
+	    tags: cleanUpArrays(rawInfo.tags),
+	    styles: cleanUpArrays(rawInfo.styles),
+	    categories: cleanUpArrays(rawInfo.categories),
+	    colors: cleanUpArrays(rawInfo.colours),
 	    // geometry
-	    boundingBox: rawItem.boundingBox,
-	    boundingPoints: rawItem.boundingPoints,
+	    boundingBox: rawInfo.boundingBox,
+	    boundingPoints: rawInfo.boundingPoints,
+	    data3dUrl: convertKeyToUrl(rawInfo.fileKey),
 	    // data info
-	    created: rawItem.createdAt,
-	    updated: rawItem.updatedAt
+	    created: rawInfo.createdAt,
+	    updated: rawInfo.updatedAt
 	  }
 	}
 
@@ -15498,7 +15499,7 @@
 	    }).then(function onSuccess (rawResults) {
 	      apiErrorCount = 0;
 	      // normalize furniture data coming from server side endpoint
-	      return rawResults.map(normalizeFurnitureResult)
+	      return rawResults.map(normalizeFurnitureInfo)
 	    }, function onReject (err) {
 	      console.error('Error fetching furniture:', err);
 	      // try again 3 times
@@ -15508,6 +15509,12 @@
 	  // expose
 	  return callApi()
 
+	}
+
+	function getFurnitureInfo (id) {
+	  return callService('Product.read', { resourceId:id }).then(function(rawInfo){
+	    return normalizeFurnitureInfo(rawInfo)
+	  })
 	}
 
 	// from https://github.com/jbgutierrez/path-parse
@@ -16793,59 +16800,24 @@
 	  })
 	}
 
-	// main
-
-	function getFromStorage (key, options) {
-
-	  // WIP: for now, assume that this is only being used for data3d
-	  // TODO: use options.type or filename extension to specify loader
-	  return loadData3d(convertKeyToUrl$1(key))
-
-	}
-
-	// helpers
-
-	function convertKeyToUrl$1 (key, options) {
-	  // API
-	  options = options || {};
-	  var cdn = options.cdn !== undefined ? options.cdn : true;
-	  var encode = options.encode !== undefined ? options.encode : true;
-	  // check cache
-	  // if (keyToUrlCache[ key + cdn + encode ]) {
-	  //   return keyToUrlCache[ key + cdn + encode ]
-	  // }
-	  // internals
-	  var processedKey = key;
-	  // remove leading slash
-	  var startsWithSlash = /^\/(.*)$/.exec(processedKey);
-	  if (startsWithSlash) {
-	    processedKey = startsWithSlash[1];
-	  }
-	  // encode key if containig special chars
-	  if (encode && !/^[\.\-\_\/a-zA-Z0-9]+$/.test(processedKey)) {
-	    processedKey = encodeURIComponent(processedKey);
-	  }
-	  // compose url
-	  var url = 'https://'+(cdn ? configs.storageDomain : configs.storageDomainNoCdn)+'/' + processedKey;
-	  // add to cache
-	  // keyToUrlCache[ key + cdn + encode ] = url
-	  return url
-	}
-
 	function getFurniture (id) {
-	  return callService('Product.read', { resourceId:id }).then(function(rawResult){
-	    return getFromStorage(rawResult.fileKey).then(function(data3d){
-	      // normalize furniture data coming from server side endpoint
-	      var furnitureData = normalizeFurnitureResult(rawResult);
-	      furnitureData.data3d = data3d;
-	      return furnitureData
+	  // we need to call furniture info first in order to obtain data3d URL
+	  return getFurnitureInfo(id).then(function(info){
+	    return loadData3d(info.data3dUrl).then(function(data3d){
+	      return {
+	        // contains lightweight metadata like designer name and description
+	        info: info,
+	        // contains geometry and material definitions
+	        data3d: data3d
+	      }
 	    })
 	  })
 	}
 
 	var furniture = {
 	  search: searchFurniture,
-	  get: getFurniture
+	  get: getFurniture,
+	  getInfo: getFurnitureInfo
 	};
 
 	var FormData_;
@@ -17528,6 +17500,45 @@
 	  var d = new Date();
 	  return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
 	    + '_' + d.getHours() + '-' + d.getMinutes() // + '-' + d.getSeconds()
+	}
+
+	// main
+
+	function getFromStorage (key, options) {
+
+	  // WIP: for now, assume that this is only being used for data3d
+	  // TODO: use options.type or filename extension to specify loader
+	  return loadData3d(convertKeyToUrl$1(key))
+
+	}
+
+	// helpers
+
+	function convertKeyToUrl$1 (key, options) {
+	  // API
+	  options = options || {};
+	  var cdn = options.cdn !== undefined ? options.cdn : true;
+	  var encode = options.encode !== undefined ? options.encode : true;
+	  // check cache
+	  // if (keyToUrlCache[ key + cdn + encode ]) {
+	  //   return keyToUrlCache[ key + cdn + encode ]
+	  // }
+	  // internals
+	  var processedKey = key;
+	  // remove leading slash
+	  var startsWithSlash = /^\/(.*)$/.exec(processedKey);
+	  if (startsWithSlash) {
+	    processedKey = startsWithSlash[1];
+	  }
+	  // encode key if containig special chars
+	  if (encode && !/^[\.\-\_\/a-zA-Z0-9]+$/.test(processedKey)) {
+	    processedKey = encodeURIComponent(processedKey);
+	  }
+	  // compose url
+	  var url = 'https://'+(cdn ? configs.storageDomain : configs.storageDomainNoCdn)+'/' + processedKey;
+	  // add to cache
+	  // keyToUrlCache[ key + cdn + encode ] = url
+	  return url
 	}
 
 	var storage = {
