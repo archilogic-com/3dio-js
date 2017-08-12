@@ -14,10 +14,10 @@ export default {
 
   update: function () {
     var this_ = this
-    var productId = this_.data.id
+    var furnitureId = this_.data.id
 
     // check params
-    if (!productId || productId === '') return
+    if (!furnitureId || furnitureId === '') return
 
     // remove old mesh
     this_.remove()
@@ -26,11 +26,11 @@ export default {
     this_.mesh = new THREE.Object3D()
     this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh})
 
-    // get product data
-    io3d.furniture.get(productId).then(function (result) {
+    // get furniture data
+    io3d.furniture.get(furnitureId).then(function (result) {
       // Expose properties
-      this_.productInfo = result
-      this_.data3d = result.data3d
+      this_.info = result.info // lightweight info like name, manufacturer, description ...
+      this_.data3d = result.data3d // geometries and materials
 
       // Parse & expose materials
       this_.availableMaterials = {}
@@ -60,8 +60,8 @@ export default {
       this_.el.data3d = result.data3d
       this_.el.setObject3D('mesh', this_.mesh)
       // emit event
-      if (this_._prevId !== productId) this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
-      this_._prevId = productId
+      if (this_._prevId !== furnitureId) this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
+      this_._prevId = furnitureId
     })
   },
 

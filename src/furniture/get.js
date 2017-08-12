@@ -1,14 +1,16 @@
-import callService  from '../utils/services/call.js'
-import getFromStore from '../storage/get.js'
-import normalizeFurnitureApiResult  from './common/normalize-furniture-api-result.js'
+import getFurnitureInfo  from './get-info.js'
+import loadData3d from '../utils/data3d/load.js'
 
 export default function getFurniture (id) {
-  return callService('Product.read', { resourceId:id }).then(function(rawResult){
-    return getFromStore(rawResult.fileKey).then(function(data3d){
-      // normalize furniture data coming from server side endpoint
-      var furnitureData = normalizeFurnitureApiResult(rawResult)
-      furnitureData.data3d = data3d
-      return furnitureData
+  // we need to call furniture info first in order to obtain data3d URL
+  return getFurnitureInfo(id).then(function(info){
+    return loadData3d(info.data3dUrl).then(function(data3d){
+      return {
+        // contains lightweight metadata like designer name and description
+        info: info,
+        // contains geometry and material definitions
+        data3d: data3d
+      }
     })
   })
 }

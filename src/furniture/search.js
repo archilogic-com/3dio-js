@@ -1,5 +1,5 @@
 import callService  from '../utils/services/call.js'
-import normalizeFurnitureApiResult  from './common/normalize-furniture-api-result.js'
+import normalizeFurnitureInfo from './common/normalize-furniture-info.js'
 
 export default function searchFurniture (query, options) {
 
@@ -21,7 +21,7 @@ export default function searchFurniture (query, options) {
     }).then(function onSuccess (rawResults) {
       apiErrorCount = 0
       // normalize furniture data coming from server side endpoint
-      return rawResults.map(normalizeFurnitureApiResult)
+      return rawResults.map(normalizeFurnitureInfo)
     }, function onReject (err) {
       console.error('Error fetching furniture:', err)
       // try again 3 times
