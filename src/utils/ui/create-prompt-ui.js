@@ -31,11 +31,24 @@ export default function createPromptUi (a, b) {
   if (multiLine) {
     var style = inputMessage && !el.isElement(inputMessage) ? 'margin: 1em 0 0 0;' : 'margin: 0 0 0 0;'
     style += 'min-height: '+(multiLineHeight ? multiLineHeight : '150px')+';'
-    var inputEl = el('<textarea>', { style: style }).appendTo(options.message)
+    var inputEl = el('<textarea>', {
+      style: style,
+      autocomplete: 'off',
+      autocorrect: 'off',
+      autocapitalize: 'off',
+      spellcheck: false
+    }).appendTo(options.message)
     inputEl.innerHTML = value
   } else {
     var style = inputMessage && !el.isElement(inputMessage) ? 'margin: 1em 0 0.5em 0;' : 'margin: 0 0 0.5em 0;'
-    var inputEl = el('<input>', { value: value, style: style }).appendTo(options.message)
+    var inputEl = el('<input>', {
+      value: value,
+      style: style,
+      autocomplete: 'off',
+      autocorrect: 'off',
+      autocapitalize: 'off',
+      spellcheck: false
+    }).appendTo(options.message)
   }
   // focus input element
   setTimeout(function () {

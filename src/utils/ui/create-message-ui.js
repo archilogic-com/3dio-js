@@ -70,7 +70,7 @@ message.warning = function createErrorMessage (str, expire) {
   return message (str, expire, 'warning')
 }
 message.error = function createErrorMessage (str, expire) {
-  return message (str, expire, 'error')
+  return message (str, expire !== undefined ? expire : 5000, 'error')
 }
 
 export default message

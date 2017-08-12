@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.44
- * @date 2017/08/12 19:05
+ * @date 2017/08/13 00:56
  * @branch master
- * @commit 16ca9a0e83d1ad794443f11222025d1c494789c3
+ * @commit 83f0d71b7ee8ce230846e99189bdd162163713f6
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/12 19:05', GIT_BRANCH = 'master', GIT_COMMIT = '16ca9a0e83d1ad794443f11222025d1c494789c3'
+	var BUILD_DATE='2017/08/13 00:56', GIT_BRANCH = 'master', GIT_COMMIT = '83f0d71b7ee8ce230846e99189bdd162163713f6'
 
 	/**
 	 * @license RequireJS domReady 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
@@ -17546,7 +17546,7 @@
 	  put: putToStore
 	};
 
-	var css = ".io3d-message-list {\n  z-index: 100001;\n  position: fixed;\n  top: 0;\n  left: 50%;\n  margin-left: -200px;\n  width: 400px;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: normal;\n  letter-spacing: 1px;\n  line-height: 1.3;\n  text-align: center;\n}\n.io3d-message-list .message {\n  display: block;\n  opacity: 0;\n}\n.io3d-message-list .message .spacer {\n  display: block;\n  height: 10px;\n}\n.io3d-message-list .message .text {\n  display: inline-block;\n  padding: 10px 12px 10px 12px;\n  border-radius: 3px;\n  color: white;\n  font-size: 18px;\n}\n.io3d-message-list .message .text a {\n  color: white;\n  text-decoration: none;\n  padding-bottom: 0px;\n  border-bottom: 2px solid white;\n}\n.io3d-message-list .message .neutral {\n  background: rgba(0, 0, 0, 0.9);\n}\n.io3d-message-list .message .success {\n  background: linear-gradient(50deg, rgba(35, 165, 9, 0.93), rgba(102, 194, 10, 0.93));\n}\n.io3d-message-list .message .warning {\n  background: linear-gradient(50deg, rgba(165, 113, 9, 0.93), rgba(194, 169, 10, 0.93));\n}\n.io3d-message-list .message .error {\n  background: linear-gradient(50deg, rgba(165, 9, 22, 0.93), rgba(194, 56, 10, 0.93));\n}\n.io3d-overlay {\n  -webkit-box-sizing: border-box;\n  /* Safari/Chrome, other WebKit */\n  -moz-box-sizing: border-box;\n  /* Firefox, other Gecko */\n  box-sizing: border-box;\n  /* Opera/IE 8+ */\n  z-index: 100000;\n  position: fixed;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: 200;\n  font-size: 18px;\n  letter-spacing: 1px;\n  color: white;\n  text-align: center;\n  line-height: 1.3;\n  background: linear-gradient(70deg, rgba(20, 17, 34, 0.96), rgba(51, 68, 77, 0.96));\n}\n@keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n.io3d-overlay .centered-content {\n  display: inline-block;\n  position: relative;\n  top: 50%;\n  text-align: left;\n}\n.io3d-overlay .centered-content .button {\n  margin-right: 4px;\n  margin-top: 1.5em;\n}\n.io3d-overlay .bottom-content {\n  display: inline-block;\n  position: absolute;\n  bottom: 1em;\n  color: rgba(255, 255, 255, 0.35);\n  transform: translateX(-100%);\n  text-align: left;\n}\n.io3d-overlay .bottom-content .clickable {\n  cursor: pointer;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-content .clickable:hover {\n  color: white;\n}\n@keyframes content-slide-in {\n  0% {\n    transform: translateY(-33%);\n  }\n  100% {\n    transform: translateY(-50%);\n  }\n}\n@keyframes content-slide-out {\n  0% {\n    transform: translateY(-50%);\n  }\n  100% {\n    transform: translateY(-33%);\n  }\n}\n.io3d-overlay h1 {\n  margin: 0 0 0.5em 0;\n  font-size: 42px;\n  font-weight: 200;\n  color: white;\n}\n.io3d-overlay p {\n  margin: 1em 0 0 0;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint {\n  position: relative;\n  margin: 1em 0 0 0;\n  color: rgba(255, 255, 255, 0.35);\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  transition: color 600ms;\n}\n.io3d-overlay .hint a:hover {\n  color: white;\n}\n.io3d-overlay .button {\n  cursor: pointer;\n  display: inline-block;\n  color: rgba(255, 255, 255, 0.35);\n  width: 40px;\n  height: 40px;\n  line-height: 32px;\n  border: 2px solid rgba(255, 255, 255, 0.35);\n  border-radius: 50%;\n  text-align: center;\n  font-size: 18px;\n  font-weight: 200;\n  transition: opacity 300ms, color 300ms;\n}\n.io3d-overlay .button:hover {\n  background-color: rgba(255, 255, 255, 0.1);\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .button-highlighted {\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .close-button {\n  display: block;\n  position: absolute;\n  top: 20px;\n  right: 20px;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay input,\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay textarea {\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-size: 24px;\n  font-weight: normal;\n  letter-spacing: 1px;\n  outline: none;\n  margin: 0 0 0 0;\n  color: white;\n}\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay input:not([type='checkbox']):not([type='range']) {\n  padding: 0.2em 0 0.4em 0;\n  width: 100%;\n  line-height: 20px;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  border-radius: 0px;\n  border: 0px;\n  background: transparent;\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n  transition: border-color 1s;\n}\n.io3d-overlay select:focus,\n.io3d-overlay option:focus,\n.io3d-overlay input:not([type='checkbox']):not([type='range']):focus {\n  border-color: white;\n}\n.io3d-overlay textarea {\n  min-height: 60px;\n}\n.io3d-overlay input[type='checkbox'] {\n  position: relative;\n  height: 20px;\n  vertical-align: bottom;\n  margin: 0;\n}\n.io3d-overlay .reveal-api-key-button {\n  cursor: pointer;\n  position: absolute;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 2px;\n  top: 30px;\n  padding: 0.1em 0.2em 0.2em 0.2em;\n  line-height: 20px;\n  transition: color 600ms;\n}\n.io3d-overlay .reveal-api-key-button:hover {\n  color: white;\n}\n";
+	var css = ".io3d-message-list {\n  z-index: 100001;\n  position: fixed;\n  top: 0;\n  left: 50%;\n  margin-left: -200px;\n  width: 400px;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: normal;\n  letter-spacing: 1px;\n  line-height: 1.3;\n  text-align: center;\n}\n.io3d-message-list .message {\n  display: block;\n  opacity: 0;\n}\n.io3d-message-list .message .spacer {\n  display: block;\n  height: 10px;\n}\n.io3d-message-list .message .text {\n  display: inline-block;\n  padding: 10px 12px 10px 12px;\n  border-radius: 3px;\n  color: white;\n  font-size: 18px;\n}\n.io3d-message-list .message .text a {\n  color: white;\n  text-decoration: none;\n  padding-bottom: 0px;\n  border-bottom: 2px solid white;\n}\n.io3d-message-list .message .neutral {\n  background: rgba(0, 0, 0, 0.9);\n}\n.io3d-message-list .message .success {\n  background: linear-gradient(50deg, rgba(35, 165, 9, 0.93), rgba(102, 194, 10, 0.93));\n}\n.io3d-message-list .message .warning {\n  background: linear-gradient(50deg, rgba(165, 113, 9, 0.93), rgba(194, 169, 10, 0.93));\n}\n.io3d-message-list .message .error {\n  background: linear-gradient(50deg, rgba(165, 9, 22, 0.93), rgba(194, 56, 10, 0.93));\n}\n.io3d-overlay {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  z-index: 100000;\n  position: fixed;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: 200;\n  font-size: 18px;\n  letter-spacing: 1px;\n  color: white;\n  text-align: center;\n  line-height: 1.3;\n  background: linear-gradient(70deg, rgba(20, 17, 34, 0.96), rgba(51, 68, 77, 0.96));\n}\n@keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n.io3d-overlay .centered-content {\n  display: inline-block;\n  position: relative;\n  top: 50%;\n  text-align: left;\n}\n.io3d-overlay .centered-content .button {\n  margin-right: 4px;\n  margin-top: 1.5em;\n}\n.io3d-overlay .bottom-content {\n  display: inline-block;\n  position: absolute;\n  bottom: 1em;\n  color: rgba(255, 255, 255, 0.35);\n  transform: translateX(-100%);\n  text-align: left;\n}\n.io3d-overlay .bottom-content .clickable {\n  cursor: pointer;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-content .clickable:hover {\n  color: white;\n}\n.io3d-overlay .bottom-content a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-content a:hover {\n  color: white;\n}\n@keyframes content-slide-in {\n  0% {\n    transform: translateY(-40%);\n  }\n  100% {\n    transform: translateY(-50%);\n  }\n}\n@keyframes content-slide-out {\n  0% {\n    transform: translateY(-50%);\n  }\n  100% {\n    transform: translateY(-40%);\n  }\n}\n.io3d-overlay h1 {\n  margin: 0 0 0.5em 0;\n  font-size: 42px;\n  font-weight: 200;\n  color: white;\n}\n.io3d-overlay p {\n  margin: 1em 0 0 0;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint {\n  position: relative;\n  margin: 1em 0 0 0;\n  color: rgba(255, 255, 255, 0.35);\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  transition: color 600ms;\n}\n.io3d-overlay .hint a:hover {\n  color: white;\n}\n.io3d-overlay .button {\n  cursor: pointer;\n  display: inline-block;\n  color: rgba(255, 255, 255, 0.35);\n  width: 40px;\n  height: 40px;\n  line-height: 32px;\n  border: 2px solid rgba(255, 255, 255, 0.35);\n  border-radius: 50%;\n  text-align: center;\n  font-size: 18px;\n  font-weight: 200;\n  transition: opacity 300ms, color 300ms;\n}\n.io3d-overlay .button:hover {\n  background-color: rgba(255, 255, 255, 0.1);\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .button-highlighted {\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .close-button {\n  display: block;\n  position: absolute;\n  top: 20px;\n  right: 20px;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay input,\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay textarea {\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-size: 24px;\n  font-weight: normal;\n  letter-spacing: 1px;\n  outline: none;\n  margin: 0 0 0 0;\n  color: white;\n}\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay input:not([type='checkbox']):not([type='range']) {\n  padding: 0.2em 0 0.4em 0;\n  width: 100%;\n  line-height: 20px;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  border-radius: 0px;\n  border: 0px;\n  background: transparent;\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n  transition: border-color 1s;\n}\n.io3d-overlay select:focus,\n.io3d-overlay option:focus,\n.io3d-overlay input:not([type='checkbox']):not([type='range']):focus {\n  border-color: white;\n}\n.io3d-overlay textarea {\n  display: box;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  padding: 0.2em 0 0.4em 0;\n  min-width: 100%;\n  max-width: 100%;\n  line-height: 26px;\n  border: 0px;\n  background: rgba(255, 255, 255, 0.08);\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n}\n.io3d-overlay input[type='checkbox'] {\n  position: relative;\n  height: 20px;\n  vertical-align: bottom;\n  margin: 0;\n}\n.io3d-overlay .reveal-api-key-button {\n  cursor: pointer;\n  position: absolute;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 2px;\n  bottom: 0.7em;\n  padding: 0.1em 0.2em 0.2em 0.2em;\n  line-height: 20px;\n  transition: color 600ms;\n}\n.io3d-overlay .reveal-api-key-button:hover {\n  color: white;\n}\n.io3d-overlay a {\n  color: white;\n  text-decoration: none;\n}\n.io3d-overlay .key-menu {\n  position: relative;\n  margin: 2em 0 0 0;\n}\n.io3d-overlay .key-menu .key-image {\n  background: red;\n  width: 220px;\n  height: 180px;\n}\n.io3d-overlay .key-menu .key-button {\n  position: absolute;\n  left: 220px;\n  width: 220px;\n  height: 36px;\n  line-height: 36px;\n  background: rgba(255, 255, 255, 0.2);\n  cursor: pointer;\n  padding: 0 0 0 6px;\n  border-radius: 2px;\n  text-align: center;\n}\n.io3d-overlay .key-menu .go-to-publishable-api-key-ui {\n  top: 32px;\n}\n.io3d-overlay .key-menu .go-to-secret-api-key-ui {\n  bottom: 32px;\n}\n.io3d-overlay .regegenerate-secret-key-button {\n  cursor: pointer;\n}\n.io3d-overlay .publishable-api-keys .list {\n  max-height: 50vh;\n  overflow: auto;\n  padding: 0 15px 0 0;\n}\n.io3d-overlay .publishable-api-keys .list .key-item {\n  position: relative;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 3px;\n  margin-bottom: 12px;\n  padding: 4px 5px 3px 8px;\n}\n.io3d-overlay .publishable-api-keys .list .key {\n  font-weight: 200 !important;\n  border-bottom: 0 !important;\n  margin-bottom: 0 !important;\n  padding: 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .domains {\n  margin: 0 0 0 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .button {\n  position: absolute !important;\n  margin: 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .delete-key-button {\n  right: 8px;\n  top: 9px;\n}\n.io3d-overlay .publishable-api-keys .list .edit-domains-button {\n  positions: absolute;\n  right: 56px;\n  top: 9px;\n}\n.io3d-overlay .publishable-api-keys .generate-new-key-button {\n  margin: 1.5em 0 0 0;\n  display: inline-block;\n  cursor: pointer;\n}\n";
 
 	// basic element utils for convenience inspired by jquery API
 
@@ -17791,7 +17791,7 @@
 	  return message (str, expire, 'warning')
 	};
 	message.error = function createErrorMessage (str, expire) {
-	  return message (str, expire, 'error')
+	  return message (str, expire !== undefined ? expire : 5000, 'error')
 	};
 
 	// configs
@@ -18125,8 +18125,8 @@
 
 	    mainEl.style.opacity = 0;
 	    mainEl.style.display = 'block';
-	    mainEl.style.animation = '1100ms ease-out 0s 1 normal forwards running overlay-fade-in';
-	    centerEl.style.animation = '900ms cubic-bezier(0.2, 0.80, 0.5, 1) 0s 1 normal forwards running content-slide-in';
+	    mainEl.style.animation = '600ms ease-out 0s 1 normal forwards running overlay-fade-in';
+	    centerEl.style.animation = '600ms cubic-bezier(0.2, 0.80, 0.5, 1) 0s 1 normal forwards running content-slide-in';
 
 	    if (callback && typeof callback === 'function') setTimeout(function(){
 	      callback();
@@ -18169,6 +18169,10 @@
 
 	}
 
+	// config
+
+	var CSS_WIDTH$2 = 'width:300px;';
+
 	// main
 
 	function createResetPasswordUi (credentials, options) {
@@ -18195,7 +18199,7 @@
 
 	    // centered content
 
-	    var centerEl = el('<div>', { style: 'width:300px;' }).appendTo(overlay.centerEl);
+	    var centerEl = el('<div>', { style: CSS_WIDTH$2 }).appendTo(overlay.centerEl);
 
 	    // tab with email input
 
@@ -18247,11 +18251,11 @@
 
 	    var bottomEl = el('<div>',{
 	      text: 'Resend activation email.',
-	      style: 'width:300px;',
+	      style: CSS_WIDTH$2,
 	      class: 'clickable',
 	      click: function(){
 	        destroy(function(){
-	          createSignUpUi(
+	          createSignUpUi$1(
 	            {email: emailEl.val()},
 	            {resendActivation: true}
 	          ).then(resolve, reject);
@@ -18261,7 +18265,7 @@
 
 	    var bottomEl = el('<div>',{
 	      text: 'Already have an account? Log in.',
-	      style: 'width:300px;',
+	      style: CSS_WIDTH$2,
 	      class: 'clickable',
 	      click: function(){
 	        destroy(function(){
@@ -18315,6 +18319,10 @@
 	  })
 	}
 
+	// configs
+
+	var CSS_WIDTH$1 = 'width:300px;';
+
 	// main
 
 	function createLogInUi (args) {
@@ -18348,18 +18356,18 @@
 
 	    el('<div>', {
 	      text: 'New? Sign up now.',
-	      style: 'width:300px;',
+	      style: CSS_WIDTH$1,
 	      class: 'clickable',
 	      click: function () {
 	        destroy(function () {
-	          createSignUpUi({email: emailEl.val()}).then(resolve, reject);
+	          createSignUpUi$1({email: emailEl.val()}).then(resolve, reject);
 	        });
 	      }
 	    }).appendTo(overlay.bottomEl);
 
 	    el('<div>', {
 	      text: 'Lost Password? Get a new one.',
-	      style: 'width:300px;',
+	      style: CSS_WIDTH$1,
 	      class: 'clickable',
 	      click: function () {
 	        destroy(function () {
@@ -18370,7 +18378,7 @@
 
 	    // centered content
 
-	    var centerEl = el('<div>', {style: 'width:300px;'}).appendTo(overlay.centerEl);
+	    var centerEl = el('<div>', {style: CSS_WIDTH$1}).appendTo(overlay.centerEl);
 
 	    el('<h1>', {
 	      text: 'Log In'
@@ -18449,7 +18457,7 @@
 	        // offer to resend activation email
 	        if (error.indexOf('check your email and activate your account first') > -1) {
 	          destroy(function () {
-	            createSignUpUi(
+	            createSignUpUi$1(
 	              {email: emailEl.val()},
 	              {resendActivation: true}
 	            ).then(resolve, reject);
@@ -18473,9 +18481,13 @@
 	  })
 	}
 
+	// config
+
+	var CSS_WIDTH = 'width:300px;';
+
 	// main
 
-	function createSignUpUi (credentials, options) {
+	function createSignUpUi$1 (credentials, options) {
 	  runtime.assertBrowser();
 	  return new bluebird_1(function (resolve, reject){
 
@@ -18503,7 +18515,7 @@
 
 	    var bottomEl = el('<div>',{
 	      text: 'Already have an account? Log in.',
-	      style: 'width:300px;',
+	      style: CSS_WIDTH,
 	      class: 'clickable',
 	      click: function(){
 	        destroy(function(){
@@ -18514,7 +18526,7 @@
 
 	    var bottomEl = el('<div>',{
 	      text: 'Lost Password? Get a new one.',
-	      style: 'width:300px;',
+	      style: CSS_WIDTH,
 	      class: 'clickable',
 	      click: function(){
 	        destroy(function(){
@@ -18525,7 +18537,7 @@
 
 	    // centered content
 
-	    var centerEl = el('<div>', { style: 'width:300px;' }).appendTo(overlay.centerEl);
+	    var centerEl = el('<div>', { style: CSS_WIDTH }).appendTo(overlay.centerEl);
 
 	    // tab with email input
 
@@ -18687,7 +18699,7 @@
 	    var hasCancelButton = defaultTo(options.cancelButton, true);
 
 	    // internals
-	    var widthCss = fixWidth ? 'width:'+fixWidth+';max-width:'+maxWidth+';' : 'max-width:'+maxWidth+';';
+	    var widthCss = fixWidth ? 'width:'+fixWidth+';' : 'max-width:'+maxWidth+';';
 
 	    // overlay
 	    var overlay = createOverlay().show();
@@ -18721,7 +18733,7 @@
 
 	    // stuff at the bottom
 
-	    if (bottom) el('<div>', { style: widthCss }).append(bottom).appendTo(overlay.centerEl);
+	    if (bottom) el('<div>', { style: widthCss }).append(bottom).appendTo(overlay.bottomEl);
 
 	    // register ESC key
 
@@ -18791,14 +18803,393 @@
 
 	// main
 
+	function createPromptUi (a, b) {
+	  runtime.assertBrowser();
+
+	  var options;
+	  if (el.isElement(a) || typeof a === 'string') {
+	    options = b || {};
+	    options.message = a;
+	  } else if (typeof a === 'object') {
+	    options = a;
+	  } else {
+	    throw 'Argument mismatch https://3d.io/docs/api/1/ui.html'
+	  }
+
+	  var value = options.value || '';
+	  var inputMessage = options.message;
+	  var multiLine = options.multiLine;
+	  var multiLineHeight = options.multiLineHeight && typeof options.multiLineHeight === 'number' ? options.multiLineHeight+'px' : options.multiLineHeight;
+	  options.width = options.width ? options.width : '500px';
+
+	  // override message with new one
+	  options.message = el('<div>');
+	  // append input message
+	  if (inputMessage) options.message.append(inputMessage);
+	  // create input box for prompt
+	  if (multiLine) {
+	    var style = inputMessage && !el.isElement(inputMessage) ? 'margin: 1em 0 0 0;' : 'margin: 0 0 0 0;';
+	    style += 'min-height: '+(multiLineHeight ? multiLineHeight : '150px')+';';
+	    var inputEl = el('<textarea>', {
+	      style: style,
+	      autocomplete: 'off',
+	      autocorrect: 'off',
+	      autocapitalize: 'off',
+	      spellcheck: false
+	    }).appendTo(options.message);
+	    inputEl.innerHTML = value;
+	  } else {
+	    var style = inputMessage && !el.isElement(inputMessage) ? 'margin: 1em 0 0.5em 0;' : 'margin: 0 0 0.5em 0;';
+	    var inputEl = el('<input>', {
+	      value: value,
+	      style: style,
+	      autocomplete: 'off',
+	      autocorrect: 'off',
+	      autocapitalize: 'off',
+	      spellcheck: false
+	    }).appendTo(options.message);
+	  }
+	  // focus input element
+	  setTimeout(function () {
+	    inputEl.focus();
+	  }, 100);
+
+	  return createConfirmUi(options).then(function onConfirm (isConfirmed) {
+	    // behaves like window.confirm() => return value on confirm or null on cancel
+	    return isConfirmed ? inputEl.val() : null
+	  })
+
+	}
+
+	// configs
+
+	var CSS_WIDTH$4 = 'width:620px;';
+
+	// main
+
+	function createPublishableApiKeysUi (a, b) {
+	  runtime.assertBrowser();
+
+	  return getSession().then(function (session) {
+	    if (!session.isAuthenticated) {
+	      // show sign up screen
+	      message('Please sign up or log in to<br>access your publishable API keys.');
+	      return createSignUpUi().then(function () {
+	        return createPublishableApiKeysUi()
+	      })
+	    }
+
+	    return new Promise(function (resolve, reject) {
+
+	      // overlay
+	      var overlay = createOverlay().show();
+
+	      // close button
+
+	      el('<div>', {
+	        text: 'x',
+	        class: 'button close-button',
+	        click: cancel
+	      }).appendTo(overlay.mainEl);
+
+	      // centered
+
+	      var centerEl = el('<div>', {
+	        class: 'publishable-api-keys',
+	        style:CSS_WIDTH$4
+	      }).appendTo(overlay.centerEl);
+
+	      el('<h1>', {html: 'Publishable API Keys'}).appendTo(centerEl);
+
+	      var listEl = el('<div>', {class: 'list'}).appendTo(centerEl);
+	      listPublishableApiKeys().then(function onSuccess (list) {
+	        // create html elements for every key
+	        list.forEach(function (item) {
+
+	          var containerEl = el('<div>', {
+	            class: 'key-item'
+	          }).appendTo(listEl);
+
+	          var keyEl = el('<input>', {
+	            class: 'key',
+	            type: 'text',
+	            value: item.key
+	          }).appendTo(containerEl);
+	          keyEl.addEventListener('click', keyEl.select);
+
+	          el('<div>', {
+	            class: 'hint domains',
+	            html: 'Domains: ' + item.allowedDomains.join(' ')
+	          }).appendTo(containerEl);
+
+	          el('<div>', {
+	            class: 'button delete-key-button',
+	            click: function () {
+	              destroy(function(){
+	                createConfirmUi({
+	                  width: 500,
+	                  title: 'Delete Publishable API Key ?',
+	                  message: 'This action can not be undone.<br><br>Key:<br><b>'+item.key+'</b><br><br>Allowed domains:<br><b>'+item.allowedDomains.join(' ')+'</b>'
+	                }).then(function(isConfirmed){
+	                  if (isConfirmed) {
+	                    return revokePublishableApiKey({ key: item.key }).then(function(){
+	                      message.success('Deleted publishable API key<br>'+item.key);
+	                    })
+	                  }
+	                }).then(function(){
+	                  // return to publishable api key ui
+	                  createPublishableApiKeysUi().then(resolve, reject);
+	                }).catch(function(error){
+	                  message.error('Error deleting publishable API key<br>'+error);
+	                  // return to publishable api key ui
+	                  createPublishableApiKeysUi().then(resolve, reject);
+	                });
+	              });
+	            }
+	          }).appendTo(containerEl);
+
+	          el('<div>', {
+	            class: 'button edit-domains-button',
+	            click: function () {
+	              destroy(function () {
+	                // ask user for allowed domains
+	                createPromptUi({
+	                  title: 'Allowed Domains',
+	                  message: 'Publishable API key:<br><b>'+item.key+'</b><br><br>Please specify allowed domains separated by empty space.<br>Example: "localhost *.3d.io mypage.com"',
+	                  bottom: el('<a>', {
+	                    html: 'Read more about allowed domains',
+	                    href: 'https://3d.io/docs/api/1/authentication.html',
+	                    target: '_blank'
+	                  }),
+	                  value: item.allowedDomains.join(' ')
+	                }).then(function (result) {
+	                  // update key if user has confirmed
+	                  if (result || result === '') {
+	                    return updatePublishableApiKeyDomains({
+	                      key: item.key,
+	                      allowedDomains: result.split(' ')
+	                    }).then(function(){
+	                      message.success('Updated allowed domains to:<br>'+result);
+	                    })
+	                  }
+	                }).then(function () {
+	                  // return to publishable api key ui
+	                  createPublishableApiKeysUi().then(resolve, reject);
+	                }).catch(function(error){
+	                  message.error('Error updating publishable API key:<br>'+error);
+	                  // return to publishable api key ui
+	                  createPublishableApiKeysUi().then(resolve, reject);
+	                });
+	              });
+	            }
+	          }).appendTo(containerEl);
+
+	        });
+	      });
+
+	      el('<div>', {
+	        class: 'generate-new-key-button',
+	        html: 'Generate new key',
+	        click: function () {
+	          destroy(function () {
+	            // ask user for allowed domains
+	            createPromptUi({
+	              width: 550,
+	              title: 'Generate Publishable Api Key',
+	              message: 'Please specify allowed domains separated by empty space.<br>Example: "localhost *.3d.io mypage.com"',
+	              bottom: el('<a>', {
+	                html: 'Read more about allowed domains',
+	                href: 'https://3d.io/docs/api/1/authentication.html',
+	                target: '_blank'
+	              })
+	            }).then(function (result) {
+	              // generate key if user has confirmed
+	              if (result || result === '') {
+	                return generatePublishableApiKey({allowedDomains: result.split(' ')}).then(function(key){
+	                  message.success('Generated new publishable API key<br>'+key);
+	                })
+	              }
+	            }).then(function () {
+	              // return to publishable api key ui
+	              createPublishableApiKeysUi().then(resolve, reject);
+	            }).catch(function(error){
+	              message.error('Error generating publishable API key:<br>'+error);
+	              // return to publishable api key ui
+	              createPublishableApiKeysUi().then(resolve, reject);
+	            });
+	          });
+	        }
+	      }).appendTo(centerEl);
+
+	      // stuff at the bottom
+
+	      el('<a>', {
+	        class: 'clickable',
+	        style: 'display:block;'+CSS_WIDTH$4,
+	        html: 'Read documentaion about how to use your publishable API keys.',
+	        href: 'https://3d.io/docs/api/1/authentication.html',
+	        target: '_blank'
+	      }).appendTo(overlay.bottomEl);
+
+	      // methods
+
+	      function cancel () {
+	        destroy(function () {
+	          resolve(false);
+	        });
+	      }
+
+	      function destroy (callback) {
+	        // remove DOM elements
+	        overlay.destroy(callback);
+	      }
+
+	    })
+
+	  })
+	}
+
+	// config
+
+	var CSS_WIDTH$5 = 'width:510px;';
+
+	// main
+
+	function createSecretApiKeyUi () {
+	  runtime.assertBrowser();
+
+	  return getSession().then(function (session) {
+	    if (!session.isAuthenticated) {
+	      // show sign up screen
+	      message('Please sign up or log in to<br>access your secret API key.');
+	      return createSignUpUi$1().then(function () {
+	        return createSecretApiKeyUi()
+	      })
+	    }
+
+	    // create dashboard promise
+	    return new bluebird_1(function (resolve, reject) {
+
+	      // DOM
+
+	      // overlay
+	      var overlay = createOverlay().show();
+
+	      // close button
+	      el('<div>', {
+	        text: 'x',
+	        class: 'button close-button',
+	        click: function () {
+	          destroy(function () {
+	            resolve();
+	          });
+	        }
+	      }).appendTo(overlay.mainEl);
+
+	      // stuff at the bottom
+
+	      el('<a>', {
+	        class: 'clickable',
+	        style: 'display:block;'+CSS_WIDTH$5,
+	        html: 'Read documentation about how to use your secret API key.',
+	        href: 'https://3d.io/docs/api/1/authentication.html',
+	        target: '_blank'
+	      }).appendTo(overlay.bottomEl);
+
+	      // centered
+
+	      var centerEl = el('<div>', {style: CSS_WIDTH$5}).appendTo(overlay.centerEl);
+
+	      el('<h1>', {text: 'Secret API Key'}).appendTo(centerEl);
+
+	      // main tab
+
+	      var mainTabEl = el('<div>').appendTo(centerEl);
+
+	      var secretApiKeyElTitle = el('<p>', {
+	        html: 'Please use this key only in secure environments and expose it only trusted 3th parties.'
+	      }).appendTo(mainTabEl);
+
+	      var secretApiKeyContainerEl = el('<p>',{
+	        style: 'position:relative;'
+	      }).appendTo(mainTabEl);
+
+	      var secretApiKeyEl = el('<input>', {type: 'text'}).appendTo(secretApiKeyContainerEl);
+	      var revealButtonEl = el('<div>', {
+	        text: 'reveal',
+	        class: 'reveal-api-key-button',
+	        click: function () {
+	          revealButtonEl.hide();
+	          getSecretApiKey().then(function (key) {
+	            secretApiKeyEl.val(key);
+	          });
+	        }
+	      }).appendTo(secretApiKeyContainerEl);
+	      secretApiKeyEl.addEventListener('click', secretApiKeyEl.select);
+
+	      el('<p>', {
+	        class: 'regegenerate-secret-key-button',
+	        html: 'Regenerate key',
+	        click: function () {
+	          destroy(function () {
+	            // ask user for allowed domains
+	            createConfirmUi({
+	              title: 'Regenrate Key',
+	              message: 'Are you sure you want to regenrate your secret key ?<br><br>This action can not be undone.'
+	            }).then(function (isConfirmed) {
+	              // regenerate key if user has confirmed
+	              if (isConfirmed) {
+	                return regenerateSecretApiKey().then(function(key){
+	                  message.success('Regenerated secret API key');
+	                })
+	              }
+	            }).then(function () {
+	              // return to secret api key ui
+	              createSecretApiKeyUi().then(resolve, reject);
+	            }).catch(function(error){
+	              message.error('Error regenerating secret API key:<br>'+error);
+	              // return to secret api key ui
+	              createSecretApiKeyUi().then(resolve, reject);
+	            });
+	          });
+	        }
+	      }).appendTo(mainTabEl);
+
+	      // register ESC key
+
+	      function onKeyDown (e) {
+	        // ESC
+	        if (e.keyCode === 27) destroy(resolve);
+	      }
+	      document.body.addEventListener('keydown', onKeyDown);
+
+	      // methods
+
+	      function destroy (callback) {
+	        // unbind events
+	        document.body.removeEventListener('keydown', onKeyDown);
+	        // remove DOM elements
+	        overlay.destroy(callback);
+	      }
+
+	    })
+	  })
+	}
+
+	// config
+
+	var CSS_WIDTH$3 = 'width:440px;';
+
+	// main
+
 	function createDevDashboardUi () {
 	  runtime.assertBrowser();
 
 	  return getSession().then(function (session) {
 	    if (!session.isAuthenticated) {
-	      // show login screen
+	      // show sign up screen
 	      message('Please sign up or log in to<br>access your dev dashboard.');
-	      return createSignUpUi().then(function () {
+	      return createSignUpUi$1().then(function () {
 	        return createDevDashboardUi()
 	      })
 	    }
@@ -18824,20 +19215,45 @@
 
 	      // stuff at the bottom
 
-	      var bottomEl = el('<div>', {
+	      el('<a>', {
+	        text: 'Get started with a basic example.',
+	        style: 'display: block;'+CSS_WIDTH$3,
+	        class: 'clickable',
+	        href: 'https://3dio-aframe.glitch.me/',
+	        target: '_blank'
+	      }).appendTo(overlay.bottomEl);
+
+	      el('<a>', {
+	        text: 'Dive right into documentation.',
+	        style: 'display: block;'+CSS_WIDTH$3,
+	        class: 'clickable',
+	        href: 'https://3d.io/docs/api/1/',
+	        target: '_blank'
+	      }).appendTo(overlay.bottomEl);
+
+	      el('<div>', {
 	        text: 'Don\'t like your password? Get a new one.',
-	        style: 'width:450px;',
+	        style: CSS_WIDTH$3,
 	        class: 'clickable',
 	        click: function () {
 	          destroy(function () {
-	            createResetPasswordUi({email: emailEl.val()}).then(resolve, reject);
-	          });
+	            createResetPasswordUi({email: emailEl.val()}).then(function(){
+	              // return dev dashboard
+	              return createDevDashboardUi()
+	            }, function(){
+	              // return dev dashboard
+	              return createDevDashboardUi()
+	            }).then(resolve, reject);
+	        });
 	        }
 	      }).appendTo(overlay.bottomEl);
 
 	      // centered
 
-	      var centerEl = el('<div>', {style: 'width:460px;'}).appendTo(overlay.centerEl);
+	      var centerEl = el('<div>', {
+	        style: CSS_WIDTH$3,
+	        class: 'dev-dashobard'
+	      }).appendTo(overlay.centerEl);
 
 	      el('<h1>', {text: 'Dev Dashboard'}).appendTo(centerEl);
 
@@ -18849,24 +19265,39 @@
 	      var emailEl = el('<input>', {type: 'text'}).appendTo(mainTabEl);
 	      emailEl.val(session.user.email);
 
-	      var secretApiKeyElTitle = el('<p>', {text: 'Secret API key:', class: 'hint'}).appendTo(mainTabEl);
-	      var secretApiKeyEl = el('<input>', {type: 'text'}).appendTo(mainTabEl);
-	      var revealButtonEl = el('<div>', {
-	        text: 'reveal',
-	        class: 'reveal-api-key-button',
-	        click: function () {
-	          revealButtonEl.hide();
-	          getSecretApiKey().then(function (key) {
-	            secretApiKeyEl.val(key);
+	      var keyMenuEl = el('<div>', {
+	        class:'key-menu'
+	      }).appendTo(mainTabEl);
+
+	      el('<div>', {
+	        class:'key-image'
+	      }).appendTo(keyMenuEl);
+
+	      el('<div>', {
+	        class:'key-button go-to-publishable-api-key-ui',
+	        html: 'Publishable API keys',
+	        click: function(){
+	          destroy(function(){
+	            createPublishableApiKeysUi().then(function(){
+	              // return dev dashboard
+	              return createDevDashboardUi()
+	            }).then(resolve, reject);
 	          });
 	        }
-	      }).appendTo(secretApiKeyElTitle);
+	      }).appendTo(keyMenuEl);
 
-	      el('<p>', {
-	        class: 'hint',
-	        style: 'margin-top: 1.7em;',
-	        html: 'Get started with a <a target="_blank" href="https://3dio-aframe.glitch.me/">basic example</a> or dive right into <a target="_blank" href="https://3d.io/docs/api/1/">documentation</a>.'
-	      }).appendTo(mainTabEl);
+	      el('<div>', {
+	        class:'key-button go-to-secret-api-key-ui',
+	        html: 'Secret API key',
+	        click: function(){
+	          destroy(function(){
+	            createSecretApiKeyUi().then(function(){
+	              // return dev dashboard
+	              return createDevDashboardUi()
+	            }).then(resolve, reject);
+	          });
+	        }
+	      }).appendTo(keyMenuEl);
 
 	      // register ESC key
 
@@ -18903,18 +19334,21 @@
 	var ui = {
 	  fileDrop: createFileDropUi,
 	  // authentication
-	  signUp: createSignUpUi,
-	  signup: createSignUpUi, // alias
+	  signUp: createSignUpUi$1,
+	  signup: createSignUpUi$1, // alias
 	  logIn: createLogInUi,
 	  login: createLogInUi, // alias
 	  logOut: createLogOutUi,
 	  logout: createLogOutUi, // alias
 	  requestPasswordReset: createResetPasswordUi,
 	  devDashboard: createDevDashboardUi,
+	  publishableApiKeys: createPublishableApiKeysUi,
+	  secretApiKey: createSecretApiKeyUi,
 	  // messages
 	  message: message,
 	  alert: createAlertUi,
-	  confirm: createConfirmUi
+	  confirm: createConfirmUi,
+	  prompt: createPromptUi
 	};
 
 	// function

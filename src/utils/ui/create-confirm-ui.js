@@ -28,7 +28,7 @@ export default function createConfirmUi (a, b) {
     var hasCancelButton = defaultTo(options.cancelButton, true)
 
     // internals
-    var widthCss = fixWidth ? 'width:'+fixWidth+';max-width:'+maxWidth+';' : 'max-width:'+maxWidth+';'
+    var widthCss = fixWidth ? 'width:'+fixWidth+';' : 'max-width:'+maxWidth+';'
 
     // overlay
     var overlay = createOverlay().show()
@@ -62,7 +62,7 @@ export default function createConfirmUi (a, b) {
 
     // stuff at the bottom
 
-    if (bottom) el('<div>', { style: widthCss }).append(bottom).appendTo(overlay.centerEl)
+    if (bottom) el('<div>', { style: widthCss }).append(bottom).appendTo(overlay.bottomEl)
 
     // register ESC key
 

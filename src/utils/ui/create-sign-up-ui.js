@@ -11,6 +11,10 @@ import createResetPasswordUi from './create-password-reset-request-ui.js'
 import message from './create-message-ui.js'
 import Promise from 'bluebird'
 
+// config
+
+var CSS_WIDTH = 'width:300px;'
+
 // main
 
 export default function createSignUpUi (credentials, options) {
@@ -41,7 +45,7 @@ export default function createSignUpUi (credentials, options) {
 
     var bottomEl = el('<div>',{
       text: 'Already have an account? Log in.',
-      style: 'width:300px;',
+      style: CSS_WIDTH,
       class: 'clickable',
       click: function(){
         destroy(function(){
@@ -52,7 +56,7 @@ export default function createSignUpUi (credentials, options) {
 
     var bottomEl = el('<div>',{
       text: 'Lost Password? Get a new one.',
-      style: 'width:300px;',
+      style: CSS_WIDTH,
       class: 'clickable',
       click: function(){
         destroy(function(){
@@ -63,7 +67,7 @@ export default function createSignUpUi (credentials, options) {
 
     // centered content
 
-    var centerEl = el('<div>', { style: 'width:300px;' }).appendTo(overlay.centerEl)
+    var centerEl = el('<div>', { style: CSS_WIDTH }).appendTo(overlay.centerEl)
 
     // tab with email input
 

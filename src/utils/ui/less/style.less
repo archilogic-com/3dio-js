@@ -112,15 +112,23 @@
                     color: @text-color;
                 }
             }
+            a {
+                color: @text-color-gray;
+                text-decoration: none;
+                transition: color 500ms;
+                &:hover {
+                    color: @text-color;
+                }
+            }
         }
 
         @keyframes content-slide-in {
-            0% { transform: translateY(-33%); }
+            0% { transform: translateY(-40%); }
             100% { transform: translateY(-50%); }
         }
         @keyframes content-slide-out {
             0% { transform: translateY(-50%); }
-            100% { transform: translateY(-33%); }
+            100% { transform: translateY(-40%); }
         }
 
         h1 {
@@ -235,13 +243,97 @@
             position: absolute;
             background: hsla(0,0,100%,0.1);
             border-radius: 2px;
-            top: 30px;
+            bottom: 0.7em;
             padding: 0.1em 0.2em 0.2em 0.2em;
             line-height: 20px;
             &:hover {
                 color: white;
             }
             transition: color 600ms;
+        }
+
+        a {
+            color: @text-color;
+            text-decoration: none;
+        }
+
+        .key-menu {
+            position: relative;
+            margin: 2em 0 0 0;
+            .key-image {
+                background: red;
+                width: 220px;
+                height: 180px;
+            }
+            .key-button {
+                position: absolute;
+                left: 220px;
+                width: 220px;
+                height: 36px;
+                line-height: 36px;
+                background: rgba(255,255,255,0.2);
+                cursor: pointer;
+                padding: 0 0 0 6px;
+                border-radius: 2px;
+                text-align: center;
+            }
+            .go-to-publishable-api-key-ui {
+                top: 32px;
+            }
+            .go-to-secret-api-key-ui {
+                bottom: 32px;
+            }
+        }
+
+        .regegenerate-secret-key-button {
+            cursor: pointer;
+        }
+
+        .publishable-api-keys {
+            .list {
+                max-height: 50vh;
+                overflow: auto;
+                padding: 0 15px 0 0;
+                .key-item {
+                    position: relative;
+                    background: rgba(255,255,255,0.1);
+                    border-radius: 3px;
+                    margin-bottom: 12px;
+                    padding: 4px 5px 3px 8px;
+                }
+                .key {
+                    //font-size: 20px !important;
+                    //line-height: 20px !important;
+                    font-weight: 200 !important;
+                    border-bottom: 0 !important;
+                    margin-bottom: 0 !important;
+                    padding: 0 !important;
+                }
+                .domains {
+                    margin: 0 0 0 0 !important;
+                }
+                .edit-domains {
+
+                }
+                .button {
+                    position: absolute !important;
+                    margin: 0 !important;
+                }
+                .delete-key-button {
+                    right: 8px;
+                    top: 9px;
+                }
+                .edit-domains-button {
+                    positions: absolute;
+                    right: 56px;
+                    top: 9px;
+                }
+            }
+            .generate-new-key-button {
+                margin: 1.5em 0 0 0;
+                display: inline-block;
+                cursor: pointer;
+            }
         }
 
     }

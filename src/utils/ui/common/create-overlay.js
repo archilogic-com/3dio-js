@@ -31,8 +31,8 @@ export default function createOverlay () {
 
     mainEl.style.opacity = 0
     mainEl.style.display = 'block'
-    mainEl.style.animation = '1100ms ease-out 0s 1 normal forwards running overlay-fade-in'
-    centerEl.style.animation = '900ms cubic-bezier(0.2, 0.80, 0.5, 1) 0s 1 normal forwards running content-slide-in'
+    mainEl.style.animation = '600ms ease-out 0s 1 normal forwards running overlay-fade-in'
+    centerEl.style.animation = '600ms cubic-bezier(0.2, 0.80, 0.5, 1) 0s 1 normal forwards running content-slide-in'
 
     if (callback && typeof callback === 'function') setTimeout(function(){
       callback()

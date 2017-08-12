@@ -5,8 +5,14 @@ import el from './common/dom-el.js'
 import createOverlay from './common/create-overlay.js'
 import createSignUpUi from './create-sign-up-ui.js'
 import createResetPasswordUi from './create-password-reset-request-ui.js'
+import createPublishableApiKeysUi from './create-publishable-api-keys-ui.js'
+import createSecretApiKeyUi from './create-secret-api-key-ui.js'
 import message from './create-message-ui.js'
 import Promise from 'bluebird'
+
+// config
+
+var CSS_WIDTH = 'width:440px;'
 
 // main
 
@@ -15,7 +21,7 @@ export default function createDevDashboardUi () {
 
   return getSession().then(function (session) {
     if (!session.isAuthenticated) {
-      // show login screen
+      // show sign up screen
       message('Please sign up or log in to<br>access your dev dashboard.')
       return createSignUpUi().then(function () {
         return createDevDashboardUi()
@@ -43,20 +49,45 @@ export default function createDevDashboardUi () {
 
       // stuff at the bottom
 
-      var bottomEl = el('<div>', {
+      el('<a>', {
+        text: 'Get started with a basic example.',
+        style: 'display: block;'+CSS_WIDTH,
+        class: 'clickable',
+        href: 'https://3dio-aframe.glitch.me/',
+        target: '_blank'
+      }).appendTo(overlay.bottomEl)
+
+      el('<a>', {
+        text: 'Dive right into documentation.',
+        style: 'display: block;'+CSS_WIDTH,
+        class: 'clickable',
+        href: 'https://3d.io/docs/api/1/',
+        target: '_blank'
+      }).appendTo(overlay.bottomEl)
+
+      el('<div>', {
         text: 'Don\'t like your password? Get a new one.',
-        style: 'width:450px;',
+        style: CSS_WIDTH,
         class: 'clickable',
         click: function () {
           destroy(function () {
-            createResetPasswordUi({email: emailEl.val()}).then(resolve, reject)
-          })
+            createResetPasswordUi({email: emailEl.val()}).then(function(){
+              // return dev dashboard
+              return createDevDashboardUi()
+            }, function(){
+              // return dev dashboard
+              return createDevDashboardUi()
+            }).then(resolve, reject)
+        })
         }
       }).appendTo(overlay.bottomEl)
 
       // centered
 
-      var centerEl = el('<div>', {style: 'width:460px;'}).appendTo(overlay.centerEl)
+      var centerEl = el('<div>', {
+        style: CSS_WIDTH,
+        class: 'dev-dashobard'
+      }).appendTo(overlay.centerEl)
 
       el('<h1>', {text: 'Dev Dashboard'}).appendTo(centerEl)
 
@@ -68,24 +99,39 @@ export default function createDevDashboardUi () {
       var emailEl = el('<input>', {type: 'text'}).appendTo(mainTabEl)
       emailEl.val(session.user.email)
 
-      var secretApiKeyElTitle = el('<p>', {text: 'Secret API key:', class: 'hint'}).appendTo(mainTabEl)
-      var secretApiKeyEl = el('<input>', {type: 'text'}).appendTo(mainTabEl)
-      var revealButtonEl = el('<div>', {
-        text: 'reveal',
-        class: 'reveal-api-key-button',
-        click: function () {
-          revealButtonEl.hide()
-          getSecretApiKey().then(function (key) {
-            secretApiKeyEl.val(key)
+      var keyMenuEl = el('<div>', {
+        class:'key-menu'
+      }).appendTo(mainTabEl)
+
+      el('<div>', {
+        class:'key-image'
+      }).appendTo(keyMenuEl)
+
+      el('<div>', {
+        class:'key-button go-to-publishable-api-key-ui',
+        html: 'Publishable API keys',
+        click: function(){
+          destroy(function(){
+            createPublishableApiKeysUi().then(function(){
+              // return dev dashboard
+              return createDevDashboardUi()
+            }).then(resolve, reject)
           })
         }
-      }).appendTo(secretApiKeyElTitle)
+      }).appendTo(keyMenuEl)
 
-      el('<p>', {
-        class: 'hint',
-        style: 'margin-top: 1.7em;',
-        html: 'Get started with a <a target="_blank" href="https://3dio-aframe.glitch.me/">basic example</a> or dive right into <a target="_blank" href="https://3d.io/docs/api/1/">documentation</a>.'
-      }).appendTo(mainTabEl)
+      el('<div>', {
+        class:'key-button go-to-secret-api-key-ui',
+        html: 'Secret API key',
+        click: function(){
+          destroy(function(){
+            createSecretApiKeyUi().then(function(){
+              // return dev dashboard
+              return createDevDashboardUi()
+            }).then(resolve, reject)
+          })
+        }
+      }).appendTo(keyMenuEl)
 
       // register ESC key
 
