@@ -57,12 +57,11 @@
     &-overlay {
 
         // prevent padding changing dimensions
-        -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-        -moz-box-sizing: border-box;    /* Firefox, other Gecko */
-        box-sizing: border-box;         /* Opera/IE 8+ */
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
 
         z-index:100000;
-        //display: none;
         position: fixed;
         top: 0;
         right: 0;
@@ -74,7 +73,6 @@
         font-size: @font-size-text;
         letter-spacing: 1px;
         color: white;
-        //text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
         text-align: center;
         line-height: 1.3;
 
@@ -97,8 +95,6 @@
             .button {
                 margin-right: 4px;
                 margin-top: 1.5em;
-                //border-color: white;
-                //color: white;
             }
         }
 
@@ -107,7 +103,6 @@
             position: absolute;
             bottom: 1em;
             color: @text-color-gray;
-            //margin-left: 50%;
             transform: translateX(-100%);
             text-align: left;
             .clickable {
@@ -207,20 +202,25 @@
             appearance: none;
             border-radius: 0px;
             border: 0px;
-            //border-bottom: 1px solid #333;
-            //background: rgba(0,0,0,0.15);
             background: transparent;
             border-bottom: 2px solid rgba(255,255,255,0.3);
-            //border-radius: 1px;
             &:focus {
                 border-color: white;
             }
             transition: border-color 1s;
         }
         textarea {
-            //width: 40%;
-            //max-width: 40%;
-            min-height: 60px;
+            display: box;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            padding: 0.2em 0 0.4em 0;
+            min-width: 100%;
+            max-width: 100%;
+            line-height: 26px;
+            border: 0px;
+            background: rgba(255,255,255,0.08);
+            border-bottom: 2px solid rgba(255,255,255,0.3);
         }
 
         input[type='checkbox'] {

@@ -9,6 +9,7 @@ import requestPasswordResetUi from './ui/create-password-reset-request-ui.js'
 import createDevDashboardUi from './ui/create-dev-dashboard-ui.js'
 import createConfirmUi from './ui/create-confirm-ui.js'
 import createAlertUi from './ui/create-alert-ui.js'
+import createPromptUi from './ui/create-prompt-ui.js'
 
 // add css to page
 if (runtime.isBrowser) {
@@ -35,7 +36,8 @@ var ui = {
   // messages
   message: createMessageUi,
   alert: createAlertUi,
-  confirm: createConfirmUi
+  confirm: createConfirmUi,
+  prompt: createPromptUi
 }
 
 export default ui
