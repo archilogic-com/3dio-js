@@ -49,25 +49,33 @@ export default function createDevDashboardUi () {
 
       // stuff at the bottom
 
-      el('<a>', {
-        text: 'Get started with a basic example.',
-        style: 'display: block;'+CSS_WIDTH,
-        class: 'clickable',
-        href: 'https://3dio-aframe.glitch.me/',
-        target: '_blank'
+      var bottomEl = el('<div>', {
+        style: 'white-space: nowrap;',
       }).appendTo(overlay.bottomEl)
 
       el('<a>', {
-        text: 'Dive right into documentation.',
-        style: 'display: block;'+CSS_WIDTH,
+        text: 'Get started using 3d.io',
+        style: 'display: inline-block;', //+CSS_WIDTH,
         class: 'clickable',
-        href: 'https://3d.io/docs/api/1/',
+        href: 'https://3d.io/docs/api/1/get-started.html',
         target: '_blank'
-      }).appendTo(overlay.bottomEl)
+      }).appendTo(bottomEl)
+
+      el('<span>', {html: ' | '}).appendTo(bottomEl)
+
+      el('<a>', {
+        text: 'Read more about keys',
+        style: 'display: inline-block;', //+CSS_WIDTH,
+        class: 'clickable',
+        href: 'https://3d.io/docs/api/1/authentication.html',
+        target: '_blank'
+      }).appendTo(bottomEl)
+
+      el('<span>', {html: ' | '}).appendTo(bottomEl)
 
       el('<div>', {
-        text: 'Don\'t like your password? Get a new one.',
-        style: CSS_WIDTH,
+        text: 'Change password',
+        style: 'display: inline-block;', //+CSS_WIDTH,
         class: 'clickable',
         click: function () {
           destroy(function () {
@@ -80,7 +88,7 @@ export default function createDevDashboardUi () {
             }).then(resolve, reject)
         })
         }
-      }).appendTo(overlay.bottomEl)
+      }).appendTo(bottomEl)
 
       // centered
 
@@ -109,7 +117,7 @@ export default function createDevDashboardUi () {
 
       el('<div>', {
         class:'key-button go-to-publishable-api-key-ui',
-        html: 'Publishable API keys',
+        html: 'Get Publishable API Keys',
         click: function(){
           destroy(function(){
             createPublishableApiKeysUi().then(function(){
@@ -122,7 +130,7 @@ export default function createDevDashboardUi () {
 
       el('<div>', {
         class:'key-button go-to-secret-api-key-ui',
-        html: 'Secret API key',
+        html: 'Get Secret API Key',
         click: function(){
           destroy(function(){
             createSecretApiKeyUi().then(function(){

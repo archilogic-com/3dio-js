@@ -51,7 +51,7 @@ export default function createSecretApiKeyUi () {
       el('<a>', {
         class: 'clickable',
         style: 'display:block;'+CSS_WIDTH,
-        html: 'Read documentation about how to use your secret API key.',
+        html: 'Read documentation about secret API key.',
         href: 'https://3d.io/docs/api/1/authentication.html',
         target: '_blank'
       }).appendTo(overlay.bottomEl)
@@ -67,7 +67,7 @@ export default function createSecretApiKeyUi () {
       var mainTabEl = el('<div>').appendTo(centerEl)
 
       var secretApiKeyElTitle = el('<p>', {
-        html: 'Please use this key only in secure environments and expose it only trusted 3th parties.'
+        html: 'Please use this key only in secure environments and expose it only to trusted 3th parties.'
       }).appendTo(mainTabEl)
 
       var secretApiKeyContainerEl = el('<p>',{

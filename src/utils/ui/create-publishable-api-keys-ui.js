@@ -175,7 +175,7 @@ export default function createPublishableApiKeysUi (a, b) {
       el('<a>', {
         class: 'clickable',
         style: 'display:block;'+CSS_WIDTH,
-        html: 'Read documentaion about how to use your publishable API keys.',
+        html: 'Read documentaion about publishable API keys.',
         href: 'https://3d.io/docs/api/1/authentication.html',
         target: '_blank'
       }).appendTo(overlay.bottomEl)

@@ -9,7 +9,8 @@ export default function createOverlay () {
   // DOM
   var mainEl = el('<div>', { class: 'io3d-overlay' }).appendTo(document.body)
   var centerEl = el('<div>', { class: 'centered-content' }).appendTo(mainEl)
-  var bottomEl = el('<div>', { class: 'bottom-content' }).appendTo(mainEl)
+  var bottomContainerEl = el('<div>', { class: 'bottom-container' }).appendTo(mainEl)
+  var bottomEl = el('<div>', { class: 'bottom-content' }).appendTo(bottomContainerEl)
 
   // overlay object
   var result = {
