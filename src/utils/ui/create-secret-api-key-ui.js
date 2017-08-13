@@ -67,7 +67,7 @@ export default function createSecretApiKeyUi () {
       var mainTabEl = el('<div>').appendTo(centerEl)
 
       var secretApiKeyElTitle = el('<p>', {
-        html: 'Please use this key only in secure environments and expose it only to trusted 3th parties.'
+        html: 'Please use this key only in secure environments and expose it only to trusted 3rd parties.'
       }).appendTo(mainTabEl)
 
       var secretApiKeyContainerEl = el('<p>',{
