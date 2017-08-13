@@ -73,6 +73,7 @@ export default function createPublishableApiKeysUi (a, b) {
 
           el('<div>', {
             class: 'button delete-key-button',
+            html: 'x',
             click: function () {
               destroy(function(){
                 createConfirmUi({
