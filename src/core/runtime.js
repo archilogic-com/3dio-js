@@ -48,7 +48,7 @@ var runtime = {
     npmName: packageJson.name,
     version: packageJson.version,
     homepage: packageJson.homepage,
-    gitRepoUrl: packageJson.repository,
+    githubRepository: packageJson.repository,
     gitBranchName: GIT_BRANCH,
     gitCommitHash: GIT_COMMIT.substr(0,7),
     buildDate: BUILD_DATE,
