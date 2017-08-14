@@ -4,7 +4,7 @@ import log from 'js-logger'
 
 var defaults = Object.freeze({
   logLevel:      'warn',
-  publishableApiKey: null,
+  publishableApiKey: getPublishableApiKeyFromUrl(),
   secretApiKey: null,
   servicesUrl:   'https://spaces.archilogic.com/api/v2',
   storageDomain: 'storage.3d.io',
@@ -73,6 +73,28 @@ function setLogLevel (val) {
     }
     console.error(errorMessage)
   }
+}
+
+function getPublishableApiKeyFromUrl () {
+  var libUrl
+  if (document.currentScript) {
+    libUrl = document.currentScript.getAttribute('src')
+  } else {
+    // browsers not supporting currentScript
+    var src, libSearch
+    var scripts = document.getElementsByTagName('script')
+    var libNameRegex = new RegExp('(\/3dio\.js|\/3dio\.min\.js)')
+    // iterating backwarts as the last script is most likely the current one
+    for (var i=scripts.length-1; i>-1; i--) {
+      src = scripts[i].getAttribute('src')
+      if (libNameRegex.exec(src)) {
+        libUrl = src
+        break
+      }
+    }
+  }
+  var keySearch = /pk=([^&]+)/i.exec(libUrl)
+  return keySearch ? keySearch[1] : null
 }
 
 // init
