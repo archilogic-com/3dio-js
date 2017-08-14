@@ -1,4 +1,5 @@
 import log from 'js-logger'
+import runtime from './runtime.js'
 
 // default configs values
 
@@ -76,6 +77,7 @@ function setLogLevel (val) {
 }
 
 function getPublishableApiKeyFromUrl () {
+  if (!runtime.isBrowser) return null
   var libUrl
   if (document.currentScript) {
     libUrl = document.currentScript.getAttribute('src')
