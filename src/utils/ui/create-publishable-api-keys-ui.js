@@ -100,6 +100,7 @@ export default function createPublishableApiKeysUi (a, b) {
 
           el('<div>', {
             class: 'button edit-domains-button',
+            html: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" enable-background="new 0 0 40 40"><style type="text/css">.st0{fill:none;stroke:#fff;stroke-miterlimit:10;}</style><line class="st0" x1="14" y1="25.8" x2="28.6" y2="11.2"/><polygon class="st0" points="8.4,31.6 10.1,24.1 25.8,8.4 31.5,14.1 15.8,29.8"/></svg>',
             click: function () {
               destroy(function () {
                 // ask user for allowed domains

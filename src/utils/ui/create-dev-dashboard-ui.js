@@ -112,7 +112,8 @@ export default function createDevDashboardUi () {
       }).appendTo(mainTabEl)
 
       el('<div>', {
-        class:'key-image'
+        class:'key-image',
+        html:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 172 127"><defs><style>.a{opacity:0.7;stroke-dasharray: 1, 4;}.b{fill:#fff;}.c{fill:none;stroke:#fff;stroke-linecap:round;stroke-miterlimit:10;stroke-width:1px;}.d{opacity:1;}</style></defs><g class="a"><circle class="c" cx="64" cy="64" r="62"/><line class="c" x1="150" y1="30" x2="130" y2="30"/><line class="c" x1="119" y1="36" x2="130" y2="30"/></g><g class="d"><circle class="c" cx="64" cy="64" r="36"/><line class="c" x1="150" y1="98" x2="130" y2="98"/><line class="c" x1="130" y1="98" x2="96.192" y2="82.337"/></g><polygon class="b" points="69.375 60.227 59.813 60.227 59.813 83.867 64.594 86.523 69.375 83.867 67.478 81.581 69.375 79.684 67.478 77.319 69.375 75.422 67.478 73.057 69.375 71.159 67.478 68.794 69.375 66.897 67.478 64.532 69.375 62.635 69.375 60.227"/><path class="b" d="M64.7,39.361A10.894,10.894,0,1,0,75.589,50.255,10.894,10.894,0,0,0,64.7,39.361Zm0,9.056a2.812,2.812,0,1,1,2.812-2.812A2.812,2.812,0,0,1,64.7,48.417Z"/></svg>'
       }).appendTo(keyMenuEl)
 
       el('<div>', {
