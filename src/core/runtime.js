@@ -1,3 +1,4 @@
+import packageJson from '../../package.json'
 import domReady from './runtime/dom-ready.js'
 import Rx from 'rxjs/BehaviorSubject.js'
 
@@ -41,7 +42,18 @@ var runtime = {
     three: threeReady
   },
 
-  webGl: webGlInfo
+  webGl: webGlInfo,
+
+  libInfo: {
+    npmName: packageJson.name,
+    version: packageJson.version,
+    homepage: packageJson.homepage,
+    gitRepoUrl: packageJson.repository,
+    gitBranchName: GIT_BRANCH,
+    gitCommitHash: GIT_COMMIT.substr(0,7),
+    buildDate: BUILD_DATE,
+    license: packageJson.license
+  }
 
 }
 

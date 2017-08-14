@@ -5,10 +5,11 @@ var key = '/fd72bf39-9d3a-471f-a4ff-ecaa3f5ff30b/bake/2017-04-15_22-45-14_XsiltX
 
 
 // get object from base store
- io3d.storage.get(key).then(function(data3d){
-   console.log('materials: ', data3d.materials)
- })
+// io3d.storage.get(key).then(function(data3d){
+//   console.log('materials: ', data3d.materials)
+// })
 
+console.log(io3d.runtime.libInfo)
 
 // io3d.furniture.get('d23062b7-6ec4-45c0-9cee-c96d835b5f54').then(console.log)
 
