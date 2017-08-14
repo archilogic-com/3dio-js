@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.44
- * @date 2017/08/13 00:56
+ * @version 1.0.0-beta.45
+ * @date 2017/08/14 14:13
  * @branch master
- * @commit 83f0d71b7ee8ce230846e99189bdd162163713f6
+ * @commit b25fe2cc78f0148f0424208ea57445819ba20266
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/13 00:56', GIT_BRANCH = 'master', GIT_COMMIT = '83f0d71b7ee8ce230846e99189bdd162163713f6'
+	var BUILD_DATE='2017/08/14 14:13', GIT_BRANCH = 'master', GIT_COMMIT = 'b25fe2cc78f0148f0424208ea57445819ba20266'
 
 	/**
 	 * @license RequireJS domReady 2.0.1 Copyright (c) 2010-2012, The Dojo Foundation All Rights Reserved.
@@ -7318,7 +7318,7 @@
 	  })();
 	}
 
-	var version = "1.0.0-beta.44";
+	var version = "1.0.0-beta.45";
 
 
 	var homepage = "https://3d.io";
@@ -7600,7 +7600,7 @@
 
 	var defaults = Object.freeze({
 	  logLevel:      'warn',
-	  publishableApiKey: null,
+	  publishableApiKey: getPublishableApiKeyFromUrl(),
 	  secretApiKey: null,
 	  servicesUrl:   'https://spaces.archilogic.com/api/v2',
 	  storageDomain: 'storage.3d.io',
@@ -7669,6 +7669,29 @@
 	    }
 	    console.error(errorMessage);
 	  }
+	}
+
+	function getPublishableApiKeyFromUrl () {
+	  if (!runtime.isBrowser) return null
+	  var libUrl;
+	  if (document.currentScript) {
+	    libUrl = document.currentScript.getAttribute('src');
+	  } else {
+	    // browsers not supporting currentScript
+	    var src, libSearch;
+	    var scripts = document.getElementsByTagName('script');
+	    var libNameRegex = new RegExp('(\/3dio\.js|\/3dio\.min\.js)');
+	    // iterating backwarts as the last script is most likely the current one
+	    for (var i=scripts.length-1; i>-1; i--) {
+	      src = scripts[i].getAttribute('src');
+	      if (libNameRegex.exec(src)) {
+	        libUrl = src;
+	        break
+	      }
+	    }
+	  }
+	  var keySearch = /pk=([^&]+)/i.exec(libUrl);
+	  return keySearch ? keySearch[1] : null
 	}
 
 	// init
@@ -17546,7 +17569,7 @@
 	  put: putToStore
 	};
 
-	var css = ".io3d-message-list {\n  z-index: 100001;\n  position: fixed;\n  top: 0;\n  left: 50%;\n  margin-left: -200px;\n  width: 400px;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: normal;\n  letter-spacing: 1px;\n  line-height: 1.3;\n  text-align: center;\n}\n.io3d-message-list .message {\n  display: block;\n  opacity: 0;\n}\n.io3d-message-list .message .spacer {\n  display: block;\n  height: 10px;\n}\n.io3d-message-list .message .text {\n  display: inline-block;\n  padding: 10px 12px 10px 12px;\n  border-radius: 3px;\n  color: white;\n  font-size: 18px;\n}\n.io3d-message-list .message .text a {\n  color: white;\n  text-decoration: none;\n  padding-bottom: 0px;\n  border-bottom: 2px solid white;\n}\n.io3d-message-list .message .neutral {\n  background: rgba(0, 0, 0, 0.9);\n}\n.io3d-message-list .message .success {\n  background: linear-gradient(50deg, rgba(35, 165, 9, 0.93), rgba(102, 194, 10, 0.93));\n}\n.io3d-message-list .message .warning {\n  background: linear-gradient(50deg, rgba(165, 113, 9, 0.93), rgba(194, 169, 10, 0.93));\n}\n.io3d-message-list .message .error {\n  background: linear-gradient(50deg, rgba(165, 9, 22, 0.93), rgba(194, 56, 10, 0.93));\n}\n.io3d-overlay {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  z-index: 100000;\n  position: fixed;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: 200;\n  font-size: 18px;\n  letter-spacing: 1px;\n  color: white;\n  text-align: center;\n  line-height: 1.3;\n  background: linear-gradient(70deg, rgba(20, 17, 34, 0.96), rgba(51, 68, 77, 0.96));\n}\n@keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n.io3d-overlay .centered-content {\n  display: inline-block;\n  position: relative;\n  top: 50%;\n  text-align: left;\n}\n.io3d-overlay .centered-content .button {\n  margin-right: 4px;\n  margin-top: 1.5em;\n}\n.io3d-overlay .bottom-content {\n  display: inline-block;\n  position: absolute;\n  bottom: 1em;\n  color: rgba(255, 255, 255, 0.35);\n  transform: translateX(-100%);\n  text-align: left;\n}\n.io3d-overlay .bottom-content .clickable {\n  cursor: pointer;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-content .clickable:hover {\n  color: white;\n}\n.io3d-overlay .bottom-content a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-content a:hover {\n  color: white;\n}\n@keyframes content-slide-in {\n  0% {\n    transform: translateY(-40%);\n  }\n  100% {\n    transform: translateY(-50%);\n  }\n}\n@keyframes content-slide-out {\n  0% {\n    transform: translateY(-50%);\n  }\n  100% {\n    transform: translateY(-40%);\n  }\n}\n.io3d-overlay h1 {\n  margin: 0 0 0.5em 0;\n  font-size: 42px;\n  font-weight: 200;\n  color: white;\n}\n.io3d-overlay p {\n  margin: 1em 0 0 0;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint {\n  position: relative;\n  margin: 1em 0 0 0;\n  color: rgba(255, 255, 255, 0.35);\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  transition: color 600ms;\n}\n.io3d-overlay .hint a:hover {\n  color: white;\n}\n.io3d-overlay .button {\n  cursor: pointer;\n  display: inline-block;\n  color: rgba(255, 255, 255, 0.35);\n  width: 40px;\n  height: 40px;\n  line-height: 32px;\n  border: 2px solid rgba(255, 255, 255, 0.35);\n  border-radius: 50%;\n  text-align: center;\n  font-size: 18px;\n  font-weight: 200;\n  transition: opacity 300ms, color 300ms;\n}\n.io3d-overlay .button:hover {\n  background-color: rgba(255, 255, 255, 0.1);\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .button-highlighted {\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .close-button {\n  display: block;\n  position: absolute;\n  top: 20px;\n  right: 20px;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay input,\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay textarea {\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-size: 24px;\n  font-weight: normal;\n  letter-spacing: 1px;\n  outline: none;\n  margin: 0 0 0 0;\n  color: white;\n}\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay input:not([type='checkbox']):not([type='range']) {\n  padding: 0.2em 0 0.4em 0;\n  width: 100%;\n  line-height: 20px;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  border-radius: 0px;\n  border: 0px;\n  background: transparent;\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n  transition: border-color 1s;\n}\n.io3d-overlay select:focus,\n.io3d-overlay option:focus,\n.io3d-overlay input:not([type='checkbox']):not([type='range']):focus {\n  border-color: white;\n}\n.io3d-overlay textarea {\n  display: box;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  padding: 0.2em 0 0.4em 0;\n  min-width: 100%;\n  max-width: 100%;\n  line-height: 26px;\n  border: 0px;\n  background: rgba(255, 255, 255, 0.08);\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n}\n.io3d-overlay input[type='checkbox'] {\n  position: relative;\n  height: 20px;\n  vertical-align: bottom;\n  margin: 0;\n}\n.io3d-overlay .reveal-api-key-button {\n  cursor: pointer;\n  position: absolute;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 2px;\n  bottom: 0.7em;\n  padding: 0.1em 0.2em 0.2em 0.2em;\n  line-height: 20px;\n  transition: color 600ms;\n}\n.io3d-overlay .reveal-api-key-button:hover {\n  color: white;\n}\n.io3d-overlay a {\n  color: white;\n  text-decoration: none;\n}\n.io3d-overlay .key-menu {\n  position: relative;\n  margin: 2em 0 0 0;\n}\n.io3d-overlay .key-menu .key-image {\n  background: red;\n  width: 220px;\n  height: 180px;\n}\n.io3d-overlay .key-menu .key-button {\n  position: absolute;\n  left: 220px;\n  width: 220px;\n  height: 36px;\n  line-height: 36px;\n  background: rgba(255, 255, 255, 0.2);\n  cursor: pointer;\n  padding: 0 0 0 6px;\n  border-radius: 2px;\n  text-align: center;\n}\n.io3d-overlay .key-menu .go-to-publishable-api-key-ui {\n  top: 32px;\n}\n.io3d-overlay .key-menu .go-to-secret-api-key-ui {\n  bottom: 32px;\n}\n.io3d-overlay .regegenerate-secret-key-button {\n  cursor: pointer;\n}\n.io3d-overlay .publishable-api-keys .list {\n  max-height: 50vh;\n  overflow: auto;\n  padding: 0 15px 0 0;\n}\n.io3d-overlay .publishable-api-keys .list .key-item {\n  position: relative;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 3px;\n  margin-bottom: 12px;\n  padding: 4px 5px 3px 8px;\n}\n.io3d-overlay .publishable-api-keys .list .key {\n  font-weight: 200 !important;\n  border-bottom: 0 !important;\n  margin-bottom: 0 !important;\n  padding: 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .domains {\n  margin: 0 0 0 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .button {\n  position: absolute !important;\n  margin: 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .delete-key-button {\n  right: 8px;\n  top: 9px;\n}\n.io3d-overlay .publishable-api-keys .list .edit-domains-button {\n  positions: absolute;\n  right: 56px;\n  top: 9px;\n}\n.io3d-overlay .publishable-api-keys .generate-new-key-button {\n  margin: 1.5em 0 0 0;\n  display: inline-block;\n  cursor: pointer;\n}\n";
+	var css = ".io3d-message-list {\n  z-index: 100001;\n  position: fixed;\n  top: 0;\n  left: 50%;\n  margin-left: -200px;\n  width: 400px;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: normal;\n  letter-spacing: 1px;\n  line-height: 1.3;\n  text-align: center;\n}\n.io3d-message-list .message {\n  display: block;\n  opacity: 0;\n}\n.io3d-message-list .message .spacer {\n  display: block;\n  height: 10px;\n}\n.io3d-message-list .message .text {\n  display: inline-block;\n  padding: 10px 12px 10px 12px;\n  border-radius: 3px;\n  color: white;\n  font-size: 18px;\n}\n.io3d-message-list .message .text a {\n  color: white;\n  text-decoration: none;\n  padding-bottom: 0px;\n  border-bottom: 2px solid white;\n}\n.io3d-message-list .message .neutral {\n  background: rgba(0, 0, 0, 0.9);\n}\n.io3d-message-list .message .success {\n  background: linear-gradient(50deg, rgba(35, 165, 9, 0.93), rgba(102, 194, 10, 0.93));\n}\n.io3d-message-list .message .warning {\n  background: linear-gradient(50deg, rgba(165, 113, 9, 0.93), rgba(194, 169, 10, 0.93));\n}\n.io3d-message-list .message .error {\n  background: linear-gradient(50deg, rgba(165, 9, 22, 0.93), rgba(194, 56, 10, 0.93));\n}\n.io3d-overlay {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  z-index: 100000;\n  position: fixed;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: 200;\n  font-size: 18px;\n  letter-spacing: 1px;\n  color: white;\n  text-align: center;\n  line-height: 1.3;\n  background: linear-gradient(70deg, rgba(20, 17, 34, 0.96), rgba(51, 68, 77, 0.96));\n}\n@keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n.io3d-overlay .centered-content {\n  display: inline-block;\n  position: relative;\n  top: 50%;\n  text-align: left;\n}\n.io3d-overlay .centered-content .button {\n  margin-right: 4px;\n  margin-top: 1.5em;\n}\n.io3d-overlay .bottom-container {\n  width: 100%;\n  display: block;\n  position: absolute;\n  bottom: 1em;\n}\n.io3d-overlay .bottom-container .bottom-content {\n  display: inline-block;\n  position: relative;\n  margin-left: auto;\n  margin-right: auto;\n  text-align: left;\n  color: rgba(255, 255, 255, 0.35);\n}\n.io3d-overlay .bottom-container .bottom-content .clickable {\n  cursor: pointer;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-container .bottom-content .clickable:hover {\n  color: white;\n}\n.io3d-overlay .bottom-container .bottom-content a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-container .bottom-content a:hover {\n  color: white;\n}\n@keyframes content-slide-in {\n  0% {\n    transform: translateY(-40%);\n  }\n  100% {\n    transform: translateY(-50%);\n  }\n}\n@keyframes content-slide-out {\n  0% {\n    transform: translateY(-50%);\n  }\n  100% {\n    transform: translateY(-40%);\n  }\n}\n.io3d-overlay h1 {\n  margin: 0 0 0.5em 0;\n  font-size: 42px;\n  font-weight: 200;\n  color: white;\n}\n.io3d-overlay p {\n  margin: 1em 0 0 0;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint {\n  position: relative;\n  margin: 1em 0 0 0;\n  color: rgba(255, 255, 255, 0.35);\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  transition: color 600ms;\n}\n.io3d-overlay .hint a:hover {\n  color: white;\n}\n.io3d-overlay .button {\n  cursor: pointer;\n  display: inline-block;\n  color: rgba(255, 255, 255, 0.35);\n  width: 40px;\n  height: 40px;\n  line-height: 32px;\n  border: 2px solid rgba(255, 255, 255, 0.35);\n  border-radius: 50%;\n  text-align: center;\n  font-size: 18px;\n  font-weight: 200;\n  transition: opacity 300ms, color 300ms;\n}\n.io3d-overlay .button:hover {\n  background-color: rgba(255, 255, 255, 0.1);\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .button-highlighted {\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .close-button {\n  display: block;\n  position: absolute;\n  top: 20px;\n  right: 20px;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay input,\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay textarea {\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-size: 24px;\n  font-weight: normal;\n  letter-spacing: 1px;\n  outline: none;\n  margin: 0 0 0 0;\n  color: white;\n}\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay input:not([type='checkbox']):not([type='range']) {\n  padding: 0.2em 0 0.4em 0;\n  width: 100%;\n  line-height: 20px;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  border-radius: 0px;\n  border: 0px;\n  background: transparent;\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n  transition: border-color 1s;\n}\n.io3d-overlay select:focus,\n.io3d-overlay option:focus,\n.io3d-overlay input:not([type='checkbox']):not([type='range']):focus {\n  border-color: white;\n}\n.io3d-overlay textarea {\n  display: box;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  padding: 0.2em 0 0.4em 0;\n  min-width: 100%;\n  max-width: 100%;\n  line-height: 26px;\n  border: 0px;\n  background: rgba(255, 255, 255, 0.08);\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n}\n.io3d-overlay input[type='checkbox'] {\n  position: relative;\n  height: 20px;\n  vertical-align: bottom;\n  margin: 0;\n}\n.io3d-overlay .reveal-api-key-button {\n  cursor: pointer;\n  position: absolute;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 2px;\n  bottom: 0.7em;\n  padding: 0.1em 0.2em 0.2em 0.2em;\n  line-height: 20px;\n  transition: color 600ms;\n}\n.io3d-overlay .reveal-api-key-button:hover {\n  color: white;\n}\n.io3d-overlay a {\n  color: white;\n  text-decoration: none;\n}\n.io3d-overlay .key-menu {\n  position: relative;\n  margin: 3em 0 0 0;\n}\n.io3d-overlay .key-menu .key-image {\n  background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 172 127\"><defs><style>.a{opacity:0.7;stroke-dasharray: 1, 4;}.b{fill:#fff;}.c{fill:none;stroke:#fff;stroke-linecap:round;stroke-miterlimit:10;stroke-width:1px;}.d{opacity:1;}</style></defs><g class=\"a\"><circle class=\"c\" cx=\"64\" cy=\"64\" r=\"62\"/><line class=\"c\" x1=\"150\" y1=\"30\" x2=\"130\" y2=\"30\"/><line class=\"c\" x1=\"119\" y1=\"36\" x2=\"130\" y2=\"30\"/></g><g class=\"d\"><circle class=\"c\" cx=\"64\" cy=\"64\" r=\"36\"/><line class=\"c\" x1=\"150\" y1=\"98\" x2=\"130\" y2=\"98\"/><line class=\"c\" x1=\"130\" y1=\"98\" x2=\"96.192\" y2=\"82.337\"/></g><polygon class=\"b\" points=\"69.375 60.227 59.813 60.227 59.813 83.867 64.594 86.523 69.375 83.867 67.478 81.581 69.375 79.684 67.478 77.319 69.375 75.422 67.478 73.057 69.375 71.159 67.478 68.794 69.375 66.897 67.478 64.532 69.375 62.635 69.375 60.227\"/><path class=\"b\" d=\"M64.7,39.361A10.894,10.894,0,1,0,75.589,50.255,10.894,10.894,0,0,0,64.7,39.361Zm0,9.056a2.812,2.812,0,1,1,2.812-2.812A2.812,2.812,0,0,1,64.7,48.417Z\"/></svg>');\n  width: 172px;\n  height: 127px;\n}\n.io3d-overlay .key-menu .key-button {\n  position: absolute;\n  left: 156px;\n  height: 36px;\n  line-height: 36px;\n  background: rgba(255, 255, 255, 0.1);\n  cursor: pointer;\n  padding: 0 14px 0 14px;\n  border-radius: 2px;\n  transition: background 300ms linear;\n}\n.io3d-overlay .key-menu .key-button:hover {\n  background: rgba(255, 255, 255, 0.3);\n}\n.io3d-overlay .key-menu .go-to-publishable-api-key-ui {\n  top: 11px;\n}\n.io3d-overlay .key-menu .go-to-secret-api-key-ui {\n  bottom: 11px;\n}\n.io3d-overlay .regegenerate-secret-key-button {\n  cursor: pointer;\n}\n.io3d-overlay .publishable-api-keys .list {\n  max-height: 50vh;\n  overflow: auto;\n  padding: 0 15px 0 0;\n}\n.io3d-overlay .publishable-api-keys .list .key-item {\n  position: relative;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 3px;\n  margin-bottom: 12px;\n  padding: 4px 5px 3px 8px;\n}\n.io3d-overlay .publishable-api-keys .list .key {\n  font-weight: 200 !important;\n  border-bottom: 0 !important;\n  margin-bottom: 0 !important;\n  padding: 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .domains {\n  margin: 0 0 0 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .button {\n  position: absolute !important;\n  margin: 0 !important;\n  background-repeat: no-repeat;\n  background-position: center;\n  color: white;\n  opacity: 0.5;\n}\n.io3d-overlay .publishable-api-keys .list .button:hover {\n  opacity: 1;\n}\n.io3d-overlay .publishable-api-keys .list .delete-key-button {\n  right: 8px;\n  top: 9px;\n}\n.io3d-overlay .publishable-api-keys .list .edit-domains-button {\n  positions: absolute;\n  right: 56px;\n  top: 9px;\n  background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" x=\"0px\" y=\"0px\" viewBox=\"0 0 40 40\" enable-background=\"new 0 0 40 40\"><style type=\"text/css\">.st0{fill:none;stroke:#fff;stroke-miterlimit:10;}</style><line class=\"st0\" x1=\"14\" y1=\"25.8\" x2=\"28.6\" y2=\"11.2\"/><polygon class=\"st0\" points=\"8.4,31.6 10.1,24.1 25.8,8.4 31.5,14.1 15.8,29.8\"/></svg>');\n  background-size: 75%;\n}\n.io3d-overlay .publishable-api-keys .generate-new-key-button {\n  margin: 1.5em 0 0 0;\n  display: inline-block;\n  cursor: pointer;\n}\n";
 
 	// basic element utils for convenience inspired by jquery API
 
@@ -18103,7 +18126,8 @@
 	  // DOM
 	  var mainEl = el('<div>', { class: 'io3d-overlay' }).appendTo(document.body);
 	  var centerEl = el('<div>', { class: 'centered-content' }).appendTo(mainEl);
-	  var bottomEl = el('<div>', { class: 'bottom-content' }).appendTo(mainEl);
+	  var bottomContainerEl = el('<div>', { class: 'bottom-container' }).appendTo(mainEl);
+	  var bottomEl = el('<div>', { class: 'bottom-content' }).appendTo(bottomContainerEl);
 
 	  // overlay object
 	  var result = {
@@ -18924,6 +18948,7 @@
 
 	          el('<div>', {
 	            class: 'button delete-key-button',
+	            html: 'x',
 	            click: function () {
 	              destroy(function(){
 	                createConfirmUi({
@@ -19026,7 +19051,7 @@
 	      el('<a>', {
 	        class: 'clickable',
 	        style: 'display:block;'+CSS_WIDTH$4,
-	        html: 'Read documentaion about how to use your publishable API keys.',
+	        html: 'Read documentaion about publishable API keys.',
 	        href: 'https://3d.io/docs/api/1/authentication.html',
 	        target: '_blank'
 	      }).appendTo(overlay.bottomEl);
@@ -19091,7 +19116,7 @@
 	      el('<a>', {
 	        class: 'clickable',
 	        style: 'display:block;'+CSS_WIDTH$5,
-	        html: 'Read documentation about how to use your secret API key.',
+	        html: 'Read documentation about secret API key.',
 	        href: 'https://3d.io/docs/api/1/authentication.html',
 	        target: '_blank'
 	      }).appendTo(overlay.bottomEl);
@@ -19107,7 +19132,7 @@
 	      var mainTabEl = el('<div>').appendTo(centerEl);
 
 	      var secretApiKeyElTitle = el('<p>', {
-	        html: 'Please use this key only in secure environments and expose it only trusted 3th parties.'
+	        html: 'Please use this key only in secure environments and expose it only to trusted 3rd parties.'
 	      }).appendTo(mainTabEl);
 
 	      var secretApiKeyContainerEl = el('<p>',{
@@ -19215,25 +19240,33 @@
 
 	      // stuff at the bottom
 
-	      el('<a>', {
-	        text: 'Get started with a basic example.',
-	        style: 'display: block;'+CSS_WIDTH$3,
-	        class: 'clickable',
-	        href: 'https://3dio-aframe.glitch.me/',
-	        target: '_blank'
+	      var bottomEl = el('<div>', {
+	        style: 'white-space: nowrap;',
 	      }).appendTo(overlay.bottomEl);
 
 	      el('<a>', {
-	        text: 'Dive right into documentation.',
-	        style: 'display: block;'+CSS_WIDTH$3,
+	        text: 'Get started using 3d.io',
+	        style: 'display: inline-block;', //+CSS_WIDTH,
 	        class: 'clickable',
-	        href: 'https://3d.io/docs/api/1/',
+	        href: 'https://3d.io/docs/api/1/get-started.html',
 	        target: '_blank'
-	      }).appendTo(overlay.bottomEl);
+	      }).appendTo(bottomEl);
+
+	      el('<span>', {html: ' | '}).appendTo(bottomEl);
+
+	      el('<a>', {
+	        text: 'Read more about keys',
+	        style: 'display: inline-block;', //+CSS_WIDTH,
+	        class: 'clickable',
+	        href: 'https://3d.io/docs/api/1/authentication.html',
+	        target: '_blank'
+	      }).appendTo(bottomEl);
+
+	      el('<span>', {html: ' | '}).appendTo(bottomEl);
 
 	      el('<div>', {
-	        text: 'Don\'t like your password? Get a new one.',
-	        style: CSS_WIDTH$3,
+	        text: 'Change password',
+	        style: 'display: inline-block;', //+CSS_WIDTH,
 	        class: 'clickable',
 	        click: function () {
 	          destroy(function () {
@@ -19246,7 +19279,7 @@
 	            }).then(resolve, reject);
 	        });
 	        }
-	      }).appendTo(overlay.bottomEl);
+	      }).appendTo(bottomEl);
 
 	      // centered
 
@@ -19275,7 +19308,7 @@
 
 	      el('<div>', {
 	        class:'key-button go-to-publishable-api-key-ui',
-	        html: 'Publishable API keys',
+	        html: 'Get Publishable API Keys',
 	        click: function(){
 	          destroy(function(){
 	            createPublishableApiKeysUi().then(function(){
@@ -19288,7 +19321,7 @@
 
 	      el('<div>', {
 	        class:'key-button go-to-secret-api-key-ui',
-	        html: 'Secret API key',
+	        html: 'Get Secret API Key',
 	        click: function(){
 	          destroy(function(){
 	            createSecretApiKeyUi().then(function(){
