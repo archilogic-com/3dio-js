@@ -7,6 +7,9 @@ import configs from './core/configs.js'
 import aFrame from './a-frame.js'
 import furniture from './furniture.js'
 import storage from './storage.js'
+import scene from './scene.js'
+import floorPlan from './floor-plan.js'
+
 import utils from './utils.js'
 
 var io3d = {
@@ -15,6 +18,7 @@ var io3d = {
   aFrame: aFrame,
   furniture: furniture,
   storage: storage,
+  scene: scene,
 
   // utils
   auth: utils.auth,

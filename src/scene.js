@@ -1,9 +1,7 @@
-import putStructure from './scene/put-structure.js'
-import getStructure from './scene/get-structure.js'
+import getViewerUrl from './scene/get-viewer-url.js'
 
 var scene = {
-  getStructure: getStructure,
-  putStructure: putStructure
+  getViewerUrl: getViewerUrl
 }
 
 export default scene
