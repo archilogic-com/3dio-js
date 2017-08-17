@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.52
- * @date 2017/08/17 22:41
+ * @version 1.0.0-beta.53
+ * @date 2017/08/18 00:00
  * @branch master
- * @commit e55f51293bdb22bff177a7a781927e6d52a260f2
+ * @commit c3cf83e24a7b4ba6b37157d023734f3476cef911
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/17 22:41', GIT_BRANCH = 'master', GIT_COMMIT = 'e55f51293bdb22bff177a7a781927e6d52a260f2'
+	var BUILD_DATE='2017/08/18 00:00', GIT_BRANCH = 'master', GIT_COMMIT = 'c3cf83e24a7b4ba6b37157d023734f3476cef911'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.52";
+	var version = "1.0.0-beta.53";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -15257,10 +15257,7 @@
 	function sendHttpRequest (rpcRequest, secretApiKey, publishableApiKey) {
 
 	  var isTrustedOrigin = ( runtime.isBrowser && window.location.href.match(/^[^\:]+:\/\/([^\.]+\.)?(3d\.io|archilogic.com|localhost)(:\d+)?\//) );
-	  var headers = {
-	    'Content-Type': 'application/json',
-	    'Accept': 'application/json'
-	  };
+	  var headers = { 'Content-Type': 'application/json' };
 	  if (secretApiKey) headers['X-Secret-Key'] = secretApiKey;
 	  if (publishableApiKey) headers['X-Publishable-Key'] = publishableApiKey;
 
@@ -15271,14 +15268,29 @@
 	    headers: headers,
 	    credentials: (isTrustedOrigin ? 'include' : 'omit' ) //TODO: Find a way to allow this more broadly yet safely
 	  }).then(function (response) {
-	    // try to parse JSON in any case because valid JSON-RPC2 errors do have error status too
-	    response.json().then(function onParsingSuccess(data){
+	    response.text().then(function onParsingSuccess(body){
+	      // try to parse JSON in any case because valid JSON-RPC2 errors do have error status too
+	      var message;
+	      try {
+	        message = JSON.parse(body);
+	      } catch (error) {
+	        return bluebird_1.reject('JSON parsing Error: "'+error+'" Response body: "'+body+'"')
+	      }
 	      // rpc client will handle JSON-RPC2 success messages and errors and resolve or reject prcRequest promise accordingly
-	      rpcClient.handleResponse(data);
-	    }).catch(function onParsingError(){
+	      rpcClient.handleResponse(message);
+	    }).catch(function onParsingError(error){
+	      var errorString = '';
+	      if (error instanceof Error || typeof error === 'string') {
+	        errorString = error;
+	      } else {
+	        try {
+	          errorString = JSON.stringify(error, null, 2);
+	        } catch (e) {
+	          errorString = error && error.toString ? error.toString() : '';
+	        }
+	      }
 	      // response is not a valid json error message. (most likely a network error)
-	      var errorMessage = 'API request to '+configs.servicesUrl+' failed: '+response.status+': '+response.statusText+'\nOriginal JSON-RPC2 request: '+JSON.stringify(rpcRequest.message, null, 2);
-	      console.error(errorMessage);
+	      var errorMessage = 'API request to '+configs.servicesUrl+' failed: '+response.status+': '+response.statusText+'\n'+errorString+'\nOriginal JSON-RPC2 request to 3d.io: '+JSON.stringify(rpcRequest.message, null, 2);
 	      rpcRequest.cancel(errorMessage);
 	    });
 	  });
@@ -17618,7 +17630,7 @@
 	  var callback = args.callback;
 
 	  // send request to server side endpoint
-	  return callService.call('FloorPlan.convertToBasic3dModel', {
+	  return callService('FloorPlan.convertToBasic3dModel', {
 	    floorplan: floorPlan,
 	    address: address,
 	    callback: callback
