@@ -35,11 +35,11 @@ body {
 
 #file-drop-box {
     position: absolute;
-    top: 40px;
-    left: 40px;
+    top: 60px;
+    left: 60px;
     height: 300px;
-    line-height: 300px;
     width: 300px;
+    padding-top: 120px;
     text-align: center;
     border: 1px dotted white;
     background: rgba(255,255,255,0.1);

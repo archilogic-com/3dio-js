@@ -2,12 +2,9 @@ var el = document.getElementById('file-box')
 
 io3d.utils.ui.fileDrop({
   elementId: 'file-drop-box',
-  upload: false,
+  upload: true,
   dragOverCssClass: 'file-drop-box-dragover',
-  onDrop: function(keys){
+  onInput: function(keys){
     console.log(keys)
-  },
-  onProgress: function(prog, tot){
-    console.log(prog/tot)
   }
 })
