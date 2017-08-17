@@ -1,6 +1,7 @@
 import runtime from '../../core/runtime.js'
 import configs from '../../core/configs.js'
 import fetch from '../../utils/io/fetch.js'
+import Promise from 'bluebird'
 import JsonRpc2Client from './json-rpc2-client.js'
 // import cache from './common/promise-cache.js'
 
@@ -78,10 +79,7 @@ function handleIncomingMessage (event) {
 function sendHttpRequest (rpcRequest, secretApiKey, publishableApiKey) {
 
   var isTrustedOrigin = ( runtime.isBrowser && window.location.href.match(/^[^\:]+:\/\/([^\.]+\.)?(3d\.io|archilogic.com|localhost)(:\d+)?\//) )
-  var headers = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-  }
+  var headers = { 'Content-Type': 'application/json' }
   if (secretApiKey) headers['X-Secret-Key'] = secretApiKey
   if (publishableApiKey) headers['X-Publishable-Key'] = publishableApiKey
 
@@ -92,14 +90,29 @@ function sendHttpRequest (rpcRequest, secretApiKey, publishableApiKey) {
     headers: headers,
     credentials: (isTrustedOrigin ? 'include' : 'omit' ) //TODO: Find a way to allow this more broadly yet safely
   }).then(function (response) {
-    // try to parse JSON in any case because valid JSON-RPC2 errors do have error status too
-    response.json().then(function onParsingSuccess(data){
+    response.text().then(function onParsingSuccess(body){
+      // try to parse JSON in any case because valid JSON-RPC2 errors do have error status too
+      var message
+      try {
+        message = JSON.parse(body)
+      } catch (error) {
+        return Promise.reject('JSON parsing Error: "'+error+'" Response body: "'+body+'"')
+      }
       // rpc client will handle JSON-RPC2 success messages and errors and resolve or reject prcRequest promise accordingly
-      rpcClient.handleResponse(data)
-    }).catch(function onParsingError(){
+      rpcClient.handleResponse(message)
+    }).catch(function onParsingError(error){
+      var errorString = ''
+      if (error instanceof Error || typeof error === 'string') {
+        errorString = error
+      } else {
+        try {
+          errorString = JSON.stringify(error, null, 2)
+        } catch (e) {
+          errorString = error && error.toString ? error.toString() : ''
+        }
+      }
       // response is not a valid json error message. (most likely a network error)
-      var errorMessage = 'API request to '+configs.servicesUrl+' failed: '+response.status+': '+response.statusText+'\nOriginal JSON-RPC2 request: '+JSON.stringify(rpcRequest.message, null, 2)
-      console.error(errorMessage)
+      var errorMessage = 'API request to '+configs.servicesUrl+' failed: '+response.status+': '+response.statusText+'\n'+errorString+'\nOriginal JSON-RPC2 request to 3d.io: '+JSON.stringify(rpcRequest.message, null, 2)
       rpcRequest.cancel(errorMessage)
     })
   })
