@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.49
- * @date 2017/08/17 18:56
+ * @version 1.0.0-beta.50
+ * @date 2017/08/17 22:07
  * @branch master
- * @commit f66ceb104cd3b580dd49c7aea0c40eb754739abb
+ * @commit b68d8908fa656df360e4d954bc9c2d9bd21e22a7
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/17 18:56', GIT_BRANCH = 'master', GIT_COMMIT = 'f66ceb104cd3b580dd49c7aea0c40eb754739abb'
+	var BUILD_DATE='2017/08/17 22:07', GIT_BRANCH = 'master', GIT_COMMIT = 'b68d8908fa656df360e4d954bc9c2d9bd21e22a7'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.49";
+	var version = "1.0.0-beta.50";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -18051,11 +18051,11 @@
 
 	  // html
 	  var elementId = args.elementId;
+	  var onInput = args.onInput;
 	  var dragOverCssClass = args.dragOverCssClass;
-	  // mouse events
+	  // drag events
 	  var onDragEnter = args.onDragEnter;
 	  var onDragLeave = args.onDragLeave;
-	  var onDrop = args.onDrop;
 	  // upload related
 	  var upload = args.upload !== undefined ? args.upload : true;
 	  var onUploadProgress = args.onUploadProgress;
@@ -18065,10 +18065,16 @@
 
 	  // get reference to main DOM element
 	  var mainEl = document.getElementById(elementId);
+	  // input allows selecting files on click
+	  var fileInputEl = document.createElement('input');
+	  fileInputEl.setAttribute('type', 'file');
+	  fileInputEl.setAttribute('multiple', true);
+	  fileInputEl.setAttribute('style', 'cursor:pointer; position:absolute; top:0; left:0; height:100%; width:100%; opacity:0;');
+	  mainEl.appendChild(fileInputEl);
 	  // progress bar
 	  var progressBarEl = document.createElement('div');
 	  progressBarEl.setAttribute('style', 'position:absolute; top:0; left:0; bottom:0; width:0; transition: width 1s linear;'+uploadProgressBarCss);
-	  if(mainEl.style.position === null ) mainEl.style.position = 'relative';
+	  if(mainEl.style.position === null) mainEl.style.position = 'relative';
 	  mainEl.appendChild(progressBarEl);
 
 	  // events
@@ -18085,52 +18091,71 @@
 	    preventBrowserDefaults(event);
 	  }
 
-	  function drop (event) {
+	  function dropFiles (event) {
 	    if (dragOverCssClass) mainEl.classList.remove(dragOverCssClass);
 	    preventBrowserDefaults(event);
 	    getFilesFromDragAndDropEvent(event).then(function (files) {
-	      if (!upload) {
-	        // return files
-	        onDrop(files, event);
-	      } else {
-	        // return keys & files
-	        progressBarEl.style.display = 'block';
-	        return putToStorage(files, {onProgress: function onProgress(uploaded, total) {
-	          progressBarEl.style.width = Math.min(100, Math.round(100 * (uploaded / total))) + '%';
-	          if (onUploadProgress) onUploadProgress(uploaded, total);
-	        }}).then(function (storageIds) {
-	          progressBarEl.style.display = 'none';
-	          progressBarEl.style.width = '0';
-	          var fileCollection = storageIds.map(function(storageId, i){
-	            return {
-	              storageId: storageId,
-	              url: 'https://storage.3d.io' + storageId,
-	              file: files[i],
-	              filename: files[i].name
-	            }
-	          });
-	          onDrop(fileCollection, event);
-	        })
-	      }
+	      handleFileInput(files, event);
 	    }).catch(console.error);
 	  }
 
-	  /* events fired on the draggable target */
+	  function selectFiles (event) {
+	    // convert FileList into array
+	    // https://developer.mozilla.org/en/docs/Web/API/FileList
+	    var files = [], fileList = event.target.files;
+	    for (var i = 0; i < fileList.length; i++) files[i] = fileList[i];
+	    handleFileInput(files, event);
+	  }
+
+	  function handleFileInput(files, event) {
+	    // uploading files is optional
+	    (upload ? uploadFiles(files) : bluebird_1.resolve()).then(function(storageIds){
+	      // create convenient collection with file info including storageIds if available
+	      var fileCollection = files.map(function(file, i){
+	        var item = { file: file, name: file.name, size: file.size, type: file.type };
+	        if (storageIds) {
+	          item.storageId = storageIds[i];
+	          item.url = 'https://storage.3d.io' + storageIds[i];
+	        }
+	        return item
+	      });
+	      onInput(fileCollection, event);
+	    });
+	  }
+
+	  function uploadFiles (files) {
+	    progressBarEl.style.width = '0';
+	    progressBarEl.style.display = 'block';
+	    return putToStorage(files, {
+	      onProgress: function onProgress(uploaded, total) {
+	        progressBarEl.style.width = Math.min(100, Math.round(100 * (uploaded / total))) + '%';
+	        if (onUploadProgress) onUploadProgress(uploaded, total);
+	      }
+	    }).then(function (storageIds) {
+	      progressBarEl.style.display = 'none';
+	      progressBarEl.style.width = '0';
+	      return storageIds
+	    })
+	  }
+
+	  // events fired on the draggable target
 	  // document.addEventListener("drag", function( event ) {}, false)
 	  // document.addEventListener("dragstart", function( event ) {}, false)
 	  // document.addEventListener("dragend", function( event ) {}, false)
 	  // prevent events on window drop
 	  window.addEventListener('dragover', preventBrowserDefaults, false);
 	  window.addEventListener('drop', preventBrowserDefaults, false);
-	  /* events fired on the drop targets */
-	  mainEl.addEventListener('dragover', function (event) {
+	  // events fired on the drop targets
+	  fileInputEl.addEventListener('dragover', function (event) {
 	    preventBrowserDefaults(event);
-	    event.dataTransfer.dropEffect = 'copy'; // set cursor style
+	    event.dataTransfer.dropEffect = 'copy'; // // adds a little "+" to mouse cursor
 	  }, false);
-	  mainEl.addEventListener('dragenter', dragEnter, false);
-	  mainEl.addEventListener('dragleave', dragLeave, false);
-	  mainEl.addEventListener('dragend', dragLeave, false);
-	  mainEl.addEventListener('drop', drop, false);
+	  fileInputEl.addEventListener('dragenter', dragEnter, false);
+	  fileInputEl.addEventListener('dragleave', dragLeave, false);
+	  fileInputEl.addEventListener('dragend', dragLeave, false);
+	  fileInputEl.addEventListener('drop', dropFiles, false);
+	  // events from input element
+	  fileInputEl.addEventListener('change', selectFiles, false);
 
 	}
 
