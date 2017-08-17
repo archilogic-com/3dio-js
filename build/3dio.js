@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.48
- * @date 2017/08/17 07:38
+ * @version 1.0.0-beta.49
+ * @date 2017/08/17 18:56
  * @branch master
- * @commit 16464e6bd7ec28c8eb7c76b80b410e8b4d15ed6e
+ * @commit f66ceb104cd3b580dd49c7aea0c40eb754739abb
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/17 07:38', GIT_BRANCH = 'master', GIT_COMMIT = '16464e6bd7ec28c8eb7c76b80b410e8b4d15ed6e'
+	var BUILD_DATE='2017/08/17 18:56', GIT_BRANCH = 'master', GIT_COMMIT = 'f66ceb104cd3b580dd49c7aea0c40eb754739abb'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.48";
+	var version = "1.0.0-beta.49";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -17365,7 +17365,7 @@
 
 	// main
 
-	function putToStore (files, options) {
+	function putToStorage (files, options) {
 
 	  options = options || {};
 
@@ -17599,7 +17599,7 @@
 
 	var storage = {
 	  get: getFromStorage,
-	  put: putToStore
+	  put: putToStorage
 	};
 
 	function getViewerUrl (args) {
@@ -17869,83 +17869,7 @@
 	  '.jpg', '.jpeg', '.jpe', '.png', '.gif', '.tga', '.dds', '.svg', '.pdf', '.dxf'
 	];
 
-	// themes
-
-	var THEME = {
-	  bright: {
-	    box: 'background-color: rgba(255, 255, 255, 0.2); border: 1px dashed rgba(255, 255, 255, 0.7); border-radius: 2px;',
-	    over: 'background-color: rgba(255, 255, 255, 0.3); border: 1px dashed rgba(255, 255, 255, 1); border-radius: 2px;'
-	  },
-	  dark: {
-	    box: 'background-color: rgba(0, 0, 0, 0.2); border: 1px dashed rgba(0, 0, 0, 0.7); border-radius: 2px;',
-	    over: 'background-color: rgba(0, 0, 0, 0.3); border: 1px dashed rgba(0, 0, 0, 1); border-radius: 2px;'
-	  }
-	};
-
 	// main
-
-	function createFileDropUi (args) {
-	  runtime.assertBrowser();
-
-	  var elementId = args.elementId;
-	  var onDrop = args.onDrop;
-	  var upload = args.upload !== undefined ? args.upload : true;
-	  var theme = args.theme !== undefined ? args.theme : 'bright';
-	  var onProgress = args.onProgress;
-
-	  var el = document.getElementById(elementId);
-	  if (THEME[theme]) el.setAttribute('style', THEME[theme].box);
-
-	  function dragEnter (event) {
-	    doNothing(event);
-	    if (THEME[theme]) el.setAttribute('style', THEME[theme].over);
-	  }
-
-	  function dragLeave (event) {
-	    doNothing(event);
-	    if (THEME[theme]) el.setAttribute('style', THEME[theme].box);
-	  }
-
-	  function drop (event) {
-	    doNothing(event);
-	    getFilesFromDragAndDropEvent(event).then(function (files) {
-	      if (!upload) {
-	        // return files
-	        onDrop(files);
-	      } else {
-	        // return keys & files
-	        return putToStore(files, { onProgress: onProgress }).then(function(keys){
-	          onDrop(keys, files);
-	        })
-	      }
-	    }).catch(console.error);
-	  }
-
-	  /* events fired on the draggable target */
-	  // document.addEventListener("drag", function( event ) {}, false)
-	  // document.addEventListener("dragstart", function( event ) {}, false)
-	  // document.addEventListener("dragend", function( event ) {}, false)
-	  // prevent events on window drop
-	  window.addEventListener('dragover', doNothing, false);
-	  window.addEventListener('drop', doNothing, false);
-	  /* events fired on the drop targets */
-	  el.addEventListener('dragover', function (event) {
-	    doNothing(event);
-	    event.dataTransfer.dropEffect = 'copy'; // set cursor style
-	  }, false);
-	  el.addEventListener('dragenter', dragEnter, false);
-	  el.addEventListener('dragleave', dragLeave, false);
-	  el.addEventListener('dragend', dragLeave, false);
-	  el.addEventListener('drop', drop, false);
-
-	}
-
-	// helpers
-
-	function doNothing (event) {
-	  event.stopPropagation();
-	  event.preventDefault();
-	}
 
 	function getFilesFromDragAndDropEvent (event, options) {
 	  // compatibility function to extract files
@@ -17972,7 +17896,7 @@
 	    // check if user tries to dragdrop a folder = only one "file" with no extension
 	    var isFolder = dataTransfer.files.length === 0 || (dataTransfer.files.length === 1 && dataTransfer.files[0].name.indexOf('.') < 0);
 	    if (isFolder) {
-	      result = bluebird_1.reject('Sorry, but this browser doesn\'t support drag&drop of folders. (use Chrome)');
+	      result = Promise.reject('Sorry, but this browser doesn\'t support drag&drop of folders. (use Chrome)');
 	    } else {
 	      // create Blobs from Files because in File name property is read only.
 	      // but we may want file.name to be writable later.
@@ -17983,13 +17907,13 @@
 	        file.name = _file.name;
 	        files.push(file);
 	      }
-	      result = bluebird_1.resolve(filterValidFiles(files, warningCallback));
+	      result = Promise.resolve(filterValidFiles(files, warningCallback));
 
 	    }
 
 	  } else {
 
-	    result = bluebird_1.reject('Event does not contain "items" nor "files" property.');
+	    result = Promise.reject('Event does not contain "items" nor "files" property.');
 
 	  }
 
@@ -17997,69 +17921,7 @@
 
 	}
 
-	// helpers
-
-	function getFlatFileArrayFromItems (items) {
-
-	  // get entries from items
-	  var entries = [], item;
-	  for (var i = 0, l = items.length; i < l; i++) {
-	    item = items[i];
-	    entries[entries.length] = item.webkitGetAsEntry ? item.webkitGetAsEntry() : item.getAsFile();
-	  }
-
-	  // recursively parse directories and collect files
-	  var files = [];
-	  return recursivelyParseEntries(entries, files).then(function () {
-	    return files
-	  })
-
-	}
-
-	function recursivelyParseEntries (entries, resultArray) {
-	  return bluebird_1.all(
-	    entries.map(function (entry) {
-
-	      if (entry.isFile) {
-
-	        // convert File into Blob
-	        return new bluebird_1(function (resolve, reject) {
-	          // add file to file array
-	          entry
-	            .file(function (_file) {
-	              // create Blob from File because in File name property is read only.
-	              // but we want file.name to include path so we need to overwrite it.
-	              var file = new Blob([_file], {type: _file.type});
-	              file.name = entry.fullPath.substring(1);
-	              resultArray[resultArray.length] = file;
-	              resolve();
-	            });
-	        })
-
-	      } else if (entry instanceof File) {
-
-	        // create Blob from File because in File name property is read only.
-	        // but we want file.name to include path so we need to overwrite it.
-	        var file = new Blob([entry], {type: entry.type});
-	        file.name = entry.name;
-	        // add file to file array
-	        resultArray[resultArray.length] = file;
-
-	      } else if (entry.isDirectory) {
-
-	        // read directory
-	        return new bluebird_1(function (resolve, reject) {
-	          entry
-	            .createReader()
-	            .readEntries(function (_entries) {
-	              resolve(recursivelyParseEntries(_entries, resultArray));
-	            });
-	        })
-
-	      }
-	    })
-	  )
-	}
+	// private methods
 
 	function filterValidFiles (_files, warningCallback) {
 	  var file, fileName, extension, hasValidExtension, filteredFiles = [];
@@ -18090,6 +17952,68 @@
 	  return filteredFiles
 	}
 
+	function getFlatFileArrayFromItems (items) {
+
+	  // get entries from items
+	  var entries = [], item;
+	  for (var i = 0, l = items.length; i < l; i++) {
+	    item = items[i];
+	    entries[entries.length] = item.webkitGetAsEntry ? item.webkitGetAsEntry() : item.getAsFile();
+	  }
+
+	  // recursively parse directories and collect files
+	  var files = [];
+	  return recursivelyParseEntries(entries, files).then(function () {
+	    return files
+	  })
+
+	}
+
+	function recursivelyParseEntries (entries, resultArray) {
+	  return Promise.all(
+	    entries.map(function (entry) {
+
+	      if (entry.isFile) {
+
+	        // convert File into Blob
+	        return new Promise(function (resolve, reject) {
+	          // add file to file array
+	          entry
+	            .file(function (_file) {
+	              // create Blob from File because in File name property is read only.
+	              // but we want file.name to include path so we need to overwrite it.
+	              var file = new Blob([_file], {type: _file.type});
+	              file.name = entry.fullPath.substring(1);
+	              resultArray[resultArray.length] = file;
+	              resolve();
+	            });
+	        })
+
+	      } else if (entry instanceof File) {
+
+	        // create Blob from File because in File name property is read only.
+	        // but we want file.name to include path so we need to overwrite it.
+	        var file = new Blob([entry], {type: entry.type});
+	        file.name = entry.name;
+	        // add file to file array
+	        resultArray[resultArray.length] = file;
+
+	      } else if (entry.isDirectory) {
+
+	        // read directory
+	        return new Promise(function (resolve, reject) {
+	          entry
+	            .createReader()
+	            .readEntries(function (_entries) {
+	              resolve(recursivelyParseEntries(_entries, resultArray));
+	            });
+	        })
+
+	      }
+	    })
+	  )
+	}
+
 	function removeRootDir (files) {
 	  // get root dir from first file
 	  var rootDir, i, l;
@@ -18116,6 +18040,105 @@
 	  // iterate recursively until all equal leading directories are removed
 	  return removeRootDir(files)
 
+	}
+
+	// main
+
+	function createFileDropUi (args) {
+	  runtime.assertBrowser();
+
+	  // API
+
+	  // html
+	  var elementId = args.elementId;
+	  var dragOverCssClass = args.dragOverCssClass;
+	  // mouse events
+	  var onDragEnter = args.onDragEnter;
+	  var onDragLeave = args.onDragLeave;
+	  var onDrop = args.onDrop;
+	  // upload related
+	  var upload = args.upload !== undefined ? args.upload : true;
+	  var onUploadProgress = args.onUploadProgress;
+	  var uploadProgressBarCss = args.uploadProgressBarCss || 'background: rgba(0,0,0,0.2);';
+
+	  // DOM
+
+	  // get reference to main DOM element
+	  var mainEl = document.getElementById(elementId);
+	  // progress bar
+	  var progressBarEl = document.createElement('div');
+	  progressBarEl.setAttribute('style', 'position:absolute; top:0; left:0; bottom:0; width:0; transition: width 1s linear;'+uploadProgressBarCss);
+	  if(mainEl.style.position === null ) mainEl.style.position = 'relative';
+	  mainEl.appendChild(progressBarEl);
+
+	  // events
+
+	  function dragEnter (event) {
+	    if (dragOverCssClass) mainEl.classList.add(dragOverCssClass);
+	    if (onDragEnter) onDragEnter(event);
+	    preventBrowserDefaults(event);
+	  }
+
+	  function dragLeave (event) {
+	    if (dragOverCssClass) mainEl.classList.remove(dragOverCssClass);
+	    if (onDragLeave) onDragLeave(event);
+	    preventBrowserDefaults(event);
+	  }
+
+	  function drop (event) {
+	    if (dragOverCssClass) mainEl.classList.remove(dragOverCssClass);
+	    preventBrowserDefaults(event);
+	    getFilesFromDragAndDropEvent(event).then(function (files) {
+	      if (!upload) {
+	        // return files
+	        onDrop(files, event);
+	      } else {
+	        // return keys & files
+	        progressBarEl.style.display = 'block';
+	        return putToStorage(files, {onProgress: function onProgress(uploaded, total) {
+	          progressBarEl.style.width = Math.min(100, Math.round(100 * (uploaded / total))) + '%';
+	          if (onUploadProgress) onUploadProgress(uploaded, total);
+	        }}).then(function (storageIds) {
+	          progressBarEl.style.display = 'none';
+	          progressBarEl.style.width = '0';
+	          var fileCollection = storageIds.map(function(storageId, i){
+	            return {
+	              storageId: storageId,
+	              url: 'https://storage.3d.io' + storageId,
+	              file: files[i],
+	              filename: files[i].name
+	            }
+	          });
+	          onDrop(fileCollection, event);
+	        })
+	      }
+	    }).catch(console.error);
+	  }
+
+	  /* events fired on the draggable target */
+	  // document.addEventListener("drag", function( event ) {}, false)
+	  // document.addEventListener("dragstart", function( event ) {}, false)
+	  // document.addEventListener("dragend", function( event ) {}, false)
+	  // prevent events on window drop
+	  window.addEventListener('dragover', preventBrowserDefaults, false);
+	  window.addEventListener('drop', preventBrowserDefaults, false);
+	  /* events fired on the drop targets */
+	  mainEl.addEventListener('dragover', function (event) {
+	    preventBrowserDefaults(event);
+	    event.dataTransfer.dropEffect = 'copy'; // set cursor style
+	  }, false);
+	  mainEl.addEventListener('dragenter', dragEnter, false);
+	  mainEl.addEventListener('dragleave', dragLeave, false);
+	  mainEl.addEventListener('dragend', dragLeave, false);
+	  mainEl.addEventListener('drop', drop, false);
+
+	}
+
+	// helpers
+
+	function preventBrowserDefaults (event) {
+	  event.stopPropagation();
+	  event.preventDefault();
 	}
 
 	function poll(callback, options) {
