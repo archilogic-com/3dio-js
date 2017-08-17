@@ -25,7 +25,7 @@ const srcDir = 'build'
 const destDir = 'release'
 const gitCommitMessage = 'Release '+version
 const awsConfig = {
-  bucket: '3dio-releases',
+  bucket: '3dio-dist',
   region: 'eu-west-1',
   key: process.env.AWS_ACCESS_KEY_ID,
   secret: process.env.AWS_SECRET_ACCESS_KEY
