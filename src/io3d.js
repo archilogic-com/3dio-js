@@ -19,6 +19,7 @@ var io3d = {
   furniture: furniture,
   storage: storage,
   scene: scene,
+  floorPlan: floorPlan,
 
   // utils
   auth: utils.auth,
