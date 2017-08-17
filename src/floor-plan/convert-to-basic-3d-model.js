@@ -9,7 +9,7 @@ export default function convertFloorPlanToBasic3dModel (args) {
   var callback = args.callback
 
   // send request to server side endpoint
-  return callServices.call('FloorPlan.convertToBasic3dModel', {
+  return callServices('FloorPlan.convertToBasic3dModel', {
     floorplan: floorPlan,
     address: address,
     callback: callback
