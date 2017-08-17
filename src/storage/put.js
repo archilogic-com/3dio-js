@@ -14,7 +14,7 @@ var KEY_USER_ID_PLACEHOLDER = '{{userId}}'
 
 // main
 
-export default function putToStore (files, options) {
+export default function putToStorage (files, options) {
 
   options = options || {}
 
