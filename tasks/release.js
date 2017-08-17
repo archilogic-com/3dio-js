@@ -25,15 +25,15 @@ const srcDir = 'build'
 const destDir = 'release'
 const gitCommitMessage = 'Release '+version
 const awsConfig = {
-  bucket: '3d.io',
+  bucket: '3dio-releases',
   region: 'eu-west-1',
   key: process.env.AWS_ACCESS_KEY_ID,
   secret: process.env.AWS_SECRET_ACCESS_KEY
 }
 const awsDir = {
-  version: `releases/3dio-js/${version}/`,
-  latestMinor: `releases/3dio-js/${getLatestMinor(version)}/`,
-  latestPatch: `releases/3dio-js/${getLatestPatch(version)}/`
+  version: `3dio-js/${version}/`,
+  latestMinor: `3dio-js/${getLatestMinor(version)}/`,
+  latestPatch: `3dio-js/${getLatestPatch(version)}/`
 }
 
 // tasks
