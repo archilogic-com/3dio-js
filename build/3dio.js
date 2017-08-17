@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.47
- * @date 2017/08/17 01:07
+ * @version 1.0.0-beta.48
+ * @date 2017/08/17 07:38
  * @branch master
- * @commit 8b065f62d2f7fba3068642356b3c9cf2dee1f262
+ * @commit 16464e6bd7ec28c8eb7c76b80b410e8b4d15ed6e
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/17 01:07', GIT_BRANCH = 'master', GIT_COMMIT = '8b065f62d2f7fba3068642356b3c9cf2dee1f262'
+	var BUILD_DATE='2017/08/17 07:38', GIT_BRANCH = 'master', GIT_COMMIT = '16464e6bd7ec28c8eb7c76b80b410e8b4d15ed6e'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.47";
+	var version = "1.0.0-beta.48";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -18320,7 +18320,7 @@
 	      class: 'clickable',
 	      click: function(){
 	        destroy(function(){
-	          createSignUpUi$1(
+	          createSignUpUi(
 	            {email: emailEl.val()},
 	            {resendActivation: true}
 	          ).then(resolve, reject);
@@ -18425,7 +18425,7 @@
 	      class: 'clickable',
 	      click: function () {
 	        destroy(function () {
-	          createSignUpUi$1({email: emailEl.val()}).then(resolve, reject);
+	          createSignUpUi({email: emailEl.val()}).then(resolve, reject);
 	        });
 	      }
 	    }).appendTo(overlay.bottomEl);
@@ -18522,7 +18522,7 @@
 	        // offer to resend activation email
 	        if (error.indexOf('check your email and activate your account first') > -1) {
 	          destroy(function () {
-	            createSignUpUi$1(
+	            createSignUpUi(
 	              {email: emailEl.val()},
 	              {resendActivation: true}
 	            ).then(resolve, reject);
@@ -18552,7 +18552,7 @@
 
 	// main
 
-	function createSignUpUi$1 (credentials, options) {
+	function createSignUpUi (credentials, options) {
 	  runtime.assertBrowser();
 	  return new bluebird_1(function (resolve, reject){
 
@@ -19129,7 +19129,7 @@
 	    if (!session.isAuthenticated) {
 	      // show sign up screen
 	      message('Please sign up or log in to<br>access your secret API key.');
-	      return createSignUpUi$1().then(function () {
+	      return createSignUpUi().then(function () {
 	        return createSecretApiKeyUi()
 	      })
 	    }
@@ -19256,7 +19256,7 @@
 	    if (!session.isAuthenticated) {
 	      // show sign up screen
 	      message('Please sign up or log in to<br>access your dev dashboard.');
-	      return createSignUpUi$1().then(function () {
+	      return createSignUpUi().then(function () {
 	        return createDevDashboardUi()
 	      })
 	    }
@@ -19410,8 +19410,8 @@
 	var ui = {
 	  fileDrop: createFileDropUi,
 	  // authentication
-	  signUp: createSignUpUi$1,
-	  signup: createSignUpUi$1, // alias
+	  signUp: createSignUpUi,
+	  signup: createSignUpUi, // alias
 	  logIn: createLogInUi,
 	  login: createLogInUi, // alias
 	  logOut: createLogOutUi,
