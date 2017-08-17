@@ -9,6 +9,7 @@ import createOverlay from './common/create-overlay.js'
 import message from './create-message-ui.js'
 import createPromptUi from './create-prompt-ui.js'
 import createConfirmUi from './create-confirm-ui.js'
+import createSignUpUi from './create-sign-up-ui.js'
 
 // configs
 
