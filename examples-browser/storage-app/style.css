@@ -33,11 +33,17 @@ body {
 
 }
 
-#file-box {
+#file-drop-box {
     position: absolute;
     top: 40px;
     left: 40px;
     height: 300px;
+    line-height: 300px;
     width: 300px;
-    padding: 60px;
+    text-align: center;
+    border: 1px dotted white;
+    background: rgba(255,255,255,0.1);
+}
+.file-drop-box-dragover {
+    background: rgba(0,255,0,0.3) !important;
 }

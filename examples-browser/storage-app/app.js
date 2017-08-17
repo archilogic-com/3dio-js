@@ -1,8 +1,9 @@
 var el = document.getElementById('file-box')
 
-io3d.ui.createFileDrop({
-  elementId: 'file-box',
-  //upload: true,
+io3d.utils.ui.fileDrop({
+  elementId: 'file-drop-box',
+  upload: false,
+  dragOverCssClass: 'file-drop-box-dragover',
   onDrop: function(keys){
     console.log(keys)
   },
