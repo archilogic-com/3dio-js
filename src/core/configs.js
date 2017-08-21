@@ -36,6 +36,12 @@ var configs = function configs (args) {
     delete args.logLevel
   }
 
+  // prevent secret API key to be included in browser environments
+  if (runtime.isBrowser && args.secretApiKey) {
+    log.error('The secret API key is not supposed to be used in browser environments!\nPlease see https://3d.io/docs/api/1/get-started-browser.html#secret-api-key for more information.')
+  }
+
+
   // simply copy over the other configs
   var key, keys = Object.keys(args)
   for (var i = 0, l = keys.length; i < l; i++) {
