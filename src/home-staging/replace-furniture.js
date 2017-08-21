@@ -1,4 +1,5 @@
 import getFurnitureInfo  from '../furniture/get-info.js'
+import callService  from '../utils/services/call.js'
 
 var filter, searchCount, margin, furnitureInfo
 
@@ -58,7 +59,7 @@ function verifyResult(result, id) {
 }
 
 function search(searchQuery) {
-  return io3d.utils.services.call('Product.search', {searchQuery: searchQuery, limit: 200})
+  return callService('Product.search', {searchQuery: searchQuery, limit: 200})
 }
 
 function getQuery(info, filter) {

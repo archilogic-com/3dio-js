@@ -13,7 +13,7 @@ export default function searchFurniture (query, options) {
   var apiErrorCount = 0
   // call API
   function callApi () {
-    return io3d.utils.services.call('Product.search', {
+    return callService('Product.search', {
       searchQuery: {query: 'isPublished:true ' + query},
       limit: limit
       // TODO: add this param once #251 https://github.com/archilogic-com/services/issues/251 is resolved
