@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+    <script src="../../../build/3dio.js"></script>
+  </head>
+  <body>
+    <div style="position: absolute; z-index:1000; top: 10px; left: 10px;">
+      <input placeholder="enter id" style="width: 200px; height: 18px; padding: 0 5px"/>
+      <button id="rnd-btn">randomize</button>
+      <button id="change-btn">change</button>
+    </div>
+    <a-scene antialias="true">
+      <a-entity light="type:directional; castShadow: true; color:#bbb" position="4 3 3"></a-entity>
+      <a-entity light="type:ambient; color:#aaa" position="0 5 3"></a-entity>
+      <a-entity id="furniture" io3d-furniture position="0 0 -3" shadow="cast:true; receive:false;">
+        <a-animation
+          attribute="rotation"
+          easing="linear"
+          dur="20000"
+          to="0 360 0"
+          repeat="indefinite">
+        </a-animation>
+      </a-entity>
+      <a-sky color="#eee"></a-sky>
+      <a-entity camera position="0 1.6 0"></a-entity>
+      <a-cylinder shadow="receive:true" color="#ccc" position="0 -0.02 -3" rotation="0 0 0" scale="5 0.04 5"></a-cylinder>
+    </a-scene>
+    <script>
+      furnitureId = 'edd99bfc-a597-4fb4-bf92-04916e6d5dfc'
+      const furniture = document.querySelector('a-entity#furniture')
+      const rndBtn = document.querySelector('#rnd-btn')
+      const idInput = document.querySelector('input')
+      const changeBtn = document.querySelector('#change-btn')
+      idInput.value = furniture.getAttribute('io3d-furniture').id
+
+      idInput.addEventListener('input', function() {
+        var furnitureId = idInput.value
+        if (validateUuid(furnitureId)) furniture.setAttribute('io3d-furniture', {'id': furnitureId})
+        else io3d.ui.message('no valid id', 4000, 'warning')
+      })
+      rndBtn.addEventListener('click', function() {
+        io3d.furniture.search('-accessories -decoration', {limit: 200}).then(result => {
+          let product = result[Math.floor(Math.random() * result.length)]
+          furniture.setAttribute('io3d-furniture', {'id': product.id})
+          idInput.value = product.id
+        })
+      })
+      changeBtn.addEventListener('click', function() {
+        productId = furniture.getAttribute('io3d-furniture').id
+        io3d.homeStaging.replaceFurniture(productId).then(result => {
+          if (!result || result.length === 0 ) return
+          let product = result[Math.floor(Math.random() * result.length)]
+          furniture.setAttribute('io3d-furniture', {'id': product.productResourceId})
+          idInput.value = product.productResourceId
+        })
+      })
+
+      function validateUuid (str) {
+        if (!str || typeof str !== "string") return false
+        return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(str)
+      }
+    </script>
+  </body>
+</html>
