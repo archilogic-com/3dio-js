@@ -23,11 +23,9 @@ export default function replaceFurniture (id, options) {
       margin = config['default_margin']
       searchCount = 0
       var searchQuery = getQuery(furnitureInfo)
-      console.log(searchQuery)
       return search(searchQuery)
     })
     .then(function(result) {
-      console.log(result)
       return verifyResult(result, id)
     })
     .catch(function(error) {
@@ -40,7 +38,6 @@ function verifyResult(result, id) {
     return Promise.reject()
   }
   var cleanResult = result.filter(function(el){
-    if (el.productResourceId === id) console.log(el.productDisplayName)
     return el.productResourceId !== id
   });
 
@@ -48,12 +45,10 @@ function verifyResult(result, id) {
     margin += 0.10
     searchCount += 1
     var searchQuery = getQuery(furnitureInfo);
-    console.log('try one more time', searchCount, searchQuery);
     return search(searchQuery).then(function(result) {
       return verifyResult(result, id)
     })
   } else {
-    console.log('we found:', cleanResult)
     return Promise.resolve(cleanResult)
   }
 }
