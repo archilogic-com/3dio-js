@@ -40,7 +40,7 @@ export default function decodeBuffer (buffer, options) {
   var url = options.url
 
   var parsedUrl = urlUtil.parse(url)
-  var rootDir = pathUtil.parse(parsedUrl.path || '').dir
+  var rootDir = pathUtil.parse(parsedUrl.path || parsedUrl.pathname || '').dir
   var origin = parsedUrl.protocol + '//' + parsedUrl.host
 
   // check buffer type
@@ -87,6 +87,7 @@ export default function decodeBuffer (buffer, options) {
     return Promise.reject(e)
   }
 
+  
   // add geometry arrays to data3d
 
   var payloadByteOffset = HEADER_BYTE_LENGTH + structureByteLength
@@ -134,7 +135,7 @@ function makeUtf16Decoder () {
 }
 
 function convertTextureKeys (data3d, origin, rootDir) {
-  
+
   var i, l, i2, l2, m, materialKeys = data3d.materialKeys || Object.keys(data3d.materials || {}), texturePathKey
 
   for (i = 0, l = materialKeys.length; i < l; i++) {
