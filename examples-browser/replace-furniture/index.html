@@ -10,9 +10,9 @@
       <button id="rnd-btn">randomize</button>
       <button id="change-btn">change</button>
     </div>
-    <a-scene antialias="true">
-      <a-entity light="type:directional; castShadow: true; color:#bbb" position="4 3 3"></a-entity>
-      <a-entity light="type:ambient; color:#aaa" position="0 5 3"></a-entity>
+    <a-scene antialias="true" shadow="type: pcfsoft">
+      <a-entity light="type:directional; castShadow: true; intensity:0.3; shadowMapHeight:1024; shadowMapWidth:1024;" position="4 3 3"></a-entity>
+      <a-entity light="type:ambient; color:#bbb" position="0 5 3"></a-entity>
       <a-entity id="furniture" io3d-furniture position="0 0 -3" shadow="cast:true; receive:false;">
         <a-animation
           attribute="rotation"
@@ -24,7 +24,7 @@
       </a-entity>
       <a-sky color="#eee"></a-sky>
       <a-entity camera position="0 1.6 0"></a-entity>
-      <a-cylinder shadow="receive:true" color="#ccc" position="0 -0.02 -3" rotation="0 0 0" scale="5 0.04 5"></a-cylinder>
+      <a-cylinder shadow="receive:true" color="#eee" position="0 -0.02 -3" rotation="0 0 0" scale="5 0.04 5"></a-cylinder>
     </a-scene>
     <script>
       furnitureId = 'edd99bfc-a597-4fb4-bf92-04916e6d5dfc'
