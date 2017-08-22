@@ -29,13 +29,13 @@ export default function replaceFurniture (id, options) {
       return verifyResult(result, id)
     })
     .catch(function(error) {
-      /* error */
+      console.error(error.message)
     })
 }
 
 function verifyResult(result, id) {
   if (searchCount > 10 ) {
-    return Promise.reject()
+    return Promise.reject(new Error('No furniture was found'))
   }
   var cleanResult = result.filter(function(el){
     return el.productResourceId !== id
@@ -57,7 +57,7 @@ function search(searchQuery) {
   return callService('Product.search', {searchQuery: searchQuery, limit: 200})
 }
 
-function getQuery(info, filter) {
+function getQuery(info) {
   var query = config['default_search']
   var tags = info.tags
 
@@ -75,10 +75,14 @@ function getQuery(info, filter) {
 
   query = query.trim()
   var searchQuery = {query: query};
-  // add dimension search params
-  ['length', 'height', 'width'].forEach(d => {
-    if (dim[d] - margin > 0) searchQuery[d + 'Min'] = Math.round((dim[d] - margin) * 100)/100
-    searchQuery[d + 'Max'] = Math.round((dim[d] + margin) * 100)/100
-  })
+  // add dimension search params if source provides dimensions
+  if (dim) {
+    ['length', 'height', 'width'].forEach(function(d) {
+      if (dim[d] -margin > 0) {
+        searchQuery[d + 'Min'] = Math.round((dim[d] - margin) * 100) / 100
+        searchQuery[d + 'Max'] = Math.round((dim[d] + margin) * 100) / 100
+      }
+    })
+  }
   return searchQuery
 }

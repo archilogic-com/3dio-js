@@ -6,9 +6,10 @@
   </head>
   <body>
     <div style="position: absolute; z-index:1000; top: 10px; left: 10px;">
-      <input placeholder="enter id" style="width: 200px; height: 18px; padding: 0 5px"/>
-      <button id="rnd-btn">randomize</button>
-      <button id="change-btn">change</button>
+      <input id="inpt-id" placeholder="enter id" style="width: 200px; height: 18px; padding: 0 5px"/>
+      <button id="rnd-btn">pick random</button>
+      <button id="change-btn">replace with similar furniture</button>
+      <input id="inpt-filter" placeholder="filter results" style="width: 100px; height: 18px; padding: 0 5px"/>
     </div>
     <a-scene antialias="true" shadow="type: pcfsoft">
       <a-entity light="type:directional; castShadow: true; intensity:0.3; shadowMapHeight:1024; shadowMapWidth:1024;" position="4 3 3"></a-entity>
@@ -30,8 +31,10 @@
       furnitureId = 'edd99bfc-a597-4fb4-bf92-04916e6d5dfc'
       const furniture = document.querySelector('a-entity#furniture')
       const rndBtn = document.querySelector('#rnd-btn')
-      const idInput = document.querySelector('input')
+      const idInput = document.querySelector('input#inpt-id')
+      const filterInput = document.querySelector('input#inpt-filter')
       const changeBtn = document.querySelector('#change-btn')
+      // preset id input
       idInput.value = furniture.getAttribute('io3d-furniture').id
 
       idInput.addEventListener('input', function() {
@@ -40,15 +43,18 @@
         else io3d.ui.message('no valid id', 4000, 'warning')
       })
       rndBtn.addEventListener('click', function() {
-        io3d.furniture.search('-accessories -decoration', {limit: 200}).then(result => {
+        let filter = filterInput.value
+        let query = '-accessories -decoration ' + filter
+        io3d.furniture.search(query.trim() , {limit: 200}).then(result => {
           let product = result[Math.floor(Math.random() * result.length)]
           furniture.setAttribute('io3d-furniture', {'id': product.id})
           idInput.value = product.id
         })
       })
       changeBtn.addEventListener('click', function() {
-        productId = furniture.getAttribute('io3d-furniture').id
-        io3d.homeStaging.replaceFurniture(productId).then(result => {
+        let productId = furniture.getAttribute('io3d-furniture').id
+        let filter = filterInput.value.trim()
+        io3d.homeStaging.replaceFurniture(productId, { filter }).then(result => {
           if (!result || result.length === 0 ) return
           let product = result[Math.floor(Math.random() * result.length)]
           furniture.setAttribute('io3d-furniture', {'id': product.productResourceId})
