@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.55
- * @date 2017/08/24 16:42
+ * @version 1.0.0-beta.56
+ * @date 2017/08/24 16:59
  * @branch master
- * @commit d6a8fea0cea2c6af32f724013c6d6a33f7d74453
+ * @commit 9098224900de76175582eb51153b3db2201118da
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/24 16:42', GIT_BRANCH = 'master', GIT_COMMIT = 'd6a8fea0cea2c6af32f724013c6d6a33f7d74453'
+	var BUILD_DATE='2017/08/24 16:59', GIT_BRANCH = 'master', GIT_COMMIT = '9098224900de76175582eb51153b3db2201118da'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.55";
+	var version = "1.0.0-beta.56";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -17591,8 +17591,17 @@
 	function getFromStorage (key, options) {
 
 	  // WIP: for now, assume that this is only being used for data3d
-	  // TODO: use options.type or filename extension to specify loader
-	  return loadData3d(convertKeyToUrl$1(key))
+	  options = options || {};
+	  options.type = options.type || 'data3d'; // TODO: support more types
+
+	  switch(options.type) {
+	    case 'json':
+	      return fetch$1(convertKeyToUrl$1(key, options)).then(function(response) { return response.json() })
+	    break
+	    default:
+	      return loadData3d(convertKeyToUrl$1(key))
+	    break
+	  }
 
 	}
 
