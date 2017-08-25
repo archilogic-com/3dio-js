@@ -1,19 +1,29 @@
 import getFurnitureInfo  from '../furniture/get-info.js'
 import callService  from '../utils/services/call.js'
 
-var filter, searchCount, margin, furnitureInfo
+var userQuery, searchCount, margin, furnitureInfo, position, rotation
 
 var config = {
   'default_margin': 0.1,
   'default_search': '-generic isPublished:true',
-  'tag_black_list': ['simplygon', 'hasChangeableMaterials', 'autofurnishing', 'wallAttached', 'daybed'],
+  'tag_black_list': [
+    'simplygon',
+    'hasChangeableMaterials',
+    'autofurnish',
+    'wallAttached',
+    'daybed',
+    '2 seater',
+    '3 seater',
+    '4 seater'
+  ],
 }
 
 export default function replaceFurniture (id, options) {
-
   // API
   options = options || {}
-  filter = options.filter || null
+  userQuery = options.query || null
+  position = options.position || {x: 0, y: 0, z: 0}
+  rotation = options.rotation || {x: 0, y: 0, z: 0}
   // config publishable api key
   // reject when no publishable or not white listed domain
   // we need to call furniture info first in order to obtain data3d URL
@@ -49,6 +59,12 @@ function verifyResult(result, id) {
       return verifyResult(result, id)
     })
   } else {
+    cleanResult = cleanResult.map(function(res) {
+      return {
+        furniture: res,
+        position: computeNewPosition(furnitureInfo, res)
+      }
+    })
     return Promise.resolve(cleanResult)
   }
 }
@@ -62,8 +78,10 @@ function getQuery(info) {
   var tags = info.tags
 
   tags.forEach(function(tag) {
+    // filter out black listed tags
     if (config['tag_black_list'].indexOf(tag) < 0 ) {
-      query += ' ' + tag
+      // filter out 1P, 2P ... tags
+      if (!/^\d+P$/.test(tag)) query += ' ' + tag
     }
   })
 
@@ -71,7 +89,7 @@ function getQuery(info) {
   var dim = info.boundingBox
 
   query += ' categories:' + categories[0]
-  if (filter) query += ' ' + filter
+  if (userQuery) query += ' ' + userQuery
 
   query = query.trim()
   var searchQuery = {query: query};
@@ -85,4 +103,34 @@ function getQuery(info) {
     })
   }
   return searchQuery
+}
+
+function computeNewPosition(a, b) {
+  var edgeAligned = ['sofa', 'shelf', 'sideboad', 'double bed', 'single bed', 'bed']
+  var isEdgeAligned = false
+  var tags = a.tags
+  a = a.boundingPoints
+  b = b.boundingPoints
+  if (!a || !b) return position
+
+  edgeAligned.forEach(function(t) {
+    if (tags.indexOf(t) > -1) isEdgeAligned = true
+  })
+
+  var offset = {
+    // compute offset between centers
+    x: (a.max[0] + a.min[0]) / 2 - (b.max[0] + b.min[0]) / 2,
+    y: 0,
+    // compute offset between edges or centers
+    z: isEdgeAligned ? a.min[2] - b.min[2] : (a.max[2] + a.min[2]) / 2 - (b.max[2] + b.min[2]) / 2
+  }
+
+  var s = Math.sin(rotation.y / 180 * Math.PI)
+  var c = Math.cos(rotation.y / 180 * Math.PI)
+  var newPosition = {
+    x: position.x + offset.x * c + offset.z * s,
+    y: position.y + offset.y,
+    z: position.z - offset.x * s + offset.z * c
+  }
+  return newPosition
 }

@@ -14,11 +14,11 @@
     <a-scene antialias="true" shadow="type: pcfsoft">
       <a-entity light="type:directional; castShadow: true; intensity:0.3; shadowMapHeight:1024; shadowMapWidth:1024;" position="4 3 3"></a-entity>
       <a-entity light="type:ambient; color:#bbb" position="0 5 3"></a-entity>
-      <a-entity id="furniture" io3d-furniture position="0 0 -3" shadow="cast:true; receive:false;">
+      <a-entity id="furniture" io3d-furniture position="0 0 -3" rotation="0 0 0" shadow="cast:true; receive:false;">
         <a-animation
           attribute="rotation"
           easing="linear"
-          dur="20000"
+          dur="40000"
           to="0 360 0"
           repeat="indefinite">
         </a-animation>
@@ -26,13 +26,14 @@
       <a-sky color="#eee"></a-sky>
       <a-entity camera position="0 1.6 0"></a-entity>
       <a-cylinder shadow="receive:true" color="#eee" position="0 -0.02 -3" rotation="0 0 0" scale="5 0.04 5"></a-cylinder>
+      <a-camera></a-camera>
     </a-scene>
     <script>
       furnitureId = 'edd99bfc-a597-4fb4-bf92-04916e6d5dfc'
       const furniture = document.querySelector('a-entity#furniture')
       const rndBtn = document.querySelector('#rnd-btn')
       const idInput = document.querySelector('input#inpt-id')
-      const filterInput = document.querySelector('input#inpt-filter')
+      const queryInput = document.querySelector('input#inpt-filter')
       const changeBtn = document.querySelector('#change-btn')
       // preset id input
       idInput.value = furniture.getAttribute('io3d-furniture').id
@@ -43,22 +44,26 @@
         else io3d.ui.message('no valid id', 4000, 'warning')
       })
       rndBtn.addEventListener('click', function() {
-        let filter = filterInput.value
-        let query = '-accessories -decoration ' + filter
+        let userQuery = queryInput.value
+        let query = '-accessories -decoration ' + userQuery
         io3d.furniture.search(query.trim() , {limit: 200}).then(result => {
           let product = result[Math.floor(Math.random() * result.length)]
           furniture.setAttribute('io3d-furniture', {'id': product.id})
+          furniture.setAttribute('position', '0 0 -3')
           idInput.value = product.id
         })
       })
       changeBtn.addEventListener('click', function() {
         let productId = furniture.getAttribute('io3d-furniture').id
-        let filter = filterInput.value.trim()
-        io3d.homeStaging.replaceFurniture(productId, { filter }).then(result => {
+        let rotation = furniture.getAttribute('rotation')
+        let position = furniture.getAttribute('position')
+        let query = queryInput.value.trim()
+        io3d.homeStaging.replaceFurniture(productId, { query, rotation, position }).then(result => {
           if (!result || result.length === 0 ) return
-          let product = result[Math.floor(Math.random() * result.length)]
-          furniture.setAttribute('io3d-furniture', {'id': product.productResourceId})
-          idInput.value = product.productResourceId
+          let item = result[Math.floor(Math.random() * result.length)]
+          furniture.setAttribute('io3d-furniture', {'id': item.furniture.productResourceId})
+          furniture.setAttribute('position', AFRAME.utils.coordinates.stringify(item.position))
+          idInput.value = item.furniture.productResourceId
         })
       })
 
