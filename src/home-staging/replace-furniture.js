@@ -1,5 +1,6 @@
 import getFurnitureInfo  from '../furniture/get-info.js'
 import callService  from '../utils/services/call.js'
+import normalizeFurnitureInfo from '../furniture/common/normalize-furniture-info.js'
 
 var userQuery, searchCount, margin, furnitureInfo, position, rotation
 
@@ -12,6 +13,8 @@ var config = {
     'autofurnish',
     'wallAttached',
     'daybed',
+    'oval',
+    'rectangular',
     '2 seater',
     '3 seater',
     '4 seater'
@@ -47,11 +50,11 @@ function verifyResult(result, id) {
   if (searchCount > 10 ) {
     return Promise.reject(new Error('No furniture was found'))
   }
-  var cleanResult = result.filter(function(el){
+  var rawResult = result.filter(function(el){
     return el.productResourceId !== id
   });
 
-  if (cleanResult.length < 2) {
+  if (rawResult.length < 2) {
     margin += 0.10
     searchCount += 1
     var searchQuery = getQuery(furnitureInfo);
@@ -59,7 +62,7 @@ function verifyResult(result, id) {
       return verifyResult(result, id)
     })
   } else {
-    cleanResult = cleanResult.map(function(res) {
+    var cleanResult = rawResult.map(normalizeFurnitureInfo).map(function(res) {
       return {
         furniture: res,
         position: computeNewPosition(furnitureInfo, res)

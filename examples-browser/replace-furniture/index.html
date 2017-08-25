@@ -47,23 +47,23 @@
         let userQuery = queryInput.value
         let query = '-accessories -decoration ' + userQuery
         io3d.furniture.search(query.trim() , {limit: 200}).then(result => {
-          let product = result[Math.floor(Math.random() * result.length)]
-          furniture.setAttribute('io3d-furniture', {'id': product.id})
+          let furnitureInfo = result[Math.floor(Math.random() * result.length)]
+          furniture.setAttribute('io3d-furniture', {'id': furnitureInfo.id})
           furniture.setAttribute('position', '0 0 -3')
-          idInput.value = product.id
+          idInput.value = furnitureInfo.id
         })
       })
       changeBtn.addEventListener('click', function() {
-        let productId = furniture.getAttribute('io3d-furniture').id
+        let furnitureId = furniture.getAttribute('io3d-furniture').id
         let rotation = furniture.getAttribute('rotation')
         let position = furniture.getAttribute('position')
         let query = queryInput.value.trim()
-        io3d.homeStaging.replaceFurniture(productId, { query, rotation, position }).then(result => {
+        io3d.homeStaging.replaceFurniture(furnitureId, { query, rotation, position }).then(result => {
           if (!result || result.length === 0 ) return
           let item = result[Math.floor(Math.random() * result.length)]
-          furniture.setAttribute('io3d-furniture', {'id': item.furniture.productResourceId})
+          furniture.setAttribute('io3d-furniture', {'id': item.furniture.id})
           furniture.setAttribute('position', AFRAME.utils.coordinates.stringify(item.position))
-          idInput.value = item.furniture.productResourceId
+          idInput.value = item.furniture.id
         })
       })
 
