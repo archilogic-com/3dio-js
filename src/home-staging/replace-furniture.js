@@ -27,7 +27,7 @@ export default function replaceFurniture (id, options) {
   userQuery = options.query || null
   position = options.position || {x: 0, y: 0, z: 0}
   rotation = options.rotation || {x: 0, y: 0, z: 0}
-  // config publishable api key
+  // TODO: check config for publishable api key
   // reject when no publishable or not white listed domain
   // we need to call furniture info first in order to obtain data3d URL
   return getFurnitureInfo(id)
@@ -119,12 +119,16 @@ function computeNewPosition(a, b) {
   // check if the furniture's virtual origin should be center or edge
   var isEdgeAligned = edgeAligned.some(function(t) { return tags.includes(t) })
 
+  var zOffset
+  // compute offset between edges or centers
+  if (isEdgeAligned) zOffset = a.min[2] - b.min[2]
+  else zOffset = (a.max[2] + a.min[2]) / 2 - (b.max[2] + b.min[2]) / 2
+
   var offset = {
     // compute offset between centers
     x: (a.max[0] + a.min[0]) / 2 - (b.max[0] + b.min[0]) / 2,
     y: 0,
-    // compute offset between edges or centers
-    z: isEdgeAligned ? a.min[2] - b.min[2] : (a.max[2] + a.min[2]) / 2 - (b.max[2] + b.min[2]) / 2
+    z: zOffset
   }
 
   var s = Math.sin(rotation.y / 180 * Math.PI)
