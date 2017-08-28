@@ -3,6 +3,7 @@ import checkDependencies from './a-frame/check-dependencies.js'
 import Data3dView from './a-frame/three/data3d-view.js'
 import data3dComponent from './a-frame/component/data3d.js'
 import furnitureComponent from './a-frame/component/furniture.js'
+import getData3dFromComponent from './a-frame/get-data3d-from-component.js'
 
 // initialize aframe components
 
@@ -23,7 +24,8 @@ checkDependencies({
 var aFrame = {
   three: {
     Data3dView: Data3dView,
-  }
+  },
+  getData3dFromComponent: getData3dFromComponent
 }
 
 export default aFrame

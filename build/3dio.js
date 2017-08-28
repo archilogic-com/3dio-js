@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.53
- * @date 2017/08/21 10:24
+ * @date 2017/08/27 05:45
  * @branch master
- * @commit 3f1f305750112ca27afa7fcf947dd325bca9fdaa
+ * @commit 4560216457643764c5de81ff0e6e098b78ba163c
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/21 10:24', GIT_BRANCH = 'master', GIT_COMMIT = '3f1f305750112ca27afa7fcf947dd325bca9fdaa'
+	var BUILD_DATE='2017/08/27 05:45', GIT_BRANCH = 'master', GIT_COMMIT = '4560216457643764c5de81ff0e6e098b78ba163c'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.53";
@@ -30,7 +30,7 @@
 	var author = {"name":"archilogic","email":"dev.rocks@archilogic.com","url":"https://archilogic.com"};
 	var main = "index.js";
 	var scripts = {"start":"gulp dev-browser","dev-browser":"gulp dev-browser","dev-node":"gulp dev-node","test":"gulp test","build":"gulp build","release":"gulp release"};
-	var dependencies = {"bluebird":"^3.5.0","form-data":"^2.1.4","js-logger":"^1.3.0","lodash":"^4.17.4","node-fetch":"2.0.0-alpha.8","rxjs":"^5.4.2","three":"^0.85.2","whatwg-fetch":"^2.0.3"};
+	var dependencies = {"bluebird":"^3.5.0","form-data":"^2.1.4","js-logger":"^1.3.0","lodash":"^4.17.4","node-fetch":"2.0.0-alpha.8","pako":"^1.0.5","rxjs":"^5.4.2","three":"^0.85.2","whatwg-fetch":"^2.0.3"};
 	var devDependencies = {"babel-runtime":"^6.25.0","chalk":"^2.0.1","confirm-cli":"^0.4.0","del":"^3.0.0","gulp":"github:gulpjs/gulp#4.0","gulp-git":"^2.4.1","gulp-gzip":"^1.4.0","gulp-less":"^3.3.2","gulp-s3":"^0.11.0","gulp-watch":"^4.3.11","lite-server":"^2.3.0","moment":"^2.18.1","rollup":"^0.41.6","rollup-plugin-commonjs":"^8.0.2","rollup-plugin-json":"^2.1.1","rollup-plugin-less":"^0.1.3","rollup-plugin-node-resolve":"^3.0.0","through2":"^2.0.3","uglify-js":"^3.0.10","vinyl":"^2.1.0"};
 	var packageJson = {
 		name: name,
@@ -1437,8 +1437,8 @@
 
 	// helpers
 
-	function assertBrowser() {
-	  if (!isBrowser) throw ('Sorry this feature requires a browser environment.')
+	function assertBrowser(message) {
+	  if (!isBrowser) throw (message || 'Sorry this feature requires a browser environment.')
 	}
 
 	function getWebGlInfo () {
@@ -15489,6 +15489,58 @@
 
 	};
 
+	function getData3dFromComponent (selector, options) {
+	  
+	  // API
+	  var options = options || {};
+	  var sourceEl = document.querySelector(selector || 'a-scene').object3D;
+	  
+	  // internals
+	  var data3d = { meshes: {}, materials: {} };
+	  
+	  function traverse (el) {
+	    
+	    el.updateMatrixWorld();
+	    
+	    if (el.geometry) {
+	      
+	      // ensure buffer geometry in result
+	      var bufferGeometry = el.geometry.type === 'BufferGeometry' ? el.geometry : new THREE.BufferGeometry().fromGeometry(el.geometry);
+	      // TODO: add support for inteviewed buffers
+	      // TODO: add support for multimatrial objects
+	      
+	      var mesh = data3d.meshes[el.uuid] = {};
+	      var attr = bufferGeometry.attributes;
+	      var p = el.getWorldPosition();
+	      var r = el.getWorldRotation();
+	      var s = el.getWorldScale();
+	      mesh.position = [p.x, p.y, p.z];
+	      mesh.rotation = [r.x, r.y, r.z];
+	      mesh.scale = [s.x, s.y, s.z];
+	      mesh.material = el.material.uuid;
+	      if (attr.position) mesh.positions = attr.position.array;
+	      if (attr.normal) mesh.normals = attr.normal.array;
+	      if (attr.uvs) mesh.normals = attr.uv.array;
+	      
+	      var m = el.material;
+	      var material = data3d.materials[el.material.uuid] = {};
+	      material.color = [m.color.r, m.color.g, m.color.b];
+	      
+	    }
+	    
+	    // parse children
+	    el.children.forEach(function(child){
+	      traverse(child);
+	    });
+	    
+	  }
+	  
+	  traverse(sourceEl);
+	  
+	  return bluebird_1.resolve(data3d)
+	  
+	}
+
 	// initialize aframe components
 
 	checkDependencies({
@@ -15508,7 +15560,8 @@
 	var aFrame = {
 	  three: {
 	    Data3dView: Data3dView,
-	  }
+	  },
+	  getData3dFromComponent: getData3dFromComponent
 	};
 
 	function normalizeFurnitureInfo (rawInfo) {
@@ -17672,6 +17725,515 @@
 	  getConversionStatus: getConversionStatus
 	};
 
+	function fetchModule (url) {
+	  runtime.assertBrowser('Please use "require()" to fetch modules in server environment.');
+	  
+	  return fetch$1(url).then(function(response){
+	    return response.text()
+	  }).then(function(code){
+	    // module wrapper
+	    window.___modules = window.___modules || {};
+	    //console.log(code)
+	    var moduleWrapper = 'window.___modules["'+url+'"] = (function(){ var exports = {}, module = {exports:exports};'+code+'\nreturn module.exports\n})()';
+	    var script = document.createElement('script');
+	    try {
+	      script.appendChild(document.createTextNode(moduleWrapper));
+	      document.body.appendChild(script);
+	    } catch (e) {
+	      script.text = moduleWrapper;
+	      document.body.appendChild(script);
+	    }
+	    return window.___modules[url]
+	  })
+	}
+
+	var FILE_READ_METHODS = {
+	  undefined: 'readAsText',
+	  text: 'readAsText',
+	  dataUrl: 'readAsDataURL',
+	  binaryString: 'readAsBinaryString',
+	  arrayBuffer: 'readAsArrayBuffer'
+	};
+
+	function readFile(blob, type) {
+	  runtime.assertBrowser();
+	  
+	  return new Promise(function(resolve, reject){
+	    var fileReader = new window.FileReader();
+	    fileReader.onload = function (e) {
+	      // IE 11 requires this
+	      // http://stackoverflow.com/a/32665193/2835973
+	      resolve(fileReader.content || fileReader.result);
+	    };
+	    fileReader.onerror = function (err){
+	      reject(err);
+	    };
+	    // start reading file
+	    fileReader[ FILE_READ_METHODS[type] ](blob);
+	  })
+	}
+
+	// API
+
+	var gzip = {
+	  inflate: inflate,
+	  inflateFile: inflateFile,
+	  deflate: deflate,
+	  deflateFile: deflateFile
+	};
+
+	// internals
+
+	var PAKO_LIB = {
+	  deflate: {
+	    url: 'https://cdnjs.cloudflare.com/ajax/libs/pako/1.0.5/pako_deflate.min.js',
+	    module: 'pako/deflate'
+	  },
+	  inflate: {
+	    url: 'https://cdnjs.cloudflare.com/ajax/libs/pako/1.0.5/pako_inflate.min.js',
+	    module: 'pako/inflate'
+	  }
+	};
+
+	// methods
+
+	function inflate (input) {
+	  return loadInflateLib().then(function (pakoInflate) {
+	    return pakoInflate.ungzip(input)
+	  })
+	}
+
+	function inflateFile (gzippedFile) {
+	  return loadInflateLib().then(function (pakoInflate) {
+	    return readFile(gzippedFile, 'arrayBuffer')
+	      .then(pakoInflate.ungzip)
+	      .then(function(arrayBuffer){
+	        var file = new Blob([ arrayBuffer ], { type: getMimeTypeFromFileName(gzippedFile.name) });
+	        // remove '.gz.' tag from filename
+	        if (gzippedFile.name) {
+	          file.name = gzippedFile.name.replace('.gz.','.');
+	        }
+	        return file
+	      })
+	  })
+	}
+
+	function deflate (input) {
+	  return loadDeflateLib().then(function (pakoDeflate) {
+	    return pakoDeflate.gzip(input)
+	  })
+	}
+
+	function deflateFile (file) {
+	  return loadDeflateLib().then(function (pakoDeflate) {
+	    return readFile(file, 'arrayBuffer')
+	      .then(pakoDeflate.gzip)
+	      .then(function(arrayBuffer){
+	        var gzippedFile = new Blob([ arrayBuffer ], { type: 'application/x-gzip' });
+	        // add '.gz.' tag to filename
+	        if (file.name) {
+	          gzippedFile.name = file.name.replace('.','.gz.');
+	        }
+	        return gzippedFile
+	      })
+	  })
+	}
+
+	// helpers
+
+	function loadDeflateLib () {
+	  return runtime.isBrowser ? fetchModule(PAKO_LIB.deflate.url) : Promise.resolve(require(PAKO_LIB.deflate.module))
+	}
+
+	function loadInflateLib () {
+	  return runtime.isBrowser ? fetchModule(PAKO_LIB.inflate.url) : Promise.resolve(require(PAKO_LIB.inflate.module))
+	}
+
+	function traverseData3d$1(data3d, callback) {
+
+	  callback(data3d);
+
+	  if (data3d.children) for (var i=0, l=data3d.children.length; i<l; i++) traverseData3d$1(data3d.children[i], callback);
+
+	}
+
+	// API
+
+	var clone = cloneData3d$1;
+	clone.meshes = cloneMeshes;
+	clone.meshe = cloneSingleMesh;
+	clone.materials = cloneMaterials;
+	clone.material = cloneSingleMaterial;
+
+	// methods
+
+	function cloneData3d$1 (_data3d, options) {
+
+	    var clone = {};
+
+	    clone.meshes = cloneMeshes(_data3d.meshes, options);
+	    clone.materials = cloneMaterials(_data3d.materials);
+
+	    if (_data3d.alternativeMaterialsByMeshKey) {
+	      clone.alternativeMaterialsByMeshKey = JSON.parse(JSON.stringify(_data3d.alternativeMaterialsByMeshKey));
+	    }
+	    if (_data3d._params) {
+	      clone._params = _data3d._params;
+	    }
+	    if (_data3d.position) {
+	      clone.position = _data3d.position.slice(0);
+	    }
+	    if (_data3d.rotDeg) {
+	      clone.rotDeg = _data3d.rotDeg.slice(0);
+	    }
+	    if (_data3d.rotRad) {
+	      clone.rotRad = _data3d.rotRad.slice(0);
+	    }
+	    if (_data3d.children) {
+	      clone.children = _data3d.children.map(function(childData3d){
+	        return cloneData3d$1 (childData3d, options)
+	      });
+	    }
+
+	    return clone
+	  }
+	  
+	  function cloneSingleMesh(mesh, options) {
+	    return cloneMeshes({ x:mesh }, options).x
+	  }
+	  
+	  function cloneMeshes (_meshes, options) {
+
+	    if (!_meshes) {
+	      return {}
+	    }
+
+	    // API
+	    options = options || {};
+	    var clonePositions = !!options.clonePositions;
+	    var cloneNormals = !!options.cloneNormals;
+	    var cloneUvs = !!options.cloneUvs;
+	    var cloneUvsLightmap = !!options.cloneUvsLightmap;
+
+	    // internals
+	    var
+	      meshId, _mesh, mesh,
+	      meshKeys = Object.keys(_meshes),
+	      meshes = {};
+
+	    for (var i = 0, l = meshKeys.length; i < l; i++) {
+
+	      meshId = meshKeys[ i ];
+	      mesh = {};
+	      _mesh = _meshes[ meshId ];
+
+	      // vertices
+	      if (_mesh.positions) {
+	        if (clonePositions && (_mesh.positions instanceof Array || _mesh.positions instanceof Float32Array)) {
+	          mesh.positions = _mesh.positions.slice(0);
+	        } else {
+	          mesh.positions = _mesh.positions;
+	        }
+	      }
+
+	      // normals
+	      if (_mesh.normals) {
+	        if (cloneNormals && (_mesh.normals instanceof Array || _mesh.normals instanceof Float32Array)) {
+	          mesh.normals = _mesh.normals.slice(0);
+	        } else {
+	          mesh.normals = _mesh.normals;
+	        }
+	      }
+
+	      // uvs
+	      if (_mesh.uvs) {
+	        if (cloneUvs && (_mesh.uvs instanceof Array || _mesh.uvs instanceof Float32Array)) {
+	          mesh.uvs = _mesh.uvs.slice(0);
+	        } else {
+	          mesh.uvs = _mesh.uvs;
+	        }
+	      }
+
+	      // uvs lightmap
+	      if (_mesh.uvsLightmap) {
+	        if (cloneUvsLightmap && (_mesh.uvsLightmap instanceof Array || _mesh.uvsLightmap instanceof Float32Array)) {
+	          mesh.uvsLightmap = _mesh.uvsLightmap.slice(0);
+	        } else {
+	          mesh.uvsLightmap = _mesh.uvsLightmap;
+	        }
+	      }
+
+	      // other arrays
+	      if (_mesh.matrix) mesh.matrix = _mesh.matrix.slice(0);
+	      if (_mesh.uvMatrix) mesh.uvMatrix = _mesh.uvMatrix.slice(0);
+	      if (_mesh.meshKeys) mesh.meshKeys = _mesh.meshKeys.slice(0);
+	      if (_mesh.position) mesh.position = _mesh.position.slice(0);
+	      if (_mesh.rotDeg) mesh.rotDeg = _mesh.rotDeg.slice(0);
+	      if (_mesh.rotRad) mesh.rotRad = _mesh.rotRad.slice(0);
+	      if (_mesh.scale) mesh.scale= _mesh.scale.slice(0);
+
+	      // primitives
+	      if (_mesh.v) mesh.v = _mesh.v;
+	      if (_mesh.vertexMode) mesh.vertexMode = _mesh.vertexMode;
+	      if (_mesh.side) mesh.side = _mesh.side;
+	      if (_mesh.material) mesh.material = _mesh.material;
+	      if (_mesh.visibleInPersonView) mesh.visibleInPersonView = _mesh.visibleInPersonView;
+	      if (_mesh.visibleInBirdView) mesh.visibleInBirdView = _mesh.visibleInBirdView;
+	      if (_mesh.visibleInFloorplanView) mesh.visibleInFloorplanView = _mesh.visibleInFloorplanView;
+
+	      meshes[ meshId ] = mesh;
+	    }
+
+	    // output
+	    return meshes
+	  }
+	  
+	  function cloneSingleMaterial(material) {
+	    return cloneMaterials({ x:material }).x
+	  }
+	  
+	  function cloneMaterials(_materials) {
+
+	    if (!_materials) {
+	      return {}
+	    }
+
+	    var materialId, _material, materials, material, materialKeys, _attributes, _attributeKeys, attributeKey, type, attributes, isExtended;
+
+	    materialKeys = Object.keys(_materials);
+	    // result
+	    materials = {};
+
+	    if (materialKeys.length === 0) {
+	      return {}
+	    }
+
+	    if (_materials[ materialKeys[0] ].attributes) {
+	      isExtended = true;
+	      // deep copy source
+	      materials = JSON.parse(JSON.stringify(_materials));
+	    } else {
+	      isExtended = false;
+	    }
+
+	    for (var i = 0, l = materialKeys.length; i < l; i++) {
+
+	      materialId = materialKeys[ i ];
+	      _attributes = isExtended ? _materials[ materialId ].attributes : _materials[ materialId ];
+
+	      if (typeof _attributes === 'string') {
+
+	        if (isExtended) {
+	          materials[ materialId ].attributes = _attributes;
+	        } else {
+	          materials[ materialId ] = _attributes;
+	        }
+
+	      } else if (_attributes) {
+
+	        attributes = {};
+	        _attributeKeys = Object.keys(_attributes);
+
+	        for (var j= 0, k=_attributeKeys.length; j<k; j++) {
+	          attributeKey = _attributeKeys[j];
+	          type = typeof _attributes[ attributeKey ];
+	          if (type === 'string' || type === 'number' || type === 'boolean') {
+	            // primitive
+	            attributes[ attributeKey ] = _attributes[ attributeKey ];
+	          } else if (_attributes[ attributeKey ]) {
+	            if (_attributes[ attributeKey ].length === 3) {
+	              // color array
+	              attributes[ attributeKey ] = [
+	                _attributes[ attributeKey ][0],
+	                _attributes[ attributeKey ][1],
+	                _attributes[ attributeKey ][2]
+	              ];
+	            } else if (_attributes[ attributeKey ].length === 2) {
+	              // size array
+	              attributes[ attributeKey ] = [
+	                _attributes[ attributeKey ][0],
+	                _attributes[ attributeKey ][1]
+	              ];
+	            }
+	          }
+	        }
+
+	        if (isExtended) {
+	          materials[ materialId ].attributes = attributes;
+	        } else {
+	          materials[ materialId ] = attributes;
+	        }
+
+	      }
+
+	    }
+
+	    return materials
+
+	  }
+
+	// config
+
+	var FILE_EXTENSION = '.data3d';
+	var HEADER_BYTE_LENGTH$1 = 16;
+	var MAGIC_NUMBER$1 = 0x41443344; // AD3D encoded as ASCII characters in hex
+	var VERSION$1 = 1;
+
+	// main
+
+	function encodeToBuffer (data3d, options) {
+
+	  // API
+	  options = options || {};
+	  var createFile = options.createFile !== undefined ? options.createFile : true;
+	  var gzipFile = options.gzipFile !== undefined ? options.gzipFile : true;
+	  var filename = options.filename || getFallbackFilename() + FILE_EXTENSION;
+	  
+	  // internals
+	  var result = {
+	    buffer: null,
+	    file: null,
+	    warnings: [],
+	    hasMeshes: false
+	  };
+	  var resultingPromise;
+	  
+	  // add correct ending
+	  if (filename.substring( filename.length - FILE_EXTENSION.length ) !== FILE_EXTENSION) filename += FILE_EXTENSION;
+	  
+	  // decouple heavy arrays from data3d and store them in dataArrays
+	  
+	  var payloadArrays = [];
+	  var payloadLength = 0;
+	  var meshes, meshKeys, i, l, array, mesh;
+	  var arrayNames = ['positions', 'normals', 'uvs', 'uvsLightmap']; // heavy arrays
+	  var _data3d = clone(data3d);
+	  traverseData3d$1( _data3d, function(data3d){
+	    meshes = data3d.meshes;
+	    meshKeys = data3d.meshKeys || Object.keys(meshes);
+	    for (i=0, l=meshKeys.length; i<l; i++) {
+	      result.hasMeshes = true;
+	      mesh = meshes[ meshKeys[i] ];
+	      arrayNames.forEach(function(name){
+	        array = mesh[name];
+	        if (array) {
+	          if (array.length) {
+	            // remember offset and length
+	            mesh[name + 'Offset'] = payloadLength;
+	            mesh[name + 'Length'] = array.length;
+	            // increase overall offset
+	            payloadLength += array.length;
+	            payloadArrays[payloadArrays.length] = array;
+	          }
+	          // delete heavy array in structure
+	          delete mesh[name];
+	        }
+	      });
+	    }
+	  });
+	  var payloadByteLength = payloadLength * 4;
+	  
+	  // create structure
+	  
+	  var structure = {
+	    version: VERSION$1,
+	    data3d: _data3d
+	  };
+	  
+	  // serialize structure
+	  
+	  var structureString = JSON.stringify( structure, function(key, value) {
+	    if (value instanceof  Float32Array) {
+	      // make typed array look like normal array json (otherwise the will look like objects)
+	      return Array.apply([], value)
+	    } else {
+	      return value
+	    }
+	  });
+	  var structureByteLength = structureString.length * 2;
+	  // byte length has to be a multiple of four! adding one string if it is not
+	  // http://stackoverflow.com/questions/7372124/why-is-creating-a-float32array-with-an-offset-that-isnt-a-multiple-of-the-eleme
+	  if (!isMultipleOf(structureByteLength, 4)) {
+	    structureString += ' ';
+	    structureByteLength += 2;
+	  }
+	  
+	  // create file buffer
+	  
+	  var fileBuffer = new ArrayBuffer( HEADER_BYTE_LENGTH$1 + structureByteLength + payloadByteLength );
+	  
+	  // write structure data into file buffer
+	  
+	  var structureArray = new Uint16Array( fileBuffer, HEADER_BYTE_LENGTH$1, structureByteLength / 2 );
+	  for (i = 0, l = structureString.length; i < l; i++) {
+	    structureArray[i] = structureString.charCodeAt(i);
+	  }
+	  
+	  // write payload into file buffer
+	  
+	  var payloadByteOffset = HEADER_BYTE_LENGTH$1 + structureByteLength;
+	  var payloadArray = new Float32Array( fileBuffer, payloadByteOffset, payloadByteLength / 4 );
+	  var payloadPointer = 0;
+	  for (i = 0, l = payloadArrays.length; i < l; i++) {
+	    array = payloadArrays[i];
+	    payloadArray.set( array, payloadPointer );
+	    payloadPointer += array.length;
+	  }
+	  
+	  // write file header
+	  
+	  var fileHeaderArray = new Int32Array( fileBuffer, 0, HEADER_BYTE_LENGTH$1 / 4 );
+	  // magic number
+	  fileHeaderArray[0] = MAGIC_NUMBER$1;
+	  // version number
+	  fileHeaderArray[1] = VERSION$1;
+	  // structure length
+	  fileHeaderArray[2] = structureByteLength;
+	  // payload length
+	  fileHeaderArray[3] = payloadByteLength;
+	  
+	  result.buffer = fileBuffer;
+	  
+	  if (createFile && !gzipFile) {
+	  
+	    var file = new Blob([ new DataView(fileBuffer) ], { type: 'application/octet-stream' });
+	    file.name = filename;
+	    result.file = file;
+	  
+	  } else if (createFile && gzipFile) {
+	  
+	    resultingPromise = gzip.deflate(fileBuffer)
+	      .then(function (zippedArray) {
+	        var file = new Blob([ zippedArray ], { type: 'application/x-gzip' });
+	        file.name = filename.replace('.', '.gz.');
+	        result.file = file;
+	        return result
+	      });
+	  
+	  }
+	  
+	  // make sure that output is a promise
+	  if (!resultingPromise) {
+	    resultingPromise = bluebird_1.resolve(result);
+	  }
+	  
+	  // return result
+	  return resultingPromise
+
+	}
+
+	// helpers
+
+	function isMultipleOf (value, multiple) {
+	  return Math.ceil(value / multiple) === value / multiple
+	}
+
+	function getFallbackFilename () {
+	  var d = new Date();
+	  return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+	  + '_' + d.getHours() + '-' + d.getMinutes() + '-' + d.getSeconds() + '_' + getShortId()
+	}
+
 	var css = ".io3d-message-list {\n  z-index: 100001;\n  position: fixed;\n  top: 0;\n  left: 50%;\n  margin-left: -200px;\n  width: 400px;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: normal;\n  letter-spacing: 1px;\n  line-height: 1.3;\n  text-align: center;\n}\n.io3d-message-list .message {\n  display: block;\n  opacity: 0;\n}\n.io3d-message-list .message .spacer {\n  display: block;\n  height: 10px;\n}\n.io3d-message-list .message .text {\n  display: inline-block;\n  padding: 10px 12px 10px 12px;\n  border-radius: 3px;\n  color: white;\n  font-size: 18px;\n}\n.io3d-message-list .message .text a {\n  color: white;\n  text-decoration: none;\n  padding-bottom: 0px;\n  border-bottom: 2px solid white;\n}\n.io3d-message-list .message .neutral {\n  background: rgba(0, 0, 0, 0.9);\n}\n.io3d-message-list .message .success {\n  background: linear-gradient(50deg, rgba(35, 165, 9, 0.93), rgba(102, 194, 10, 0.93));\n}\n.io3d-message-list .message .warning {\n  background: linear-gradient(50deg, rgba(165, 113, 9, 0.93), rgba(194, 169, 10, 0.93));\n}\n.io3d-message-list .message .error {\n  background: linear-gradient(50deg, rgba(165, 9, 22, 0.93), rgba(194, 56, 10, 0.93));\n}\n.io3d-overlay {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  z-index: 100000;\n  position: fixed;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: 200;\n  font-size: 18px;\n  letter-spacing: 1px;\n  color: white;\n  text-align: center;\n  line-height: 1.3;\n  background: linear-gradient(70deg, rgba(20, 17, 34, 0.96), rgba(51, 68, 77, 0.96));\n}\n@keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n.io3d-overlay .centered-content {\n  display: inline-block;\n  position: relative;\n  top: 50%;\n  text-align: left;\n}\n.io3d-overlay .centered-content .button {\n  margin-right: 4px;\n  margin-top: 1.5em;\n}\n.io3d-overlay .bottom-container {\n  width: 100%;\n  display: block;\n  position: absolute;\n  bottom: 1em;\n}\n.io3d-overlay .bottom-container .bottom-content {\n  display: inline-block;\n  position: relative;\n  margin-left: auto;\n  margin-right: auto;\n  text-align: left;\n  color: rgba(255, 255, 255, 0.35);\n}\n.io3d-overlay .bottom-container .bottom-content .clickable {\n  cursor: pointer;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-container .bottom-content .clickable:hover {\n  color: white;\n}\n.io3d-overlay .bottom-container .bottom-content a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-container .bottom-content a:hover {\n  color: white;\n}\n@keyframes content-slide-in {\n  0% {\n    transform: translateY(-40%);\n  }\n  100% {\n    transform: translateY(-50%);\n  }\n}\n@keyframes content-slide-out {\n  0% {\n    transform: translateY(-50%);\n  }\n  100% {\n    transform: translateY(-40%);\n  }\n}\n.io3d-overlay h1 {\n  margin: 0 0 0.5em 0;\n  font-size: 42px;\n  font-weight: 200;\n  color: white;\n}\n.io3d-overlay p {\n  margin: 1em 0 0 0;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint {\n  position: relative;\n  margin: 1em 0 0 0;\n  color: rgba(255, 255, 255, 0.35);\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  transition: color 600ms;\n}\n.io3d-overlay .hint a:hover {\n  color: white;\n}\n.io3d-overlay .button {\n  cursor: pointer;\n  display: inline-block;\n  color: rgba(255, 255, 255, 0.35);\n  width: 40px;\n  height: 40px;\n  line-height: 32px;\n  border: 2px solid rgba(255, 255, 255, 0.35);\n  border-radius: 50%;\n  text-align: center;\n  font-size: 18px;\n  font-weight: 200;\n  transition: opacity 300ms, color 300ms;\n}\n.io3d-overlay .button:hover {\n  background-color: rgba(255, 255, 255, 0.1);\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .button-highlighted {\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .close-button {\n  display: block;\n  position: absolute;\n  top: 20px;\n  right: 20px;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay input,\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay textarea {\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-size: 24px;\n  font-weight: normal;\n  letter-spacing: 1px;\n  outline: none;\n  margin: 0 0 0 0;\n  color: white;\n}\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay input:not([type='checkbox']):not([type='range']) {\n  padding: 0.2em 0 0.4em 0;\n  width: 100%;\n  line-height: 20px;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  border-radius: 0px;\n  border: 0px;\n  background: transparent;\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n  transition: border-color 1s;\n}\n.io3d-overlay select:focus,\n.io3d-overlay option:focus,\n.io3d-overlay input:not([type='checkbox']):not([type='range']):focus {\n  border-color: white;\n}\n.io3d-overlay textarea {\n  display: box;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  padding: 0.2em 0 0.4em 0;\n  min-width: 100%;\n  max-width: 100%;\n  line-height: 26px;\n  border: 0px;\n  background: rgba(255, 255, 255, 0.08);\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n}\n.io3d-overlay input[type='checkbox'] {\n  position: relative;\n  height: 20px;\n  vertical-align: bottom;\n  margin: 0;\n}\n.io3d-overlay .reveal-api-key-button {\n  cursor: pointer;\n  position: absolute;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 2px;\n  bottom: 0.7em;\n  padding: 0.1em 0.2em 0.2em 0.2em;\n  line-height: 20px;\n  transition: color 600ms;\n}\n.io3d-overlay .reveal-api-key-button:hover {\n  color: white;\n}\n.io3d-overlay a {\n  color: white;\n  text-decoration: none;\n}\n.io3d-overlay .key-menu {\n  position: relative;\n  margin: 3em 0 0 0;\n}\n.io3d-overlay .key-menu .key-image {\n  width: 172px;\n  height: 127px;\n}\n.io3d-overlay .key-menu .key-button {\n  position: absolute;\n  left: 156px;\n  height: 36px;\n  line-height: 36px;\n  background: rgba(255, 255, 255, 0.1);\n  cursor: pointer;\n  padding: 0 14px 0 14px;\n  border-radius: 2px;\n  transition: background 300ms linear;\n}\n.io3d-overlay .key-menu .key-button:hover {\n  background: rgba(255, 255, 255, 0.3);\n}\n.io3d-overlay .key-menu .go-to-publishable-api-key-ui {\n  top: 11px;\n}\n.io3d-overlay .key-menu .go-to-secret-api-key-ui {\n  bottom: 11px;\n}\n.io3d-overlay .regegenerate-secret-key-button {\n  cursor: pointer;\n}\n.io3d-overlay .publishable-api-keys .list {\n  max-height: 50vh;\n  overflow: auto;\n  padding: 0 15px 0 0;\n}\n.io3d-overlay .publishable-api-keys .list .key-item {\n  position: relative;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 3px;\n  margin-bottom: 12px;\n  padding: 4px 5px 3px 8px;\n}\n.io3d-overlay .publishable-api-keys .list .key {\n  font-weight: 200 !important;\n  border-bottom: 0 !important;\n  margin-bottom: 0 !important;\n  padding: 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .domains {\n  margin: 0 0 0 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .button {\n  position: absolute !important;\n  margin: 0 !important;\n  background-repeat: no-repeat;\n  background-position: center;\n  color: white;\n  opacity: 0.5;\n}\n.io3d-overlay .publishable-api-keys .list .button:hover {\n  opacity: 1;\n}\n.io3d-overlay .publishable-api-keys .list .delete-key-button {\n  right: 8px;\n  top: 9px;\n}\n.io3d-overlay .publishable-api-keys .list .edit-domains-button {\n  positions: absolute;\n  right: 56px;\n  top: 9px;\n  background-size: 75%;\n  padding: 5px;\n}\n.io3d-overlay .publishable-api-keys .generate-new-key-button {\n  margin: 1.5em 0 0 0;\n  display: inline-block;\n  cursor: pointer;\n}\n";
 
 	// basic element utils for convenience inspired by jquery API
@@ -19551,7 +20113,10 @@
 
 	  data3d: {
 	    load: loadData3d,
-	    decodeBuffer: decodeBuffer
+	    encodeBuffer: encodeToBuffer,
+	    decodeBuffer: decodeBuffer,
+	    clone: clone,
+	    traverse: traverseData3d$1
 	  },
 	  ui: ui,
 	  auth: auth,
@@ -19562,13 +20127,16 @@
 	  services: {
 	    call: callService
 	  },
-	  getMimeTypeFromFilename: getMimeTypeFromFileName,
+	  file: {
+	    getMimeTypeFromFilename: getMimeTypeFromFileName,
+	    gzip: gzip
+	  },
 	  url: Url,
 	  uuid: uuid,
 	  getShortId: getShortId,
 	  path: path,
 	  wait: wait
-
+	  
 	};
 
 	var io3d$1 = {
