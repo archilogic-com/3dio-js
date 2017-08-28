@@ -53,7 +53,8 @@ function verifyResult(result, id) {
   var rawResult = result.filter(function(el){
     return el.productResourceId !== id
   });
-
+  // if we didn't find anything in the first place
+  // let's increase dimensions a bit
   if (rawResult.length < 2) {
     margin += 0.10
     searchCount += 1
@@ -78,15 +79,15 @@ function search(searchQuery) {
 
 function getQuery(info) {
   var query = config['default_search']
-  var tags = info.tags
-
-  tags.forEach(function(tag) {
-    // filter out black listed tags
-    if (config['tag_black_list'].indexOf(tag) < 0 ) {
-      // filter out 1P, 2P ... tags
-      if (!/^\d+P$/.test(tag)) query += ' ' + tag
-    }
+  var tags = info.tags.filter(function(tag) {
+    // removes blacklisted tags as well as 1P, 2P, ...
+    return !config['tag_black_list'].includes(tag) && !/^\d+P$/.test(tag)
   })
+
+  // start removing tags from query when increasing dimensions didn't work
+  if (searchCount >= 5) tags = tags.slice(0, (tags.length - searchCount + 5))
+
+  query += ' ' + tags.join(' ')
 
   var categories = info.categories
   var dim = info.boundingBox
@@ -100,8 +101,8 @@ function getQuery(info) {
   if (dim) {
     ['length', 'height', 'width'].forEach(function(d) {
       if (dim[d] -margin > 0) {
-        searchQuery[d + 'Min'] = Math.round((dim[d] - margin) * 100) / 100
-        searchQuery[d + 'Max'] = Math.round((dim[d] + margin) * 100) / 100
+        searchQuery[d + 'Min'] = Math.round((dim[d] - margin) * 1e2) / 1e2
+        searchQuery[d + 'Max'] = Math.round((dim[d] + margin) * 1e2) / 1e2
       }
     })
   }
@@ -110,15 +111,13 @@ function getQuery(info) {
 
 function computeNewPosition(a, b) {
   var edgeAligned = ['sofa', 'shelf', 'sideboad', 'double bed', 'single bed', 'bed']
-  var isEdgeAligned = false
   var tags = a.tags
   a = a.boundingPoints
   b = b.boundingPoints
   if (!a || !b) return position
 
-  edgeAligned.forEach(function(t) {
-    if (tags.indexOf(t) > -1) isEdgeAligned = true
-  })
+  // check if the furniture's virtual origin should be center or edge
+  var isEdgeAligned = edgeAligned.some(function(t) { return tags.includes(t) })
 
   var offset = {
     // compute offset between centers
