@@ -2,11 +2,10 @@ import traverseData3d from './traverse.js'
 import cloneData3d from './clone.js'
 import uuid from '../uuid.js'
 import shortId from '../short-id.js'
-//import generateUvs from './generate-uvs.js'
-//import generateNormals from './generate-normals.js'
+import generateUvs from './buffer/get-uvs.js'
+import generateNormals from './buffer/get-normals.js'
 
-var generateUvs = {}
-var generateNormals = {}
+// placeholder
 function normalizeMaterials(x) { return x; }
 
 // API

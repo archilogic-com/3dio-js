@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.53
- * @date 2017/08/29 02:32
+ * @date 2017/08/29 04:25
  * @branch data3d
- * @commit acea58b9d7845d52de83823a400857ccf36db06c
+ * @commit 849d106c83a86f6eedccf13f8e852dc965e9bbc5
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/29 02:32', GIT_BRANCH = 'data3d', GIT_COMMIT = 'acea58b9d7845d52de83823a400857ccf36db06c'
+	var BUILD_DATE='2017/08/29 04:25', GIT_BRANCH = 'data3d', GIT_COMMIT = '849d106c83a86f6eedccf13f8e852dc965e9bbc5'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.53";
@@ -15329,11 +15329,212 @@
 	  return shortId
 	}
 
-	//import generateUvs from './generate-uvs.js'
-	//import generateNormals from './generate-normals.js'
+	// methods
 
-	var generateUvs = {};
-	var generateNormals = {};
+	function projectAxisY (v) {
+
+	  var uvs = new Float32Array(v.length / 1.5);
+	  var uvPos = 0;
+
+	  var i, l;
+	  for (i = 0, l = v.length; i < l; i += 9) {
+
+	    uvs[uvPos] = v[i + 2];
+	    uvs[uvPos + 1] = v[i];
+	    uvs[uvPos + 2] = v[i + 5];
+	    uvs[uvPos + 3] = v[i + 3];
+	    uvs[uvPos + 4] = v[i + 8];
+	    uvs[uvPos + 5] = v[i + 6];
+	    uvPos += 6;
+
+	  }
+
+	  return uvs
+
+	}
+	projectAxisY.title = 'Project Top Down';
+
+	function architectural (v) {
+
+	  var uvs = new Float32Array(v.length / 1.5);
+	  var uvPos = 0;
+
+	  var i, l, n, components;
+	  for (i = 0, l = v.length; i < l; i += 9) {
+
+	    // calculate face normal
+	    // cross product (a-b) x (c-b)
+	    n = [
+	      (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]),
+	      (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]),
+	      (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3])
+	    ];
+
+	    // normals should be absolute
+	    if (n[0] < 0) {
+	      n[0] *= -1;
+	    }
+	    if (n[1] < 0) {
+	      n[1] *= -1;
+	    }
+	    if (n[2] < 0) {
+	      n[2] *= -1;
+	    }
+
+	    // highest first?
+	    components = [1, 0, 2].sort(function (a, b) {
+	      return n[a] - n[b]
+	    });
+
+	    uvs[uvPos] = v[i + components[1]];
+	    uvs[uvPos + 1] = v[i + components[0]];
+	    uvs[uvPos + 2] = v[i + 3 + components[1]];
+	    uvs[uvPos + 3] = v[i + 3 + components[0]];
+	    uvs[uvPos + 4] = v[i + 6 + components[1]];
+	    uvs[uvPos + 5] = v[i + 6 + components[0]];
+	    uvPos += 6;
+
+	  }
+
+	  return uvs
+
+	}
+	architectural.title = 'Architectural';
+
+	// API
+
+	var getUvsBuffer = {
+	  architectural: architectural,
+	  projectAxisY: projectAxisY
+	};
+
+	var DEBUG = true;
+
+	// methods
+
+	function flat (v) {
+	  // calculate normals for flat shading
+	  var n = new Float32Array(v.length);
+	  var i, l, crx, cry, crz, invScalar;
+	  var hasFaultyTrigons = false;
+	  for (i = 0, l = v.length; i < l; i += 9) {
+	    // cross product (a-b) x (c-b)
+	    crx = (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]);
+	    cry = (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]);
+	    crz = (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3]);
+	    // normalize
+	    invScalar = 1 / Math.sqrt(crx * crx + cry * cry + crz * crz);
+	    // Fallback for trigons that don't span an area
+	    if (invScalar === Infinity) {
+	      invScalar = 0;
+	      hasFaultyTrigons = true;
+	    }
+	    // set normals
+	    n[i] = n[i + 3] = n[i + 6] = crx * invScalar;
+	    n[i + 1] = n[i + 4] = n[i + 7] = cry * invScalar;
+	    n[i + 2] = n[i + 5] = n[i + 8] = crz * invScalar;
+
+	  }
+	  if (DEBUG && hasFaultyTrigons) console.error('Geometry contains trigons that don\'t span an area.');
+	  return n
+	}
+	flat.title = 'Flat';
+
+	function smooth (v) {
+
+	  // output
+
+	  var normals = new Float32Array(v.length);
+
+	  // internals
+
+	  var hash, hashes = [], vertexRelatedNormals = {}, faceNormals, averageNormal;
+	  var n;
+	  var crx, cry, crz, invScalar;
+	  var hasFaultyTrigons = false;
+	  var i, l, i2, l2;
+
+	  ////////// 1. connect vertices to faces
+
+	  // go face by face
+	  for (i = 0, l = v.length; i < l; i += 9) {
+
+	    // calculate face normal
+	    // cross product (a-b) x (c-b)
+	    crx = (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]);
+	    cry = (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]);
+	    crz = (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3]);
+	    // normalize
+	    invScalar = 1 / Math.sqrt(crx * crx + cry * cry + crz * crz);
+	    if (invScalar === Infinity) {
+	      hasFaultyTrigons = true;
+	      invScalar = 0;
+	    }
+	    // set normals
+	    n = [crx * invScalar, cry * invScalar, crz * invScalar];
+
+	    for (i2 = 0, l2 = 9; i2 < l2; i2 += 3) {
+	      hash = v[i + i2] + '_' + v[i + i2 + 1] + '_' + v[i + i2 + 2];
+	      if (!vertexRelatedNormals[hash]) {
+	        vertexRelatedNormals[hash] = {
+	          faceNormals: [n]
+	        };
+	        hashes[hashes.length] = hash;
+	      } else {
+	        vertexRelatedNormals[hash].faceNormals.push(n);
+	      }
+	    }
+	  }
+
+	  ////////// 2. calculate average normals from related face normals
+
+	  var avx, avy, avz;
+	  for (i = 0, l = hashes.length; i < l; i++) {
+	    hash = hashes[i];
+	    faceNormals = vertexRelatedNormals[hash].faceNormals;
+	    avx = 0;
+	    avy = 0;
+	    avz = 0;
+	    for (i2 = 0, l2 = faceNormals.length; i2 < l2; i2++) {
+	      avx += faceNormals[i2][0];
+	      avy += faceNormals[i2][1];
+	      avz += faceNormals[i2][2];
+	    }
+	    // normalize
+	    invScalar = 1 / Math.sqrt(avx * avx + avy * avy + avz * avz);
+	    if (invScalar === Infinity) {
+	      hasFaultyTrigons = true;
+	      invScalar = 0;
+	    }
+	    // set average normal
+	    vertexRelatedNormals[hash].averageNormal = [avx * invScalar, avy * invScalar, avz * invScalar];
+	  }
+
+	  ////////// 3. apply average normals to vertices
+
+	  for (i = 0, l = v.length; i < l; i += 3) {
+	    hash = v[i] + '_' + v[i + 1] + '_' + v[i + 2];
+	    averageNormal = vertexRelatedNormals[hash].averageNormal;
+	    normals[i] = averageNormal[0];
+	    normals[i + 1] = averageNormal[1];
+	    normals[i + 2] = averageNormal[2];
+	  }
+
+	  // return
+	  if (DEBUG && hasFaultyTrigons) console.error('Shade Smooth: Geometry contains trigons that don\'t span an area.');
+	  return normals
+
+	}
+	smooth.title = 'Smooth';
+
+	// API
+
+	var getNormalsBuffer = {
+	  flat: flat,
+	  smooth: smooth,
+	};
+
+	// placeholder
 	function normalizeMaterials(x) { return x; }
 
 	// API
@@ -15470,7 +15671,7 @@
 	          // generate fallback UVs
 	          if (IS_DEBUG_MODE) console.error('Mesh with material "'+materialId+'" has texture(s) has no UVs. Fallback to architectural UV mapping.');
 	          if (warningCallback) warningCallback('Mesh with material "'+materialId+'" has texture(s) has no UVs. Fallback to architectural UV mapping.');
-	          mesh.uvs = generateUvs.architectural(mesh.positions);
+	          mesh.uvs = getUvsBuffer.architectural(mesh.positions);
 	        }
 
 	        // check if material with lightmap has lightmap uvs
@@ -15655,17 +15856,17 @@
 
 	        // check if normals are defined
 	        if (mesh.normals === undefined || mesh.normals.length === 0) {
-	          mesh.normals = generateNormals.flat(mesh.positions);
+	          mesh.normals = getNormalsBuffer.flat(mesh.positions);
 	        }
 	        // check if normal generation method exists
 	        else if (typeof mesh.normals === 'string') {
-	          if (generateNormals[ mesh.normals ]) {
+	          if (getNormalsBuffer[ mesh.normals ]) {
 	            // generate normals
-	            mesh.normals = generateNormals[ mesh.normals ](mesh.positions);
+	            mesh.normals = getNormalsBuffer[ mesh.normals ](mesh.positions);
 	          } else {
 	            // unknown shading method. fallback to flat
 	            if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Unknown normal shading method "' + mesh.normals + '". Fallback to flat shading.');
-	            mesh.normals = generateNormals.flat(mesh.positions);
+	            mesh.normals = getNormalsBuffer.flat(mesh.positions);
 	          }
 	        }
 	        // check type
@@ -15677,13 +15878,13 @@
 	          // type not supported
 	          else {
 	            if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Normal vertices should be of type Float32Array or Array. Fallback to flat shading.', mesh.normals);
-	            mesh.normals = generateNormals.flat(mesh.positions);
+	            mesh.normals = getNormalsBuffer.flat(mesh.positions);
 	          }
 	        }
 	        // check count
 	        if (mesh.normals.length !== mesh.positions.length) {
 	          if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Position vertices and normal vertices count has to be the same. Fallback to flat Shading. ', mesh.normals.length, mesh.normals.length);
-	          mesh.normals = generateNormals.flat(mesh.positions);
+	          mesh.normals = getNormalsBuffer.flat(mesh.positions);
 	        }
 
 	        // check uvs channel 1
@@ -15691,13 +15892,13 @@
 	          // defined as string
 	          if (typeof mesh.uvs === 'string') {
 	            // check if uv generation method exists
-	            if (generateUvs[ mesh.uvs ]) {
+	            if (getUvsBuffer[ mesh.uvs ]) {
 	              // generate uvs
-	              mesh.uvs = generateUvs[ mesh.uvs ](mesh.positions);
+	              mesh.uvs = getUvsBuffer[ mesh.uvs ](mesh.positions);
 	            } else {
 	              // unknown mapping method. fallback to architectural
 	              if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Unknown UV1 mapping method "' + mesh.uvs + '". Fallback to architectural UV mapping.');
-	              mesh.uvs = generateUvs.architectural(mesh.positions);
+	              mesh.uvs = getUvsBuffer.architectural(mesh.positions);
 	            }
 	          }
 	          // check type
@@ -15709,13 +15910,13 @@
 	            // mesh uvs not of supported type
 	            else {
 	              if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' UV Vertices should be of type Float32Array or Array. Fallback to architectural UV mapping.', mesh.uvs);
-	              mesh.uvs = generateUvs.architectural(mesh.positions);
+	              mesh.uvs = getUvsBuffer.architectural(mesh.positions);
 	            }
 	          }
 	          // check length
 	          if (mesh.uvs.length && mesh.uvs.length * 1.5 !== mesh.positions.length) {
 	            if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Position Vertices and UV vertices count not in ratio of 3:2. Fallback to architectural UV mapping. ', mesh.positions.length, mesh.uvs.length);
-	            mesh.uvs = generateUvs.architectural(mesh.positions);
+	            mesh.uvs = getUvsBuffer.architectural(mesh.positions);
 	          }
 	        }
 
