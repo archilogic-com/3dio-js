@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.53
- * @date 2017/08/27 05:45
- * @branch master
- * @commit 4560216457643764c5de81ff0e6e098b78ba163c
+ * @date 2017/08/29 02:32
+ * @branch data3d
+ * @commit acea58b9d7845d52de83823a400857ccf36db06c
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/27 05:45', GIT_BRANCH = 'master', GIT_COMMIT = '4560216457643764c5de81ff0e6e098b78ba163c'
+	var BUILD_DATE='2017/08/29 02:32', GIT_BRANCH = 'data3d', GIT_COMMIT = 'acea58b9d7845d52de83823a400857ccf36db06c'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.53";
@@ -8639,9 +8639,9 @@
 	};
 
 	var thenables = function(Promise, INTERNAL) {
-	var util$$1 = util;
-	var errorObj = util$$1.errorObj;
-	var isObject = util$$1.isObject;
+	var util$$2 = util;
+	var errorObj = util$$2.errorObj;
+	var isObject = util$$2.isObject;
 
 	function tryConvertToPromise(obj, context) {
 	    if (isObject(obj)) {
@@ -8699,7 +8699,7 @@
 	    promise._captureStackTrace();
 	    if (context) context._popContext();
 	    var synchronous = true;
-	    var result = util$$1.tryCatch(then).call(x, resolve, reject);
+	    var result = util$$2.tryCatch(then).call(x, resolve, reject);
 	    synchronous = false;
 
 	    if (promise && result === errorObj) {
@@ -8726,8 +8726,8 @@
 
 	var promise_array = function(Promise, INTERNAL, tryConvertToPromise,
 	    apiRejection, Proxyable) {
-	var util$$1 = util;
-	var isArray = util$$1.isArray;
+	var util$$2 = util;
+	var isArray = util$$2.isArray;
 
 	function toResolutionValue(val) {
 	    switch(val) {
@@ -8748,7 +8748,7 @@
 	    this._totalResolved = 0;
 	    this._init(undefined, -2);
 	}
-	util$$1.inherits(PromiseArray, Proxyable);
+	util$$2.inherits(PromiseArray, Proxyable);
 
 	PromiseArray.prototype.length = function () {
 	    return this._length;
@@ -8783,10 +8783,10 @@
 	            return this._cancel();
 	        }
 	    }
-	    values = util$$1.asArray(values);
+	    values = util$$2.asArray(values);
 	    if (values === null) {
 	        var err = apiRejection(
-	            "expecting an array or an iterable object but got " + util$$1.classString(values)).reason();
+	            "expecting an array or an iterable object but got " + util$$2.classString(values)).reason();
 	        this._promise._rejectCallback(err, false);
 	        return;
 	    }
@@ -8982,8 +8982,8 @@
 	var getDomain = Promise._getDomain;
 	var async = Promise._async;
 	var Warning = errors.Warning;
-	var util$$1 = util;
-	var canAttachTrace = util$$1.canAttachTrace;
+	var util$$2 = util;
+	var canAttachTrace = util$$2.canAttachTrace;
 	var unhandledRejectionHandled;
 	var possiblyUnhandledRejection;
 	var bluebirdFramePattern =
@@ -8994,19 +8994,19 @@
 	var formatStack = null;
 	var indentStackFrames = false;
 	var printWarning;
-	var debugging = !!(util$$1.env("BLUEBIRD_DEBUG") != 0 &&
+	var debugging = !!(util$$2.env("BLUEBIRD_DEBUG") != 0 &&
 	                        (false ||
-	                         util$$1.env("BLUEBIRD_DEBUG") ||
-	                         util$$1.env("NODE_ENV") === "development"));
+	                         util$$2.env("BLUEBIRD_DEBUG") ||
+	                         util$$2.env("NODE_ENV") === "development"));
 
-	var warnings = !!(util$$1.env("BLUEBIRD_WARNINGS") != 0 &&
-	    (debugging || util$$1.env("BLUEBIRD_WARNINGS")));
+	var warnings = !!(util$$2.env("BLUEBIRD_WARNINGS") != 0 &&
+	    (debugging || util$$2.env("BLUEBIRD_WARNINGS")));
 
-	var longStackTraces = !!(util$$1.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
-	    (debugging || util$$1.env("BLUEBIRD_LONG_STACK_TRACES")));
+	var longStackTraces = !!(util$$2.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
+	    (debugging || util$$2.env("BLUEBIRD_LONG_STACK_TRACES")));
 
-	var wForgottenReturn = util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
-	    (warnings || !!util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
+	var wForgottenReturn = util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
+	    (warnings || !!util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
 
 	Promise.prototype.suppressUnhandledRejections = function() {
 	    var target = this._target();
@@ -9078,7 +9078,7 @@
 	    var domain = getDomain();
 	    possiblyUnhandledRejection =
 	        typeof fn === "function" ? (domain === null ?
-	                                            fn : util$$1.domainBind(domain, fn))
+	                                            fn : util$$2.domainBind(domain, fn))
 	                                 : undefined;
 	};
 
@@ -9086,7 +9086,7 @@
 	    var domain = getDomain();
 	    unhandledRejectionHandled =
 	        typeof fn === "function" ? (domain === null ?
-	                                            fn : util$$1.domainBind(domain, fn))
+	                                            fn : util$$2.domainBind(domain, fn))
 	                                 : undefined;
 	};
 
@@ -9124,33 +9124,33 @@
 	    try {
 	        if (typeof CustomEvent === "function") {
 	            var event = new CustomEvent("CustomEvent");
-	            util$$1.global.dispatchEvent(event);
+	            util$$2.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = new CustomEvent(name.toLowerCase(), {
 	                    detail: event,
 	                    cancelable: true
 	                });
-	                return !util$$1.global.dispatchEvent(domEvent);
+	                return !util$$2.global.dispatchEvent(domEvent);
 	            };
 	        } else if (typeof Event === "function") {
 	            var event = new Event("CustomEvent");
-	            util$$1.global.dispatchEvent(event);
+	            util$$2.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = new Event(name.toLowerCase(), {
 	                    cancelable: true
 	                });
 	                domEvent.detail = event;
-	                return !util$$1.global.dispatchEvent(domEvent);
+	                return !util$$2.global.dispatchEvent(domEvent);
 	            };
 	        } else {
 	            var event = document.createEvent("CustomEvent");
 	            event.initCustomEvent("testingtheevent", false, true, {});
-	            util$$1.global.dispatchEvent(event);
+	            util$$2.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = document.createEvent("CustomEvent");
 	                domEvent.initCustomEvent(name.toLowerCase(), false, true,
 	                    event);
-	                return !util$$1.global.dispatchEvent(domEvent);
+	                return !util$$2.global.dispatchEvent(domEvent);
 	            };
 	        }
 	    } catch (e) {}
@@ -9160,21 +9160,21 @@
 	})();
 
 	var fireGlobalEvent = (function() {
-	    if (util$$1.isNode) {
+	    if (util$$2.isNode) {
 	        return function() {
 	            return process.emit.apply(process, arguments);
 	        };
 	    } else {
-	        if (!util$$1.global) {
+	        if (!util$$2.global) {
 	            return function() {
 	                return false;
 	            };
 	        }
 	        return function(name) {
 	            var methodName = "on" + name.toLowerCase();
-	            var method = util$$1.global[methodName];
+	            var method = util$$2.global[methodName];
 	            if (!method) return false;
-	            method.apply(util$$1.global, [].slice.call(arguments, 1));
+	            method.apply(util$$2.global, [].slice.call(arguments, 1));
 	            return true;
 	        };
 	    }
@@ -9237,7 +9237,7 @@
 	        config.warnings = !!warningsOption;
 	        wForgottenReturn = config.warnings;
 
-	        if (util$$1.isObject(warningsOption)) {
+	        if (util$$2.isObject(warningsOption)) {
 	            if ("wForgottenReturn" in warningsOption) {
 	                wForgottenReturn = !!warningsOption.wForgottenReturn;
 	            }
@@ -9300,7 +9300,7 @@
 	        executor(resolve, reject, function(onCancel) {
 	            if (typeof onCancel !== "function") {
 	                throw new TypeError("onCancel must be a function, got: " +
-	                                    util$$1.toString(onCancel));
+	                                    util$$2.toString(onCancel));
 	            }
 	            promise._attachCancellationCallback(onCancel);
 	        });
@@ -9314,7 +9314,7 @@
 
 	    var previousOnCancel = this._onCancel();
 	    if (previousOnCancel !== undefined) {
-	        if (util$$1.isArray(previousOnCancel)) {
+	        if (util$$2.isArray(previousOnCancel)) {
 	            previousOnCancel.push(onCancel);
 	        } else {
 	            this._setOnCancel([previousOnCancel, onCancel]);
@@ -9386,9 +9386,9 @@
 	            trace.attachExtraTrace(error);
 	        } else if (!error.__stackCleaned__) {
 	            var parsed = parseStackAndMessage(error);
-	            util$$1.notEnumerableProp(error, "stack",
+	            util$$2.notEnumerableProp(error, "stack",
 	                parsed.message + "\n" + parsed.stack.join("\n"));
-	            util$$1.notEnumerableProp(error, "__stackCleaned__", true);
+	            util$$2.notEnumerableProp(error, "__stackCleaned__", true);
 	        }
 	    }
 	}
@@ -9559,7 +9559,7 @@
 	function formatAndLogError(error, title, isSoft) {
 	    if (typeof console !== "undefined") {
 	        var message;
-	        if (util$$1.isObject(error)) {
+	        if (util$$2.isObject(error)) {
 	            var stack = error.stack;
 	            message = title + formatStack(stack, error);
 	        } else {
@@ -9606,7 +9606,7 @@
 	            "]";
 	    } else {
 	        str = obj && typeof obj.toString === "function"
-	            ? obj.toString() : util$$1.toString(obj);
+	            ? obj.toString() : util$$2.toString(obj);
 	        var ruselessToString = /\[object [a-zA-Z0-9$_]+\]/;
 	        if (ruselessToString.test(str)) {
 	            try {
@@ -9697,7 +9697,7 @@
 	    captureStackTrace(this, CapturedTrace);
 	    if (length > 32) this.uncycle();
 	}
-	util$$1.inherits(CapturedTrace, Error);
+	util$$2.inherits(CapturedTrace, Error);
 	Context.CapturedTrace = CapturedTrace;
 
 	CapturedTrace.prototype.uncycle = function() {
@@ -9762,8 +9762,8 @@
 	    }
 	    removeCommonRoots(stacks);
 	    removeDuplicateOrEmptyJumps(stacks);
-	    util$$1.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
-	    util$$1.notEnumerableProp(error, "__stackCleaned__", true);
+	    util$$2.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
+	    util$$2.notEnumerableProp(error, "__stackCleaned__", true);
 	};
 
 	var captureStackTrace = (function stackDetection() {
@@ -9843,12 +9843,12 @@
 	    printWarning = function (message) {
 	        console.warn(message);
 	    };
-	    if (util$$1.isNode && process.stderr.isTTY) {
+	    if (util$$2.isNode && process.stderr.isTTY) {
 	        printWarning = function(message, isSoft) {
 	            var color = isSoft ? "\u001b[33m" : "\u001b[31m";
 	            console.warn(color + message + "\u001b[0m\n");
 	        };
-	    } else if (!util$$1.isNode && typeof (new Error().stack) === "string") {
+	    } else if (!util$$2.isNode && typeof (new Error().stack) === "string") {
 	        printWarning = function(message, isSoft) {
 	            console.warn("%c" + message,
 	                        isSoft ? "color: darkorange" : "color: red");
@@ -9895,10 +9895,10 @@
 	};
 
 	var catch_filter = function(NEXT_FILTER) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var getKeys = es5.keys;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 
 	function catchFilter(instances, cb, promise) {
 	    return function(e) {
@@ -9918,7 +9918,7 @@
 	                } else if (matchesPredicate) {
 	                    return tryCatch(cb).call(boundTo, e);
 	                }
-	            } else if (util$$1.isObject(e)) {
+	            } else if (util$$2.isObject(e)) {
 	                var keys = getKeys(item);
 	                for (var j = 0; j < keys.length; ++j) {
 	                    var key = keys[j];
@@ -9937,9 +9937,9 @@
 	};
 
 	var _finally = function(Promise, tryConvertToPromise, NEXT_FILTER) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var CancellationError = Promise.CancellationError;
-	var errorObj = util$$1.errorObj;
+	var errorObj = util$$2.errorObj;
 	var catchFilter = catch_filter(NEXT_FILTER);
 
 	function PassThroughHandlerContext(promise, type, handler) {
@@ -10060,12 +10060,12 @@
 	            j = 0, i;
 	        for (i = 0; i < len - 1; ++i) {
 	            var item = arguments[i];
-	            if (util$$1.isObject(item)) {
+	            if (util$$2.isObject(item)) {
 	                catchInstances[j++] = item;
 	            } else {
 	                return Promise.reject(new TypeError(
 	                    "tapCatch statement predicate: "
-	                    + "expecting an object but got " + util$$1.classString(item)
+	                    + "expecting an object but got " + util$$2.classString(item)
 	                ));
 	            }
 	        }
@@ -10134,12 +10134,12 @@
 
 	var method =
 	function(Promise, INTERNAL, tryConvertToPromise, apiRejection, debug) {
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
 
 	Promise.method = function (fn) {
 	    if (typeof fn !== "function") {
-	        throw new Promise.TypeError("expecting a function but got " + util$$1.classString(fn));
+	        throw new Promise.TypeError("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    return function () {
 	        var ret = new Promise(INTERNAL);
@@ -10156,7 +10156,7 @@
 
 	Promise.attempt = Promise["try"] = function (fn) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    var ret = new Promise(INTERNAL);
 	    ret._captureStackTrace();
@@ -10166,7 +10166,7 @@
 	        debug.deprecated("calling Promise.try with more than 1 argument");
 	        var arg = arguments[1];
 	        var ctx = arguments[2];
-	        value = util$$1.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
+	        value = util$$2.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
 	                                  : tryCatch(fn).call(ctx, arg);
 	    } else {
 	        value = tryCatch(fn)();
@@ -10179,7 +10179,7 @@
 	};
 
 	Promise.prototype._resolveFromSyncValue = function (value) {
-	    if (value === util$$1.errorObj) {
+	    if (value === util$$2.errorObj) {
 	        this._rejectCallback(value.e, false);
 	    } else {
 	        this._resolveCallback(value, true);
@@ -10255,9 +10255,9 @@
 	};
 
 	var cancel = function(Promise, PromiseArray, apiRejection, debug) {
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 	var async = Promise._async;
 
 	Promise.prototype["break"] = Promise.prototype.cancel = function() {
@@ -10345,7 +10345,7 @@
 	};
 
 	Promise.prototype._doInvokeOnCancel = function(onCancelCallback, internalOnly) {
-	    if (util$$1.isArray(onCancelCallback)) {
+	    if (util$$2.isArray(onCancelCallback)) {
 	        for (var i = 0; i < onCancelCallback.length; ++i) {
 	            this._doInvokeOnCancel(onCancelCallback[i], internalOnly);
 	        }
@@ -10535,10 +10535,10 @@
 	var join =
 	function(Promise, PromiseArray, tryConvertToPromise, INTERNAL, async,
 	         getDomain) {
-	var util$$1 = util;
-	var canEvaluate = util$$1.canEvaluate;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var util$$2 = util;
+	var canEvaluate = util$$2.canEvaluate;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 	var reject;
 
 	{
@@ -10682,7 +10682,7 @@
 	                    if (holder.asyncNeeded) {
 	                        var domain = getDomain();
 	                        if (domain !== null) {
-	                            holder.fn = util$$1.domainBind(domain, holder.fn);
+	                            holder.fn = util$$2.domainBind(domain, holder.fn);
 	                        }
 	                    }
 	                    ret._setAsyncGuaranteed();
@@ -10707,16 +10707,16 @@
 	                          INTERNAL,
 	                          debug) {
 	var getDomain = Promise._getDomain;
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 	var async = Promise._async;
 
 	function MappingPromiseArray(promises, fn, limit, _filter) {
 	    this.constructor$(promises);
 	    this._promise._captureStackTrace();
 	    var domain = getDomain();
-	    this._callback = domain === null ? fn : util$$1.domainBind(domain, fn);
+	    this._callback = domain === null ? fn : util$$2.domainBind(domain, fn);
 	    this._preservedValues = _filter === INTERNAL
 	        ? new Array(this.length())
 	        : null;
@@ -10725,7 +10725,7 @@
 	    this._queue = [];
 	    async.invoke(this._asyncInit, this, undefined);
 	}
-	util$$1.inherits(MappingPromiseArray, PromiseArray);
+	util$$2.inherits(MappingPromiseArray, PromiseArray);
 
 	MappingPromiseArray.prototype._asyncInit = function() {
 	    this._init$(undefined, -2);
@@ -10834,7 +10834,7 @@
 
 	function map(promises, fn, options, _filter) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	    }
 
 	    var limit = 0;
@@ -10843,13 +10843,13 @@
 	            if (typeof options.concurrency !== "number") {
 	                return Promise.reject(
 	                    new TypeError("'concurrency' must be a number but it is " +
-	                                    util$$1.classString(options.concurrency)));
+	                                    util$$2.classString(options.concurrency)));
 	            }
 	            limit = options.concurrency;
 	        } else {
 	            return Promise.reject(new TypeError(
 	                            "options argument must be an object but it is " +
-	                             util$$1.classString(options)));
+	                             util$$2.classString(options)));
 	        }
 	    }
 	    limit = typeof limit === "number" &&
@@ -10876,9 +10876,9 @@
 	}
 
 	var call_get = function(Promise) {
-	var util$$1 = util;
-	var canEvaluate = util$$1.canEvaluate;
-	var isIdentifier = util$$1.isIdentifier;
+	var util$$2 = util;
+	var canEvaluate = util$$2.canEvaluate;
+	var isIdentifier = util$$2.isIdentifier;
 
 	var getMethodCaller;
 	var getGetter;
@@ -10939,8 +10939,8 @@
 	    var fn;
 	    if (obj != null) fn = obj[methodName];
 	    if (typeof fn !== "function") {
-	        var message = "Object " + util$$1.classString(obj) + " has no method '" +
-	            util$$1.toString(methodName) + "'";
+	        var message = "Object " + util$$2.classString(obj) + " has no method '" +
+	            util$$2.toString(methodName) + "'";
 	        throw new Promise.TypeError(message);
 	    }
 	    return fn;
@@ -10993,11 +10993,11 @@
 
 	var using = function (Promise, apiRejection, tryConvertToPromise,
 	    createContext, INTERNAL, debug) {
-	    var util$$1 = util;
+	    var util$$2 = util;
 	    var TypeError = errors.TypeError;
 	    var inherits = util.inherits;
-	    var errorObj = util$$1.errorObj;
-	    var tryCatch = util$$1.tryCatch;
+	    var errorObj = util$$2.errorObj;
+	    var tryCatch = util$$2.tryCatch;
 	    var NULL = {};
 
 	    function thrower(e) {
@@ -11120,7 +11120,7 @@
 	                        "you must pass at least 2 arguments to Promise.using");
 	        var fn = arguments[len - 1];
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	        }
 	        var input;
 	        var spreadArgs = true;
@@ -11218,7 +11218,7 @@
 	};
 
 	var timers$1 = function(Promise, INTERNAL, debug) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var TimeoutError = Promise.TimeoutError;
 
 	function HandleWrapper(handle)  {
@@ -11266,7 +11266,7 @@
 	    } else {
 	        err = new TimeoutError(message);
 	    }
-	    util$$1.markAsOriginatingFromRejection(err);
+	    util$$2.markAsOriginatingFromRejection(err);
 	    promise._attachExtraTrace(err);
 	    promise._reject(err);
 
@@ -11316,11 +11316,11 @@
 	                          tryConvertToPromise,
 	                          Proxyable,
 	                          debug) {
-	var errors$$1 = errors;
-	var TypeError = errors$$1.TypeError;
-	var util$$1 = util;
-	var errorObj = util$$1.errorObj;
-	var tryCatch = util$$1.tryCatch;
+	var errors$$2 = errors;
+	var TypeError = errors$$2.TypeError;
+	var util$$2 = util;
+	var errorObj = util$$2.errorObj;
+	var tryCatch = util$$2.tryCatch;
 	var yieldHandlers = [];
 
 	function promiseFromYieldHandler(value, yieldHandlers, traceParent) {
@@ -11363,7 +11363,7 @@
 	    this._yieldedPromise = null;
 	    this._cancellationPhase = false;
 	}
-	util$$1.inherits(PromiseSpawn, Proxyable);
+	util$$2.inherits(PromiseSpawn, Proxyable);
 
 	PromiseSpawn.prototype._isResolved = function() {
 	    return this._promise === null;
@@ -11516,7 +11516,7 @@
 
 	Promise.coroutine.addYieldHandler = function(fn) {
 	    if (typeof fn !== "function") {
-	        throw new TypeError("expecting a function but got " + util$$1.classString(fn));
+	        throw new TypeError("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    yieldHandlers.push(fn);
 	};
@@ -11534,14 +11534,14 @@
 	};
 
 	var nodeify = function(Promise) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var async = Promise._async;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 
 	function spreadAdapter(val, nodeback) {
 	    var promise = this;
-	    if (!util$$1.isArray(val)) return successAdapter.call(promise, val, nodeback);
+	    if (!util$$2.isArray(val)) return successAdapter.call(promise, val, nodeback);
 	    var ret =
 	        tryCatch(nodeback).apply(promise._boundValue(), [null].concat(val));
 	    if (ret === errorObj) {
@@ -11593,11 +11593,11 @@
 
 	var promisify = function(Promise, INTERNAL) {
 	var THIS = {};
-	var util$$1 = util;
+	var util$$2 = util;
 	var nodebackForPromise = nodeback;
-	var withAppended = util$$1.withAppended;
-	var maybeWrapAsError = util$$1.maybeWrapAsError;
-	var canEvaluate = util$$1.canEvaluate;
+	var withAppended = util$$2.withAppended;
+	var maybeWrapAsError = util$$2.maybeWrapAsError;
+	var canEvaluate = util$$2.canEvaluate;
 	var TypeError = errors.TypeError;
 	var defaultSuffix = "Async";
 	var defaultPromisified = {__isPromisified__: true};
@@ -11613,7 +11613,7 @@
 	var noCopyPropsPattern = new RegExp("^(?:" + noCopyProps.join("|") + ")$");
 
 	var defaultFilter = function(name) {
-	    return util$$1.isIdentifier(name) &&
+	    return util$$2.isIdentifier(name) &&
 	        name.charAt(0) !== "_" &&
 	        name !== "constructor";
 	};
@@ -11632,7 +11632,7 @@
 	}
 
 	function hasPromisified(obj, key, suffix) {
-	    var val = util$$1.getDataPropertyOrDefault(obj, key + suffix,
+	    var val = util$$2.getDataPropertyOrDefault(obj, key + suffix,
 	                                            defaultPromisified);
 	    return val ? isPromisified(val) : false;
 	}
@@ -11652,7 +11652,7 @@
 	}
 
 	function promisifiableMethods(obj, suffix, suffixRegexp, filter) {
-	    var keys = util$$1.inheritedDataKeys(obj);
+	    var keys = util$$2.inheritedDataKeys(obj);
 	    var ret = [];
 	    for (var i = 0; i < keys.length; ++i) {
 	        var key = keys[i];
@@ -11689,11 +11689,11 @@
 	};
 
 	var argumentSequence = function(argumentCount) {
-	    return util$$1.filledRange(argumentCount, "_arg", "");
+	    return util$$2.filledRange(argumentCount, "_arg", "");
 	};
 
 	var parameterDeclaration = function(parameterCount) {
-	    return util$$1.filledRange(
+	    return util$$2.filledRange(
 	        Math.max(parameterCount, 3), "_arg", "");
 	};
 
@@ -11790,9 +11790,9 @@
 	                    withAppended,
 	                    maybeWrapAsError,
 	                    nodebackForPromise,
-	                    util$$1.tryCatch,
-	                    util$$1.errorObj,
-	                    util$$1.notEnumerableProp,
+	                    util$$2.tryCatch,
+	                    util$$2.errorObj,
+	                    util$$2.notEnumerableProp,
 	                    INTERNAL);
 	};
 	}
@@ -11819,7 +11819,7 @@
 	        if (!promise._isFateSealed()) promise._setAsyncGuaranteed();
 	        return promise;
 	    }
-	    util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
+	    util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
 	    return promisified;
 	}
 
@@ -11844,11 +11844,11 @@
 	                return makeNodePromisified(key, THIS, key,
 	                                           fn, suffix, multiArgs);
 	            });
-	            util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
+	            util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
 	            obj[promisifiedKey] = promisified;
 	        }
 	    }
-	    util$$1.toFastProperties(obj);
+	    util$$2.toFastProperties(obj);
 	    return obj;
 	}
 
@@ -11859,7 +11859,7 @@
 
 	Promise.promisify = function (fn, options) {
 	    if (typeof fn !== "function") {
-	        throw new TypeError("expecting a function but got " + util$$1.classString(fn));
+	        throw new TypeError("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    if (isPromisified(fn)) {
 	        return fn;
@@ -11868,7 +11868,7 @@
 	    var receiver = options.context === undefined ? THIS : options.context;
 	    var multiArgs = !!options.multiArgs;
 	    var ret = promisify(fn, receiver, multiArgs);
-	    util$$1.copyDescriptors(fn, ret, propsFilter);
+	    util$$2.copyDescriptors(fn, ret, propsFilter);
 	    return ret;
 	};
 
@@ -11885,15 +11885,15 @@
 	    var promisifier = options.promisifier;
 	    if (typeof promisifier !== "function") promisifier = makeNodePromisified;
 
-	    if (!util$$1.isIdentifier(suffix)) {
+	    if (!util$$2.isIdentifier(suffix)) {
 	        throw new RangeError("suffix must be a valid identifier\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
 	    }
 
-	    var keys = util$$1.inheritedDataKeys(target);
+	    var keys = util$$2.inheritedDataKeys(target);
 	    for (var i = 0; i < keys.length; ++i) {
 	        var value = target[keys[i]];
 	        if (keys[i] !== "constructor" &&
-	            util$$1.isClass(value)) {
+	            util$$2.isClass(value)) {
 	            promisifyAll(value.prototype, suffix, filter, promisifier,
 	                multiArgs);
 	            promisifyAll(value, suffix, filter, promisifier, multiArgs);
@@ -11906,9 +11906,9 @@
 
 	var props = function(
 	    Promise, PromiseArray, tryConvertToPromise, apiRejection) {
-	var util$$1 = util;
-	var isObject = util$$1.isObject;
-	var es5$$1 = es5;
+	var util$$2 = util;
+	var isObject = util$$2.isObject;
+	var es5$$2 = es5;
 	var Es6Map;
 	if (typeof Map === "function") Es6Map = Map;
 
@@ -11949,7 +11949,7 @@
 	        entries = mapToEntries(obj);
 	        isMap = true;
 	    } else {
-	        var keys = es5$$1.keys(obj);
+	        var keys = es5$$2.keys(obj);
 	        var len = keys.length;
 	        entries = new Array(len * 2);
 	        for (var i = 0; i < len; ++i) {
@@ -11962,7 +11962,7 @@
 	    this._isMap = isMap;
 	    this._init$(undefined, isMap ? -6 : -3);
 	}
-	util$$1.inherits(PropertiesPromiseArray, PromiseArray);
+	util$$2.inherits(PropertiesPromiseArray, PromiseArray);
 
 	PropertiesPromiseArray.prototype._init = function () {};
 
@@ -12024,7 +12024,7 @@
 
 	var race = function(
 	    Promise, INTERNAL, tryConvertToPromise, apiRejection) {
-	var util$$1 = util;
+	var util$$2 = util;
 
 	var raceLater = function (promise) {
 	    return promise.then(function(array) {
@@ -12038,9 +12038,9 @@
 	    if (maybePromise instanceof Promise) {
 	        return raceLater(maybePromise);
 	    } else {
-	        promises = util$$1.asArray(promises);
+	        promises = util$$2.asArray(promises);
 	        if (promises === null)
-	            return apiRejection("expecting an array or an iterable object but got " + util$$1.classString(promises));
+	            return apiRejection("expecting an array or an iterable object but got " + util$$2.classString(promises));
 	    }
 
 	    var ret = new Promise(INTERNAL);
@@ -12078,13 +12078,13 @@
 	                          INTERNAL,
 	                          debug) {
 	var getDomain = Promise._getDomain;
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
 
 	function ReductionPromiseArray(promises, fn, initialValue, _each) {
 	    this.constructor$(promises);
 	    var domain = getDomain();
-	    this._fn = domain === null ? fn : util$$1.domainBind(domain, fn);
+	    this._fn = domain === null ? fn : util$$2.domainBind(domain, fn);
 	    if (initialValue !== undefined) {
 	        initialValue = Promise.resolve(initialValue);
 	        initialValue._attachCancellationCallback(this);
@@ -12101,7 +12101,7 @@
 	    this._promise._captureStackTrace();
 	    this._init$(undefined, -5);
 	}
-	util$$1.inherits(ReductionPromiseArray, PromiseArray);
+	util$$2.inherits(ReductionPromiseArray, PromiseArray);
 
 	ReductionPromiseArray.prototype._gotAccum = function(accum) {
 	    if (this._eachValues !== undefined && 
@@ -12199,7 +12199,7 @@
 
 	function reduce(promises, fn, initialValue, _each) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    var array = new ReductionPromiseArray(promises, fn, initialValue, _each);
 	    return array.promise();
@@ -12246,12 +12246,12 @@
 	var settle =
 	    function(Promise, PromiseArray, debug) {
 	var PromiseInspection = Promise.PromiseInspection;
-	var util$$1 = util;
+	var util$$2 = util;
 
 	function SettledPromiseArray(values) {
 	    this.constructor$(values);
 	}
-	util$$1.inherits(SettledPromiseArray, PromiseArray);
+	util$$2.inherits(SettledPromiseArray, PromiseArray);
 
 	SettledPromiseArray.prototype._promiseResolved = function (index, inspection) {
 	    this._values[index] = inspection;
@@ -12288,10 +12288,10 @@
 
 	var some =
 	function(Promise, PromiseArray, apiRejection) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var RangeError = errors.RangeError;
 	var AggregateError = errors.AggregateError;
-	var isArray = util$$1.isArray;
+	var isArray = util$$2.isArray;
 	var CANCELLATION = {};
 
 
@@ -12301,7 +12301,7 @@
 	    this._unwrap = false;
 	    this._initialized = false;
 	}
-	util$$1.inherits(SomePromiseArray, PromiseArray);
+	util$$2.inherits(SomePromiseArray, PromiseArray);
 
 	SomePromiseArray.prototype._init = function () {
 	    if (!this._initialized) {
@@ -14799,6 +14799,11 @@
 	          }
 
 	          // apply position
+	          if (position) {
+	            mesh3d.position.set( position[0] , position[1], position[2] );
+	          }
+
+	          // apply rotation
 	          if (rotRad) {
 	            mesh3d.rotation.set( rotRad[0] , rotRad[1], rotRad[2] );
 	          } else if (rotDeg) {
@@ -15066,20 +15071,228 @@
 
 	});
 
-	var fetch$1 = (function(){
+	function traverseData3d(data3d, callback) {
 
-	  if (runtime.isNode) {
-	    return require('node-fetch')
-	  } else if (typeof fetch !== 'undefined') {
-	    return fetch
-	  } else {
-	    console.warn('Missing global fetch API.');
-	    return function() {
-	      throw new Error('Missing global fetch API.')
+	  callback(data3d);
+
+	  if (data3d.children) for (var i=0, l=data3d.children.length; i<l; i++) traverseData3d(data3d.children[i], callback);
+
+	}
+
+	// API
+
+	var clone = cloneData3d$1;
+	clone.meshes = cloneMeshes;
+	clone.meshe = cloneSingleMesh;
+	clone.materials = cloneMaterials;
+	clone.material = cloneSingleMaterial;
+
+	// methods
+
+	function cloneData3d$1 (_data3d, options) {
+
+	    var clone = {};
+
+	    clone.meshes = cloneMeshes(_data3d.meshes, options);
+	    clone.materials = cloneMaterials(_data3d.materials);
+
+	    if (_data3d.alternativeMaterialsByMeshKey) {
+	      clone.alternativeMaterialsByMeshKey = JSON.parse(JSON.stringify(_data3d.alternativeMaterialsByMeshKey));
 	    }
-	  }
+	    if (_data3d._params) {
+	      clone._params = _data3d._params;
+	    }
+	    if (_data3d.position) {
+	      clone.position = _data3d.position.slice(0);
+	    }
+	    if (_data3d.rotDeg) {
+	      clone.rotDeg = _data3d.rotDeg.slice(0);
+	    }
+	    if (_data3d.rotRad) {
+	      clone.rotRad = _data3d.rotRad.slice(0);
+	    }
+	    if (_data3d.children) {
+	      clone.children = _data3d.children.map(function(childData3d){
+	        return cloneData3d$1 (childData3d, options)
+	      });
+	    }
 
-	})();
+	    return clone
+	  }
+	  
+	  function cloneSingleMesh(mesh, options) {
+	    return cloneMeshes({ x:mesh }, options).x
+	  }
+	  
+	  function cloneMeshes (_meshes, options) {
+
+	    if (!_meshes) {
+	      return {}
+	    }
+
+	    // API
+	    options = options || {};
+	    var clonePositions = !!options.clonePositions;
+	    var cloneNormals = !!options.cloneNormals;
+	    var cloneUvs = !!options.cloneUvs;
+	    var cloneUvsLightmap = !!options.cloneUvsLightmap;
+
+	    // internals
+	    var
+	      meshId, _mesh, mesh,
+	      meshKeys = Object.keys(_meshes),
+	      meshes = {};
+
+	    for (var i = 0, l = meshKeys.length; i < l; i++) {
+
+	      meshId = meshKeys[ i ];
+	      mesh = {};
+	      _mesh = _meshes[ meshId ];
+
+	      // vertices
+	      if (_mesh.positions) {
+	        if (clonePositions && (_mesh.positions instanceof Array || _mesh.positions instanceof Float32Array)) {
+	          mesh.positions = _mesh.positions.slice(0);
+	        } else {
+	          mesh.positions = _mesh.positions;
+	        }
+	      }
+
+	      // normals
+	      if (_mesh.normals) {
+	        if (cloneNormals && (_mesh.normals instanceof Array || _mesh.normals instanceof Float32Array)) {
+	          mesh.normals = _mesh.normals.slice(0);
+	        } else {
+	          mesh.normals = _mesh.normals;
+	        }
+	      }
+
+	      // uvs
+	      if (_mesh.uvs) {
+	        if (cloneUvs && (_mesh.uvs instanceof Array || _mesh.uvs instanceof Float32Array)) {
+	          mesh.uvs = _mesh.uvs.slice(0);
+	        } else {
+	          mesh.uvs = _mesh.uvs;
+	        }
+	      }
+
+	      // uvs lightmap
+	      if (_mesh.uvsLightmap) {
+	        if (cloneUvsLightmap && (_mesh.uvsLightmap instanceof Array || _mesh.uvsLightmap instanceof Float32Array)) {
+	          mesh.uvsLightmap = _mesh.uvsLightmap.slice(0);
+	        } else {
+	          mesh.uvsLightmap = _mesh.uvsLightmap;
+	        }
+	      }
+
+	      // other arrays
+	      if (_mesh.matrix) mesh.matrix = _mesh.matrix.slice(0);
+	      if (_mesh.uvMatrix) mesh.uvMatrix = _mesh.uvMatrix.slice(0);
+	      if (_mesh.meshKeys) mesh.meshKeys = _mesh.meshKeys.slice(0);
+	      if (_mesh.position) mesh.position = _mesh.position.slice(0);
+	      if (_mesh.rotDeg) mesh.rotDeg = _mesh.rotDeg.slice(0);
+	      if (_mesh.rotRad) mesh.rotRad = _mesh.rotRad.slice(0);
+	      if (_mesh.scale) mesh.scale= _mesh.scale.slice(0);
+
+	      // primitives
+	      if (_mesh.v) mesh.v = _mesh.v;
+	      if (_mesh.vertexMode) mesh.vertexMode = _mesh.vertexMode;
+	      if (_mesh.side) mesh.side = _mesh.side;
+	      if (_mesh.material) mesh.material = _mesh.material;
+	      if (_mesh.visibleInPersonView) mesh.visibleInPersonView = _mesh.visibleInPersonView;
+	      if (_mesh.visibleInBirdView) mesh.visibleInBirdView = _mesh.visibleInBirdView;
+	      if (_mesh.visibleInFloorplanView) mesh.visibleInFloorplanView = _mesh.visibleInFloorplanView;
+
+	      meshes[ meshId ] = mesh;
+	    }
+
+	    // output
+	    return meshes
+	  }
+	  
+	  function cloneSingleMaterial(material) {
+	    return cloneMaterials({ x:material }).x
+	  }
+	  
+	  function cloneMaterials(_materials) {
+
+	    if (!_materials) {
+	      return {}
+	    }
+
+	    var materialId, _material, materials, material, materialKeys, _attributes, _attributeKeys, attributeKey, type, attributes, isExtended;
+
+	    materialKeys = Object.keys(_materials);
+	    // result
+	    materials = {};
+
+	    if (materialKeys.length === 0) {
+	      return {}
+	    }
+
+	    if (_materials[ materialKeys[0] ].attributes) {
+	      isExtended = true;
+	      // deep copy source
+	      materials = JSON.parse(JSON.stringify(_materials));
+	    } else {
+	      isExtended = false;
+	    }
+
+	    for (var i = 0, l = materialKeys.length; i < l; i++) {
+
+	      materialId = materialKeys[ i ];
+	      _attributes = isExtended ? _materials[ materialId ].attributes : _materials[ materialId ];
+
+	      if (typeof _attributes === 'string') {
+
+	        if (isExtended) {
+	          materials[ materialId ].attributes = _attributes;
+	        } else {
+	          materials[ materialId ] = _attributes;
+	        }
+
+	      } else if (_attributes) {
+
+	        attributes = {};
+	        _attributeKeys = Object.keys(_attributes);
+
+	        for (var j= 0, k=_attributeKeys.length; j<k; j++) {
+	          attributeKey = _attributeKeys[j];
+	          type = typeof _attributes[ attributeKey ];
+	          if (type === 'string' || type === 'number' || type === 'boolean') {
+	            // primitive
+	            attributes[ attributeKey ] = _attributes[ attributeKey ];
+	          } else if (_attributes[ attributeKey ]) {
+	            if (_attributes[ attributeKey ].length === 3) {
+	              // color array
+	              attributes[ attributeKey ] = [
+	                _attributes[ attributeKey ][0],
+	                _attributes[ attributeKey ][1],
+	                _attributes[ attributeKey ][2]
+	              ];
+	            } else if (_attributes[ attributeKey ].length === 2) {
+	              // size array
+	              attributes[ attributeKey ] = [
+	                _attributes[ attributeKey ][0],
+	                _attributes[ attributeKey ][1]
+	              ];
+	            }
+	          }
+	        }
+
+	        if (isExtended) {
+	          materials[ materialId ].attributes = attributes;
+	        } else {
+	          materials[ materialId ] = attributes;
+	        }
+
+	      }
+
+	    }
+
+	    return materials
+
+	  }
 
 	var PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -15107,6 +15320,494 @@
 	  if (!str || typeof str !== "string") return false
 	  return PATTERN.test(str)
 	};
+
+	function getShortId (length) {
+	  length = length || 6;
+	  var shortId = '';
+	  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	  for (var i = 0; i < length; i++) shortId += possible.charAt(Math.floor(Math.random() * possible.length));
+	  return shortId
+	}
+
+	//import generateUvs from './generate-uvs.js'
+	//import generateNormals from './generate-normals.js'
+
+	var generateUvs = {};
+	var generateNormals = {};
+	function normalizeMaterials(x) { return x; }
+
+	// API
+
+	var consolidate = consolidateData3d$1;
+	consolidate.meshes = consolidateMeshes;
+	consolidate.materials = consolidateMaterials;
+
+	// constants
+
+	var IS_DEBUG_MODE = true;
+	var DEG_TO_RAD = Math.PI / 180;
+	var RAD_TO_DEG = 180 / Math.PI;
+
+	// main
+	function consolidateData3d$1(data3d, options){
+
+	  // API
+	  options = options || {};
+	  var consolidateMaterialsEnabled = options.consolidateMaterials !== undefined ? options.consolidateMaterials : true;
+	  var consolidateMeshesEnabled = options.consolidateMeshes !== undefined ? options.consolidateMeshes : true;
+	  var el3d = options.el3d;
+	  var warningCallback = options.onWarning;
+
+	  // make clone so that we can apply changes
+	  data3d = clone(data3d);
+
+	  // support hierarchy
+	  var resolvePromises = [];
+	  traverseData3d(data3d, function(data3d){
+
+	    // add node id
+	    data3d.nodeId = el3d ? el3d.params.id : uuid.generate();
+
+	    // add keys to data3d if not present
+	    data3d.meshes = data3d.meshes || {};
+	    data3d.meshKeys = data3d.meshKeys || Object.keys(data3d.meshes);
+	    data3d.materials = data3d.materials || {};
+	    data3d.materialKeys = data3d.materialKeys || Object.keys(data3d.materials);
+
+	    // add params
+	    if (el3d && !data3d._params) {
+	      data3d._params = el3d.toObject({ recursive: false });
+	    }
+
+	    // add position
+	    if (!data3d.position) {
+	      if (el3d) {
+	        data3d.position = [ el3d.params.x || 0, el3d.params.y || 0, el3d.params.z || 0 ];
+	      } else {
+	        data3d.position = [ 0, 0, 0 ];
+	      }
+	    }
+
+	    // add rotation
+	    if (!data3d.rotRad && !data3d.rotDeg) {
+	      // both missing
+	      if (el3d) {
+	        data3d.rotDeg = [ el3d.params.rx || 0, el3d.params.ry || 0, el3d.params.rz || 0 ];
+	      } else {
+	        data3d.rotDeg = [ 0, 0, 0 ];
+	      }
+	      data3d.rotRad = [ data3d.rotDeg[0] * DEG_TO_RAD, data3d.rotDeg[1] * DEG_TO_RAD, data3d.rotDeg[2] * DEG_TO_RAD ];
+	    } else if (!data3d.rotDeg) {
+	      // only rot deg missing
+	      data3d.rotDeg = [ data3d.rotRad[0] * RAD_TO_DEG, data3d.rotRad[1] * RAD_TO_DEG, data3d.rotRad[2] * RAD_TO_DEG ];
+	    } else {
+	      // only rot rad missing
+	      data3d.rotRad = [ data3d.rotDeg[0] * DEG_TO_RAD, data3d.rotDeg[1] * DEG_TO_RAD, data3d.rotDeg[2] * DEG_TO_RAD ];
+	    }
+
+	    // add children
+	    if (!data3d.children) {
+	      data3d.children = [];
+	    }
+
+	    // resolve meshes
+	    if (consolidateMeshesEnabled) {
+	      data3d.meshes = consolidateMeshes(data3d.meshes, el3d ? el3d.params.id : null);
+	      data3d.meshKeys = Object.keys(data3d.meshes);
+	    }
+
+	    // internals
+	    var
+	      meshes = data3d.meshes,
+	      meshKeys = data3d.meshKeys,
+	      materials = data3d.materials,
+	      nodeId = el3d && el3d.params ? el3d.params.id : null,
+	      i, l, meshId, mesh, materialId, positions, uvs, uvs2, normals, material, materialKeysHaveChanged;
+
+	    // check meshes
+	    for (i = 0, l = meshKeys.length; i < l; i++) {
+
+	      meshId = meshKeys[ i ];
+	      mesh = meshes[ meshId ];
+	      materialId = mesh.material;
+	      material = materials && materials[ materialId ] ? materials[ materialId ] : null;
+	      positions = mesh.positions;
+	      normals = mesh.normals;
+	      uvs = mesh.uvs;
+	      uvs2 = mesh.uvsLightmap;
+
+	      // mesh position
+	      if (!mesh.position) {
+	        mesh.position = [ 0,0,0 ];
+	      }
+
+	      // mesh rotation
+	      if (!mesh.rotRad && !mesh.rotDeg) {
+	        // both missing
+	        mesh.rotDeg = [ 0,0,0 ];
+	        mesh.rotRad = [ 0,0,0 ];
+	      } else if (!mesh.rotDeg) {
+	        // only rot deg missing
+	        mesh.rotDeg = [ mesh.rotRad[0] * RAD_TO_DEG, mesh.rotRad[1] * RAD_TO_DEG, mesh.rotRad[2] * RAD_TO_DEG ];
+	      } else {
+	        // only rot rad missing
+	        mesh.rotRad = [ mesh.rotDeg[0] * DEG_TO_RAD, mesh.rotDeg[1] * DEG_TO_RAD, mesh.rotDeg[2] * DEG_TO_RAD ];
+	      }
+
+	      // mesh scale
+	      if (!mesh.scale) {
+	        mesh.scale = [ 1,1,1 ];
+	      }
+
+	      // mesh in relation to material
+	      if (material) {
+
+	        // check if material with texture has UVs
+	        if (
+	          materialHasTexture(material) &&
+	          (mesh.uvs === undefined || mesh.uvs.length === 0)
+	        ) {
+	          // generate fallback UVs
+	          if (IS_DEBUG_MODE) console.error('Mesh with material "'+materialId+'" has texture(s) has no UVs. Fallback to architectural UV mapping.');
+	          if (warningCallback) warningCallback('Mesh with material "'+materialId+'" has texture(s) has no UVs. Fallback to architectural UV mapping.');
+	          mesh.uvs = generateUvs.architectural(mesh.positions);
+	        }
+
+	        // check if material with lightmap has lightmap uvs
+	        if (
+	          (material.mapLight || material.mapLightPreview) &&
+	          (mesh.uvsLightmap === undefined || mesh.uvsLightmap.length === 0)
+	        ) {
+	          // delete texture references as we can not generate lightmap fallbacks
+	          if (IS_DEBUG_MODE) console.error('Mesh with material "'+materialId+'" has lightmap has no lightmap UVs. Lightmap will be ignored.');
+	          if (warningCallback) warningCallback('Mesh with material "'+materialId+'" has lightmap has no lightmap UVs. Lightmap will be ignored.');
+	          delete material.mapLight;
+	          delete material.mapLightPreview;
+
+	        }
+
+	        // create fallback material
+	      } else {
+	        if (materialId) {
+	          console.error('Node:'+nodeId+' Material by ID "' + materialId + '" not found.', materials);
+	          if (warningCallback) warningCallback('Material by ID "' + materialId + '" not found.');
+	        } else {
+	          materialId = getShortId();
+	          mesh.material = materialId;
+	        }
+	        materials[ materialId ] = {
+	          colorDiffuse: [0.85,0.85,0.85]
+	        };
+	        materialKeysHaveChanged = true;
+	      }
+
+	    }
+
+	    // regenerate material keys if needed
+	    if (materialKeysHaveChanged) {
+	      data3d.materialKeys = Object.keys(materials);
+	    }
+
+	    // resolve materials
+	    if (consolidateMaterialsEnabled) {
+
+	      resolvePromises.push(
+	        consolidateMaterials(data3d.materials).then(function(materials){
+	          data3d.materials = normalizeMaterials(materials);
+	          return data3d
+	        })
+	      );
+
+	    } else {
+
+	      data3d.materials = normalizeMaterials(data3d.materials);
+	      resolvePromises.push(Promise.resolve(data3d));
+
+	    }
+
+	  });
+
+	  return Promise.all(resolvePromises).then(function(){
+	    return data3d
+	  })
+
+	}
+
+	// helpers
+
+	function materialHasTexture(m) {
+	  return m.mapDiffuse ||
+	    m.mapSpecular ||
+	    m.mapNormal ||
+	    m.mapAlpha ||
+	    m.mapDiffusePreview ||
+	    m.mapSpecularPreview ||
+	    m.mapNormalPreview ||
+	    m.mapAlphaPreview
+	}
+
+	function consolidateMaterials(_materials){
+
+	  // TODO: introduce bundled calls to material API to request multiple materials in one call
+
+	  var promiseKeys = [];
+	  var promises = [];
+	  var materialKeys = _materials ? Object.keys(_materials) : [];
+	  var materialKey;
+	  var i, l;
+	  // result
+	  var materials = {};
+
+	  if (!materialKeys.length) {
+	    return Promise.resolve(materials)
+	  }
+
+	  var isExtended = (materialKeys.length && _materials[ materialKeys[0] ].attributes);
+
+	  // process
+	  for (i= 0, l=materialKeys.length; i<l; i++) {
+	    materialKey = materialKeys[i];
+
+	    // shallow clone material
+	    if (isExtended) {
+	      materials[ materialKey ] = _materials[ materialKey ].attributes;
+	    } else {
+	      materials[ materialKey ] = _materials[ materialKey ];
+	    }
+
+	    // convert material ids to attributes
+	    if (typeof materials[ materialKey ] === 'string') {
+	      if (materials[ materialKey ][0] === '#') {
+	        // is hex color definition: convert to rgb
+	        materials[ materialKey ] = {
+	          colorDiffuse: hexToRgb(materials[ materialKey ])
+	        };
+	      } else {
+	        // is global id: get attributes from registry
+	        promiseKeys[ promiseKeys.length ] = materialKey;
+	        promises[ promises.length ] = api.call('Material.get', materials[ materialKey ]);
+	      }
+	    }
+
+	  }
+
+	  if (promiseKeys.length === 0) {
+
+	    return Promise.resolve(normalizeMaterials(materials))
+
+	  } else {
+
+	    return Promise.all(promises).then(function(resolvedMaterials){
+
+	      // replace resolved materials
+	      for (i= 0, l=promiseKeys.length; i<l; i++) {
+	        materials[ promiseKeys[ i ] ] = resolvedMaterials[ i ].attributes;
+	      }
+
+	      return normalizeMaterials(materials)
+
+	    })
+
+	  }
+
+	}
+	  
+	function consolidateMeshes (meshes, nodeId){
+	    
+	    if (!meshes) {
+
+	      return meshes
+
+	    } else {
+
+	      // internals
+	      var
+	        meshKeys = Object.keys(meshes),
+	        i, l, mesh;
+
+	      for (i = 0, l = meshKeys.length; i < l; i++) {
+	        mesh = meshes[ meshKeys[ i ] ];
+
+	        // check if positions are defined
+	        if (mesh.positions === undefined || mesh.positions.length === 0) {
+	          delete meshes[ meshKeys[ i ] ];
+	          continue
+	        }
+	        // check type
+	        else if (!(mesh.positions instanceof Float32Array)) {
+	          // convert to float array if needed
+	          if (mesh.positions instanceof Array) {
+	            mesh.positions = new Float32Array(mesh.positions);
+	          }
+	          // type not supported
+	          else {
+	            if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Position vertices must be of type Float32Array or Array. Mesh will be ignored', mesh.position);
+	            delete meshes[ meshKeys[ i ] ];
+	            continue
+	          }
+	        }
+	        // check if multiple of 9
+	        if (mesh.positions.length/9 % 1 !== 0) {
+	          if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Invalid position vertices count: ' + mesh.positions.length + '. Has to be multiple of 9. Mesh will be ignored.');
+	          delete meshes[ meshKeys[ i ] ];
+	          continue
+	        }
+
+	        // check if normals are defined
+	        if (mesh.normals === undefined || mesh.normals.length === 0) {
+	          mesh.normals = generateNormals.flat(mesh.positions);
+	        }
+	        // check if normal generation method exists
+	        else if (typeof mesh.normals === 'string') {
+	          if (generateNormals[ mesh.normals ]) {
+	            // generate normals
+	            mesh.normals = generateNormals[ mesh.normals ](mesh.positions);
+	          } else {
+	            // unknown shading method. fallback to flat
+	            if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Unknown normal shading method "' + mesh.normals + '". Fallback to flat shading.');
+	            mesh.normals = generateNormals.flat(mesh.positions);
+	          }
+	        }
+	        // check type
+	        else if (!(mesh.normals instanceof Float32Array)) {
+	          // convert to float array if needed
+	          if (mesh.normals instanceof Array) {
+	            mesh.normals = new Float32Array(mesh.normals);
+	          }
+	          // type not supported
+	          else {
+	            if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Normal vertices should be of type Float32Array or Array. Fallback to flat shading.', mesh.normals);
+	            mesh.normals = generateNormals.flat(mesh.positions);
+	          }
+	        }
+	        // check count
+	        if (mesh.normals.length !== mesh.positions.length) {
+	          if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Position vertices and normal vertices count has to be the same. Fallback to flat Shading. ', mesh.normals.length, mesh.normals.length);
+	          mesh.normals = generateNormals.flat(mesh.positions);
+	        }
+
+	        // check uvs channel 1
+	        if (mesh.uvs) {
+	          // defined as string
+	          if (typeof mesh.uvs === 'string') {
+	            // check if uv generation method exists
+	            if (generateUvs[ mesh.uvs ]) {
+	              // generate uvs
+	              mesh.uvs = generateUvs[ mesh.uvs ](mesh.positions);
+	            } else {
+	              // unknown mapping method. fallback to architectural
+	              if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Unknown UV1 mapping method "' + mesh.uvs + '". Fallback to architectural UV mapping.');
+	              mesh.uvs = generateUvs.architectural(mesh.positions);
+	            }
+	          }
+	          // check type
+	          else if (!(mesh.uvs instanceof Float32Array)) {
+	            // convert to float32array if needed
+	            if (mesh.uvs instanceof Array) {
+	              mesh.uvs = new Float32Array(mesh.uvs);
+	            }
+	            // mesh uvs not of supported type
+	            else {
+	              if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' UV Vertices should be of type Float32Array or Array. Fallback to architectural UV mapping.', mesh.uvs);
+	              mesh.uvs = generateUvs.architectural(mesh.positions);
+	            }
+	          }
+	          // check length
+	          if (mesh.uvs.length && mesh.uvs.length * 1.5 !== mesh.positions.length) {
+	            if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Position Vertices and UV vertices count not in ratio of 3:2. Fallback to architectural UV mapping. ', mesh.positions.length, mesh.uvs.length);
+	            mesh.uvs = generateUvs.architectural(mesh.positions);
+	          }
+	        }
+
+	        // check uvs channel 2
+	        if (mesh.uvsLightmap && mesh.uvsLightmap.length && mesh.uvs.length * 1.5 !== mesh.positions.length) {
+	          if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Position Vertices and Lightmap UV Vertices count not in ratio of 3:2.', mesh.positions.length, mesh.uvs.length);
+	          delete mesh.uvsLightmap;
+	        }
+
+	      }
+
+	      return meshes
+
+	    }
+	  }
+
+	// constants
+
+	var getData3d = checkDependencies({
+	  three: true,
+	  aframe: false
+	}, function () {
+
+	  return function getData3d(object3d) {
+
+	    // API
+	    var options = options || {};
+	    var sourceEl = object3d;
+
+	    // internals
+	    var data3d = { meshes: {}, materials: {} };
+
+	    function traverse (el) {
+	      
+	      el.updateMatrixWorld();
+
+	      if (el.geometry) {
+	        
+	        // ensure buffer geometry in result
+	        var bufferGeometry = el.geometry.type.indexOf('BufferGeometry') > -1 ? el.geometry : new THREE.BufferGeometry().fromGeometry(el.geometry);
+	        // TODO: add support for inteviewed buffers
+	        // TODO: add support for multimatrial objects
+	        
+	        var mesh = data3d.meshes[el.uuid] = {};
+	        var attr = bufferGeometry.attributes;
+	        var p = el.getWorldPosition();
+	        var r = el.getWorldRotation();
+	        var s = el.getWorldScale();
+	        mesh.position = [p.x, p.y, p.z];
+	        mesh.rotRad = [r.x, r.y, r.z];
+	        mesh.scale = [s.x, s.y, s.z];
+	        mesh.material = el.material.uuid;
+	        if (attr.position) mesh.positions = attr.position.array;
+	        if (attr.normal) mesh.normals = attr.normal.array;
+	        if (attr.uv) mesh.uvs = attr.uv.array;
+	        
+	        var m = el.material;
+	        var material = data3d.materials[el.material.uuid] = {};
+	        if (m.color) material.colorDiffuse = [m.color.r, m.color.g, m.color.b];
+
+	      }
+
+	      // parse children
+	      el.children.forEach(function(child){
+	        traverse(child);
+	      });
+
+	    }
+
+	    traverse(sourceEl);
+
+	    return bluebird_1.resolve().then(function(){
+	      return consolidate(data3d)
+	    })
+
+	  }
+	});
+
+	var fetch$1 = (function(){
+
+	  if (runtime.isNode) {
+	    return require('node-fetch')
+	  } else if (typeof fetch !== 'undefined') {
+	    return fetch
+	  } else {
+	    console.warn('Missing global fetch API.');
+	    return function() {
+	      throw new Error('Missing global fetch API.')
+	    }
+	  }
+
+	})();
 
 	// main
 
@@ -15489,58 +16190,6 @@
 
 	};
 
-	function getData3dFromComponent (selector, options) {
-	  
-	  // API
-	  var options = options || {};
-	  var sourceEl = document.querySelector(selector || 'a-scene').object3D;
-	  
-	  // internals
-	  var data3d = { meshes: {}, materials: {} };
-	  
-	  function traverse (el) {
-	    
-	    el.updateMatrixWorld();
-	    
-	    if (el.geometry) {
-	      
-	      // ensure buffer geometry in result
-	      var bufferGeometry = el.geometry.type === 'BufferGeometry' ? el.geometry : new THREE.BufferGeometry().fromGeometry(el.geometry);
-	      // TODO: add support for inteviewed buffers
-	      // TODO: add support for multimatrial objects
-	      
-	      var mesh = data3d.meshes[el.uuid] = {};
-	      var attr = bufferGeometry.attributes;
-	      var p = el.getWorldPosition();
-	      var r = el.getWorldRotation();
-	      var s = el.getWorldScale();
-	      mesh.position = [p.x, p.y, p.z];
-	      mesh.rotation = [r.x, r.y, r.z];
-	      mesh.scale = [s.x, s.y, s.z];
-	      mesh.material = el.material.uuid;
-	      if (attr.position) mesh.positions = attr.position.array;
-	      if (attr.normal) mesh.normals = attr.normal.array;
-	      if (attr.uvs) mesh.normals = attr.uv.array;
-	      
-	      var m = el.material;
-	      var material = data3d.materials[el.material.uuid] = {};
-	      material.color = [m.color.r, m.color.g, m.color.b];
-	      
-	    }
-	    
-	    // parse children
-	    el.children.forEach(function(child){
-	      traverse(child);
-	    });
-	    
-	  }
-	  
-	  traverse(sourceEl);
-	  
-	  return bluebird_1.resolve(data3d)
-	  
-	}
-
 	// initialize aframe components
 
 	checkDependencies({
@@ -15560,8 +16209,14 @@
 	var aFrame = {
 	  three: {
 	    Data3dView: Data3dView,
+	    getData3d: getData3d,
 	  },
-	  getData3dFromComponent: getData3dFromComponent
+	  getData3d: function getData3dFromComponent(selector){
+	    runtime.assertBrowser();
+
+	    var object3d = document.querySelector(selector || 'a-scene').object3D;
+	    return getData3d(object3d)
+	  }
 	};
 
 	function normalizeFurnitureInfo (rawInfo) {
@@ -16750,9 +17405,9 @@
 
 	  // API
 	  options = options || {};
-	  var url = options.url;
+	  var url$$1 = options.url;
 
-	  var parsedUrl = Url.parse(url);
+	  var parsedUrl = Url.parse(url$$1);
 	  var rootDir = path.parse(parsedUrl.path || '').dir;
 	  var origin = parsedUrl.protocol + '//' + parsedUrl.host;
 
@@ -16803,10 +17458,10 @@
 	  // add geometry arrays to data3d
 
 	  var payloadByteOffset = HEADER_BYTE_LENGTH + structureByteLength;
-	  traverseData3d(structure.data3d, function (data3d) {
+	  traverseData3d$1(structure.data3d, function (data3d) {
 
 	    // map typed arrays to payload area in file buffer
-	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url);
+	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url$$1);
 
 	    //  convert relative material keys into absolute once
 	    if (origin && data3d.materials) convertTextureKeys(data3d, origin, rootDir);
@@ -16871,7 +17526,7 @@
 
 	}
 
-	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url) {
+	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url$$1) {
 
 	  var mesh, i, l, meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
 
@@ -16901,19 +17556,19 @@
 	    }
 
 	    // add cache key
-	    if (url) mesh.cacheKey = url + ':' + meshKeys[i];
+	    if (url$$1) mesh.cacheKey = url$$1 + ':' + meshKeys[i];
 
 	  }
 
 	}
 
-	function traverseData3d (data3d, callback) {
+	function traverseData3d$1 (data3d, callback) {
 
 	  callback(data3d);
 
 	  if (data3d.children) {
 	    for (var i = 0, l = data3d.children.length; i < l; i++) {
-	      traverseData3d(data3d.children[i], callback);
+	      traverseData3d$1(data3d.children[i], callback);
 	    }
 	  }
 
@@ -16960,14 +17615,6 @@
 	}
 
 	var FormData$1 = FormData_;
-
-	function getShortId (length) {
-	  length = length || 6;
-	  var shortId = '';
-	  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	  for (var i = 0; i < length; i++) shortId += possible.charAt(Math.floor(Math.random() * possible.length));
-	  return shortId
-	}
 
 	/**
 	 * Sign up: Create a new user
@@ -17725,6 +18372,102 @@
 	  getConversionStatus: getConversionStatus
 	};
 
+	// main
+
+	function bakeLightMaps (input, options) {
+
+	  var storageId = input;
+	  var assetStorageIds = [];
+	  var sunDirection = [0.7487416646324341, -0.47789104947352223, -0.45935396425474223];
+	  var cacheKey = null; // "preview9684e75cf46f2df04d497644589eda2f2ec754403c0c3912b5aa5914104ea3c1_bcf24e1dedf818e505b3321e0848ea02"
+
+	  console.log('Baking file: https://spaces.archilogic.com/3d/?mode=sdk&file='+storageId);
+
+	  return callService('Processing.task.enqueue', {
+	    method: 'bakePreview',
+	    params: {
+	      inputFileKey: storageId,
+	      options: {
+	        inputAssetKeys: assetStorageIds,
+	        sunDirection: sunDirection,
+	        cacheKey: cacheKey
+	      }
+	    }
+	  })
+
+	  // 279ecbf2-02eb-49b0-a7b8-ddcdafdfb4fb/processing/2017-08-28_23-26-59_5e7tlA/status.json
+
+	}
+
+	function poll(callback, options) {
+
+	  // API
+	  options = options || {};
+	  var timeout = options.timeout || 10 * 60 * 1000;
+	  var minInterval = options.minInterval || 1000;
+	  var maxInterval = options.maxInterval || 5000;
+	  var intervalIncreaseFactor = options.intervalIncreaseFactor || 1.05;
+
+	  return new bluebird_1(function( fulfill, reject, onCancel ){
+	    var flags = { isCancelled: false };
+	    // cancellation is supported in bluebird version > 3.x
+	    // enable cancellation in Promise.config as it is off by default
+	    if (onCancel) onCancel(function(){ flags.isCancelled = true; });
+	    // start recursive poll
+	    recursivePoll(callback, fulfill, reject, minInterval, maxInterval, intervalIncreaseFactor, 0, timeout, flags);
+	  })
+
+	}
+
+	// helper
+
+	function recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags) {
+
+	  // return if poll has been cancelled in meanwhile
+	  if (flags.isCancelled) return reject('Poll request has been cancelled')
+	  // increase interval
+	  if (interval < maxInterval) interval *= intervalIncreaseFactor;
+	  // check timeout
+	  if (timeElapsed > timeout) return reject('Poll request timed out')
+	  // count time
+	  timeElapsed += interval;
+	  // call
+	  callback(fulfill, reject, function next() {
+	    window.setTimeout(function(){
+	      recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags);
+	    }, interval);
+	  });
+
+	}
+
+	// main
+
+	function getBakeResult (processingId) {
+
+	  return poll(function(resolve, reject, next){
+	    fetch$1(Url.resolve('https://storage-nocdn.3d.io',processingId)).then(function(response) {
+	      return response.json()
+	    }).then(function(message){
+	      var status = message.params.status;
+
+	      if (status === 'ERROR') {
+	        reject(message.params.data);
+	      } else if (status === 'SUCCESS') {
+	        resolve(message.params.data);
+	      } else {
+	        next();
+	      }
+
+	    });
+	  })
+
+	}
+
+	var light = {
+	  bake: bakeLightMaps,
+	  getResult: getBakeResult
+	};
+
 	function fetchModule (url) {
 	  runtime.assertBrowser('Please use "require()" to fetch modules in server environment.');
 	  
@@ -17849,232 +18592,9 @@
 	  return runtime.isBrowser ? fetchModule(PAKO_LIB.inflate.url) : Promise.resolve(require(PAKO_LIB.inflate.module))
 	}
 
-	function traverseData3d$1(data3d, callback) {
-
-	  callback(data3d);
-
-	  if (data3d.children) for (var i=0, l=data3d.children.length; i<l; i++) traverseData3d$1(data3d.children[i], callback);
-
-	}
-
-	// API
-
-	var clone = cloneData3d$1;
-	clone.meshes = cloneMeshes;
-	clone.meshe = cloneSingleMesh;
-	clone.materials = cloneMaterials;
-	clone.material = cloneSingleMaterial;
-
-	// methods
-
-	function cloneData3d$1 (_data3d, options) {
-
-	    var clone = {};
-
-	    clone.meshes = cloneMeshes(_data3d.meshes, options);
-	    clone.materials = cloneMaterials(_data3d.materials);
-
-	    if (_data3d.alternativeMaterialsByMeshKey) {
-	      clone.alternativeMaterialsByMeshKey = JSON.parse(JSON.stringify(_data3d.alternativeMaterialsByMeshKey));
-	    }
-	    if (_data3d._params) {
-	      clone._params = _data3d._params;
-	    }
-	    if (_data3d.position) {
-	      clone.position = _data3d.position.slice(0);
-	    }
-	    if (_data3d.rotDeg) {
-	      clone.rotDeg = _data3d.rotDeg.slice(0);
-	    }
-	    if (_data3d.rotRad) {
-	      clone.rotRad = _data3d.rotRad.slice(0);
-	    }
-	    if (_data3d.children) {
-	      clone.children = _data3d.children.map(function(childData3d){
-	        return cloneData3d$1 (childData3d, options)
-	      });
-	    }
-
-	    return clone
-	  }
-	  
-	  function cloneSingleMesh(mesh, options) {
-	    return cloneMeshes({ x:mesh }, options).x
-	  }
-	  
-	  function cloneMeshes (_meshes, options) {
-
-	    if (!_meshes) {
-	      return {}
-	    }
-
-	    // API
-	    options = options || {};
-	    var clonePositions = !!options.clonePositions;
-	    var cloneNormals = !!options.cloneNormals;
-	    var cloneUvs = !!options.cloneUvs;
-	    var cloneUvsLightmap = !!options.cloneUvsLightmap;
-
-	    // internals
-	    var
-	      meshId, _mesh, mesh,
-	      meshKeys = Object.keys(_meshes),
-	      meshes = {};
-
-	    for (var i = 0, l = meshKeys.length; i < l; i++) {
-
-	      meshId = meshKeys[ i ];
-	      mesh = {};
-	      _mesh = _meshes[ meshId ];
-
-	      // vertices
-	      if (_mesh.positions) {
-	        if (clonePositions && (_mesh.positions instanceof Array || _mesh.positions instanceof Float32Array)) {
-	          mesh.positions = _mesh.positions.slice(0);
-	        } else {
-	          mesh.positions = _mesh.positions;
-	        }
-	      }
-
-	      // normals
-	      if (_mesh.normals) {
-	        if (cloneNormals && (_mesh.normals instanceof Array || _mesh.normals instanceof Float32Array)) {
-	          mesh.normals = _mesh.normals.slice(0);
-	        } else {
-	          mesh.normals = _mesh.normals;
-	        }
-	      }
-
-	      // uvs
-	      if (_mesh.uvs) {
-	        if (cloneUvs && (_mesh.uvs instanceof Array || _mesh.uvs instanceof Float32Array)) {
-	          mesh.uvs = _mesh.uvs.slice(0);
-	        } else {
-	          mesh.uvs = _mesh.uvs;
-	        }
-	      }
-
-	      // uvs lightmap
-	      if (_mesh.uvsLightmap) {
-	        if (cloneUvsLightmap && (_mesh.uvsLightmap instanceof Array || _mesh.uvsLightmap instanceof Float32Array)) {
-	          mesh.uvsLightmap = _mesh.uvsLightmap.slice(0);
-	        } else {
-	          mesh.uvsLightmap = _mesh.uvsLightmap;
-	        }
-	      }
-
-	      // other arrays
-	      if (_mesh.matrix) mesh.matrix = _mesh.matrix.slice(0);
-	      if (_mesh.uvMatrix) mesh.uvMatrix = _mesh.uvMatrix.slice(0);
-	      if (_mesh.meshKeys) mesh.meshKeys = _mesh.meshKeys.slice(0);
-	      if (_mesh.position) mesh.position = _mesh.position.slice(0);
-	      if (_mesh.rotDeg) mesh.rotDeg = _mesh.rotDeg.slice(0);
-	      if (_mesh.rotRad) mesh.rotRad = _mesh.rotRad.slice(0);
-	      if (_mesh.scale) mesh.scale= _mesh.scale.slice(0);
-
-	      // primitives
-	      if (_mesh.v) mesh.v = _mesh.v;
-	      if (_mesh.vertexMode) mesh.vertexMode = _mesh.vertexMode;
-	      if (_mesh.side) mesh.side = _mesh.side;
-	      if (_mesh.material) mesh.material = _mesh.material;
-	      if (_mesh.visibleInPersonView) mesh.visibleInPersonView = _mesh.visibleInPersonView;
-	      if (_mesh.visibleInBirdView) mesh.visibleInBirdView = _mesh.visibleInBirdView;
-	      if (_mesh.visibleInFloorplanView) mesh.visibleInFloorplanView = _mesh.visibleInFloorplanView;
-
-	      meshes[ meshId ] = mesh;
-	    }
-
-	    // output
-	    return meshes
-	  }
-	  
-	  function cloneSingleMaterial(material) {
-	    return cloneMaterials({ x:material }).x
-	  }
-	  
-	  function cloneMaterials(_materials) {
-
-	    if (!_materials) {
-	      return {}
-	    }
-
-	    var materialId, _material, materials, material, materialKeys, _attributes, _attributeKeys, attributeKey, type, attributes, isExtended;
-
-	    materialKeys = Object.keys(_materials);
-	    // result
-	    materials = {};
-
-	    if (materialKeys.length === 0) {
-	      return {}
-	    }
-
-	    if (_materials[ materialKeys[0] ].attributes) {
-	      isExtended = true;
-	      // deep copy source
-	      materials = JSON.parse(JSON.stringify(_materials));
-	    } else {
-	      isExtended = false;
-	    }
-
-	    for (var i = 0, l = materialKeys.length; i < l; i++) {
-
-	      materialId = materialKeys[ i ];
-	      _attributes = isExtended ? _materials[ materialId ].attributes : _materials[ materialId ];
-
-	      if (typeof _attributes === 'string') {
-
-	        if (isExtended) {
-	          materials[ materialId ].attributes = _attributes;
-	        } else {
-	          materials[ materialId ] = _attributes;
-	        }
-
-	      } else if (_attributes) {
-
-	        attributes = {};
-	        _attributeKeys = Object.keys(_attributes);
-
-	        for (var j= 0, k=_attributeKeys.length; j<k; j++) {
-	          attributeKey = _attributeKeys[j];
-	          type = typeof _attributes[ attributeKey ];
-	          if (type === 'string' || type === 'number' || type === 'boolean') {
-	            // primitive
-	            attributes[ attributeKey ] = _attributes[ attributeKey ];
-	          } else if (_attributes[ attributeKey ]) {
-	            if (_attributes[ attributeKey ].length === 3) {
-	              // color array
-	              attributes[ attributeKey ] = [
-	                _attributes[ attributeKey ][0],
-	                _attributes[ attributeKey ][1],
-	                _attributes[ attributeKey ][2]
-	              ];
-	            } else if (_attributes[ attributeKey ].length === 2) {
-	              // size array
-	              attributes[ attributeKey ] = [
-	                _attributes[ attributeKey ][0],
-	                _attributes[ attributeKey ][1]
-	              ];
-	            }
-	          }
-	        }
-
-	        if (isExtended) {
-	          materials[ materialId ].attributes = attributes;
-	        } else {
-	          materials[ materialId ] = attributes;
-	        }
-
-	      }
-
-	    }
-
-	    return materials
-
-	  }
-
 	// config
 
-	var FILE_EXTENSION = '.data3d';
+	var FILE_EXTENSION = '.data3d.buffer';
 	var HEADER_BYTE_LENGTH$1 = 16;
 	var MAGIC_NUMBER$1 = 0x41443344; // AD3D encoded as ASCII characters in hex
 	var VERSION$1 = 1;
@@ -18093,8 +18613,7 @@
 	  var result = {
 	    buffer: null,
 	    file: null,
-	    warnings: [],
-	    hasMeshes: false
+	    warnings: []
 	  };
 	  var resultingPromise;
 	  
@@ -18108,11 +18627,10 @@
 	  var meshes, meshKeys, i, l, array, mesh;
 	  var arrayNames = ['positions', 'normals', 'uvs', 'uvsLightmap']; // heavy arrays
 	  var _data3d = clone(data3d);
-	  traverseData3d$1( _data3d, function(data3d){
+	  traverseData3d( _data3d, function(data3d){
 	    meshes = data3d.meshes;
 	    meshKeys = data3d.meshKeys || Object.keys(meshes);
 	    for (i=0, l=meshKeys.length; i<l; i++) {
-	      result.hasMeshes = true;
 	      mesh = meshes[ meshKeys[i] ];
 	      arrayNames.forEach(function(name){
 	        array = mesh[name];
@@ -18218,7 +18736,9 @@
 	  }
 	  
 	  // return result
-	  return resultingPromise
+	  return resultingPromise.then(function(){
+	    return createFile ? result.file : result.buffer
+	  })
 
 	}
 
@@ -18788,47 +19308,6 @@
 	function preventBrowserDefaults (event) {
 	  event.stopPropagation();
 	  event.preventDefault();
-	}
-
-	function poll(callback, options) {
-
-	  // API
-	  options = options || {};
-	  var timeout = options.timeout || 10 * 60 * 1000;
-	  var minInterval = options.minInterval || 1000;
-	  var maxInterval = options.maxInterval || 5000;
-	  var intervalIncreaseFactor = options.intervalIncreaseFactor || 1.05;
-
-	  return new bluebird_1(function( fulfill, reject, onCancel ){
-	    var flags = { isCancelled: false };
-	    // cancellation is supported in bluebird version > 3.x
-	    // enable cancellation in Promise.config as it is off by default
-	    if (onCancel) onCancel(function(){ flags.isCancelled = true; });
-	    // start recursive poll
-	    recursivePoll(callback, fulfill, reject, minInterval, maxInterval, intervalIncreaseFactor, 0, timeout, flags);
-	  })
-
-	}
-
-	// helper
-
-	function recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags) {
-
-	  // return if poll has been cancelled in meanwhile
-	  if (flags.isCancelled) return reject('Poll request has been cancelled')
-	  // increase interval
-	  if (interval < maxInterval) interval *= intervalIncreaseFactor;
-	  // check timeout
-	  if (timeElapsed > timeout) return reject('Poll request timed out')
-	  // count time
-	  timeElapsed += interval;
-	  // call
-	  callback(fulfill, reject, function next() {
-	    window.setTimeout(function(){
-	      recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags);
-	    }, interval);
-	  });
-
 	}
 
 	// main
@@ -20116,7 +20595,7 @@
 	    encodeBuffer: encodeToBuffer,
 	    decodeBuffer: decodeBuffer,
 	    clone: clone,
-	    traverse: traverseData3d$1
+	    traverse: traverseData3d
 	  },
 	  ui: ui,
 	  auth: auth,
@@ -20147,6 +20626,7 @@
 	  storage: storage,
 	  scene: scene,
 	  floorPlan: floorPlan,
+	  light: light,
 
 	  // utils
 	  auth: utils.auth,

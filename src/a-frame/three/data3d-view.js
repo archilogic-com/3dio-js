@@ -145,6 +145,11 @@ export default checkDependencies({
           }
 
           // apply position
+          if (position) {
+            mesh3d.position.set( position[0] , position[1], position[2] )
+          }
+
+          // apply rotation
           if (rotRad) {
             mesh3d.rotation.set( rotRad[0] , rotRad[1], rotRad[2] )
           } else if (rotDeg) {

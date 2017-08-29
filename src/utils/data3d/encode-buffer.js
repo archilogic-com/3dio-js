@@ -7,7 +7,7 @@ import cloneData3d from './clone.js'
 
 // config
 
-var FILE_EXTENSION = '.data3d'
+var FILE_EXTENSION = '.data3d.buffer'
 var HEADER_BYTE_LENGTH = 16
 var MAGIC_NUMBER = 0x41443344 // AD3D encoded as ASCII characters in hex
 var VERSION = 1
@@ -26,8 +26,7 @@ export default function encodeToBuffer (data3d, options) {
   var result = {
     buffer: null,
     file: null,
-    warnings: [],
-    hasMeshes: false
+    warnings: []
   }
   var resultingPromise
   
@@ -45,7 +44,6 @@ export default function encodeToBuffer (data3d, options) {
     meshes = data3d.meshes
     meshKeys = data3d.meshKeys || Object.keys(meshes)
     for (i=0, l=meshKeys.length; i<l; i++) {
-      result.hasMeshes = true
       mesh = meshes[ meshKeys[i] ]
       arrayNames.forEach(function(name){
         array = mesh[name]
@@ -151,7 +149,9 @@ export default function encodeToBuffer (data3d, options) {
   }
   
   // return result
-  return resultingPromise
+  return resultingPromise.then(function(){
+    return createFile ? result.file : result.buffer
+  })
 
 }
 

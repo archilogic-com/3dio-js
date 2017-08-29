@@ -9,6 +9,7 @@ import furniture from './furniture.js'
 import storage from './storage.js'
 import scene from './scene.js'
 import floorPlan from './floor-plan.js'
+import light from './light.js'
 
 import utils from './utils.js'
 
@@ -20,6 +21,7 @@ var io3d = {
   storage: storage,
   scene: scene,
   floorPlan: floorPlan,
+  light: light,
 
   // utils
   auth: utils.auth,

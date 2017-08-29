@@ -2,8 +2,12 @@ import traverseData3d from './traverse.js'
 import cloneData3d from './clone.js'
 import uuid from '../uuid.js'
 import shortId from '../short-id.js'
-import generateUvs from './generate-uvs.js'
-import generateNormals from './generate-normals.js'
+//import generateUvs from './generate-uvs.js'
+//import generateNormals from './generate-normals.js'
+
+var generateUvs = {}
+var generateNormals = {}
+function normalizeMaterials(x) { return x; }
 
 // API
 
@@ -15,7 +19,7 @@ export default consolidate
 
 // constants
 
-var IS_DEBUG_MODE = false
+var IS_DEBUG_MODE = true
 var DEG_TO_RAD = Math.PI / 180
 var RAD_TO_DEG = 180 / Math.PI
 
@@ -84,6 +88,7 @@ function consolidateData3d(data3d, options){
     // resolve meshes
     if (consolidateMeshesEnabled) {
       data3d.meshes = consolidateMeshes(data3d.meshes, el3d ? el3d.params.id : null)
+      data3d.meshKeys = Object.keys(data3d.meshes)
     }
 
     // internals
