@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.53
- * @date 2017/08/29 04:25
+ * @date 2017/08/30 18:14
  * @branch data3d
- * @commit 849d106c83a86f6eedccf13f8e852dc965e9bbc5
+ * @commit 2fbd28ae3aca36bf9024ce699504a737c7efa69f
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/29 04:25', GIT_BRANCH = 'data3d', GIT_COMMIT = '849d106c83a86f6eedccf13f8e852dc965e9bbc5'
+	var BUILD_DATE='2017/08/30 18:14', GIT_BRANCH = 'data3d', GIT_COMMIT = '2fbd28ae3aca36bf9024ce699504a737c7efa69f'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.53";
@@ -17602,7 +17602,7 @@
 
 	// public methods
 
-	function decodeBuffer (buffer, options) {
+	function decodeBinary (buffer, options) {
 
 	  // API
 	  options = options || {};
@@ -17779,7 +17779,7 @@
 	  return fetch$1(url, options).then(function(res){
 	    return res.arrayBuffer()
 	  }).then(function(buffer){
-	    return decodeBuffer(buffer, { url: url })
+	    return decodeBinary(buffer, { url: url })
 	  })
 	}
 
@@ -18671,24 +18671,43 @@
 
 	function fetchModule (url) {
 	  runtime.assertBrowser('Please use "require()" to fetch modules in server environment.');
-	  
-	  return fetch$1(url).then(function(response){
-	    return response.text()
-	  }).then(function(code){
-	    // module wrapper
-	    window.___modules = window.___modules || {};
-	    //console.log(code)
-	    var moduleWrapper = 'window.___modules["'+url+'"] = (function(){ var exports = {}, module = {exports:exports};'+code+'\nreturn module.exports\n})()';
-	    var script = document.createElement('script');
-	    try {
-	      script.appendChild(document.createTextNode(moduleWrapper));
-	      document.body.appendChild(script);
-	    } catch (e) {
-	      script.text = moduleWrapper;
-	      document.body.appendChild(script);
-	    }
-	    return window.___modules[url]
-	  })
+
+	  // module wrapper
+	  window.___modules = window.___modules || {};
+
+	  // return module if it has been loaded already
+	  if (window.___modules[url]) {
+	    return Promise.resolve(window.___modules[url])
+
+	  } else {
+	  // load code and use module wrapper
+	    return fetch$1(url).then(function(response){
+	      return response.text()
+	    }).then(function(code){
+
+	      // check module type
+	      var moduleWrapper;
+	      if (code.indexOf('define(function()') > -1) {
+	        // AMD
+	        moduleWrapper = code+'\nfunction define(cb){ window.___modules["'+url+'"] = cb(); };';
+	      } else {
+	        // CommonJS
+	        moduleWrapper = 'window.___modules["'+url+'"] = (function(){ var exports = {}, module = {exports:exports};'+code+'\nreturn module.exports\n})()';
+	      }
+
+	      var script = document.createElement('script');
+	      try {
+	        script.appendChild(document.createTextNode(moduleWrapper));
+	        document.body.appendChild(script);
+	      } catch (e) {
+	        script.text = moduleWrapper;
+	        document.body.appendChild(script);
+	      }
+	      return window.___modules[url]
+	    })
+
+	  }
+
 	}
 
 	var FILE_READ_METHODS = {
@@ -18793,6 +18812,12 @@
 	  return runtime.isBrowser ? fetchModule(PAKO_LIB.inflate.url) : Promise.resolve(require(PAKO_LIB.inflate.module))
 	}
 
+	function getDefaultFilename () {
+	  var d = new Date();
+	  return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+	    + '_' + d.getHours() + '-' + d.getMinutes() + '-' + d.getSeconds() + '_' + getShortId()
+	}
+
 	// config
 
 	var FILE_EXTENSION = '.data3d.buffer';
@@ -18802,13 +18827,13 @@
 
 	// main
 
-	function encodeToBuffer (data3d, options) {
+	function encodeBinary (data3d, options) {
 
 	  // API
 	  options = options || {};
 	  var createFile = options.createFile !== undefined ? options.createFile : true;
 	  var gzipFile = options.gzipFile !== undefined ? options.gzipFile : true;
-	  var filename = options.filename || getFallbackFilename() + FILE_EXTENSION;
+	  var filename = options.filename || getDefaultFilename() + FILE_EXTENSION;
 	  
 	  // internals
 	  var result = {
@@ -18947,12 +18972,6 @@
 
 	function isMultipleOf (value, multiple) {
 	  return Math.ceil(value / multiple) === value / multiple
-	}
-
-	function getFallbackFilename () {
-	  var d = new Date();
-	  return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
-	  + '_' + d.getHours() + '-' + d.getMinutes() + '-' + d.getSeconds() + '_' + getShortId()
 	}
 
 	var css = ".io3d-message-list {\n  z-index: 100001;\n  position: fixed;\n  top: 0;\n  left: 50%;\n  margin-left: -200px;\n  width: 400px;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: normal;\n  letter-spacing: 1px;\n  line-height: 1.3;\n  text-align: center;\n}\n.io3d-message-list .message {\n  display: block;\n  opacity: 0;\n}\n.io3d-message-list .message .spacer {\n  display: block;\n  height: 10px;\n}\n.io3d-message-list .message .text {\n  display: inline-block;\n  padding: 10px 12px 10px 12px;\n  border-radius: 3px;\n  color: white;\n  font-size: 18px;\n}\n.io3d-message-list .message .text a {\n  color: white;\n  text-decoration: none;\n  padding-bottom: 0px;\n  border-bottom: 2px solid white;\n}\n.io3d-message-list .message .neutral {\n  background: rgba(0, 0, 0, 0.9);\n}\n.io3d-message-list .message .success {\n  background: linear-gradient(50deg, rgba(35, 165, 9, 0.93), rgba(102, 194, 10, 0.93));\n}\n.io3d-message-list .message .warning {\n  background: linear-gradient(50deg, rgba(165, 113, 9, 0.93), rgba(194, 169, 10, 0.93));\n}\n.io3d-message-list .message .error {\n  background: linear-gradient(50deg, rgba(165, 9, 22, 0.93), rgba(194, 56, 10, 0.93));\n}\n.io3d-overlay {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  z-index: 100000;\n  position: fixed;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: 200;\n  font-size: 18px;\n  letter-spacing: 1px;\n  color: white;\n  text-align: center;\n  line-height: 1.3;\n  background: linear-gradient(70deg, rgba(20, 17, 34, 0.96), rgba(51, 68, 77, 0.96));\n}\n@keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n.io3d-overlay .centered-content {\n  display: inline-block;\n  position: relative;\n  top: 50%;\n  text-align: left;\n}\n.io3d-overlay .centered-content .button {\n  margin-right: 4px;\n  margin-top: 1.5em;\n}\n.io3d-overlay .bottom-container {\n  width: 100%;\n  display: block;\n  position: absolute;\n  bottom: 1em;\n}\n.io3d-overlay .bottom-container .bottom-content {\n  display: inline-block;\n  position: relative;\n  margin-left: auto;\n  margin-right: auto;\n  text-align: left;\n  color: rgba(255, 255, 255, 0.35);\n}\n.io3d-overlay .bottom-container .bottom-content .clickable {\n  cursor: pointer;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-container .bottom-content .clickable:hover {\n  color: white;\n}\n.io3d-overlay .bottom-container .bottom-content a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-container .bottom-content a:hover {\n  color: white;\n}\n@keyframes content-slide-in {\n  0% {\n    transform: translateY(-40%);\n  }\n  100% {\n    transform: translateY(-50%);\n  }\n}\n@keyframes content-slide-out {\n  0% {\n    transform: translateY(-50%);\n  }\n  100% {\n    transform: translateY(-40%);\n  }\n}\n.io3d-overlay h1 {\n  margin: 0 0 0.5em 0;\n  font-size: 42px;\n  font-weight: 200;\n  color: white;\n}\n.io3d-overlay p {\n  margin: 1em 0 0 0;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint {\n  position: relative;\n  margin: 1em 0 0 0;\n  color: rgba(255, 255, 255, 0.35);\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  transition: color 600ms;\n}\n.io3d-overlay .hint a:hover {\n  color: white;\n}\n.io3d-overlay .button {\n  cursor: pointer;\n  display: inline-block;\n  color: rgba(255, 255, 255, 0.35);\n  width: 40px;\n  height: 40px;\n  line-height: 32px;\n  border: 2px solid rgba(255, 255, 255, 0.35);\n  border-radius: 50%;\n  text-align: center;\n  font-size: 18px;\n  font-weight: 200;\n  transition: opacity 300ms, color 300ms;\n}\n.io3d-overlay .button:hover {\n  background-color: rgba(255, 255, 255, 0.1);\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .button-highlighted {\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .close-button {\n  display: block;\n  position: absolute;\n  top: 20px;\n  right: 20px;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay input,\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay textarea {\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-size: 24px;\n  font-weight: normal;\n  letter-spacing: 1px;\n  outline: none;\n  margin: 0 0 0 0;\n  color: white;\n}\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay input:not([type='checkbox']):not([type='range']) {\n  padding: 0.2em 0 0.4em 0;\n  width: 100%;\n  line-height: 20px;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  border-radius: 0px;\n  border: 0px;\n  background: transparent;\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n  transition: border-color 1s;\n}\n.io3d-overlay select:focus,\n.io3d-overlay option:focus,\n.io3d-overlay input:not([type='checkbox']):not([type='range']):focus {\n  border-color: white;\n}\n.io3d-overlay textarea {\n  display: box;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  padding: 0.2em 0 0.4em 0;\n  min-width: 100%;\n  max-width: 100%;\n  line-height: 26px;\n  border: 0px;\n  background: rgba(255, 255, 255, 0.08);\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n}\n.io3d-overlay input[type='checkbox'] {\n  position: relative;\n  height: 20px;\n  vertical-align: bottom;\n  margin: 0;\n}\n.io3d-overlay .reveal-api-key-button {\n  cursor: pointer;\n  position: absolute;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 2px;\n  bottom: 0.7em;\n  padding: 0.1em 0.2em 0.2em 0.2em;\n  line-height: 20px;\n  transition: color 600ms;\n}\n.io3d-overlay .reveal-api-key-button:hover {\n  color: white;\n}\n.io3d-overlay a {\n  color: white;\n  text-decoration: none;\n}\n.io3d-overlay .key-menu {\n  position: relative;\n  margin: 3em 0 0 0;\n}\n.io3d-overlay .key-menu .key-image {\n  width: 172px;\n  height: 127px;\n}\n.io3d-overlay .key-menu .key-button {\n  position: absolute;\n  left: 156px;\n  height: 36px;\n  line-height: 36px;\n  background: rgba(255, 255, 255, 0.1);\n  cursor: pointer;\n  padding: 0 14px 0 14px;\n  border-radius: 2px;\n  transition: background 300ms linear;\n}\n.io3d-overlay .key-menu .key-button:hover {\n  background: rgba(255, 255, 255, 0.3);\n}\n.io3d-overlay .key-menu .go-to-publishable-api-key-ui {\n  top: 11px;\n}\n.io3d-overlay .key-menu .go-to-secret-api-key-ui {\n  bottom: 11px;\n}\n.io3d-overlay .regegenerate-secret-key-button {\n  cursor: pointer;\n}\n.io3d-overlay .publishable-api-keys .list {\n  max-height: 50vh;\n  overflow: auto;\n  padding: 0 15px 0 0;\n}\n.io3d-overlay .publishable-api-keys .list .key-item {\n  position: relative;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 3px;\n  margin-bottom: 12px;\n  padding: 4px 5px 3px 8px;\n}\n.io3d-overlay .publishable-api-keys .list .key {\n  font-weight: 200 !important;\n  border-bottom: 0 !important;\n  margin-bottom: 0 !important;\n  padding: 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .domains {\n  margin: 0 0 0 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .button {\n  position: absolute !important;\n  margin: 0 !important;\n  background-repeat: no-repeat;\n  background-position: center;\n  color: white;\n  opacity: 0.5;\n}\n.io3d-overlay .publishable-api-keys .list .button:hover {\n  opacity: 1;\n}\n.io3d-overlay .publishable-api-keys .list .delete-key-button {\n  right: 8px;\n  top: 9px;\n}\n.io3d-overlay .publishable-api-keys .list .edit-domains-button {\n  positions: absolute;\n  right: 56px;\n  top: 9px;\n  background-size: 75%;\n  padding: 5px;\n}\n.io3d-overlay .publishable-api-keys .generate-new-key-button {\n  margin: 1.5em 0 0 0;\n  display: inline-block;\n  cursor: pointer;\n}\n";
@@ -20779,6 +20798,733 @@
 	  prompt: createPromptUi
 	};
 
+	function addCacheBustToQuery (url) {
+	  var cacheBust = '___cacheBust='+Date.now();
+	  if (url.indexOf('?') > -1) {
+	    // url has query: append cache bust
+	    url = url.replace('?','?'+cacheBust+'&');
+	  } else if (url.indexOf('#') > -1) {
+	    // url has no query but hash: prepend cache bust to hash tag
+	    url = url.replace('#', '?'+cacheBust+'#');
+	  } else {
+	    // no query and no hash tag: add cache bust
+	    url = url + '?' + cacheBust;
+	  }
+	  return url
+	}
+
+	function checkIfFileExists (url) {
+	  return fetch$1(
+	    addCacheBustToQuery(url),
+	    {
+	      method: 'HEAD',
+	      cache: 'reload',
+	      credentials: 'include'
+	    }
+	  ).then(function onSuccess(){
+	    return true
+	  }, function onReject(){
+	    return false
+	  })
+	}
+
+	function getBlobFromCanvas (canvas, options) {
+	  runtime.assertBrowser();
+
+	  // API
+	  options = options || {};
+	  var mimeType = options.mimeType || 'image/jpeg'; // can be: 'image/jpeg' or 'image/png'
+	  var quality = options.quality || 98;
+	  var fileName = options.fileName || fileUtils.getFallbackFilename() + (mimeType === 'image/jpeg' ? '.jpg' : '.png');
+
+	  // run
+	  return new bluebird_1(function (resolve, reject) {
+	    canvas.toBlob(function (blob) {
+	      blob.name = fileName;
+	      resolve(blob);
+	    }, mimeType, quality);
+	  })
+
+	}
+
+	// dependencies
+
+	var TARGA_PARSER_LIB = 'https://cdn.rawgit.com/archilogic-com/roBrowser/e4b5b53a/src/Loaders/Targa.js';
+
+	// main
+
+	function getImageFromFile (file, options) {
+
+	  // API
+	  options = options || {};
+	  var format = options.format;
+
+	  // FIXME get image from blob based on format (to also support DDS, PDF, DXF...)
+	  // at the moment we assume that blob is JPG or PNG
+
+	  var fileName = file.name;
+	  var type = fileName ? fileName.split('.').pop().toLowerCase() : 'jpg';
+
+	  if (type === 'jpg' || type === 'jpeg' || type === 'jpe' || type === 'png') {
+	    return getImageFromJpgOrPngFile(file)
+
+	  } else if (type === 'tga') {
+	    return getImageFromTga(file)
+
+	  } else {
+	    return bluebird_1.reject('Image of type '+type+' not supported')
+
+	  }
+
+	}
+
+	// methods
+
+	function getImageFromJpgOrPngFile (file) {
+	  var filename = file.name;
+	  return new bluebird_1(function(resolve, reject){
+
+	    var image = new Image();
+	    var urlCreator = window.URL || window.webkitURL;
+	    var imageUrl = urlCreator.createObjectURL(file);
+
+	    // event handlers
+	    image.onload = function () {
+	      urlCreator.revokeObjectURL(imageUrl);
+	      resolve(image);
+	    };
+	    image.onerror = function (error) {
+	      urlCreator.revokeObjectURL(imageUrl);
+	      console.error('Error converting image: ' + filename, error);
+	      reject('Error converting image: ' + filename);
+	    };
+
+	    // initiate loading process
+	    image.src = imageUrl;
+
+	  })
+	}
+
+	function getImageFromTga (file) {
+	  return fetchModule(TARGA_PARSER_LIB).then(function(Targa){
+	    return readFile(file, 'arrayBuffer').then(function(buffer){
+	      return new bluebird_1(function(resolve, reject){
+
+	        var
+	          targa = new Targa(),
+	          image = new Image();
+
+	        // add event handlers to image
+	        image.onload = function () {
+	          resolve(image);
+	        };
+	        image.onerror = function (error) {
+	          console.error('Error converting image: ' + file.name, error);
+	          reject('Error converting image: ' + file.name);
+	        };
+
+	        // buffer -> targa
+	        targa.load(new Uint8Array(buffer));
+	        // targa -> image
+	        image.src = targa.getDataURL();
+
+	      })
+	    })
+	  })
+	}
+
+	// settings
+
+	var DEFAULT_MAX_WIDTH = 2048;
+	var DEFAULT_MAX_HEIGHT = 2048;
+
+	// main
+
+	function scaleDownImage (input, options) {
+	  runtime.assertBrowser();
+
+	  // API
+	  options = options || {};
+	  var maxWidth = options.maxWidth || DEFAULT_MAX_WIDTH;
+	  var maxHeight = options.maxHeight || DEFAULT_MAX_HEIGHT;
+	  var powerOfTwo = !!options.powerOfTwo;
+
+	  // run
+	  return new bluebird_1(function(resolve, reject){
+
+	    // internals
+	    var canvas;
+	    var scale;
+	    var result;
+	    var originalWidth = input.width;
+	    var originalHeight = input.height;
+
+	    // convert original image size to power of two before scaling
+	    // because pixelPerfect algorithm allows only one dimensional scaling
+	    var makePowerOfTwo = powerOfTwo && !(checkPowerOfTwo$1(originalWidth) && checkPowerOfTwo$1(originalHeight));
+	    if (makePowerOfTwo) {
+	      originalWidth = getNearestPowerOfTwo(originalWidth);
+	      originalHeight = getNearestPowerOfTwo(originalHeight);
+	    }
+
+	    // cap width and height to max
+	    var width = Math.min(originalWidth, maxWidth);
+	    var height = Math.min(originalHeight, maxHeight);
+
+	    // scale down smaller size
+	    if (originalWidth < originalHeight) {
+	      width = height * (originalWidth / originalHeight);
+	    } else {
+	      height = width * (originalHeight / originalWidth);
+	    }
+
+	    // normalize input
+	    canvas = getCanvas(input, originalWidth, originalHeight);
+
+	    // scale if needed
+	    scale = width / originalWidth;
+	    if (scale < 1) {
+	      // scale image
+	      result = downScaleCanvas(canvas, width / originalWidth);
+	    } else {
+	      // nothing to scale
+	      result = canvas;
+	    }
+
+	    resolve(result);
+
+	  })
+	}
+
+	// helpers
+
+	function checkPowerOfTwo$1 (value) {
+	  return ( value & ( value - 1 ) ) === 0 && value !== 0
+	}
+
+	function getNearestPowerOfTwo (n) {
+	  // next best power of two
+	  var l = Math.log(n) / Math.LN2;
+	  return Math.pow(2, Math.round(l))
+	}
+
+	function getCanvas(input, width, height) {
+	  var canvas = document.createElement('canvas');
+	  canvas.width = width;
+	  canvas.height = height;
+	  var context = canvas.getContext('2d');
+	  // add filled white background, otherwise transparent png image areas turn black
+	  context.fillStyle="#FFFFFF";
+	  context.fillRect(0,0,width,height);
+	  context.drawImage(input, 0, 0, width, height);
+	  return canvas
+	}
+
+	// scales the canvas by (float) scale < 1
+	// returns a new canvas containing the scaled image.
+	function downScaleCanvas(cv, scale) {
+	  if (!(scale < 1) || !(scale > 0)) throw ('scale must be a positive number <1 ');
+	  scale = normaliseScale(scale);
+	  var tBuffer = new Float32Array(3 * cv.width * cv.height); // temporary buffer Float32 rgb
+	  var sqScale = scale * scale; // square scale =  area of a source pixel within target
+	  var sw = cv.width; // source image width
+	  var sh = cv.height; // source image height
+	  var tw = Math.floor(sw * scale); // target image width
+	  var th = Math.floor(sh * scale); // target image height
+	  var sx = 0, sy = 0, sIndex = 0; // source x,y, index within source array
+	  var tx = 0, ty = 0, yIndex = 0, tIndex = 0; // target x,y, x,y index within target array
+	  var tX = 0, tY = 0; // rounded tx, ty
+	  var w = 0, nw = 0, wx = 0, nwx = 0, wy = 0, nwy = 0; // weight / next weight x / y
+	  // weight is weight of current source point within target.
+	  // next weight is weight of current source point within next target's point.
+	  var crossX = false; // does scaled px cross its current px right border ?
+	  var crossY = false; // does scaled px cross its current px bottom border ?
+	  var sBuffer = cv.getContext('2d').getImageData(0, 0, sw, sh).data; // source buffer 8 bit rgba
+	  var sR = 0, sG = 0,  sB = 0; // source's current point r,g,b
+
+	  for (sy = 0; sy < sh; sy++) {
+	    ty = sy * scale; // y src position within target
+	    tY = 0 | ty;     // rounded : target pixel's y
+	    yIndex = 3 * tY * tw;  // line index within target array
+	    crossY = (tY !== (0 | ( ty + scale )));
+	    if (crossY) { // if pixel is crossing botton target pixel
+	      wy = (tY + 1 - ty); // weight of point within target pixel
+	      nwy = (ty + scale - tY - 1); // ... within y+1 target pixel
+	    }
+	    for (sx = 0; sx < sw; sx++, sIndex += 4) {
+	      tx = sx * scale; // x src position within target
+	      tX = 0 |  tx;    // rounded : target pixel's x
+	      tIndex = yIndex + tX * 3; // target pixel index within target array
+	      crossX = (tX !== (0 | (tx + scale)));
+	      if (crossX) { // if pixel is crossing target pixel's right
+	        wx = (tX + 1 - tx); // weight of point within target pixel
+	        nwx = (tx + scale - tX - 1); // ... within x+1 target pixel
+	      }
+	      sR = sBuffer[sIndex    ];   // retrieving r,g,b for curr src px.
+	      sG = sBuffer[sIndex + 1];
+	      sB = sBuffer[sIndex + 2];
+	      if (!crossX && !crossY) { // pixel does not cross
+	        // just add components weighted by squared scale.
+	        tBuffer[tIndex    ] += sR * sqScale;
+	        tBuffer[tIndex + 1] += sG * sqScale;
+	        tBuffer[tIndex + 2] += sB * sqScale;
+	      } else if (crossX && !crossY) { // cross on X only
+	        w = wx * scale;
+	        // add weighted component for current px
+	        tBuffer[tIndex    ] += sR * w;
+	        tBuffer[tIndex + 1] += sG * w;
+	        tBuffer[tIndex + 2] += sB * w;
+	        // add weighted component for next (tX+1) px
+	        nw = nwx * scale;
+	        tBuffer[tIndex + 3] += sR * nw;
+	        tBuffer[tIndex + 4] += sG * nw;
+	        tBuffer[tIndex + 5] += sB * nw;
+	      } else if (!crossX && crossY) { // cross on Y only
+	        w = wy * scale;
+	        // add weighted component for current px
+	        tBuffer[tIndex    ] += sR * w;
+	        tBuffer[tIndex + 1] += sG * w;
+	        tBuffer[tIndex + 2] += sB * w;
+	        // add weighted component for next (tY+1) px
+	        nw = nwy * scale;
+	        tBuffer[tIndex + 3 * tw    ] += sR * nw;
+	        tBuffer[tIndex + 3 * tw + 1] += sG * nw;
+	        tBuffer[tIndex + 3 * tw + 2] += sB * nw;
+	      } else { // crosses both x and y : four target points involved
+	        // add weighted component for current px
+	        w = wx * wy;
+	        tBuffer[tIndex    ] += sR * w;
+	        tBuffer[tIndex + 1] += sG * w;
+	        tBuffer[tIndex + 2] += sB * w;
+	        // for tX + 1; tY px
+	        nw = nwx * wy;
+	        tBuffer[tIndex + 3] += sR * nw;
+	        tBuffer[tIndex + 4] += sG * nw;
+	        tBuffer[tIndex + 5] += sB * nw;
+	        // for tX ; tY + 1 px
+	        nw = wx * nwy;
+	        tBuffer[tIndex + 3 * tw    ] += sR * nw;
+	        tBuffer[tIndex + 3 * tw + 1] += sG * nw;
+	        tBuffer[tIndex + 3 * tw + 2] += sB * nw;
+	        // for tX + 1 ; tY +1 px
+	        nw = nwx * nwy;
+	        tBuffer[tIndex + 3 * tw + 3] += sR * nw;
+	        tBuffer[tIndex + 3 * tw + 4] += sG * nw;
+	        tBuffer[tIndex + 3 * tw + 5] += sB * nw;
+	      }
+	    } // end for sx
+	  } // end for sy
+
+	  // create result canvas
+	  var resCV = document.createElement('canvas');
+	  resCV.width = tw;
+	  resCV.height = th;
+	  var resCtx = resCV.getContext('2d');
+
+	//    var imgRes = resCtx.getImageData(resCV.width/2 - tw/2, resCV.height/2 - th/2, tw, th);
+	  var imgRes = resCtx.getImageData(0, 0, tw, th);
+	  var tByteBuffer = imgRes.data;
+	  // convert float32 array into a UInt8Clamped Array
+	  var pxIndex = 0; //
+	  for (sIndex = 0, tIndex = 0; pxIndex < tw * th; sIndex += 3, tIndex += 4, pxIndex++) {
+	    tByteBuffer[tIndex] = 0 | ( tBuffer[sIndex]);
+	    tByteBuffer[tIndex + 1] = 0 | (tBuffer[sIndex + 1]);
+	    tByteBuffer[tIndex + 2] = 0 | (tBuffer[sIndex + 2]);
+	    tByteBuffer[tIndex + 3] = 255;
+	    // set back temp buffer
+	    tBuffer[sIndex] = 0;
+	    tBuffer[sIndex + 1] = 0;
+	    tBuffer[sIndex + 2] = 0;
+	  }
+
+	  // writing result to canvas.
+	  resCtx.putImageData(imgRes, 0, 0);
+	  return resCV;
+
+	}
+
+	function log2$1(v) {
+	  // taken from http://graphics.stanford.edu/~seander/bithacks.html
+	  var b =  [ 0x2, 0xC, 0xF0, 0xFF00, 0xFFFF0000 ];
+	  var S =  [1, 2, 4, 8, 16];
+	  var i=0, r=0;
+
+	  for (i = 4; i >= 0; i--) {
+	    if (v & b[i])  {
+	      v >>= S[i];
+	      r |= S[i];
+	    }
+	  }
+	  return r;
+	}
+
+	// normalize a scale <1 to avoid some rounding issue with js numbers
+	function normaliseScale(s) {
+	  if (s>1) throw('s must be <1');
+	  s = 0 | (1/s);
+	  var l = log2$1(s);
+	  var mask = 1 << l;
+	  var accuracy = 4;
+	  while(accuracy && l) { l--; mask |= 1<<l; accuracy--; }
+	  return 1 / ( s & mask );
+	}
+
+	/**
+	 http://www.myersdaily.org/joseph/javascript/md5-text.html
+	 author: Joseph's Myers
+	 http://stackoverflow.com/questions/1655769/fastest-md5-implementation-in-javascript
+	 **/
+
+	function md5cycle(x, k) {
+	  var a = x[0], b = x[1], c = x[2], d = x[3];
+
+	  a = ff(a, b, c, d, k[0], 7, -680876936);
+	  d = ff(d, a, b, c, k[1], 12, -389564586);
+	  c = ff(c, d, a, b, k[2], 17,  606105819);
+	  b = ff(b, c, d, a, k[3], 22, -1044525330);
+	  a = ff(a, b, c, d, k[4], 7, -176418897);
+	  d = ff(d, a, b, c, k[5], 12,  1200080426);
+	  c = ff(c, d, a, b, k[6], 17, -1473231341);
+	  b = ff(b, c, d, a, k[7], 22, -45705983);
+	  a = ff(a, b, c, d, k[8], 7,  1770035416);
+	  d = ff(d, a, b, c, k[9], 12, -1958414417);
+	  c = ff(c, d, a, b, k[10], 17, -42063);
+	  b = ff(b, c, d, a, k[11], 22, -1990404162);
+	  a = ff(a, b, c, d, k[12], 7,  1804603682);
+	  d = ff(d, a, b, c, k[13], 12, -40341101);
+	  c = ff(c, d, a, b, k[14], 17, -1502002290);
+	  b = ff(b, c, d, a, k[15], 22,  1236535329);
+
+	  a = gg(a, b, c, d, k[1], 5, -165796510);
+	  d = gg(d, a, b, c, k[6], 9, -1069501632);
+	  c = gg(c, d, a, b, k[11], 14,  643717713);
+	  b = gg(b, c, d, a, k[0], 20, -373897302);
+	  a = gg(a, b, c, d, k[5], 5, -701558691);
+	  d = gg(d, a, b, c, k[10], 9,  38016083);
+	  c = gg(c, d, a, b, k[15], 14, -660478335);
+	  b = gg(b, c, d, a, k[4], 20, -405537848);
+	  a = gg(a, b, c, d, k[9], 5,  568446438);
+	  d = gg(d, a, b, c, k[14], 9, -1019803690);
+	  c = gg(c, d, a, b, k[3], 14, -187363961);
+	  b = gg(b, c, d, a, k[8], 20,  1163531501);
+	  a = gg(a, b, c, d, k[13], 5, -1444681467);
+	  d = gg(d, a, b, c, k[2], 9, -51403784);
+	  c = gg(c, d, a, b, k[7], 14,  1735328473);
+	  b = gg(b, c, d, a, k[12], 20, -1926607734);
+
+	  a = hh(a, b, c, d, k[5], 4, -378558);
+	  d = hh(d, a, b, c, k[8], 11, -2022574463);
+	  c = hh(c, d, a, b, k[11], 16,  1839030562);
+	  b = hh(b, c, d, a, k[14], 23, -35309556);
+	  a = hh(a, b, c, d, k[1], 4, -1530992060);
+	  d = hh(d, a, b, c, k[4], 11,  1272893353);
+	  c = hh(c, d, a, b, k[7], 16, -155497632);
+	  b = hh(b, c, d, a, k[10], 23, -1094730640);
+	  a = hh(a, b, c, d, k[13], 4,  681279174);
+	  d = hh(d, a, b, c, k[0], 11, -358537222);
+	  c = hh(c, d, a, b, k[3], 16, -722521979);
+	  b = hh(b, c, d, a, k[6], 23,  76029189);
+	  a = hh(a, b, c, d, k[9], 4, -640364487);
+	  d = hh(d, a, b, c, k[12], 11, -421815835);
+	  c = hh(c, d, a, b, k[15], 16,  530742520);
+	  b = hh(b, c, d, a, k[2], 23, -995338651);
+
+	  a = ii(a, b, c, d, k[0], 6, -198630844);
+	  d = ii(d, a, b, c, k[7], 10,  1126891415);
+	  c = ii(c, d, a, b, k[14], 15, -1416354905);
+	  b = ii(b, c, d, a, k[5], 21, -57434055);
+	  a = ii(a, b, c, d, k[12], 6,  1700485571);
+	  d = ii(d, a, b, c, k[3], 10, -1894986606);
+	  c = ii(c, d, a, b, k[10], 15, -1051523);
+	  b = ii(b, c, d, a, k[1], 21, -2054922799);
+	  a = ii(a, b, c, d, k[8], 6,  1873313359);
+	  d = ii(d, a, b, c, k[15], 10, -30611744);
+	  c = ii(c, d, a, b, k[6], 15, -1560198380);
+	  b = ii(b, c, d, a, k[13], 21,  1309151649);
+	  a = ii(a, b, c, d, k[4], 6, -145523070);
+	  d = ii(d, a, b, c, k[11], 10, -1120210379);
+	  c = ii(c, d, a, b, k[2], 15,  718787259);
+	  b = ii(b, c, d, a, k[9], 21, -343485551);
+
+	  x[0] = add32(a, x[0]);
+	  x[1] = add32(b, x[1]);
+	  x[2] = add32(c, x[2]);
+	  x[3] = add32(d, x[3]);
+
+	}
+
+	function cmn(q, a, b, x, s, t) {
+	  a = add32(add32(a, q), add32(x, t));
+	  return add32((a << s) | (a >>> (32 - s)), b);
+	}
+
+	function ff(a, b, c, d, x, s, t) {
+	  return cmn((b & c) | ((~b) & d), a, b, x, s, t);
+	}
+
+	function gg(a, b, c, d, x, s, t) {
+	  return cmn((b & d) | (c & (~d)), a, b, x, s, t);
+	}
+
+	function hh(a, b, c, d, x, s, t) {
+	  return cmn(b ^ c ^ d, a, b, x, s, t);
+	}
+
+	function ii(a, b, c, d, x, s, t) {
+	  return cmn(c ^ (b | (~d)), a, b, x, s, t);
+	}
+
+	function md51(s) {
+	//        txt = '';
+	  var n = s.length,
+	    state = [1732584193, -271733879, -1732584194, 271733878], i;
+	  for (i=64; i<=s.length; i+=64) {
+	    md5cycle(state, md5blk(s.substring(i-64, i)));
+	  }
+	  s = s.substring(i-64);
+	  var tail = [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0];
+	  for (i=0; i<s.length; i++)
+	    tail[i>>2] |= s.charCodeAt(i) << ((i%4) << 3);
+	  tail[i>>2] |= 0x80 << ((i%4) << 3);
+	  if (i > 55) {
+	    md5cycle(state, tail);
+	    for (i=0; i<16; i++) tail[i] = 0;
+	  }
+	  tail[14] = n*8;
+	  md5cycle(state, tail);
+	  return state;
+	}
+
+	/* there needs to be support for Unicode here,
+	 * unless we pretend that we can redefine the MD-5
+	 * algorithm for multi-byte characters (perhaps
+	 * by adding every four 16-bit characters and
+	 * shortening the sum to 32 bits). Otherwise
+	 * I suggest performing MD-5 as if every character
+	 * was two bytes--e.g., 0040 0025 = @%--but then
+	 * how will an ordinary MD-5 sum be matched?
+	 * There is no way to standardize text to something
+	 * like UTF-8 before transformation; speed cost is
+	 * utterly prohibitive. The JavaScript standard
+	 * itself needs to look at this: it should start
+	 * providing access to strings as preformed UTF-8
+	 * 8-bit unsigned value arrays.
+	 */
+	function md5blk(s) { /* I figured global was faster.   */
+	  var md5blks = [], i; /* Andy King said do it this way. */
+	  for (i=0; i<64; i+=4) {
+	    md5blks[i>>2] = s.charCodeAt(i)
+	      + (s.charCodeAt(i+1) << 8)
+	      + (s.charCodeAt(i+2) << 16)
+	      + (s.charCodeAt(i+3) << 24);
+	  }
+	  return md5blks;
+	}
+
+	var hex_chr = '0123456789abcdef'.split('');
+
+	function rhex(n)
+	{
+	  var s='', j=0;
+	  for(; j<4; j++)
+	    s += hex_chr[(n >> (j * 8 + 4)) & 0x0F]
+	      + hex_chr[(n >> (j * 8)) & 0x0F];
+	  return s;
+	}
+
+	function hex(x) {
+	  for (var i=0; i<x.length; i++)
+	    x[i] = rhex(x[i]);
+	  return x.join('');
+	}
+
+	/* this function is much faster,
+	 so if possible we use it. Some IEs
+	 are the only ones I know of that
+	 need the idiotic second function,
+	 generated by an if clause.  */
+
+	function add32(a, b) {
+	  return (a + b) & 0xFFFFFFFF;
+	}
+
+	if (md5('hello') != '5d41402abc4b2a76b9719d911017c592') {
+	  
+	}
+
+	// API
+
+	function md5(s) {
+	  return hex(md51(s));
+	}
+
+	/**
+	 *
+	 *  Secure Hash Algorithm (SHA1)
+	 *  http://www.webtoolkit.info/
+	 *
+	 **/
+
+	function sha1 (msg) {
+
+	  function rotate_left(n,s) {
+	    var t4 = ( n<<s ) | (n>>>(32-s));
+	    return t4;
+	  }
+
+	  
+
+	  function cvt_hex(val) {
+	    var str="";
+	    var i;
+	    var v;
+
+	    for( i=7; i>=0; i-- ) {
+	      v = (val>>>(i*4))&0x0f;
+	      str += v.toString(16);
+	    }
+	    return str;
+	  }
+
+
+	  function Utf8Encode(string) {
+	    string = string.replace(/\r\n/g,"\n");
+	    var utftext = "";
+
+	    for (var n = 0; n < string.length; n++) {
+
+	      var c = string.charCodeAt(n);
+
+	      if (c < 128) {
+	        utftext += String.fromCharCode(c);
+	      }
+	      else if((c > 127) && (c < 2048)) {
+	        utftext += String.fromCharCode((c >> 6) | 192);
+	        utftext += String.fromCharCode((c & 63) | 128);
+	      }
+	      else {
+	        utftext += String.fromCharCode((c >> 12) | 224);
+	        utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+	        utftext += String.fromCharCode((c & 63) | 128);
+	      }
+
+	    }
+
+	    return utftext;
+	  }
+
+	  var blockstart;
+	  var i, j;
+	  var W = new Array(80);
+	  var H0 = 0x67452301;
+	  var H1 = 0xEFCDAB89;
+	  var H2 = 0x98BADCFE;
+	  var H3 = 0x10325476;
+	  var H4 = 0xC3D2E1F0;
+	  var A, B, C, D, E;
+	  var temp;
+
+	  msg = Utf8Encode(msg);
+
+	  var msg_len = msg.length;
+
+	  var word_array = new Array();
+	  for( i=0; i<msg_len-3; i+=4 ) {
+	    j = msg.charCodeAt(i)<<24 | msg.charCodeAt(i+1)<<16 |
+	      msg.charCodeAt(i+2)<<8 | msg.charCodeAt(i+3);
+	    word_array.push( j );
+	  }
+
+	  switch( msg_len % 4 ) {
+	    case 0:
+	      i = 0x080000000;
+	      break;
+	    case 1:
+	      i = msg.charCodeAt(msg_len-1)<<24 | 0x0800000;
+	      break;
+
+	    case 2:
+	      i = msg.charCodeAt(msg_len-2)<<24 | msg.charCodeAt(msg_len-1)<<16 | 0x08000;
+	      break;
+
+	    case 3:
+	      i = msg.charCodeAt(msg_len-3)<<24 | msg.charCodeAt(msg_len-2)<<16 | msg.charCodeAt(msg_len-1)<<8	| 0x80;
+	      break;
+	  }
+
+	  word_array.push( i );
+
+	  while( (word_array.length % 16) != 14 ) word_array.push( 0 );
+
+	  word_array.push( msg_len>>>29 );
+	  word_array.push( (msg_len<<3)&0x0ffffffff );
+
+
+	  for ( blockstart=0; blockstart<word_array.length; blockstart+=16 ) {
+
+	    for( i=0; i<16; i++ ) W[i] = word_array[blockstart+i];
+	    for( i=16; i<=79; i++ ) W[i] = rotate_left(W[i-3] ^ W[i-8] ^ W[i-14] ^ W[i-16], 1);
+
+	    A = H0;
+	    B = H1;
+	    C = H2;
+	    D = H3;
+	    E = H4;
+
+	    for( i= 0; i<=19; i++ ) {
+	      temp = (rotate_left(A,5) + ((B&C) | (~B&D)) + E + W[i] + 0x5A827999) & 0x0ffffffff;
+	      E = D;
+	      D = C;
+	      C = rotate_left(B,30);
+	      B = A;
+	      A = temp;
+	    }
+
+	    for( i=20; i<=39; i++ ) {
+	      temp = (rotate_left(A,5) + (B ^ C ^ D) + E + W[i] + 0x6ED9EBA1) & 0x0ffffffff;
+	      E = D;
+	      D = C;
+	      C = rotate_left(B,30);
+	      B = A;
+	      A = temp;
+	    }
+
+	    for( i=40; i<=59; i++ ) {
+	      temp = (rotate_left(A,5) + ((B&C) | (B&D) | (C&D)) + E + W[i] + 0x8F1BBCDC) & 0x0ffffffff;
+	      E = D;
+	      D = C;
+	      C = rotate_left(B,30);
+	      B = A;
+	      A = temp;
+	    }
+
+	    for( i=60; i<=79; i++ ) {
+	      temp = (rotate_left(A,5) + (B ^ C ^ D) + E + W[i] + 0xCA62C1D6) & 0x0ffffffff;
+	      E = D;
+	      D = C;
+	      C = rotate_left(B,30);
+	      B = A;
+	      A = temp;
+	    }
+
+	    H0 = (H0 + A) & 0x0ffffffff;
+	    H1 = (H1 + B) & 0x0ffffffff;
+	    H2 = (H2 + C) & 0x0ffffffff;
+	    H3 = (H3 + D) & 0x0ffffffff;
+	    H4 = (H4 + E) & 0x0ffffffff;
+
+	  }
+
+	  var temp = cvt_hex(H0) + cvt_hex(H1) + cvt_hex(H2) + cvt_hex(H3) + cvt_hex(H4);
+
+	  return temp.toLowerCase();
+
+	}
+
+	function getMd5Hash (file) {
+	  return readFile(file, 'binaryString').then(md5)
+	}
+
 	// function
 
 	function wait(duration, passThroughValue) {
@@ -20793,8 +21539,8 @@
 
 	  data3d: {
 	    load: loadData3d,
-	    encodeBuffer: encodeToBuffer,
-	    decodeBuffer: decodeBuffer,
+	    encodeBinary: encodeBinary,
+	    decodeBinary: decodeBinary,
 	    clone: clone,
 	    traverse: traverseData3d
 	  },
@@ -20802,14 +21548,27 @@
 	  auth: auth,
 	  io: {
 	    fetch: fetch$1,
-	    request: request
+	    fetchModule: fetchModule,
+	    request: request,
+	    checkIfFileExists: checkIfFileExists
+	  },
+	  image: {
+	    scaleDown: scaleDownImage,
+	    getFromFile: getImageFromFile,
+	    getBlobFromCanvas: getBlobFromCanvas
+	  },
+	  math: {
+	    md5: md5,
+	    sha1: sha1
 	  },
 	  services: {
 	    call: callService
 	  },
 	  file: {
 	    getMimeTypeFromFilename: getMimeTypeFromFileName,
-	    gzip: gzip
+	    gzip: gzip,
+	    read: readFile,
+	    getMd5Hash: getMd5Hash
 	  },
 	  url: Url,
 	  uuid: uuid,

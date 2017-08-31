@@ -1,7 +1,7 @@
 import Promise from 'bluebird'
 import runtime from '../../core/runtime.js'
 import gzip from '../file/gzip.js'
-import shortId from '../short-id.js'
+import getDefaultFilename from '../file/get-default-filename.js'
 import traverseData3d from './traverse.js'
 import cloneData3d from './clone.js'
 
@@ -14,13 +14,13 @@ var VERSION = 1
 
 // main
 
-export default function encodeToBuffer (data3d, options) {
+export default function encodeBinary (data3d, options) {
 
   // API
   options = options || {}
   var createFile = options.createFile !== undefined ? options.createFile : true
   var gzipFile = options.gzipFile !== undefined ? options.gzipFile : true
-  var filename = options.filename || getFallbackFilename() + FILE_EXTENSION
+  var filename = options.filename || getDefaultFilename() + FILE_EXTENSION
   
   // internals
   var result = {
@@ -159,10 +159,4 @@ export default function encodeToBuffer (data3d, options) {
 
 function isMultipleOf (value, multiple) {
   return Math.ceil(value / multiple) === value / multiple
-}
-
-function getFallbackFilename () {
-  var d = new Date()
-  return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
-  + '_' + d.getHours() + '-' + d.getMinutes() + '-' + d.getSeconds() + '_' + shortId()
 }

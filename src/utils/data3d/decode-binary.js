@@ -33,7 +33,7 @@ var textDecoder = runtime.isBrowser && window.TextDecoder ? new window.TextDecod
 
 // public methods
 
-export default function decodeBuffer (buffer, options) {
+export default function decodeBinary (buffer, options) {
 
   // API
   options = options || {}
