@@ -98,7 +98,6 @@ export default checkDependencies({
           // three.js materials
           if (!self._materials3d[ meshId ]) {
             // (one material pro mesh, because some of our mesh properties are material properties and it does not matter performance wise)
-            //material3d = new THREE.MeshPhongMaterial({ opacity: 0.5, transparent: true})
             material3d = new Io3dMaterial()
             material3d.name = materialId
             if (!materials) {
@@ -127,7 +126,7 @@ export default checkDependencies({
             // create a separate geometry object for wireframes
             wireframe3d = new Wireframe()
             // add to parent
-            //self._meshes3d[ meshId ].add(wireframe3d)
+            self._meshes3d[ meshId ].add(wireframe3d)
             // remember
             self._wireframes3d[ meshId ] = wireframe3d
 
@@ -157,23 +156,19 @@ export default checkDependencies({
 
           // apply buffers if they are different than current buffers
           if (geometry3d.attributes.position === undefined) {
-            geometry3d.attributes.position = new THREE.BufferAttribute(positions, 3)
-//              geometry3d.addAttribute( 'position', new THREE.BufferAttribute(positions, 3) )
+            geometry3d.addAttribute( 'position', new THREE.BufferAttribute(positions, 3) )
             // The bounding box of the scene may need to be updated
-            if (this.vm && this.vm.viewport && this.vm.viewport.webglView)
-              self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true
+            // self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true
           } else if (geometry3d.attributes.position.array !== positions ) {
             geometry3d.attributes.position.array = positions
             geometry3d.attributes.position.needsUpdate = true
             // Three.js needs this to update
             geometry3d.computeBoundingSphere()
             // The bounding box of the scene may need to be updated
-            if (this.vm && this.vm.viewport && this.vm.viewport.webglView)
-              self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true
+            // self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true
           }
           if (geometry3d.attributes.normal === undefined) {
-            geometry3d.attributes.normal = new THREE.BufferAttribute(normals, 3)
-//              geometry3d.addAttribute( 'normal', new THREE.BufferAttribute(normals, 3) )
+            geometry3d.addAttribute( 'normal', new THREE.BufferAttribute(normals, 3) )
           } else if (geometry3d.attributes.normal.array !== normals ) {
             geometry3d.attributes.normal.array = normals
             geometry3d.attributes.normal.needsUpdate = true
@@ -234,13 +229,11 @@ export default checkDependencies({
           mesh = self._meshes3d[meshId]
           if (!meshes[ meshId ]) {
             // destroy wireframe geometry
-            /*
-             var wireframe3d = self._wireframes3d[ meshId ]
-             if (wireframe3d.parent) {
+           var wireframe3d = self._wireframes3d[ meshId ]
+           if (wireframe3d.parent) {
              wireframe3d.parent.remove( wireframe3d )
              wireframe3d.geometry.dispose()
-             }
-             */
+           }
             // destroy geometry
             var geometry3d = self._meshes3d[ meshId ].geometry
             disposeGeometry3dIfNotUsedElsewhere(self.meshes[ meshId ].cacheKey, geometry3d)
@@ -308,14 +301,7 @@ export default checkDependencies({
 
       ///////////////// return
 
-      if (!promise) {
-        promise = Promise.resolve()
-      }
-
-      return promise.then(function(){
-        if (self.isDestroyed) return
-        //self.vm.viewport.render()
-      })
+      return promise ? promise : Promise.resolve()
 
     },
 
@@ -349,9 +335,6 @@ export default checkDependencies({
       this.isDestroyed = true
 
       this.reset()
-
-      this.vm = null
-      this.threeParent = null
 
       this.threeParent = null
 
