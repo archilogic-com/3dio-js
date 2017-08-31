@@ -12,9 +12,6 @@ var config = {
     'hasChangeableMaterials',
     'autofurnish',
     'wallAttached',
-    'daybed',
-    'oval',
-    'rectangular',
     '2 seater',
     '3 seater',
     '4 seater'
