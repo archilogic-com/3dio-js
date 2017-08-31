@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.59
- * @date 2017/08/31 18:42
+ * @version 1.0.0-beta.60
+ * @date 2017/08/31 21:18
  * @branch master
- * @commit d3cd0e11f456c8a4ef441f7f433e335b37440646
+ * @commit 4d674a0cda7ac12e731ad3b8922b1735291f43e6
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/31 18:42', GIT_BRANCH = 'master', GIT_COMMIT = 'd3cd0e11f456c8a4ef441f7f433e335b37440646'
+	var BUILD_DATE='2017/08/31 21:18', GIT_BRANCH = 'master', GIT_COMMIT = '4d674a0cda7ac12e731ad3b8922b1735291f43e6'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.59";
+	var version = "1.0.0-beta.60";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -14488,13 +14488,97 @@
 	  return loadingTexturesPromise
 	}
 
-	// static class, @memberof View
+	// TODO: increase performance
+	// TODO: decouple from THREEjs
+	// TODO: make use of edge case threshold=0 (no need to compare face normals)
 
-	// TODO: add dependencies
-	// * compareArrays
-	// * generateWireframeBuffer
+	function generateWireframeBuffer( positions, thresholdAngle ) {
+		
+	//    console.time('calc')
 
-	// class
+		// internals
+		var thresholdDot = Math.cos( thresholdAngle * Math.PI / 180 );
+		var edge = [ 0, 0 ];
+		var hash = {};
+		var keys = [ 'a', 'b', 'c' ];
+
+		var tempGeometry = new THREE.Geometry();
+		for (var i = 0, j = 0; i < positions.length / 3; i += 3, j += 9) {
+			tempGeometry.vertices[ tempGeometry.vertices.length ] = new THREE.Vector3( positions[ j ], positions[ j + 1 ], positions[ j + 2 ] );
+			tempGeometry.vertices[ tempGeometry.vertices.length ] = new THREE.Vector3( positions[ j + 3 ], positions[ j + 4 ], positions[ j + 5 ] );
+			tempGeometry.vertices[ tempGeometry.vertices.length ] = new THREE.Vector3( positions[ j + 6 ], positions[ j + 7 ], positions[ j + 8 ] );
+			tempGeometry.faces[ tempGeometry.faces.length ] = new THREE.Face3( i, i + 1, i + 2, [], [] );
+		}
+		tempGeometry.mergeVertices();
+		tempGeometry.computeFaceNormals();
+
+		var vertices = tempGeometry.vertices;
+		var faces = tempGeometry.faces;
+		var numEdges = 0;
+
+		for ( var i = 0, l = faces.length; i < l; i ++ ) {
+			var face = faces[ i ];
+			for ( var j = 0; j < 3; j ++ ) {
+
+				edge[ 0 ] = face[ keys[ j ] ];
+				edge[ 1 ] = face[ keys[ ( j + 1 ) % 3 ] ];
+				edge.sort( sortFunction );
+
+				var key = edge.toString();
+
+				if ( hash[ key ] === undefined ) {
+					hash[ key ] = { vert1: edge[ 0 ], vert2: edge[ 1 ], face1: i, face2: undefined };
+					numEdges ++;
+				} else {
+					hash[ key ].face2 = i;
+				}
+			}
+		}
+
+		var coords = new Float32Array( numEdges * 2 * 3 );
+		var index = 0;
+
+		for ( var key in hash ) {
+			var h = hash[ key ];
+			if ( h.face2 === undefined || faces[ h.face1 ].normal.dot( faces[ h.face2 ].normal ) <= thresholdDot ) {
+
+				var vertex = vertices[ h.vert1 ];
+				coords[ index ++ ] = vertex.x;
+				coords[ index ++ ] = vertex.y;
+				coords[ index ++ ] = vertex.z;
+
+				vertex = vertices[ h.vert2 ];
+				coords[ index ++ ] = vertex.x;
+				coords[ index ++ ] = vertex.y;
+				coords[ index ++ ] = vertex.z;
+
+			}
+		}
+
+	//    console.timeEnd('calc')
+
+		return coords
+
+	}
+
+	// helpers
+
+	function sortFunction ( a, b ) { return a - b }
+
+	function compareArrays(a, b, precision) {
+
+		if (a === b) {
+			return true
+		} else if (a.length !== b.length) {
+			return false
+		} else {
+			precision = precision === undefined ? 1 : precision;
+			var step = ~~(a.length / (a.length * precision));
+			for (var i = 0, l = a.length; i<l; i+=step) if (a[i] !== b[i]) return false
+			return true
+		}
+
+	}
 
 	var Wireframe = checkDependencies({
 	  three: true,
@@ -14516,7 +14600,8 @@
 	    this._opacity = 1;
 
 	    // init
-	    THREE.Line.call( this, this._wireframeGeometry, this._wireframeMaterial, THREE.LinePieces );
+	    this.isLineSegments = true;
+	    THREE.Line.call( this, this._wireframeGeometry, this._wireframeMaterial );
 
 	  }
 
@@ -14528,7 +14613,7 @@
 	// extend with own methods
 
 	  Wireframe.prototype.update = function (options) {
-
+	    
 	    // API
 	    var positions = options.positions;
 	    //var normals = options.normals
@@ -14549,11 +14634,9 @@
 	      if (regenerateBuffer) {
 
 	        // generate new buffer from positions
-	        //var newBuffer = generateWireframeBuffer( positions, thresholdAngle )
-	        var newBuffer = new Float32Array(27);
+	        var newBuffer = generateWireframeBuffer( positions, thresholdAngle );
 	        if (newBuffer.length) {
-	          this._wireframeGeometry.attributes.position.array = newBuffer;
-	          this._wireframeGeometry.attributes.position.needsUpdate = true;
+						this._wireframeGeometry.attributes.position.setArray( newBuffer );
 	          this.visible = true;
 	        } else {
 	          this.visible = false;
@@ -14752,7 +14835,6 @@
 	          // three.js materials
 	          if (!self._materials3d[ meshId ]) {
 	            // (one material pro mesh, because some of our mesh properties are material properties and it does not matter performance wise)
-	            //material3d = new THREE.MeshPhongMaterial({ opacity: 0.5, transparent: true})
 	            material3d = new Io3dMaterial();
 	            material3d.name = materialId;
 	            if (!materials) {
@@ -14781,7 +14863,7 @@
 	            // create a separate geometry object for wireframes
 	            wireframe3d = new Wireframe();
 	            // add to parent
-	            //self._meshes3d[ meshId ].add(wireframe3d)
+	            self._meshes3d[ meshId ].add(wireframe3d);
 	            // remember
 	            self._wireframes3d[ meshId ] = wireframe3d;
 
@@ -14811,23 +14893,19 @@
 
 	          // apply buffers if they are different than current buffers
 	          if (geometry3d.attributes.position === undefined) {
-	            geometry3d.attributes.position = new THREE.BufferAttribute(positions, 3);
-	//              geometry3d.addAttribute( 'position', new THREE.BufferAttribute(positions, 3) )
+	            geometry3d.addAttribute( 'position', new THREE.BufferAttribute(positions, 3) );
 	            // The bounding box of the scene may need to be updated
-	            if (this.vm && this.vm.viewport && this.vm.viewport.webglView)
-	              self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true;
+	            // self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true
 	          } else if (geometry3d.attributes.position.array !== positions ) {
 	            geometry3d.attributes.position.array = positions;
 	            geometry3d.attributes.position.needsUpdate = true;
 	            // Three.js needs this to update
 	            geometry3d.computeBoundingSphere();
 	            // The bounding box of the scene may need to be updated
-	            if (this.vm && this.vm.viewport && this.vm.viewport.webglView)
-	              self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true;
+	            // self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true
 	          }
 	          if (geometry3d.attributes.normal === undefined) {
-	            geometry3d.attributes.normal = new THREE.BufferAttribute(normals, 3);
-	//              geometry3d.addAttribute( 'normal', new THREE.BufferAttribute(normals, 3) )
+	            geometry3d.addAttribute( 'normal', new THREE.BufferAttribute(normals, 3) );
 	          } else if (geometry3d.attributes.normal.array !== normals ) {
 	            geometry3d.attributes.normal.array = normals;
 	            geometry3d.attributes.normal.needsUpdate = true;
@@ -14888,13 +14966,11 @@
 	          mesh = self._meshes3d[meshId];
 	          if (!meshes[ meshId ]) {
 	            // destroy wireframe geometry
-	            /*
-	             var wireframe3d = self._wireframes3d[ meshId ]
-	             if (wireframe3d.parent) {
-	             wireframe3d.parent.remove( wireframe3d )
-	             wireframe3d.geometry.dispose()
-	             }
-	             */
+	           var wireframe3d = self._wireframes3d[ meshId ];
+	           if (wireframe3d.parent) {
+	             wireframe3d.parent.remove( wireframe3d );
+	             wireframe3d.geometry.dispose();
+	           }
 	            // destroy geometry
 	            var geometry3d = self._meshes3d[ meshId ].geometry;
 	            disposeGeometry3dIfNotUsedElsewhere(self.meshes[ meshId ].cacheKey, geometry3d);
@@ -14962,14 +15038,7 @@
 
 	      ///////////////// return
 
-	      if (!promise) {
-	        promise = bluebird_1.resolve();
-	      }
-
-	      return promise.then(function(){
-	        if (self.isDestroyed) return
-	        //self.vm.viewport.render()
-	      })
+	      return promise ? promise : bluebird_1.resolve()
 
 	    },
 
@@ -15003,9 +15072,6 @@
 	      this.isDestroyed = true;
 
 	      this.reset();
-
-	      this.vm = null;
-	      this.threeParent = null;
 
 	      this.threeParent = null;
 
