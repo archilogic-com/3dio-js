@@ -119,7 +119,6 @@ export default checkDependencies({
             geometry3d = createOrReuseGeometry3d( mesh.cacheKey )
             // create mesh
             mesh3d = new THREE.Mesh(geometry3d, material3d)
-            mesh3d.userData = self.userData
             // add to parent
             self.threeParent.add(mesh3d)
             // remembers
@@ -145,6 +144,11 @@ export default checkDependencies({
           }
 
           // apply position
+          if (position) {
+            mesh3d.position.set( position[0] , position[1], position[2] )
+          }
+
+          // apply rotation
           if (rotRad) {
             mesh3d.rotation.set( rotRad[0] , rotRad[1], rotRad[2] )
           } else if (rotDeg) {
@@ -348,7 +352,6 @@ export default checkDependencies({
 
       this.vm = null
       this.threeParent = null
-      this.userData = null
 
       this.threeParent = null
 
