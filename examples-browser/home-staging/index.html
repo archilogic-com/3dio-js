@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>3dio for Aframe</title>
+    <!-- aframe library -->
+    <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+    <script src="../../../build/3dio.js"></script>
+    <style>
+      .btn {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        border: solid 2px white;
+        outline: none;
+        background: transparent;
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+        letter-spacing: 1px;
+        padding: 5px 15px;
+        cursor: pointer;
+        z-index: 1000;
+      }
+      .btn:hover {
+        background: white;
+        color: #222;
+      }
+    </style>
+  </head>
+  <!-- start the body of your page -->
+  <body>
+    <!-- Define your 3d scene and enabled ar.js -->
+    <button class="btn">furnish</button>
+    <a-scene vr-mode-ui="enabled: false">
+      <a-camera position="0 5 5"></a-camera>
+      <a-entity id="cursor" cursor="rayOrigin: mouse"></a-entity>
+      <a-image id="floor-plan" width="13.98" height="16.15" src="https://storage.3d.io/132f8fd0-f7e0-432a-ad21-732f3307e77e/2017-08-31_21-54-52_KYeEaE/Grundriss_WE17_BW-4.jpg" rotation="-90 0 0"></a-image>
+    <a-sky color="#222"></a-sky>
+    </a-scene>
+    <script>
+      let cursor = document.querySelector('#cursor')
+      let btn = document.querySelector('.btn')
+      // bind events
+      cursor.addEventListener('click', elementClick)
+      btn.addEventListener('click', furnish)
+      var addedItems = []
+
+      function furnish() {
+        // check for added elements
+        addedItems.forEach(el => {
+          el.parentNode.removeChild(el)
+        })
+        io3d.floorPlan.recognize('#floor-plan')
+          .then(io3d.homeStaging.getFurnishings)
+          .then(io3d.homeStaging.placeFurnishings)
+          .then(result => {addedItems = result})
+          .catch(err => {
+            console.log(err)
+          })
+      }
+      function elementClick() {
+        let el = cursor.components.raycaster.intersectedEls[0]
+        let furniture = el.getAttribute('io3d-furniture')
+        if (furniture) {
+          io3d.homeStaging.replaceFurniture({id: furniture.id, position: el.getAttribute('position'), rotation: el.getAttribute('rotation')})
+            .then(result => {
+              if (!result) return
+              let newEL = result[Math.floor(Math.random() * result.length)]
+              el.setAttribute('io3d-furniture', {id: newEL.furniture.id})
+              el.setAttribute('position', AFRAME.utils.coordinates.stringify(newEL.position))
+            })
+        }
+      }
+    </script>
+  </body>
+</html>

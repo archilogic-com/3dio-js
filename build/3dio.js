@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.58
- * @date 2017/08/28 12:56
- * @branch master
- * @commit b40aed08655e6e891b2b34929330fbdb83a39d9e
+ * @date 2017/09/01 01:19
+ * @branch io3d.homeStaging.replaceFurniture
+ * @commit a821d5486b74969c3277f2d8e2809831f1e58fd6
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/08/28 12:56', GIT_BRANCH = 'master', GIT_COMMIT = 'b40aed08655e6e891b2b34929330fbdb83a39d9e'
+	var BUILD_DATE='2017/09/01 01:19', GIT_BRANCH = 'io3d.homeStaging.replaceFurniture', GIT_COMMIT = 'a821d5486b74969c3277f2d8e2809831f1e58fd6'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.58";
@@ -16904,6 +16904,164 @@
 	  getInfo: getFurnitureInfo
 	};
 
+	function furnish (args) {
+
+	  console.log('furnishing:', args);
+
+	  var
+	    modelStructure,
+	    floorLabels;
+
+	  var data = verifyModelStructure(args.planStructure);
+	  console.log('data', data);
+
+	  if (args.planStructure) {
+	    modelStructure = data.modelStructure;
+	  } else return
+
+	  floorLabels = getLabels(data.polyfloors);
+
+	  let params = {
+	    floors: floorLabels,
+	    modelStructure,
+	    maxResults: 1,
+	    tags: ['generic']
+	  };
+
+	  console.log('autofurnish', params);
+
+	  return callService('Autofurnishing.furnish', { arguments: params })
+	    .then(function(result) { return result.furnishings })
+	    /*.then(loadGroups)*/
+	    .catch(console.error)
+	}
+
+	// TODO: cleanup after API review
+	function verifyModelStructure(input) {
+	  var levelId = uuid.generate();
+	  var polyfloors = [];
+	  var modelStructure = {
+	    activeLevelId: levelId,
+	    type: "plan",
+	    x: 0,
+	    y: 0,
+	    z: 0,
+	    ry: 0,
+	    id: uuid.generate(),
+	    children: [{
+	      type: 'level',
+	      id: levelId,
+	      x: 0,
+	      y: 0,
+	      z: 0,
+	      ry: 0,
+	      children: []
+	    }]
+	  };
+	  // add missing ids
+	  input = input.map(function(element) {
+	    if (!element.id) element.id = uuid.generate();
+	    if (!element.y) element.y = 0;
+	    if (element.children) {
+	      element.children = element.children.map(function (child) {
+	        if (!child.id) child.id = uuid.generate();
+	        // apply defaults
+	        if (!child.y && child.type === 'window') {
+	          child.y = 0.9;
+	          child.h = 1.5;
+	        }
+	        else if (!child.y && child.type === 'door') {
+	          child.y = 0;
+	          child.h = 2;
+	        }
+	        return child
+	      });
+	    }
+	    if (element.type === 'polyfloor') polyfloors.push(element.id);
+	    return element
+	  });
+	  modelStructure.children[0].children = input;
+	  return ({modelStructure, polyfloors})
+	}
+
+	function getLabels(polyfloors) {
+	  var labels = {};
+	  labels[polyfloors[0]] = 'dining_living';
+	  labels[polyfloors[4]] = 'homeOffice';
+	  labels[polyfloors[3]] = 'bedroom';
+	  return labels
+	}
+
+	function placeFurnishings (args) {
+	  console.log('placing things', args);
+	  var floorIds = Object.keys(args);
+	  // pick first floor & first result
+	  var promises = [];
+	  floorIds.forEach(function(id) {
+	    var groups = args[id][0].groups;
+	    groups.forEach(g => {
+	      promises.push(getGroup({modelStructure: g}));
+	    });
+	  });
+	  return Promise.all(promises)
+	}
+
+	function getGroup(args) {
+	  var id = args.id || args.modelStructure.src && args.modelStructure.src.substring(1);
+	  var group;
+	  return callService('Product.read', { arguments: id})
+	    .then(product => {
+	      if (product.categories.indexOf('group') < -1) return
+	      var ms = JSON.parse(product.modelStructure);
+	      console.log(ms, ms.type);
+	      var modelStructure = args.modelStructure || ms;
+	      var position = {x: modelStructure.x, y: modelStructure.y, z: modelStructure.z};
+	      var rotation = modelStructure.ry;
+	      // product groups
+	      if (ms.type === 'group' && ms.children) {
+	        group = addEntity({ position, rotation });
+	        ms.children.forEach(c => {
+	          if (c.type === 'interior') {
+	          var position = {x: c.x, y: c.y, z: c.z};
+	          var rotation = c.ry;
+	          var el = addEntity({key: 'io3d-furniture', id: c.src.substring(1), position, rotation, parent:group});
+	        }
+	      });
+	        // single products
+	      } else if (ms.type === 'interior') group = addEntity({key: 'io3d-furniture', id: product.productResourceId, position, rotation});
+	      return group
+	    })
+	}
+
+	function addEntity(args) {
+	  var
+	    position = args.position || {x: 0, y: 0, z: 0},
+	    ry = args.rotation || 0,
+	    id = args.id,
+	    tag = args.tag || 'a-entity',
+	    key = args.key,
+	    parent = args.parent || document.querySelector("a-scene"),
+	    attributes = args.attributes || {};
+
+	  attributes.position = position.x + ' ' + position.y + ' ' + position.z;
+	  attributes.rotation = '0 ' + ry + ' 0';
+	  if (key === 'io3d-furniture' && id) {
+	    attributes[key] = 'id:' + id;
+	    attributes.productId = id;
+	  }
+	  else if (key === 'io3d-data3d' && id) attributes[key] = 'key:' + id + '; lightMapExposure: 0.8: lightMapIntensity: 1.0;';
+	  var el = document.createElement(tag);
+	  Object.keys(attributes).forEach(key => {
+	    el.setAttribute(key, attributes[key]);
+	  });
+	  if (args.class) {
+	    if (el.classList) el.classList.add(args.class);
+	    else el.className += " " + args.class;
+	  }
+	  if (parent) return parent.appendChild(el)
+	  else console.log('no parent', attributes.id);
+	}
+
 	var userQuery;
 	var searchCount;
 	var margin;
@@ -16925,12 +17083,14 @@
 	  ],
 	};
 
-	function replaceFurniture (id, options) {
+	function replaceFurniture (args) {
 	  // API
-	  options = options || {};
-	  userQuery = options.query || null;
-	  position = options.position || {x: 0, y: 0, z: 0};
-	  rotation = options.rotation || {x: 0, y: 0, z: 0};
+	  var args = args || {};
+	  var id = args.id;
+
+	  userQuery = args.query || null;
+	  position = args.position || {x: 0, y: 0, z: 0};
+	  rotation = args.rotation || {x: 0, y: 0, z: 0};
 	  // TODO: check config for publishable api key
 	  // reject when no publishable or not white listed domain
 	  // we need to call furniture info first in order to obtain data3d URL
@@ -16960,9 +17120,9 @@
 	  // if we didn't find anything in the first place
 	  // let's increase dimensions a bit
 	  if (rawResult.length < 2) {
-	    margin += 0.10;
-	    searchCount += 1;
+	    if (searchCount >= 3) margin += 0.10;
 	    var searchQuery = getQuery(furnitureInfo);
+	    searchCount += 1;
 	    return search(searchQuery).then(function(result) {
 	      return verifyResult(result, id)
 	    })
@@ -16989,7 +17149,7 @@
 	  });
 
 	  // start removing tags from query when increasing dimensions didn't work
-	  if (searchCount >= 5) tags = tags.slice(0, (tags.length - searchCount + 5));
+	  if (searchCount > 1) tags = tags.slice(0, (tags.length - searchCount + 1));
 
 	  query += ' ' + tags.join(' ');
 
@@ -17046,6 +17206,8 @@
 	}
 
 	var homeStaging = {
+	  getFurnishings: furnish,
+	  placeFurnishings: placeFurnishings,
 	  replaceFurniture: replaceFurniture
 	};
 
@@ -17831,9 +17993,62 @@
 
 	}
 
+	function recognize (args) {
+	  console.log('starting recognition');
+	  var el = typeof args === 'string' ? document.querySelector(args) : null;
+
+	  var url, width, height, pixelsPerMeter;
+
+	  if (el) {
+	    // get floor plan image date info from aframe element
+	    // TODO: replacement for inverted floor plan
+	    url = 'https://storage.3d.io/132f8fd0-f7e0-432a-ad21-732f3307e77e/2017-08-31_21-55-19_xExGmY/Grundriss_WE17_s.jpg';
+	    // url = el.attributes.src.value
+	    width = el.attributes.width.value;
+	    height = el.attributes.height.value;
+
+	    // TODO: fetch image directly to make sure we get it
+	    var texture = el.components.material.material.map.image;
+	    pixelsPerMeter = getPixelPerMeterRatio(texture.width, texture.height, width, height);
+
+	    console.log(url, width, height, pixelsPerMeter);
+
+	  } else {
+	    return
+	    // TODO: add option for user provided arguments & fetch image to get dimensions
+	    /*
+	    url = args.url
+	    width = args.width
+	    height = args.height
+	    */
+	  }
+
+	  var args = {
+	    colorCoded: false,
+	    floorPlanUrl: url,
+	    pixelsPerMeter: pixelsPerMeter
+	  };
+
+	  return callService('Recognizer.recognize', {arguments: args})
+	}
+
+	function getPixelPerMeterRatio(pxWidth, pxHeight, width, height) {
+
+	  // from pixels
+	  var areaPx2 = pxWidth * pxHeight; //this.getPixelArea()
+
+	  // from input
+	  var areaM2 = width * height; //parseFloat(this.$distanceInput.val())
+
+	  var pixelPerMeterRatio = Math.sqrt(areaPx2 / areaM2);
+
+	  return pixelPerMeterRatio
+	}
+
 	var floorPlan = {
 	  convertToBasic3dModel: convertFloorPlanToBasic3dModel,
-	  getConversionStatus: getConversionStatus
+	  getConversionStatus: getConversionStatus,
+	  recognize: recognize
 	};
 
 	var css = ".io3d-message-list {\n  z-index: 100001;\n  position: fixed;\n  top: 0;\n  left: 50%;\n  margin-left: -200px;\n  width: 400px;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: normal;\n  letter-spacing: 1px;\n  line-height: 1.3;\n  text-align: center;\n}\n.io3d-message-list .message {\n  display: block;\n  opacity: 0;\n}\n.io3d-message-list .message .spacer {\n  display: block;\n  height: 10px;\n}\n.io3d-message-list .message .text {\n  display: inline-block;\n  padding: 10px 12px 10px 12px;\n  border-radius: 3px;\n  color: white;\n  font-size: 18px;\n}\n.io3d-message-list .message .text a {\n  color: white;\n  text-decoration: none;\n  padding-bottom: 0px;\n  border-bottom: 2px solid white;\n}\n.io3d-message-list .message .neutral {\n  background: rgba(0, 0, 0, 0.9);\n}\n.io3d-message-list .message .success {\n  background: linear-gradient(50deg, rgba(35, 165, 9, 0.93), rgba(102, 194, 10, 0.93));\n}\n.io3d-message-list .message .warning {\n  background: linear-gradient(50deg, rgba(165, 113, 9, 0.93), rgba(194, 169, 10, 0.93));\n}\n.io3d-message-list .message .error {\n  background: linear-gradient(50deg, rgba(165, 9, 22, 0.93), rgba(194, 56, 10, 0.93));\n}\n.io3d-overlay {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  z-index: 100000;\n  position: fixed;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  height: 100%;\n  width: 100%;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: 200;\n  font-size: 18px;\n  letter-spacing: 1px;\n  color: white;\n  text-align: center;\n  line-height: 1.3;\n  background: linear-gradient(70deg, rgba(20, 17, 34, 0.96), rgba(51, 68, 77, 0.96));\n}\n@-webkit-keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@-webkit-keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n@keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n.io3d-overlay .centered-content {\n  display: inline-block;\n  position: relative;\n  top: 50%;\n  text-align: left;\n}\n.io3d-overlay .centered-content .button {\n  margin-right: 4px;\n  margin-top: 1.5em;\n}\n.io3d-overlay .bottom-container {\n  width: 100%;\n  display: block;\n  position: absolute;\n  bottom: 1em;\n}\n.io3d-overlay .bottom-container .bottom-content {\n  display: inline-block;\n  position: relative;\n  margin-left: auto;\n  margin-right: auto;\n  text-align: left;\n  color: rgba(255, 255, 255, 0.35);\n}\n.io3d-overlay .bottom-container .bottom-content .clickable {\n  cursor: pointer;\n  -webkit-transition: color 500ms;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-container .bottom-content .clickable:hover {\n  color: white;\n}\n.io3d-overlay .bottom-container .bottom-content a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  -webkit-transition: color 500ms;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-container .bottom-content a:hover {\n  color: white;\n}\n@-webkit-keyframes content-slide-in {\n  0% {\n    -webkit-transform: translateY(-40%);\n  }\n  100% {\n    -webkit-transform: translateY(-50%);\n  }\n}\n@keyframes content-slide-in {\n  0% {\n    transform: translateY(-40%);\n  }\n  100% {\n    transform: translateY(-50%);\n  }\n}\n@-webkit-keyframes content-slide-out {\n  0% {\n    -webkit-transform: translateY(-50%);\n  }\n  100% {\n    -webkit-transform: translateY(-40%);\n  }\n}\n@keyframes content-slide-out {\n  0% {\n    transform: translateY(-50%);\n  }\n  100% {\n    transform: translateY(-40%);\n  }\n}\n.io3d-overlay h1 {\n  margin: 0 0 0.5em 0;\n  font-size: 42px;\n  font-weight: 200;\n  color: white;\n}\n.io3d-overlay p {\n  margin: 1em 0 0 0;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint {\n  position: relative;\n  margin: 1em 0 0 0;\n  color: rgba(255, 255, 255, 0.35);\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  -webkit-transition: color 600ms;\n  transition: color 600ms;\n}\n.io3d-overlay .hint a:hover {\n  color: white;\n}\n.io3d-overlay .button {\n  cursor: pointer;\n  display: inline-block;\n  color: rgba(255, 255, 255, 0.35);\n  width: 40px;\n  height: 40px;\n  line-height: 32px;\n  border: 2px solid rgba(255, 255, 255, 0.35);\n  border-radius: 50%;\n  text-align: center;\n  font-size: 18px;\n  font-weight: 200;\n  -webkit-transition: opacity 300ms, color 300ms;\n  transition: opacity 300ms, color 300ms;\n}\n.io3d-overlay .button:hover {\n  background-color: rgba(255, 255, 255, 0.1);\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .button-highlighted {\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .close-button {\n  display: block;\n  position: absolute;\n  top: 20px;\n  right: 20px;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay input,\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay textarea {\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-size: 24px;\n  font-weight: normal;\n  letter-spacing: 1px;\n  outline: none;\n  margin: 0 0 0 0;\n  color: white;\n}\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay input:not([type='checkbox']):not([type='range']) {\n  padding: 0.2em 0 0.4em 0;\n  width: 100%;\n  line-height: 20px;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  border-radius: 0px;\n  border: 0px;\n  background: transparent;\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n  -webkit-transition: border-color 1s;\n  transition: border-color 1s;\n}\n.io3d-overlay select:focus,\n.io3d-overlay option:focus,\n.io3d-overlay input:not([type='checkbox']):not([type='range']):focus {\n  border-color: white;\n}\n.io3d-overlay textarea {\n  display: box;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  padding: 0.2em 0 0.4em 0;\n  min-width: 100%;\n  max-width: 100%;\n  line-height: 26px;\n  border: 0px;\n  background: rgba(255, 255, 255, 0.08);\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n}\n.io3d-overlay input[type='checkbox'] {\n  position: relative;\n  height: 20px;\n  vertical-align: bottom;\n  margin: 0;\n}\n.io3d-overlay .reveal-api-key-button {\n  cursor: pointer;\n  position: absolute;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 2px;\n  bottom: 0.7em;\n  padding: 0.1em 0.2em 0.2em 0.2em;\n  line-height: 20px;\n  -webkit-transition: color 600ms;\n  transition: color 600ms;\n}\n.io3d-overlay .reveal-api-key-button:hover {\n  color: white;\n}\n.io3d-overlay a {\n  color: white;\n  text-decoration: none;\n}\n.io3d-overlay .key-menu {\n  position: relative;\n  margin: 3em 0 0 0;\n}\n.io3d-overlay .key-menu .key-image {\n  width: 172px;\n  height: 127px;\n}\n.io3d-overlay .key-menu .key-button {\n  position: absolute;\n  left: 156px;\n  height: 36px;\n  line-height: 36px;\n  background: rgba(255, 255, 255, 0.1);\n  cursor: pointer;\n  padding: 0 14px 0 14px;\n  border-radius: 2px;\n  -webkit-transition: background 300ms linear;\n  transition: background 300ms linear;\n}\n.io3d-overlay .key-menu .key-button:hover {\n  background: rgba(255, 255, 255, 0.3);\n}\n.io3d-overlay .key-menu .go-to-publishable-api-key-ui {\n  top: 11px;\n}\n.io3d-overlay .key-menu .go-to-secret-api-key-ui {\n  bottom: 11px;\n}\n.io3d-overlay .regegenerate-secret-key-button {\n  cursor: pointer;\n}\n.io3d-overlay .publishable-api-keys .list {\n  max-height: 50vh;\n  overflow: auto;\n  padding: 0 15px 0 0;\n}\n.io3d-overlay .publishable-api-keys .list .key-item {\n  position: relative;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 3px;\n  margin-bottom: 12px;\n  padding: 4px 5px 3px 8px;\n}\n.io3d-overlay .publishable-api-keys .list .key {\n  font-weight: 200 !important;\n  border-bottom: 0 !important;\n  margin-bottom: 0 !important;\n  padding: 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .domains {\n  margin: 0 0 0 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .button {\n  position: absolute !important;\n  margin: 0 !important;\n  background-repeat: no-repeat;\n  background-position: center;\n  color: white;\n  opacity: 0.5;\n}\n.io3d-overlay .publishable-api-keys .list .button:hover {\n  opacity: 1;\n}\n.io3d-overlay .publishable-api-keys .list .delete-key-button {\n  right: 8px;\n  top: 9px;\n}\n.io3d-overlay .publishable-api-keys .list .edit-domains-button {\n  positions: absolute;\n  right: 56px;\n  top: 9px;\n  background-size: 75%;\n  padding: 5px;\n}\n.io3d-overlay .publishable-api-keys .generate-new-key-button {\n  margin: 1.5em 0 0 0;\n  display: inline-block;\n  cursor: pointer;\n}\n";

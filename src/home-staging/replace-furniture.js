@@ -18,12 +18,14 @@ var config = {
   ],
 }
 
-export default function replaceFurniture (id, options) {
+export default function replaceFurniture (args) {
   // API
-  options = options || {}
-  userQuery = options.query || null
-  position = options.position || {x: 0, y: 0, z: 0}
-  rotation = options.rotation || {x: 0, y: 0, z: 0}
+  var args = args || {}
+  var id = args.id
+
+  userQuery = args.query || null
+  position = args.position || {x: 0, y: 0, z: 0}
+  rotation = args.rotation || {x: 0, y: 0, z: 0}
   // TODO: check config for publishable api key
   // reject when no publishable or not white listed domain
   // we need to call furniture info first in order to obtain data3d URL
@@ -53,9 +55,9 @@ function verifyResult(result, id) {
   // if we didn't find anything in the first place
   // let's increase dimensions a bit
   if (rawResult.length < 2) {
-    margin += 0.10
-    searchCount += 1
+    if (searchCount >= 3) margin += 0.10
     var searchQuery = getQuery(furnitureInfo);
+    searchCount += 1
     return search(searchQuery).then(function(result) {
       return verifyResult(result, id)
     })
@@ -82,7 +84,7 @@ function getQuery(info) {
   })
 
   // start removing tags from query when increasing dimensions didn't work
-  if (searchCount >= 5) tags = tags.slice(0, (tags.length - searchCount + 5))
+  if (searchCount > 1) tags = tags.slice(0, (tags.length - searchCount + 1))
 
   query += ' ' + tags.join(' ')
 
