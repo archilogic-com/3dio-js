@@ -1,12 +1,6 @@
 import checkDependencies from '../../check-dependencies.js'
-
-// static class, @memberof View
-
-// TODO: add dependencies
-// * compareArrays
-// * generateWireframeBuffer
-
-// class
+import getWireframeBuffer from '../../../utils/data3d/buffer/get-wireframe.js'
+import compareArrays from '../../../utils/math/compare-arrays.js'
 
 export default checkDependencies({
   three: true,
@@ -28,7 +22,8 @@ export default checkDependencies({
     this._opacity = 1
 
     // init
-    THREE.Line.call( this, this._wireframeGeometry, this._wireframeMaterial, THREE.LinePieces )
+    this.isLineSegments = true
+    THREE.Line.call( this, this._wireframeGeometry, this._wireframeMaterial )
 
   }
 
@@ -40,7 +35,7 @@ export default checkDependencies({
 // extend with own methods
 
   Wireframe.prototype.update = function (options) {
-
+    
     // API
     var positions = options.positions
     //var normals = options.normals
@@ -61,11 +56,9 @@ export default checkDependencies({
       if (regenerateBuffer) {
 
         // generate new buffer from positions
-        //var newBuffer = generateWireframeBuffer( positions, thresholdAngle )
-        var newBuffer = new Float32Array(27)
+        var newBuffer = getWireframeBuffer( positions, thresholdAngle )
         if (newBuffer.length) {
-          this._wireframeGeometry.attributes.position.array = newBuffer
-          this._wireframeGeometry.attributes.position.needsUpdate = true
+					this._wireframeGeometry.attributes.position.setArray( newBuffer )
           this.visible = true
         } else {
           this.visible = false
