@@ -30,6 +30,7 @@ export default function normalizeFurnitureInfo (rawInfo) {
 // helpers
 
 function convertKeyToUrl (key) {
+  if (!key) return
   // add leading slash
   if (key[0] !== '/') key = '/'+key
   return 'https://storage.3d.io' + key

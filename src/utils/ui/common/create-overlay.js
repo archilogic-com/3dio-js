@@ -32,9 +32,17 @@ export default function createOverlay () {
 
     mainEl.style.opacity = 0
     mainEl.style.display = 'block'
-    mainEl.style.animation = '600ms ease-out 0s 1 normal forwards running overlay-fade-in'
-    centerEl.style.animation = '600ms cubic-bezier(0.2, 0.80, 0.5, 1) 0s 1 normal forwards running content-slide-in'
-
+    
+    mainEl.style['-webkit-animation'] = '600ms overlay-fade-in ease-out'
+    mainEl.style['animation'] = '600ms overlay-fade-in ease-out'
+    mainEl.style['-webkit-animation-fill-mode'] = 'forwards'
+    mainEl.style['animation-fill-mode'] = 'forwards'
+    
+    centerEl.style['-webkit-animation'] = '600ms content-slide-in cubic-bezier(0.2, 0.80, 0.5, 1)'
+    centerEl.style['animation'] = '600ms content-slide-in cubic-bezier(0.2, 0.80, 0.5, 1)'
+    centerEl.style['-webkit-animation-fill-mode'] = 'forwards'
+    centerEl.style['animation-fill-mode'] = 'forwards'
+    
     if (callback && typeof callback === 'function') setTimeout(function(){
       callback()
     }, 500)
@@ -46,9 +54,16 @@ export default function createOverlay () {
     if (!result.isVisible) return
     result.isVisible = false
 
-    mainEl.style.animation = '600ms ease-out 0s 1 normal forwards running overlay-fade-out'
-    centerEl.style.animation = '600ms ease-in 0s 1 normal forwards running content-slide-out'
-
+    mainEl.style['-webkit-animation'] = '600ms overlay-fade-out ease-out'
+    mainEl.style['animation'] = '600ms overlay-fade-out ease-out'
+    mainEl.style['-webkit-animation-fill-mode'] = 'forwards'
+    mainEl.style['animation-fill-mode'] = 'forwards'
+    
+    centerEl.style['-webkit-animation'] = '600ms content-slide-out ease-in'
+    centerEl.style['animation'] = '600ms content-slide-out ease-in'
+    centerEl.style['-webkit-animation-fill-mode'] = 'forwards'
+    centerEl.style['animation-fill-mode'] = 'forwards'
+    
     // remove element
     setTimeout(function(){
       mainEl.remove()
