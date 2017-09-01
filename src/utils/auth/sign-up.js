@@ -14,7 +14,8 @@ export default function signUp (args) {
 
   var credentials = {
     email: args.email,
-    password: args.password || uuid.generate()
+    password: args.password || uuid.generate(),
+    accountSetup: '3dio'
   }
 
   // log out first
