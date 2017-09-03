@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.60
- * @date 2017/09/03 02:23
+ * @date 2017/09/03 04:48
  * @branch data3d
- * @commit 742e8782fb7f256fb7215cc5fcefb9760bb690b8
+ * @commit 1c74182962818e6bb9c3df17d13d972c150448c1
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/03 02:23', GIT_BRANCH = 'data3d', GIT_COMMIT = '742e8782fb7f256fb7215cc5fcefb9760bb690b8'
+	var BUILD_DATE='2017/09/03 04:48', GIT_BRANCH = 'data3d', GIT_COMMIT = '1c74182962818e6bb9c3df17d13d972c150448c1'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.60";
@@ -14265,6 +14265,9 @@
 	  var lightMapExposure = args.lightMapExposure;
 
 
+	  material3d.userData = material3d.userData || {};
+	  material3d.userData.data3dMaterial = args.attributes;
+
 	  // transparency
 
 	  //     material3d.transparent = true
@@ -14389,19 +14392,8 @@
 	  // shadows
 
 	  if (mesh3d) {
-	    // (2017/04/05) Interiors are currently not shadow receivers, as this
-	    // would produce many artifacts. However, flat and thin objects laying
-	    // very close to the floor (such as carpets) need to be excepted from
-	    // that rule. This is a temporary way to achieve that.
-	    if (!mesh3d.geometry.boundingBox)
-	      mesh3d.geometry.computeBoundingBox();
-	    var boundingBox = mesh3d.geometry.boundingBox;
-	    var position    = boundingBox.min.clone();
-	    position.applyMatrix4(mesh3d.matrixWorld);
-	    var meshIsFlat          = boundingBox.max.y - boundingBox.min.y < 0.05;
-	    var meshIsOnGroundLevel = position.y < 0.1;
-	    mesh3d.castShadow    = !(meshIsFlat && meshIsOnGroundLevel) && _attributes.castRealTimeShadows;
-	    mesh3d.receiveShadow =  (meshIsFlat && meshIsOnGroundLevel) || _attributes.receiveRealTimeShadows;
+	    mesh3d.castShadow    = _attributes.castRealTimeShadows;
+	    mesh3d.receiveShadow = _attributes.receiveRealTimeShadows;
 	    mesh3d.material.needsUpdate = true; // without this, receiveShadow does not become effective
 	  }
 
@@ -17571,22 +17563,11 @@
 					if (attr.normal) mesh.normals = attr.normal.array;
 					if (attr.uv) mesh.uvs = attr.uv.array;
 
-					var m = el.material;
-					var material = data3d.materials[el.material.uuid] = {};
-					// diffuse
-					if (m.color) material.colorDiffuse = [m.color.r, m.color.g, m.color.b];
-					if (m.map && m.map.image) {
+	        var threeMaterial = el.material;
+	        var data3dMaterial = data3d.materials[el.material.uuid] = {};
 
-	          basicTextureSetPromises.push(
-	            getTextureSet(m.map.image).then(function(result){
-	              fullTextureSetPromises.push(result.fullSetReady);
-	              material.mapDiffuse = result.dds;
-	              material.mapDiffusePreview = result.loRes;
-	              material.mapDiffuseSource = result.source;
-	            })
-	          );
-
-					}
+	        convertColor(threeMaterial, 'color', data3dMaterial, 'colorDiffuse');
+	        convertMap(threeMaterial, 'map', data3dMaterial, 'mapDiffuse', basicTextureSetPromises, fullTextureSetPromises);
 
 	      }
 
@@ -17608,6 +17589,33 @@
 
 	  }
 	});
+
+	// helpers
+
+	function convertColor(threeMaterial, threeName, data3dMaterial, data3dName) {
+	  // get colors always from threejs mat
+	  if (threeMaterial[threeName]) data3dMaterial.data3dName = [
+	    threeMaterial[threeName].r, threeMaterial[threeName].g, threeMaterial[threeName].b
+	  ];
+	}
+
+	function convertMap(threeMaterial, threeName, data3dMaterial, data3dName, basicTextureSetPromises, fullTextureSetPromises) {
+	  // get textures from threejs mat if not compressed with fallback to data3dMaterial source
+	  if (threeMaterial[threeName] && threeMaterial[threeName].image && !threeMaterial[threeName].isCompressedTexture) {
+	    basicTextureSetPromises.push(
+	      getTextureSet(m.map.image).then(function (result) {
+	        fullTextureSetPromises.push(result.fullSetReady);
+	        material.mapDiffuse = result.dds;
+	        material.mapDiffusePreview = result.loRes;
+	        material.mapDiffuseSource = result.source;
+	      })
+	    );
+	  } else if (threeMaterial.userData && threeMaterial.userData.data3dMaterial) {
+	    if (threeMaterial.userData.data3dMaterial[data3dName]) {
+	      data3dMaterial[data3dName] = threeMaterial.userData.data3dMaterial[data3dName];
+	    }
+	  }
+	}
 
 	var data3dComponent = {
 
@@ -19089,8 +19097,12 @@
 	    // hi-res textures
 	    for (i2 = 0, l2 = TEXTURE_PATH_KEYS.length; i2 < l2; i2++) {
 	      texturePathKey = TEXTURE_PATH_KEYS[i2];
+
 	      if (m[texturePathKey]) {
-	        if (m[texturePathKey][0] === '/') {
+	        if (m[texturePathKey].substring(0,5) === '/http') {
+	          // FIXME: prevent leading slashes being added to absolute paths
+	          m[texturePathKey] = m[texturePathKey].substring(1);
+	        } else if (m[texturePathKey][0] === '/') {
 	          // absolute path
 	          m[texturePathKey] = origin + m[texturePathKey];
 	        } else {

@@ -55,22 +55,11 @@ export default checkDependencies({
 				if (attr.normal) mesh.normals = attr.normal.array
 				if (attr.uv) mesh.uvs = attr.uv.array
 
-				var m = el.material
-				var material = data3d.materials[el.material.uuid] = {}
-				// diffuse
-				if (m.color) material.colorDiffuse = [m.color.r, m.color.g, m.color.b]
-				if (m.map && m.map.image) {
+        var threeMaterial = el.material
+        var data3dMaterial = data3d.materials[el.material.uuid] = {}
 
-          basicTextureSetPromises.push(
-            getTextureSet(m.map.image).then(function(result){
-              fullTextureSetPromises.push(result.fullSetReady)
-              material.mapDiffuse = result.dds
-              material.mapDiffusePreview = result.loRes
-              material.mapDiffuseSource = result.source
-            })
-          )
-
-				}
+        convertColor(threeMaterial, 'color', data3dMaterial, 'colorDiffuse')
+        convertMap(threeMaterial, 'map', data3dMaterial, 'mapDiffuse', basicTextureSetPromises, fullTextureSetPromises)
 
       }
 
@@ -92,3 +81,30 @@ export default checkDependencies({
 
   }
 })
+
+// helpers
+
+function convertColor(threeMaterial, threeName, data3dMaterial, data3dName) {
+  // get colors always from threejs mat
+  if (threeMaterial[threeName]) data3dMaterial.data3dName = [
+    threeMaterial[threeName].r, threeMaterial[threeName].g, threeMaterial[threeName].b
+  ]
+}
+
+function convertMap(threeMaterial, threeName, data3dMaterial, data3dName, basicTextureSetPromises, fullTextureSetPromises) {
+  // get textures from threejs mat if not compressed with fallback to data3dMaterial source
+  if (threeMaterial[threeName] && threeMaterial[threeName].image && !threeMaterial[threeName].isCompressedTexture) {
+    basicTextureSetPromises.push(
+      getTextureSet(m.map.image).then(function (result) {
+        fullTextureSetPromises.push(result.fullSetReady)
+        material.mapDiffuse = result.dds
+        material.mapDiffusePreview = result.loRes
+        material.mapDiffuseSource = result.source
+      })
+    )
+  } else if (threeMaterial.userData && threeMaterial.userData.data3dMaterial) {
+    if (threeMaterial.userData.data3dMaterial[data3dName]) {
+      data3dMaterial[data3dName] = threeMaterial.userData.data3dMaterial[data3dName]
+    }
+  }
+}

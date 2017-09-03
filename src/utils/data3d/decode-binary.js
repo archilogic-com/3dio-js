@@ -144,8 +144,12 @@ function convertTextureKeys (data3d, origin, rootDir) {
     // hi-res textures
     for (i2 = 0, l2 = TEXTURE_PATH_KEYS.length; i2 < l2; i2++) {
       texturePathKey = TEXTURE_PATH_KEYS[i2]
+
       if (m[texturePathKey]) {
-        if (m[texturePathKey][0] === '/') {
+        if (m[texturePathKey].substring(0,5) === '/http') {
+          // FIXME: prevent leading slashes being added to absolute paths
+          m[texturePathKey] = m[texturePathKey].substring(1)
+        } else if (m[texturePathKey][0] === '/') {
           // absolute path
           m[texturePathKey] = origin + m[texturePathKey]
         } else {
