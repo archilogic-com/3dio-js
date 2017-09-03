@@ -1,8 +1,9 @@
 import runtime from './core/runtime.js'
-import checkDependencies from './a-frame/check-dependencies.js'
+import checkDependencies from './a-frame/check-dependencies'
 import Data3dView from './a-frame/three/data3d-view.js'
 import data3dComponent from './a-frame/component/data3d.js'
 import furnitureComponent from './a-frame/component/furniture.js'
+import tourComponent from './a-frame/component/tour.js'
 
 // initialize aframe components
 
@@ -16,6 +17,7 @@ checkDependencies({
 }, function registerComponents () {
   AFRAME.registerComponent('io3d-data3d', data3dComponent)
   AFRAME.registerComponent('io3d-furniture', furnitureComponent)
+  AFRAME.registerComponent('tour', tourComponent)
 })
 
 // export
