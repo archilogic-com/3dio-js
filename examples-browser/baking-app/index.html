@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+
+  <!-- boilerplate libs -->
+  <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+
+  <script src="https://cdn.rawgit.com/tizzle/aframe-orbit-controls-component/v0.1.12/dist/aframe-orbit-controls-component.min.js"></script>
+  <!-- 3dio lib -->
+  <script src="../../../build/3dio.js"></script>
+
+
+</head>
+<body>
+
+<!-- 3D -->
+<a-scene>
+
+  <a-entity id="bake-this">
+    <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
+    <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
+    <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+    <a-plane id="cam-target" src="https://storage.3d.io/535e624259ee6b0200000484/2017-09-01_23-07-05_hAX3Ot/0_copy.jpg" position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+  </a-entity>
+
+  <a-sky color="#ECECEC"></a-sky>
+
+  <a-entity camera position="10 16 0" orbit-controls="target:#cam-target;"></a-entity>
+
+</a-scene>
+
+<!-- 2D / UI -->
+<div id="buttons">
+  <a id="bake-button">BAKE</a>
+  <a id="visual-inspector-button">visual inspector</a>
+  <a href="https://appcreator.3d.io/50DMpR?m=e">view source</a>
+</div>
+
+<script>
+
+	document.querySelector('#bake-button').addEventListener('click', function(){
+		bakeLightMaps('#bake-this')
+	})
+
+	document.querySelector('#visual-inspector-button').addEventListener('click', function(){
+		window.postMessage('INJECT_AFRAME_INSPECTOR','*')
+	})
+
+	function bakeLightMaps(selector) {
+
+		var message
+
+		io3d.publish(selector, {
+      onFullTextureSetReady: function () {
+        console.log('HI-RES TEXTURES READY')
+      }
+    }).then(io3d.light.bake).then(function (processingId) {
+      message = io3d.utils.ui.message('Light map baking in progress...', 0)
+      return io3d.light.getResult(processingId)
+    }).then(function (storageId) {
+      message.close()
+      io3d.utils.ui.message.success('Baking Successful')
+      // add baked element to aframe scene
+      var bakedEl = document.createElement('a-entity')
+      bakedEl.setAttribute('position', '4 0 0')
+      bakedEl.setAttribute('io3d-data3d', 'key:' + storageId + ';lightMapExposure:1;lightMapIntensity:1;')
+      document.querySelector('a-scene').append(bakedEl)
+    }, io3d.utils.ui.message.error)
+
+	}
+
+</script>
+
+</body>
+</html>
+

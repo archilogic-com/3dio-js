@@ -9,6 +9,7 @@ import furniture from './furniture.js'
 import homeStaging from './home-staging.js'
 import storage from './storage.js'
 import scene from './scene.js'
+import publish from './publish.js'
 import floorPlan from './floor-plan.js'
 import light from './light.js'
 
@@ -22,6 +23,7 @@ var io3d = {
   homeStaging: homeStaging,
   storage: storage,
   scene: scene,
+  publish: publish,
   floorPlan: floorPlan,
   light: light,
 

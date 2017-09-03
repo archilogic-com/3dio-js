@@ -25,12 +25,6 @@ var aFrame = {
   three: {
     Data3dView: Data3dView,
     getData3d: getData3d,
-  },
-  getData3d: function getData3dFromComponent(selector){
-    runtime.assertBrowser()
-
-    var object3d = document.querySelector(selector || 'a-scene').object3D
-    return getData3d(object3d)
   }
 }
 

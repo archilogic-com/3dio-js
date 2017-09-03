@@ -8,7 +8,10 @@ import urlUtils from '../utils/url.js'
 export default function getBakeResult (processingId) {
 
   return poll(function(resolve, reject, next){
-    fetch(urlUtils.resolve('https://storage-nocdn.3d.io',processingId)).then(function(response) {
+
+    var url = 'https://storage-nocdn.3d.io/' + processingId
+
+    fetch(url).then(function(response) {
       return response.json()
     }).then(function(message){
       var status = message.params.status
