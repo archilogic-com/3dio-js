@@ -8,9 +8,7 @@ export default function recognize (args) {
 
   if (el) {
     // get floor plan image date info from aframe element
-    // TODO: replacement for inverted floor plan
-    url = 'https://storage.3d.io/132f8fd0-f7e0-432a-ad21-732f3307e77e/2017-08-31_21-55-19_xExGmY/Grundriss_WE17_s.jpg'
-    // url = el.attributes.src.value
+    url = el.attributes.src.value
     width = el.attributes.width.value
     height = el.attributes.height.value
 

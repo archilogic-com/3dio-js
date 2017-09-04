@@ -83,8 +83,9 @@ function verifyModelStructure(input) {
 
 function getLabels(polyfloors) {
   var labels = {}
+  // TODO: provide functions in call
   labels[polyfloors[0]] = 'dining_living'
-  labels[polyfloors[4]] = 'homeOffice'
-  labels[polyfloors[3]] = 'bedroom'
+  if (polyfloors[4]) labels[polyfloors[4]] = 'homeOffice'
+  if (polyfloors[3]) labels[polyfloors[3]] = 'bedroom'
   return labels
 }
