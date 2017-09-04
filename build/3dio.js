@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.60
- * @date 2017/09/01 01:24
+ * @date 2017/09/04 02:41
  * @branch io3d.homeStaging.replaceFurniture
- * @commit 7c8984c6faa7099caa07416765ed5402636efb6a
+ * @commit ef8dba192083abd452638df15343072b68e970cc
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/01 01:24', GIT_BRANCH = 'io3d.homeStaging.replaceFurniture', GIT_COMMIT = '7c8984c6faa7099caa07416765ed5402636efb6a'
+	var BUILD_DATE='2017/09/04 02:41', GIT_BRANCH = 'io3d.homeStaging.replaceFurniture', GIT_COMMIT = 'ef8dba192083abd452638df15343072b68e970cc'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.60";
@@ -17055,9 +17055,10 @@
 
 	function getLabels(polyfloors) {
 	  var labels = {};
+	  // TODO: provide functions in call
 	  labels[polyfloors[0]] = 'dining_living';
-	  labels[polyfloors[4]] = 'homeOffice';
-	  labels[polyfloors[3]] = 'bedroom';
+	  if (polyfloors[4]) labels[polyfloors[4]] = 'homeOffice';
+	  if (polyfloors[3]) labels[polyfloors[3]] = 'bedroom';
 	  return labels
 	}
 
@@ -18070,9 +18071,7 @@
 
 	  if (el) {
 	    // get floor plan image date info from aframe element
-	    // TODO: replacement for inverted floor plan
-	    url = 'https://storage.3d.io/132f8fd0-f7e0-432a-ad21-732f3307e77e/2017-08-31_21-55-19_xExGmY/Grundriss_WE17_s.jpg';
-	    // url = el.attributes.src.value
+	    url = el.attributes.src.value;
 	    width = el.attributes.width.value;
 	    height = el.attributes.height.value;
 
