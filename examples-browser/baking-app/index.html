@@ -11,6 +11,8 @@
   <!-- 3dio lib -->
   <script src="../../../build/3dio.js"></script>
 
+  <script src="https://rawgit.com/archilogic-com/aframe-gblock/master/dist/gblock.js"></script>
+
 
 </head>
 <body>
@@ -19,7 +21,13 @@
 <a-scene>
 
   <a-entity id="bake-this">
+
+    <!--
     <a-entity io3d-data3d="url:https://storage.3d.io/535e624259ee6b0200000484/170903-0313-gnpts9/archilogic_2017-09-03_03-13-15_fWERdX.gz.data3d.buffer"></a-entity>
+    <a-entity gltf-model="url(https://storage.3d.io/archilogic/sample-models/cube-with-texture/gltf/cube-with-texture.gltf)"></a-entity>
+    -->
+    <a-entity gblock="https://vr.google.com/objects/dVG0XJrpRJC" position="-2.418 -33.238 -18.742" scale="20 20 20" rotation="0 -90 0"></a-entity>
+
   </a-entity>
 
   <a-sky color="#ECECEC"></a-sky>

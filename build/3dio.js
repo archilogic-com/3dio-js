@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.60
- * @date 2017/09/03 04:48
+ * @date 2017/09/04 02:02
  * @branch data3d
- * @commit 1c74182962818e6bb9c3df17d13d972c150448c1
+ * @commit d1733a67d20c9fa203199d88598745148e73b0f0
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/03 04:48', GIT_BRANCH = 'data3d', GIT_COMMIT = '1c74182962818e6bb9c3df17d13d972c150448c1'
+	var BUILD_DATE='2017/09/04 02:02', GIT_BRANCH = 'data3d', GIT_COMMIT = 'd1733a67d20c9fa203199d88598745148e73b0f0'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.60";
@@ -17525,7 +17525,7 @@
 	  return function getData3d(object3d, options) {
 
 	    // API
-	    var sourceEl = object3d;
+	    var sourceObject3d = object3d;
 			var options = options || {};
 			var onFullTextureSetReady = options.onFullTextureSetReady;
 
@@ -17541,42 +17541,76 @@
 	    // - DXT (DDS) for hires on desktop
 	    // - PVRTC for iOS (not yet implemented)
 	    // - ETC1 for Android (not yet implemented)
-	    var fullTextureSetPromises = [];(function traverse (el) {
-	      
-	      el.updateMatrixWorld();
+	    var fullTextureSetPromises = [];(function traverseThreeSceneGraph (threeObject3D) {
 
-	      if (el.geometry) {
+	      threeObject3D.updateMatrixWorld();
 
-					// ensure buffer geometry in result
-					var bufferGeometry = el.geometry.type.indexOf('BufferGeometry') > -1 ? el.geometry : new THREE.BufferGeometry().fromGeometry(el.geometry);
+	      if (threeObject3D.geometry) {
 
-					var mesh = data3d.meshes[el.uuid] = {};
-					var attr = bufferGeometry.attributes;
-					var p = el.getWorldPosition();
-					var r = el.getWorldRotation();
-					var s = el.getWorldScale();
-					mesh.position = [p.x, p.y, p.z];
-					mesh.rotRad = [r.x, r.y, r.z];
-					mesh.scale = [s.x, s.y, s.z];
-					mesh.material = el.material.uuid;
-					if (attr.position) mesh.positions = attr.position.array;
-					if (attr.normal) mesh.normals = attr.normal.array;
-					if (attr.uv) mesh.uvs = attr.uv.array;
+	        var threeGeometry = threeObject3D.geometry;
+	        var threeMaterial = threeObject3D.material;
 
-	        var threeMaterial = el.material;
-	        var data3dMaterial = data3d.materials[el.material.uuid] = {};
+	        var data3dMesh = data3d.meshes[threeObject3D.uuid] = {};
+	        var data3dMaterial = data3d.materials[threeMaterial.uuid] = {};
 
-	        convertColor(threeMaterial, 'color', data3dMaterial, 'colorDiffuse');
-	        convertMap(threeMaterial, 'map', data3dMaterial, 'mapDiffuse', basicTextureSetPromises, fullTextureSetPromises);
+	        // translate geometry
+
+	        if (threeGeometry.type.indexOf('BufferGeometry') > -1) {
+	          if (threeGeometry.index) {
+	            translateIndexedBufferGeometry(data3dMesh, threeGeometry);
+	          } else {
+	            translateBufferGeometry(data3dMesh, threeGeometry);
+	          }
+	        } else {
+	          translateGeometry(data3dMesh, threeGeometry);
+	        }
+
+	        // translate scene graph
+
+					var p = threeObject3D.getWorldPosition();
+					var r = threeObject3D.getWorldRotation();
+					var s = threeObject3D.getWorldScale();
+	        data3dMesh.position = [p.x, p.y, p.z];
+	        data3dMesh.rotRad = [r.x, r.y, r.z];
+	        data3dMesh.scale = [s.x, s.y, s.z];
+
+	        // translate material
+
+	        data3dMesh.material = threeMaterial.uuid;
+	        
+	        translateNumbers([
+	          // three attribs -> data3d attribs
+	          ['opacity', 'opacity'],
+	          ['specularCoef', 'shininess'],
+	        ], threeMaterial, data3dMaterial);
+
+	        translateColors([
+	          // three attribs -> data3d attribs
+	          ['color', 'colorDiffuse'],
+	          ['specular', 'colorSpecular'],
+	          ['emissive', 'colorEmissive']
+	        ], threeMaterial, data3dMaterial);
+
+	        translateTextures([
+	            // three attribs -> data3d attribs
+	            ['map', 'mapDiffuse'],
+	            ['specularMap', 'mapSpecular'],
+	            ['normalMap', 'mapNormal'],
+	            ['alphaMap', 'mapAlpha']
+	          ], threeMaterial, data3dMaterial,
+	          basicTextureSetPromises, fullTextureSetPromises
+	        );
+
+	        // todo: use bake settings from data3dMaterial, i.e. lighting factor from emissive color?
 
 	      }
 
 	      // parse children
-	      el.children.forEach(function(child){
-	        traverse(child);
+	      threeObject3D.children.forEach(function(child){
+	        traverseThreeSceneGraph(child);
 	      });
 
-	    })(sourceEl);
+	    })(sourceObject3d);
 
 	    return bluebird_1.all(basicTextureSetPromises).then(function(){
 	      // trigger callback when full texture set promises finish
@@ -17592,29 +17626,120 @@
 
 	// helpers
 
-	function convertColor(threeMaterial, threeName, data3dMaterial, data3dName) {
-	  // get colors always from threejs mat
-	  if (threeMaterial[threeName]) data3dMaterial.data3dName = [
-	    threeMaterial[threeName].r, threeMaterial[threeName].g, threeMaterial[threeName].b
-	  ];
+	function translateGeometry (data3dMesh, threeGeometry) {
+
+	  translateBufferGeometry(data3dMesh, new THREE.BufferGeometry().fromGeometry(threeGeometry));
+
 	}
 
-	function convertMap(threeMaterial, threeName, data3dMaterial, data3dName, basicTextureSetPromises, fullTextureSetPromises) {
-	  // get textures from threejs mat if not compressed with fallback to data3dMaterial source
-	  if (threeMaterial[threeName] && threeMaterial[threeName].image && !threeMaterial[threeName].isCompressedTexture) {
-	    basicTextureSetPromises.push(
-	      getTextureSet(m.map.image).then(function (result) {
-	        fullTextureSetPromises.push(result.fullSetReady);
-	        material.mapDiffuse = result.dds;
-	        material.mapDiffusePreview = result.loRes;
-	        material.mapDiffuseSource = result.source;
-	      })
-	    );
-	  } else if (threeMaterial.userData && threeMaterial.userData.data3dMaterial) {
-	    if (threeMaterial.userData.data3dMaterial[data3dName]) {
-	      data3dMaterial[data3dName] = threeMaterial.userData.data3dMaterial[data3dName];
-	    }
+	function translateBufferGeometry(data3dMesh, threeGeometry) {
+
+	  if (!threeGeometry.attributes.position) return
+
+	  var attr = threeBufferGeometry.attributes;
+	  if (attr.position) data3dMesh.positions = attr.position.array;
+	  if (attr.normal) data3dMesh.normals = attr.normal.array;
+	  if (attr.uv) data3dMesh.uvs = attr.uv.array;
+
+	}
+
+	function translateIndexedBufferGeometry (data3dMesh, threeGeometry) {
+
+	  if (!threeGeometry.attributes.position) return
+
+	  var index = threeGeometry.index.array;
+	  var i = 0, l = threeGeometry.index.array.length;
+
+	  // translate positions
+	  var pIn = threeGeometry.attributes.position.array;
+	  var pOut = new Float32Array(l * 3);
+	  for (i = 0; i < l; i++) {
+	    pOut[i * 3] = pIn[index[i] * 3];
+	    pOut[i * 3 + 1] = pIn[index[i] * 3 + 1];
+	    pOut[i * 3 + 2] = pIn[index[i] * 3 + 2];
 	  }
+	  data3dMesh.positions = pOut;
+
+	  // translate normals
+	  if (threeGeometry.attributes.normal) {
+	    var nIn = threeGeometry.attributes.normal.array;
+	    var nOut = new Float32Array(l * 3);
+	    for (i = 0; i < l; i++) {
+	      nOut[i * 3] = nIn[index[i] * 3];
+	      nOut[i * 3 + 1] = nIn[index[i] * 3 + 1];
+	      nOut[i * 3 + 2] = nIn[index[i] * 3 + 2];
+	    }
+	    data3dMesh.normals = nOut;
+	  }
+
+	  // translate uvs
+	  if (threeGeometry.attributes.uv) {
+	    var uvIn = threeGeometry.attributes.uv.array;
+	    var uvOut = new Float32Array(l * 2);
+	    for (i = 0; i < l; i++) {
+	      nOut[i * 2] = nIn[index[i] * 2];
+	      nOut[i * 2 + 1] = nIn[index[i] * 2 + 1];
+	    }
+	    data3dMesh.normals = nOut;
+	  }
+
+	}
+
+	function translateNumbers(attribMap, threeMaterial, data3dMaterial) {
+
+	  attribMap.forEach(function(attribs){
+	    var threeName = attribs[0], data3dName = attribs[1];
+	    // translate material numeric values from three.js to data3d
+	    if (threeMaterial[threeName] !== undefined) data3dMaterial[data3dName] = threeMaterial[threeName];
+	  });
+
+	}
+
+	function translateColors(attribMap, threeMaterial, data3dMaterial) {
+
+	  attribMap.forEach(function(attribs){
+	    var threeName = attribs[0], data3dName = attribs[1];
+	    // translate material colors from three.js to data3d
+	    if (threeMaterial[threeName]) data3dMaterial[data3dName] = [
+	      threeMaterial[threeName].r, threeMaterial[threeName].g, threeMaterial[threeName].b
+	    ];
+	  });
+
+	}
+
+	function translateTextures(attribMap, threeMaterial, data3dMaterial, basicTextureSetPromises, fullTextureSetPromises) {
+
+	  attribMap.forEach(function(attribs){
+	    var threeName = attribs[0], data3dName = attribs[1];
+	    // translate textures from three.js to data3d
+
+	    // if not compressed get textures from threejs material:
+	    if (threeMaterial[threeName] && threeMaterial[threeName].image && !threeMaterial[threeName].isCompressedTexture) {
+	      basicTextureSetPromises.push(
+	        getTextureSet(threeMaterial[threeName].image).then(function (result) {
+
+	          // collect promises for full texture set
+	          fullTextureSetPromises.push(result.fullSetReady);
+
+	          // add texture keys to data3d
+	          data3dMaterial[data3dName] = result.dds;
+	          data3dMaterial[data3dName+'Preview'] = result.loRes;
+	          data3dMaterial[data3dName+'Source'] = result.source;
+
+	        })
+	      );
+
+	      // fallback to data from data3dMaterial if available:
+	    } else if (threeMaterial.userData && threeMaterial.userData.data3dMaterial) {
+	      if (threeMaterial.userData.data3dMaterial[data3dName]) {
+	        data3dMaterial[data3dName] = threeMaterial.userData.data3dMaterial[data3dName];
+	        data3dMaterial[data3dName+'Source'] = threeMaterial.userData.data3dMaterial[data3dName+'Source'];
+	        data3dMaterial[data3dName+'Preview'] = threeMaterial.userData.data3dMaterial[data3dName+'Preview'];
+	      }
+	    }
+
+	  });
+
 	}
 
 	var data3dComponent = {
