@@ -40,60 +40,21 @@ export default checkDependencies({
       if (threeObject3D.geometry) {
 
         var threeGeometry = threeObject3D.geometry
-        var threeMaterial = threeObject3D.material
 
-        var data3dMesh = data3d.meshes[threeObject3D.uuid] = {}
-        var data3dMaterial = data3d.materials[threeMaterial.uuid] = {}
-
-        // translate geometry
-
-        if (threeGeometry.type.indexOf('BufferGeometry') > -1) {
-          if (threeGeometry.index) {
-            translateIndexedBufferGeometry(data3dMesh, threeGeometry)
-          } else {
-            translateBufferGeometry(data3dMesh, threeGeometry)
-          }
-        } else {
-          translateGeometry(data3dMesh, threeGeometry)
+        // ensure buffer geometry
+        if (threeGeometry.type.indexOf('BufferGeometry') === -1) {
+          threeGeometry = new THREE.BufferGeometry().fromGeometry(threeGeometry)
         }
 
-        // translate scene graph
-
-				var p = threeObject3D.getWorldPosition()
-				var r = threeObject3D.getWorldRotation()
-				var s = threeObject3D.getWorldScale()
-        data3dMesh.position = [p.x, p.y, p.z]
-        data3dMesh.rotRad = [r.x, r.y, r.z]
-        data3dMesh.scale = [s.x, s.y, s.z]
-
-        // translate material
-
-        data3dMesh.material = threeMaterial.uuid
-        
-        translateNumbers([
-          // three attribs -> data3d attribs
-          ['opacity', 'opacity'],
-          ['specularCoef', 'shininess'],
-        ], threeMaterial, data3dMaterial)
-
-        translateColors([
-          // three attribs -> data3d attribs
-          ['color', 'colorDiffuse'],
-          ['specular', 'colorSpecular'],
-          ['emissive', 'colorEmissive']
-        ], threeMaterial, data3dMaterial)
-
-        translateTextures([
-            // three attribs -> data3d attribs
-            ['map', 'mapDiffuse'],
-            ['specularMap', 'mapSpecular'],
-            ['normalMap', 'mapNormal'],
-            ['alphaMap', 'mapAlpha']
-          ], threeMaterial, data3dMaterial,
-          basicTextureSetPromises, fullTextureSetPromises
-        )
-
-        // todo: use bake settings from data3dMaterial, i.e. lighting factor from emissive color?
+        if (threeGeometry.index) {
+          if (threeGeometry.attributes.colors) {
+            translateIndexedBufferGeometryWithColor(data3d, threeObject3D, basicTextureSetPromises, fullTextureSetPromises)
+          } else {
+            translateIndexedBufferGeometry(data3d, threeObject3D, basicTextureSetPromises, fullTextureSetPromises)
+          }
+        } else {
+          translateNonIndexedBufferGeometry(data3d, threeObject3D, basicTextureSetPromises, fullTextureSetPromises)
+        }
 
       }
 
@@ -118,26 +79,42 @@ export default checkDependencies({
 
 // helpers
 
-function translateGeometry (data3dMesh, threeGeometry) {
+function translateSceneGraph (data3dMesh, threeObject3D) {
+  var p = threeObject3D.getWorldPosition()
+  var r = threeObject3D.getWorldRotation()
+  var s = threeObject3D.getWorldScale()
+  data3dMesh.position = [p.x, p.y, p.z]
+  data3dMesh.rotRad = [r.x, r.y, r.z]
+  data3dMesh.scale = [s.x, s.y, s.z]
+}
 
-  translateBufferGeometry(data3dMesh, new THREE.BufferGeometry().fromGeometry(threeGeometry))
+
+function translateNonIndexedBufferGeometry (data3d, threeObject3D, basicTextureSetPromises, fullTextureSetPromises) {
+
+  // mesh
+  var threeGeometry = threeObject3D.geometry
+  // create data3d mesh
+  var data3dMesh = data3d.meshes[threeObject3D.uuid] = {}
+  // positions
+  data3dMesh.positions = threeGeometry.attributes.position.array
+  // normals
+  if (threeGeometry.attributes.normal) data3dMesh.normals = threeGeometry.attributes.normal.array
+  // uvs
+  if (threeGeometry.attributes.uv) data3dMesh.uvs = threeGeometry.attributes.uv.array
+
+  // material
+  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, basicTextureSetPromises, fullTextureSetPromises)
+
+  // scene graph
+  translateSceneGraph(data3dMesh, threeObject3D)
 
 }
 
-function translateBufferGeometry(data3dMesh, threeGeometry) {
+function translateIndexedBufferGeometry (data3d, threeObject3D, basicTextureSetPromises, fullTextureSetPromises) {
 
-  if (!threeGeometry.attributes.position) return
-
-  var attr = threeBufferGeometry.attributes
-  if (attr.position) data3dMesh.positions = attr.position.array
-  if (attr.normal) data3dMesh.normals = attr.normal.array
-  if (attr.uv) data3dMesh.uvs = attr.uv.array
-
-}
-
-function translateIndexedBufferGeometry (data3dMesh, threeGeometry) {
-
-  if (!threeGeometry.attributes.position) return
+  var threeGeometry = threeObject3D.geometry
+  // create data3d mesh
+  var data3dMesh = data3d.meshes[threeObject3D.uuid] = {}
 
   var index = threeGeometry.index.array
   var i = 0, l = threeGeometry.index.array.length
@@ -175,9 +152,62 @@ function translateIndexedBufferGeometry (data3dMesh, threeGeometry) {
     data3dMesh.normals = nOut
   }
 
+  // material
+  var threeMaterial = threeObject3D.material
+  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, basicTextureSetPromises, fullTextureSetPromises)
+
+  // scene graph
+  translateSceneGraph(data3dMesh, threeObject3D)
+
 }
 
-function translateNumbers(attribMap, threeMaterial, data3dMaterial) {
+function translateIndexedBufferGeometryWithColor (data3d, threeObject3D, basicTextureSetPromises, fullTextureSetPromises) {
+
+  console.log(threeObject3D)
+  // TODO: add support for vertex colors:
+  // 1. create material indices
+  // 2. create separate data3d meshes
+  // 3. create separate data3d materials
+  // 4. replace this placeholder function:
+  translateIndexedBufferGeometry (data3d, threeObject3D, basicTextureSetPromises, fullTextureSetPromises)
+
+}
+
+function translateMaterial (data3d, data3dMesh, threeObject3D, threeMaterial, basicTextureSetPromises, fullTextureSetPromises) {
+
+  // create data3d material
+  var data3dMaterial = data3d.materials[threeMaterial.uuid] = {}
+  // link data3d mesh with material
+  data3dMesh.material = threeMaterial.uuid
+
+  // material attributes
+
+  translateMaterialNumericValues([
+    // three attribs -> data3d attribs
+    ['opacity', 'opacity'],
+    ['specularCoef', 'shininess'],
+  ], threeMaterial, data3dMaterial)
+
+  translateMaterialColors([
+    // three attribs -> data3d attribs
+    ['color', 'colorDiffuse'],
+    ['specular', 'colorSpecular'],
+    ['emissive', 'colorEmissive']
+  ], threeMaterial, data3dMaterial)
+
+  translateMaterialTextures([
+      // three attribs -> data3d attribs
+      ['map', 'mapDiffuse'],
+      ['specularMap', 'mapSpecular'],
+      ['normalMap', 'mapNormal'],
+      ['alphaMap', 'mapAlpha']
+    ], threeMaterial, data3dMaterial,
+    basicTextureSetPromises, fullTextureSetPromises
+  )
+
+}
+
+function translateMaterialNumericValues(attribMap, threeMaterial, data3dMaterial) {
 
   attribMap.forEach(function(attribs){
     var threeName = attribs[0], data3dName = attribs[1]
@@ -187,7 +217,7 @@ function translateNumbers(attribMap, threeMaterial, data3dMaterial) {
 
 }
 
-function translateColors(attribMap, threeMaterial, data3dMaterial) {
+function translateMaterialColors(attribMap, threeMaterial, data3dMaterial) {
 
   attribMap.forEach(function(attribs){
     var threeName = attribs[0], data3dName = attribs[1]
@@ -199,7 +229,7 @@ function translateColors(attribMap, threeMaterial, data3dMaterial) {
 
 }
 
-function translateTextures(attribMap, threeMaterial, data3dMaterial, basicTextureSetPromises, fullTextureSetPromises) {
+function translateMaterialTextures(attribMap, threeMaterial, data3dMaterial, basicTextureSetPromises, fullTextureSetPromises) {
 
   attribMap.forEach(function(attribs){
     var threeName = attribs[0], data3dName = attribs[1]
