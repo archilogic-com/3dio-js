@@ -101,7 +101,7 @@ export default {
     }
 
     var next = this._waypoints[++this._currentWayPoint]
-    setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying) }, this.data.wait || 0)
+    setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying) }.bind(this), this.data.wait || 0)
   }
 }
 
