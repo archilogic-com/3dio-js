@@ -22,8 +22,8 @@ export default {
 
   init: function () {
 
-    this.el.setAttribute('animation__move', { startEvents: 'doNotFire', property: 'position', easing: 'easeInOutSine', dur: 100 }) //'property:position; easing:easeInOutSine; dur:100;')
-    this.el.setAttribute('animation__turn', { property: 'rotation', easing: 'easeInOutSine', dur: 100 })//'property:rotation; easing:easeInOutSine; dur:100;')
+    this.el.setAttribute('animation__move', { startEvents: 'doNotFire', property: 'position', easing: 'easeInOutSine', dur: 100 })
+    this.el.setAttribute('animation__turn', { property: 'rotation', easing: 'easeInOutSine', dur: 100 })
     this._nextWaypointHandler = this._nextWaypoint.bind(this)
     this._currentWayPoint = -1
   },
@@ -37,12 +37,12 @@ export default {
   },
 
   playTour: function () {
-    console.log('alright', this._currentWayPoint)
+    this._currentWayPoint = -1
     this._isPlaying = true
     this.el.addEventListener('animation__move-complete', this._nextWaypointHandler)
     var next = this._waypoints[++this._currentWayPoint]
-    if(next) this.goTo(next.getAttribute('tour-waypoint'), true)
-    else if(this.data.loop) {
+    if (next) this.goTo(next.getAttribute('tour-waypoint'), true)
+    else if (this.data.loop) {
       this._currentWayPoint = 0
       this.goTo(this._waypoints[0].getAttribute('tour-waypoint'), true)
     }
@@ -56,7 +56,7 @@ export default {
   goTo: function (label, keepPlaying) {
     this._isPlaying = !!keepPlaying
     var target = this._waypoints.find(function (item) { return item.getAttribute('tour-waypoint') === label })
-    if(!target) {
+    if (!target) {
       console.error('The given waypoint '+ label + ' does not exist. Available waypoints:', this._waypoints.map(function (elem) { elem.getAttribute('tour-waypoint') }))
       return
     }
@@ -94,9 +94,9 @@ export default {
   },
 
   _nextWaypoint: function () {
-    if(!this._isPlaying) return this.stop()
-    if(this._currentWayPoint === this._waypoints.length - 1) {
-      if(!this.data.loop) return
+    if (!this._isPlaying) return this.stopTour()
+    if (this._currentWayPoint === this._waypoints.length - 1) {
+      if (!this.data.loop) return
       this._currentWayPoint = -1
     }
 

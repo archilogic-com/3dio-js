@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.62
- * @date 2017/09/05 09:26
+ * @date 2017/09/05 09:38
  * @branch master
- * @commit 86d9b06dcd333c5a1878f8b196d0385280e24bf5
+ * @commit 16184dd792e63053dcd73ade2169326e2b3f8d5d
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/05 09:26', GIT_BRANCH = 'master', GIT_COMMIT = '86d9b06dcd333c5a1878f8b196d0385280e24bf5'
+	var BUILD_DATE='2017/09/05 09:38', GIT_BRANCH = 'master', GIT_COMMIT = '16184dd792e63053dcd73ade2169326e2b3f8d5d'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.62";
@@ -15580,8 +15580,8 @@
 
 	  init: function () {
 
-	    this.el.setAttribute('animation__move', { startEvents: 'doNotFire', property: 'position', easing: 'easeInOutSine', dur: 100 }); //'property:position; easing:easeInOutSine; dur:100;')
-	    this.el.setAttribute('animation__turn', { property: 'rotation', easing: 'easeInOutSine', dur: 100 });//'property:rotation; easing:easeInOutSine; dur:100;')
+	    this.el.setAttribute('animation__move', { startEvents: 'doNotFire', property: 'position', easing: 'easeInOutSine', dur: 100 });
+	    this.el.setAttribute('animation__turn', { property: 'rotation', easing: 'easeInOutSine', dur: 100 });
 	    this._nextWaypointHandler = this._nextWaypoint.bind(this);
 	    this._currentWayPoint = -1;
 	  },
@@ -15595,12 +15595,12 @@
 	  },
 
 	  playTour: function () {
-	    console.log('alright', this._currentWayPoint);
+	    this._currentWayPoint = -1;
 	    this._isPlaying = true;
 	    this.el.addEventListener('animation__move-complete', this._nextWaypointHandler);
 	    var next = this._waypoints[++this._currentWayPoint];
-	    if(next) this.goTo(next.getAttribute('tour-waypoint'), true);
-	    else if(this.data.loop) {
+	    if (next) this.goTo(next.getAttribute('tour-waypoint'), true);
+	    else if (this.data.loop) {
 	      this._currentWayPoint = 0;
 	      this.goTo(this._waypoints[0].getAttribute('tour-waypoint'), true);
 	    }
@@ -15614,7 +15614,7 @@
 	  goTo: function (label, keepPlaying) {
 	    this._isPlaying = !!keepPlaying;
 	    var target = this._waypoints.find(function (item) { return item.getAttribute('tour-waypoint') === label });
-	    if(!target) {
+	    if (!target) {
 	      console.error('The given waypoint '+ label + ' does not exist. Available waypoints:', this._waypoints.map(function (elem) { elem.getAttribute('tour-waypoint'); }));
 	      return
 	    }
@@ -15652,9 +15652,9 @@
 	  },
 
 	  _nextWaypoint: function () {
-	    if(!this._isPlaying) return this.stop()
-	    if(this._currentWayPoint === this._waypoints.length - 1) {
-	      if(!this.data.loop) return
+	    if (!this._isPlaying) return this.stopTour()
+	    if (this._currentWayPoint === this._waypoints.length - 1) {
+	      if (!this.data.loop) return
 	      this._currentWayPoint = -1;
 	    }
 
