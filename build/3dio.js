@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.63
- * @date 2017/09/05 10:05
+ * @date 2017/09/05 17:55
  * @branch io3d.homeStaging.replaceFurniture
- * @commit 494a266913ff2ebd11025a7b87dbbc3948374755
+ * @commit 7fc2d2e794c21c1b4b3ea0b0096010c4b13b9692
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/05 10:05', GIT_BRANCH = 'io3d.homeStaging.replaceFurniture', GIT_COMMIT = '494a266913ff2ebd11025a7b87dbbc3948374755'
+	var BUILD_DATE='2017/09/05 17:55', GIT_BRANCH = 'io3d.homeStaging.replaceFurniture', GIT_COMMIT = '7fc2d2e794c21c1b4b3ea0b0096010c4b13b9692'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.63";
@@ -30,8 +30,8 @@
 	var author = {"name":"archilogic","email":"dev.rocks@archilogic.com","url":"https://archilogic.com"};
 	var main = "index.js";
 	var scripts = {"start":"gulp dev-browser","dev-browser":"gulp dev-browser","dev-node":"gulp dev-node","test":"gulp test","build":"gulp build","release":"gulp release"};
-	var dependencies = {"bluebird":"^3.5.0","form-data":"^2.1.4","js-logger":"^1.3.0","lodash":"^4.17.4","node-fetch":"2.0.0-alpha.8","rxjs":"^5.4.2","three":"^0.85.2","whatwg-fetch":"^2.0.3"};
-	var devDependencies = {"babel-runtime":"^6.25.0","chalk":"^2.0.1","confirm-cli":"^0.4.0","del":"^3.0.0","gulp":"github:gulpjs/gulp#4.0","gulp-git":"^2.4.1","gulp-gzip":"^1.4.0","gulp-less":"^3.3.2","gulp-s3":"^0.11.0","gulp-watch":"^4.3.11","lite-server":"^2.3.0","moment":"^2.18.1","rollup":"^0.41.6","rollup-plugin-commonjs":"^8.0.2","rollup-plugin-json":"^2.1.1","rollup-plugin-less":"^0.1.3","rollup-plugin-node-resolve":"^3.0.0","through2":"^2.0.3","uglify-js":"^3.0.10","vinyl":"^2.1.0"};
+	var dependencies = {"bluebird":"^3.5.0","form-data":"^2.1.4","gulp-cli":"^1.4.0","js-logger":"^1.3.0","lodash":"^4.17.4","matchdep":"^2.0.0","node-fetch":"2.0.0-alpha.8","rxjs":"^5.4.2","three":"^0.85.2","whatwg-fetch":"^2.0.3","wreck":"^12.4.0"};
+	var devDependencies = {"ava":"^0.22.0","babel-runtime":"^6.25.0","chalk":"^2.0.1","confirm-cli":"^0.4.0","del":"^3.0.0","gulp":"github:gulpjs/gulp#4.0","gulp-git":"^2.4.1","gulp-gzip":"^1.4.0","gulp-less":"^3.3.2","gulp-s3":"^0.11.0","gulp-watch":"^4.3.11","lite-server":"^2.3.0","moment":"^2.18.1","rollup":"^0.41.6","rollup-plugin-commonjs":"^8.0.2","rollup-plugin-json":"^2.1.1","rollup-plugin-less":"^0.1.3","rollup-plugin-node-resolve":"^3.0.0","through2":"^2.0.3","uglify-js":"^3.0.10","vinyl":"^2.1.0"};
 	var packageJson = {
 		name: name,
 		version: version,
@@ -18131,8 +18131,574 @@
 	  return 'https://spaces.archilogic.com/3d/!'+args.sceneId
 	}
 
+	var door = {
+	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 3,
+	      possibleValues: [3],
+	      optional: false
+	    },
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 0.05,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 0.9,
+	      optional: false,
+	      min: 0.01
+	    },
+	    frameLength: { // in meters
+	      type: 'number',
+	      defaultValue: 0.05,
+	      optional: true,
+	      min: 0.01
+	    },
+	    frameOffset: { // in meters
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true
+	    },
+	    leafWidth: { // in meters
+	      type: 'number',
+	      defaultValue: 0.03,
+	      optional: true
+	    },
+	    leafOffset: { // in meters
+	      type: 'number',
+	      defaultValue: 0.005,
+	      optional: true
+	    },
+	    doorType: {
+	      type: 'string',
+	      defaultValue: 'singleSwing',
+	      optional: false,
+	      possibleValues: ['singleSwing', 'doubleSwing', 'swingFix', 'swingDoubleFix', 'doubleSwingDoubleFix', 'slidingDoor', 'opening']
+	    },
+	    fixLeafRatio: { // in meters
+	      type: 'number',
+	      defaultValue: 0.3,
+	      optional: true
+	    },
+	    doorAngle: { // in angle degrees
+	      type: 'number',
+	      defaultValue: 92,
+	      optional: true
+	    },
+	    hinge: {
+	      type: 'string',
+	      defaultValue: 'right',
+	      optional: false,
+	      possibleValues: ['right', 'left']
+	    },
+	    side: {
+	      type: 'string',
+	      defaultValue: 'back',
+	      optional: false,
+	      possibleValues: ['front', 'back']
+	    },
+	    thresholdHeight: {
+	      type: 'number',
+	      defaultValue: 0.01,
+	      optional: true
+	    }
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var floor = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01
+	    },
+	    hasCeiling: { // in meters
+	      type: 'boolean',
+	      optional: false
+	    },
+	    hCeiling: { // in meters
+	      type: 'number',
+	      optional: false
+	    }
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var floorplan = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01
+	    },
+	    file: {
+	      type: 'string',
+	      optional: false
+	    }
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var level$1 = {
+	  params: {},
+	  possibleChildrenTypes: ['wall', 'railing', 'floor', 'polyfloor', 'floorplan', 'group', 'box']
+	};
+
+	var plan = {
+	  params: {
+	    modelDisplayName: {
+	      type: 'string',
+	      optional: false
+	    },
+	    v: {
+	      type: 'number',
+	      possibleValues: [1],
+	      optional: false
+	    }
+	  },
+	  possibleChildrenTypes: ['level']
+	};
+
+	var polyfloor = {
+	  params: {
+	    h: { // height in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    polygon: {
+	      //type: 'array-with-arrays-with-numbers',
+	      type: 'array',
+	      optional: false
+	    },
+	    hasCeiling: { // in meters
+	      type: 'boolean',
+	      optional: false
+	    },
+	    hCeiling: { // in meters
+	      type: 'number',
+	      optional: false
+	    },
+	    usage: { // in meters
+	      type: 'string',
+	      optional: true
+	    }
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var wall = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 0.15,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01
+	    },
+	    baseHeight: {type: 'number', optional: true, defaultValue: 0},
+	    frontHasBase: {type: 'boolean', optional: true, defaultValue: false},
+	    backHasBase: {type: 'boolean', optional: true, defaultValue: false}
+	  },
+	  possibleChildrenTypes: ['window', 'door']
+	};
+
+	var window$1 = {
+	  params: {
+	    h: { // height in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01
+	    },
+	    rowRatios: { // in meters
+	      //type: 'array-with-numbers',
+	      type: 'array',
+	      optional: true
+	    },
+	    columnRatios: { // in meters
+	      //type: 'array-with-arrays-with-numbers',
+	      type: 'array',
+	      optional: true
+	    },
+	    frameLength: { // in meters
+	      type: 'number',
+	      optional: true,
+	      min: 0.01
+	    },
+	    frameWidth: { // in meters
+	      type: 'number',
+	      optional: true,
+	      min: 0.01
+	    }
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var railing = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01
+	    },
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var generic = {
+	  params: {
+	    type: {
+	      type: 'string',
+	      possibleValues: ['plan', 'level', 'box', 'wall', 'interior', 'group', 'railing', 'window', 'door', 'floor', 'polyfloor', 'floorplan'],
+	      optional: false
+	    },
+	    x: { // x position in meters
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true
+	    },
+	    y: { // y position in meters
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true
+	    },
+	    z: { // z position in meters
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true
+	    },
+	    ry: { // y rotation in angle degrees
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true
+	    },
+	    children: {
+	      //type: 'array-with-objects',
+	      type: 'array',
+	      defaultValue: [],
+	      optional: true
+	    },
+	    id: {
+	      type: 'string',
+	      optional: true
+	    }
+	  }
+	};
+
+	var defaults$1 = require('lodash/defaults');
+
+	function getDefaultsByType() {
+	  var types = {
+	    door,
+	    floor,
+	    floorplan,
+	    level: level$1,
+	    plan,
+	    polyfloor,
+	    wall,
+	    window: window$1,
+	    railing
+	  };
+
+	  var typeSpecificValidations = {};
+
+	  Object.keys(types).forEach(key => {
+	    typeSpecificValidations[key] = {
+	      params: defaults$1({}, generic.params, types[key].params),
+	      possibleChildrenTypes: types[key].possibleChildrenTypes
+	    };
+	  });
+
+	  return typeSpecificValidations
+	}
+
+	var ErrorCodes = {
+	  OK: 0,
+	  MIN_VALUE: 1,
+	  MAX_VALUE: 2,
+	  MISSED: 3,
+	  NOT_SUPPOPRTED: 4,
+	  VALUE: 5,
+	  TYPE: 6,
+	  CHILDREN_TYPE: 7
+	};
+
+	var typeSpecificValidations = getDefaultsByType();
+
+	// methods
+
+	function validateSceneStructure (elements3d) {
+
+	  var result = {
+	    isValid: true,
+	    validatedSceneStructure: null,
+	    warnings: [],
+	    errors: []
+	  };
+
+	  // model structure can be a sole element or array of element
+	  // make sure we return the same type
+	  var inputIsArray = Array.isArray(elements3d);
+	  // start recursive validation
+	  var validatedSceneStructure = validateElements3d(result, inputIsArray ? elements3d : [elements3d]);
+	  // add result to in corresponding input type
+	  result.validatedSceneStructure = inputIsArray ? validatedSceneStructure : validatedSceneStructure[0];
+
+	  return Promise.resolve(result)
+
+	}
+
+	function validateElements3d (result, sourceElements3d, parentType) {
+	  var validatedElements3d = [];
+
+	  sourceElements3d.forEach(function (sourceElement3d) {
+
+	    // validate if children types are correct
+	    if (parentType) {
+	      var validChild = typeSpecificValidations[parentType].possibleChildrenTypes.indexOf(sourceElement3d.type) > -1;
+	      if (!validChild)  {
+	        result.isValid = false;
+	        var message = '"' + sourceElement3d.type + '" is invalid child for "' + parentType + '"';
+	        result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.CHILDREN_TYPE});
+	        return
+	      }
+	    }
+
+	    if (!sourceElement3d || !sourceElement3d.type) {
+	      // missing type param => invalid
+	      result.isValid = false;
+	      var message = 'Missing "type" parameter';
+	      result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.TYPE});
+	      return
+	    } else if (!typeSpecificValidations[sourceElement3d.type]) {
+	      // missing type validation (typ not supported) => invalid
+	      result.isValid = false;
+	      var message = 'Parameter "type" of value "'+sourceElement3d.type+'" is not supported';
+	      result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.NOT_SUPPOPRTED});
+	      return
+	    }
+
+	    var validatedElement3d = {};
+	    var passedValidations = validateParams(result, typeSpecificValidations[sourceElement3d.type], sourceElement3d, validatedElement3d);
+
+	    // if element passed validations...
+	    if (passedValidations) {
+
+	      // add to array
+	      validatedElements3d.push(validatedElement3d);
+
+	      // parse children
+	      if (validatedElement3d.children && validatedElement3d.children.length) {
+	        validatedElement3d.children = validateElements3d(result, validatedElement3d.children, validatedElement3d.type);
+	      }
+
+	    }
+
+	  });
+
+	  return validatedElements3d
+	}
+
+	function validateParams (result, validations, sourceElement3d, validatedElement3d) {
+
+	  var isValid = true;
+
+	  // iterate through param validations and copy valid params from source to validated element
+	  Object.keys(validations.params).sort().forEach(function (paramName) {
+	    var v = validations.params[paramName];
+	    var value = sourceElement3d[paramName];
+
+	    if (value !== undefined) {
+
+	      // check type
+	      var paramValueType = getParamValueType(value);
+	      if (v.type !== paramValueType) {
+	        isValid = false;
+	        var message = 'Parameter "' + paramName + '" is of type "' + paramValueType + '" but should be type "' + v.type + '"';
+	        result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.TYPE});
+	        return
+	      }
+
+	      // check if value allowed
+	      if (v.possibleValues !== undefined && v.possibleValues.indexOf(value) === -1) {
+	        isValid = false;
+	        var message = 'Parameter "' + paramName + '" has value "' + value + '" but should be one of: ' + JSON.stringify(v.possibleValues);
+	        result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.VALUE});
+	        return
+	      }
+
+	      // check if above min
+	      if (v.min !== undefined && (v.type === 'number' && value <= v.min)) {
+	        isValid = false;
+	        var message = 'Parameter "' + paramName + '" has value ' + value + ' which is below allowed minimum of ' + v.min;
+	        result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.MIN_VALUE});
+	        return
+	      }
+
+	      // check if below max
+	      if (v.max !== undefined && (v.type === 'number' && value >= v.max)) {
+	        isValid = false;
+	        var message = 'Parameter "' + paramName + '" has value ' + value + ' which is above allowed maximum of ' + v.max;
+	        result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.MAX_VALUE});
+	        return
+	      }
+
+	      // everything ok: assign value to validated object
+	      validatedElement3d[paramName] = value;
+
+	    } else if (!v.optional) {
+	      // param not set but mandatory
+
+	      isValid = false;
+	      var message = 'Parameter "' + paramName + '" is mandatory but not set';
+	      result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.MISSED});
+	      return
+
+	    }
+
+	  });
+
+	  // check for unexpected params
+	  Object.keys(sourceElement3d).forEach(function (paramName) {
+	    if (!validations.params[paramName]) {
+	      var message = 'Parameter "' + paramName + '" is not supported and will be ignored';
+	      result.warnings.push({message: message, item: sourceElement3d, code: ErrorCodes.NOT_SUPPOPRTED});
+	    }
+	  });
+
+	  if (!isValid) result.isValid = false;
+	  return isValid
+
+	}
+
+	function getParamValueType (value) {
+	  if (Array.isArray(value)) {
+	    // TODO: add support for more sophisticated array types
+	    // array-with-objects, array-with-numbers, array-with-arrays-with-numbers
+	    return 'array'
+	  } else {
+	    return typeof value
+	  }
+	}
+
+	function applyDefaults(element3d) {
+	  if (!element3d || !element3d.type) return
+
+	  var typeSpecificDefaults = getDefaultsByType();
+	  var defaultParams = typeSpecificDefaults[element3d.type].params;
+
+	  Object.keys(defaultParams).forEach(function (key) {
+	    if (!element3d[key]) {
+	      // id needs to be generated hence no defaultValue
+	      if (key === 'id') element3d[key] = uuid.generate();
+	      // apply default value
+	      else if (defaultParams[key].defaultValue !== undefined) element3d[key] = defaultParams[key].defaultValue;
+	    }
+	  });
+	  return element3d
+	}
+
+	function removeUnknown(element3d) {
+	  var knownParameters = getDefaultsByType();
+	  // remove invalid types entirely
+	  if (!knownParameters[element3d.type]) return
+
+	  var params = knownParameters[element3d.type].params;
+	  var possibleChildren = knownParameters[element3d.type].possibleChildrenTypes;
+	  // remove invalid params
+	  Object.keys(element3d).forEach(function(key) {
+	    if (!params[key]) {
+	      delete element3d[key];
+	    }
+	  });
+	  // remove invalid children
+	  if (element3d.children && element3d.children.length) {
+	    element3d.children = element3d.children.filter(function(child) {
+	      return possibleChildren.indexOf(child.type) > -1
+	    });
+	  }
+	  return element3d
+	}
+
+	function normalizeSceneStructure(elements3d) {
+
+	  // model structure can be a sole element or array of element
+	  // make sure we return the same type
+	  var inputIsArray = Array.isArray(elements3d);
+	  // start recursive validation
+	  var normalizedSceneStructure = normalizeElements3d(inputIsArray ? elements3d : [elements3d]);
+
+	  return Promise.resolve(inputIsArray ? normalizedSceneStructure : normalizedSceneStructure[0])
+	}
+
+	function normalizeElements3d(input) {
+	  return input.map(function(element3d) {
+	    element3d = removeUnknown(element3d);
+	    // recursive parsing through scene structure
+	    if (element3d && element3d.children && element3d.children.length) {
+	      element3d.children = normalizeElements3d(element3d.children);
+	    }
+	    return applyDefaults(element3d)
+	  }).filter(function(element3d) {
+	    return element3d !== undefined
+	  })
+	}
+
 	var scene = {
-	  getViewerUrl: getViewerUrl
+	  getViewerUrl: getViewerUrl,
+	  validateSceneStructure: validateSceneStructure,
+	  normalizeSceneStructure: normalizeSceneStructure
 	};
 
 	function convertFloorPlanToBasic3dModel (args) {
