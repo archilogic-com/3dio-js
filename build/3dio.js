@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.61
- * @date 2017/09/05 08:55
+ * @version 1.0.0-beta.62
+ * @date 2017/09/05 09:26
  * @branch master
- * @commit 2711b190b6fe1893bf8bf46b923808bbb4536c93
+ * @commit 86d9b06dcd333c5a1878f8b196d0385280e24bf5
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/05 08:55', GIT_BRANCH = 'master', GIT_COMMIT = '2711b190b6fe1893bf8bf46b923808bbb4536c93'
+	var BUILD_DATE='2017/09/05 09:26', GIT_BRANCH = 'master', GIT_COMMIT = '86d9b06dcd333c5a1878f8b196d0385280e24bf5'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.61";
+	var version = "1.0.0-beta.62";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -15659,7 +15659,7 @@
 	    }
 
 	    var next = this._waypoints[++this._currentWayPoint];
-	    setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying); }, this.data.wait || 0);
+	    setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying); }.bind(this), this.data.wait || 0);
 	  }
 	};
 
