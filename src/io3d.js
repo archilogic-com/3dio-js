@@ -6,7 +6,7 @@ import configs from './core/configs.js'
 
 import aFrame from './a-frame.js'
 import furniture from './furniture.js'
-import homeStaging from './home-staging.js'
+import staging from './staging.js'
 import storage from './storage.js'
 import scene from './scene.js'
 import floorPlan from './floor-plan.js'
@@ -18,7 +18,7 @@ var io3d = {
   // APIs
   aFrame: aFrame,
   furniture: furniture,
-  homeStaging: homeStaging,
+  staging:staging,
   storage: storage,
   scene: scene,
   floorPlan: floorPlan,

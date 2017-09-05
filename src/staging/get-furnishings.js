@@ -3,14 +3,11 @@ import uuid from '../utils/uuid'
 
 export default function furnish (args) {
 
-  console.log('furnishing:', args)
-
   var
     modelStructure,
     floorLabels
 
   var data = verifyModelStructure(args.planStructure)
-  console.log('data', data)
 
   if (args.planStructure) {
     modelStructure = data.modelStructure

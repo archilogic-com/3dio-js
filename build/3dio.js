@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.63
- * @date 2017/09/05 10:03
+ * @date 2017/09/05 10:05
  * @branch io3d.homeStaging.replaceFurniture
- * @commit c605e510db88c58c172fd215344756fbe8df06df
+ * @commit 494a266913ff2ebd11025a7b87dbbc3948374755
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/05 10:03', GIT_BRANCH = 'io3d.homeStaging.replaceFurniture', GIT_COMMIT = 'c605e510db88c58c172fd215344756fbe8df06df'
+	var BUILD_DATE='2017/09/05 10:05', GIT_BRANCH = 'io3d.homeStaging.replaceFurniture', GIT_COMMIT = '494a266913ff2ebd11025a7b87dbbc3948374755'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.63";
@@ -17088,14 +17088,11 @@
 
 	function furnish (args) {
 
-	  console.log('furnishing:', args);
-
 	  var
 	    modelStructure,
 	    floorLabels;
 
 	  var data = verifyModelStructure(args.planStructure);
-	  console.log('data', data);
 
 	  if (args.planStructure) {
 	    modelStructure = data.modelStructure;
@@ -17388,7 +17385,7 @@
 	  return newPosition
 	}
 
-	var homeStaging = {
+	var staging = {
 	  getFurnishings: furnish,
 	  placeFurnishings: placeFurnishings,
 	  replaceFurniture: replaceFurniture
@@ -20152,7 +20149,7 @@
 	  // APIs
 	  aFrame: aFrame,
 	  furniture: furniture,
-	  homeStaging: homeStaging,
+	  staging:staging,
 	  storage: storage,
 	  scene: scene,
 	  floorPlan: floorPlan,
