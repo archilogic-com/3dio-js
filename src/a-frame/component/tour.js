@@ -55,9 +55,9 @@ export default {
 
   goTo: function (label, keepPlaying) {
     this._isPlaying = !!keepPlaying
-    let target = this._waypoints.find(function (item) { return item.getAttribute('tour-waypoint') === label })
+    var target = this._waypoints.find(function (item) { return item.getAttribute('tour-waypoint') === label })
     if(!target) {
-      console.error(`The given waypoint ${label} does not exist. Available waypoints:`, this._waypoints.map((elem) => elem.getAttribute('tour-waypoint')))
+      console.error('The given waypoint '+ label + ' does not exist. Available waypoints:', this._waypoints.map(function (elem) { elem.getAttribute('tour-waypoint') }))
       return
     }
 
@@ -101,7 +101,7 @@ export default {
     }
 
     var next = this._waypoints[++this._currentWayPoint]
-    setTimeout(() => this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying), this.data.wait || 0)
+    setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying) }, this.data.wait || 0)
   }
 }
 
