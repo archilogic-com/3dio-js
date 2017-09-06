@@ -1,9 +1,7 @@
-import bakeLightMaps from './light/bake-light-maps.js'
-import getResult from './light/get-result.js'
+import bake from './light/bake.js'
 
 var light = {
-  bake: bakeLightMaps,
-  getResult: getResult
+  bake: bake
 }
 
 export default light

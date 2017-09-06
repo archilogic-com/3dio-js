@@ -1,14 +1,19 @@
 import runtime from '../core/runtime.js'
 import callServices from '../utils/services/call.js'
+import whenDone from './when-done.js'
 
 // main
 
-export default function bakeLightMaps (input, options) {
+function bake (storageId, options) {
 
-  var storageId = input
+  // API
+  options = options || {}
+  var sunDirection = sunDirection || [0.7487416646324341, -0.47789104947352223, -0.45935396425474223]
+
+  // internals
   var assetStorageIds = []
-  var sunDirection = [0.7487416646324341, -0.47789104947352223, -0.45935396425474223]
-  var cacheKey = null // "preview9684e75cf46f2df04d497644589eda2f2ec754403c0c3912b5aa5914104ea3c1_bcf24e1dedf818e505b3321e0848ea02"
+  // TODO: reimplement caching mechanism on server side
+  var cacheKey = null
 
   console.log('Baking file: https://spaces.archilogic.com/3d/?mode=sdk&file='+storageId)
 
@@ -24,6 +29,12 @@ export default function bakeLightMaps (input, options) {
     }
   })
 
-  // 279ecbf2-02eb-49b0-a7b8-ddcdafdfb4fb/processing/2017-08-28_23-26-59_5e7tlA/status.json
-
 }
+
+// public methods
+
+bake.whenDone = whenDone
+
+// expose API
+
+export default bake

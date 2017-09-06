@@ -23,8 +23,9 @@
   <a-entity id="bake-this">
 
     <!--
-    <a-entity io3d-data3d="url:https://storage.3d.io/535e624259ee6b0200000484/170903-0313-gnpts9/archilogic_2017-09-03_03-13-15_fWERdX.gz.data3d.buffer"></a-entity>
+    <a-entity io3d-data3d="url:https://storage.3d.io/535e624259ee6b0200000484/170905-0023-mybkkm/archilogic_2017-09-05_00-22-58_hpEh2j.gz.data3d.buffer"></a-entity>
     <a-entity gltf-model="url(https://storage.3d.io/archilogic/sample-models/cube-with-texture/gltf/cube-with-texture.gltf)"></a-entity>
+    <a-entity io3d-data3d="url:https://storage.3d.io/535e624259ee6b0200000484/170903-0313-gnpts9/archilogic_2017-09-03_03-13-15_fWERdX.gz.data3d.buffer"></a-entity>
     -->
     <a-entity gblock="https://vr.google.com/objects/dVG0XJrpRJC" position="-2.418 -33.238 -18.742" scale="20 20 20" rotation="0 -90 0"></a-entity>
 
@@ -55,24 +56,38 @@
 
 	function bakeLightMaps(selector) {
 
-		var message
+	  var message
 
-		io3d.publish(selector, {
-      onFullTextureSetReady: function () {
-        console.log('HI-RES TEXTURES READY')
-      }
-    }).then(io3d.light.bake).then(function (processingId) {
-      message = io3d.utils.ui.message('Light map baking in progress...', 0)
-      return io3d.light.getResult(processingId)
-    }).then(function (storageId) {
-      message.close()
-      io3d.utils.ui.message.success('Baking Successful')
-      // add baked element to aframe scene
-      var bakedEl = document.createElement('a-entity')
-      bakedEl.setAttribute('position', '4 0 0')
-      bakedEl.setAttribute('io3d-data3d', 'key:' + storageId + ';lightMapExposure:1;lightMapIntensity:1;')
-      document.querySelector('a-scene').append(bakedEl)
-    }, io3d.utils.ui.message.error)
+    io3d.publish(selector)
+      .then(function (storageId) {
+
+        io3d.publish.whenHiResTexturesReady(storageId).then(function () {
+          console.log('HI RES READY')
+        })
+
+        return storageId
+
+      })
+      .then(io3d.light.bake)
+      .then(function (processingId) {
+        
+        message = io3d.utils.ui.message('Light map baking in progress...', 0)
+
+        return io3d.light.bake.whenDone(processingId)
+
+      })
+      .then(function (storageId) {
+
+        message.close()
+        io3d.utils.ui.message.success('Baking Successful')
+
+        // add baked element to aframe scene
+        var bakedEl = document.createElement('a-entity')
+        bakedEl.setAttribute('position', '10 0 0')
+        bakedEl.setAttribute('io3d-data3d', 'key:' + storageId + ';lightMapExposure:1;lightMapIntensity:1.4;')
+        document.querySelector('a-scene').append(bakedEl)
+
+      }, io3d.utils.ui.message.error)
 
 	}
 

@@ -1,49 +1,74 @@
 import runtime from './core/runtime.js'
-import getData3dFromThreeJs from './a-frame/three/get-data3d.js'
+import storagePut from './storage/put.js'
+import getData3dFromThreeJs from './utils/data3d/from-three.js'
+import encodeData3dToBinary from './utils/data3d/encode-binary.js'
+import whenHiResTexturesReady from './utils/data3d/when-hi-res-textures-ready.js'
 
-export default function publish(input, options) {
+// main
 
-  // detect input type
+/*
+ input: dom selector referencing aframe element, file, array of files, three.js Object3D
+ returns storageId
+ */
+function publish(input) {
+
+  return normalizeInput(input)
+    .then(encodeData3dToBinary)
+    .then(storagePut)
+
+}
+
+// public methods
+
+publish.whenHiResTexturesReady = whenHiResTexturesReady
+
+// private methods
+
+/*
+ input: dom selector referencing aframe element, file, array of files, three.js Object3D
+ returns data3d
+ */
+function normalizeInput(input) {
+
   if (typeof input === 'string') {
 
-    // selector
     if (input[0] === '#' || input === 'a-scene') {
-      return publishFromThreeJs(document.querySelector(input).object3D, options)
+      // selector
+      return getData3dFromThreeJs(document.querySelector(input).object3D)
 
-    // url
     } else {
+      // url
       return fetch(input).then(function(response){
         return response.blob()
-      }).then(function(blob){
-        return publishFromFiles(blob, options)
-      })
+      }).then(getData3dFromFiles)
     }
 
-  // files
   } else if (Array.isArray(input) || input instanceof Blob) {
-    return publishFromFiles(input, options)
+    // files
+    return getData3dFromFiles(input)
 
-  // three.js object
   } else if (typeof input === 'object' && input.isObject3D) {
-    return publishFromThreeJs(input, options)
+    // three.js object
+    return getData3dFromThreeJs(input)
 
-  // not supported
   } else {
+    // not supported
     throw new Error('Unknown input param')
   }
-
 }
 
-// methods
+/*
+input: file or array of files
+returns data3d
+ */
+function getData3dFromFiles(files) {
 
-function publishFromThreeJs(object3D, options) {
-  return getData3dFromThreeJs(object3D, options)
-    .then(io3d.utils.data3d.encodeBinary)
-    .then(io3d.storage.put)
-}
-
-// TODO: implement
-function publishFromFiles(files, options) {
+  // TODO: implement
   if (!Arrray.isArray(files)) files = [files]
   return Promise.reject('Importing files is not supported yet')
+
 }
+
+// expose API
+
+export default publish

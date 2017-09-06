@@ -1,6 +1,6 @@
 import checkDependencies from '../../check-dependencies.js'
-import fragmentShader from './io3d-fragment.glsl'
-import vertexShader from './io3d-vertex.glsl'
+import fragmentShader from './io3d-material/fragment.glsl'
+import vertexShader from './io3d-material/vertex.glsl'
 
 // CONFIGS
 

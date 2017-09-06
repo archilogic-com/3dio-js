@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.60
- * @date 2017/09/04 03:53
+ * @date 2017/09/06 11:26
  * @branch data3d
- * @commit 7b04bb9ec598ee7d5d6e2922104caacc9510846c
+ * @commit 784812d4b300bb674cd9134bdd683631747bb413
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/04 03:53', GIT_BRANCH = 'data3d', GIT_COMMIT = '7b04bb9ec598ee7d5d6e2922104caacc9510846c'
+	var BUILD_DATE='2017/09/06 11:26', GIT_BRANCH = 'data3d', GIT_COMMIT = '784812d4b300bb674cd9134bdd683631747bb413'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.60";
@@ -14480,6 +14480,60 @@
 	  return loadingTexturesPromise
 	}
 
+	var fragmentShader = "uniform vec3 diffuse;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapExposure;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\n#include <shadowmap_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( diffuse, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #include <normal_flip>\n    #include <normal_fragment>\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}";
+
+	var vertexShader = "varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}";
+
+	// CONFIGS
+
+	var DEFAULT_LIGHT_MAP_INTENSITY$1 = 1.2;
+	var DEFAULT_LIGHT_MAP_EXPOSURE$1 = 0.6;
+	var DEFAULT_LIGHT_MAP_FALLOFF$1 = 0;
+
+	var Io3dMaterial = checkDependencies ({
+	  three: true,
+	  aframe: false
+	}, function makeIo3dMaterial () {
+
+	  function Io3dMaterial( params ) {
+	    THREE.ShaderMaterial.call( this, params );
+
+	    var params = params || {};
+	    this.lightMapExposure = params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1;
+	    this.lightMapFalloff = params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1;
+
+	    this.uniforms = THREE.UniformsUtils.merge( [
+	      THREE.UniformsLib[ "lights" ],
+	      THREE.UniformsLib[ "shadowmap" ],
+	      { diffuse: { value: params.diffuse || new THREE.Color(1.0, 1.0, 1.0) },
+	        map: { value: params.map || null },
+	        specularMap: { value: params.specularMap || null },
+	        alphaMap: { value: params.alphaMap || null },
+	        lightMap: { value: params.lightMap || null },
+	        lightMapIntensity: { value: params.lightMapIntensity || DEFAULT_LIGHT_MAP_INTENSITY$1 },
+	        lightMapFalloff: { value: params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1 },
+	        lightMapExposure: { value: params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1 },
+	        normalMap: { value: params.normalMap || null },
+	        shininess: { value: params.shininess || 1.0 },
+	        specular: { value: params.specular || new THREE.Color(0.25, 0.25, 0.25) },
+	        emissive: { value: params.emissive || new THREE.Color(0.0, 0.0, 0.0) },
+	        opacity: { value: params.opacity || 1 },
+	        offsetRepeat: { value: params.offsetRepeat || new THREE.Vector4( 0, 0, 1, 1) }
+	      }
+	    ]);
+
+	    this.vertexShader = vertexShader;
+	    this.fragmentShader = fragmentShader;
+	    this.lights = true;
+	  }
+
+	  Io3dMaterial.prototype = Object.create(THREE.ShaderMaterial.prototype);
+	  Io3dMaterial.prototype.constructor = Io3dMaterial;
+
+	  return Io3dMaterial
+
+	});
+
 	// TODO: increase performance
 	// TODO: decouple from THREEjs
 	// TODO: make use of edge case threshold=0 (no need to compare face normals)
@@ -14676,60 +14730,6 @@
 	  };
 
 	  return Wireframe
-
-	});
-
-	var fragmentShader = "uniform vec3 diffuse;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapExposure;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\n#include <shadowmap_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( diffuse, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #include <normal_flip>\n    #include <normal_fragment>\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}";
-
-	var vertexShader = "varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}";
-
-	// CONFIGS
-
-	var DEFAULT_LIGHT_MAP_INTENSITY$1 = 1.2;
-	var DEFAULT_LIGHT_MAP_EXPOSURE$1 = 0.6;
-	var DEFAULT_LIGHT_MAP_FALLOFF$1 = 0;
-
-	var Io3dMaterial = checkDependencies ({
-	  three: true,
-	  aframe: false
-	}, function makeIo3dMaterial () {
-
-	  function Io3dMaterial( params ) {
-	    THREE.ShaderMaterial.call( this, params );
-
-	    var params = params || {};
-	    this.lightMapExposure = params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1;
-	    this.lightMapFalloff = params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1;
-
-	    this.uniforms = THREE.UniformsUtils.merge( [
-	      THREE.UniformsLib[ "lights" ],
-	      THREE.UniformsLib[ "shadowmap" ],
-	      { diffuse: { value: params.diffuse || new THREE.Color(1.0, 1.0, 1.0) },
-	        map: { value: params.map || null },
-	        specularMap: { value: params.specularMap || null },
-	        alphaMap: { value: params.alphaMap || null },
-	        lightMap: { value: params.lightMap || null },
-	        lightMapIntensity: { value: params.lightMapIntensity || DEFAULT_LIGHT_MAP_INTENSITY$1 },
-	        lightMapFalloff: { value: params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1 },
-	        lightMapExposure: { value: params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1 },
-	        normalMap: { value: params.normalMap || null },
-	        shininess: { value: params.shininess || 1.0 },
-	        specular: { value: params.specular || new THREE.Color(0.25, 0.25, 0.25) },
-	        emissive: { value: params.emissive || new THREE.Color(0.0, 0.0, 0.0) },
-	        opacity: { value: params.opacity || 1 },
-	        offsetRepeat: { value: params.offsetRepeat || new THREE.Vector4( 0, 0, 1, 1) }
-	      }
-	    ]);
-
-	    this.vertexShader = vertexShader;
-	    this.fragmentShader = fragmentShader;
-	    this.lights = true;
-	  }
-
-	  Io3dMaterial.prototype = Object.create(THREE.ShaderMaterial.prototype);
-	  Io3dMaterial.prototype.constructor = Io3dMaterial;
-
-	  return Io3dMaterial
 
 	});
 
@@ -15127,228 +15127,20 @@
 
 	});
 
-	function traverseData3d(data3d, callback) {
+	var fetch$1 = (function(){
 
-	  callback(data3d);
-
-	  if (data3d.children) for (var i=0, l=data3d.children.length; i<l; i++) traverseData3d(data3d.children[i], callback);
-
-	}
-
-	// API
-
-	var clone = cloneData3d$1;
-	clone.meshes = cloneMeshes;
-	clone.meshe = cloneSingleMesh;
-	clone.materials = cloneMaterials;
-	clone.material = cloneSingleMaterial;
-
-	// methods
-
-	function cloneData3d$1 (_data3d, options) {
-
-	    var clone = {};
-
-	    clone.meshes = cloneMeshes(_data3d.meshes, options);
-	    clone.materials = cloneMaterials(_data3d.materials);
-
-	    if (_data3d.alternativeMaterialsByMeshKey) {
-	      clone.alternativeMaterialsByMeshKey = JSON.parse(JSON.stringify(_data3d.alternativeMaterialsByMeshKey));
+	  if (runtime.isNode) {
+	    return require('node-fetch')
+	  } else if (typeof fetch !== 'undefined') {
+	    return fetch
+	  } else {
+	    console.warn('Missing global fetch API.');
+	    return function() {
+	      throw new Error('Missing global fetch API.')
 	    }
-	    if (_data3d._params) {
-	      clone._params = _data3d._params;
-	    }
-	    if (_data3d.position) {
-	      clone.position = _data3d.position.slice(0);
-	    }
-	    if (_data3d.rotDeg) {
-	      clone.rotDeg = _data3d.rotDeg.slice(0);
-	    }
-	    if (_data3d.rotRad) {
-	      clone.rotRad = _data3d.rotRad.slice(0);
-	    }
-	    if (_data3d.children) {
-	      clone.children = _data3d.children.map(function(childData3d){
-	        return cloneData3d$1 (childData3d, options)
-	      });
-	    }
-
-	    return clone
 	  }
-	  
-	  function cloneSingleMesh(mesh, options) {
-	    return cloneMeshes({ x:mesh }, options).x
-	  }
-	  
-	  function cloneMeshes (_meshes, options) {
 
-	    if (!_meshes) {
-	      return {}
-	    }
-
-	    // API
-	    options = options || {};
-	    var clonePositions = !!options.clonePositions;
-	    var cloneNormals = !!options.cloneNormals;
-	    var cloneUvs = !!options.cloneUvs;
-	    var cloneUvsLightmap = !!options.cloneUvsLightmap;
-
-	    // internals
-	    var
-	      meshId, _mesh, mesh,
-	      meshKeys = Object.keys(_meshes),
-	      meshes = {};
-
-	    for (var i = 0, l = meshKeys.length; i < l; i++) {
-
-	      meshId = meshKeys[ i ];
-	      mesh = {};
-	      _mesh = _meshes[ meshId ];
-
-	      // vertices
-	      if (_mesh.positions) {
-	        if (clonePositions && (_mesh.positions instanceof Array || _mesh.positions instanceof Float32Array)) {
-	          mesh.positions = _mesh.positions.slice(0);
-	        } else {
-	          mesh.positions = _mesh.positions;
-	        }
-	      }
-
-	      // normals
-	      if (_mesh.normals) {
-	        if (cloneNormals && (_mesh.normals instanceof Array || _mesh.normals instanceof Float32Array)) {
-	          mesh.normals = _mesh.normals.slice(0);
-	        } else {
-	          mesh.normals = _mesh.normals;
-	        }
-	      }
-
-	      // uvs
-	      if (_mesh.uvs) {
-	        if (cloneUvs && (_mesh.uvs instanceof Array || _mesh.uvs instanceof Float32Array)) {
-	          mesh.uvs = _mesh.uvs.slice(0);
-	        } else {
-	          mesh.uvs = _mesh.uvs;
-	        }
-	      }
-
-	      // uvs lightmap
-	      if (_mesh.uvsLightmap) {
-	        if (cloneUvsLightmap && (_mesh.uvsLightmap instanceof Array || _mesh.uvsLightmap instanceof Float32Array)) {
-	          mesh.uvsLightmap = _mesh.uvsLightmap.slice(0);
-	        } else {
-	          mesh.uvsLightmap = _mesh.uvsLightmap;
-	        }
-	      }
-
-	      // other arrays
-	      if (_mesh.matrix) mesh.matrix = _mesh.matrix.slice(0);
-	      if (_mesh.uvMatrix) mesh.uvMatrix = _mesh.uvMatrix.slice(0);
-	      if (_mesh.meshKeys) mesh.meshKeys = _mesh.meshKeys.slice(0);
-	      if (_mesh.position) mesh.position = _mesh.position.slice(0);
-	      if (_mesh.rotDeg) mesh.rotDeg = _mesh.rotDeg.slice(0);
-	      if (_mesh.rotRad) mesh.rotRad = _mesh.rotRad.slice(0);
-	      if (_mesh.scale) mesh.scale= _mesh.scale.slice(0);
-
-	      // primitives
-	      if (_mesh.v) mesh.v = _mesh.v;
-	      if (_mesh.vertexMode) mesh.vertexMode = _mesh.vertexMode;
-	      if (_mesh.side) mesh.side = _mesh.side;
-	      if (_mesh.material) mesh.material = _mesh.material;
-	      if (_mesh.visibleInPersonView) mesh.visibleInPersonView = _mesh.visibleInPersonView;
-	      if (_mesh.visibleInBirdView) mesh.visibleInBirdView = _mesh.visibleInBirdView;
-	      if (_mesh.visibleInFloorplanView) mesh.visibleInFloorplanView = _mesh.visibleInFloorplanView;
-
-	      meshes[ meshId ] = mesh;
-	    }
-
-	    // output
-	    return meshes
-	  }
-	  
-	  function cloneSingleMaterial(material) {
-	    return cloneMaterials({ x:material }).x
-	  }
-	  
-	  function cloneMaterials(_materials) {
-
-	    if (!_materials) {
-	      return {}
-	    }
-
-	    var materialId, _material, materials, material, materialKeys, _attributes, _attributeKeys, attributeKey, type, attributes, isExtended;
-
-	    materialKeys = Object.keys(_materials);
-	    // result
-	    materials = {};
-
-	    if (materialKeys.length === 0) {
-	      return {}
-	    }
-
-	    if (_materials[ materialKeys[0] ].attributes) {
-	      isExtended = true;
-	      // deep copy source
-	      materials = JSON.parse(JSON.stringify(_materials));
-	    } else {
-	      isExtended = false;
-	    }
-
-	    for (var i = 0, l = materialKeys.length; i < l; i++) {
-
-	      materialId = materialKeys[ i ];
-	      _attributes = isExtended ? _materials[ materialId ].attributes : _materials[ materialId ];
-
-	      if (typeof _attributes === 'string') {
-
-	        if (isExtended) {
-	          materials[ materialId ].attributes = _attributes;
-	        } else {
-	          materials[ materialId ] = _attributes;
-	        }
-
-	      } else if (_attributes) {
-
-	        attributes = {};
-	        _attributeKeys = Object.keys(_attributes);
-
-	        for (var j= 0, k=_attributeKeys.length; j<k; j++) {
-	          attributeKey = _attributeKeys[j];
-	          type = typeof _attributes[ attributeKey ];
-	          if (type === 'string' || type === 'number' || type === 'boolean') {
-	            // primitive
-	            attributes[ attributeKey ] = _attributes[ attributeKey ];
-	          } else if (_attributes[ attributeKey ]) {
-	            if (_attributes[ attributeKey ].length === 3) {
-	              // color array
-	              attributes[ attributeKey ] = [
-	                _attributes[ attributeKey ][0],
-	                _attributes[ attributeKey ][1],
-	                _attributes[ attributeKey ][2]
-	              ];
-	            } else if (_attributes[ attributeKey ].length === 2) {
-	              // size array
-	              attributes[ attributeKey ] = [
-	                _attributes[ attributeKey ][0],
-	                _attributes[ attributeKey ][1]
-	              ];
-	            }
-	          }
-	        }
-
-	        if (isExtended) {
-	          materials[ materialId ].attributes = attributes;
-	        } else {
-	          materials[ materialId ] = attributes;
-	        }
-
-	      }
-
-	    }
-
-	    return materials
-
-	  }
+	})();
 
 	var PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -15376,701 +15168,6 @@
 	  if (!str || typeof str !== "string") return false
 	  return PATTERN.test(str)
 	};
-
-	function getShortId (length) {
-	  length = length || 6;
-	  var shortId = '';
-	  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	  for (var i = 0; i < length; i++) shortId += possible.charAt(Math.floor(Math.random() * possible.length));
-	  return shortId
-	}
-
-	// methods
-
-	function projectAxisY (v) {
-
-	  var uvs = new Float32Array(v.length / 1.5);
-	  var uvPos = 0;
-
-	  var i, l;
-	  for (i = 0, l = v.length; i < l; i += 9) {
-
-	    uvs[uvPos] = v[i + 2];
-	    uvs[uvPos + 1] = v[i];
-	    uvs[uvPos + 2] = v[i + 5];
-	    uvs[uvPos + 3] = v[i + 3];
-	    uvs[uvPos + 4] = v[i + 8];
-	    uvs[uvPos + 5] = v[i + 6];
-	    uvPos += 6;
-
-	  }
-
-	  return uvs
-
-	}
-	projectAxisY.title = 'Project Top Down';
-
-	function architectural (v) {
-
-	  var uvs = new Float32Array(v.length / 1.5);
-	  var uvPos = 0;
-
-	  var i, l, n, components;
-	  for (i = 0, l = v.length; i < l; i += 9) {
-
-	    // calculate face normal
-	    // cross product (a-b) x (c-b)
-	    n = [
-	      (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]),
-	      (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]),
-	      (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3])
-	    ];
-
-	    // normals should be absolute
-	    if (n[0] < 0) {
-	      n[0] *= -1;
-	    }
-	    if (n[1] < 0) {
-	      n[1] *= -1;
-	    }
-	    if (n[2] < 0) {
-	      n[2] *= -1;
-	    }
-
-	    // highest first?
-	    components = [1, 0, 2].sort(function (a, b) {
-	      return n[a] - n[b]
-	    });
-
-	    uvs[uvPos] = v[i + components[1]];
-	    uvs[uvPos + 1] = v[i + components[0]];
-	    uvs[uvPos + 2] = v[i + 3 + components[1]];
-	    uvs[uvPos + 3] = v[i + 3 + components[0]];
-	    uvs[uvPos + 4] = v[i + 6 + components[1]];
-	    uvs[uvPos + 5] = v[i + 6 + components[0]];
-	    uvPos += 6;
-
-	  }
-
-	  return uvs
-
-	}
-	architectural.title = 'Architectural';
-
-	// API
-
-	var getUvsBuffer = {
-	  architectural: architectural,
-	  projectAxisY: projectAxisY
-	};
-
-	var DEBUG = true;
-
-	// methods
-
-	function flat (v) {
-	  // calculate normals for flat shading
-	  var n = new Float32Array(v.length);
-	  var i, l, crx, cry, crz, invScalar;
-	  var hasFaultyTrigons = false;
-	  for (i = 0, l = v.length; i < l; i += 9) {
-	    // cross product (a-b) x (c-b)
-	    crx = (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]);
-	    cry = (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]);
-	    crz = (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3]);
-	    // normalize
-	    invScalar = 1 / Math.sqrt(crx * crx + cry * cry + crz * crz);
-	    // Fallback for trigons that don't span an area
-	    if (invScalar === Infinity) {
-	      invScalar = 0;
-	      hasFaultyTrigons = true;
-	    }
-	    // set normals
-	    n[i] = n[i + 3] = n[i + 6] = crx * invScalar;
-	    n[i + 1] = n[i + 4] = n[i + 7] = cry * invScalar;
-	    n[i + 2] = n[i + 5] = n[i + 8] = crz * invScalar;
-
-	  }
-	  if (DEBUG && hasFaultyTrigons) console.error('Geometry contains trigons that don\'t span an area.');
-	  return n
-	}
-	flat.title = 'Flat';
-
-	function smooth (v) {
-
-	  // output
-
-	  var normals = new Float32Array(v.length);
-
-	  // internals
-
-	  var hash, hashes = [], vertexRelatedNormals = {}, faceNormals, averageNormal;
-	  var n;
-	  var crx, cry, crz, invScalar;
-	  var hasFaultyTrigons = false;
-	  var i, l, i2, l2;
-
-	  ////////// 1. connect vertices to faces
-
-	  // go face by face
-	  for (i = 0, l = v.length; i < l; i += 9) {
-
-	    // calculate face normal
-	    // cross product (a-b) x (c-b)
-	    crx = (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]);
-	    cry = (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]);
-	    crz = (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3]);
-	    // normalize
-	    invScalar = 1 / Math.sqrt(crx * crx + cry * cry + crz * crz);
-	    if (invScalar === Infinity) {
-	      hasFaultyTrigons = true;
-	      invScalar = 0;
-	    }
-	    // set normals
-	    n = [crx * invScalar, cry * invScalar, crz * invScalar];
-
-	    for (i2 = 0, l2 = 9; i2 < l2; i2 += 3) {
-	      hash = v[i + i2] + '_' + v[i + i2 + 1] + '_' + v[i + i2 + 2];
-	      if (!vertexRelatedNormals[hash]) {
-	        vertexRelatedNormals[hash] = {
-	          faceNormals: [n]
-	        };
-	        hashes[hashes.length] = hash;
-	      } else {
-	        vertexRelatedNormals[hash].faceNormals.push(n);
-	      }
-	    }
-	  }
-
-	  ////////// 2. calculate average normals from related face normals
-
-	  var avx, avy, avz;
-	  for (i = 0, l = hashes.length; i < l; i++) {
-	    hash = hashes[i];
-	    faceNormals = vertexRelatedNormals[hash].faceNormals;
-	    avx = 0;
-	    avy = 0;
-	    avz = 0;
-	    for (i2 = 0, l2 = faceNormals.length; i2 < l2; i2++) {
-	      avx += faceNormals[i2][0];
-	      avy += faceNormals[i2][1];
-	      avz += faceNormals[i2][2];
-	    }
-	    // normalize
-	    invScalar = 1 / Math.sqrt(avx * avx + avy * avy + avz * avz);
-	    if (invScalar === Infinity) {
-	      hasFaultyTrigons = true;
-	      invScalar = 0;
-	    }
-	    // set average normal
-	    vertexRelatedNormals[hash].averageNormal = [avx * invScalar, avy * invScalar, avz * invScalar];
-	  }
-
-	  ////////// 3. apply average normals to vertices
-
-	  for (i = 0, l = v.length; i < l; i += 3) {
-	    hash = v[i] + '_' + v[i + 1] + '_' + v[i + 2];
-	    averageNormal = vertexRelatedNormals[hash].averageNormal;
-	    normals[i] = averageNormal[0];
-	    normals[i + 1] = averageNormal[1];
-	    normals[i + 2] = averageNormal[2];
-	  }
-
-	  // return
-	  if (DEBUG && hasFaultyTrigons) console.error('Shade Smooth: Geometry contains trigons that don\'t span an area.');
-	  return normals
-
-	}
-	smooth.title = 'Smooth';
-
-	// API
-
-	var getNormalsBuffer = {
-	  flat: flat,
-	  smooth: smooth,
-	};
-
-	// placeholder
-	function normalizeMaterials(x) { return x; }
-
-	// API
-
-	var consolidate = consolidateData3d$1;
-	consolidate.meshes = consolidateMeshes;
-	consolidate.materials = consolidateMaterials;
-
-	// constants
-
-	var IS_DEBUG_MODE = true;
-	var DEG_TO_RAD = Math.PI / 180;
-	var RAD_TO_DEG = 180 / Math.PI;
-
-	// main
-	function consolidateData3d$1(data3d, options){
-
-	  // API
-	  options = options || {};
-	  var consolidateMaterialsEnabled = options.consolidateMaterials !== undefined ? options.consolidateMaterials : true;
-	  var consolidateMeshesEnabled = options.consolidateMeshes !== undefined ? options.consolidateMeshes : true;
-	  var el3d = options.el3d;
-	  var warningCallback = options.onWarning;
-
-	  // make clone so that we can apply changes
-	  data3d = clone(data3d);
-
-	  // support hierarchy
-	  var resolvePromises = [];
-	  traverseData3d(data3d, function(data3d){
-
-	    // add node id
-	    data3d.nodeId = el3d ? el3d.params.id : uuid.generate();
-
-	    // add keys to data3d if not present
-	    data3d.meshes = data3d.meshes || {};
-	    data3d.meshKeys = data3d.meshKeys || Object.keys(data3d.meshes);
-	    data3d.materials = data3d.materials || {};
-	    data3d.materialKeys = data3d.materialKeys || Object.keys(data3d.materials);
-
-	    // add params
-	    if (el3d && !data3d._params) {
-	      data3d._params = el3d.toObject({ recursive: false });
-	    }
-
-	    // add position
-	    if (!data3d.position) {
-	      if (el3d) {
-	        data3d.position = [ el3d.params.x || 0, el3d.params.y || 0, el3d.params.z || 0 ];
-	      } else {
-	        data3d.position = [ 0, 0, 0 ];
-	      }
-	    }
-
-	    // add rotation
-	    if (!data3d.rotRad && !data3d.rotDeg) {
-	      // both missing
-	      if (el3d) {
-	        data3d.rotDeg = [ el3d.params.rx || 0, el3d.params.ry || 0, el3d.params.rz || 0 ];
-	      } else {
-	        data3d.rotDeg = [ 0, 0, 0 ];
-	      }
-	      data3d.rotRad = [ data3d.rotDeg[0] * DEG_TO_RAD, data3d.rotDeg[1] * DEG_TO_RAD, data3d.rotDeg[2] * DEG_TO_RAD ];
-	    } else if (!data3d.rotDeg) {
-	      // only rot deg missing
-	      data3d.rotDeg = [ data3d.rotRad[0] * RAD_TO_DEG, data3d.rotRad[1] * RAD_TO_DEG, data3d.rotRad[2] * RAD_TO_DEG ];
-	    } else {
-	      // only rot rad missing
-	      data3d.rotRad = [ data3d.rotDeg[0] * DEG_TO_RAD, data3d.rotDeg[1] * DEG_TO_RAD, data3d.rotDeg[2] * DEG_TO_RAD ];
-	    }
-
-	    // add children
-	    if (!data3d.children) {
-	      data3d.children = [];
-	    }
-
-	    // resolve meshes
-	    if (consolidateMeshesEnabled) {
-	      data3d.meshes = consolidateMeshes(data3d.meshes, el3d ? el3d.params.id : null);
-	      data3d.meshKeys = Object.keys(data3d.meshes);
-	    }
-
-	    // internals
-	    var
-	      meshes = data3d.meshes,
-	      meshKeys = data3d.meshKeys,
-	      materials = data3d.materials,
-	      nodeId = el3d && el3d.params ? el3d.params.id : null,
-	      i, l, meshId, mesh, materialId, positions, uvs, uvs2, normals, material, materialKeysHaveChanged;
-
-	    // check meshes
-	    for (i = 0, l = meshKeys.length; i < l; i++) {
-
-	      meshId = meshKeys[ i ];
-	      mesh = meshes[ meshId ];
-	      materialId = mesh.material;
-	      material = materials && materials[ materialId ] ? materials[ materialId ] : null;
-	      positions = mesh.positions;
-	      normals = mesh.normals;
-	      uvs = mesh.uvs;
-	      uvs2 = mesh.uvsLightmap;
-
-	      // mesh position
-	      if (!mesh.position) {
-	        mesh.position = [ 0,0,0 ];
-	      }
-
-	      // mesh rotation
-	      if (!mesh.rotRad && !mesh.rotDeg) {
-	        // both missing
-	        mesh.rotDeg = [ 0,0,0 ];
-	        mesh.rotRad = [ 0,0,0 ];
-	      } else if (!mesh.rotDeg) {
-	        // only rot deg missing
-	        mesh.rotDeg = [ mesh.rotRad[0] * RAD_TO_DEG, mesh.rotRad[1] * RAD_TO_DEG, mesh.rotRad[2] * RAD_TO_DEG ];
-	      } else {
-	        // only rot rad missing
-	        mesh.rotRad = [ mesh.rotDeg[0] * DEG_TO_RAD, mesh.rotDeg[1] * DEG_TO_RAD, mesh.rotDeg[2] * DEG_TO_RAD ];
-	      }
-
-	      // mesh scale
-	      if (!mesh.scale) {
-	        mesh.scale = [ 1,1,1 ];
-	      }
-
-	      // mesh in relation to material
-	      if (material) {
-
-	        // check if material with texture has UVs
-	        if (
-	          materialHasTexture(material) &&
-	          (mesh.uvs === undefined || mesh.uvs.length === 0)
-	        ) {
-	          // generate fallback UVs
-	          if (IS_DEBUG_MODE) console.error('Mesh with material "'+materialId+'" has texture(s) has no UVs. Fallback to architectural UV mapping.');
-	          if (warningCallback) warningCallback('Mesh with material "'+materialId+'" has texture(s) has no UVs. Fallback to architectural UV mapping.');
-	          mesh.uvs = getUvsBuffer.architectural(mesh.positions);
-	        }
-
-	        // check if material with lightmap has lightmap uvs
-	        if (
-	          (material.mapLight || material.mapLightPreview) &&
-	          (mesh.uvsLightmap === undefined || mesh.uvsLightmap.length === 0)
-	        ) {
-	          // delete texture references as we can not generate lightmap fallbacks
-	          if (IS_DEBUG_MODE) console.error('Mesh with material "'+materialId+'" has lightmap has no lightmap UVs. Lightmap will be ignored.');
-	          if (warningCallback) warningCallback('Mesh with material "'+materialId+'" has lightmap has no lightmap UVs. Lightmap will be ignored.');
-	          delete material.mapLight;
-	          delete material.mapLightPreview;
-
-	        }
-
-	        // create fallback material
-	      } else {
-	        if (materialId) {
-	          console.error('Node:'+nodeId+' Material by ID "' + materialId + '" not found.', materials);
-	          if (warningCallback) warningCallback('Material by ID "' + materialId + '" not found.');
-	        } else {
-	          materialId = getShortId();
-	          mesh.material = materialId;
-	        }
-	        materials[ materialId ] = {
-	          colorDiffuse: [0.85,0.85,0.85]
-	        };
-	        materialKeysHaveChanged = true;
-	      }
-
-	    }
-
-	    // regenerate material keys if needed
-	    if (materialKeysHaveChanged) {
-	      data3d.materialKeys = Object.keys(materials);
-	    }
-
-	    // resolve materials
-	    if (consolidateMaterialsEnabled) {
-
-	      resolvePromises.push(
-	        consolidateMaterials(data3d.materials).then(function(materials){
-	          data3d.materials = normalizeMaterials(materials);
-	          return data3d
-	        })
-	      );
-
-	    } else {
-
-	      data3d.materials = normalizeMaterials(data3d.materials);
-	      resolvePromises.push(Promise.resolve(data3d));
-
-	    }
-
-	  });
-
-	  return Promise.all(resolvePromises).then(function(){
-	    return data3d
-	  })
-
-	}
-
-	// helpers
-
-	function materialHasTexture(m) {
-	  return m.mapDiffuse ||
-	    m.mapSpecular ||
-	    m.mapNormal ||
-	    m.mapAlpha ||
-	    m.mapDiffusePreview ||
-	    m.mapSpecularPreview ||
-	    m.mapNormalPreview ||
-	    m.mapAlphaPreview
-	}
-
-	function consolidateMaterials(_materials){
-
-	  // TODO: introduce bundled calls to material API to request multiple materials in one call
-
-	  var promiseKeys = [];
-	  var promises = [];
-	  var materialKeys = _materials ? Object.keys(_materials) : [];
-	  var materialKey;
-	  var i, l;
-	  // result
-	  var materials = {};
-
-	  if (!materialKeys.length) {
-	    return Promise.resolve(materials)
-	  }
-
-	  var isExtended = (materialKeys.length && _materials[ materialKeys[0] ].attributes);
-
-	  // process
-	  for (i= 0, l=materialKeys.length; i<l; i++) {
-	    materialKey = materialKeys[i];
-
-	    // shallow clone material
-	    if (isExtended) {
-	      materials[ materialKey ] = _materials[ materialKey ].attributes;
-	    } else {
-	      materials[ materialKey ] = _materials[ materialKey ];
-	    }
-
-	    // convert material ids to attributes
-	    if (typeof materials[ materialKey ] === 'string') {
-	      if (materials[ materialKey ][0] === '#') {
-	        // is hex color definition: convert to rgb
-	        materials[ materialKey ] = {
-	          colorDiffuse: hexToRgb(materials[ materialKey ])
-	        };
-	      } else {
-	        // is global id: get attributes from registry
-	        promiseKeys[ promiseKeys.length ] = materialKey;
-	        promises[ promises.length ] = api.call('Material.get', materials[ materialKey ]);
-	      }
-	    }
-
-	  }
-
-	  if (promiseKeys.length === 0) {
-
-	    return Promise.resolve(normalizeMaterials(materials))
-
-	  } else {
-
-	    return Promise.all(promises).then(function(resolvedMaterials){
-
-	      // replace resolved materials
-	      for (i= 0, l=promiseKeys.length; i<l; i++) {
-	        materials[ promiseKeys[ i ] ] = resolvedMaterials[ i ].attributes;
-	      }
-
-	      return normalizeMaterials(materials)
-
-	    })
-
-	  }
-
-	}
-	  
-	function consolidateMeshes (meshes, nodeId){
-	    
-	    if (!meshes) {
-
-	      return meshes
-
-	    } else {
-
-	      // internals
-	      var
-	        meshKeys = Object.keys(meshes),
-	        i, l, mesh;
-
-	      for (i = 0, l = meshKeys.length; i < l; i++) {
-	        mesh = meshes[ meshKeys[ i ] ];
-
-	        // check if positions are defined
-	        if (mesh.positions === undefined || mesh.positions.length === 0) {
-	          delete meshes[ meshKeys[ i ] ];
-	          continue
-	        }
-	        // check type
-	        else if (!(mesh.positions instanceof Float32Array)) {
-	          // convert to float array if needed
-	          if (mesh.positions instanceof Array) {
-	            mesh.positions = new Float32Array(mesh.positions);
-	          }
-	          // type not supported
-	          else {
-	            if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Position vertices must be of type Float32Array or Array. Mesh will be ignored', mesh.position);
-	            delete meshes[ meshKeys[ i ] ];
-	            continue
-	          }
-	        }
-	        // check if multiple of 9
-	        if (mesh.positions.length/9 % 1 !== 0) {
-	          if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Invalid position vertices count: ' + mesh.positions.length + '. Has to be multiple of 9. Mesh will be ignored.');
-	          delete meshes[ meshKeys[ i ] ];
-	          continue
-	        }
-
-	        // check if normals are defined
-	        if (mesh.normals === undefined || mesh.normals.length === 0) {
-	          mesh.normals = getNormalsBuffer.flat(mesh.positions);
-	        }
-	        // check if normal generation method exists
-	        else if (typeof mesh.normals === 'string') {
-	          if (getNormalsBuffer[ mesh.normals ]) {
-	            // generate normals
-	            mesh.normals = getNormalsBuffer[ mesh.normals ](mesh.positions);
-	          } else {
-	            // unknown shading method. fallback to flat
-	            if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Unknown normal shading method "' + mesh.normals + '". Fallback to flat shading.');
-	            mesh.normals = getNormalsBuffer.flat(mesh.positions);
-	          }
-	        }
-	        // check type
-	        else if (!(mesh.normals instanceof Float32Array)) {
-	          // convert to float array if needed
-	          if (mesh.normals instanceof Array) {
-	            mesh.normals = new Float32Array(mesh.normals);
-	          }
-	          // type not supported
-	          else {
-	            if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Normal vertices should be of type Float32Array or Array. Fallback to flat shading.', mesh.normals);
-	            mesh.normals = getNormalsBuffer.flat(mesh.positions);
-	          }
-	        }
-	        // check count
-	        if (mesh.normals.length !== mesh.positions.length) {
-	          if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Position vertices and normal vertices count has to be the same. Fallback to flat Shading. ', mesh.normals.length, mesh.normals.length);
-	          mesh.normals = getNormalsBuffer.flat(mesh.positions);
-	        }
-
-	        // check uvs channel 1
-	        if (mesh.uvs) {
-	          // defined as string
-	          if (typeof mesh.uvs === 'string') {
-	            // check if uv generation method exists
-	            if (getUvsBuffer[ mesh.uvs ]) {
-	              // generate uvs
-	              mesh.uvs = getUvsBuffer[ mesh.uvs ](mesh.positions);
-	            } else {
-	              // unknown mapping method. fallback to architectural
-	              if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Unknown UV1 mapping method "' + mesh.uvs + '". Fallback to architectural UV mapping.');
-	              mesh.uvs = getUvsBuffer.architectural(mesh.positions);
-	            }
-	          }
-	          // check type
-	          else if (!(mesh.uvs instanceof Float32Array)) {
-	            // convert to float32array if needed
-	            if (mesh.uvs instanceof Array) {
-	              mesh.uvs = new Float32Array(mesh.uvs);
-	            }
-	            // mesh uvs not of supported type
-	            else {
-	              if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' UV Vertices should be of type Float32Array or Array. Fallback to architectural UV mapping.', mesh.uvs);
-	              mesh.uvs = getUvsBuffer.architectural(mesh.positions);
-	            }
-	          }
-	          // check length
-	          if (mesh.uvs.length && mesh.uvs.length * 1.5 !== mesh.positions.length) {
-	            if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Position Vertices and UV vertices count not in ratio of 3:2. Fallback to architectural UV mapping. ', mesh.positions.length, mesh.uvs.length);
-	            mesh.uvs = getUvsBuffer.architectural(mesh.positions);
-	          }
-	        }
-
-	        // check uvs channel 2
-	        if (mesh.uvsLightmap && mesh.uvsLightmap.length && mesh.uvs.length * 1.5 !== mesh.positions.length) {
-	          if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Position Vertices and Lightmap UV Vertices count not in ratio of 3:2.', mesh.positions.length, mesh.uvs.length);
-	          delete mesh.uvsLightmap;
-	        }
-
-	      }
-
-	      return meshes
-
-	    }
-	  }
-
-	// function
-
-	function wait(duration, passThroughValue) {
-	  return new bluebird_1(function (resolve, reject) {
-	    setTimeout(function(){
-	      resolve(passThroughValue);
-	    }, duration);
-	  })
-	}
-
-	// from https://github.com/jbgutierrez/path-parse
-	// Split a filename into [root, dir, basename, ext], unix version
-	// 'root' is just a slash, or nothing.
-	var splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
-
-	function parsePath (path) {
-	  if (typeof path !== 'string') {
-	    throw new TypeError(
-	      "Parameter 'path' must be a string, not " + typeof path
-	    );
-	  }
-	  var allParts = splitPathRe.exec(path).slice(1);
-	  if (!allParts || allParts.length !== 4) {
-	    throw new TypeError("Invalid path '" + path + "'");
-	  }
-	  allParts[2] = allParts[2] || '';
-	  allParts[3] = allParts[3] || '';
-
-	  return {
-	    root: allParts[0],
-	    dir: allParts[0] + allParts[1].slice(0, -1),
-	    base: allParts[2],
-	    ext: allParts[3],
-	    name: allParts[2].slice(0, allParts[2].length - allParts[3].length)
-	  }
-	}
-
-	var path = {
-	  parse: parsePath
-	};
-
-	function fetchImage (url) {
-		return new bluebird_1(function (resolve, reject) {
-
-			var img = document.createElement('img');
-			img.crossOrigin = 'Anonymous';
-
-			img.onload = function () {
-				resolve(img);
-			};
-
-			var triedWithCacheBust = false;
-			img.onerror = function () {
-				if(triedWithCacheBust) {
-					reject('Error loading image ' + url);
-				} else {
-					// try again with cache busting to avoid things like #1510
-					triedWithCacheBust = true;
-					img.src = ( url.indexOf('?') > -1 ? '&' : '&' ) + 'cacheBust=' + new Date().getTime();
-				}
-			};
-
-			// initiate image loading
-			img.src = url;
-
-		})
-	}
-
-	var fetch$1 = (function(){
-
-	  if (runtime.isNode) {
-	    return require('node-fetch')
-	  } else if (typeof fetch !== 'undefined') {
-	    return fetch
-	  } else {
-	    console.warn('Missing global fetch API.');
-	    return function() {
-	      throw new Error('Missing global fetch API.')
-	    }
-	  }
-
-	})();
 
 	// main
 
@@ -16263,1511 +15360,6 @@
 	      var errorMessage = 'API request to '+configs.servicesUrl+' failed: '+response.status+': '+response.statusText+'\n'+errorString+'\nOriginal JSON-RPC2 request to 3d.io: '+JSON.stringify(rpcRequest.message, null, 2);
 	      rpcRequest.cancel(errorMessage);
 	    });
-	  });
-
-	}
-
-	var FormData_;
-	if (runtime.isNode) {
-	  FormData_ = require('form-data');
-	} else if (typeof FormData !== 'undefined') {
-	  FormData_ = FormData;
-	} else {
-	  console.warn('Missing FormData API.');
-	  FormData_ = function FormDataError () {
-	    throw new Error('Missing FormData API.')
-	  };
-	}
-
-	var FormData$1 = FormData_;
-
-	/**
-	 * Sign up: Create a new user
-	 * @function io3d.auth.signUp
-	 * @param {object} args
-	 * @param {string} args.email
-	 * @param {string} args.password (optional)
-	 */
-	function signUp (args) {
-
-	  var credentials = {
-	    email: args.email,
-	    password: args.password || uuid.generate()
-	  };
-
-	  // log out first
-	  return callService('User.logOut').then(function(){
-
-	    // send sign up request
-	    logger.debug('Sending API sign up request for email "' + credentials.email + '" ...');
-	    return callService('User.create', credentials)
-
-	  }).then(function onSignUpSuccess(result) {
-
-	    // success
-	    logger.debug('API: User sign up with email "' + credentials.email + '" was successful.');
-	    return bluebird_1.resolve()
-
-	  }, function onSignUpError(error){
-
-	    // denied
-	    logger.debug('API: Could not sign up using email "' + credentials.email + '".', error);
-	    return bluebird_1.reject(error)
-
-	  })
-
-	}
-
-	function normalizeSession(session_) {
-
-	  var isAuthenticated = !!session_.user;
-	  var user = {};
-
-	  // populate user object if authenticated
-	  if (isAuthenticated) {
-	    user.id = session_.user.resourceId;
-	    user.username = session_.user.resourceName;
-	    user.email = session_.user.email;
-	  }
-
-	  return {
-	    isAuthenticated: isAuthenticated,
-	    user: user
-	  }
-
-	}
-
-	/**
-	 * Creates a session stream
-	 * @function io3d.auth.session$
-	 */
-
-	var session$ = new BehaviorSubject_1.BehaviorSubject(normalizeSession({}));
-
-	// init
-	getSession();
-
-	// update session state every time when tab becomes visible
-	if (runtime.isBrowser) {
-	  runtime.isFocused$.subscribe(function(isFocused){
-	    if (isFocused) getSession();
-	  });
-	}
-
-	// export
-
-	/**
-	 * Get information about the current session.
-	 * @function io3d.auth.getSession
-	 */
-	function getSession () {
-	  logger.debug('Sending API session request...');
-	  return callService('User.getSession')
-	    .then(normalizeSession)
-	    .then(function onSuccess (session) {
-	      logger.debug('API: session data:\n', session);
-	      // stream session object
-	      session$.next(session);
-	      // return result
-	      return session
-	    }, function onError (error) {
-	      logger.debug('API: error receiving session data.', error);
-	      return bluebird_1.reject(error)
-	    })
-	}
-
-	/**
-	 * Set password for a specific user
-	 * @function io3d.auth.setPassword
-	 * @param {object} args
-	 * @param {string} args.token
-	 * @param {string} args.password
-	 */
-	function setPassword (args) {
-
-	  var credentials = {
-	    token: args.token,
-	    password: args.password
-	  };
-
-	  // log out first
-	  return callService('User.logOut').then(function(){
-
-	    // send sign up request
-	    logger.debug('Setting new password ...');
-	    return callService('User.changePassword', {
-	      token: credentials.token,
-	      oldPassword: null,
-	      newPassword: password
-	    })
-
-	  }).then(function onSuccess(result) {
-
-	    // success
-	    logger.debug('API: setting password successful.');
-	    return getSession()
-
-	  }, function onError(error){
-
-	    // denied
-	    logger.debug('API: setting password failed.', error);
-	    return bluebird_1.reject(error)
-
-	  })
-
-	}
-
-	/**
-	 * Request password reset for a specific user
-	 * @function io3d.auth.requestPasswordReset
-	 * @param {object} args
-	 * @param {string} args.email
-	 */
-	function requestPasswordReset (args) {
-
-	  var credentials = {
-	    email: args.email
-	  };
-
-	  logger.debug('Sending password reset request to API ...');
-	  return callService('User.requestPasswordReset', credentials)
-	    .then(function onSuccess(result) {
-
-	      // success
-	      logger.debug('API: requesting password reset successful.');
-	      return bluebird_1.resolve()
-
-	    }, function onError(error){
-
-	      // denied
-	      logger.debug('API: requesting password reset failed.', error);
-	      return bluebird_1.reject(error)
-
-	    })
-
-	}
-
-	/**
-	 * Resend activation email
-	 * @function io3d.auth.resendActivationEmail
-	 * @param {object} args
-	 * @param {string} args.email
-	 */
-	function resendActivationEmail (args) {
-
-	  var credentials = {
-	    email: args.email
-	  };
-
-	  //
-	  logger.debug('Sending account activation request to API ...');
-	  return callService('User.requestAccountActivation', credentials)
-	    .then(function onSuccess(result) {
-
-	      // success
-	      logger.debug('API: requesting account activation successful.');
-	      return bluebird_1.resolve()
-
-	    }, function onError(error){
-
-	      // denied
-	      logger.debug('API: requesting account activation failed.', error);
-	      return bluebird_1.reject(error)
-
-	    })
-
-
-	}
-
-	/**
-	 * Login in user using credentials
-	 * @function io3d.auth.logIn
-	 * @param {object} args
-	 * @param {string} args.email - User email or username
-	 * @param {string} args.password - User password
-	 */
-
-	function logIn (args) {
-
-	  var credentials = {
-	    email: args.email,
-	    password: args.password || uuid.generate()
-	  };
-
-	  // log out first
-	  logger.debug('Sending API login request for user "' + credentials.email + '" ...');
-	  return callService('User.logOut').then(function onLogoutSuccess() {
-
-	    // send log in request
-	    return callService('User.logIn', {
-	      loginData: {
-	        resourceName: credentials.email,
-	        password: credentials.password
-	      }
-	    })
-
-	  }).then(function onLoginSuccess () {
-
-	    // request session to verify login with a separate request
-	    return getSession()
-
-	  }).then(function onSessionSuccess (session) {
-
-	    if (session.isAuthenticated) {
-	      logger.debug('API: User "' + session.user.email + '" logged in successfully.');
-	      return session
-	    } else {
-	      return bluebird_1.reject('Log in error: Session could not been established.')
-	    }
-
-	  }).catch(function onError (error) {
-
-	    // login failed
-	    logger.debug('API: Could not log in user "' + credentials.email + '".', error);
-	    return bluebird_1.reject(error)
-
-	  })
-
-	}
-
-	/**
-	 * Log out currently authenticated user.
-	 * @function io3d.auth.logOut
-	 */
-	function logOut () {
-
-	  logger.debug('Sending API log out request...');
-	  return callService('User.logOut').then(function onLogoutSuccess (result) {
-
-	    // verify if user has been logged out
-	    return getSession()
-
-	  }).then(function onSessionSuccess (session) {
-
-	    if (!session.isAuthenticated) {
-	      logger.debug('API: Log out successful.');
-	      return session
-	    } else {
-	      return bluebird_1.reject('Log out error: Session has not been terminated.')
-	    }
-
-	  }).catch(function onError (error) {
-
-	    logger.error('Log out error.', error);
-	    return bluebird_1.reject(error)
-
-	  })
-	}
-
-	/**
-	 * Reenerate secret API key
-	 */
-
-	function regenerateSecretApiKey () {
-	  logger.debug('Sending API request to generate secret API key ...');
-	  return callService('Organization.generateSecretApiKey').then(function onSuccess(key) {
-	    logger.debug('API: Generating secret API key successful: ', key);
-	    return key
-	  }, function onReject(error) {
-	    logger.error('API: Error generating secret key.', error);
-	    return bluebird_1.reject(error)
-	  })
-	}
-
-	/**
-	 * Get secret API key
-	 * @function io3d.auth.getSecretApiKey
-	 */
-
-	function getSecretApiKey () {
-	  logger.debug('Sent API request reading secret key ...');
-	  return callService('Organization.read').then(function onSuccess (result) {
-	    if (result.secretApiKey) {
-	      logger.debug('Received secret API key from API');
-	      return result.secretApiKey
-	    } else {
-	      // user has no secret key yet: generate one
-	      logger.debug('User has no secret key. Sent request to generate one.');
-	      return regenerateSecretApiKey()
-	    }
-	  }, function onError (error) {
-	    logger.debug('Error receiving secret API key');
-	    return Promise.reject(error)
-	  })
-	}
-
-	/**
-	 * Generate publishable API key
-	 */
-
-	function generatePublishableApiKey (args) {
-
-	  var allowedDomains = args.allowedDomains;
-
-	  logger.debug('Sending API request to generate publishable API key ...');
-	  return callService('Organization.generatePublishableApiKey', {
-	    allowedDomains: allowedDomains
-	  }).then(function onSuccess(key) {
-	    logger.debug('API: Generating publishable API key successful: ', key);
-	    return key
-	  }, function onReject(error) {
-	    logger.error('API: Error generating publishable key.', error);
-	    return bluebird_1.reject(error)
-	  })
-	}
-
-	/**
-	 * List publishable API keys
-	 */
-
-	function listPublishableApiKeys () {
-	  logger.debug('Sending API request to list publishable API keys ...');
-	  return callService('Organization.listPublishableApiKeys').then(function onSuccess(keys) {
-	    logger.debug('API: Listing publishable API keys successful: ', keys);
-	    return keys
-	  }, function onReject(error) {
-	    logger.error('API: Error listing publishable keys.', error);
-	    return bluebird_1.reject(error)
-	  })
-	}
-
-	/**
-	 * Update publishable API key domains
-	 */
-
-	function updatePublishableApiKeyDomains (args) {
-
-	  var key = args.key;
-	  var allowedDomains = args.allowedDomains;
-
-	  logger.debug('Sending API request to update publishable API key domains ...');
-	  return callService('Organization.updatePublishableApiKeyDomains', {
-	    key: key,
-	    allowedDomains: allowedDomains
-	  }).then(function onSuccess(message) {
-	    logger.debug('API: Updating publishable API key domains successful: ', message);
-	    return message
-	  }, function onReject(error) {
-	    logger.error('API: Error updating publishable key domains.', error);
-	    return bluebird_1.reject(error)
-	  })
-	}
-
-	/**
-	 * Revoke publishable API key
-	 */
-
-	function revokePublishableApiKey (args) {
-
-	  var key = args.key;
-
-	  logger.debug('Sending API request to generate publishable API key ...');
-	  return callService('Organization.revokePublishableApiKey', {
-	    key: key
-	  }).then(function onSuccess(message) {
-	    logger.debug('API: Revoking publishable API key successful: ', message);
-	    return message
-	  }, function onReject(error) {
-	    logger.error('API: Error revoking publishable key.', error);
-	    return bluebird_1.reject(error)
-	  })
-	}
-
-	// export
-
-	var auth = {
-	  // user
-	  getSession: getSession,
-	  session$: session$,
-	  signUp: signUp,
-	  signup: signUp, // alias
-	  logIn: logIn,
-	  login: logIn, // alias
-	  logOut: logOut,
-	  logout: logOut, // alias
-	  setPassword: setPassword,
-	  requestPasswordReset: requestPasswordReset,
-	  resendActivationEmail: resendActivationEmail,
-	  // secret api key
-	  getSecretApiKey: getSecretApiKey,
-	  regenerateSecretApiKey: regenerateSecretApiKey,
-	  // publishable api keys
-	  generatePublishableApiKey: generatePublishableApiKey,
-	  listPublishableApiKeys: listPublishableApiKeys,
-	  updatePublishableApiKeyDomains: updatePublishableApiKeyDomains,
-	  revokePublishableApiKey: revokePublishableApiKey
-	};
-
-	var FALLBACK_MIME_TYPE = 'application/octet-stream';
-	var EXTENSION_TO_MIME_TYPE = {
-	    obj: 'text/plain',
-	    dds: 'application/octet-stream',
-	    dwg: 'application/acad',
-	    dxf: 'application/dxf',
-	    jpg: 'image/jpeg',
-	    jpeg: 'image/jpeg',
-	    png: 'image/png',
-	    gif: 'image/gif',
-	    txt: 'text/plain',
-	    log: 'text/plain',
-	    svg: 'svg+xml',
-	    html: 'text/html',
-	    htm: 'text/html',
-	    js: 'application/javascript',
-	    json: 'application/json',
-	    md: 'text/markdown',
-	    csv: 'text/csv',
-	    gz:	'application/x-gzip',
-	    gzip:	'application/x-gzip',
-	    zip:'application/x-zip',
-	    pdf: 'application/pdf',
-	    '3ds': 'application/x-3ds'
-	  };
-
-	function getMimeTypeFromFileName (filename) {
-	  var
-	    result = FALLBACK_MIME_TYPE,
-	    extension;
-
-	  // get extension if file has one
-	  if (filename.indexOf('.') > -1) {
-	    extension = filename.split('.').pop().toLowerCase();
-	    if (EXTENSION_TO_MIME_TYPE[extension]) {
-	      // set mime type if it exists in the map
-	      result = EXTENSION_TO_MIME_TYPE[extension];
-	    }
-	  }
-
-	  return result
-	}
-
-	// configs
-
-	var ANONYMOUS_USER_ID = 'anonymous-uploads';
-	var KEY_USER_ID_PLACEHOLDER = '{{userId}}';
-
-	// main
-
-	function putToStorage (files, options) {
-
-	  options = options || {};
-
-	  if (!Array.isArray(files)) {
-
-	    // upload single file
-
-	    return putSingleFileToStore(files, options)
-
-	  } else {
-
-	    // upload multiple files and bundle progress events
-	    // TODO: add dir option
-
-	    var totalSize_ = 0;
-	    var progress_ = [];
-	    var onProgress_ = options.onProgress;
-
-	    return bluebird_1.map(files, function(file, i){
-	      totalSize_ += file.size;
-	      return putSingleFileToStore(file, {
-	        dir: options.dir,
-	        onProgress: function(progress, total){
-	          progress_[i] = progress;
-	          if (onProgress_) onProgress_(progress_.reduce(function(a, b) { return a+b; }, 0), totalSize_);
-	        }
-	      })
-	    })
-
-	  }
-
-	}
-
-	// private
-
-	function putSingleFileToStore (file, options) {
-
-	  // API
-	  var key = options.key;
-	  var dir = options.dir;
-	  var fileName = options.filename || options.fileName || file.name || 'unnamed.txt';
-	  var onProgress = options.onProgress;
-
-	  return resolveKey(key, dir, fileName)
-	    .then(validateKey)
-	    .then(function (key) {
-	      return getCredentials(file, key, fileName)
-	    })
-	    .then(function (credentials) {
-	      return uploadFile(file, credentials, onProgress)
-	    })
-
-	}
-
-	function resolveKey (key, dir, fileName) {
-	  // prefer key. fallback to dir + fileName
-	  key = key ? key : (dir ? (dir[dir.length - 1] === '/' ? dir : dir + '/') + fileName : null);
-	  var isTemplateKey = !!(key && key.indexOf(KEY_USER_ID_PLACEHOLDER) > -1);
-
-	  // full key including userId provided
-	  if (key && !isTemplateKey) return bluebird_1.resolve(key)
-
-	  // get user id
-	  return auth.getSession().then(function(session){
-	    if (isTemplateKey) {
-	      if (session.isAuthenticated) {
-	        // replace user id in template key
-	        return key.replace( '{{userId}}', session.user.id )
-	      } else {
-	        console.error('Using key parameter with template syntax requires authentication.');
-	        // reject with user friendly error message
-	        return bluebird_1.reject('Please log in to upload file.')
-	      }
-	    } else {
-	      // key not provided
-	      var uploadFolder = getFormattedDate() + '_' + getShortId();
-	      if (session.isAuthenticated) {
-	        // construct new user specific key
-	        return '/' + session.user.id + '/' + uploadFolder + '/' + fileName
-	      } else {
-	        // construct anonymous key
-	        var k = '/' + ANONYMOUS_USER_ID + '/' + uploadFolder + '/' + fileName;
-	        return null
-	      }
-	    }
-	  })
-	}
-
-	var keyValidationRegex = /^\/([a-zA-Z0-9\.\-\_]+\/)+([a-zA-Z0-9\.\-\_]+)$/;
-	function validateKey (key) {
-	  if (!key) {
-	    return bluebird_1.resolve(null)
-	  } else if (keyValidationRegex.test(key)) {
-	    return bluebird_1.resolve(key)
-	  } else {
-	    return bluebird_1.reject(
-	      'Key format validation failed.\n'
-	      + key + '\n'
-	      + 'Key must match the following pattern\n'
-	      + '- must start with a slash\n'
-	      + '- must not end with a slash\n'
-	      + '- must have one or more directories\n'
-	      + '- must not include double slashes like: "//"\n'
-	      + '- allowed characters are: a-z A-Z 0-9 _ - . /'
-	    )
-	  }
-	}
-
-	function getCredentials (file, key, fileName) {
-	  // strip leading slash
-	  if (key && key[0] === '/') key = key.substring(1);
-	  // get credentials for upload
-	  var params = {
-	    contentLength: file.size || file.length
-	  };
-	  if (key) {
-	    params.contentType = getMimeTypeFromFileName(key);
-	    params.key = key;
-	  } else if (fileName) {
-	    params.contentType = getMimeTypeFromFileName(fileName);
-	    params.fileName = fileName;
-	  } else {
-	    return bluebird_1.reject('Key or fileName param must be provided.')
-	  }
-	  return callService('S3.getCredentials', params)
-	}
-
-	function uploadFile (file, credentials, onProgress) {
-	  // upload directly to S3 using credentials
-	  var fd = new FormData$1();
-	  fd.append('key', credentials.key);
-	  fd.append('AWSAccessKeyId', credentials.AWSAccessKeyId);
-	  fd.append('acl', credentials.acl);
-	  fd.append('Content-Type', credentials.contentType);
-	  fd.append('policy', credentials.policy);
-	  fd.append('signature', credentials.signature);
-	  fd.append('success_action_status', '201');
-	  if (credentials.contentEncoding) {
-	    fd.append('Content-Encoding', credentials.contentEncoding);
-	  }
-	  fd.append('file', file);
-
-	  if (runtime.isBrowser) {
-
-	    // upload using XHR (in order to provide progress info)
-	    return new bluebird_1(function(resolve, reject){
-	      var xhr = new XMLHttpRequest();
-	      xhr.crossOrigin = 'Anonymous';
-	      xhr.onload = function (event) {
-	        if (xhr.status >= 200 && xhr.status < 300) {
-	          var key = getKeyFromS3Response(xhr.responseText);
-	          key ? resolve(key) : reject ('Error Uploading File: '+xhr.responseText);
-	        } else {
-	          reject ('Error Uploading File: '+xhr.responseText);
-	        }
-	      };
-	      xhr.onerror = function (event) {
-	        reject(event);
-	      };
-	      if (onProgress) {
-	        xhr.upload.addEventListener('progress', function(e){
-	          onProgress(e.loaded, e.total);
-	        }, false);
-	      }
-	      xhr.open('POST', credentials.url, true);
-	      xhr.send(fd);
-	    })
-
-	  } else {
-
-	    // node environment: upload using fetch
-	    return fetch$1(credentials.url, {method: 'POST', body: fd}).then(function (res) {
-	      return res.text()
-	    }).then(function(str){
-	      return getKeyFromS3Response(str) || bluebird_1.reject('Error Uploading File: '+str)
-	    })
-
-	  }
-	}
-
-	function getKeyFromS3Response (str) {
-	  // get file key from response
-	  var s = /<Key>(.*)<\/Key>/gi.exec(str);
-	  return s ? '/'+s[1] : false
-	}
-
-	function getFormattedDate() {
-	  var d = new Date();
-	  return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
-	    + '_' + d.getHours() + '-' + d.getMinutes() // + '-' + d.getSeconds()
-	}
-
-	function poll(callback, options) {
-
-	  // API
-	  options = options || {};
-	  var timeout = options.timeout || 10 * 60 * 1000;
-	  var minInterval = options.minInterval || 1000;
-	  var maxInterval = options.maxInterval || 5000;
-	  var intervalIncreaseFactor = options.intervalIncreaseFactor || 1.05;
-
-	  return new bluebird_1(function( fulfill, reject, onCancel ){
-	    var flags = { isCancelled: false };
-	    // cancellation is supported in bluebird version > 3.x
-	    // enable cancellation in Promise.config as it is off by default
-	    if (onCancel) onCancel(function(){ flags.isCancelled = true; });
-	    // start recursive poll
-	    recursivePoll(callback, fulfill, reject, minInterval, maxInterval, intervalIncreaseFactor, 0, timeout, flags);
-	  })
-
-	}
-
-	// helper
-
-	function recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags) {
-
-	  // return if poll has been cancelled in meanwhile
-	  if (flags.isCancelled) return reject('Poll request has been cancelled')
-	  // increase interval
-	  if (interval < maxInterval) interval *= intervalIncreaseFactor;
-	  // check timeout
-	  if (timeElapsed > timeout) return reject('Poll request timed out')
-	  // count time
-	  timeElapsed += interval;
-	  // call
-	  callback(fulfill, reject, function next() {
-	    window.setTimeout(function(){
-	      recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags);
-	    }, interval);
-	  });
-
-	}
-
-	// settings
-
-	var DEFAULT_MAX_WIDTH = 2048;
-	var DEFAULT_MAX_HEIGHT = 2048;
-
-	// main
-
-	function scaleDownImage (input, options) {
-	  runtime.assertBrowser();
-
-	  // API
-	  options = options || {};
-	  var maxWidth = options.maxWidth || DEFAULT_MAX_WIDTH;
-	  var maxHeight = options.maxHeight || DEFAULT_MAX_HEIGHT;
-	  var powerOfTwo = !!options.powerOfTwo;
-
-	  // run
-	  return new bluebird_1(function(resolve, reject){
-
-	    // internals
-	    var canvas;
-	    var scale;
-	    var result;
-	    var originalWidth = input.width;
-	    var originalHeight = input.height;
-
-	    // convert original image size to power of two before scaling
-	    // because pixelPerfect algorithm allows only one dimensional scaling
-	    var makePowerOfTwo = powerOfTwo && !(checkPowerOfTwo$1(originalWidth) && checkPowerOfTwo$1(originalHeight));
-	    if (makePowerOfTwo) {
-	      originalWidth = getNearestPowerOfTwo(originalWidth);
-	      originalHeight = getNearestPowerOfTwo(originalHeight);
-	    }
-
-	    // cap width and height to max
-	    var width = Math.min(originalWidth, maxWidth);
-	    var height = Math.min(originalHeight, maxHeight);
-
-	    // scale down smaller size
-	    if (originalWidth < originalHeight) {
-	      width = height * (originalWidth / originalHeight);
-	    } else {
-	      height = width * (originalHeight / originalWidth);
-	    }
-
-	    // normalize input
-	    canvas = getCanvas(input, originalWidth, originalHeight);
-
-	    // scale if needed
-	    scale = width / originalWidth;
-	    if (scale < 1) {
-	      // scale image
-	      result = downScaleCanvas(canvas, width / originalWidth);
-	    } else {
-	      // nothing to scale
-	      result = canvas;
-	    }
-
-	    resolve(result);
-
-	  })
-	}
-
-	// helpers
-
-	function checkPowerOfTwo$1 (value) {
-	  return ( value & ( value - 1 ) ) === 0 && value !== 0
-	}
-
-	function getNearestPowerOfTwo (n) {
-	  // next best power of two
-	  var l = Math.log(n) / Math.LN2;
-	  return Math.pow(2, Math.round(l))
-	}
-
-	function getCanvas(input, width, height) {
-	  var canvas = document.createElement('canvas');
-	  canvas.width = width;
-	  canvas.height = height;
-	  var context = canvas.getContext('2d');
-	  // add filled white background, otherwise transparent png image areas turn black
-	  context.fillStyle="#FFFFFF";
-	  context.fillRect(0,0,width,height);
-	  context.drawImage(input, 0, 0, width, height);
-	  return canvas
-	}
-
-	// scales the canvas by (float) scale < 1
-	// returns a new canvas containing the scaled image.
-	function downScaleCanvas(cv, scale) {
-	  if (!(scale < 1) || !(scale > 0)) throw ('scale must be a positive number <1 ');
-	  scale = normaliseScale(scale);
-	  var tBuffer = new Float32Array(3 * cv.width * cv.height); // temporary buffer Float32 rgb
-	  var sqScale = scale * scale; // square scale =  area of a source pixel within target
-	  var sw = cv.width; // source image width
-	  var sh = cv.height; // source image height
-	  var tw = Math.floor(sw * scale); // target image width
-	  var th = Math.floor(sh * scale); // target image height
-	  var sx = 0, sy = 0, sIndex = 0; // source x,y, index within source array
-	  var tx = 0, ty = 0, yIndex = 0, tIndex = 0; // target x,y, x,y index within target array
-	  var tX = 0, tY = 0; // rounded tx, ty
-	  var w = 0, nw = 0, wx = 0, nwx = 0, wy = 0, nwy = 0; // weight / next weight x / y
-	  // weight is weight of current source point within target.
-	  // next weight is weight of current source point within next target's point.
-	  var crossX = false; // does scaled px cross its current px right border ?
-	  var crossY = false; // does scaled px cross its current px bottom border ?
-	  var sBuffer = cv.getContext('2d').getImageData(0, 0, sw, sh).data; // source buffer 8 bit rgba
-	  var sR = 0, sG = 0,  sB = 0; // source's current point r,g,b
-
-	  for (sy = 0; sy < sh; sy++) {
-	    ty = sy * scale; // y src position within target
-	    tY = 0 | ty;     // rounded : target pixel's y
-	    yIndex = 3 * tY * tw;  // line index within target array
-	    crossY = (tY !== (0 | ( ty + scale )));
-	    if (crossY) { // if pixel is crossing botton target pixel
-	      wy = (tY + 1 - ty); // weight of point within target pixel
-	      nwy = (ty + scale - tY - 1); // ... within y+1 target pixel
-	    }
-	    for (sx = 0; sx < sw; sx++, sIndex += 4) {
-	      tx = sx * scale; // x src position within target
-	      tX = 0 |  tx;    // rounded : target pixel's x
-	      tIndex = yIndex + tX * 3; // target pixel index within target array
-	      crossX = (tX !== (0 | (tx + scale)));
-	      if (crossX) { // if pixel is crossing target pixel's right
-	        wx = (tX + 1 - tx); // weight of point within target pixel
-	        nwx = (tx + scale - tX - 1); // ... within x+1 target pixel
-	      }
-	      sR = sBuffer[sIndex    ];   // retrieving r,g,b for curr src px.
-	      sG = sBuffer[sIndex + 1];
-	      sB = sBuffer[sIndex + 2];
-	      if (!crossX && !crossY) { // pixel does not cross
-	        // just add components weighted by squared scale.
-	        tBuffer[tIndex    ] += sR * sqScale;
-	        tBuffer[tIndex + 1] += sG * sqScale;
-	        tBuffer[tIndex + 2] += sB * sqScale;
-	      } else if (crossX && !crossY) { // cross on X only
-	        w = wx * scale;
-	        // add weighted component for current px
-	        tBuffer[tIndex    ] += sR * w;
-	        tBuffer[tIndex + 1] += sG * w;
-	        tBuffer[tIndex + 2] += sB * w;
-	        // add weighted component for next (tX+1) px
-	        nw = nwx * scale;
-	        tBuffer[tIndex + 3] += sR * nw;
-	        tBuffer[tIndex + 4] += sG * nw;
-	        tBuffer[tIndex + 5] += sB * nw;
-	      } else if (!crossX && crossY) { // cross on Y only
-	        w = wy * scale;
-	        // add weighted component for current px
-	        tBuffer[tIndex    ] += sR * w;
-	        tBuffer[tIndex + 1] += sG * w;
-	        tBuffer[tIndex + 2] += sB * w;
-	        // add weighted component for next (tY+1) px
-	        nw = nwy * scale;
-	        tBuffer[tIndex + 3 * tw    ] += sR * nw;
-	        tBuffer[tIndex + 3 * tw + 1] += sG * nw;
-	        tBuffer[tIndex + 3 * tw + 2] += sB * nw;
-	      } else { // crosses both x and y : four target points involved
-	        // add weighted component for current px
-	        w = wx * wy;
-	        tBuffer[tIndex    ] += sR * w;
-	        tBuffer[tIndex + 1] += sG * w;
-	        tBuffer[tIndex + 2] += sB * w;
-	        // for tX + 1; tY px
-	        nw = nwx * wy;
-	        tBuffer[tIndex + 3] += sR * nw;
-	        tBuffer[tIndex + 4] += sG * nw;
-	        tBuffer[tIndex + 5] += sB * nw;
-	        // for tX ; tY + 1 px
-	        nw = wx * nwy;
-	        tBuffer[tIndex + 3 * tw    ] += sR * nw;
-	        tBuffer[tIndex + 3 * tw + 1] += sG * nw;
-	        tBuffer[tIndex + 3 * tw + 2] += sB * nw;
-	        // for tX + 1 ; tY +1 px
-	        nw = nwx * nwy;
-	        tBuffer[tIndex + 3 * tw + 3] += sR * nw;
-	        tBuffer[tIndex + 3 * tw + 4] += sG * nw;
-	        tBuffer[tIndex + 3 * tw + 5] += sB * nw;
-	      }
-	    } // end for sx
-	  } // end for sy
-
-	  // create result canvas
-	  var resCV = document.createElement('canvas');
-	  resCV.width = tw;
-	  resCV.height = th;
-	  var resCtx = resCV.getContext('2d');
-
-	//    var imgRes = resCtx.getImageData(resCV.width/2 - tw/2, resCV.height/2 - th/2, tw, th);
-	  var imgRes = resCtx.getImageData(0, 0, tw, th);
-	  var tByteBuffer = imgRes.data;
-	  // convert float32 array into a UInt8Clamped Array
-	  var pxIndex = 0; //
-	  for (sIndex = 0, tIndex = 0; pxIndex < tw * th; sIndex += 3, tIndex += 4, pxIndex++) {
-	    tByteBuffer[tIndex] = 0 | ( tBuffer[sIndex]);
-	    tByteBuffer[tIndex + 1] = 0 | (tBuffer[sIndex + 1]);
-	    tByteBuffer[tIndex + 2] = 0 | (tBuffer[sIndex + 2]);
-	    tByteBuffer[tIndex + 3] = 255;
-	    // set back temp buffer
-	    tBuffer[sIndex] = 0;
-	    tBuffer[sIndex + 1] = 0;
-	    tBuffer[sIndex + 2] = 0;
-	  }
-
-	  // writing result to canvas.
-	  resCtx.putImageData(imgRes, 0, 0);
-	  return resCV;
-
-	}
-
-	function log2$1(v) {
-	  // taken from http://graphics.stanford.edu/~seander/bithacks.html
-	  var b =  [ 0x2, 0xC, 0xF0, 0xFF00, 0xFFFF0000 ];
-	  var S =  [1, 2, 4, 8, 16];
-	  var i=0, r=0;
-
-	  for (i = 4; i >= 0; i--) {
-	    if (v & b[i])  {
-	      v >>= S[i];
-	      r |= S[i];
-	    }
-	  }
-	  return r;
-	}
-
-	// normalize a scale <1 to avoid some rounding issue with js numbers
-	function normaliseScale(s) {
-	  if (s>1) throw('s must be <1');
-	  s = 0 | (1/s);
-	  var l = log2$1(s);
-	  var mask = 1 << l;
-	  var accuracy = 4;
-	  while(accuracy && l) { l--; mask |= 1<<l; accuracy--; }
-	  return 1 / ( s & mask );
-	}
-
-	function getDefaultFilename () {
-	  var d = new Date();
-	  return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
-	    + '_' + d.getHours() + '-' + d.getMinutes() + '-' + d.getSeconds() + '_' + getShortId()
-	}
-
-	function getBlobFromCanvas (canvas, options) {
-	  runtime.assertBrowser();
-
-	  // API
-	  options = options || {};
-	  var mimeType = options.mimeType || 'image/jpeg'; // can be: 'image/jpeg' or 'image/png'
-	  var quality = options.quality || 98;
-	  var fileName = options.fileName || getDefaultFilename() + (mimeType === 'image/jpeg' ? '.jpg' : '.png');
-
-	  // run
-	  return new bluebird_1(function (resolve, reject) {
-	    canvas.toBlob(function (blob) {
-	      blob.name = fileName;
-	      resolve(blob);
-	    }, mimeType, quality);
-	  })
-
-	}
-
-	var FILE_READ_METHODS = {
-	  undefined: 'readAsText',
-	  text: 'readAsText',
-	  dataUrl: 'readAsDataURL',
-	  binaryString: 'readAsBinaryString',
-	  arrayBuffer: 'readAsArrayBuffer'
-	};
-
-	function readFile(blob, type) {
-	  runtime.assertBrowser();
-	  
-	  return new Promise(function(resolve, reject){
-	    var fileReader = new window.FileReader();
-	    fileReader.onload = function (e) {
-	      // IE 11 requires this
-	      // http://stackoverflow.com/a/32665193/2835973
-	      resolve(fileReader.content || fileReader.result);
-	    };
-	    fileReader.onerror = function (err){
-	      reject(err);
-	    };
-	    // start reading file
-	    fileReader[ FILE_READ_METHODS[type] ](blob);
-	  })
-	}
-
-	function fetchModule (url) {
-	  runtime.assertBrowser('Please use "require()" to fetch modules in server environment.');
-
-	  // module wrapper
-	  window.___modules = window.___modules || {};
-
-	  // return module if it has been loaded already
-	  if (window.___modules[url]) {
-	    return Promise.resolve(window.___modules[url])
-
-	  } else {
-	  // load code and use module wrapper
-	    return fetch$1(url).then(function(response){
-	      return response.text()
-	    }).then(function(code){
-
-	      // check module type
-	      var moduleWrapper;
-	      if (code.indexOf('define(function()') > -1) {
-	        // AMD
-	        moduleWrapper = code+'\nfunction define(cb){ window.___modules["'+url+'"] = cb(); };';
-	      } else {
-	        // CommonJS
-	        moduleWrapper = 'window.___modules["'+url+'"] = (function(){ var exports = {}, module = {exports:exports};'+code+'\nreturn module.exports\n})()';
-	      }
-
-	      var script = document.createElement('script');
-	      try {
-	        script.appendChild(document.createTextNode(moduleWrapper));
-	        document.body.appendChild(script);
-	      } catch (e) {
-	        script.text = moduleWrapper;
-	        document.body.appendChild(script);
-	      }
-	      return window.___modules[url]
-	    })
-
-	  }
-
-	}
-
-	// dependencies
-
-	var TARGA_PARSER_LIB = 'https://cdn.rawgit.com/archilogic-com/roBrowser/e4b5b53a/src/Loaders/Targa.js';
-
-	// main
-
-	function getImageFromFile (file, options) {
-
-	  // API
-	  options = options || {};
-	  var format = options.format;
-
-	  // FIXME get image from blob based on format (to also support DDS, PDF, DXF...)
-	  // at the moment we assume that blob is JPG or PNG
-
-	  var fileName = file.name;
-	  var type = fileName ? fileName.split('.').pop().toLowerCase() : 'jpg';
-
-	  if (type === 'jpg' || type === 'jpeg' || type === 'jpe' || type === 'png') {
-	    return getImageFromJpgOrPngFile(file)
-
-	  } else if (type === 'tga') {
-	    return getImageFromTga(file)
-
-	  } else {
-	    return bluebird_1.reject('Image of type '+type+' not supported')
-
-	  }
-
-	}
-
-	// methods
-
-	function getImageFromJpgOrPngFile (file) {
-	  var filename = file.name;
-	  return new bluebird_1(function(resolve, reject){
-
-	    var image = new Image();
-	    var urlCreator = window.URL || window.webkitURL;
-	    var imageUrl = urlCreator.createObjectURL(file);
-
-	    // event handlers
-	    image.onload = function () {
-	      urlCreator.revokeObjectURL(imageUrl);
-	      resolve(image);
-	    };
-	    image.onerror = function (error) {
-	      urlCreator.revokeObjectURL(imageUrl);
-	      console.error('Error converting image: ' + filename, error);
-	      reject('Error converting image: ' + filename);
-	    };
-
-	    // initiate loading process
-	    image.src = imageUrl;
-
-	  })
-	}
-
-	function getImageFromTga (file) {
-	  return fetchModule(TARGA_PARSER_LIB).then(function(Targa){
-	    return readFile(file, 'arrayBuffer').then(function(buffer){
-	      return new bluebird_1(function(resolve, reject){
-
-	        var
-	          targa = new Targa(),
-	          image = new Image();
-
-	        // add event handlers to image
-	        image.onload = function () {
-	          resolve(image);
-	        };
-	        image.onerror = function (error) {
-	          console.error('Error converting image: ' + file.name, error);
-	          reject('Error converting image: ' + file.name);
-	        };
-
-	        // buffer -> targa
-	        targa.load(new Uint8Array(buffer));
-	        // targa -> image
-	        image.src = targa.getDataURL();
-
-	      })
-	    })
-	  })
-	}
-
-	// main
-
-	function getTextureSet (input) {
-
-	  // internals
-
-	  var result = {
-	    loRes: null,
-	    source: null,
-	    dds: null
-	  };
-	  var fullSetReadyPromises = [];
-
-	  // normalize input
-	  return getSourceCanvasFromInput(input).then(function (sourceCanvas) {
-
-	    // TODO: readd back hash based optimizations (should happen on server)
-
-	    return bluebird_1.all([
-	      // generate loRes texture localy and upload it
-	      getLoResCanvas(sourceCanvas).then(getBlobFromCanvas).then(putToStorage).then(function (previewStorageId) {
-	        // loRes texture uploaded and ready for use
-	        result.loRes = previewStorageId;
-	      }),
-	      // upload source texture...
-	      getBlobFromCanvas(sourceCanvas).then(putToStorage).then(function (sourceStorageId) {
-	        // ... to have it ready for server side processing
-	        result.source = sourceStorageId;
-	        // ... like DDS conversion (or baking)
-	        return requestDdsConversion(sourceStorageId).then(function (processingId) {
-	          // we know the future DDS storageId but will not wait for conversion being done
-	          // TODO: future storageId should be in status file
-	          result.dds = sourceStorageId.replace('.jpg', '.hi-res.gz.dds');
-	          // waiting for DDS converion is optional and up to the user:
-	          fullSetReadyPromises.push(pollForDdsTexture(processingId));
-	        })
-	      })
-	    ])
-	  }).then(function () {
-
-	    // promise for full texture set
-	    result.fullSetReady = bluebird_1.all(fullSetReadyPromises).then(function () {
-	      return result
-	    });
-	    return result
-
-	  })
-
-	}
-
-	// private methods
-
-	function getSourceCanvasFromInput (input) {
-	  // input can be url, img, canvas or file
-	  return bluebird_1.resolve().then(function () {
-	    if (typeof input === 'string') {
-	      // infoCallback('Loading image '+file.name)
-	      return fetchImage(input)
-	    } else if (input instanceof Blob) {
-	      // infoCallback('Reading image '+file.name)
-	      return getImageFromFile(input)
-	    } else {
-	      return input
-	    }
-	  }).then(function (canvas) {
-	    // infoCallback(file.name + ' - Generating source texture file')
-	    // return canvas
-	    return scaleDownImage(canvas, {
-	      powerOfTwo: false,
-	      maxWidth: 2048,
-	      maxHeight: 2048
-	    })
-	  })
-	}
-
-	function getLoResCanvas (sourceCanvas) {
-	  //infoCallback(file.name + ' - Generating lo-res texture file')
-	  return scaleDownImage(sourceCanvas, {
-	    powerOfTwo: true,
-	    maxWidth: 256,
-	    maxHeight: 256
-	  })
-	}
-
-	function requestDdsConversion (sourceStorageId) {
-	  sourceStorageId = sourceStorageId.substring(1);
-	  return callService('Processing.task.enqueue', {
-	    method: 'convertImage',
-	    params: {
-	      inputFileKey: sourceStorageId,
-	      options: {
-	        outputFormat: 'dds',
-	        outputDirectory: path.parse(sourceStorageId).dir
-	      }
-	    }
-	  })
-	}
-
-	function pollForDdsTexture (processingId) {
-	  return poll(function (resolve, reject, next) {
-	    var url = 'https://storage-nocdn.3d.io/' + processingId;
-
-	    fetch(url).then(function (response) {
-	      return response.json()
-	    }).then(function (message) {
-	      var status = message.params.status;
-
-	      if (status === 'ERROR') {
-	        reject(message.params.data);
-	      } else if (status === 'SUCCESS') {
-	        resolve(message.params.data);
-	      } else {
-	        next();
-	      }
-
-	    });
-	  })
-	}
-
-	// constants
-
-	var getData3dFromThreeJs = checkDependencies({
-	  three: true,
-	  aframe: false
-	}, function () {
-
-	  return function getData3d(object3d, options) {
-
-	    // API
-	    var sourceObject3d = object3d;
-			var options = options || {};
-			var onFullTextureSetReady = options.onFullTextureSetReady;
-
-	    // internals
-	    var data3d = { meshes: {}, materials: {} };
-
-	    // promises for a minimal texture set required to proceed
-	    // - source textures for server side processing
-	    // - preview textures for minimal view
-	    var basicTextureSetPromises = [];
-
-	    // promises for full texture set
-	    // - DXT (DDS) for hires on desktop
-	    // - PVRTC for iOS (not yet implemented)
-	    // - ETC1 for Android (not yet implemented)
-	    var fullTextureSetPromises = [];(function traverseThreeSceneGraph (threeObject3D) {
-
-	      threeObject3D.updateMatrixWorld();
-
-	      if (threeObject3D.geometry) {
-
-	        var threeGeometry = threeObject3D.geometry;
-
-	        // ensure buffer geometry
-	        if (threeGeometry.type.indexOf('BufferGeometry') === -1) {
-	          threeGeometry = new THREE.BufferGeometry().fromGeometry(threeGeometry);
-	        }
-
-	        if (threeGeometry.index) {
-	          if (threeGeometry.attributes.colors) {
-	            translateIndexedBufferGeometryWithColor(data3d, threeObject3D, basicTextureSetPromises, fullTextureSetPromises);
-	          } else {
-	            translateIndexedBufferGeometry(data3d, threeObject3D, basicTextureSetPromises, fullTextureSetPromises);
-	          }
-	        } else {
-	          translateNonIndexedBufferGeometry(data3d, threeObject3D, basicTextureSetPromises, fullTextureSetPromises);
-	        }
-
-	      }
-
-	      // parse children
-	      threeObject3D.children.forEach(function(child){
-	        traverseThreeSceneGraph(child);
-	      });
-
-	    })(sourceObject3d);
-
-	    return bluebird_1.all(basicTextureSetPromises).then(function(){
-	      // trigger callback when full texture set promises finish
-	      bluebird_1.all(fullTextureSetPromises).then(function(){
-	        if (onFullTextureSetReady) onFullTextureSetReady();
-	      });
-	      // return data3d
-	      return consolidate(data3d)
-	    })
-
-	  }
-	});
-
-	// helpers
-
-	function translateSceneGraph (data3dMesh, threeObject3D) {
-	  var p = threeObject3D.getWorldPosition();
-	  var r = threeObject3D.getWorldRotation();
-	  var s = threeObject3D.getWorldScale();
-	  data3dMesh.position = [p.x, p.y, p.z];
-	  data3dMesh.rotRad = [r.x, r.y, r.z];
-	  data3dMesh.scale = [s.x, s.y, s.z];
-	}
-
-
-	function translateNonIndexedBufferGeometry (data3d, threeObject3D, basicTextureSetPromises, fullTextureSetPromises) {
-
-	  // mesh
-	  var threeGeometry = threeObject3D.geometry;
-	  // create data3d mesh
-	  var data3dMesh = data3d.meshes[threeObject3D.uuid] = {};
-	  // positions
-	  data3dMesh.positions = threeGeometry.attributes.position.array;
-	  // normals
-	  if (threeGeometry.attributes.normal) data3dMesh.normals = threeGeometry.attributes.normal.array;
-	  // uvs
-	  if (threeGeometry.attributes.uv) data3dMesh.uvs = threeGeometry.attributes.uv.array;
-
-	  // material
-	  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, basicTextureSetPromises, fullTextureSetPromises);
-
-	  // scene graph
-	  translateSceneGraph(data3dMesh, threeObject3D);
-
-	}
-
-	function translateIndexedBufferGeometry (data3d, threeObject3D, basicTextureSetPromises, fullTextureSetPromises) {
-
-	  var threeGeometry = threeObject3D.geometry;
-	  // create data3d mesh
-	  var data3dMesh = data3d.meshes[threeObject3D.uuid] = {};
-
-	  var index = threeGeometry.index.array;
-	  var i = 0, l = threeGeometry.index.array.length;
-
-	  // translate positions
-	  var pIn = threeGeometry.attributes.position.array;
-	  var pOut = new Float32Array(l * 3);
-	  for (i = 0; i < l; i++) {
-	    pOut[i * 3] = pIn[index[i] * 3];
-	    pOut[i * 3 + 1] = pIn[index[i] * 3 + 1];
-	    pOut[i * 3 + 2] = pIn[index[i] * 3 + 2];
-	  }
-	  data3dMesh.positions = pOut;
-
-	  // translate normals
-	  if (threeGeometry.attributes.normal) {
-	    var nIn = threeGeometry.attributes.normal.array;
-	    var nOut = new Float32Array(l * 3);
-	    for (i = 0; i < l; i++) {
-	      nOut[i * 3] = nIn[index[i] * 3];
-	      nOut[i * 3 + 1] = nIn[index[i] * 3 + 1];
-	      nOut[i * 3 + 2] = nIn[index[i] * 3 + 2];
-	    }
-	    data3dMesh.normals = nOut;
-	  }
-
-	  // translate uvs
-	  if (threeGeometry.attributes.uv) {
-	    var uvIn = threeGeometry.attributes.uv.array;
-	    var uvOut = new Float32Array(l * 2);
-	    for (i = 0; i < l; i++) {
-	      nOut[i * 2] = nIn[index[i] * 2];
-	      nOut[i * 2 + 1] = nIn[index[i] * 2 + 1];
-	    }
-	    data3dMesh.normals = nOut;
-	  }
-
-	  // material
-	  var threeMaterial = threeObject3D.material;
-	  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, basicTextureSetPromises, fullTextureSetPromises);
-
-	  // scene graph
-	  translateSceneGraph(data3dMesh, threeObject3D);
-
-	}
-
-	function translateIndexedBufferGeometryWithColor (data3d, threeObject3D, basicTextureSetPromises, fullTextureSetPromises) {
-
-	  console.log(threeObject3D);
-	  // TODO: add support for vertex colors:
-	  // 1. create material indices
-	  // 2. create separate data3d meshes
-	  // 3. create separate data3d materials
-	  // 4. replace this placeholder function:
-	  translateIndexedBufferGeometry (data3d, threeObject3D, basicTextureSetPromises, fullTextureSetPromises);
-
-	}
-
-	function translateMaterial (data3d, data3dMesh, threeObject3D, threeMaterial, basicTextureSetPromises, fullTextureSetPromises) {
-
-	  // create data3d material
-	  var data3dMaterial = data3d.materials[threeMaterial.uuid] = {};
-	  // link data3d mesh with material
-	  data3dMesh.material = threeMaterial.uuid;
-
-	  // material attributes
-
-	  translateMaterialNumericValues([
-	    // three attribs -> data3d attribs
-	    ['opacity', 'opacity'],
-	    ['specularCoef', 'shininess'],
-	  ], threeMaterial, data3dMaterial);
-
-	  translateMaterialColors([
-	    // three attribs -> data3d attribs
-	    ['color', 'colorDiffuse'],
-	    ['specular', 'colorSpecular'],
-	    ['emissive', 'colorEmissive']
-	  ], threeMaterial, data3dMaterial);
-
-	  translateMaterialTextures([
-	      // three attribs -> data3d attribs
-	      ['map', 'mapDiffuse'],
-	      ['specularMap', 'mapSpecular'],
-	      ['normalMap', 'mapNormal'],
-	      ['alphaMap', 'mapAlpha']
-	    ], threeMaterial, data3dMaterial,
-	    basicTextureSetPromises, fullTextureSetPromises
-	  );
-
-	}
-
-	function translateMaterialNumericValues(attribMap, threeMaterial, data3dMaterial) {
-
-	  attribMap.forEach(function(attribs){
-	    var threeName = attribs[0], data3dName = attribs[1];
-	    // translate material numeric values from three.js to data3d
-	    if (threeMaterial[threeName] !== undefined) data3dMaterial[data3dName] = threeMaterial[threeName];
-	  });
-
-	}
-
-	function translateMaterialColors(attribMap, threeMaterial, data3dMaterial) {
-
-	  attribMap.forEach(function(attribs){
-	    var threeName = attribs[0], data3dName = attribs[1];
-	    // translate material colors from three.js to data3d
-	    if (threeMaterial[threeName]) data3dMaterial[data3dName] = [
-	      threeMaterial[threeName].r, threeMaterial[threeName].g, threeMaterial[threeName].b
-	    ];
-	  });
-
-	}
-
-	function translateMaterialTextures(attribMap, threeMaterial, data3dMaterial, basicTextureSetPromises, fullTextureSetPromises) {
-
-	  attribMap.forEach(function(attribs){
-	    var threeName = attribs[0], data3dName = attribs[1];
-	    // translate textures from three.js to data3d
-
-	    // if not compressed get textures from threejs material:
-	    if (threeMaterial[threeName] && threeMaterial[threeName].image && !threeMaterial[threeName].isCompressedTexture) {
-	      basicTextureSetPromises.push(
-	        getTextureSet(threeMaterial[threeName].image).then(function (result) {
-
-	          // collect promises for full texture set
-	          fullTextureSetPromises.push(result.fullSetReady);
-
-	          // add texture keys to data3d
-	          data3dMaterial[data3dName] = result.dds;
-	          data3dMaterial[data3dName+'Preview'] = result.loRes;
-	          data3dMaterial[data3dName+'Source'] = result.source;
-
-	        })
-	      );
-
-	      // fallback to data from data3dMaterial if available:
-	    } else if (threeMaterial.userData && threeMaterial.userData.data3dMaterial) {
-	      if (threeMaterial.userData.data3dMaterial[data3dName]) {
-	        data3dMaterial[data3dName] = threeMaterial.userData.data3dMaterial[data3dName];
-	        data3dMaterial[data3dName+'Source'] = threeMaterial.userData.data3dMaterial[data3dName+'Source'];
-	        data3dMaterial[data3dName+'Preview'] = threeMaterial.userData.data3dMaterial[data3dName+'Preview'];
-	      }
-	    }
-
 	  });
 
 	}
@@ -17965,7 +15557,7 @@
 	  aFrame: true,
 	  onError: function (){
 	    // show aframe dependency warning, since it is unexpected to run aframe on server
-	    if (runtime.isBrowser) console.log('AFRAME library not found: related features will be disabled.');
+	    if (runtime.isBrowser) console.warn('AFRAME library not found: related features will be disabled.');
 	  }
 	}, function registerComponents () {
 	  AFRAME.registerComponent('io3d-data3d', data3dComponent);
@@ -17976,8 +15568,7 @@
 
 	var aFrame = {
 	  three: {
-	    Data3dView: Data3dView,
-	    getData3d: getData3dFromThreeJs,
+	    Data3dView: Data3dView
 	  }
 	};
 
@@ -18062,6 +15653,37 @@
 	  })
 	}
 
+	// from https://github.com/jbgutierrez/path-parse
+	// Split a filename into [root, dir, basename, ext], unix version
+	// 'root' is just a slash, or nothing.
+	var splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+
+	function parsePath (path) {
+	  if (typeof path !== 'string') {
+	    throw new TypeError(
+	      "Parameter 'path' must be a string, not " + typeof path
+	    );
+	  }
+	  var allParts = splitPathRe.exec(path).slice(1);
+	  if (!allParts || allParts.length !== 4) {
+	    throw new TypeError("Invalid path '" + path + "'");
+	  }
+	  allParts[2] = allParts[2] || '';
+	  allParts[3] = allParts[3] || '';
+
+	  return {
+	    root: allParts[0],
+	    dir: allParts[0] + allParts[1].slice(0, -1),
+	    base: allParts[2],
+	    ext: allParts[3],
+	    name: allParts[2].slice(0, allParts[2].length - allParts[3].length)
+	  }
+	}
+
+	var path = {
+	  parse: parsePath
+	};
+
 	// source: https://github.com/petkaantonov/urlparser
 	// modified for browser compatibility
 
@@ -18117,7 +15739,7 @@
 	    if(typeof window !== 'undefined' && !str.match(/^[^:]+:\/\//) && str.substr(0, 2) !== '//') {
 	      if(str[0] === '/') str = str.slice(1);
 	      str = window.location.protocol + '//' + window.location.host + window.location.pathname + str;
-	      console.log('mutated', str);
+	      console.error('mutated', str);
 	    }
 
 	    if (str.substr(0,2) === '//' && typeof window !== 'undefined' && window.location && window.location.protocol) {
@@ -19199,7 +16821,7 @@
 	  // add geometry arrays to data3d
 
 	  var payloadByteOffset = HEADER_BYTE_LENGTH + structureByteLength;
-	  traverseData3d$1(structure.data3d, function (data3d) {
+	  traverseData3d(structure.data3d, function (data3d) {
 
 	    // map typed arrays to payload area in file buffer
 	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url$$1);
@@ -19307,19 +16929,71 @@
 
 	}
 
-	function traverseData3d$1 (data3d, callback) {
+	function traverseData3d (data3d, callback) {
 
 	  callback(data3d);
 
 	  if (data3d.children) {
 	    for (var i = 0, l = data3d.children.length; i < l; i++) {
-	      traverseData3d$1(data3d.children[i], callback);
+	      traverseData3d(data3d.children[i], callback);
 	    }
 	  }
 
 	}
 
-	function loadData3d (url, options) {
+	// constants
+	var IS_URL = new RegExp('^http:\\/\\/.*$|^https:\\/\\/.*$');
+	var ID_TO_URL_CACHE = {};
+
+	// main
+	function getUrlFromStorageId (storageId, options) {
+
+	  // API
+	  options = options || {};
+	  var cdn = options.cdn !== undefined ? options.cdn : true;
+	  var encode = options.encode !== undefined ? options.encode : true;
+
+	  // check cache
+	  if (ID_TO_URL_CACHE[storageId + cdn + encode]) {
+	    return ID_TO_URL_CACHE[storageId + cdn + encode]
+	  }
+
+	  // check if storageId is URL already
+	  if (IS_URL.test(storageId)) {
+	    // add to cache
+	    ID_TO_URL_CACHE[ storageId + cdn + encode ] = storageId;
+	    // return URL
+	    return storageId
+	  }
+
+	  // internals
+	  var processedStorageId = storageId;
+
+	  // remove leading slash
+	  var startsWithSlash = /^\/(.*)$/.exec(processedStorageId);
+	  if (startsWithSlash) {
+	    processedStorageId = startsWithSlash[1];
+	  }
+
+	  // encode storageId if containig special chars
+	  if (encode && !/^[\.\-\_\/a-zA-Z0-9]+$/.test(processedStorageId)) {
+	    processedStorageId = encodeURIComponent(processedStorageId);
+	  }
+
+	  // compose url
+	  var url = 'https://' + (cdn ? configs.storageDomain : configs.storageDomainNoCdn) + '/' + processedStorageId;
+
+	  // add to cache
+	  ID_TO_URL_CACHE[ storageId + cdn + encode ] = url;
+	  
+	  return url
+	}
+
+	function loadData3d (val, options) {
+
+	  // could be storageId or URL
+	  var url = getUrlFromStorageId(val);
+
 	  return fetch$1(url, options).then(function(res){
 	    return res.arrayBuffer()
 	  }).then(function(buffer){
@@ -19492,9 +17166,691 @@
 	  replaceFurniture: replaceFurniture
 	};
 
+	var FormData_;
+	if (runtime.isNode) {
+	  FormData_ = require('form-data');
+	} else if (typeof FormData !== 'undefined') {
+	  FormData_ = FormData;
+	} else {
+	  console.warn('Missing FormData API.');
+	  FormData_ = function FormDataError () {
+	    throw new Error('Missing FormData API.')
+	  };
+	}
+
+	var FormData$1 = FormData_;
+
+	function getShortId (length) {
+	  length = length || 6;
+	  var shortId = '';
+	  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	  for (var i = 0; i < length; i++) shortId += possible.charAt(Math.floor(Math.random() * possible.length));
+	  return shortId
+	}
+
+	/**
+	 * Sign up: Create a new user
+	 * @function io3d.auth.signUp
+	 * @param {object} args
+	 * @param {string} args.email
+	 * @param {string} args.password (optional)
+	 */
+	function signUp (args) {
+
+	  var credentials = {
+	    email: args.email,
+	    password: args.password || uuid.generate()
+	  };
+
+	  // log out first
+	  return callService('User.logOut').then(function(){
+
+	    // send sign up request
+	    logger.debug('Sending API sign up request for email "' + credentials.email + '" ...');
+	    return callService('User.create', credentials)
+
+	  }).then(function onSignUpSuccess(result) {
+
+	    // success
+	    logger.debug('API: User sign up with email "' + credentials.email + '" was successful.');
+	    return bluebird_1.resolve()
+
+	  }, function onSignUpError(error){
+
+	    // denied
+	    logger.debug('API: Could not sign up using email "' + credentials.email + '".', error);
+	    return bluebird_1.reject(error)
+
+	  })
+
+	}
+
+	function normalizeSession(session_) {
+
+	  var isAuthenticated = !!session_.user;
+	  var user = {};
+
+	  // populate user object if authenticated
+	  if (isAuthenticated) {
+	    user.id = session_.user.resourceId;
+	    user.username = session_.user.resourceName;
+	    user.email = session_.user.email;
+	  }
+
+	  return {
+	    isAuthenticated: isAuthenticated,
+	    user: user
+	  }
+
+	}
+
+	/**
+	 * Creates a session stream
+	 * @function io3d.auth.session$
+	 */
+
+	var session$ = new BehaviorSubject_1.BehaviorSubject(normalizeSession({}));
+
+	// init
+	getSession();
+
+	// update session state every time when tab becomes visible
+	if (runtime.isBrowser) {
+	  runtime.isFocused$.subscribe(function(isFocused){
+	    if (isFocused) getSession();
+	  });
+	}
+
+	// export
+
+	/**
+	 * Get information about the current session.
+	 * @function io3d.auth.getSession
+	 */
+	function getSession () {
+	  logger.debug('Sending API session request...');
+	  return callService('User.getSession')
+	    .then(normalizeSession)
+	    .then(function onSuccess (session) {
+	      logger.debug('API: session data:\n', session);
+	      // stream session object
+	      session$.next(session);
+	      // return result
+	      return session
+	    }, function onError (error) {
+	      logger.debug('API: error receiving session data.', error);
+	      return bluebird_1.reject(error)
+	    })
+	}
+
+	/**
+	 * Set password for a specific user
+	 * @function io3d.auth.setPassword
+	 * @param {object} args
+	 * @param {string} args.token
+	 * @param {string} args.password
+	 */
+	function setPassword (args) {
+
+	  var credentials = {
+	    token: args.token,
+	    password: args.password
+	  };
+
+	  // log out first
+	  return callService('User.logOut').then(function(){
+
+	    // send sign up request
+	    logger.debug('Setting new password ...');
+	    return callService('User.changePassword', {
+	      token: credentials.token,
+	      oldPassword: null,
+	      newPassword: password
+	    })
+
+	  }).then(function onSuccess(result) {
+
+	    // success
+	    logger.debug('API: setting password successful.');
+	    return getSession()
+
+	  }, function onError(error){
+
+	    // denied
+	    logger.debug('API: setting password failed.', error);
+	    return bluebird_1.reject(error)
+
+	  })
+
+	}
+
+	/**
+	 * Request password reset for a specific user
+	 * @function io3d.auth.requestPasswordReset
+	 * @param {object} args
+	 * @param {string} args.email
+	 */
+	function requestPasswordReset (args) {
+
+	  var credentials = {
+	    email: args.email
+	  };
+
+	  logger.debug('Sending password reset request to API ...');
+	  return callService('User.requestPasswordReset', credentials)
+	    .then(function onSuccess(result) {
+
+	      // success
+	      logger.debug('API: requesting password reset successful.');
+	      return bluebird_1.resolve()
+
+	    }, function onError(error){
+
+	      // denied
+	      logger.debug('API: requesting password reset failed.', error);
+	      return bluebird_1.reject(error)
+
+	    })
+
+	}
+
+	/**
+	 * Resend activation email
+	 * @function io3d.auth.resendActivationEmail
+	 * @param {object} args
+	 * @param {string} args.email
+	 */
+	function resendActivationEmail (args) {
+
+	  var credentials = {
+	    email: args.email
+	  };
+
+	  //
+	  logger.debug('Sending account activation request to API ...');
+	  return callService('User.requestAccountActivation', credentials)
+	    .then(function onSuccess(result) {
+
+	      // success
+	      logger.debug('API: requesting account activation successful.');
+	      return bluebird_1.resolve()
+
+	    }, function onError(error){
+
+	      // denied
+	      logger.debug('API: requesting account activation failed.', error);
+	      return bluebird_1.reject(error)
+
+	    })
+
+
+	}
+
+	/**
+	 * Login in user using credentials
+	 * @function io3d.auth.logIn
+	 * @param {object} args
+	 * @param {string} args.email - User email or username
+	 * @param {string} args.password - User password
+	 */
+
+	function logIn (args) {
+
+	  var credentials = {
+	    email: args.email,
+	    password: args.password || uuid.generate()
+	  };
+
+	  // log out first
+	  logger.debug('Sending API login request for user "' + credentials.email + '" ...');
+	  return callService('User.logOut').then(function onLogoutSuccess() {
+
+	    // send log in request
+	    return callService('User.logIn', {
+	      loginData: {
+	        resourceName: credentials.email,
+	        password: credentials.password
+	      }
+	    })
+
+	  }).then(function onLoginSuccess () {
+
+	    // request session to verify login with a separate request
+	    return getSession()
+
+	  }).then(function onSessionSuccess (session) {
+
+	    if (session.isAuthenticated) {
+	      logger.debug('API: User "' + session.user.email + '" logged in successfully.');
+	      return session
+	    } else {
+	      return bluebird_1.reject('Log in error: Session could not been established.')
+	    }
+
+	  }).catch(function onError (error) {
+
+	    // login failed
+	    logger.debug('API: Could not log in user "' + credentials.email + '".', error);
+	    return bluebird_1.reject(error)
+
+	  })
+
+	}
+
+	/**
+	 * Log out currently authenticated user.
+	 * @function io3d.auth.logOut
+	 */
+	function logOut () {
+
+	  logger.debug('Sending API log out request...');
+	  return callService('User.logOut').then(function onLogoutSuccess (result) {
+
+	    // verify if user has been logged out
+	    return getSession()
+
+	  }).then(function onSessionSuccess (session) {
+
+	    if (!session.isAuthenticated) {
+	      logger.debug('API: Log out successful.');
+	      return session
+	    } else {
+	      return bluebird_1.reject('Log out error: Session has not been terminated.')
+	    }
+
+	  }).catch(function onError (error) {
+
+	    logger.error('Log out error.', error);
+	    return bluebird_1.reject(error)
+
+	  })
+	}
+
+	/**
+	 * Reenerate secret API key
+	 */
+
+	function regenerateSecretApiKey () {
+	  logger.debug('Sending API request to generate secret API key ...');
+	  return callService('Organization.generateSecretApiKey').then(function onSuccess(key) {
+	    logger.debug('API: Generating secret API key successful: ', key);
+	    return key
+	  }, function onReject(error) {
+	    logger.error('API: Error generating secret key.', error);
+	    return bluebird_1.reject(error)
+	  })
+	}
+
+	/**
+	 * Get secret API key
+	 * @function io3d.auth.getSecretApiKey
+	 */
+
+	function getSecretApiKey () {
+	  logger.debug('Sent API request reading secret key ...');
+	  return callService('Organization.read').then(function onSuccess (result) {
+	    if (result.secretApiKey) {
+	      logger.debug('Received secret API key from API');
+	      return result.secretApiKey
+	    } else {
+	      // user has no secret key yet: generate one
+	      logger.debug('User has no secret key. Sent request to generate one.');
+	      return regenerateSecretApiKey()
+	    }
+	  }, function onError (error) {
+	    logger.debug('Error receiving secret API key');
+	    return Promise.reject(error)
+	  })
+	}
+
+	/**
+	 * Generate publishable API key
+	 */
+
+	function generatePublishableApiKey (args) {
+
+	  var allowedDomains = args.allowedDomains;
+
+	  logger.debug('Sending API request to generate publishable API key ...');
+	  return callService('Organization.generatePublishableApiKey', {
+	    allowedDomains: allowedDomains
+	  }).then(function onSuccess(key) {
+	    logger.debug('API: Generating publishable API key successful: ', key);
+	    return key
+	  }, function onReject(error) {
+	    logger.error('API: Error generating publishable key.', error);
+	    return bluebird_1.reject(error)
+	  })
+	}
+
+	/**
+	 * List publishable API keys
+	 */
+
+	function listPublishableApiKeys () {
+	  logger.debug('Sending API request to list publishable API keys ...');
+	  return callService('Organization.listPublishableApiKeys').then(function onSuccess(keys) {
+	    logger.debug('API: Listing publishable API keys successful: ', keys);
+	    return keys
+	  }, function onReject(error) {
+	    logger.error('API: Error listing publishable keys.', error);
+	    return bluebird_1.reject(error)
+	  })
+	}
+
+	/**
+	 * Update publishable API key domains
+	 */
+
+	function updatePublishableApiKeyDomains (args) {
+
+	  var key = args.key;
+	  var allowedDomains = args.allowedDomains;
+
+	  logger.debug('Sending API request to update publishable API key domains ...');
+	  return callService('Organization.updatePublishableApiKeyDomains', {
+	    key: key,
+	    allowedDomains: allowedDomains
+	  }).then(function onSuccess(message) {
+	    logger.debug('API: Updating publishable API key domains successful: ', message);
+	    return message
+	  }, function onReject(error) {
+	    logger.error('API: Error updating publishable key domains.', error);
+	    return bluebird_1.reject(error)
+	  })
+	}
+
+	/**
+	 * Revoke publishable API key
+	 */
+
+	function revokePublishableApiKey (args) {
+
+	  var key = args.key;
+
+	  logger.debug('Sending API request to generate publishable API key ...');
+	  return callService('Organization.revokePublishableApiKey', {
+	    key: key
+	  }).then(function onSuccess(message) {
+	    logger.debug('API: Revoking publishable API key successful: ', message);
+	    return message
+	  }, function onReject(error) {
+	    logger.error('API: Error revoking publishable key.', error);
+	    return bluebird_1.reject(error)
+	  })
+	}
+
+	// export
+
+	var auth = {
+	  // user
+	  getSession: getSession,
+	  session$: session$,
+	  signUp: signUp,
+	  signup: signUp, // alias
+	  logIn: logIn,
+	  login: logIn, // alias
+	  logOut: logOut,
+	  logout: logOut, // alias
+	  setPassword: setPassword,
+	  requestPasswordReset: requestPasswordReset,
+	  resendActivationEmail: resendActivationEmail,
+	  // secret api key
+	  getSecretApiKey: getSecretApiKey,
+	  regenerateSecretApiKey: regenerateSecretApiKey,
+	  // publishable api keys
+	  generatePublishableApiKey: generatePublishableApiKey,
+	  listPublishableApiKeys: listPublishableApiKeys,
+	  updatePublishableApiKeyDomains: updatePublishableApiKeyDomains,
+	  revokePublishableApiKey: revokePublishableApiKey
+	};
+
+	var FALLBACK_MIME_TYPE = 'application/octet-stream';
+	var EXTENSION_TO_MIME_TYPE = {
+	    obj: 'text/plain',
+	    dds: 'application/octet-stream',
+	    dwg: 'application/acad',
+	    dxf: 'application/dxf',
+	    jpg: 'image/jpeg',
+	    jpeg: 'image/jpeg',
+	    png: 'image/png',
+	    gif: 'image/gif',
+	    txt: 'text/plain',
+	    log: 'text/plain',
+	    svg: 'svg+xml',
+	    html: 'text/html',
+	    htm: 'text/html',
+	    js: 'application/javascript',
+	    json: 'application/json',
+	    md: 'text/markdown',
+	    csv: 'text/csv',
+	    gz:	'application/x-gzip',
+	    gzip:	'application/x-gzip',
+	    zip:'application/x-zip',
+	    pdf: 'application/pdf',
+	    '3ds': 'application/x-3ds'
+	  };
+
+	function getMimeTypeFromFileName (filename) {
+	  var
+	    result = FALLBACK_MIME_TYPE,
+	    extension;
+
+	  // get extension if file has one
+	  if (filename.indexOf('.') > -1) {
+	    extension = filename.split('.').pop().toLowerCase();
+	    if (EXTENSION_TO_MIME_TYPE[extension]) {
+	      // set mime type if it exists in the map
+	      result = EXTENSION_TO_MIME_TYPE[extension];
+	    }
+	  }
+
+	  return result
+	}
+
+	// configs
+
+	var ANONYMOUS_USER_ID = 'anonymous-uploads';
+	var KEY_USER_ID_PLACEHOLDER = '{{userId}}';
+
 	// main
 
-	function getFromStorage (key, options) {
+	function putToStorage (files, options) {
+
+	  options = options || {};
+
+	  if (!Array.isArray(files)) {
+
+	    // upload single file
+
+	    return putSingleFileToStore(files, options)
+
+	  } else {
+
+	    // upload multiple files and bundle progress events
+	    // TODO: add dir option
+
+	    var totalSize_ = 0;
+	    var progress_ = [];
+	    var onProgress_ = options.onProgress;
+
+	    return bluebird_1.map(files, function(file, i){
+	      totalSize_ += file.size;
+	      return putSingleFileToStore(file, {
+	        dir: options.dir,
+	        onProgress: function(progress, total){
+	          progress_[i] = progress;
+	          if (onProgress_) onProgress_(progress_.reduce(function(a, b) { return a+b; }, 0), totalSize_);
+	        }
+	      })
+	    })
+
+	  }
+
+	}
+
+	// private
+
+	function putSingleFileToStore (file, options) {
+
+	  // API
+	  var key = options.key;
+	  var dir = options.dir;
+	  var fileName = options.filename || options.fileName || file.name || 'unnamed.txt';
+	  var onProgress = options.onProgress;
+
+	  return resolveKey(key, dir, fileName)
+	    .then(validateKey)
+	    .then(function (key) {
+	      return getCredentials(file, key, fileName)
+	    })
+	    .then(function (credentials) {
+	      return uploadFile(file, credentials, onProgress)
+	    })
+
+	}
+
+	function resolveKey (key, dir, fileName) {
+	  // prefer key. fallback to dir + fileName
+	  key = key ? key : (dir ? (dir[dir.length - 1] === '/' ? dir : dir + '/') + fileName : null);
+	  var isTemplateKey = !!(key && key.indexOf(KEY_USER_ID_PLACEHOLDER) > -1);
+
+	  // full key including userId provided
+	  if (key && !isTemplateKey) return bluebird_1.resolve(key)
+
+	  // get user id
+	  return auth.getSession().then(function(session){
+	    if (isTemplateKey) {
+	      if (session.isAuthenticated) {
+	        // replace user id in template key
+	        return key.replace( '{{userId}}', session.user.id )
+	      } else {
+	        console.error('Using key parameter with template syntax requires authentication.');
+	        // reject with user friendly error message
+	        return bluebird_1.reject('Please log in to upload file.')
+	      }
+	    } else {
+	      // key not provided
+	      var uploadFolder = getFormattedDate() + '_' + getShortId();
+	      if (session.isAuthenticated) {
+	        // construct new user specific key
+	        return '/' + session.user.id + '/' + uploadFolder + '/' + fileName
+	      } else {
+	        // construct anonymous key
+	        var k = '/' + ANONYMOUS_USER_ID + '/' + uploadFolder + '/' + fileName;
+	        return null
+	      }
+	    }
+	  })
+	}
+
+	var keyValidationRegex = /^\/([a-zA-Z0-9\.\-\_]+\/)+([a-zA-Z0-9\.\-\_]+)$/;
+	function validateKey (key) {
+	  if (!key) {
+	    return bluebird_1.resolve(null)
+	  } else if (keyValidationRegex.test(key)) {
+	    return bluebird_1.resolve(key)
+	  } else {
+	    return bluebird_1.reject(
+	      'Key format validation failed.\n'
+	      + key + '\n'
+	      + 'Key must match the following pattern\n'
+	      + '- must start with a slash\n'
+	      + '- must not end with a slash\n'
+	      + '- must have one or more directories\n'
+	      + '- must not include double slashes like: "//"\n'
+	      + '- allowed characters are: a-z A-Z 0-9 _ - . /'
+	    )
+	  }
+	}
+
+	function getCredentials (file, key, fileName) {
+	  // strip leading slash
+	  if (key && key[0] === '/') key = key.substring(1);
+	  // get credentials for upload
+	  var params = {
+	    contentLength: file.size || file.length
+	  };
+	  if (key) {
+	    params.contentType = getMimeTypeFromFileName(key);
+	    params.key = key;
+	  } else if (fileName) {
+	    params.contentType = getMimeTypeFromFileName(fileName);
+	    params.fileName = fileName;
+	  } else {
+	    return bluebird_1.reject('Key or fileName param must be provided.')
+	  }
+	  return callService('S3.getCredentials', params)
+	}
+
+	function uploadFile (file, credentials, onProgress) {
+	  // upload directly to S3 using credentials
+	  var fd = new FormData$1();
+	  fd.append('key', credentials.key);
+	  fd.append('AWSAccessKeyId', credentials.AWSAccessKeyId);
+	  fd.append('acl', credentials.acl);
+	  fd.append('Content-Type', credentials.contentType);
+	  fd.append('policy', credentials.policy);
+	  fd.append('signature', credentials.signature);
+	  fd.append('success_action_status', '201');
+	  if (credentials.contentEncoding) {
+	    fd.append('Content-Encoding', credentials.contentEncoding);
+	  }
+	  fd.append('file', file);
+
+	  if (runtime.isBrowser) {
+
+	    // upload using XHR (in order to provide progress info)
+	    return new bluebird_1(function(resolve, reject){
+	      var xhr = new XMLHttpRequest();
+	      xhr.crossOrigin = 'Anonymous';
+	      xhr.onload = function (event) {
+	        if (xhr.status >= 200 && xhr.status < 300) {
+	          var key = getKeyFromS3Response(xhr.responseText);
+	          key ? resolve(key) : reject ('Error Uploading File: '+xhr.responseText);
+	        } else {
+	          reject ('Error Uploading File: '+xhr.responseText);
+	        }
+	      };
+	      xhr.onerror = function (event) {
+	        reject(event);
+	      };
+	      if (onProgress) {
+	        xhr.upload.addEventListener('progress', function(e){
+	          onProgress(e.loaded, e.total);
+	        }, false);
+	      }
+	      xhr.open('POST', credentials.url, true);
+	      xhr.send(fd);
+	    })
+
+	  } else {
+
+	    // node environment: upload using fetch
+	    return fetch$1(credentials.url, {method: 'POST', body: fd}).then(function (res) {
+	      return res.text()
+	    }).then(function(str){
+	      return getKeyFromS3Response(str) || bluebird_1.reject('Error Uploading File: '+str)
+	    })
+
+	  }
+	}
+
+	function getKeyFromS3Response (str) {
+	  // get file key from response
+	  var s = /<Key>(.*)<\/Key>/gi.exec(str);
+	  return s ? '/'+s[1] : false
+	}
+
+	function getFormattedDate() {
+	  var d = new Date();
+	  return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+	    + '_' + d.getHours() + '-' + d.getMinutes() // + '-' + d.getSeconds()
+	}
+
+	// main
+
+	function getFromStorage (storageId, options) {
 
 	  // WIP: for now, assume that this is only being used for data3d
 	  options = options || {};
@@ -19502,46 +17858,18 @@
 
 	  switch(options.type) {
 	    case 'json':
-	      return fetch$1(convertKeyToUrl$1(key, options)).then(function(response) { return response.json() })
+	      return fetch$1(getUrlFromStorageId(storageId, options)).then(function(response) { return response.json() })
 	    break
 	    default:
-	      return loadData3d(convertKeyToUrl$1(key))
+	      return loadData3d(getUrlFromStorageId(storageId))
 	    break
 	  }
 
-	}
-
-	// helpers
-
-	function convertKeyToUrl$1 (key, options) {
-	  // API
-	  options = options || {};
-	  var cdn = options.cdn !== undefined ? options.cdn : true;
-	  var encode = options.encode !== undefined ? options.encode : true;
-	  // check cache
-	  // if (keyToUrlCache[ key + cdn + encode ]) {
-	  //   return keyToUrlCache[ key + cdn + encode ]
-	  // }
-	  // internals
-	  var processedKey = key;
-	  // remove leading slash
-	  var startsWithSlash = /^\/(.*)$/.exec(processedKey);
-	  if (startsWithSlash) {
-	    processedKey = startsWithSlash[1];
-	  }
-	  // encode key if containig special chars
-	  if (encode && !/^[\.\-\_\/a-zA-Z0-9]+$/.test(processedKey)) {
-	    processedKey = encodeURIComponent(processedKey);
-	  }
-	  // compose url
-	  var url = 'https://'+(cdn ? configs.storageDomain : configs.storageDomainNoCdn)+'/' + processedKey;
-	  // add to cache
-	  // keyToUrlCache[ key + cdn + encode ] = url
-	  return url
 	}
 
 	var storage = {
 	  get: getFromStorage,
+	  getUrlFromStorageId: getUrlFromStorageId,
 	  put: putToStorage
 	};
 
@@ -19553,154 +17881,1666 @@
 	  getViewerUrl: getViewerUrl
 	};
 
-	function publish(input, options) {
+	function traverseData3d$1(data3d, callback) {
 
-	  // detect input type
-	  if (typeof input === 'string') {
+	  callback(data3d);
 
-	    // selector
-	    if (input[0] === '#' || input === 'a-scene') {
-	      return publishFromThreeJs(document.querySelector(input).object3D, options)
+	  if (data3d.children) for (var i=0, l=data3d.children.length; i<l; i++) traverseData3d$1(data3d.children[i], callback);
 
-	    // url
-	    } else {
-	      return fetch(input).then(function(response){
-	        return response.blob()
-	      }).then(function(blob){
-	        return publishFromFiles(blob, options)
-	      })
+	}
+
+	// methods
+
+	traverseData3d$1.materials = function traverseMaterials (data3d, callback) {
+	  
+	  (function traverseMaterials_(data3d, callback) {
+
+	    var material;
+	    var materialKeys = data3d.materialKeys || Object.keys(data3d.materials || {});
+	    for (var i = 0; i < materialKeys.length; i++) {
+	      material = data3d.materials[ materialKeys[ i ] ];
+	      callback(material, data3d);
 	    }
 
-	  // files
-	  } else if (Array.isArray(input) || input instanceof Blob) {
-	    return publishFromFiles(input, options)
+	    if (data3d.children) {
+	      for (var i=0, l=data3d.children.length; i<l; i++) {
+	        traverseMaterials_(data3d.children[i], callback);
+	      }
+	    }
 
-	  // three.js object
-	  } else if (typeof input === 'object' && input.isObject3D) {
-	    return publishFromThreeJs(input, options)
+	  })(data3d, callback);
 
-	  // not supported
+	};
+
+	traverseData3d$1.meshes = function traverseMeshes (data3d, callback) {
+
+	  (function traverseMeshes_(data3d, callback) {
+
+	    var mesh, material;
+	    var meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
+	    for (var i = 0; i < meshKeys.length; i++) {
+	      mesh = data3d.meshes[ meshKeys[ i ] ];
+	      material = data3d.materials[ mesh.material ];
+	      callback(mesh, material, data3d);
+	    }
+
+	    if (data3d.children) {
+	      for (var i=0, l=data3d.children.length; i<l; i++) {
+	        traverseMeshes_(data3d.children[i], callback);
+	      }
+	    }
+
+	  })(data3d, callback);
+
+	};
+
+	// API
+
+	var clone = cloneData3d$1;
+	clone.meshes = cloneMeshes;
+	clone.meshe = cloneSingleMesh;
+	clone.materials = cloneMaterials;
+	clone.material = cloneSingleMaterial;
+
+	// methods
+
+	function cloneData3d$1 (_data3d, options) {
+
+	    var clone = {};
+
+	    clone.meshes = cloneMeshes(_data3d.meshes, options);
+	    clone.materials = cloneMaterials(_data3d.materials);
+
+	    if (_data3d.alternativeMaterialsByMeshKey) {
+	      clone.alternativeMaterialsByMeshKey = JSON.parse(JSON.stringify(_data3d.alternativeMaterialsByMeshKey));
+	    }
+	    if (_data3d._params) {
+	      clone._params = _data3d._params;
+	    }
+	    if (_data3d.position) {
+	      clone.position = _data3d.position.slice(0);
+	    }
+	    if (_data3d.rotDeg) {
+	      clone.rotDeg = _data3d.rotDeg.slice(0);
+	    }
+	    if (_data3d.rotRad) {
+	      clone.rotRad = _data3d.rotRad.slice(0);
+	    }
+	    if (_data3d.children) {
+	      clone.children = _data3d.children.map(function(childData3d){
+	        return cloneData3d$1 (childData3d, options)
+	      });
+	    }
+
+	    return clone
+	  }
+	  
+	  function cloneSingleMesh(mesh, options) {
+	    return cloneMeshes({ x:mesh }, options).x
+	  }
+	  
+	  function cloneMeshes (_meshes, options) {
+
+	    if (!_meshes) {
+	      return {}
+	    }
+
+	    // API
+	    options = options || {};
+	    var clonePositions = !!options.clonePositions;
+	    var cloneNormals = !!options.cloneNormals;
+	    var cloneUvs = !!options.cloneUvs;
+	    var cloneUvsLightmap = !!options.cloneUvsLightmap;
+
+	    // internals
+	    var
+	      meshId, _mesh, mesh,
+	      meshKeys = Object.keys(_meshes),
+	      meshes = {};
+
+	    for (var i = 0, l = meshKeys.length; i < l; i++) {
+
+	      meshId = meshKeys[ i ];
+	      mesh = {};
+	      _mesh = _meshes[ meshId ];
+
+	      // vertices
+	      if (_mesh.positions) {
+	        if (clonePositions && (_mesh.positions instanceof Array || _mesh.positions instanceof Float32Array)) {
+	          mesh.positions = _mesh.positions.slice(0);
+	        } else {
+	          mesh.positions = _mesh.positions;
+	        }
+	      }
+
+	      // normals
+	      if (_mesh.normals) {
+	        if (cloneNormals && (_mesh.normals instanceof Array || _mesh.normals instanceof Float32Array)) {
+	          mesh.normals = _mesh.normals.slice(0);
+	        } else {
+	          mesh.normals = _mesh.normals;
+	        }
+	      }
+
+	      // uvs
+	      if (_mesh.uvs) {
+	        if (cloneUvs && (_mesh.uvs instanceof Array || _mesh.uvs instanceof Float32Array)) {
+	          mesh.uvs = _mesh.uvs.slice(0);
+	        } else {
+	          mesh.uvs = _mesh.uvs;
+	        }
+	      }
+
+	      // uvs lightmap
+	      if (_mesh.uvsLightmap) {
+	        if (cloneUvsLightmap && (_mesh.uvsLightmap instanceof Array || _mesh.uvsLightmap instanceof Float32Array)) {
+	          mesh.uvsLightmap = _mesh.uvsLightmap.slice(0);
+	        } else {
+	          mesh.uvsLightmap = _mesh.uvsLightmap;
+	        }
+	      }
+
+	      // other arrays
+	      if (_mesh.matrix) mesh.matrix = _mesh.matrix.slice(0);
+	      if (_mesh.uvMatrix) mesh.uvMatrix = _mesh.uvMatrix.slice(0);
+	      if (_mesh.meshKeys) mesh.meshKeys = _mesh.meshKeys.slice(0);
+	      if (_mesh.position) mesh.position = _mesh.position.slice(0);
+	      if (_mesh.rotDeg) mesh.rotDeg = _mesh.rotDeg.slice(0);
+	      if (_mesh.rotRad) mesh.rotRad = _mesh.rotRad.slice(0);
+	      if (_mesh.scale) mesh.scale= _mesh.scale.slice(0);
+
+	      // primitives
+	      if (_mesh.v) mesh.v = _mesh.v;
+	      if (_mesh.vertexMode) mesh.vertexMode = _mesh.vertexMode;
+	      if (_mesh.side) mesh.side = _mesh.side;
+	      if (_mesh.material) mesh.material = _mesh.material;
+	      if (_mesh.visibleInPersonView) mesh.visibleInPersonView = _mesh.visibleInPersonView;
+	      if (_mesh.visibleInBirdView) mesh.visibleInBirdView = _mesh.visibleInBirdView;
+	      if (_mesh.visibleInFloorplanView) mesh.visibleInFloorplanView = _mesh.visibleInFloorplanView;
+
+	      meshes[ meshId ] = mesh;
+	    }
+
+	    // output
+	    return meshes
+	  }
+	  
+	  function cloneSingleMaterial(material) {
+	    return cloneMaterials({ x:material }).x
+	  }
+	  
+	  function cloneMaterials(_materials) {
+
+	    if (!_materials) {
+	      return {}
+	    }
+
+	    var materialId, _material, materials, material, materialKeys, _attributes, _attributeKeys, attributeKey, type, attributes, isExtended;
+
+	    materialKeys = Object.keys(_materials);
+	    // result
+	    materials = {};
+
+	    if (materialKeys.length === 0) {
+	      return {}
+	    }
+
+	    if (_materials[ materialKeys[0] ].attributes) {
+	      isExtended = true;
+	      // deep copy source
+	      materials = JSON.parse(JSON.stringify(_materials));
+	    } else {
+	      isExtended = false;
+	    }
+
+	    for (var i = 0, l = materialKeys.length; i < l; i++) {
+
+	      materialId = materialKeys[ i ];
+	      _attributes = isExtended ? _materials[ materialId ].attributes : _materials[ materialId ];
+
+	      if (typeof _attributes === 'string') {
+
+	        if (isExtended) {
+	          materials[ materialId ].attributes = _attributes;
+	        } else {
+	          materials[ materialId ] = _attributes;
+	        }
+
+	      } else if (_attributes) {
+
+	        attributes = {};
+	        _attributeKeys = Object.keys(_attributes);
+
+	        for (var j= 0, k=_attributeKeys.length; j<k; j++) {
+	          attributeKey = _attributeKeys[j];
+	          type = typeof _attributes[ attributeKey ];
+	          if (type === 'string' || type === 'number' || type === 'boolean') {
+	            // primitive
+	            attributes[ attributeKey ] = _attributes[ attributeKey ];
+	          } else if (_attributes[ attributeKey ]) {
+	            if (_attributes[ attributeKey ].length === 3) {
+	              // color array
+	              attributes[ attributeKey ] = [
+	                _attributes[ attributeKey ][0],
+	                _attributes[ attributeKey ][1],
+	                _attributes[ attributeKey ][2]
+	              ];
+	            } else if (_attributes[ attributeKey ].length === 2) {
+	              // size array
+	              attributes[ attributeKey ] = [
+	                _attributes[ attributeKey ][0],
+	                _attributes[ attributeKey ][1]
+	              ];
+	            }
+	          }
+	        }
+
+	        if (isExtended) {
+	          materials[ materialId ].attributes = attributes;
+	        } else {
+	          materials[ materialId ] = attributes;
+	        }
+
+	      }
+
+	    }
+
+	    return materials
+
+	  }
+
+	// methods
+
+	function projectAxisY (v) {
+
+	  var uvs = new Float32Array(v.length / 1.5);
+	  var uvPos = 0;
+
+	  var i, l;
+	  for (i = 0, l = v.length; i < l; i += 9) {
+
+	    uvs[uvPos] = v[i + 2];
+	    uvs[uvPos + 1] = v[i];
+	    uvs[uvPos + 2] = v[i + 5];
+	    uvs[uvPos + 3] = v[i + 3];
+	    uvs[uvPos + 4] = v[i + 8];
+	    uvs[uvPos + 5] = v[i + 6];
+	    uvPos += 6;
+
+	  }
+
+	  return uvs
+
+	}
+	projectAxisY.title = 'Project Top Down';
+
+	function architectural (v) {
+
+	  var uvs = new Float32Array(v.length / 1.5);
+	  var uvPos = 0;
+
+	  var i, l, n, components;
+	  for (i = 0, l = v.length; i < l; i += 9) {
+
+	    // calculate face normal
+	    // cross product (a-b) x (c-b)
+	    n = [
+	      (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]),
+	      (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]),
+	      (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3])
+	    ];
+
+	    // normals should be absolute
+	    if (n[0] < 0) {
+	      n[0] *= -1;
+	    }
+	    if (n[1] < 0) {
+	      n[1] *= -1;
+	    }
+	    if (n[2] < 0) {
+	      n[2] *= -1;
+	    }
+
+	    // highest first?
+	    components = [1, 0, 2].sort(function (a, b) {
+	      return n[a] - n[b]
+	    });
+
+	    uvs[uvPos] = v[i + components[1]];
+	    uvs[uvPos + 1] = v[i + components[0]];
+	    uvs[uvPos + 2] = v[i + 3 + components[1]];
+	    uvs[uvPos + 3] = v[i + 3 + components[0]];
+	    uvs[uvPos + 4] = v[i + 6 + components[1]];
+	    uvs[uvPos + 5] = v[i + 6 + components[0]];
+	    uvPos += 6;
+
+	  }
+
+	  return uvs
+
+	}
+	architectural.title = 'Architectural';
+
+	// API
+
+	var getUvsBuffer = {
+	  architectural: architectural,
+	  projectAxisY: projectAxisY
+	};
+
+	var DEBUG = true;
+
+	// methods
+
+	function flat (v) {
+	  // calculate normals for flat shading
+	  var n = new Float32Array(v.length);
+	  var i, l, crx, cry, crz, invScalar;
+	  var hasFaultyTrigons = false;
+	  for (i = 0, l = v.length; i < l; i += 9) {
+	    // cross product (a-b) x (c-b)
+	    crx = (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]);
+	    cry = (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]);
+	    crz = (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3]);
+	    // normalize
+	    invScalar = 1 / Math.sqrt(crx * crx + cry * cry + crz * crz);
+	    // Fallback for trigons that don't span an area
+	    if (invScalar === Infinity) {
+	      invScalar = 0;
+	      hasFaultyTrigons = true;
+	    }
+	    // set normals
+	    n[i] = n[i + 3] = n[i + 6] = crx * invScalar;
+	    n[i + 1] = n[i + 4] = n[i + 7] = cry * invScalar;
+	    n[i + 2] = n[i + 5] = n[i + 8] = crz * invScalar;
+
+	  }
+	  if (DEBUG && hasFaultyTrigons) console.error('Geometry contains trigons that don\'t span an area.');
+	  return n
+	}
+	flat.title = 'Flat';
+
+	function smooth (v) {
+
+	  // output
+
+	  var normals = new Float32Array(v.length);
+
+	  // internals
+
+	  var hash, hashes = [], vertexRelatedNormals = {}, faceNormals, averageNormal;
+	  var n;
+	  var crx, cry, crz, invScalar;
+	  var hasFaultyTrigons = false;
+	  var i, l, i2, l2;
+
+	  ////////// 1. connect vertices to faces
+
+	  // go face by face
+	  for (i = 0, l = v.length; i < l; i += 9) {
+
+	    // calculate face normal
+	    // cross product (a-b) x (c-b)
+	    crx = (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]);
+	    cry = (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]);
+	    crz = (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3]);
+	    // normalize
+	    invScalar = 1 / Math.sqrt(crx * crx + cry * cry + crz * crz);
+	    if (invScalar === Infinity) {
+	      hasFaultyTrigons = true;
+	      invScalar = 0;
+	    }
+	    // set normals
+	    n = [crx * invScalar, cry * invScalar, crz * invScalar];
+
+	    for (i2 = 0, l2 = 9; i2 < l2; i2 += 3) {
+	      hash = v[i + i2] + '_' + v[i + i2 + 1] + '_' + v[i + i2 + 2];
+	      if (!vertexRelatedNormals[hash]) {
+	        vertexRelatedNormals[hash] = {
+	          faceNormals: [n]
+	        };
+	        hashes[hashes.length] = hash;
+	      } else {
+	        vertexRelatedNormals[hash].faceNormals.push(n);
+	      }
+	    }
+	  }
+
+	  ////////// 2. calculate average normals from related face normals
+
+	  var avx, avy, avz;
+	  for (i = 0, l = hashes.length; i < l; i++) {
+	    hash = hashes[i];
+	    faceNormals = vertexRelatedNormals[hash].faceNormals;
+	    avx = 0;
+	    avy = 0;
+	    avz = 0;
+	    for (i2 = 0, l2 = faceNormals.length; i2 < l2; i2++) {
+	      avx += faceNormals[i2][0];
+	      avy += faceNormals[i2][1];
+	      avz += faceNormals[i2][2];
+	    }
+	    // normalize
+	    invScalar = 1 / Math.sqrt(avx * avx + avy * avy + avz * avz);
+	    if (invScalar === Infinity) {
+	      hasFaultyTrigons = true;
+	      invScalar = 0;
+	    }
+	    // set average normal
+	    vertexRelatedNormals[hash].averageNormal = [avx * invScalar, avy * invScalar, avz * invScalar];
+	  }
+
+	  ////////// 3. apply average normals to vertices
+
+	  for (i = 0, l = v.length; i < l; i += 3) {
+	    hash = v[i] + '_' + v[i + 1] + '_' + v[i + 2];
+	    averageNormal = vertexRelatedNormals[hash].averageNormal;
+	    normals[i] = averageNormal[0];
+	    normals[i + 1] = averageNormal[1];
+	    normals[i + 2] = averageNormal[2];
+	  }
+
+	  // return
+	  if (DEBUG && hasFaultyTrigons) console.error('Shade Smooth: Geometry contains trigons that don\'t span an area.');
+	  return normals
+
+	}
+	smooth.title = 'Smooth';
+
+	// API
+
+	var getNormalsBuffer = {
+	  flat: flat,
+	  smooth: smooth,
+	};
+
+	// placeholder
+	function normalizeMaterials(x) { return x; }
+
+	// API
+
+	var consolidate = consolidateData3d$1;
+	consolidate.meshes = consolidateMeshes;
+	consolidate.materials = consolidateMaterials;
+
+	// constants
+
+	var IS_DEBUG_MODE = true;
+	var DEG_TO_RAD = Math.PI / 180;
+	var RAD_TO_DEG = 180 / Math.PI;
+
+	// main
+	function consolidateData3d$1(data3d, options){
+
+	  // API
+	  options = options || {};
+	  var consolidateMaterialsEnabled = options.consolidateMaterials !== undefined ? options.consolidateMaterials : true;
+	  var consolidateMeshesEnabled = options.consolidateMeshes !== undefined ? options.consolidateMeshes : true;
+	  var el3d = options.el3d;
+	  var warningCallback = options.onWarning;
+
+	  // make clone so that we can apply changes
+	  data3d = clone(data3d);
+
+	  // support hierarchy
+	  var resolvePromises = [];
+	  traverseData3d$1(data3d, function(data3d){
+
+	    // add node id
+	    data3d.nodeId = el3d ? el3d.params.id : uuid.generate();
+
+	    // add keys to data3d if not present
+	    data3d.meshes = data3d.meshes || {};
+	    data3d.meshKeys = data3d.meshKeys || Object.keys(data3d.meshes);
+	    data3d.materials = data3d.materials || {};
+	    data3d.materialKeys = data3d.materialKeys || Object.keys(data3d.materials);
+
+	    // add params
+	    if (el3d && !data3d._params) {
+	      data3d._params = el3d.toObject({ recursive: false });
+	    }
+
+	    // add position
+	    if (!data3d.position) {
+	      if (el3d) {
+	        data3d.position = [ el3d.params.x || 0, el3d.params.y || 0, el3d.params.z || 0 ];
+	      } else {
+	        data3d.position = [ 0, 0, 0 ];
+	      }
+	    }
+
+	    // add rotation
+	    if (!data3d.rotRad && !data3d.rotDeg) {
+	      // both missing
+	      if (el3d) {
+	        data3d.rotDeg = [ el3d.params.rx || 0, el3d.params.ry || 0, el3d.params.rz || 0 ];
+	      } else {
+	        data3d.rotDeg = [ 0, 0, 0 ];
+	      }
+	      data3d.rotRad = [ data3d.rotDeg[0] * DEG_TO_RAD, data3d.rotDeg[1] * DEG_TO_RAD, data3d.rotDeg[2] * DEG_TO_RAD ];
+	    } else if (!data3d.rotDeg) {
+	      // only rot deg missing
+	      data3d.rotDeg = [ data3d.rotRad[0] * RAD_TO_DEG, data3d.rotRad[1] * RAD_TO_DEG, data3d.rotRad[2] * RAD_TO_DEG ];
+	    } else {
+	      // only rot rad missing
+	      data3d.rotRad = [ data3d.rotDeg[0] * DEG_TO_RAD, data3d.rotDeg[1] * DEG_TO_RAD, data3d.rotDeg[2] * DEG_TO_RAD ];
+	    }
+
+	    // add children
+	    if (!data3d.children) {
+	      data3d.children = [];
+	    }
+
+	    // resolve meshes
+	    if (consolidateMeshesEnabled) {
+	      data3d.meshes = consolidateMeshes(data3d.meshes, el3d ? el3d.params.id : null);
+	      data3d.meshKeys = Object.keys(data3d.meshes);
+	    }
+
+	    // internals
+	    var
+	      meshes = data3d.meshes,
+	      meshKeys = data3d.meshKeys,
+	      materials = data3d.materials,
+	      nodeId = el3d && el3d.params ? el3d.params.id : null,
+	      i, l, meshId, mesh, materialId, positions, uvs, uvs2, normals, material, materialKeysHaveChanged;
+
+	    // check meshes
+	    for (i = 0, l = meshKeys.length; i < l; i++) {
+
+	      meshId = meshKeys[ i ];
+	      mesh = meshes[ meshId ];
+	      materialId = mesh.material;
+	      material = materials && materials[ materialId ] ? materials[ materialId ] : null;
+	      positions = mesh.positions;
+	      normals = mesh.normals;
+	      uvs = mesh.uvs;
+	      uvs2 = mesh.uvsLightmap;
+
+	      // mesh position
+	      if (!mesh.position) {
+	        mesh.position = [ 0,0,0 ];
+	      }
+
+	      // mesh rotation
+	      if (!mesh.rotRad && !mesh.rotDeg) {
+	        // both missing
+	        mesh.rotDeg = [ 0,0,0 ];
+	        mesh.rotRad = [ 0,0,0 ];
+	      } else if (!mesh.rotDeg) {
+	        // only rot deg missing
+	        mesh.rotDeg = [ mesh.rotRad[0] * RAD_TO_DEG, mesh.rotRad[1] * RAD_TO_DEG, mesh.rotRad[2] * RAD_TO_DEG ];
+	      } else {
+	        // only rot rad missing
+	        mesh.rotRad = [ mesh.rotDeg[0] * DEG_TO_RAD, mesh.rotDeg[1] * DEG_TO_RAD, mesh.rotDeg[2] * DEG_TO_RAD ];
+	      }
+
+	      // mesh scale
+	      if (!mesh.scale) {
+	        mesh.scale = [ 1,1,1 ];
+	      }
+
+	      // mesh in relation to material
+	      if (material) {
+
+	        // check if material with texture has UVs
+	        if (
+	          materialHasTexture(material) &&
+	          (mesh.uvs === undefined || mesh.uvs.length === 0)
+	        ) {
+	          // generate fallback UVs
+	          if (IS_DEBUG_MODE) console.error('Mesh with material "'+materialId+'" has texture(s) has no UVs. Fallback to architectural UV mapping.');
+	          if (warningCallback) warningCallback('Mesh with material "'+materialId+'" has texture(s) has no UVs. Fallback to architectural UV mapping.');
+	          mesh.uvs = getUvsBuffer.architectural(mesh.positions);
+	        }
+
+	        // check if material with lightmap has lightmap uvs
+	        if (
+	          (material.mapLight || material.mapLightPreview) &&
+	          (mesh.uvsLightmap === undefined || mesh.uvsLightmap.length === 0)
+	        ) {
+	          // delete texture references as we can not generate lightmap fallbacks
+	          if (IS_DEBUG_MODE) console.error('Mesh with material "'+materialId+'" has lightmap has no lightmap UVs. Lightmap will be ignored.');
+	          if (warningCallback) warningCallback('Mesh with material "'+materialId+'" has lightmap has no lightmap UVs. Lightmap will be ignored.');
+	          delete material.mapLight;
+	          delete material.mapLightPreview;
+
+	        }
+
+	        // create fallback material
+	      } else {
+	        if (materialId) {
+	          console.error('Node:'+nodeId+' Material by ID "' + materialId + '" not found.', materials);
+	          if (warningCallback) warningCallback('Material by ID "' + materialId + '" not found.');
+	        } else {
+	          materialId = getShortId();
+	          mesh.material = materialId;
+	        }
+	        materials[ materialId ] = {
+	          colorDiffuse: [0.85,0.85,0.85]
+	        };
+	        materialKeysHaveChanged = true;
+	      }
+
+	    }
+
+	    // regenerate material keys if needed
+	    if (materialKeysHaveChanged) {
+	      data3d.materialKeys = Object.keys(materials);
+	    }
+
+	    // resolve materials
+	    if (consolidateMaterialsEnabled) {
+
+	      resolvePromises.push(
+	        consolidateMaterials(data3d.materials).then(function(materials){
+	          data3d.materials = normalizeMaterials(materials);
+	          return data3d
+	        })
+	      );
+
+	    } else {
+
+	      data3d.materials = normalizeMaterials(data3d.materials);
+	      resolvePromises.push(Promise.resolve(data3d));
+
+	    }
+
+	  });
+
+	  return Promise.all(resolvePromises).then(function(){
+	    return data3d
+	  })
+
+	}
+
+	// helpers
+
+	function materialHasTexture(m) {
+	  return m.mapDiffuse ||
+	    m.mapSpecular ||
+	    m.mapNormal ||
+	    m.mapAlpha ||
+	    m.mapDiffusePreview ||
+	    m.mapSpecularPreview ||
+	    m.mapNormalPreview ||
+	    m.mapAlphaPreview
+	}
+
+	function consolidateMaterials(_materials){
+
+	  // TODO: introduce bundled calls to material API to request multiple materials in one call
+
+	  var promiseKeys = [];
+	  var promises = [];
+	  var materialKeys = _materials ? Object.keys(_materials) : [];
+	  var materialKey;
+	  var i, l;
+	  // result
+	  var materials = {};
+
+	  if (!materialKeys.length) {
+	    return Promise.resolve(materials)
+	  }
+
+	  var isExtended = (materialKeys.length && _materials[ materialKeys[0] ].attributes);
+
+	  // process
+	  for (i= 0, l=materialKeys.length; i<l; i++) {
+	    materialKey = materialKeys[i];
+
+	    // shallow clone material
+	    if (isExtended) {
+	      materials[ materialKey ] = _materials[ materialKey ].attributes;
+	    } else {
+	      materials[ materialKey ] = _materials[ materialKey ];
+	    }
+
+	    // convert material ids to attributes
+	    if (typeof materials[ materialKey ] === 'string') {
+	      if (materials[ materialKey ][0] === '#') {
+	        // is hex color definition: convert to rgb
+	        materials[ materialKey ] = {
+	          colorDiffuse: hexToRgb(materials[ materialKey ])
+	        };
+	      } else {
+	        // is global id: get attributes from registry
+	        promiseKeys[ promiseKeys.length ] = materialKey;
+	        promises[ promises.length ] = api.call('Material.get', materials[ materialKey ]);
+	      }
+	    }
+
+	  }
+
+	  if (promiseKeys.length === 0) {
+
+	    return Promise.resolve(normalizeMaterials(materials))
+
 	  } else {
-	    throw new Error('Unknown input param')
+
+	    return Promise.all(promises).then(function(resolvedMaterials){
+
+	      // replace resolved materials
+	      for (i= 0, l=promiseKeys.length; i<l; i++) {
+	        materials[ promiseKeys[ i ] ] = resolvedMaterials[ i ].attributes;
+	      }
+
+	      return normalizeMaterials(materials)
+
+	    })
+
+	  }
+
+	}
+	  
+	function consolidateMeshes (meshes, nodeId){
+	    
+	    if (!meshes) {
+
+	      return meshes
+
+	    } else {
+
+	      // internals
+	      var
+	        meshKeys = Object.keys(meshes),
+	        i, l, mesh;
+
+	      for (i = 0, l = meshKeys.length; i < l; i++) {
+	        mesh = meshes[ meshKeys[ i ] ];
+
+	        // check if positions are defined
+	        if (mesh.positions === undefined || mesh.positions.length === 0) {
+	          delete meshes[ meshKeys[ i ] ];
+	          continue
+	        }
+	        // check type
+	        else if (!(mesh.positions instanceof Float32Array)) {
+	          // convert to float array if needed
+	          if (mesh.positions instanceof Array) {
+	            mesh.positions = new Float32Array(mesh.positions);
+	          }
+	          // type not supported
+	          else {
+	            if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Position vertices must be of type Float32Array or Array. Mesh will be ignored', mesh.position);
+	            delete meshes[ meshKeys[ i ] ];
+	            continue
+	          }
+	        }
+	        // check if multiple of 9
+	        if (mesh.positions.length/9 % 1 !== 0) {
+	          if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Invalid position vertices count: ' + mesh.positions.length + '. Has to be multiple of 9. Mesh will be ignored.');
+	          delete meshes[ meshKeys[ i ] ];
+	          continue
+	        }
+
+	        // check if normals are defined
+	        if (mesh.normals === undefined || mesh.normals.length === 0) {
+	          mesh.normals = getNormalsBuffer.flat(mesh.positions);
+	        }
+	        // check if normal generation method exists
+	        else if (typeof mesh.normals === 'string') {
+	          if (getNormalsBuffer[ mesh.normals ]) {
+	            // generate normals
+	            mesh.normals = getNormalsBuffer[ mesh.normals ](mesh.positions);
+	          } else {
+	            // unknown shading method. fallback to flat
+	            if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Unknown normal shading method "' + mesh.normals + '". Fallback to flat shading.');
+	            mesh.normals = getNormalsBuffer.flat(mesh.positions);
+	          }
+	        }
+	        // check type
+	        else if (!(mesh.normals instanceof Float32Array)) {
+	          // convert to float array if needed
+	          if (mesh.normals instanceof Array) {
+	            mesh.normals = new Float32Array(mesh.normals);
+	          }
+	          // type not supported
+	          else {
+	            if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Normal vertices should be of type Float32Array or Array. Fallback to flat shading.', mesh.normals);
+	            mesh.normals = getNormalsBuffer.flat(mesh.positions);
+	          }
+	        }
+	        // check count
+	        if (mesh.normals.length !== mesh.positions.length) {
+	          if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Position vertices and normal vertices count has to be the same. Fallback to flat Shading. ', mesh.normals.length, mesh.normals.length);
+	          mesh.normals = getNormalsBuffer.flat(mesh.positions);
+	        }
+
+	        // check uvs channel 1
+	        if (mesh.uvs) {
+	          // defined as string
+	          if (typeof mesh.uvs === 'string') {
+	            // check if uv generation method exists
+	            if (getUvsBuffer[ mesh.uvs ]) {
+	              // generate uvs
+	              mesh.uvs = getUvsBuffer[ mesh.uvs ](mesh.positions);
+	            } else {
+	              // unknown mapping method. fallback to architectural
+	              if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Unknown UV1 mapping method "' + mesh.uvs + '". Fallback to architectural UV mapping.');
+	              mesh.uvs = getUvsBuffer.architectural(mesh.positions);
+	            }
+	          }
+	          // check type
+	          else if (!(mesh.uvs instanceof Float32Array)) {
+	            // convert to float32array if needed
+	            if (mesh.uvs instanceof Array) {
+	              mesh.uvs = new Float32Array(mesh.uvs);
+	            }
+	            // mesh uvs not of supported type
+	            else {
+	              if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' UV Vertices should be of type Float32Array or Array. Fallback to architectural UV mapping.', mesh.uvs);
+	              mesh.uvs = getUvsBuffer.architectural(mesh.positions);
+	            }
+	          }
+	          // check length
+	          if (mesh.uvs.length && mesh.uvs.length * 1.5 !== mesh.positions.length) {
+	            if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Position Vertices and UV vertices count not in ratio of 3:2. Fallback to architectural UV mapping. ', mesh.positions.length, mesh.uvs.length);
+	            mesh.uvs = getUvsBuffer.architectural(mesh.positions);
+	          }
+	        }
+
+	        // check uvs channel 2
+	        if (mesh.uvsLightmap && mesh.uvsLightmap.length && mesh.uvs.length * 1.5 !== mesh.positions.length) {
+	          if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Position Vertices and Lightmap UV Vertices count not in ratio of 3:2.', mesh.positions.length, mesh.uvs.length);
+	          delete mesh.uvsLightmap;
+	        }
+
+	      }
+
+	      return meshes
+
+	    }
+	  }
+
+	// function
+
+	function wait(duration, passThroughValue) {
+	  return new bluebird_1(function (resolve, reject) {
+	    setTimeout(function(){
+	      resolve(passThroughValue);
+	    }, duration);
+	  })
+	}
+
+	function fetchImage (url) {
+		return new bluebird_1(function (resolve, reject) {
+
+			var img = document.createElement('img');
+			img.crossOrigin = 'Anonymous';
+
+			img.onload = function () {
+				resolve(img);
+			};
+
+			var triedWithCacheBust = false;
+			img.onerror = function () {
+				if(triedWithCacheBust) {
+					reject('Error loading image ' + url);
+				} else {
+					// try again with cache busting to avoid things like #1510
+					triedWithCacheBust = true;
+					img.src = ( url.indexOf('?') > -1 ? '&' : '&' ) + 'cacheBust=' + new Date().getTime();
+				}
+			};
+
+			// initiate image loading
+			img.src = url;
+
+		})
+	}
+
+	// settings
+
+	var DEFAULT_MAX_WIDTH = 2048;
+	var DEFAULT_MAX_HEIGHT = 2048;
+
+	// main
+
+	function scaleDownImage (input, options) {
+	  runtime.assertBrowser();
+
+	  // API
+	  options = options || {};
+	  var maxWidth = options.maxWidth || DEFAULT_MAX_WIDTH;
+	  var maxHeight = options.maxHeight || DEFAULT_MAX_HEIGHT;
+	  var powerOfTwo = !!options.powerOfTwo;
+
+	  // run
+	  return new bluebird_1(function(resolve, reject){
+
+	    // internals
+	    var canvas;
+	    var scale;
+	    var result;
+	    var originalWidth = input.width;
+	    var originalHeight = input.height;
+
+	    // convert original image size to power of two before scaling
+	    // because pixelPerfect algorithm allows only one dimensional scaling
+	    var makePowerOfTwo = powerOfTwo && !(checkPowerOfTwo$1(originalWidth) && checkPowerOfTwo$1(originalHeight));
+	    if (makePowerOfTwo) {
+	      originalWidth = getNearestPowerOfTwo(originalWidth);
+	      originalHeight = getNearestPowerOfTwo(originalHeight);
+	    }
+
+	    // cap width and height to max
+	    var width = Math.min(originalWidth, maxWidth);
+	    var height = Math.min(originalHeight, maxHeight);
+
+	    // scale down smaller size
+	    if (originalWidth < originalHeight) {
+	      width = height * (originalWidth / originalHeight);
+	    } else {
+	      height = width * (originalHeight / originalWidth);
+	    }
+
+	    // normalize input
+	    canvas = getCanvas(input, originalWidth, originalHeight);
+
+	    // scale if needed
+	    scale = width / originalWidth;
+	    if (scale < 1) {
+	      // scale image
+	      result = downScaleCanvas(canvas, width / originalWidth);
+	    } else {
+	      // nothing to scale
+	      result = canvas;
+	    }
+
+	    resolve(result);
+
+	  })
+	}
+
+	// helpers
+
+	function checkPowerOfTwo$1 (value) {
+	  return ( value & ( value - 1 ) ) === 0 && value !== 0
+	}
+
+	function getNearestPowerOfTwo (n) {
+	  // next best power of two
+	  var l = Math.log(n) / Math.LN2;
+	  return Math.pow(2, Math.round(l))
+	}
+
+	function getCanvas(input, width, height) {
+	  var canvas = document.createElement('canvas');
+	  canvas.width = width;
+	  canvas.height = height;
+	  var context = canvas.getContext('2d');
+	  // add filled white background, otherwise transparent png image areas turn black
+	  context.fillStyle="#FFFFFF";
+	  context.fillRect(0,0,width,height);
+	  context.drawImage(input, 0, 0, width, height);
+	  return canvas
+	}
+
+	// scales the canvas by (float) scale < 1
+	// returns a new canvas containing the scaled image.
+	function downScaleCanvas(cv, scale) {
+	  if (!(scale < 1) || !(scale > 0)) throw ('scale must be a positive number <1 ');
+	  scale = normaliseScale(scale);
+	  var tBuffer = new Float32Array(3 * cv.width * cv.height); // temporary buffer Float32 rgb
+	  var sqScale = scale * scale; // square scale =  area of a source pixel within target
+	  var sw = cv.width; // source image width
+	  var sh = cv.height; // source image height
+	  var tw = Math.floor(sw * scale); // target image width
+	  var th = Math.floor(sh * scale); // target image height
+	  var sx = 0, sy = 0, sIndex = 0; // source x,y, index within source array
+	  var tx = 0, ty = 0, yIndex = 0, tIndex = 0; // target x,y, x,y index within target array
+	  var tX = 0, tY = 0; // rounded tx, ty
+	  var w = 0, nw = 0, wx = 0, nwx = 0, wy = 0, nwy = 0; // weight / next weight x / y
+	  // weight is weight of current source point within target.
+	  // next weight is weight of current source point within next target's point.
+	  var crossX = false; // does scaled px cross its current px right border ?
+	  var crossY = false; // does scaled px cross its current px bottom border ?
+	  var sBuffer = cv.getContext('2d').getImageData(0, 0, sw, sh).data; // source buffer 8 bit rgba
+	  var sR = 0, sG = 0,  sB = 0; // source's current point r,g,b
+
+	  for (sy = 0; sy < sh; sy++) {
+	    ty = sy * scale; // y src position within target
+	    tY = 0 | ty;     // rounded : target pixel's y
+	    yIndex = 3 * tY * tw;  // line index within target array
+	    crossY = (tY !== (0 | ( ty + scale )));
+	    if (crossY) { // if pixel is crossing botton target pixel
+	      wy = (tY + 1 - ty); // weight of point within target pixel
+	      nwy = (ty + scale - tY - 1); // ... within y+1 target pixel
+	    }
+	    for (sx = 0; sx < sw; sx++, sIndex += 4) {
+	      tx = sx * scale; // x src position within target
+	      tX = 0 |  tx;    // rounded : target pixel's x
+	      tIndex = yIndex + tX * 3; // target pixel index within target array
+	      crossX = (tX !== (0 | (tx + scale)));
+	      if (crossX) { // if pixel is crossing target pixel's right
+	        wx = (tX + 1 - tx); // weight of point within target pixel
+	        nwx = (tx + scale - tX - 1); // ... within x+1 target pixel
+	      }
+	      sR = sBuffer[sIndex    ];   // retrieving r,g,b for curr src px.
+	      sG = sBuffer[sIndex + 1];
+	      sB = sBuffer[sIndex + 2];
+	      if (!crossX && !crossY) { // pixel does not cross
+	        // just add components weighted by squared scale.
+	        tBuffer[tIndex    ] += sR * sqScale;
+	        tBuffer[tIndex + 1] += sG * sqScale;
+	        tBuffer[tIndex + 2] += sB * sqScale;
+	      } else if (crossX && !crossY) { // cross on X only
+	        w = wx * scale;
+	        // add weighted component for current px
+	        tBuffer[tIndex    ] += sR * w;
+	        tBuffer[tIndex + 1] += sG * w;
+	        tBuffer[tIndex + 2] += sB * w;
+	        // add weighted component for next (tX+1) px
+	        nw = nwx * scale;
+	        tBuffer[tIndex + 3] += sR * nw;
+	        tBuffer[tIndex + 4] += sG * nw;
+	        tBuffer[tIndex + 5] += sB * nw;
+	      } else if (!crossX && crossY) { // cross on Y only
+	        w = wy * scale;
+	        // add weighted component for current px
+	        tBuffer[tIndex    ] += sR * w;
+	        tBuffer[tIndex + 1] += sG * w;
+	        tBuffer[tIndex + 2] += sB * w;
+	        // add weighted component for next (tY+1) px
+	        nw = nwy * scale;
+	        tBuffer[tIndex + 3 * tw    ] += sR * nw;
+	        tBuffer[tIndex + 3 * tw + 1] += sG * nw;
+	        tBuffer[tIndex + 3 * tw + 2] += sB * nw;
+	      } else { // crosses both x and y : four target points involved
+	        // add weighted component for current px
+	        w = wx * wy;
+	        tBuffer[tIndex    ] += sR * w;
+	        tBuffer[tIndex + 1] += sG * w;
+	        tBuffer[tIndex + 2] += sB * w;
+	        // for tX + 1; tY px
+	        nw = nwx * wy;
+	        tBuffer[tIndex + 3] += sR * nw;
+	        tBuffer[tIndex + 4] += sG * nw;
+	        tBuffer[tIndex + 5] += sB * nw;
+	        // for tX ; tY + 1 px
+	        nw = wx * nwy;
+	        tBuffer[tIndex + 3 * tw    ] += sR * nw;
+	        tBuffer[tIndex + 3 * tw + 1] += sG * nw;
+	        tBuffer[tIndex + 3 * tw + 2] += sB * nw;
+	        // for tX + 1 ; tY +1 px
+	        nw = nwx * nwy;
+	        tBuffer[tIndex + 3 * tw + 3] += sR * nw;
+	        tBuffer[tIndex + 3 * tw + 4] += sG * nw;
+	        tBuffer[tIndex + 3 * tw + 5] += sB * nw;
+	      }
+	    } // end for sx
+	  } // end for sy
+
+	  // create result canvas
+	  var resCV = document.createElement('canvas');
+	  resCV.width = tw;
+	  resCV.height = th;
+	  var resCtx = resCV.getContext('2d');
+
+	//    var imgRes = resCtx.getImageData(resCV.width/2 - tw/2, resCV.height/2 - th/2, tw, th);
+	  var imgRes = resCtx.getImageData(0, 0, tw, th);
+	  var tByteBuffer = imgRes.data;
+	  // convert float32 array into a UInt8Clamped Array
+	  var pxIndex = 0; //
+	  for (sIndex = 0, tIndex = 0; pxIndex < tw * th; sIndex += 3, tIndex += 4, pxIndex++) {
+	    tByteBuffer[tIndex] = 0 | ( tBuffer[sIndex]);
+	    tByteBuffer[tIndex + 1] = 0 | (tBuffer[sIndex + 1]);
+	    tByteBuffer[tIndex + 2] = 0 | (tBuffer[sIndex + 2]);
+	    tByteBuffer[tIndex + 3] = 255;
+	    // set back temp buffer
+	    tBuffer[sIndex] = 0;
+	    tBuffer[sIndex + 1] = 0;
+	    tBuffer[sIndex + 2] = 0;
+	  }
+
+	  // writing result to canvas.
+	  resCtx.putImageData(imgRes, 0, 0);
+	  return resCV;
+
+	}
+
+	function log2$1(v) {
+	  // taken from http://graphics.stanford.edu/~seander/bithacks.html
+	  var b =  [ 0x2, 0xC, 0xF0, 0xFF00, 0xFFFF0000 ];
+	  var S =  [1, 2, 4, 8, 16];
+	  var i=0, r=0;
+
+	  for (i = 4; i >= 0; i--) {
+	    if (v & b[i])  {
+	      v >>= S[i];
+	      r |= S[i];
+	    }
+	  }
+	  return r;
+	}
+
+	// normalize a scale <1 to avoid some rounding issue with js numbers
+	function normaliseScale(s) {
+	  if (s>1) throw('s must be <1');
+	  s = 0 | (1/s);
+	  var l = log2$1(s);
+	  var mask = 1 << l;
+	  var accuracy = 4;
+	  while(accuracy && l) { l--; mask |= 1<<l; accuracy--; }
+	  return 1 / ( s & mask );
+	}
+
+	function getDefaultFilename () {
+	  var d = new Date();
+	  return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+	    + '_' + d.getHours() + '-' + d.getMinutes() + '-' + d.getSeconds() + '_' + getShortId()
+	}
+
+	function getBlobFromCanvas (canvas, options) {
+	  runtime.assertBrowser();
+
+	  // API
+	  options = options || {};
+	  var mimeType = options.mimeType || 'image/jpeg'; // can be: 'image/jpeg' or 'image/png'
+	  var quality = options.quality || 98;
+	  var fileName = options.fileName || getDefaultFilename() + (mimeType === 'image/jpeg' ? '.jpg' : '.png');
+
+	  // run
+	  return new bluebird_1(function (resolve, reject) {
+	    canvas.toBlob(function (blob) {
+	      blob.name = fileName;
+	      resolve(blob);
+	    }, mimeType, quality);
+	  })
+
+	}
+
+	var FILE_READ_METHODS = {
+	  undefined: 'readAsText',
+	  text: 'readAsText',
+	  dataUrl: 'readAsDataURL',
+	  binaryString: 'readAsBinaryString',
+	  arrayBuffer: 'readAsArrayBuffer'
+	};
+
+	function readFile(blob, type) {
+	  runtime.assertBrowser();
+	  
+	  return new Promise(function(resolve, reject){
+	    var fileReader = new window.FileReader();
+	    fileReader.onload = function (e) {
+	      // IE 11 requires this
+	      // http://stackoverflow.com/a/32665193/2835973
+	      resolve(fileReader.content || fileReader.result);
+	    };
+	    fileReader.onerror = function (err){
+	      reject(err);
+	    };
+	    // start reading file
+	    fileReader[ FILE_READ_METHODS[type] ](blob);
+	  })
+	}
+
+	function fetchModule (url) {
+	  runtime.assertBrowser('Please use "require()" to fetch modules in server environment.');
+
+	  // module wrapper
+	  window.___modules = window.___modules || {};
+
+	  // return module if it has been loaded already
+	  if (window.___modules[url]) {
+	    return Promise.resolve(window.___modules[url])
+
+	  } else {
+	  // load code and use module wrapper
+	    return fetch$1(url).then(function(response){
+	      return response.text()
+	    }).then(function(code){
+
+	      // check module type
+	      var moduleWrapper;
+	      if (code.indexOf('define(function()') > -1) {
+	        // AMD
+	        moduleWrapper = code+'\nfunction define(cb){ window.___modules["'+url+'"] = cb(); };';
+	      } else {
+	        // CommonJS
+	        moduleWrapper = 'window.___modules["'+url+'"] = (function(){ var exports = {}, module = {exports:exports};'+code+'\nreturn module.exports\n})()';
+	      }
+
+	      var script = document.createElement('script');
+	      try {
+	        script.appendChild(document.createTextNode(moduleWrapper));
+	        document.body.appendChild(script);
+	      } catch (e) {
+	        script.text = moduleWrapper;
+	        document.body.appendChild(script);
+	      }
+	      return window.___modules[url]
+	    })
+
+	  }
+
+	}
+
+	// dependencies
+
+	var TARGA_PARSER_LIB = 'https://cdn.rawgit.com/archilogic-com/roBrowser/e4b5b53a/src/Loaders/Targa.js';
+
+	// main
+
+	function getImageFromFile (file, options) {
+
+	  // API
+	  options = options || {};
+	  var format = options.format;
+
+	  // FIXME get image from blob based on format (to also support DDS, PDF, DXF...)
+	  // at the moment we assume that blob is JPG or PNG
+
+	  var fileName = file.name;
+	  var type = fileName ? fileName.split('.').pop().toLowerCase() : 'jpg';
+
+	  if (type === 'jpg' || type === 'jpeg' || type === 'jpe' || type === 'png') {
+	    return getImageFromJpgOrPngFile(file)
+
+	  } else if (type === 'tga') {
+	    return getImageFromTga(file)
+
+	  } else {
+	    return bluebird_1.reject('Image of type '+type+' not supported')
+
 	  }
 
 	}
 
 	// methods
 
-	function publishFromThreeJs(object3D, options) {
-	  return getData3dFromThreeJs(object3D, options)
-	    .then(io3d.utils.data3d.encodeBinary)
-	    .then(io3d.storage.put)
-	}
+	function getImageFromJpgOrPngFile (file) {
+	  var filename = file.name;
+	  return new bluebird_1(function(resolve, reject){
 
-	// TODO: implement
-	function publishFromFiles(files, options) {
-	  if (!Arrray.isArray(files)) files = [files];
-	  return Promise.reject('Importing files is not supported yet')
-	}
+	    var image = new Image();
+	    var urlCreator = window.URL || window.webkitURL;
+	    var imageUrl = urlCreator.createObjectURL(file);
 
-	function convertFloorPlanToBasic3dModel (args) {
+	    // event handlers
+	    image.onload = function () {
+	      urlCreator.revokeObjectURL(imageUrl);
+	      resolve(image);
+	    };
+	    image.onerror = function (error) {
+	      urlCreator.revokeObjectURL(imageUrl);
+	      console.error('Error converting image: ' + filename, error);
+	      reject('Error converting image: ' + filename);
+	    };
 
-	  // API
-	  var floorPlan = args.floorPlan;
-	  var address = args.address;
-	  var callback = args.callback;
+	    // initiate loading process
+	    image.src = imageUrl;
 
-	  // send request to server side endpoint
-	  return callService('FloorPlan.convertToBasic3dModel', {
-	    floorplan: floorPlan,
-	    address: address,
-	    callback: callback
-	  }).then(function onSuccess (result) {
-	    // conversion request accepted
-	    return result.conversionId
-	  }).catch(function onError (error) {
-	    // conversion request error
-	    // TODO: provide info in debug mode
-	    return bluebird_1.reject(error)
 	  })
-
 	}
 
-	function getConversionStatus (args) {
+	function getImageFromTga (file) {
+	  return fetchModule(TARGA_PARSER_LIB).then(function(Targa){
+	    return readFile(file, 'arrayBuffer').then(function(buffer){
+	      return new bluebird_1(function(resolve, reject){
 
-	  // API
-	  var conversionId = args.conversionId;
+	        var
+	          targa = new Targa(),
+	          image = new Image();
 
-	  // send request to server side endpoint
-	  return callService('FloorPlan.getConversionStatus', {
-	    conversionId: conversionId
-	  }).catch(function onError (error) {
-	    // conversion request error
-	    // TODO: provide info in debug mode
-	    return bluebird_1.reject(error)
+	        // add event handlers to image
+	        image.onload = function () {
+	          resolve(image);
+	        };
+	        image.onerror = function (error) {
+	          console.error('Error converting image: ' + file.name, error);
+	          reject('Error converting image: ' + file.name);
+	        };
+
+	        // buffer -> targa
+	        targa.load(new Uint8Array(buffer));
+	        // targa -> image
+	        image.src = targa.getDataURL();
+
+	      })
+	    })
 	  })
-
 	}
-
-	var floorPlan = {
-	  convertToBasic3dModel: convertFloorPlanToBasic3dModel,
-	  getConversionStatus: getConversionStatus
-	};
 
 	// main
 
-	function bakeLightMaps (input, options) {
+	function getTextureSet (input) {
 
-	  var storageId = input;
-	  var assetStorageIds = [];
-	  var sunDirection = [0.7487416646324341, -0.47789104947352223, -0.45935396425474223];
-	  var cacheKey = null; // "preview9684e75cf46f2df04d497644589eda2f2ec754403c0c3912b5aa5914104ea3c1_bcf24e1dedf818e505b3321e0848ea02"
+	  // internals
+	  var result = {
+	    loRes: null,
+	    source: null,
+	    dds: null
+	  };
 
-	  console.log('Baking file: https://spaces.archilogic.com/3d/?mode=sdk&file='+storageId);
+	  // normalize input
+	  return getSourceCanvasFromInput(input).then(function (sourceCanvas) {
 
+	    // TODO: readd back hash based optimizations (should happen on server)
+
+	    return bluebird_1.all([
+	      // generate loRes texture localy and upload it
+	      getLoResCanvas(sourceCanvas).then(getBlobFromCanvas).then(putToStorage).then(function (previewStorageId) {
+	        // loRes texture uploaded and ready for use
+	        result.loRes = previewStorageId;
+	      }),
+	      // upload source texture...
+	      getBlobFromCanvas(sourceCanvas).then(putToStorage).then(function (sourceStorageId) {
+	        // ... to have it ready for server side processing
+	        result.source = sourceStorageId;
+	        // ... like DDS conversion (or baking)
+	        return requestDdsConversion(sourceStorageId).then(function (processingId) {
+	          // we know the future DDS storageId but will not wait for conversion being done
+	          // TODO: future DDS file storageId should be fetched from status file using processingId (same as baking)
+	          result.dds = sourceStorageId.replace('.jpg', '.hi-res.gz.dds');
+	        })
+	      })
+	    ])
+
+	  }).then(function () {
+
+	    return result
+
+	  })
+
+	}
+
+	// private methods
+
+	function getSourceCanvasFromInput (input) {
+	  // input can be url, img, canvas or file
+	  return bluebird_1.resolve().then(function () {
+	    if (typeof input === 'string') {
+	      // infoCallback('Loading image '+file.name)
+	      return fetchImage(input)
+	    } else if (input instanceof Blob) {
+	      // infoCallback('Reading image '+file.name)
+	      return getImageFromFile(input)
+	    } else {
+	      return input
+	    }
+	  }).then(function (canvas) {
+	    // infoCallback(file.name + ' - Generating source texture file')
+	    // return canvas
+	    return scaleDownImage(canvas, {
+	      powerOfTwo: false,
+	      maxWidth: 2048,
+	      maxHeight: 2048
+	    })
+	  })
+	}
+
+	function getLoResCanvas (sourceCanvas) {
+	  //infoCallback(file.name + ' - Generating lo-res texture file')
+	  return scaleDownImage(sourceCanvas, {
+	    powerOfTwo: true,
+	    maxWidth: 256,
+	    maxHeight: 256
+	  })
+	}
+
+	function requestDdsConversion (sourceStorageId) {
+	  sourceStorageId = sourceStorageId.substring(1);
 	  return callService('Processing.task.enqueue', {
-	    method: 'bakePreview',
+	    method: 'convertImage',
 	    params: {
-	      inputFileKey: storageId,
+	      inputFileKey: sourceStorageId,
 	      options: {
-	        inputAssetKeys: assetStorageIds,
-	        sunDirection: sunDirection,
-	        cacheKey: cacheKey
+	        outputFormat: 'dds',
+	        outputDirectory: path.parse(sourceStorageId).dir
 	      }
 	    }
 	  })
-
-	  // 279ecbf2-02eb-49b0-a7b8-ddcdafdfb4fb/processing/2017-08-28_23-26-59_5e7tlA/status.json
-
 	}
 
 	// main
 
-	function getBakeResult (processingId) {
+	var getData3dFromThreeJs = checkDependencies({
+	  three: true,
+	  aframe: false
+	}, function () {
 
-	  return poll(function(resolve, reject, next){
+	  return function getData3d(object3d) {
 
-	    var url = 'https://storage-nocdn.3d.io/' + processingId;
+	    // API
+	    var sourceObject3d = object3d;
 
-	    fetch$1(url).then(function(response) {
-	      return response.json()
-	    }).then(function(message){
-	      var status = message.params.status;
+	    // returns data3d when a minimal texture is ready:
+	    // - source textures for server side processing
+	    // - loRes textures for rendering
+	    var texturePromises = [];
 
-	      if (status === 'ERROR') {
-	        reject(message.params.data);
-	      } else if (status === 'SUCCESS') {
-	        resolve(message.params.data);
-	      } else {
-	        next();
+	    // internals
+	    var data3d = { meshes: {}, materials: {} };(function traverseThreeSceneGraph (threeObject3D) {
+
+	      threeObject3D.updateMatrixWorld();
+
+	      if (threeObject3D.geometry) {
+
+	        var threeGeometry = threeObject3D.geometry;
+
+	        // ensure buffer geometry
+	        if (threeGeometry.type.indexOf('BufferGeometry') === -1) {
+	          threeGeometry = new THREE.BufferGeometry().fromGeometry(threeGeometry);
+	        }
+
+	        if (threeGeometry.index) {
+	          if (threeGeometry.attributes.colors) {
+	            translateIndexedBufferGeometryWithColor(data3d, threeObject3D, texturePromises);
+	          } else {
+	            translateIndexedBufferGeometry(data3d, threeObject3D, texturePromises);
+	          }
+	        } else {
+	          translateNonIndexedBufferGeometry(data3d, threeObject3D, texturePromises);
+	        }
+
 	      }
 
-	    });
-	  })
+	      // parse children
+	      threeObject3D.children.forEach(function(child){
+	        traverseThreeSceneGraph(child);
+	      });
+
+	    })(sourceObject3d);
+
+	    return bluebird_1.all([
+	      consolidate(data3d),
+	      bluebird_1.all(texturePromises)
+	    ]).then(function(results){
+	      // return data3d
+	      return results[0]
+	    })
+
+	  }
+	});
+
+	// helpers
+
+	function translateSceneGraph (data3dMesh, threeObject3D) {
+	  var p = threeObject3D.getWorldPosition();
+	  var r = threeObject3D.getWorldRotation();
+	  var s = threeObject3D.getWorldScale();
+	  data3dMesh.position = [p.x, p.y, p.z];
+	  data3dMesh.rotRad = [r.x, r.y, r.z];
+	  data3dMesh.scale = [s.x, s.y, s.z];
+	}
+
+
+	function translateNonIndexedBufferGeometry (data3d, threeObject3D, texturePromises) {
+
+	  // mesh
+	  var threeGeometry = threeObject3D.geometry;
+	  // create data3d mesh
+	  var data3dMesh = data3d.meshes[threeObject3D.uuid] = {};
+	  // positions
+	  data3dMesh.positions = threeGeometry.attributes.position.array;
+	  // normals
+	  if (threeGeometry.attributes.normal) data3dMesh.normals = threeGeometry.attributes.normal.array;
+	  // uvs
+	  if (threeGeometry.attributes.uv) data3dMesh.uvs = threeGeometry.attributes.uv.array;
+
+	  // material
+	  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, texturePromises);
+
+	  // scene graph
+	  translateSceneGraph(data3dMesh, threeObject3D);
 
 	}
 
-	var light = {
-	  bake: bakeLightMaps,
-	  getResult: getBakeResult
-	};
+	function translateIndexedBufferGeometry (data3d, threeObject3D, texturePromises) {
+
+	  var threeGeometry = threeObject3D.geometry;
+	  // create data3d mesh
+	  var data3dMesh = data3d.meshes[threeObject3D.uuid] = {};
+
+	  var index = threeGeometry.index.array;
+	  var i = 0, l = threeGeometry.index.array.length;
+
+	  // translate positions
+	  var pIn = threeGeometry.attributes.position.array;
+	  var pOut = new Float32Array(l * 3);
+	  for (i = 0; i < l; i++) {
+	    pOut[i * 3] = pIn[index[i] * 3];
+	    pOut[i * 3 + 1] = pIn[index[i] * 3 + 1];
+	    pOut[i * 3 + 2] = pIn[index[i] * 3 + 2];
+	  }
+	  data3dMesh.positions = pOut;
+
+	  // translate normals
+	  if (threeGeometry.attributes.normal) {
+	    var nIn = threeGeometry.attributes.normal.array;
+	    var nOut = new Float32Array(l * 3);
+	    for (i = 0; i < l; i++) {
+	      nOut[i * 3] = nIn[index[i] * 3];
+	      nOut[i * 3 + 1] = nIn[index[i] * 3 + 1];
+	      nOut[i * 3 + 2] = nIn[index[i] * 3 + 2];
+	    }
+	    data3dMesh.normals = nOut;
+	  }
+
+	  // translate uvs
+	  if (threeGeometry.attributes.uv) {
+	    var uvIn = threeGeometry.attributes.uv.array;
+	    var uvOut = new Float32Array(l * 2);
+	    for (i = 0; i < l; i++) {
+	      nOut[i * 2] = nIn[index[i] * 2];
+	      nOut[i * 2 + 1] = nIn[index[i] * 2 + 1];
+	    }
+	    data3dMesh.normals = nOut;
+	  }
+
+	  // material
+	  var threeMaterial = threeObject3D.material;
+	  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, texturePromises);
+
+	  // scene graph
+	  translateSceneGraph(data3dMesh, threeObject3D);
+
+	}
+
+	function translateIndexedBufferGeometryWithColor (data3d, threeObject3D, texturePromises) {
+
+	  console.log(threeObject3D);
+	  // TODO: add support for vertex colors:
+	  // 1. create material indices
+	  // 2. create separate data3d meshes
+	  // 3. create separate data3d materials
+	  // 4. replace this placeholder function:
+	  translateIndexedBufferGeometry (data3d, threeObject3D, texturePromises);
+
+	}
+
+	function translateMaterial (data3d, data3dMesh, threeObject3D, threeMaterial, texturePromises) {
+
+	  // create data3d material
+	  var data3dMaterial = data3d.materials[threeMaterial.uuid] = {};
+	  // link data3d mesh with material
+	  data3dMesh.material = threeMaterial.uuid;
+
+	  // material attributes
+
+	  translateMaterialNumericValues([
+	    // three attribs -> data3d attribs
+	    ['opacity', 'opacity'],
+	    ['specularCoef', 'shininess'],
+	  ], threeMaterial, data3dMaterial);
+
+	  translateMaterialColors([
+	    // three attribs -> data3d attribs
+	    ['color', 'colorDiffuse'],
+	    ['specular', 'colorSpecular'],
+	    ['emissive', 'colorEmissive']
+	  ], threeMaterial, data3dMaterial);
+
+	  translateMaterialTextures([
+	    // three attribs -> data3d attribs
+	    ['map', 'mapDiffuse'],
+	    ['specularMap', 'mapSpecular'],
+	    ['normalMap', 'mapNormal'],
+	    ['alphaMap', 'mapAlpha']
+	  ], threeMaterial, data3dMaterial, texturePromises);
+
+	}
+
+	function translateMaterialNumericValues(attribMap, threeMaterial, data3dMaterial) {
+
+	  attribMap.forEach(function(attribs){
+	    var threeName = attribs[0], data3dName = attribs[1];
+	    // translate material numeric values from three.js to data3d
+	    if (threeMaterial[threeName] !== undefined) data3dMaterial[data3dName] = threeMaterial[threeName];
+	  });
+
+	}
+
+	function translateMaterialColors(attribMap, threeMaterial, data3dMaterial) {
+
+	  attribMap.forEach(function(attribs){
+	    var threeName = attribs[0], data3dName = attribs[1];
+	    // translate material colors from three.js to data3d
+	    if (threeMaterial[threeName]) data3dMaterial[data3dName] = [
+	      threeMaterial[threeName].r, threeMaterial[threeName].g, threeMaterial[threeName].b
+	    ];
+	  });
+
+	}
+
+	function translateMaterialTextures(attribMap, threeMaterial, data3dMaterial, texturePromises) {
+
+	  attribMap.forEach(function(attribs){
+	    // translate texture from three.js to data3d
+	    var threeAttribName = attribs[0];
+	    var data3dAttribName = attribs[1];
+
+	    // if not compressed get textures from threejs material:
+	    var isNonCompressedImage = threeMaterial[threeAttribName] && threeMaterial[threeAttribName].image && !threeMaterial[threeAttribName].isCompressedTexture;
+	    if (isNonCompressedImage) {
+
+	      var image = threeMaterial[threeName].image;
+	      texturePromises.push(
+	        getTextureSet(image).then(function (result) {
+	          // add texture keys to data3d
+	          data3dMaterial[data3dName + 'Preview'] = result.loRes;
+	          data3dMaterial[data3dName + 'Source'] = result.source;
+	          data3dMaterial[data3dName] = result.dds;
+	        })
+	      );
+
+	    } else {
+	      // fallback to data from data3dMaterial (if available)
+	      var hasOriginalData3dMaterial = threeMaterial.userData && threeMaterial.userData.data3dMaterial && threeMaterial.userData.data3dMaterial[data3dAttribName];
+	      if (hasOriginalData3dMaterial) {
+	        var originalData3dMaterial = threeMaterial.userData.data3dMaterial;
+	        data3dMaterial[data3dAttribName+'Preview'] = originalData3dMaterial[data3dAttribName+'Preview'];
+	        data3dMaterial[data3dAttribName+'Source'] = originalData3dMaterial[data3dAttribName+'Source'];
+	        data3dMaterial[data3dAttribName] = originalData3dMaterial[data3dAttribName];
+	      }
+	    }
+
+	  });
+
+	}
 
 	// API
 
@@ -19813,7 +19653,7 @@
 	  var meshes, meshKeys, i, l, array, mesh;
 	  var arrayNames = ['positions', 'normals', 'uvs', 'uvsLightmap']; // heavy arrays
 	  var _data3d = clone(data3d);
-	  traverseData3d( _data3d, function(data3d){
+	  traverseData3d$1( _data3d, function(data3d){
 	    meshes = data3d.meshes;
 	    meshKeys = data3d.meshKeys || Object.keys(meshes);
 	    for (i=0, l=meshKeys.length; i<l; i++) {
@@ -19933,6 +19773,402 @@
 	function isMultipleOf (value, multiple) {
 	  return Math.ceil(value / multiple) === value / multiple
 	}
+
+	function poll(callback, options) {
+
+	  // API
+	  options = options || {};
+	  var timeout = options.timeout || 10 * 60 * 1000;
+	  var minInterval = options.minInterval || 1000;
+	  var maxInterval = options.maxInterval || 5000;
+	  var intervalIncreaseFactor = options.intervalIncreaseFactor || 1.05;
+
+	  return new bluebird_1(function( fulfill, reject, onCancel ){
+	    var flags = { isCancelled: false };
+	    // cancellation is supported in bluebird version > 3.x
+	    // enable cancellation in Promise.config as it is off by default
+	    if (onCancel) onCancel(function(){ flags.isCancelled = true; });
+	    // start recursive poll
+	    recursivePoll(callback, fulfill, reject, minInterval, maxInterval, intervalIncreaseFactor, 0, timeout, flags);
+	  })
+
+	}
+
+	// helper
+
+	function recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags) {
+
+	  // return if poll has been cancelled in meanwhile
+	  if (flags.isCancelled) return reject('Poll request has been cancelled')
+	  // increase interval
+	  if (interval < maxInterval) interval *= intervalIncreaseFactor;
+	  // check timeout
+	  if (timeElapsed > timeout) return reject('Poll request timed out')
+	  // count time
+	  timeElapsed += interval;
+	  // call
+	  callback(fulfill, reject, function next() {
+	    window.setTimeout(function(){
+	      recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags);
+	    }, interval);
+	  });
+
+	}
+
+	function addCacheBustToQuery (url) {
+	  var cacheBust = '___cacheBust='+Date.now();
+	  if (url.indexOf('?') > -1) {
+	    // url has query: append cache bust
+	    url = url.replace('?','?'+cacheBust+'&');
+	  } else if (url.indexOf('#') > -1) {
+	    // url has no query but hash: prepend cache bust to hash tag
+	    url = url.replace('#', '?'+cacheBust+'#');
+	  } else {
+	    // no query and no hash tag: add cache bust
+	    url = url + '?' + cacheBust;
+	  }
+	  return url
+	}
+
+	function checkIfFileExists (url) {
+	  return fetch$1(
+	    addCacheBustToQuery(url),
+	    {
+	      method: 'HEAD',
+	      cache: 'reload'
+	    }
+	  ).then(function onSuccess(){
+	    return true
+	  }, function onReject(){
+	    return false
+	  })
+	}
+
+	function getTextureKeys (data3d, options) {
+
+	  // API
+	  var options = options || {};
+	  var filter = options.filter;
+
+	  // internals
+	  var cache = {};
+
+	  // internals
+	  traverseData3d$1.materials(data3d, function(material) {
+
+	    var filteredResult, attr, type, format, value;
+	    for (var i=0, l=ATTRIBUTES.length; i<l; i++) {
+
+	      attr = ATTRIBUTES[i];
+	      value = material[attr];
+
+	      // apply filter function if specified in options
+	      if (filter) {
+	        // provide info on type and format of texture to the filter function
+	        type = ATTRIBUTE_TO_TYPE[attr];
+	        format = ATTRIBUTE_TO_FORMAT[attr];
+	        value = filter(value, type, format, material, data3d);
+	      }
+
+	      if (value) cache[value] = true;
+
+	    }
+
+	  });
+
+	  return Object.keys(cache)
+
+	}
+
+	// constants
+
+	var ATTRIBUTES = [
+	  'mapDiffuse',
+	  'mapDiffusePreview',
+	  'mapDiffuseSource',
+	  // specular
+	  'mapSpecular',
+	  'mapSpecularPreview',
+	  'mapSpecularPreview',
+	  // normal
+	  'mapNormal',
+	  'mapNormalPreview',
+	  'mapNormalPreview',
+	  // alpha
+	  'mapAlpha',
+	  'mapAlphaPreview',
+	  'mapAlphaPreview',
+	];
+
+	var ATTRIBUTE_TO_TYPE = {
+	  // diffuse
+	  mapDiffuse: 'diffuse',
+	  mapDiffusePreview: 'diffuse',
+	  mapDiffuseSource: 'diffuse',
+	  // specular
+	  mapSpecular: 'specular',
+	  mapSpecularPreview: 'specular',
+	  mapSpecularPreview: 'specular',
+	  // normal
+	  mapNormal: 'normal',
+	  mapNormalPreview: 'normal',
+	  mapNormalPreview: 'normal',
+	  // alpha
+	  mapAlpha: 'alpha',
+	  mapAlphaPreview: 'alpha',
+	  mapAlphaPreview: 'alpha',
+	};
+
+	var ATTRIBUTE_TO_FORMAT = {
+	  // loRes
+	  mapDiffusePreview: 'loRes',
+	  mapSpecularPreview: 'loRes',
+	  mapNormalPreview: 'loRes',
+	  mapAlphaPreview: 'loRes',
+	  // source
+	  mapDiffuseSource: 'source',
+	  mapSpecularSource: 'source',
+	  mapNormalSource: 'source',
+	  mapAlphaSource: 'source',
+	  // dds
+	  mapDiffuse: 'dds',
+	  mapSpecular: 'dds',
+	  mapNormal: 'dds',
+	  mapAlpha: 'dds',
+	};
+
+	/*
+	input: data3d or storageId to a data3d file
+	returns promise
+	 */
+
+	function whenHiResTexturesReady (input) {
+
+	  // resolves when hi-res textures are available
+	  // - DXT (DDS) for hires on desktop
+	  // - PVRTC for iOS (not yet implemented)
+	  // - ETC1 for Android (not yet implemented)
+
+	  return normalizeInput$1(input).then(function (data3d) {
+
+	    var values = getTextureKeys(data3d, {
+	      filter: function (value, type, format, material, data3d) {
+	        return format === 'dds' ? value : null
+	      }
+	    });
+
+	    return Promise.all(values.map(pollTexture))
+
+	  })
+
+	}
+
+	// helpers
+
+	function normalizeInput$1(input) {
+	  var inputType = typeof input;
+	  if (inputType === 'string') {
+	    // load data3d from URL
+	    return loadData3d(input)
+	  } else if (input instanceof Blob) {
+	    // decode binary data3d
+	    return decodeBinary(input)
+	  } else if (inputType === 'object') {
+	    // data3d object
+	    return Promise.resolve(input)
+	  } else {
+	    return Promise.reject('Unknown param type')
+	  }
+	}
+
+	// poll for DDS storageIds
+
+	function pollTexture(val) {
+
+	  // normalize input to URL
+	  var url = getUrlFromStorageId(val);
+
+	  return poll(function (resolve, reject, next) {
+
+	    checkIfFileExists(url).then(function(exists){
+	      exists ? resolve() : next();
+	    });
+
+	  })
+
+	}
+
+	// main
+
+	/*
+	 input: dom selector referencing aframe element, file, array of files, three.js Object3D
+	 returns storageId
+	 */
+	function publish(input) {
+
+	  return normalizeInput(input)
+	    .then(encodeBinary)
+	    .then(putToStorage)
+
+	}
+
+	// public methods
+
+	publish.whenHiResTexturesReady = whenHiResTexturesReady;
+
+	// private methods
+
+	/*
+	 input: dom selector referencing aframe element, file, array of files, three.js Object3D
+	 returns data3d
+	 */
+	function normalizeInput(input) {
+
+	  if (typeof input === 'string') {
+
+	    if (input[0] === '#' || input === 'a-scene') {
+	      // selector
+	      return getData3dFromThreeJs(document.querySelector(input).object3D)
+
+	    } else {
+	      // url
+	      return fetch(input).then(function(response){
+	        return response.blob()
+	      }).then(getData3dFromFiles)
+	    }
+
+	  } else if (Array.isArray(input) || input instanceof Blob) {
+	    // files
+	    return getData3dFromFiles(input)
+
+	  } else if (typeof input === 'object' && input.isObject3D) {
+	    // three.js object
+	    return getData3dFromThreeJs(input)
+
+	  } else {
+	    // not supported
+	    throw new Error('Unknown input param')
+	  }
+	}
+
+	/*
+	input: file or array of files
+	returns data3d
+	 */
+	function getData3dFromFiles(files) {
+
+	  // TODO: implement
+	  if (!Arrray.isArray(files)) files = [files];
+	  return Promise.reject('Importing files is not supported yet')
+
+	}
+
+	function convertFloorPlanToBasic3dModel (args) {
+
+	  // API
+	  var floorPlan = args.floorPlan;
+	  var address = args.address;
+	  var callback = args.callback;
+
+	  // send request to server side endpoint
+	  return callService('FloorPlan.convertToBasic3dModel', {
+	    floorplan: floorPlan,
+	    address: address,
+	    callback: callback
+	  }).then(function onSuccess (result) {
+	    // conversion request accepted
+	    return result.conversionId
+	  }).catch(function onError (error) {
+	    // conversion request error
+	    // TODO: provide info in debug mode
+	    return bluebird_1.reject(error)
+	  })
+
+	}
+
+	function getConversionStatus (args) {
+
+	  // API
+	  var conversionId = args.conversionId;
+
+	  // send request to server side endpoint
+	  return callService('FloorPlan.getConversionStatus', {
+	    conversionId: conversionId
+	  }).catch(function onError (error) {
+	    // conversion request error
+	    // TODO: provide info in debug mode
+	    return bluebird_1.reject(error)
+	  })
+
+	}
+
+	var floorPlan = {
+	  convertToBasic3dModel: convertFloorPlanToBasic3dModel,
+	  getConversionStatus: getConversionStatus
+	};
+
+	// main
+
+	function getBakeResult (processingId) {
+
+	  return poll(function(resolve, reject, next){
+
+	    var url = 'https://storage-nocdn.3d.io/' + processingId;
+
+	    fetch$1(url).then(function(response) {
+	      return response.json()
+	    }).then(function(message){
+	      var status = message.params.status;
+
+	      if (status === 'ERROR') {
+	        reject(message.params.data);
+	      } else if (status === 'SUCCESS') {
+	        resolve(message.params.data);
+	      } else {
+	        next();
+	      }
+
+	    });
+	  })
+
+	}
+
+	// main
+
+	function bake (storageId, options) {
+
+	  // API
+	  options = options || {};
+	  var sunDirection = sunDirection || [0.7487416646324341, -0.47789104947352223, -0.45935396425474223];
+
+	  // internals
+	  var assetStorageIds = [];
+	  // TODO: reimplement caching mechanism on server side
+	  var cacheKey = null;
+
+	  console.log('Baking file: https://spaces.archilogic.com/3d/?mode=sdk&file='+storageId);
+
+	  return callService('Processing.task.enqueue', {
+	    method: 'bakePreview',
+	    params: {
+	      inputFileKey: storageId,
+	      options: {
+	        inputAssetKeys: assetStorageIds,
+	        sunDirection: sunDirection,
+	        cacheKey: cacheKey
+	      }
+	    }
+	  })
+
+	}
+
+	// public methods
+
+	bake.whenDone = getBakeResult;
+
+	var light = {
+	  bake: bake
+	};
 
 	var css = ".io3d-message-list {\n  z-index: 100001;\n  position: fixed;\n  top: 0;\n  left: 50%;\n  margin-left: -200px;\n  width: 400px;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: normal;\n  letter-spacing: 1px;\n  line-height: 1.3;\n  text-align: center;\n}\n.io3d-message-list .message {\n  display: block;\n  opacity: 0;\n}\n.io3d-message-list .message .spacer {\n  display: block;\n  height: 10px;\n}\n.io3d-message-list .message .text {\n  display: inline-block;\n  padding: 10px 12px 10px 12px;\n  border-radius: 3px;\n  color: white;\n  font-size: 18px;\n}\n.io3d-message-list .message .text a {\n  color: white;\n  text-decoration: none;\n  padding-bottom: 0px;\n  border-bottom: 2px solid white;\n}\n.io3d-message-list .message .neutral {\n  background: rgba(0, 0, 0, 0.9);\n}\n.io3d-message-list .message .success {\n  background: linear-gradient(50deg, rgba(35, 165, 9, 0.93), rgba(102, 194, 10, 0.93));\n}\n.io3d-message-list .message .warning {\n  background: linear-gradient(50deg, rgba(165, 113, 9, 0.93), rgba(194, 169, 10, 0.93));\n}\n.io3d-message-list .message .error {\n  background: linear-gradient(50deg, rgba(165, 9, 22, 0.93), rgba(194, 56, 10, 0.93));\n}\n.io3d-overlay {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  z-index: 100000;\n  position: fixed;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  height: 100%;\n  width: 100%;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: 200;\n  font-size: 18px;\n  letter-spacing: 1px;\n  color: white;\n  text-align: center;\n  line-height: 1.3;\n  background: linear-gradient(70deg, rgba(20, 17, 34, 0.96), rgba(51, 68, 77, 0.96));\n}\n@-webkit-keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@-webkit-keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n@keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n.io3d-overlay .centered-content {\n  display: inline-block;\n  position: relative;\n  top: 50%;\n  text-align: left;\n}\n.io3d-overlay .centered-content .button {\n  margin-right: 4px;\n  margin-top: 1.5em;\n}\n.io3d-overlay .bottom-container {\n  width: 100%;\n  display: block;\n  position: absolute;\n  bottom: 1em;\n}\n.io3d-overlay .bottom-container .bottom-content {\n  display: inline-block;\n  position: relative;\n  margin-left: auto;\n  margin-right: auto;\n  text-align: left;\n  color: rgba(255, 255, 255, 0.35);\n}\n.io3d-overlay .bottom-container .bottom-content .clickable {\n  cursor: pointer;\n  -webkit-transition: color 500ms;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-container .bottom-content .clickable:hover {\n  color: white;\n}\n.io3d-overlay .bottom-container .bottom-content a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  -webkit-transition: color 500ms;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-container .bottom-content a:hover {\n  color: white;\n}\n@-webkit-keyframes content-slide-in {\n  0% {\n    -webkit-transform: translateY(-40%);\n  }\n  100% {\n    -webkit-transform: translateY(-50%);\n  }\n}\n@keyframes content-slide-in {\n  0% {\n    transform: translateY(-40%);\n  }\n  100% {\n    transform: translateY(-50%);\n  }\n}\n@-webkit-keyframes content-slide-out {\n  0% {\n    -webkit-transform: translateY(-50%);\n  }\n  100% {\n    -webkit-transform: translateY(-40%);\n  }\n}\n@keyframes content-slide-out {\n  0% {\n    transform: translateY(-50%);\n  }\n  100% {\n    transform: translateY(-40%);\n  }\n}\n.io3d-overlay h1 {\n  margin: 0 0 0.5em 0;\n  font-size: 42px;\n  font-weight: 200;\n  color: white;\n}\n.io3d-overlay p {\n  margin: 1em 0 0 0;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint {\n  position: relative;\n  margin: 1em 0 0 0;\n  color: rgba(255, 255, 255, 0.35);\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  -webkit-transition: color 600ms;\n  transition: color 600ms;\n}\n.io3d-overlay .hint a:hover {\n  color: white;\n}\n.io3d-overlay .button {\n  cursor: pointer;\n  display: inline-block;\n  color: rgba(255, 255, 255, 0.35);\n  width: 40px;\n  height: 40px;\n  line-height: 32px;\n  border: 2px solid rgba(255, 255, 255, 0.35);\n  border-radius: 50%;\n  text-align: center;\n  font-size: 18px;\n  font-weight: 200;\n  -webkit-transition: opacity 300ms, color 300ms;\n  transition: opacity 300ms, color 300ms;\n}\n.io3d-overlay .button:hover {\n  background-color: rgba(255, 255, 255, 0.1);\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .button-highlighted {\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .close-button {\n  display: block;\n  position: absolute;\n  top: 20px;\n  right: 20px;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay input,\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay textarea {\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-size: 24px;\n  font-weight: normal;\n  letter-spacing: 1px;\n  outline: none;\n  margin: 0 0 0 0;\n  color: white;\n}\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay input:not([type='checkbox']):not([type='range']) {\n  padding: 0.2em 0 0.4em 0;\n  width: 100%;\n  line-height: 20px;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  border-radius: 0px;\n  border: 0px;\n  background: transparent;\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n  -webkit-transition: border-color 1s;\n  transition: border-color 1s;\n}\n.io3d-overlay select:focus,\n.io3d-overlay option:focus,\n.io3d-overlay input:not([type='checkbox']):not([type='range']):focus {\n  border-color: white;\n}\n.io3d-overlay textarea {\n  display: box;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  padding: 0.2em 0 0.4em 0;\n  min-width: 100%;\n  max-width: 100%;\n  line-height: 26px;\n  border: 0px;\n  background: rgba(255, 255, 255, 0.08);\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n}\n.io3d-overlay input[type='checkbox'] {\n  position: relative;\n  height: 20px;\n  vertical-align: bottom;\n  margin: 0;\n}\n.io3d-overlay .reveal-api-key-button {\n  cursor: pointer;\n  position: absolute;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 2px;\n  bottom: 0.7em;\n  padding: 0.1em 0.2em 0.2em 0.2em;\n  line-height: 20px;\n  -webkit-transition: color 600ms;\n  transition: color 600ms;\n}\n.io3d-overlay .reveal-api-key-button:hover {\n  color: white;\n}\n.io3d-overlay a {\n  color: white;\n  text-decoration: none;\n}\n.io3d-overlay .key-menu {\n  position: relative;\n  margin: 3em 0 0 0;\n}\n.io3d-overlay .key-menu .key-image {\n  width: 172px;\n  height: 127px;\n}\n.io3d-overlay .key-menu .key-button {\n  position: absolute;\n  left: 156px;\n  height: 36px;\n  line-height: 36px;\n  background: rgba(255, 255, 255, 0.1);\n  cursor: pointer;\n  padding: 0 14px 0 14px;\n  border-radius: 2px;\n  -webkit-transition: background 300ms linear;\n  transition: background 300ms linear;\n}\n.io3d-overlay .key-menu .key-button:hover {\n  background: rgba(255, 255, 255, 0.3);\n}\n.io3d-overlay .key-menu .go-to-publishable-api-key-ui {\n  top: 11px;\n}\n.io3d-overlay .key-menu .go-to-secret-api-key-ui {\n  bottom: 11px;\n}\n.io3d-overlay .regegenerate-secret-key-button {\n  cursor: pointer;\n}\n.io3d-overlay .publishable-api-keys .list {\n  max-height: 50vh;\n  overflow: auto;\n  padding: 0 15px 0 0;\n}\n.io3d-overlay .publishable-api-keys .list .key-item {\n  position: relative;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 3px;\n  margin-bottom: 12px;\n  padding: 4px 5px 3px 8px;\n}\n.io3d-overlay .publishable-api-keys .list .key {\n  font-weight: 200 !important;\n  border-bottom: 0 !important;\n  margin-bottom: 0 !important;\n  padding: 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .domains {\n  margin: 0 0 0 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .button {\n  position: absolute !important;\n  margin: 0 !important;\n  background-repeat: no-repeat;\n  background-position: center;\n  color: white;\n  opacity: 0.5;\n}\n.io3d-overlay .publishable-api-keys .list .button:hover {\n  opacity: 1;\n}\n.io3d-overlay .publishable-api-keys .list .delete-key-button {\n  right: 8px;\n  top: 9px;\n}\n.io3d-overlay .publishable-api-keys .list .edit-domains-button {\n  positions: absolute;\n  right: 56px;\n  top: 9px;\n  background-size: 75%;\n  padding: 5px;\n}\n.io3d-overlay .publishable-api-keys .generate-new-key-button {\n  margin: 1.5em 0 0 0;\n  display: inline-block;\n  cursor: pointer;\n}\n";
 
@@ -21773,36 +22009,6 @@
 	  prompt: createPromptUi
 	};
 
-	function addCacheBustToQuery (url) {
-	  var cacheBust = '___cacheBust='+Date.now();
-	  if (url.indexOf('?') > -1) {
-	    // url has query: append cache bust
-	    url = url.replace('?','?'+cacheBust+'&');
-	  } else if (url.indexOf('#') > -1) {
-	    // url has no query but hash: prepend cache bust to hash tag
-	    url = url.replace('#', '?'+cacheBust+'#');
-	  } else {
-	    // no query and no hash tag: add cache bust
-	    url = url + '?' + cacheBust;
-	  }
-	  return url
-	}
-
-	function checkIfFileExists (url) {
-	  return fetch$1(
-	    addCacheBustToQuery(url),
-	    {
-	      method: 'HEAD',
-	      cache: 'reload',
-	      credentials: 'include'
-	    }
-	  ).then(function onSuccess(){
-	    return true
-	  }, function onReject(){
-	    return false
-	  })
-	}
-
 	/**
 	 http://www.myersdaily.org/joseph/javascript/md5-text.html
 	 author: Joseph's Myers
@@ -22166,7 +22372,7 @@
 	    encodeBinary: encodeBinary,
 	    decodeBinary: decodeBinary,
 	    clone: clone,
-	    traverse: traverseData3d
+	    traverse: traverseData3d$1
 	  },
 	  ui: ui,
 	  auth: auth,

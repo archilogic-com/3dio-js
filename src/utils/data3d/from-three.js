@@ -1,36 +1,28 @@
 import Promise from 'bluebird'
-import consolidateData3d from '../../utils/data3d/consolidate.js'
-import getTextureSet from '../../utils/data3d/get-texture-set.js'
-import checkDependencies from '../check-dependencies.js'
+import consolidateData3d from './consolidate.js'
+import generateTextureSet from './generate-texture-set.js'
+import checkDependencies from '../../a-frame/check-dependencies.js'
 import runtime from '../../core/runtime.js'
 
-// constants
+// main
 
 export default checkDependencies({
   three: true,
   aframe: false
 }, function () {
 
-  return function getData3d(object3d, options) {
+  return function getData3d(object3d) {
 
     // API
     var sourceObject3d = object3d
-		var options = options || {}
-		var onFullTextureSetReady = options.onFullTextureSetReady
+
+    // returns data3d when a minimal texture is ready:
+    // - source textures for server side processing
+    // - loRes textures for rendering
+    var texturePromises = []
 
     // internals
     var data3d = { meshes: {}, materials: {} }
-
-    // promises for a minimal texture set required to proceed
-    // - source textures for server side processing
-    // - preview textures for minimal view
-    var basicTextureSetPromises = []
-
-    // promises for full texture set
-    // - DXT (DDS) for hires on desktop
-    // - PVRTC for iOS (not yet implemented)
-    // - ETC1 for Android (not yet implemented)
-    var fullTextureSetPromises = []
 
     // traverse scene graph
     ;(function traverseThreeSceneGraph (threeObject3D) {
@@ -48,12 +40,12 @@ export default checkDependencies({
 
         if (threeGeometry.index) {
           if (threeGeometry.attributes.colors) {
-            translateIndexedBufferGeometryWithColor(data3d, threeObject3D, basicTextureSetPromises, fullTextureSetPromises)
+            translateIndexedBufferGeometryWithColor(data3d, threeObject3D, texturePromises)
           } else {
-            translateIndexedBufferGeometry(data3d, threeObject3D, basicTextureSetPromises, fullTextureSetPromises)
+            translateIndexedBufferGeometry(data3d, threeObject3D, texturePromises)
           }
         } else {
-          translateNonIndexedBufferGeometry(data3d, threeObject3D, basicTextureSetPromises, fullTextureSetPromises)
+          translateNonIndexedBufferGeometry(data3d, threeObject3D, texturePromises)
         }
 
       }
@@ -65,13 +57,12 @@ export default checkDependencies({
 
     })(sourceObject3d);
 
-    return Promise.all(basicTextureSetPromises).then(function(){
-      // trigger callback when full texture set promises finish
-      Promise.all(fullTextureSetPromises).then(function(){
-        if (onFullTextureSetReady) onFullTextureSetReady()
-      })
+    return Promise.all([
+      consolidateData3d(data3d),
+      Promise.all(texturePromises)
+    ]).then(function(results){
       // return data3d
-      return consolidateData3d(data3d)
+      return results[0]
     })
 
   }
@@ -89,7 +80,7 @@ function translateSceneGraph (data3dMesh, threeObject3D) {
 }
 
 
-function translateNonIndexedBufferGeometry (data3d, threeObject3D, basicTextureSetPromises, fullTextureSetPromises) {
+function translateNonIndexedBufferGeometry (data3d, threeObject3D, texturePromises) {
 
   // mesh
   var threeGeometry = threeObject3D.geometry
@@ -103,14 +94,14 @@ function translateNonIndexedBufferGeometry (data3d, threeObject3D, basicTextureS
   if (threeGeometry.attributes.uv) data3dMesh.uvs = threeGeometry.attributes.uv.array
 
   // material
-  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, basicTextureSetPromises, fullTextureSetPromises)
+  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, texturePromises)
 
   // scene graph
   translateSceneGraph(data3dMesh, threeObject3D)
 
 }
 
-function translateIndexedBufferGeometry (data3d, threeObject3D, basicTextureSetPromises, fullTextureSetPromises) {
+function translateIndexedBufferGeometry (data3d, threeObject3D, texturePromises) {
 
   var threeGeometry = threeObject3D.geometry
   // create data3d mesh
@@ -154,14 +145,14 @@ function translateIndexedBufferGeometry (data3d, threeObject3D, basicTextureSetP
 
   // material
   var threeMaterial = threeObject3D.material
-  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, basicTextureSetPromises, fullTextureSetPromises)
+  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, texturePromises)
 
   // scene graph
   translateSceneGraph(data3dMesh, threeObject3D)
 
 }
 
-function translateIndexedBufferGeometryWithColor (data3d, threeObject3D, basicTextureSetPromises, fullTextureSetPromises) {
+function translateIndexedBufferGeometryWithColor (data3d, threeObject3D, texturePromises) {
 
   console.log(threeObject3D)
   // TODO: add support for vertex colors:
@@ -169,11 +160,11 @@ function translateIndexedBufferGeometryWithColor (data3d, threeObject3D, basicTe
   // 2. create separate data3d meshes
   // 3. create separate data3d materials
   // 4. replace this placeholder function:
-  translateIndexedBufferGeometry (data3d, threeObject3D, basicTextureSetPromises, fullTextureSetPromises)
+  translateIndexedBufferGeometry (data3d, threeObject3D, texturePromises)
 
 }
 
-function translateMaterial (data3d, data3dMesh, threeObject3D, threeMaterial, basicTextureSetPromises, fullTextureSetPromises) {
+function translateMaterial (data3d, data3dMesh, threeObject3D, threeMaterial, texturePromises) {
 
   // create data3d material
   var data3dMaterial = data3d.materials[threeMaterial.uuid] = {}
@@ -196,14 +187,12 @@ function translateMaterial (data3d, data3dMesh, threeObject3D, threeMaterial, ba
   ], threeMaterial, data3dMaterial)
 
   translateMaterialTextures([
-      // three attribs -> data3d attribs
-      ['map', 'mapDiffuse'],
-      ['specularMap', 'mapSpecular'],
-      ['normalMap', 'mapNormal'],
-      ['alphaMap', 'mapAlpha']
-    ], threeMaterial, data3dMaterial,
-    basicTextureSetPromises, fullTextureSetPromises
-  )
+    // three attribs -> data3d attribs
+    ['map', 'mapDiffuse'],
+    ['specularMap', 'mapSpecular'],
+    ['normalMap', 'mapNormal'],
+    ['alphaMap', 'mapAlpha']
+  ], threeMaterial, data3dMaterial, texturePromises)
 
 }
 
@@ -229,34 +218,35 @@ function translateMaterialColors(attribMap, threeMaterial, data3dMaterial) {
 
 }
 
-function translateMaterialTextures(attribMap, threeMaterial, data3dMaterial, basicTextureSetPromises, fullTextureSetPromises) {
+function translateMaterialTextures(attribMap, threeMaterial, data3dMaterial, texturePromises) {
 
   attribMap.forEach(function(attribs){
-    var threeName = attribs[0], data3dName = attribs[1]
-    // translate textures from three.js to data3d
+    // translate texture from three.js to data3d
+    var threeAttribName = attribs[0]
+    var data3dAttribName = attribs[1]
 
     // if not compressed get textures from threejs material:
-    if (threeMaterial[threeName] && threeMaterial[threeName].image && !threeMaterial[threeName].isCompressedTexture) {
-      basicTextureSetPromises.push(
-        getTextureSet(threeMaterial[threeName].image).then(function (result) {
+    var isNonCompressedImage = threeMaterial[threeAttribName] && threeMaterial[threeAttribName].image && !threeMaterial[threeAttribName].isCompressedTexture
+    if (isNonCompressedImage) {
 
-          // collect promises for full texture set
-          fullTextureSetPromises.push(result.fullSetReady)
-
+      var image = threeMaterial[threeName].image
+      texturePromises.push(
+        generateTextureSet(image).then(function (result) {
           // add texture keys to data3d
+          data3dMaterial[data3dName + 'Preview'] = result.loRes
+          data3dMaterial[data3dName + 'Source'] = result.source
           data3dMaterial[data3dName] = result.dds
-          data3dMaterial[data3dName+'Preview'] = result.loRes
-          data3dMaterial[data3dName+'Source'] = result.source
-
         })
       )
 
-      // fallback to data from data3dMaterial if available:
-    } else if (threeMaterial.userData && threeMaterial.userData.data3dMaterial) {
-      if (threeMaterial.userData.data3dMaterial[data3dName]) {
-        data3dMaterial[data3dName] = threeMaterial.userData.data3dMaterial[data3dName]
-        data3dMaterial[data3dName+'Source'] = threeMaterial.userData.data3dMaterial[data3dName+'Source']
-        data3dMaterial[data3dName+'Preview'] = threeMaterial.userData.data3dMaterial[data3dName+'Preview']
+    } else {
+      // fallback to data from data3dMaterial (if available)
+      var hasOriginalData3dMaterial = threeMaterial.userData && threeMaterial.userData.data3dMaterial && threeMaterial.userData.data3dMaterial[data3dAttribName]
+      if (hasOriginalData3dMaterial) {
+        var originalData3dMaterial = threeMaterial.userData.data3dMaterial
+        data3dMaterial[data3dAttribName+'Preview'] = originalData3dMaterial[data3dAttribName+'Preview']
+        data3dMaterial[data3dAttribName+'Source'] = originalData3dMaterial[data3dAttribName+'Source']
+        data3dMaterial[data3dAttribName] = originalData3dMaterial[data3dAttribName]
       }
     }
 

@@ -4,7 +4,6 @@ import pathUtil from '../path.js'
 import fetchImage from '../io/fetch-image.js'
 import callServices from '../services/call.js'
 import storagePut from '../../storage/put.js'
-import poll from '../poll.js'
 import scaleDownImage from '../image/scale-down-image.js'
 import getBlobFromCanvas from '../image/get-blob-from-canvas.js'
 import getImageFromFile from '../image/get-image-from-file.js'
@@ -14,13 +13,11 @@ import getImageFromFile from '../image/get-image-from-file.js'
 export default function getTextureSet (input) {
 
   // internals
-
   var result = {
     loRes: null,
     source: null,
     dds: null
   }
-  var fullSetReadyPromises = []
 
   // normalize input
   return getSourceCanvasFromInput(input).then(function (sourceCanvas) {
@@ -40,19 +37,14 @@ export default function getTextureSet (input) {
         // ... like DDS conversion (or baking)
         return requestDdsConversion(sourceStorageId).then(function (processingId) {
           // we know the future DDS storageId but will not wait for conversion being done
-          // TODO: future storageId should be in status file
+          // TODO: future DDS file storageId should be fetched from status file using processingId (same as baking)
           result.dds = sourceStorageId.replace('.jpg', '.hi-res.gz.dds')
-          // waiting for DDS converion is optional and up to the user:
-          fullSetReadyPromises.push(pollForDdsTexture(processingId))
         })
       })
     ])
+
   }).then(function () {
 
-    // promise for full texture set
-    result.fullSetReady = Promise.all(fullSetReadyPromises).then(function () {
-      return result
-    })
     return result
 
   })
@@ -104,27 +96,6 @@ function requestDdsConversion (sourceStorageId) {
         outputDirectory: pathUtil.parse(sourceStorageId).dir
       }
     }
-  })
-}
-
-function pollForDdsTexture (processingId) {
-  return poll(function (resolve, reject, next) {
-    var url = 'https://storage-nocdn.3d.io/' + processingId
-
-    fetch(url).then(function (response) {
-      return response.json()
-    }).then(function (message) {
-      var status = message.params.status
-
-      if (status === 'ERROR') {
-        reject(message.params.data)
-      } else if (status === 'SUCCESS') {
-        resolve(message.params.data)
-      } else {
-        next()
-      }
-
-    })
   })
 }
 
