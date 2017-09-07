@@ -8,8 +8,7 @@ import wall from './by-type/wall.js'
 import window from './by-type/window.js'
 import railing from './by-type/railing.js'
 import generic from './generic'
-
-var defaults = require('lodash/defaults')
+import defaults from 'lodash/defaults'
 
 export default function getDefaultsByType() {
   var types = {

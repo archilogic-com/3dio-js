@@ -2,6 +2,7 @@ export default  {
   params: {
     h: { // height in meters
       type: 'number',
+      defaultValue: 0.2,
       optional: false,
       min: 0.01 // 1cm
     },

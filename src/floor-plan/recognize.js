@@ -1,4 +1,5 @@
 import callService  from '../utils/services/call.js'
+import normalizeSceneStructure from '../scene/structure/normalize.js'
 
 export default function recognize (args) {
   console.log('starting recognition')
@@ -35,6 +36,14 @@ export default function recognize (args) {
   }
 
   return callService('Recognizer.recognize', {arguments: args})
+    .then(function(result) {
+      // normalize scene structure to add ids and default values
+      return normalizeSceneStructure(result.planStructure)
+    })
+    .catch(function(error) {
+      console.error('Recognition error:', error)
+      return Promise.reject('Recognition failed - check console for details')
+    })
 }
 
 function getPixelPerMeterRatio(pxWidth, pxHeight, width, height) {

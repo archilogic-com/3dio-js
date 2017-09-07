@@ -62,7 +62,8 @@ export default {
       include: [
         'node_modules/js-logger/**',
         'node_modules/bluebird/**',
-        'node_modules/rxjs/**'
+        'node_modules/rxjs/**',
+        'node_modules/lodash/**'
       ]
     }),
     resolve()

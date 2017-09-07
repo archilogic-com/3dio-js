@@ -101,7 +101,6 @@ test('Scene: fix invalid children', t => {
   return io3d.scene.normalizeSceneStructure(sceneStructure)
     .then(io3d.scene.validateSceneStructure)
     .then(result => {
-      console.log(result)
       t.is(result.isValid, true)
     })
 })
