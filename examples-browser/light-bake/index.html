@@ -23,11 +23,17 @@
   <a-entity id="bake-this">
 
     <!--
-    <a-entity io3d-data3d="url:https://storage.3d.io/535e624259ee6b0200000484/170905-0023-mybkkm/archilogic_2017-09-05_00-22-58_hpEh2j.gz.data3d.buffer"></a-entity>
     <a-entity gltf-model="url(https://storage.3d.io/archilogic/sample-models/cube-with-texture/gltf/cube-with-texture.gltf)"></a-entity>
+    <a-entity io3d-data3d="url:https://storage.3d.io/535e624259ee6b0200000484/170905-0023-mybkkm/archilogic_2017-09-05_00-22-58_hpEh2j.gz.data3d.buffer"></a-entity>
     <a-entity io3d-data3d="url:https://storage.3d.io/535e624259ee6b0200000484/170903-0313-gnpts9/archilogic_2017-09-03_03-13-15_fWERdX.gz.data3d.buffer"></a-entity>
-    -->
     <a-entity gblock="https://vr.google.com/objects/dVG0XJrpRJC" position="-2.418 -33.238 -18.742" scale="20 20 20" rotation="0 -90 0"></a-entity>
+    https://vr.google.com/objects/d_k2teZePG6
+    https://vr.google.com/objects/8N52xltVzib
+    https://vr.google.com/objects/9kOXKJvTgKS
+    https://vr.google.com/objects/fi8pX6r6GBI
+    -->
+
+    <a-entity gblock="https://vr.google.com/objects/bEWe7XrrOjG" position="-19.646 72.878 1.225" scale="20 20 20" rotation="0 -90 0"></a-entity>
 
   </a-entity>
 
@@ -84,7 +90,7 @@
         // add baked element to aframe scene
         var bakedEl = document.createElement('a-entity')
         bakedEl.setAttribute('position', '10 0 0')
-        bakedEl.setAttribute('io3d-data3d', 'key:' + storageId + ';lightMapExposure:1;lightMapIntensity:1.4;')
+        bakedEl.setAttribute('io3d-data3d', 'key:' + storageId + ';lightMapExposure:1.1;lightMapIntensity:0.85;')
         document.querySelector('a-scene').append(bakedEl)
 
       }, io3d.utils.ui.message.error)
