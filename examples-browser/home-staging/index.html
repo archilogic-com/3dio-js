@@ -4,7 +4,7 @@
     <title>3dio for Aframe</title>
     <!-- aframe library -->
     <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
-    <script src="../../../build/3dio.js?pk=acef26ed-bda9-48ac-baa4-822501dcd046"></script>
+    <script src="../../../build/3dio.js"></script>
     <style>
       .btn {
         position: absolute;
@@ -37,30 +37,38 @@
       <a-image id="floor-plan" width="13.98" height="16.15" src="https://storage.3d.io/132f8fd0-f7e0-432a-ad21-732f3307e77e/2017-08-31_21-55-19_xExGmY/Grundriss_WE17_s.jpg" rotation="-90 0 0"></a-image>
     </a-scene>
     <script>
+      io3d.config({
+        // use https://spaces.archilogic.com/api/v2
+        servicesUrl: 'https://testing.archilogic.com/api/v2',
+        publishableApiKey: '213edd35-0500-4953-bbc1-b4d7535d604f'
+      })
       let cursor = document.querySelector('#cursor')
       let btn = document.querySelector('.btn')
+      var sceneEl = document.querySelector('a-scene')
       // bind events
       cursor.addEventListener('click', elementClick)
       btn.addEventListener('click', furnish)
       var addedItems = []
 
       function furnish() {
-        // check for added elements
-        addedItems.forEach(el => {
-          el.parentNode.removeChild(el)
-        })
         io3d.floorPlan.recognize('#floor-plan')
           .then(io3d.staging.getFurnishings)
           .then(results => {
-            console.log(results)
+            var elements = io3d.scene.getHtmlFromSceneStructure(results)
+            console.log(elements)
+            // check for previously added elements
+            addedItems.forEach(el => {
+              el.parentNode.removeChild(el)
+            })
+            // add elements to the scene
+            elements.forEach(el => {
+              sceneEl.appendChild(el)
+            })
+            addedItems = elements
           })
-        /*
-        .then(io3d.staging.placeFurnishings)
-        .then(result => {addedItems = result})
-        .catch(err => {
-          console.log(err)
-        })
-        */
+          .catch(function(error) {
+            console.error('something went wrong', error)
+          })
       }
       function elementClick() {
         let el = cursor.components.raycaster.intersectedEls[0]
