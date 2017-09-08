@@ -38,7 +38,7 @@
     </a-scene>
     <script>
       io3d.config({
-        // use https://spaces.archilogic.com/api/v2
+        // use https://spaces.archilogic.com/api/v2 in production
         servicesUrl: 'https://testing.archilogic.com/api/v2',
         publishableApiKey: '213edd35-0500-4953-bbc1-b4d7535d604f'
       })
@@ -51,11 +51,26 @@
       var addedItems = []
 
       function furnish() {
+        // let's show some status messages
+        var msgRecogntionStart, msgStagingStart
+        msgRecogntionStart = io3d.utils.ui.message('start recognition')
+
+        // floor plan recognition call
         io3d.floorPlan.recognize('#floor-plan')
-          .then(io3d.staging.getFurnishings)
+          .then(sceneStructure => {
+            // update ui messages
+            msgRecogntionStart.close()
+            msgStagingStart = io3d.utils.ui.message('start home staging')
+
+            // get home staging furnishings
+            return io3d.staging.getFurnishings(sceneStructure)
+          })
           .then(results => {
+            msgStagingStart.close()
+            io3d.utils.ui.message('home staging finished')
+
+            // convert sceneStructure to aframe Html so we can place it in the scene
             var elements = io3d.scene.getHtmlFromSceneStructure(results)
-            console.log(elements)
             // check for previously added elements
             addedItems.forEach(el => {
               el.parentNode.removeChild(el)
@@ -74,7 +89,7 @@
         let el = cursor.components.raycaster.intersectedEls[0]
         let furniture = el.getAttribute('io3d-furniture')
         if (furniture) {
-          io3d.homeStaging.replaceFurniture({id: furniture.id, position: el.getAttribute('position'), rotation: el.getAttribute('rotation')})
+          io3d.staging.replaceFurniture({id: furniture.id, position: el.getAttribute('position'), rotation: el.getAttribute('rotation')})
             .then(result => {
               if (!result) return
               let newEL = result[Math.floor(Math.random() * result.length)]
