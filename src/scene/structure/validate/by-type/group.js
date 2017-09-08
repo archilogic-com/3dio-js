@@ -1,4 +1,9 @@
 export default {
-  params: {},
+  params: {
+    src: {
+      type: 'string',
+      optional: true
+    }
+  },
   possibleChildrenTypes: ['interior', 'object', 'wall', 'box', 'group', 'polybox']
 }
