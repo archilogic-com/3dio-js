@@ -16,7 +16,6 @@ export default function furnish (sceneStructure, options) {
   // make sure we're having a plan, a level object and a
   return normalizeInput(sceneStructure)
     .then(function(result) {
-      console.log(result)
 
       if (!spaceId) {
         var polyfloors = result.children[0].children.filter(function(element3d) {
