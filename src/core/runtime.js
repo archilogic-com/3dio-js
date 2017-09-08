@@ -61,8 +61,8 @@ export default runtime
 
 // helpers
 
-function assertBrowser() {
-  if (!isBrowser) throw ('Sorry this feature requires a browser environment.')
+function assertBrowser(message) {
+  if (!isBrowser) throw (message || 'Sorry this feature requires a browser environment.')
 }
 
 function getWebGlInfo () {

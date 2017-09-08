@@ -5,7 +5,7 @@ import getShortId from '../utils/short-id.js'
 import auth from '../utils/auth.js'
 import Promise from 'bluebird'
 import fetch from '../utils/io/fetch.js'
-import getMimeTypeFromFileName from '../utils/get-mime-type-from-filename.js'
+import getMimeTypeFromFileName from '../utils/file/get-mime-type-from-filename.js'
 
 // configs
 

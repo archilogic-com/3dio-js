@@ -45,6 +45,9 @@ export default function setMaterial (args) {
   var lightMapExposure = args.lightMapExposure
 
 
+  material3d.userData = material3d.userData || {}
+  material3d.userData.data3dMaterial = args.attributes
+
   // transparency
 
   //     material3d.transparent = true
@@ -169,19 +172,8 @@ export default function setMaterial (args) {
   // shadows
 
   if (mesh3d) {
-    // (2017/04/05) Interiors are currently not shadow receivers, as this
-    // would produce many artifacts. However, flat and thin objects laying
-    // very close to the floor (such as carpets) need to be excepted from
-    // that rule. This is a temporary way to achieve that.
-    if (!mesh3d.geometry.boundingBox)
-      mesh3d.geometry.computeBoundingBox();
-    var boundingBox = mesh3d.geometry.boundingBox;
-    var position    = boundingBox.min.clone();
-    position.applyMatrix4(mesh3d.matrixWorld);
-    var meshIsFlat          = boundingBox.max.y - boundingBox.min.y < 0.05;
-    var meshIsOnGroundLevel = position.y < 0.1;
-    mesh3d.castShadow    = !(meshIsFlat && meshIsOnGroundLevel) && _attributes.castRealTimeShadows;
-    mesh3d.receiveShadow =  (meshIsFlat && meshIsOnGroundLevel) || _attributes.receiveRealTimeShadows;
+    mesh3d.castShadow    = _attributes.castRealTimeShadows;
+    mesh3d.receiveShadow = _attributes.receiveRealTimeShadows;
     mesh3d.material.needsUpdate = true // without this, receiveShadow does not become effective
   }
 
