@@ -16,6 +16,8 @@
   <script src="./js/libs/ace-1.2.6/ext-searchbox.js"></script>
   <script src="./js/libs/linkify.min.js"></script>
   <script src="./js/libs/linkify-jquery.min.js"></script>
+  
+  <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
 
   <script src="../../build/3dio.js"></script>
 
@@ -38,6 +40,19 @@
   <div id="run-button"></div>
   <span style="margin-left: 51px;">Code</span>
   <div id="code-editor"></div>
+</div>
+
+<div style="width:100px; height: 100px;">
+  <a-scene id="whatever" embedded>
+    <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
+    <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
+    <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+    <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+  </a-scene>
+</body>
+</html>
+
+</a-scene>
 </div>
 
 <div id="log-output-column" class="column">

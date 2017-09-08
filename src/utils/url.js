@@ -53,7 +53,7 @@ Url.prototype.parse =
     if(typeof window !== 'undefined' && !str.match(/^[^:]+:\/\//) && str.substr(0, 2) !== '//') {
       if(str[0] === '/') str = str.slice(1)
       str = window.location.protocol + '//' + window.location.host + window.location.pathname + str
-      console.log('mutated', str)
+      console.error('mutated', str)
     }
 
     if (str.substr(0,2) === '//' && typeof window !== 'undefined' && window.location && window.location.protocol) {

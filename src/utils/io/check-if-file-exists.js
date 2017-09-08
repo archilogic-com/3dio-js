@@ -6,8 +6,7 @@ export default function checkIfFileExists (url) {
     addCacheBustToQuery(url),
     {
       method: 'HEAD',
-      cache: 'reload',
-      credentials: 'include'
+      cache: 'reload'
     }
   ).then(function onSuccess(){
     return true

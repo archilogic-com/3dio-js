@@ -12,7 +12,7 @@ checkDependencies({
   aFrame: true,
   onError: function (){
     // show aframe dependency warning, since it is unexpected to run aframe on server
-    if (runtime.isBrowser) console.log('AFRAME library not found: related features will be disabled.')
+    if (runtime.isBrowser) console.warn('AFRAME library not found: related features will be disabled.')
   }
 }, function registerComponents () {
   AFRAME.registerComponent('io3d-data3d', data3dComponent)
@@ -24,7 +24,7 @@ checkDependencies({
 
 var aFrame = {
   three: {
-    Data3dView: Data3dView,
+    Data3dView: Data3dView
   }
 }
 
