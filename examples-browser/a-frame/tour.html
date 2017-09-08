@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href = "style.css" rel = "stylesheet" type = "text/css"/>
+
+  <!-- boilerplate libs -->
+  <script src="https://aframe.io/releases/0.6.0/aframe.min.js"></script>
+  <script src="https://unpkg.com/aframe-animation-component/dist/aframe-animation-component.min.js"></script>
+  <!-- 3dio lib -->
+  <script src="../../../build/3dio.js"></script>
+</head>
+<style>
+  nav {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    z-index: 100;
+  }
+  nav > button {
+    background: rgba(255,255,255,0.9);
+    box-sizing: border-box;
+    display: block;
+    border-radius: 3px;
+    font-size: 14px;
+    color: #333;
+    height: 30px;
+    box-shadow: 1px 1px 2px rgba(0,0,0,.1);
+    transition: all ease 0.3s;
+    cursor: pointer;
+    margin: 0 5px 5px 0;
+    padding: 0 10px;
+    text-decoration: none;
+    border: none;
+    outline: none;
+  }
+  nav > button:hover {
+    background: rgba(255,255,255,1);
+  }
+</style>
+<body>
+
+<!-- 3D -->
+<a-scene>
+  <a-box color="red"></a-box>
+  <a-box color="green" position="0 0 -5"></a-box>
+  <a-box color="blue" position="-5 0 0"></a-box>
+  <!-- Camera -->
+  <a-entity id="camera" tour="loop:false" camera="userHeight: 1.6" position="1 0 -4" rotation="0 0 0">
+    <a-entity tour-waypoint="Overview" position="5 5 5" rotation="-45 45 0"></a-entity>
+    <a-entity tour-waypoint="Red" position="0 0 4" rotation="0 0 0"></a-entity>
+    <a-entity tour-waypoint="Green" position="0 0 -2" rotation="0 0 0"></a-entity>
+    <a-entity tour-waypoint="Blue" position="-2 0 0" rotation="0 90 0"></a-entity>
+  </a-entity>
+</a-scene>
+
+<!-- 2D / UI -->
+<div id="buttons">
+  <button onclick="window.postMessage('INJECT_AFRAME_INSPECTOR','*');">visual inspector</button>
+</div>
+<nav>
+  <button onclick="document.querySelector('[camera]').components['tour'].goTo('Overview')">Overview</button>
+  <button onclick="document.querySelector('[camera]').components['tour'].goTo('Red')">Red box</button>
+  <button onclick="document.querySelector('[camera]').components['tour'].goTo('Green')">Green box</button>
+  <button onclick="document.querySelector('[camera]').components['tour'].goTo('Blue')">Blue box</button>
+  <button onclick="document.querySelector('[camera]').components['tour'].playTour()">&#9658;</button>
+<nav>
+
+</body>
+</html>
+
