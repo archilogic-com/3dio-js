@@ -1,6 +1,8 @@
 import callService  from '../utils/services/call.js'
 import uuid from '../utils/uuid'
 import normalizeSceneStructure from '../scene/structure/normalize.js'
+import defaults from 'lodash/defaults'
+import Promise from 'bluebird'
 
 export default function furnish (sceneStructure, options) {
 
@@ -9,10 +11,10 @@ export default function furnish (sceneStructure, options) {
     options = options || {},
     spaceId = options.spaceId,
     label = options.label,
-    floorLabels = {}
+    spaceLabels = {}
 
-  // make sure we're having a plan and a level object
-  return verifySceneStructure(sceneStructure)
+  // make sure we're having a plan, a level object and a
+  return normalizeInput(sceneStructure)
     .then(function(result) {
       console.log(result)
 
@@ -24,24 +26,27 @@ export default function furnish (sceneStructure, options) {
       }
 
       // set default space label if none provided
-      floorLabels[spaceId] = label || 'living'
+      spaceLabels[spaceId] = label || 'living'
 
+      // TODO: cleanup params after API review
       var params = {
-        floors: floorLabels,
+        floors: spaceLabels,
         modelStructure: result,
         maxResults: 1,
         tags: ['generic']
       }
 
-      console.log('autofurnish', params)
+      // do the actual home staging api call
       return callService('Autofurnishing.furnish', { arguments: params })
     })
-    .then(function(result) { return result.furnishings })
-    .catch(console.error)
+    .then(getSceneStructureFromFurnishingResult)
+    .catch(function(error) {
+      console.error('HomeStaging error:', error)
+      return Promise.reject('HomeStaging failed - check console for details')
+    })
 }
 
-// TODO: cleanup after API review
-function verifySceneStructure(input) {
+function normalizeInput(input) {
   if (input.type !== 'plan') {
     if (Array.isArray(input)) {
       if (input[0].type !== 'level') {
@@ -72,4 +77,25 @@ function verifySceneStructure(input) {
     }
   }
   return normalizeSceneStructure(input)
+}
+
+function getSceneStructureFromFurnishingResult(result) {
+  var furnishing = result.furnishings
+  var spaceIds = Object.keys(furnishing)
+  if (!uuid.validate(spaceIds[0])) return Promise.reject('No furnishings were found')
+  var groups = furnishing[spaceIds[0]][0].groups
+
+  return Promise.map(groups, getFurnitureGroupData)
+    .then(normalizeSceneStructure)
+}
+
+function getFurnitureGroupData(args) {
+  var id = args.src.substring(1)
+  var group
+  return callService('Product.read', { arguments: id})
+    .then(product => {
+      var ms = JSON.parse(product.modelStructure)
+      var sceneStructure = defaults({}, args, ms)
+      return Promise.resolve(sceneStructure)
+    })
 }

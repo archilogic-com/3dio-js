@@ -87,6 +87,10 @@ const sceneStructure = {
     }
   ]
 }
+
+test('dummy', t => {
+  t.is(true, true)
+})
 /*
 TODO: make tests work with publishableApiKey
 test('Staging: fails without api key', t => {
