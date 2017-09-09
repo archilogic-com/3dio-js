@@ -1,5 +1,5 @@
 import Promise from 'bluebird'
-import runtime from '../../../core/runtime.js'
+import runtime from '../../../../../core/runtime.js'
 
 // internals
 
@@ -14,9 +14,9 @@ function checkPowerOfTwo (value) {
 
 function nearestPowerOfTwoOrMaxTextureSize (n) {
   // max texture size supported by vga
-    if (n > MAX_TEXTURE_SIZE) {
-        return MAX_TEXTURE_SIZE
-    }
+  if (n > MAX_TEXTURE_SIZE) {
+    return MAX_TEXTURE_SIZE
+  }
   // next best power of two
   var l = Math.log(n) / Math.LN2;
   return Math.pow(2, Math.round(l))
@@ -33,21 +33,21 @@ function resizeImage (image, url) {
   canvas.getContext('2d').drawImage(image, 0, 0, width, height)
 
   console.log('Image size not compatible. Image has been resized from ' + image.width + 'x' + image.height + 'px to ' + canvas.width + 'x' + canvas.height +
-  'px.\n' + url)
+    'px.\n' + url)
 
   return canvas
 }
 
 // function
 
-export default function sendTextureRequest (url, type, dataType, data, progress, s3Key) {
+export default function fetchImageTexture (url) {
   return new Promise(function (resolve, reject) {
-    
+
     var image = document.createElement('img')
     image.crossOrigin = 'Anonymous'
 
     image.onload = function () {
-      
+
       var texture = new THREE.Texture()
 
       texture.sourceFile = url
@@ -71,7 +71,7 @@ export default function sendTextureRequest (url, type, dataType, data, progress,
         texture.image.src = url
 
       }
-      
+
       resolve(texture)
 
     }

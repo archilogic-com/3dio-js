@@ -5,7 +5,6 @@ import traverseData3d               from './utils/data3d/traverse.js'
 import cloneData3d                  from './utils/data3d/clone.js'
 import ui                           from './utils/ui.js'
 import auth                         from './utils/auth.js'
-import request                      from './utils/io/request.js'
 import fetch                        from './utils/io/fetch.js'
 import fetchModule                  from './utils/io/fetch-module.js'
 import checkIfFileExists            from './utils/io/check-if-file-exists.js'
@@ -39,7 +38,6 @@ var utils = {
   io: {
     fetch: fetch,
     fetchModule: fetchModule,
-    request: request,
     checkIfFileExists: checkIfFileExists
   },
   image: {
