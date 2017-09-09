@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.63
- * @date 2017/09/09 10:43
+ * @version 1.0.0-beta.64
+ * @date 2017/09/09 11:15
  * @branch master
- * @commit 77db522ae0e897db0076201572cf4bcba8fd02b0
+ * @commit d081dcf35716b287720b5f0e2ecc28a959a7139d
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/09 10:43', GIT_BRANCH = 'master', GIT_COMMIT = '77db522ae0e897db0076201572cf4bcba8fd02b0'
+	var BUILD_DATE='2017/09/09 11:15', GIT_BRANCH = 'master', GIT_COMMIT = 'd081dcf35716b287720b5f0e2ecc28a959a7139d'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.63";
+	var version = "1.0.0-beta.64";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -21088,24 +21088,24 @@
 	// import sceneStructure types
 	function getDefaultsByType() {
 	  var types = {
-	    box,
-	    cameraBookmark,
-	    door,
-	    floor,
-	    floorplan,
-	    group,
-	    interior,
+	    box: box,
+	    cameraBookmark: cameraBookmark,
+	    door: door,
+	    floor: floor,
+	    floorplan: floorplan,
+	    group: group,
+	    interior: interior,
 	    level: level$1,
-	    plan,
-	    polyfloor,
-	    railing,
-	    wall,
+	    plan: plan,
+	    polyfloor: polyfloor,
+	    railing: railing,
+	    wall: wall,
 	    window: window$1
 	  };
 
 	  var typeSpecificValidations = {};
 
-	  Object.keys(types).forEach(key => {
+	  Object.keys(types).forEach(function(key) {
 	    typeSpecificValidations[key] = {
 	      params: defaults_1({}, generic.params, types[key].params),
 	      possibleChildrenTypes: types[key].possibleChildrenTypes
@@ -21267,7 +21267,7 @@
 	  var id = args.src.substring(1);
 	  var group;
 	  return callService('Product.read', { arguments: id})
-	    .then(product => {
+	    .then(function(product) {
 	      var ms = JSON.parse(product.modelStructure);
 	      var sceneStructure = defaults_1({}, args, ms);
 	      return bluebird_1.resolve(sceneStructure)
@@ -22329,7 +22329,10 @@
 	  var collection = parent ? null : []; // use collection or parent
 	  sceneStructure.forEach(function(element3d) {
 	    if (validTypes.indexOf(element3d.type) > -1) {
-	      var el = addEntity({attributes: getAttributes(element3d), parent});
+	      var el = addEntity({
+	        attributes: getAttributes(element3d),
+	        parent: parent
+	      });
 	      getHtmlFromSceneStructure(element3d.children, el);
 	      if (collection) collection.push(el);
 	    }
@@ -22356,7 +22359,7 @@
 
 	  var el = document.createElement(tag);
 
-	  Object.keys(attributes).forEach(key => {
+	  Object.keys(attributes).forEach(function(key) {
 	    el.setAttribute(key, attributes[key]);
 	  });
 
