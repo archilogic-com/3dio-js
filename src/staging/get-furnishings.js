@@ -93,7 +93,7 @@ function getFurnitureGroupData(args) {
   var id = args.src.substring(1)
   var group
   return callService('Product.read', { arguments: id})
-    .then(product => {
+    .then(function(product) {
       var ms = JSON.parse(product.modelStructure)
       var sceneStructure = defaults({}, args, ms)
       return Promise.resolve(sceneStructure)

@@ -26,7 +26,10 @@ function getHtmlFromSceneStructure(sceneStructure, parent) {
   var collection = parent ? null : [] // use collection or parent
   sceneStructure.forEach(function(element3d) {
     if (validTypes.indexOf(element3d.type) > -1) {
-      var el = addEntity({attributes: getAttributes(element3d), parent})
+      var el = addEntity({
+        attributes: getAttributes(element3d),
+        parent: parent
+      })
       getHtmlFromSceneStructure(element3d.children, el)
       if (collection) collection.push(el)
     }
@@ -53,7 +56,7 @@ function addEntity(args) {
 
   var el = document.createElement(tag)
 
-  Object.keys(attributes).forEach(key => {
+  Object.keys(attributes).forEach(function(key) {
     el.setAttribute(key, attributes[key])
   })
 

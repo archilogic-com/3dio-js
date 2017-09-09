@@ -18,24 +18,24 @@ import defaults from 'lodash/defaults'
 
 export default function getDefaultsByType() {
   var types = {
-    box,
-    cameraBookmark,
-    door,
-    floor,
-    floorplan,
-    group,
-    interior,
-    level,
-    plan,
-    polyfloor,
-    railing,
-    wall,
-    window
+    box: box,
+    cameraBookmark: cameraBookmark,
+    door: door,
+    floor: floor,
+    floorplan: floorplan,
+    group: group,
+    interior: interior,
+    level: level,
+    plan: plan,
+    polyfloor: polyfloor,
+    railing: railing,
+    wall: wall,
+    window: window
   }
 
   var typeSpecificValidations = {}
 
-  Object.keys(types).forEach(key => {
+  Object.keys(types).forEach(function(key) {
     typeSpecificValidations[key] = {
       params: defaults({}, generic.params, types[key].params),
       possibleChildrenTypes: types[key].possibleChildrenTypes
