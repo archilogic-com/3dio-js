@@ -13,10 +13,11 @@ export default function furnish (sceneStructure, options) {
     label = options.label,
     spaceLabels = {}
 
-  // make sure we're having a plan, a level object and a
+  // make sure we're having a plan and a level object
   return normalizeInput(sceneStructure)
     .then(function(result) {
 
+      // choose first space if none is specified
       if (!spaceId) {
         var polyfloors = result.children[0].children.filter(function(element3d) {
           return element3d.type === 'polyfloor'
@@ -25,7 +26,7 @@ export default function furnish (sceneStructure, options) {
       }
 
       // set default space label if none provided
-      spaceLabels[spaceId] = label || 'living'
+      spaceLabels[spaceId] = label || 'dining_living'
 
       // TODO: cleanup params after API review
       var params = {
@@ -45,6 +46,7 @@ export default function furnish (sceneStructure, options) {
     })
 }
 
+// completes sceneStructure with plan and level object
 function normalizeInput(input) {
   if (input.type !== 'plan') {
     if (Array.isArray(input)) {
@@ -82,19 +84,25 @@ function getSceneStructureFromFurnishingResult(result) {
   var furnishing = result.furnishings
   var spaceIds = Object.keys(furnishing)
   if (!uuid.validate(spaceIds[0])) return Promise.reject('No furnishings were found')
+
+  // get furniture groups from api result
   var groups = furnishing[spaceIds[0]][0].groups
 
+  // get normailzed sceneStructure for each furniture group
   return Promise.map(groups, getFurnitureGroupData)
     .then(normalizeSceneStructure)
 }
 
-function getFurnitureGroupData(args) {
-  var id = args.src.substring(1)
-  var group
+// combine data from staging API with data from furniture API
+function getFurnitureGroupData(group) {
+  var id = group.src.substring(1)
+  // get raw data from Furniture API
   return callService('Product.read', { arguments: id})
-    .then(product => {
-      var ms = JSON.parse(product.modelStructure)
-      var sceneStructure = defaults({}, args, ms)
+    .then(furniture => {
+      // get sceneStructure from Furniture API -> info on type and possible children
+      var sceneStructure = JSON.parse(furniture.modelStructure)
+      // combine data from both API calls to turn result into full sceneStructure
+      sceneStructure = defaults({}, group, sceneStructure)
       return Promise.resolve(sceneStructure)
     })
 }

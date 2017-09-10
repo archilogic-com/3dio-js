@@ -13,8 +13,11 @@ export default function searchFurniture (query, options) {
   var apiErrorCount = 0
   // call API
   function callApi () {
+    // let's make sure we don't have trailing or double spaces
+    query = 'isPublished:true ' + query
+    query = query.trim().replace(/\s+/g, ' ')
     return callService('Product.search', {
-      searchQuery: {query: 'isPublished:true ' + query},
+      searchQuery: {query: query},
       limit: limit
       // TODO: add this param once #251 https://github.com/archilogic-com/services/issues/251 is resolved
       //offset: offset
