@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.64
- * @date 2017/09/09 11:15
+ * @date 2017/09/10 16:54
  * @branch master
- * @commit d081dcf35716b287720b5f0e2ecc28a959a7139d
+ * @commit fe60efdd5fe39a5afaf6c9d279571340ee5bd22a
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/09 11:15', GIT_BRANCH = 'master', GIT_COMMIT = 'd081dcf35716b287720b5f0e2ecc28a959a7139d'
+	var BUILD_DATE='2017/09/10 16:54', GIT_BRANCH = 'master', GIT_COMMIT = 'fe60efdd5fe39a5afaf6c9d279571340ee5bd22a'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.64";
@@ -22852,7 +22852,7 @@
 
 	// API
 
-	var consolidate = consolidateData3d$1;
+	var consolidate = consolidateData3d;
 	consolidate.meshes = consolidateMeshes;
 	consolidate.materials = consolidateMaterials;
 
@@ -22863,7 +22863,7 @@
 	var RAD_TO_DEG = 180 / Math.PI;
 
 	// main
-	function consolidateData3d$1(data3d, options){
+	function consolidateData3d(data3d, options){
 
 	  // API
 	  options = options || {};
@@ -23796,10 +23796,7 @@
 	}, function () {
 
 	  return function getData3d(object3d) {
-
-	    // API
-	    var sourceObject3d = object3d;
-
+	    
 	    // returns data3d when a minimal texture is ready:
 	    // - source textures for server side processing
 	    // - loRes textures for rendering
@@ -23820,8 +23817,8 @@
 	        }
 
 	        if (threeGeometry.index) {
-	          if (threeGeometry.attributes.colors) {
-	            translateIndexedBufferGeometryWithColor(data3d, threeObject3D, texturePromises);
+	          if (threeGeometry.attributes.color) {
+	            translateIndexedBufferGeometryWithColor(data3d, threeObject3D);
 	          } else {
 	            translateIndexedBufferGeometry(data3d, threeObject3D, texturePromises);
 	          }
@@ -23836,7 +23833,7 @@
 	        traverseThreeSceneGraph(child);
 	      });
 
-	    })(sourceObject3d);
+	    })(object3d);
 
 	    return bluebird_1.all([
 	      consolidate(data3d),
@@ -23933,15 +23930,113 @@
 
 	}
 
-	function translateIndexedBufferGeometryWithColor (data3d, threeObject3D, texturePromises) {
+	function translateIndexedBufferGeometryWithColor (data3d, threeObject3D) {
 
-	  console.log(threeObject3D);
-	  // TODO: add support for vertex colors:
-	  // 1. create material indices
-	  // 2. create separate data3d meshes
-	  // 3. create separate data3d materials
-	  // 4. replace this placeholder function:
-	  translateIndexedBufferGeometry (data3d, threeObject3D, texturePromises);
+	  var colorMap = {};
+
+	  var threeGeometry = threeObject3D.geometry;
+
+	  var index = threeGeometry.index.array;
+	  var colors = threeGeometry.attributes.color.array;
+	  var colorSize = threeGeometry.attributes.color.itemSize;
+	  var defaultOpacity = colorSize === 3 ? 1 : null; // null because we will extract opacity from color array while parsing it
+	  var i = 0, l = threeGeometry.index.array.length, materialId;
+
+	  var color, colorKey, opacity;
+	  // build color map & create materials (loop over index face by face)
+	  for (i = 0; i < l; i+=3) {
+	    // get color of first vertex
+	    color = [colors[index[i] * colorSize], colors[index[i] * colorSize + 1], colors[index[i] * colorSize + 2]];
+	    opacity = defaultOpacity || colors[index[i] * colorSize + 3];
+	    colorKey = color.join('-') + '-' + opacity;
+
+	    // .itemSize of faces
+	    if (colorMap[colorKey]) {
+	      colorMap[colorKey].faceCount++;
+	    } else {
+	      materialId = getShortId();
+	      colorMap[colorKey] = {
+	        faceCount: 1,
+	        materialId: materialId
+	      };
+	      // create material
+	      data3d.materials[ materialId ] = {
+	        colorDiffuse: color,
+	        opacity: opacity
+	      };
+	    }
+	  }
+
+	  // create arrays & meshes
+	  Object.keys(colorMap).forEach(function(key, i){
+	    // create arrays
+	    colorMap[key].positions = new Float32Array(colorMap[key].faceCount * 9);
+	    colorMap[key].positionIndex = 0;
+	    if (threeGeometry.attributes.normal) {
+	      colorMap[key].normals = new Float32Array(colorMap[key].faceCount * 9);
+	      colorMap[key].normalIndex = 0;
+	    }
+	    // create data3d mesh
+	    var meshId = getShortId();
+	    var data3dMesh = data3d.meshes[meshId] = {
+	      positions: colorMap[key].positions,
+	      normals: colorMap[key].normals,
+	      material: colorMap[key].materialId
+	    };
+	    // scene graph
+	    translateSceneGraph(data3dMesh, threeObject3D);
+	  });
+	  
+	  // fill arrays: translate positions and normals (loop over index face by face)
+	  var pOut, pOutI, pIn = threeGeometry.attributes.position.array,
+	    nOut, nOutI, nIn = threeGeometry.attributes.normal.array;
+	  for (i = 0; i < l; i+=3) {
+	    // get color of this face (use first vertex)
+	    color = [colors[index[i] * colorSize], colors[index[i] * colorSize + 1], colors[index[i] * colorSize + 2]];
+	    opacity = defaultOpacity || colors[index[i] * colorSize + 3];
+	    colorKey = color.join('-') + '-' + opacity;
+
+	    // get output array for positions
+	    pOut = colorMap[colorKey].positions;
+	    pOutI = colorMap[colorKey].positionIndex;
+	    // vertex 1
+	    pOut[pOutI]     = pIn[index[i] * 3];
+	    pOut[pOutI + 1] = pIn[index[i] * 3 + 1];
+	    pOut[pOutI + 2] = pIn[index[i] * 3 + 2];
+	    // vertex 1
+	    pOut[pOutI + 3] = pIn[index[i + 1] * 3];
+	    pOut[pOutI + 4] = pIn[index[i + 1] * 3 + 1];
+	    pOut[pOutI + 5] = pIn[index[i + 1] * 3 + 2];
+	    // vertex 1
+	    pOut[pOutI + 6] = pIn[index[i + 2] * 3];
+	    pOut[pOutI + 7] = pIn[index[i + 2] * 3 + 1];
+	    pOut[pOutI + 8] = pIn[index[i + 2] * 3 + 2];
+	    // move index
+	    colorMap[colorKey].positionIndex += 9;
+
+	    // get output array for normals
+	    if (nIn) {
+	      nOut = colorMap[colorKey].normals;
+	      nOutI = colorMap[colorKey].normalIndex;
+	      // vertex 1
+	      nOut[nOutI]     = nIn[index[i] * 3];
+	      nOut[nOutI + 1] = nIn[index[i] * 3 + 1];
+	      nOut[nOutI + 2] = nIn[index[i] * 3 + 2];
+	      // vertex 1
+	      nOut[nOutI + 3] = nIn[index[i + 1] * 3];
+	      nOut[nOutI + 4] = nIn[index[i + 1] * 3 + 1];
+	      nOut[nOutI + 5] = nIn[index[i + 1] * 3 + 2];
+	      // vertex 1
+	      nOut[nOutI + 6] = nIn[index[i + 2] * 3];
+	      nOut[nOutI + 7] = nIn[index[i + 2] * 3 + 1];
+	      nOut[nOutI + 8] = nIn[index[i + 2] * 3 + 2];
+	      // move index
+	      colorMap[colorKey].normalIndex += 9;
+	    }
+
+	  }
+
+	  return data3d
 
 	}
 
@@ -26923,6 +27018,7 @@
 	    load: loadData3d,
 	    encodeBinary: encodeBinary,
 	    decodeBinary: decodeBinary,
+	    fromThree: getData3dFromThreeJs,
 	    clone: clone,
 	    traverse: traverseData3d$1
 	  },
