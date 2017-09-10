@@ -1,141 +1,139 @@
-import getFurnitureInfo  from '../furniture/get-info.js'
-import callService  from '../utils/services/call.js'
-import normalizeFurnitureInfo from '../furniture/common/normalize-furniture-info.js'
+import getFurnitureAlternatives from './get-furniture-alternatives.js'
+import getSceneStructureFromHtml from '../scene/structure/from-html.js'
+import getHtmlFromSceneStructure from '../scene/structure/to-html.js'
+import normalizeSceneStructure from '../scene/structure/normalize.js'
+import defaults from 'lodash/defaults'
+import Promise from 'bluebird'
 
-var userQuery, searchCount, margin, furnitureInfo, position, rotation
+// consumes sceneStructure or DOM elements
+// replaces furniture Ids and adjusts positioning
+// outputs input type
+export default function replaceFurniture (input, options) {
 
-var config = {
-  'default_margin': 0.1,
-  'default_search': '-generic isPublished:true',
-  'tag_black_list': [
-    'simplygon',
-    'hasChangeableMaterials',
-    'autofurnish',
-    'wallAttached',
-    '2 seater',
-    '3 seater',
-    '4 seater'
-  ],
-}
+  options = options || {}
+  var query = options.query
+  // defaults to pick a random item from alternatives
+  var random = options.random || true
+  var furnitureIds
 
-export default function replaceFurniture (args) {
-  // API
-  var args = args || {}
-  var id = args.id
+  // check for DOM element
+  var isDomElement = isElement(input)
+  if (isDomElement) {
+    // convert to sceneStructure
+    input = getSceneStructureFromHtml(input)
+  }
 
-  userQuery = args.query || null
-  position = args.position || {x: 0, y: 0, z: 0}
-  rotation = args.rotation || {x: 0, y: 0, z: 0}
-  // TODO: check config for publishable api key
-  // reject when no publishable or not white listed domain
-  // we need to call furniture info first in order to obtain data3d URL
-  return getFurnitureInfo(id)
-    .then(function(info){
-      furnitureInfo = info
-      margin = config['default_margin']
-      searchCount = 0
-      var searchQuery = getQuery(furnitureInfo)
-      return search(searchQuery)
+  return normalizeSceneStructure(input)
+    .then(function(sceneStructure) {
+      furnitureIds = getIdsFromSceneStructure(sceneStructure)
+
+      if (Object.keys(furnitureIds).length === 0) return Promise.reject('No valid furniture elements were found')
+
+      var promises = []
+      Object.keys(furnitureIds).forEach(function(id) {
+        promises.push(getFurnitureAlternatives(id, options))
+      })
+
+      return Promise.all(promises)
     })
     .then(function(result) {
-      return verifyResult(result, id)
+      var alternatives = {}
+      Object.keys(furnitureIds).forEach(function(id, index) {
+        alternatives[id] = result[index]
+      })
+
+      // replace params in furniture elements
+      var sceneStructure = updateSceneStructureWithResult(input, alternatives, random)
+      if (isDomElement) {
+        return getHtmlFromSceneStructure(sceneStructure)
+      } else return sceneStructure
     })
     .catch(function(error) {
-      console.error(error.message)
+      console.error(error)
+      return Promise.reject(error)
     })
 }
 
-function verifyResult(result, id) {
-  if (searchCount > 10 ) {
-    return Promise.reject(new Error('No furniture was found'))
-  }
-  var rawResult = result.filter(function(el){
-    return el.productResourceId !== id
-  });
-  // if we didn't find anything in the first place
-  // let's increase dimensions a bit
-  if (rawResult.length < 2) {
-    if (searchCount >= 3) margin += 0.10
-    var searchQuery = getQuery(furnitureInfo);
-    searchCount += 1
-    return search(searchQuery).then(function(result) {
-      return verifyResult(result, id)
-    })
-  } else {
-    var cleanResult = rawResult.map(normalizeFurnitureInfo).map(function(res) {
-      return {
-        furniture: res,
-        position: computeNewPosition(furnitureInfo, res)
-      }
-    })
-    return Promise.resolve(cleanResult)
-  }
+function getIdsFromSceneStructure(sceneStructure) {
+  var isArray = Array.isArray(sceneStructure)
+  sceneStructure = isArray ? sceneStructure : [sceneStructure]
+
+  var collection = {}
+  sceneStructure.forEach(function(element3d) {
+    // get all furniture elements = type: 'interior'
+    if (element3d.type === 'interior' && element3d.src && typeof element3d.src === 'string') collection[element3d.src.substring(1)] = true
+    // recursively search through scene structure
+    if (element3d.children && element3d.children.length) {
+      collection = defaults({}, collection, getIdsFromSceneStructure (element3d.children))
+    }
+  })
+  return collection
 }
 
-function search(searchQuery) {
-  return callService('Product.search', {searchQuery: searchQuery, limit: 200})
+// Returns true if it is a DOM element
+// https://stackoverflow.com/a/384380/2835973
+function isElement(o){
+  return (
+    typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
+      o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
+  );
 }
 
-function getQuery(info) {
-  var query = config['default_search']
-  var tags = info.tags.filter(function(tag) {
-    // removes blacklisted tags as well as 1P, 2P, ...
-    return !config['tag_black_list'].includes(tag) && !/^\d+P$/.test(tag)
+function updateSceneStructureWithResult(input, alternatives, random) {
+  var
+    sceneStructure = input,
+    replacement,
+    index = 0
+
+  Object.keys(alternatives).forEach(function(id) {
+
+    if (!alternatives[id] || !alternatives[id].length) return
+    // we the pick a random item or take the first one
+    if (random) index = Math.floor(Math.random() * alternatives[id].length)
+
+    replacement = alternatives[id][index]
+
+    sceneStructure = updateElementsById(sceneStructure, id, replacement)
+  })
+  return sceneStructure
+}
+
+// search by furniture id and replace params
+function updateElementsById(sceneStructure, id, replacement) {
+  var isArray = Array.isArray(sceneStructure)
+  sceneStructure = isArray ? sceneStructure : [sceneStructure]
+
+  sceneStructure = sceneStructure.map(function(element3d) {
+    // furniture id is stored in src param
+    if (element3d.type === 'interior' && element3d.src.substring(1) === id) {
+      // apply new id
+      element3d.src = '!' + replacement.furniture.id
+      // compute new position for items that differ in size and mesh origin
+      var newPosition = getNewPosition(element3d, replacement.offset)
+      // apply new position
+      element3d.x = newPosition.x
+      element3d.y = newPosition.y
+      element3d.z = newPosition.z
+    }
+    // recursivley search tree
+    if (element3d.children && element3d.children.length) {
+      element3d.children = updateElementsById(element3d.children, id, replacement)
+    }
+    return element3d
   })
 
-  // start removing tags from query when increasing dimensions didn't work
-  if (searchCount > 1) tags = tags.slice(0, (tags.length - searchCount + 1))
-
-  query += ' ' + tags.join(' ')
-
-  var categories = info.categories
-  var dim = info.boundingBox
-
-  query += ' categories:' + categories[0]
-  if (userQuery) query += ' ' + userQuery
-
-  query = query.trim()
-  var searchQuery = {query: query};
-  // add dimension search params if source provides dimensions
-  if (dim) {
-    ['length', 'height', 'width'].forEach(function(d) {
-      if (dim[d] -margin > 0) {
-        searchQuery[d + 'Min'] = Math.round((dim[d] - margin) * 1e2) / 1e2
-        searchQuery[d + 'Max'] = Math.round((dim[d] + margin) * 1e2) / 1e2
-      }
-    })
-  }
-  return searchQuery
+  return isArray ? sceneStructure : sceneStructure[0]
 }
 
-function computeNewPosition(a, b) {
-  var edgeAligned = ['sofa', 'shelf', 'sideboad', 'double bed', 'single bed', 'bed']
-  var tags = a.tags
-  a = a.boundingPoints
-  b = b.boundingPoints
-  if (!a || !b) return position
+// compute new position based on bounding boxes
+function getNewPosition(element3d, offset) {
 
-  // check if the furniture's virtual origin should be center or edge
-  var isEdgeAligned = edgeAligned.some(function(t) { return tags.includes(t) })
-
-  var zOffset
-  // compute offset between edges or centers
-  if (isEdgeAligned) zOffset = a.min[2] - b.min[2]
-  else zOffset = (a.max[2] + a.min[2]) / 2 - (b.max[2] + b.min[2]) / 2
-
-  var offset = {
-    // compute offset between centers
-    x: (a.max[0] + a.min[0]) / 2 - (b.max[0] + b.min[0]) / 2,
-    y: 0,
-    z: zOffset
-  }
-
-  var s = Math.sin(rotation.y / 180 * Math.PI)
-  var c = Math.cos(rotation.y / 180 * Math.PI)
+  var s = Math.sin(element3d.ry / 180 * Math.PI)
+  var c = Math.cos(element3d.ry / 180 * Math.PI)
   var newPosition = {
-    x: position.x + offset.x * c + offset.z * s,
-    y: position.y + offset.y,
-    z: position.z - offset.x * s + offset.z * c
+    x: element3d.x + offset.x * c + offset.z * s,
+    y: element3d.y + offset.y,
+    z: element3d.z - offset.x * s + offset.z * c
   }
   return newPosition
 }
