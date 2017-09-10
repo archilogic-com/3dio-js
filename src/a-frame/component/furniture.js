@@ -32,6 +32,8 @@ export default {
       this_.info = result.info // lightweight info like name, manufacturer, description ...
       this_.data3d = result.data3d // geometries and materials
 
+      // check for material presets in the furniture sceneStructure definition
+      var materialPreset = this_.info.sceneStructure && JSON.parse(this_.info.sceneStructure).materials
       // Parse & expose materials
       this_.availableMaterials = {}
       Object.keys(result.data3d.meshes).forEach(function eachMesh (meshName) {
@@ -42,6 +44,10 @@ export default {
         if (this_.data[materialPropName] !== undefined) {
           result.data3d.meshes[meshName].material = this_.data[materialPropName]
           this_.el.emit('material-changed', {mesh: meshName, material: this_.data[materialPropName]})
+        } else if (materialPreset && materialPreset[meshName]) {
+          // apply presets from the furniture's sceneStructure definition
+          result.data3d.meshes[meshName].material = materialPreset[meshName]
+          this_.el.emit('material-changed', {mesh: meshName, material: materialPreset[meshName]})
         } else {
           // register it as part of the schema for the inspector
           var prop = {}

@@ -98,7 +98,7 @@ function getFurnitureGroupData(group) {
   var id = group.src.substring(1)
   // get raw data from Furniture API
   return callService('Product.read', { arguments: id})
-    .then(furniture => {
+    .then(function(furniture) {
       // get sceneStructure from Furniture API -> info on type and possible children
       var sceneStructure = JSON.parse(furniture.modelStructure)
       // combine data from both API calls to turn result into full sceneStructure

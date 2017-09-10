@@ -7,7 +7,7 @@
 
 */
 
-import request from '../../../utils/io/request.js'
+import fetchTexture from './fetch-texture.js'
 import Promise from 'bluebird'
 
 // static method, @memberof View
@@ -146,7 +146,7 @@ export default function loadTextures ( queue, TEXTURE_TYPES, vm, _attributes, ma
 
       if (needsUpdate) {
         // load new texture
-        texturePromises[ textureCount ] = request.getTexture(textureS3Key, { queue: queue }).catch(onError)
+        texturePromises[ textureCount ] = fetchTexture(textureS3Key, queue).catch(onError)
         textureKeys[ textureCount ] = textureType
         texture3dKeys[ textureCount ] = textureType3d
         textureCount++
@@ -221,7 +221,7 @@ export default function loadTextures ( queue, TEXTURE_TYPES, vm, _attributes, ma
         // everything ok - load lightmap
         textureType = TEXTURE_TYPES.UV2
         textureS3Key = _attributes[ textureType ]
-        texturePromises[ textureCount ] = request.getTexture(textureS3Key, { queue: queue }).catch(onError)
+        texturePromises[ textureCount ] = fetchTexture(textureS3Key, queue).catch(onError)
         textureKeys[ textureCount ] = textureType
         texture3dKeys[ textureCount ] = THREEJS_TEXTURE_TYPES_MAP[ textureType ]
         textureCount++

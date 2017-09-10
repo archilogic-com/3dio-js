@@ -239,7 +239,7 @@ function log2 (x) {
 
 // load function
 
-export default function sendDdsTextureRequest (url, type, dataType, data, progress, s3Key) {
+export default function fetchDdsTexture (url) {
   return new Promise(function (resolve, reject) {
 
     var xhr = new XMLHttpRequest()

@@ -7,7 +7,7 @@
 
 */
 
-import loadTextures from './load-textures.js'
+import loadTextures from './set-material/load-textures.js'
 import runtime from '../../../core/runtime.js'
 
 // static method, @memberof View

@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.63
- * @date 2017/09/07 18:02
- * @branch io3d.homeStaging.replaceFurniture
- * @commit a2411c431762a6721a6fc30afc85d38bc5977d7f
+ * @version 1.0.0-beta.65
+ * @date 2017/09/10 18:00
+ * @branch master
+ * @commit 360f4008aa35b5b617e8c4de22567f27ba1b5309
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/07 18:02', GIT_BRANCH = 'io3d.homeStaging.replaceFurniture', GIT_COMMIT = 'a2411c431762a6721a6fc30afc85d38bc5977d7f'
+	var BUILD_DATE='2017/09/10 18:00', GIT_BRANCH = 'master', GIT_COMMIT = '360f4008aa35b5b617e8c4de22567f27ba1b5309'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.63";
+	var version = "1.0.0-beta.65";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -30,8 +30,8 @@
 	var author = {"name":"archilogic","email":"dev.rocks@archilogic.com","url":"https://archilogic.com"};
 	var main = "index.js";
 	var scripts = {"start":"gulp dev-browser","dev-browser":"gulp dev-browser","dev-node":"gulp dev-node","test":"gulp test","build":"gulp build","release":"gulp release"};
-	var dependencies = {"bluebird":"^3.5.0","form-data":"^2.1.4","gulp-cli":"^1.4.0","js-logger":"^1.3.0","lodash":"^4.17.4","matchdep":"^2.0.0","node-fetch":"2.0.0-alpha.8","rxjs":"^5.4.2","three":"^0.85.2","whatwg-fetch":"^2.0.3","wreck":"^12.4.0"};
-	var devDependencies = {"ava":"^0.22.0","babel-runtime":"^6.25.0","chalk":"^2.0.1","confirm-cli":"^0.4.0","del":"^3.0.0","gulp":"github:gulpjs/gulp#4.0","gulp-git":"^2.4.1","gulp-gzip":"^1.4.0","gulp-less":"^3.3.2","gulp-s3":"^0.11.0","gulp-watch":"^4.3.11","lite-server":"^2.3.0","moment":"^2.18.1","rollup":"^0.41.6","rollup-plugin-commonjs":"^8.0.2","rollup-plugin-json":"^2.1.1","rollup-plugin-less":"^0.1.3","rollup-plugin-node-resolve":"^3.0.0","through2":"^2.0.3","uglify-js":"^3.0.10","vinyl":"^2.1.0"};
+	var dependencies = {"bluebird":"^3.5.0","form-data":"^2.1.4","js-logger":"^1.3.0","lodash":"^4.17.4","node-fetch":"2.0.0-alpha.8","pako":"^1.0.5","rxjs":"^5.4.2","three":"^0.85.2","whatwg-fetch":"^2.0.3"};
+	var devDependencies = {"babel-runtime":"^6.25.0","chalk":"^2.0.1","confirm-cli":"^0.4.0","del":"^3.0.0","gulp":"github:gulpjs/gulp#4.0","gulp-git":"^2.4.1","gulp-gzip":"^1.4.0","gulp-less":"^3.3.2","gulp-s3":"^0.11.0","gulp-watch":"^4.3.11","lite-server":"^2.3.0","moment":"^2.18.1","rollup":"^0.41.6","rollup-plugin-commonjs":"^8.0.2","rollup-plugin-json":"^2.1.1","rollup-plugin-less":"^0.1.3","rollup-plugin-node-resolve":"^3.0.0","through2":"^2.0.3","uglify-js":"^3.0.10","vinyl":"^2.1.0"};
 	var packageJson = {
 		name: name,
 		version: version,
@@ -1437,8 +1437,8 @@
 
 	// helpers
 
-	function assertBrowser() {
-	  if (!isBrowser) throw ('Sorry this feature requires a browser environment.')
+	function assertBrowser(message) {
+	  if (!isBrowser) throw (message || 'Sorry this feature requires a browser environment.')
 	}
 
 	function getWebGlInfo () {
@@ -8639,9 +8639,9 @@
 	};
 
 	var thenables = function(Promise, INTERNAL) {
-	var util$$1 = util;
-	var errorObj = util$$1.errorObj;
-	var isObject = util$$1.isObject;
+	var util$$2 = util;
+	var errorObj = util$$2.errorObj;
+	var isObject = util$$2.isObject;
 
 	function tryConvertToPromise(obj, context) {
 	    if (isObject(obj)) {
@@ -8699,7 +8699,7 @@
 	    promise._captureStackTrace();
 	    if (context) context._popContext();
 	    var synchronous = true;
-	    var result = util$$1.tryCatch(then).call(x, resolve, reject);
+	    var result = util$$2.tryCatch(then).call(x, resolve, reject);
 	    synchronous = false;
 
 	    if (promise && result === errorObj) {
@@ -8726,8 +8726,8 @@
 
 	var promise_array = function(Promise, INTERNAL, tryConvertToPromise,
 	    apiRejection, Proxyable) {
-	var util$$1 = util;
-	var isArray = util$$1.isArray;
+	var util$$2 = util;
+	var isArray = util$$2.isArray;
 
 	function toResolutionValue(val) {
 	    switch(val) {
@@ -8748,7 +8748,7 @@
 	    this._totalResolved = 0;
 	    this._init(undefined, -2);
 	}
-	util$$1.inherits(PromiseArray, Proxyable);
+	util$$2.inherits(PromiseArray, Proxyable);
 
 	PromiseArray.prototype.length = function () {
 	    return this._length;
@@ -8783,10 +8783,10 @@
 	            return this._cancel();
 	        }
 	    }
-	    values = util$$1.asArray(values);
+	    values = util$$2.asArray(values);
 	    if (values === null) {
 	        var err = apiRejection(
-	            "expecting an array or an iterable object but got " + util$$1.classString(values)).reason();
+	            "expecting an array or an iterable object but got " + util$$2.classString(values)).reason();
 	        this._promise._rejectCallback(err, false);
 	        return;
 	    }
@@ -8982,8 +8982,8 @@
 	var getDomain = Promise._getDomain;
 	var async = Promise._async;
 	var Warning = errors.Warning;
-	var util$$1 = util;
-	var canAttachTrace = util$$1.canAttachTrace;
+	var util$$2 = util;
+	var canAttachTrace = util$$2.canAttachTrace;
 	var unhandledRejectionHandled;
 	var possiblyUnhandledRejection;
 	var bluebirdFramePattern =
@@ -8994,19 +8994,19 @@
 	var formatStack = null;
 	var indentStackFrames = false;
 	var printWarning;
-	var debugging = !!(util$$1.env("BLUEBIRD_DEBUG") != 0 &&
+	var debugging = !!(util$$2.env("BLUEBIRD_DEBUG") != 0 &&
 	                        (false ||
-	                         util$$1.env("BLUEBIRD_DEBUG") ||
-	                         util$$1.env("NODE_ENV") === "development"));
+	                         util$$2.env("BLUEBIRD_DEBUG") ||
+	                         util$$2.env("NODE_ENV") === "development"));
 
-	var warnings = !!(util$$1.env("BLUEBIRD_WARNINGS") != 0 &&
-	    (debugging || util$$1.env("BLUEBIRD_WARNINGS")));
+	var warnings = !!(util$$2.env("BLUEBIRD_WARNINGS") != 0 &&
+	    (debugging || util$$2.env("BLUEBIRD_WARNINGS")));
 
-	var longStackTraces = !!(util$$1.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
-	    (debugging || util$$1.env("BLUEBIRD_LONG_STACK_TRACES")));
+	var longStackTraces = !!(util$$2.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
+	    (debugging || util$$2.env("BLUEBIRD_LONG_STACK_TRACES")));
 
-	var wForgottenReturn = util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
-	    (warnings || !!util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
+	var wForgottenReturn = util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
+	    (warnings || !!util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
 
 	Promise.prototype.suppressUnhandledRejections = function() {
 	    var target = this._target();
@@ -9078,7 +9078,7 @@
 	    var domain = getDomain();
 	    possiblyUnhandledRejection =
 	        typeof fn === "function" ? (domain === null ?
-	                                            fn : util$$1.domainBind(domain, fn))
+	                                            fn : util$$2.domainBind(domain, fn))
 	                                 : undefined;
 	};
 
@@ -9086,7 +9086,7 @@
 	    var domain = getDomain();
 	    unhandledRejectionHandled =
 	        typeof fn === "function" ? (domain === null ?
-	                                            fn : util$$1.domainBind(domain, fn))
+	                                            fn : util$$2.domainBind(domain, fn))
 	                                 : undefined;
 	};
 
@@ -9124,33 +9124,33 @@
 	    try {
 	        if (typeof CustomEvent === "function") {
 	            var event = new CustomEvent("CustomEvent");
-	            util$$1.global.dispatchEvent(event);
+	            util$$2.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = new CustomEvent(name.toLowerCase(), {
 	                    detail: event,
 	                    cancelable: true
 	                });
-	                return !util$$1.global.dispatchEvent(domEvent);
+	                return !util$$2.global.dispatchEvent(domEvent);
 	            };
 	        } else if (typeof Event === "function") {
 	            var event = new Event("CustomEvent");
-	            util$$1.global.dispatchEvent(event);
+	            util$$2.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = new Event(name.toLowerCase(), {
 	                    cancelable: true
 	                });
 	                domEvent.detail = event;
-	                return !util$$1.global.dispatchEvent(domEvent);
+	                return !util$$2.global.dispatchEvent(domEvent);
 	            };
 	        } else {
 	            var event = document.createEvent("CustomEvent");
 	            event.initCustomEvent("testingtheevent", false, true, {});
-	            util$$1.global.dispatchEvent(event);
+	            util$$2.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = document.createEvent("CustomEvent");
 	                domEvent.initCustomEvent(name.toLowerCase(), false, true,
 	                    event);
-	                return !util$$1.global.dispatchEvent(domEvent);
+	                return !util$$2.global.dispatchEvent(domEvent);
 	            };
 	        }
 	    } catch (e) {}
@@ -9160,21 +9160,21 @@
 	})();
 
 	var fireGlobalEvent = (function() {
-	    if (util$$1.isNode) {
+	    if (util$$2.isNode) {
 	        return function() {
 	            return process.emit.apply(process, arguments);
 	        };
 	    } else {
-	        if (!util$$1.global) {
+	        if (!util$$2.global) {
 	            return function() {
 	                return false;
 	            };
 	        }
 	        return function(name) {
 	            var methodName = "on" + name.toLowerCase();
-	            var method = util$$1.global[methodName];
+	            var method = util$$2.global[methodName];
 	            if (!method) return false;
-	            method.apply(util$$1.global, [].slice.call(arguments, 1));
+	            method.apply(util$$2.global, [].slice.call(arguments, 1));
 	            return true;
 	        };
 	    }
@@ -9237,7 +9237,7 @@
 	        config.warnings = !!warningsOption;
 	        wForgottenReturn = config.warnings;
 
-	        if (util$$1.isObject(warningsOption)) {
+	        if (util$$2.isObject(warningsOption)) {
 	            if ("wForgottenReturn" in warningsOption) {
 	                wForgottenReturn = !!warningsOption.wForgottenReturn;
 	            }
@@ -9300,7 +9300,7 @@
 	        executor(resolve, reject, function(onCancel) {
 	            if (typeof onCancel !== "function") {
 	                throw new TypeError("onCancel must be a function, got: " +
-	                                    util$$1.toString(onCancel));
+	                                    util$$2.toString(onCancel));
 	            }
 	            promise._attachCancellationCallback(onCancel);
 	        });
@@ -9314,7 +9314,7 @@
 
 	    var previousOnCancel = this._onCancel();
 	    if (previousOnCancel !== undefined) {
-	        if (util$$1.isArray(previousOnCancel)) {
+	        if (util$$2.isArray(previousOnCancel)) {
 	            previousOnCancel.push(onCancel);
 	        } else {
 	            this._setOnCancel([previousOnCancel, onCancel]);
@@ -9386,9 +9386,9 @@
 	            trace.attachExtraTrace(error);
 	        } else if (!error.__stackCleaned__) {
 	            var parsed = parseStackAndMessage(error);
-	            util$$1.notEnumerableProp(error, "stack",
+	            util$$2.notEnumerableProp(error, "stack",
 	                parsed.message + "\n" + parsed.stack.join("\n"));
-	            util$$1.notEnumerableProp(error, "__stackCleaned__", true);
+	            util$$2.notEnumerableProp(error, "__stackCleaned__", true);
 	        }
 	    }
 	}
@@ -9559,7 +9559,7 @@
 	function formatAndLogError(error, title, isSoft) {
 	    if (typeof console !== "undefined") {
 	        var message;
-	        if (util$$1.isObject(error)) {
+	        if (util$$2.isObject(error)) {
 	            var stack = error.stack;
 	            message = title + formatStack(stack, error);
 	        } else {
@@ -9606,7 +9606,7 @@
 	            "]";
 	    } else {
 	        str = obj && typeof obj.toString === "function"
-	            ? obj.toString() : util$$1.toString(obj);
+	            ? obj.toString() : util$$2.toString(obj);
 	        var ruselessToString = /\[object [a-zA-Z0-9$_]+\]/;
 	        if (ruselessToString.test(str)) {
 	            try {
@@ -9697,7 +9697,7 @@
 	    captureStackTrace(this, CapturedTrace);
 	    if (length > 32) this.uncycle();
 	}
-	util$$1.inherits(CapturedTrace, Error);
+	util$$2.inherits(CapturedTrace, Error);
 	Context.CapturedTrace = CapturedTrace;
 
 	CapturedTrace.prototype.uncycle = function() {
@@ -9762,8 +9762,8 @@
 	    }
 	    removeCommonRoots(stacks);
 	    removeDuplicateOrEmptyJumps(stacks);
-	    util$$1.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
-	    util$$1.notEnumerableProp(error, "__stackCleaned__", true);
+	    util$$2.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
+	    util$$2.notEnumerableProp(error, "__stackCleaned__", true);
 	};
 
 	var captureStackTrace = (function stackDetection() {
@@ -9843,12 +9843,12 @@
 	    printWarning = function (message) {
 	        console.warn(message);
 	    };
-	    if (util$$1.isNode && process.stderr.isTTY) {
+	    if (util$$2.isNode && process.stderr.isTTY) {
 	        printWarning = function(message, isSoft) {
 	            var color = isSoft ? "\u001b[33m" : "\u001b[31m";
 	            console.warn(color + message + "\u001b[0m\n");
 	        };
-	    } else if (!util$$1.isNode && typeof (new Error().stack) === "string") {
+	    } else if (!util$$2.isNode && typeof (new Error().stack) === "string") {
 	        printWarning = function(message, isSoft) {
 	            console.warn("%c" + message,
 	                        isSoft ? "color: darkorange" : "color: red");
@@ -9895,10 +9895,10 @@
 	};
 
 	var catch_filter = function(NEXT_FILTER) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var getKeys = es5.keys;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 
 	function catchFilter(instances, cb, promise) {
 	    return function(e) {
@@ -9918,7 +9918,7 @@
 	                } else if (matchesPredicate) {
 	                    return tryCatch(cb).call(boundTo, e);
 	                }
-	            } else if (util$$1.isObject(e)) {
+	            } else if (util$$2.isObject(e)) {
 	                var keys = getKeys(item);
 	                for (var j = 0; j < keys.length; ++j) {
 	                    var key = keys[j];
@@ -9937,9 +9937,9 @@
 	};
 
 	var _finally = function(Promise, tryConvertToPromise, NEXT_FILTER) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var CancellationError = Promise.CancellationError;
-	var errorObj = util$$1.errorObj;
+	var errorObj = util$$2.errorObj;
 	var catchFilter = catch_filter(NEXT_FILTER);
 
 	function PassThroughHandlerContext(promise, type, handler) {
@@ -10060,12 +10060,12 @@
 	            j = 0, i;
 	        for (i = 0; i < len - 1; ++i) {
 	            var item = arguments[i];
-	            if (util$$1.isObject(item)) {
+	            if (util$$2.isObject(item)) {
 	                catchInstances[j++] = item;
 	            } else {
 	                return Promise.reject(new TypeError(
 	                    "tapCatch statement predicate: "
-	                    + "expecting an object but got " + util$$1.classString(item)
+	                    + "expecting an object but got " + util$$2.classString(item)
 	                ));
 	            }
 	        }
@@ -10134,12 +10134,12 @@
 
 	var method =
 	function(Promise, INTERNAL, tryConvertToPromise, apiRejection, debug) {
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
 
 	Promise.method = function (fn) {
 	    if (typeof fn !== "function") {
-	        throw new Promise.TypeError("expecting a function but got " + util$$1.classString(fn));
+	        throw new Promise.TypeError("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    return function () {
 	        var ret = new Promise(INTERNAL);
@@ -10156,7 +10156,7 @@
 
 	Promise.attempt = Promise["try"] = function (fn) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    var ret = new Promise(INTERNAL);
 	    ret._captureStackTrace();
@@ -10166,7 +10166,7 @@
 	        debug.deprecated("calling Promise.try with more than 1 argument");
 	        var arg = arguments[1];
 	        var ctx = arguments[2];
-	        value = util$$1.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
+	        value = util$$2.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
 	                                  : tryCatch(fn).call(ctx, arg);
 	    } else {
 	        value = tryCatch(fn)();
@@ -10179,7 +10179,7 @@
 	};
 
 	Promise.prototype._resolveFromSyncValue = function (value) {
-	    if (value === util$$1.errorObj) {
+	    if (value === util$$2.errorObj) {
 	        this._rejectCallback(value.e, false);
 	    } else {
 	        this._resolveCallback(value, true);
@@ -10255,9 +10255,9 @@
 	};
 
 	var cancel = function(Promise, PromiseArray, apiRejection, debug) {
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 	var async = Promise._async;
 
 	Promise.prototype["break"] = Promise.prototype.cancel = function() {
@@ -10345,7 +10345,7 @@
 	};
 
 	Promise.prototype._doInvokeOnCancel = function(onCancelCallback, internalOnly) {
-	    if (util$$1.isArray(onCancelCallback)) {
+	    if (util$$2.isArray(onCancelCallback)) {
 	        for (var i = 0; i < onCancelCallback.length; ++i) {
 	            this._doInvokeOnCancel(onCancelCallback[i], internalOnly);
 	        }
@@ -10535,10 +10535,10 @@
 	var join =
 	function(Promise, PromiseArray, tryConvertToPromise, INTERNAL, async,
 	         getDomain) {
-	var util$$1 = util;
-	var canEvaluate = util$$1.canEvaluate;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var util$$2 = util;
+	var canEvaluate = util$$2.canEvaluate;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 	var reject;
 
 	{
@@ -10682,7 +10682,7 @@
 	                    if (holder.asyncNeeded) {
 	                        var domain = getDomain();
 	                        if (domain !== null) {
-	                            holder.fn = util$$1.domainBind(domain, holder.fn);
+	                            holder.fn = util$$2.domainBind(domain, holder.fn);
 	                        }
 	                    }
 	                    ret._setAsyncGuaranteed();
@@ -10707,16 +10707,16 @@
 	                          INTERNAL,
 	                          debug) {
 	var getDomain = Promise._getDomain;
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 	var async = Promise._async;
 
 	function MappingPromiseArray(promises, fn, limit, _filter) {
 	    this.constructor$(promises);
 	    this._promise._captureStackTrace();
 	    var domain = getDomain();
-	    this._callback = domain === null ? fn : util$$1.domainBind(domain, fn);
+	    this._callback = domain === null ? fn : util$$2.domainBind(domain, fn);
 	    this._preservedValues = _filter === INTERNAL
 	        ? new Array(this.length())
 	        : null;
@@ -10725,7 +10725,7 @@
 	    this._queue = [];
 	    async.invoke(this._asyncInit, this, undefined);
 	}
-	util$$1.inherits(MappingPromiseArray, PromiseArray);
+	util$$2.inherits(MappingPromiseArray, PromiseArray);
 
 	MappingPromiseArray.prototype._asyncInit = function() {
 	    this._init$(undefined, -2);
@@ -10834,7 +10834,7 @@
 
 	function map(promises, fn, options, _filter) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	    }
 
 	    var limit = 0;
@@ -10843,13 +10843,13 @@
 	            if (typeof options.concurrency !== "number") {
 	                return Promise.reject(
 	                    new TypeError("'concurrency' must be a number but it is " +
-	                                    util$$1.classString(options.concurrency)));
+	                                    util$$2.classString(options.concurrency)));
 	            }
 	            limit = options.concurrency;
 	        } else {
 	            return Promise.reject(new TypeError(
 	                            "options argument must be an object but it is " +
-	                             util$$1.classString(options)));
+	                             util$$2.classString(options)));
 	        }
 	    }
 	    limit = typeof limit === "number" &&
@@ -10876,9 +10876,9 @@
 	}
 
 	var call_get = function(Promise) {
-	var util$$1 = util;
-	var canEvaluate = util$$1.canEvaluate;
-	var isIdentifier = util$$1.isIdentifier;
+	var util$$2 = util;
+	var canEvaluate = util$$2.canEvaluate;
+	var isIdentifier = util$$2.isIdentifier;
 
 	var getMethodCaller;
 	var getGetter;
@@ -10939,8 +10939,8 @@
 	    var fn;
 	    if (obj != null) fn = obj[methodName];
 	    if (typeof fn !== "function") {
-	        var message = "Object " + util$$1.classString(obj) + " has no method '" +
-	            util$$1.toString(methodName) + "'";
+	        var message = "Object " + util$$2.classString(obj) + " has no method '" +
+	            util$$2.toString(methodName) + "'";
 	        throw new Promise.TypeError(message);
 	    }
 	    return fn;
@@ -10993,11 +10993,11 @@
 
 	var using = function (Promise, apiRejection, tryConvertToPromise,
 	    createContext, INTERNAL, debug) {
-	    var util$$1 = util;
+	    var util$$2 = util;
 	    var TypeError = errors.TypeError;
 	    var inherits = util.inherits;
-	    var errorObj = util$$1.errorObj;
-	    var tryCatch = util$$1.tryCatch;
+	    var errorObj = util$$2.errorObj;
+	    var tryCatch = util$$2.tryCatch;
 	    var NULL = {};
 
 	    function thrower(e) {
@@ -11120,7 +11120,7 @@
 	                        "you must pass at least 2 arguments to Promise.using");
 	        var fn = arguments[len - 1];
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	        }
 	        var input;
 	        var spreadArgs = true;
@@ -11218,7 +11218,7 @@
 	};
 
 	var timers$1 = function(Promise, INTERNAL, debug) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var TimeoutError = Promise.TimeoutError;
 
 	function HandleWrapper(handle)  {
@@ -11266,7 +11266,7 @@
 	    } else {
 	        err = new TimeoutError(message);
 	    }
-	    util$$1.markAsOriginatingFromRejection(err);
+	    util$$2.markAsOriginatingFromRejection(err);
 	    promise._attachExtraTrace(err);
 	    promise._reject(err);
 
@@ -11316,11 +11316,11 @@
 	                          tryConvertToPromise,
 	                          Proxyable,
 	                          debug) {
-	var errors$$1 = errors;
-	var TypeError = errors$$1.TypeError;
-	var util$$1 = util;
-	var errorObj = util$$1.errorObj;
-	var tryCatch = util$$1.tryCatch;
+	var errors$$2 = errors;
+	var TypeError = errors$$2.TypeError;
+	var util$$2 = util;
+	var errorObj = util$$2.errorObj;
+	var tryCatch = util$$2.tryCatch;
 	var yieldHandlers = [];
 
 	function promiseFromYieldHandler(value, yieldHandlers, traceParent) {
@@ -11363,7 +11363,7 @@
 	    this._yieldedPromise = null;
 	    this._cancellationPhase = false;
 	}
-	util$$1.inherits(PromiseSpawn, Proxyable);
+	util$$2.inherits(PromiseSpawn, Proxyable);
 
 	PromiseSpawn.prototype._isResolved = function() {
 	    return this._promise === null;
@@ -11516,7 +11516,7 @@
 
 	Promise.coroutine.addYieldHandler = function(fn) {
 	    if (typeof fn !== "function") {
-	        throw new TypeError("expecting a function but got " + util$$1.classString(fn));
+	        throw new TypeError("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    yieldHandlers.push(fn);
 	};
@@ -11534,14 +11534,14 @@
 	};
 
 	var nodeify = function(Promise) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var async = Promise._async;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 
 	function spreadAdapter(val, nodeback) {
 	    var promise = this;
-	    if (!util$$1.isArray(val)) return successAdapter.call(promise, val, nodeback);
+	    if (!util$$2.isArray(val)) return successAdapter.call(promise, val, nodeback);
 	    var ret =
 	        tryCatch(nodeback).apply(promise._boundValue(), [null].concat(val));
 	    if (ret === errorObj) {
@@ -11593,11 +11593,11 @@
 
 	var promisify = function(Promise, INTERNAL) {
 	var THIS = {};
-	var util$$1 = util;
+	var util$$2 = util;
 	var nodebackForPromise = nodeback;
-	var withAppended = util$$1.withAppended;
-	var maybeWrapAsError = util$$1.maybeWrapAsError;
-	var canEvaluate = util$$1.canEvaluate;
+	var withAppended = util$$2.withAppended;
+	var maybeWrapAsError = util$$2.maybeWrapAsError;
+	var canEvaluate = util$$2.canEvaluate;
 	var TypeError = errors.TypeError;
 	var defaultSuffix = "Async";
 	var defaultPromisified = {__isPromisified__: true};
@@ -11613,7 +11613,7 @@
 	var noCopyPropsPattern = new RegExp("^(?:" + noCopyProps.join("|") + ")$");
 
 	var defaultFilter = function(name) {
-	    return util$$1.isIdentifier(name) &&
+	    return util$$2.isIdentifier(name) &&
 	        name.charAt(0) !== "_" &&
 	        name !== "constructor";
 	};
@@ -11632,7 +11632,7 @@
 	}
 
 	function hasPromisified(obj, key, suffix) {
-	    var val = util$$1.getDataPropertyOrDefault(obj, key + suffix,
+	    var val = util$$2.getDataPropertyOrDefault(obj, key + suffix,
 	                                            defaultPromisified);
 	    return val ? isPromisified(val) : false;
 	}
@@ -11652,7 +11652,7 @@
 	}
 
 	function promisifiableMethods(obj, suffix, suffixRegexp, filter) {
-	    var keys = util$$1.inheritedDataKeys(obj);
+	    var keys = util$$2.inheritedDataKeys(obj);
 	    var ret = [];
 	    for (var i = 0; i < keys.length; ++i) {
 	        var key = keys[i];
@@ -11689,11 +11689,11 @@
 	};
 
 	var argumentSequence = function(argumentCount) {
-	    return util$$1.filledRange(argumentCount, "_arg", "");
+	    return util$$2.filledRange(argumentCount, "_arg", "");
 	};
 
 	var parameterDeclaration = function(parameterCount) {
-	    return util$$1.filledRange(
+	    return util$$2.filledRange(
 	        Math.max(parameterCount, 3), "_arg", "");
 	};
 
@@ -11790,9 +11790,9 @@
 	                    withAppended,
 	                    maybeWrapAsError,
 	                    nodebackForPromise,
-	                    util$$1.tryCatch,
-	                    util$$1.errorObj,
-	                    util$$1.notEnumerableProp,
+	                    util$$2.tryCatch,
+	                    util$$2.errorObj,
+	                    util$$2.notEnumerableProp,
 	                    INTERNAL);
 	};
 	}
@@ -11819,7 +11819,7 @@
 	        if (!promise._isFateSealed()) promise._setAsyncGuaranteed();
 	        return promise;
 	    }
-	    util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
+	    util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
 	    return promisified;
 	}
 
@@ -11844,11 +11844,11 @@
 	                return makeNodePromisified(key, THIS, key,
 	                                           fn, suffix, multiArgs);
 	            });
-	            util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
+	            util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
 	            obj[promisifiedKey] = promisified;
 	        }
 	    }
-	    util$$1.toFastProperties(obj);
+	    util$$2.toFastProperties(obj);
 	    return obj;
 	}
 
@@ -11859,7 +11859,7 @@
 
 	Promise.promisify = function (fn, options) {
 	    if (typeof fn !== "function") {
-	        throw new TypeError("expecting a function but got " + util$$1.classString(fn));
+	        throw new TypeError("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    if (isPromisified(fn)) {
 	        return fn;
@@ -11868,7 +11868,7 @@
 	    var receiver = options.context === undefined ? THIS : options.context;
 	    var multiArgs = !!options.multiArgs;
 	    var ret = promisify(fn, receiver, multiArgs);
-	    util$$1.copyDescriptors(fn, ret, propsFilter);
+	    util$$2.copyDescriptors(fn, ret, propsFilter);
 	    return ret;
 	};
 
@@ -11885,15 +11885,15 @@
 	    var promisifier = options.promisifier;
 	    if (typeof promisifier !== "function") promisifier = makeNodePromisified;
 
-	    if (!util$$1.isIdentifier(suffix)) {
+	    if (!util$$2.isIdentifier(suffix)) {
 	        throw new RangeError("suffix must be a valid identifier\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
 	    }
 
-	    var keys = util$$1.inheritedDataKeys(target);
+	    var keys = util$$2.inheritedDataKeys(target);
 	    for (var i = 0; i < keys.length; ++i) {
 	        var value = target[keys[i]];
 	        if (keys[i] !== "constructor" &&
-	            util$$1.isClass(value)) {
+	            util$$2.isClass(value)) {
 	            promisifyAll(value.prototype, suffix, filter, promisifier,
 	                multiArgs);
 	            promisifyAll(value, suffix, filter, promisifier, multiArgs);
@@ -11906,9 +11906,9 @@
 
 	var props = function(
 	    Promise, PromiseArray, tryConvertToPromise, apiRejection) {
-	var util$$1 = util;
-	var isObject = util$$1.isObject;
-	var es5$$1 = es5;
+	var util$$2 = util;
+	var isObject = util$$2.isObject;
+	var es5$$2 = es5;
 	var Es6Map;
 	if (typeof Map === "function") Es6Map = Map;
 
@@ -11949,7 +11949,7 @@
 	        entries = mapToEntries(obj);
 	        isMap = true;
 	    } else {
-	        var keys = es5$$1.keys(obj);
+	        var keys = es5$$2.keys(obj);
 	        var len = keys.length;
 	        entries = new Array(len * 2);
 	        for (var i = 0; i < len; ++i) {
@@ -11962,7 +11962,7 @@
 	    this._isMap = isMap;
 	    this._init$(undefined, isMap ? -6 : -3);
 	}
-	util$$1.inherits(PropertiesPromiseArray, PromiseArray);
+	util$$2.inherits(PropertiesPromiseArray, PromiseArray);
 
 	PropertiesPromiseArray.prototype._init = function () {};
 
@@ -12024,7 +12024,7 @@
 
 	var race = function(
 	    Promise, INTERNAL, tryConvertToPromise, apiRejection) {
-	var util$$1 = util;
+	var util$$2 = util;
 
 	var raceLater = function (promise) {
 	    return promise.then(function(array) {
@@ -12038,9 +12038,9 @@
 	    if (maybePromise instanceof Promise) {
 	        return raceLater(maybePromise);
 	    } else {
-	        promises = util$$1.asArray(promises);
+	        promises = util$$2.asArray(promises);
 	        if (promises === null)
-	            return apiRejection("expecting an array or an iterable object but got " + util$$1.classString(promises));
+	            return apiRejection("expecting an array or an iterable object but got " + util$$2.classString(promises));
 	    }
 
 	    var ret = new Promise(INTERNAL);
@@ -12078,13 +12078,13 @@
 	                          INTERNAL,
 	                          debug) {
 	var getDomain = Promise._getDomain;
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
 
 	function ReductionPromiseArray(promises, fn, initialValue, _each) {
 	    this.constructor$(promises);
 	    var domain = getDomain();
-	    this._fn = domain === null ? fn : util$$1.domainBind(domain, fn);
+	    this._fn = domain === null ? fn : util$$2.domainBind(domain, fn);
 	    if (initialValue !== undefined) {
 	        initialValue = Promise.resolve(initialValue);
 	        initialValue._attachCancellationCallback(this);
@@ -12101,7 +12101,7 @@
 	    this._promise._captureStackTrace();
 	    this._init$(undefined, -5);
 	}
-	util$$1.inherits(ReductionPromiseArray, PromiseArray);
+	util$$2.inherits(ReductionPromiseArray, PromiseArray);
 
 	ReductionPromiseArray.prototype._gotAccum = function(accum) {
 	    if (this._eachValues !== undefined && 
@@ -12199,7 +12199,7 @@
 
 	function reduce(promises, fn, initialValue, _each) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    var array = new ReductionPromiseArray(promises, fn, initialValue, _each);
 	    return array.promise();
@@ -12246,12 +12246,12 @@
 	var settle =
 	    function(Promise, PromiseArray, debug) {
 	var PromiseInspection = Promise.PromiseInspection;
-	var util$$1 = util;
+	var util$$2 = util;
 
 	function SettledPromiseArray(values) {
 	    this.constructor$(values);
 	}
-	util$$1.inherits(SettledPromiseArray, PromiseArray);
+	util$$2.inherits(SettledPromiseArray, PromiseArray);
 
 	SettledPromiseArray.prototype._promiseResolved = function (index, inspection) {
 	    this._values[index] = inspection;
@@ -12288,10 +12288,10 @@
 
 	var some =
 	function(Promise, PromiseArray, apiRejection) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var RangeError = errors.RangeError;
 	var AggregateError = errors.AggregateError;
-	var isArray = util$$1.isArray;
+	var isArray = util$$2.isArray;
 	var CANCELLATION = {};
 
 
@@ -12301,7 +12301,7 @@
 	    this._unwrap = false;
 	    this._initialized = false;
 	}
-	util$$1.inherits(SomePromiseArray, PromiseArray);
+	util$$2.inherits(SomePromiseArray, PromiseArray);
 
 	SomePromiseArray.prototype._init = function () {
 	    if (!this._initialized) {
@@ -13285,200 +13285,6 @@
 	bluebird$2.noConflict = noConflict;
 	var bluebird_1 = bluebird$2;
 
-	function sendBasicRequest (url, method, type, body){
-	  return new bluebird_1(function (resolve, reject) {
-
-	    var xhr = new XMLHttpRequest();
-	    xhr.onload = function (event) {
-	      if (xhr.status >= 200 && xhr.status < 300) {
-	        resolve(xhr.response);
-	      } else {
-	        reject('Http request to '+url+' returned status: '+xhr.status+'. Body:\n'+xhr.response);
-	      }
-	    };
-	    xhr.onerror = function (event) {
-	      reject('Http request error. URL: '+url);
-	    };
-	    xhr.open(method, url, true);
-	    xhr.crossOrigin = 'Anonymous';
-	    xhr.responseType = type.toLowerCase();
-	    xhr.send(body);
-
-	  })
-	}
-
-	function sendJsonRequest(url, method, type, data){
-	  return new bluebird_1(function (resolve, reject) {
-
-	    // internals
-	    var jsonString = null;
-	    var triedPreflightWorkaround = false;
-
-	    // preprocess data
-	    if (data) {
-	      try {
-	        jsonString = JSON.stringify(data);
-	      } catch (e) {
-	        reject('Error creating JSON string.');
-	      }
-	    }
-
-	    // create request
-	    var xhr = new XMLHttpRequest();
-	    xhr.crossOrigin = 'Anonymous';
-
-	    xhr.onload = function (event) {
-	      // parse data
-	      var json;
-	      try {
-	        json = JSON.parse(xhr.responseText);
-	      } catch (e) {
-	        reject({
-	          message: 'Http Request failed: Error parsing response JSON',
-	          url: url,
-	          status: xhr.status,
-	          headers: xhr.getAllResponseHeaders(),
-	          event: event
-	        });
-	        return
-	      }
-	      if (xhr.status >= 200 && xhr.status < 300) {
-	        resolve(json);
-	      } else {
-	        reject(json);
-	      }
-	    };
-	    xhr.onerror = function (event) {
-
-	      // When CORS preflight fails then xhr.status is 0
-	      if (!triedPreflightWorkaround && xhr.status === 0) {
-
-	        // try again with simple header to avoid OPTIONS preflight
-	        triedPreflightWorkaround = true;
-	        xhr.open(method, url, true);
-	        xhr.setRequestHeader('Content-Type', 'text/plain');
-	        xhr.send(jsonString);
-
-	      } else {
-
-	        reject({
-	          message: 'Http Request error',
-	          url: url,
-	          status: xhr.status,
-	          headers: xhr.getAllResponseHeaders(),
-	          event: event
-	        });
-
-	      }
-
-	    };
-
-	    xhr.open(method, url, true);
-	      if (method !== 'GET') {
-	          xhr.setRequestHeader('Content-Type', 'application/json');
-	      }
-	    xhr.send(jsonString);
-	    
-	  })
-	}
-
-	// internals
-
-	// graphic card max supported texture size
-	var MAX_TEXTURE_SIZE = runtime.has.webGl ? runtime.webGl.maxTextureSize || 2048 : 2048;
-
-	// helpers
-
-	function checkPowerOfTwo (value) {
-	  return ( value & ( value - 1 ) ) === 0 && value !== 0
-	}
-
-	function nearestPowerOfTwoOrMaxTextureSize (n) {
-	  // max texture size supported by vga
-	    if (n > MAX_TEXTURE_SIZE) {
-	        return MAX_TEXTURE_SIZE
-	    }
-	  // next best power of two
-	  var l = Math.log(n) / Math.LN2;
-	  return Math.pow(2, Math.round(l))
-	}
-
-	function resizeImage (image, url) {
-
-	  var width = nearestPowerOfTwoOrMaxTextureSize(image.width);
-	  var height = nearestPowerOfTwoOrMaxTextureSize(image.height);
-
-	  var canvas = document.createElement('canvas');
-	  canvas.width = width;
-	  canvas.height = height;
-	  canvas.getContext('2d').drawImage(image, 0, 0, width, height);
-
-	  console.log('Image size not compatible. Image has been resized from ' + image.width + 'x' + image.height + 'px to ' + canvas.width + 'x' + canvas.height +
-	  'px.\n' + url);
-
-	  return canvas
-	}
-
-	// function
-
-	function sendTextureRequest (url, type, dataType, data, progress, s3Key) {
-	  return new bluebird_1(function (resolve, reject) {
-	    
-	    var image = document.createElement('img');
-	    image.crossOrigin = 'Anonymous';
-
-	    image.onload = function () {
-	      
-	      var texture = new THREE.Texture();
-
-	      texture.sourceFile = url;
-	      texture.url = url;
-
-	      // image size compatibility check
-
-	      var isPowerOfTwo = (checkPowerOfTwo(image.width) && checkPowerOfTwo(image.height));
-	      var isNotTooBig = (image.width <= MAX_TEXTURE_SIZE && image.height <= MAX_TEXTURE_SIZE);
-
-	      if (isPowerOfTwo && isNotTooBig) {
-
-	        // use image as it is
-	        texture.image = image;
-
-	      } else {
-
-	        // resize image to make it compatible
-	        texture.image = resizeImage(image, url);
-	        // add url reference
-	        texture.image.src = url;
-
-	      }
-	      
-	      resolve(texture);
-
-	    };
-
-	    var triedWithCacheBust = false;
-	    image.onerror = function () {
-	      if(triedWithCacheBust) {
-	        reject('Error loading texture ' + url);
-	      } else {
-	        // try again with cache busting to avoid things like #1510
-	        triedWithCacheBust = true;
-	        if (url.indexOf('?') === -1) {
-	          url += '?cacheBust=' + new Date().getTime();
-	        } else {
-	          url += '&cacheBust=' + new Date().getTime();
-	        }
-	        image.src = url;
-	      }
-	    };
-
-	    // initiate image loading
-	    image.src = url;
-
-	  })
-	}
-
 	var DDS_MAGIC = 0x20534444;
 
 	var DDSD_MIPMAPCOUNT = 0x20000;
@@ -13695,7 +13501,7 @@
 
 	// load function
 
-	function sendDdsTextureRequest (url, type, dataType, data, progress, s3Key) {
+	function fetchDdsTexture (url) {
 	  return new bluebird_1(function (resolve, reject) {
 
 	    var xhr = new XMLHttpRequest();
@@ -13774,151 +13580,3644 @@
 	  })
 	}
 
-	// main
+	// internals
 
-	function request(args) {
-	  // API
-	  var url = args.url || args.uri;
-	  var method = args.method || 'GET';
-	  var body = args.body;
-	  var type = getType(args.type, url, body);
-	  
-	  // TODO: add support for additional params
-	  //var headers = args.headers || {}
-	  //var qs = args.qs
+	// graphic card max supported texture size
+	var MAX_TEXTURE_SIZE = runtime.has.webGl ? runtime.webGl.maxTextureSize || 2048 : 2048;
 
-	  //var noCache = !!args.noCache
+	// helpers
 
-	  // TODO: validate params
-	  if (sendRequestByType[type]) {
-	    return sendRequestByType[type](url, method, type, body)
-	  } else {
-	    return bluebird_1.reject('Type '+type+' not supported.')
-	  }
-
+	function checkPowerOfTwo (value) {
+	  return ( value & ( value - 1 ) ) === 0 && value !== 0
 	}
 
-	// shortcuts
+	function nearestPowerOfTwoOrMaxTextureSize (n) {
+	  // max texture size supported by vga
+	  if (n > MAX_TEXTURE_SIZE) {
+	    return MAX_TEXTURE_SIZE
+	  }
+	  // next best power of two
+	  var l = Math.log(n) / Math.LN2;
+	  return Math.pow(2, Math.round(l))
+	}
 
-	request.get = function get (url) {
-	  return request({
-	    method: 'GET',
-	    url: url
+	function resizeImage (image, url) {
+
+	  var width = nearestPowerOfTwoOrMaxTextureSize(image.width);
+	  var height = nearestPowerOfTwoOrMaxTextureSize(image.height);
+
+	  var canvas = document.createElement('canvas');
+	  canvas.width = width;
+	  canvas.height = height;
+	  canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+
+	  console.log('Image size not compatible. Image has been resized from ' + image.width + 'x' + image.height + 'px to ' + canvas.width + 'x' + canvas.height +
+	    'px.\n' + url);
+
+	  return canvas
+	}
+
+	// function
+
+	function fetchImageTexture (url) {
+	  return new bluebird_1(function (resolve, reject) {
+
+	    var image = document.createElement('img');
+	    image.crossOrigin = 'Anonymous';
+
+	    image.onload = function () {
+
+	      var texture = new THREE.Texture();
+
+	      texture.sourceFile = url;
+	      texture.url = url;
+
+	      // image size compatibility check
+
+	      var isPowerOfTwo = (checkPowerOfTwo(image.width) && checkPowerOfTwo(image.height));
+	      var isNotTooBig = (image.width <= MAX_TEXTURE_SIZE && image.height <= MAX_TEXTURE_SIZE);
+
+	      if (isPowerOfTwo && isNotTooBig) {
+
+	        // use image as it is
+	        texture.image = image;
+
+	      } else {
+
+	        // resize image to make it compatible
+	        texture.image = resizeImage(image, url);
+	        // add url reference
+	        texture.image.src = url;
+
+	      }
+
+	      resolve(texture);
+
+	    };
+
+	    var triedWithCacheBust = false;
+	    image.onerror = function () {
+	      if(triedWithCacheBust) {
+	        reject('Error loading texture ' + url);
+	      } else {
+	        // try again with cache busting to avoid things like #1510
+	        triedWithCacheBust = true;
+	        if (url.indexOf('?') === -1) {
+	          url += '?cacheBust=' + new Date().getTime();
+	        } else {
+	          url += '&cacheBust=' + new Date().getTime();
+	        }
+	        image.src = url;
+	      }
+	    };
+
+	    // initiate image loading
+	    image.src = url;
+
 	  })
+	}
+
+	/**
+	 * Appends the elements of `values` to `array`.
+	 *
+	 * @private
+	 * @param {Array} array The array to modify.
+	 * @param {Array} values The values to append.
+	 * @returns {Array} Returns `array`.
+	 */
+	function arrayPush(array, values) {
+	  var index = -1,
+	      length = values.length,
+	      offset = array.length;
+
+	  while (++index < length) {
+	    array[offset + index] = values[index];
+	  }
+	  return array;
+	}
+
+	var _arrayPush = arrayPush;
+
+	/** Detect free variable `global` from Node.js. */
+	var freeGlobal = typeof commonjsGlobal == 'object' && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
+
+	var _freeGlobal = freeGlobal;
+
+	/** Detect free variable `self`. */
+	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+	/** Used as a reference to the global object. */
+	var root$2 = _freeGlobal || freeSelf || Function('return this')();
+
+	var _root$1 = root$2;
+
+	/** Built-in value references. */
+	var Symbol$1 = _root$1.Symbol;
+
+	var _Symbol = Symbol$1;
+
+	/** Used for built-in method references. */
+	var objectProto$1 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$1 = objectProto$1.hasOwnProperty;
+
+	/**
+	 * Used to resolve the
+	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var nativeObjectToString = objectProto$1.toString;
+
+	/** Built-in value references. */
+	var symToStringTag$1 = _Symbol ? _Symbol.toStringTag : undefined;
+
+	/**
+	 * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {string} Returns the raw `toStringTag`.
+	 */
+	function getRawTag(value) {
+	  var isOwn = hasOwnProperty$1.call(value, symToStringTag$1),
+	      tag = value[symToStringTag$1];
+
+	  try {
+	    value[symToStringTag$1] = undefined;
+	    var unmasked = true;
+	  } catch (e) {}
+
+	  var result = nativeObjectToString.call(value);
+	  if (unmasked) {
+	    if (isOwn) {
+	      value[symToStringTag$1] = tag;
+	    } else {
+	      delete value[symToStringTag$1];
+	    }
+	  }
+	  return result;
+	}
+
+	var _getRawTag = getRawTag;
+
+	/** Used for built-in method references. */
+	var objectProto$2 = Object.prototype;
+
+	/**
+	 * Used to resolve the
+	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var nativeObjectToString$1 = objectProto$2.toString;
+
+	/**
+	 * Converts `value` to a string using `Object.prototype.toString`.
+	 *
+	 * @private
+	 * @param {*} value The value to convert.
+	 * @returns {string} Returns the converted string.
+	 */
+	function objectToString(value) {
+	  return nativeObjectToString$1.call(value);
+	}
+
+	var _objectToString = objectToString;
+
+	/** `Object#toString` result references. */
+	var nullTag = '[object Null]';
+	var undefinedTag = '[object Undefined]';
+
+	/** Built-in value references. */
+	var symToStringTag = _Symbol ? _Symbol.toStringTag : undefined;
+
+	/**
+	 * The base implementation of `getTag` without fallbacks for buggy environments.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {string} Returns the `toStringTag`.
+	 */
+	function baseGetTag(value) {
+	  if (value == null) {
+	    return value === undefined ? undefinedTag : nullTag;
+	  }
+	  return (symToStringTag && symToStringTag in Object(value))
+	    ? _getRawTag(value)
+	    : _objectToString(value);
+	}
+
+	var _baseGetTag = baseGetTag;
+
+	/**
+	 * Checks if `value` is object-like. A value is object-like if it's not `null`
+	 * and has a `typeof` result of "object".
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+	 * @example
+	 *
+	 * _.isObjectLike({});
+	 * // => true
+	 *
+	 * _.isObjectLike([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObjectLike(_.noop);
+	 * // => false
+	 *
+	 * _.isObjectLike(null);
+	 * // => false
+	 */
+	function isObjectLike(value) {
+	  return value != null && typeof value == 'object';
+	}
+
+	var isObjectLike_1 = isObjectLike;
+
+	/** `Object#toString` result references. */
+	var argsTag = '[object Arguments]';
+
+	/**
+	 * The base implementation of `_.isArguments`.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+	 */
+	function baseIsArguments(value) {
+	  return isObjectLike_1(value) && _baseGetTag(value) == argsTag;
+	}
+
+	var _baseIsArguments = baseIsArguments;
+
+	/** Used for built-in method references. */
+	var objectProto = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+
+	/** Built-in value references. */
+	var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+
+	/**
+	 * Checks if `value` is likely an `arguments` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+	 *  else `false`.
+	 * @example
+	 *
+	 * _.isArguments(function() { return arguments; }());
+	 * // => true
+	 *
+	 * _.isArguments([1, 2, 3]);
+	 * // => false
+	 */
+	var isArguments = _baseIsArguments(function() { return arguments; }()) ? _baseIsArguments : function(value) {
+	  return isObjectLike_1(value) && hasOwnProperty.call(value, 'callee') &&
+	    !propertyIsEnumerable.call(value, 'callee');
 	};
 
-	request.getTexture = function getTexture (url) {
-	  return request({
-	    method: 'GET',
-	    type: 'texture',
-	    url: url
-	  })
+	var isArguments_1 = isArguments;
 
+	/**
+	 * Checks if `value` is classified as an `Array` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+	 * @example
+	 *
+	 * _.isArray([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArray(document.body.children);
+	 * // => false
+	 *
+	 * _.isArray('abc');
+	 * // => false
+	 *
+	 * _.isArray(_.noop);
+	 * // => false
+	 */
+	var isArray$2 = Array.isArray;
+
+	var isArray_1$2 = isArray$2;
+
+	/** Built-in value references. */
+	var spreadableSymbol = _Symbol ? _Symbol.isConcatSpreadable : undefined;
+
+	/**
+	 * Checks if `value` is a flattenable `arguments` object or array.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is flattenable, else `false`.
+	 */
+	function isFlattenable(value) {
+	  return isArray_1$2(value) || isArguments_1(value) ||
+	    !!(spreadableSymbol && value && value[spreadableSymbol]);
+	}
+
+	var _isFlattenable = isFlattenable;
+
+	/**
+	 * The base implementation of `_.flatten` with support for restricting flattening.
+	 *
+	 * @private
+	 * @param {Array} array The array to flatten.
+	 * @param {number} depth The maximum recursion depth.
+	 * @param {boolean} [predicate=isFlattenable] The function invoked per iteration.
+	 * @param {boolean} [isStrict] Restrict to values that pass `predicate` checks.
+	 * @param {Array} [result=[]] The initial result value.
+	 * @returns {Array} Returns the new flattened array.
+	 */
+	function baseFlatten(array, depth, predicate, isStrict, result) {
+	  var index = -1,
+	      length = array.length;
+
+	  predicate || (predicate = _isFlattenable);
+	  result || (result = []);
+
+	  while (++index < length) {
+	    var value = array[index];
+	    if (depth > 0 && predicate(value)) {
+	      if (depth > 1) {
+	        // Recursively flatten arrays (susceptible to call stack limits).
+	        baseFlatten(value, depth - 1, predicate, isStrict, result);
+	      } else {
+	        _arrayPush(result, value);
+	      }
+	    } else if (!isStrict) {
+	      result[result.length] = value;
+	    }
+	  }
+	  return result;
+	}
+
+	var _baseFlatten = baseFlatten;
+
+	/**
+	 * A specialized version of `_.map` for arrays without support for iteratee
+	 * shorthands.
+	 *
+	 * @private
+	 * @param {Array} [array] The array to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array} Returns the new mapped array.
+	 */
+	function arrayMap(array, iteratee) {
+	  var index = -1,
+	      length = array == null ? 0 : array.length,
+	      result = Array(length);
+
+	  while (++index < length) {
+	    result[index] = iteratee(array[index], index, array);
+	  }
+	  return result;
+	}
+
+	var _arrayMap = arrayMap;
+
+	/**
+	 * Removes all key-value entries from the list cache.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf ListCache
+	 */
+	function listCacheClear() {
+	  this.__data__ = [];
+	  this.size = 0;
+	}
+
+	var _listCacheClear = listCacheClear;
+
+	/**
+	 * Performs a
+	 * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+	 * comparison between two values to determine if they are equivalent.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to compare.
+	 * @param {*} other The other value to compare.
+	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+	 * @example
+	 *
+	 * var object = { 'a': 1 };
+	 * var other = { 'a': 1 };
+	 *
+	 * _.eq(object, object);
+	 * // => true
+	 *
+	 * _.eq(object, other);
+	 * // => false
+	 *
+	 * _.eq('a', 'a');
+	 * // => true
+	 *
+	 * _.eq('a', Object('a'));
+	 * // => false
+	 *
+	 * _.eq(NaN, NaN);
+	 * // => true
+	 */
+	function eq(value, other) {
+	  return value === other || (value !== value && other !== other);
+	}
+
+	var eq_1 = eq;
+
+	/**
+	 * Gets the index at which the `key` is found in `array` of key-value pairs.
+	 *
+	 * @private
+	 * @param {Array} array The array to inspect.
+	 * @param {*} key The key to search for.
+	 * @returns {number} Returns the index of the matched value, else `-1`.
+	 */
+	function assocIndexOf(array, key) {
+	  var length = array.length;
+	  while (length--) {
+	    if (eq_1(array[length][0], key)) {
+	      return length;
+	    }
+	  }
+	  return -1;
+	}
+
+	var _assocIndexOf = assocIndexOf;
+
+	/** Used for built-in method references. */
+	var arrayProto = Array.prototype;
+
+	/** Built-in value references. */
+	var splice = arrayProto.splice;
+
+	/**
+	 * Removes `key` and its value from the list cache.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf ListCache
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function listCacheDelete(key) {
+	  var data = this.__data__,
+	      index = _assocIndexOf(data, key);
+
+	  if (index < 0) {
+	    return false;
+	  }
+	  var lastIndex = data.length - 1;
+	  if (index == lastIndex) {
+	    data.pop();
+	  } else {
+	    splice.call(data, index, 1);
+	  }
+	  --this.size;
+	  return true;
+	}
+
+	var _listCacheDelete = listCacheDelete;
+
+	/**
+	 * Gets the list cache value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf ListCache
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function listCacheGet(key) {
+	  var data = this.__data__,
+	      index = _assocIndexOf(data, key);
+
+	  return index < 0 ? undefined : data[index][1];
+	}
+
+	var _listCacheGet = listCacheGet;
+
+	/**
+	 * Checks if a list cache value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf ListCache
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function listCacheHas(key) {
+	  return _assocIndexOf(this.__data__, key) > -1;
+	}
+
+	var _listCacheHas = listCacheHas;
+
+	/**
+	 * Sets the list cache `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf ListCache
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the list cache instance.
+	 */
+	function listCacheSet(key, value) {
+	  var data = this.__data__,
+	      index = _assocIndexOf(data, key);
+
+	  if (index < 0) {
+	    ++this.size;
+	    data.push([key, value]);
+	  } else {
+	    data[index][1] = value;
+	  }
+	  return this;
+	}
+
+	var _listCacheSet = listCacheSet;
+
+	/**
+	 * Creates an list cache object.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [entries] The key-value pairs to cache.
+	 */
+	function ListCache(entries) {
+	  var index = -1,
+	      length = entries == null ? 0 : entries.length;
+
+	  this.clear();
+	  while (++index < length) {
+	    var entry = entries[index];
+	    this.set(entry[0], entry[1]);
+	  }
+	}
+
+	// Add methods to `ListCache`.
+	ListCache.prototype.clear = _listCacheClear;
+	ListCache.prototype['delete'] = _listCacheDelete;
+	ListCache.prototype.get = _listCacheGet;
+	ListCache.prototype.has = _listCacheHas;
+	ListCache.prototype.set = _listCacheSet;
+
+	var _ListCache = ListCache;
+
+	/**
+	 * Removes all key-value entries from the stack.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf Stack
+	 */
+	function stackClear() {
+	  this.__data__ = new _ListCache;
+	  this.size = 0;
+	}
+
+	var _stackClear = stackClear;
+
+	/**
+	 * Removes `key` and its value from the stack.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf Stack
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function stackDelete(key) {
+	  var data = this.__data__,
+	      result = data['delete'](key);
+
+	  this.size = data.size;
+	  return result;
+	}
+
+	var _stackDelete = stackDelete;
+
+	/**
+	 * Gets the stack value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf Stack
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function stackGet(key) {
+	  return this.__data__.get(key);
+	}
+
+	var _stackGet = stackGet;
+
+	/**
+	 * Checks if a stack value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf Stack
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function stackHas(key) {
+	  return this.__data__.has(key);
+	}
+
+	var _stackHas = stackHas;
+
+	/**
+	 * Checks if `value` is the
+	 * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+	 * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+	 * @example
+	 *
+	 * _.isObject({});
+	 * // => true
+	 *
+	 * _.isObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObject(_.noop);
+	 * // => true
+	 *
+	 * _.isObject(null);
+	 * // => false
+	 */
+	function isObject$2(value) {
+	  var type = typeof value;
+	  return value != null && (type == 'object' || type == 'function');
+	}
+
+	var isObject_1$3 = isObject$2;
+
+	/** `Object#toString` result references. */
+	var asyncTag = '[object AsyncFunction]';
+	var funcTag = '[object Function]';
+	var genTag = '[object GeneratorFunction]';
+	var proxyTag = '[object Proxy]';
+
+	/**
+	 * Checks if `value` is classified as a `Function` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+	 * @example
+	 *
+	 * _.isFunction(_);
+	 * // => true
+	 *
+	 * _.isFunction(/abc/);
+	 * // => false
+	 */
+	function isFunction$1(value) {
+	  if (!isObject_1$3(value)) {
+	    return false;
+	  }
+	  // The use of `Object#toString` avoids issues with the `typeof` operator
+	  // in Safari 9 which returns 'object' for typed arrays and other constructors.
+	  var tag = _baseGetTag(value);
+	  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
+	}
+
+	var isFunction_1$3 = isFunction$1;
+
+	/** Used to detect overreaching core-js shims. */
+	var coreJsData = _root$1['__core-js_shared__'];
+
+	var _coreJsData = coreJsData;
+
+	/** Used to detect methods masquerading as native. */
+	var maskSrcKey = (function() {
+	  var uid = /[^.]+$/.exec(_coreJsData && _coreJsData.keys && _coreJsData.keys.IE_PROTO || '');
+	  return uid ? ('Symbol(src)_1.' + uid) : '';
+	}());
+
+	/**
+	 * Checks if `func` has its source masked.
+	 *
+	 * @private
+	 * @param {Function} func The function to check.
+	 * @returns {boolean} Returns `true` if `func` is masked, else `false`.
+	 */
+	function isMasked(func) {
+	  return !!maskSrcKey && (maskSrcKey in func);
+	}
+
+	var _isMasked = isMasked;
+
+	/** Used for built-in method references. */
+	var funcProto$1 = Function.prototype;
+
+	/** Used to resolve the decompiled source of functions. */
+	var funcToString$1 = funcProto$1.toString;
+
+	/**
+	 * Converts `func` to its source code.
+	 *
+	 * @private
+	 * @param {Function} func The function to convert.
+	 * @returns {string} Returns the source code.
+	 */
+	function toSource(func) {
+	  if (func != null) {
+	    try {
+	      return funcToString$1.call(func);
+	    } catch (e) {}
+	    try {
+	      return (func + '');
+	    } catch (e) {}
+	  }
+	  return '';
+	}
+
+	var _toSource = toSource;
+
+	/**
+	 * Used to match `RegExp`
+	 * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
+	 */
+	var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+
+	/** Used to detect host constructors (Safari). */
+	var reIsHostCtor = /^\[object .+?Constructor\]$/;
+
+	/** Used for built-in method references. */
+	var funcProto = Function.prototype;
+	var objectProto$3 = Object.prototype;
+
+	/** Used to resolve the decompiled source of functions. */
+	var funcToString = funcProto.toString;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$2 = objectProto$3.hasOwnProperty;
+
+	/** Used to detect if a method is native. */
+	var reIsNative = RegExp('^' +
+	  funcToString.call(hasOwnProperty$2).replace(reRegExpChar, '\\$&')
+	  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+	);
+
+	/**
+	 * The base implementation of `_.isNative` without bad shim checks.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a native function,
+	 *  else `false`.
+	 */
+	function baseIsNative(value) {
+	  if (!isObject_1$3(value) || _isMasked(value)) {
+	    return false;
+	  }
+	  var pattern = isFunction_1$3(value) ? reIsNative : reIsHostCtor;
+	  return pattern.test(_toSource(value));
+	}
+
+	var _baseIsNative = baseIsNative;
+
+	/**
+	 * Gets the value at `key` of `object`.
+	 *
+	 * @private
+	 * @param {Object} [object] The object to query.
+	 * @param {string} key The key of the property to get.
+	 * @returns {*} Returns the property value.
+	 */
+	function getValue(object, key) {
+	  return object == null ? undefined : object[key];
+	}
+
+	var _getValue = getValue;
+
+	/**
+	 * Gets the native function at `key` of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {string} key The key of the method to get.
+	 * @returns {*} Returns the function if it's native, else `undefined`.
+	 */
+	function getNative(object, key) {
+	  var value = _getValue(object, key);
+	  return _baseIsNative(value) ? value : undefined;
+	}
+
+	var _getNative = getNative;
+
+	/* Built-in method references that are verified to be native. */
+	var Map$1 = _getNative(_root$1, 'Map');
+
+	var _Map = Map$1;
+
+	/* Built-in method references that are verified to be native. */
+	var nativeCreate = _getNative(Object, 'create');
+
+	var _nativeCreate = nativeCreate;
+
+	/**
+	 * Removes all key-value entries from the hash.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf Hash
+	 */
+	function hashClear() {
+	  this.__data__ = _nativeCreate ? _nativeCreate(null) : {};
+	  this.size = 0;
+	}
+
+	var _hashClear = hashClear;
+
+	/**
+	 * Removes `key` and its value from the hash.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf Hash
+	 * @param {Object} hash The hash to modify.
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function hashDelete(key) {
+	  var result = this.has(key) && delete this.__data__[key];
+	  this.size -= result ? 1 : 0;
+	  return result;
+	}
+
+	var _hashDelete = hashDelete;
+
+	/** Used to stand-in for `undefined` hash values. */
+	var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+	/** Used for built-in method references. */
+	var objectProto$4 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$3 = objectProto$4.hasOwnProperty;
+
+	/**
+	 * Gets the hash value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf Hash
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function hashGet(key) {
+	  var data = this.__data__;
+	  if (_nativeCreate) {
+	    var result = data[key];
+	    return result === HASH_UNDEFINED ? undefined : result;
+	  }
+	  return hasOwnProperty$3.call(data, key) ? data[key] : undefined;
+	}
+
+	var _hashGet = hashGet;
+
+	/** Used for built-in method references. */
+	var objectProto$5 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$4 = objectProto$5.hasOwnProperty;
+
+	/**
+	 * Checks if a hash value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf Hash
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function hashHas(key) {
+	  var data = this.__data__;
+	  return _nativeCreate ? (data[key] !== undefined) : hasOwnProperty$4.call(data, key);
+	}
+
+	var _hashHas = hashHas;
+
+	/** Used to stand-in for `undefined` hash values. */
+	var HASH_UNDEFINED$1 = '__lodash_hash_undefined__';
+
+	/**
+	 * Sets the hash `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf Hash
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the hash instance.
+	 */
+	function hashSet(key, value) {
+	  var data = this.__data__;
+	  this.size += this.has(key) ? 0 : 1;
+	  data[key] = (_nativeCreate && value === undefined) ? HASH_UNDEFINED$1 : value;
+	  return this;
+	}
+
+	var _hashSet = hashSet;
+
+	/**
+	 * Creates a hash object.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [entries] The key-value pairs to cache.
+	 */
+	function Hash(entries) {
+	  var index = -1,
+	      length = entries == null ? 0 : entries.length;
+
+	  this.clear();
+	  while (++index < length) {
+	    var entry = entries[index];
+	    this.set(entry[0], entry[1]);
+	  }
+	}
+
+	// Add methods to `Hash`.
+	Hash.prototype.clear = _hashClear;
+	Hash.prototype['delete'] = _hashDelete;
+	Hash.prototype.get = _hashGet;
+	Hash.prototype.has = _hashHas;
+	Hash.prototype.set = _hashSet;
+
+	var _Hash = Hash;
+
+	/**
+	 * Removes all key-value entries from the map.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf MapCache
+	 */
+	function mapCacheClear() {
+	  this.size = 0;
+	  this.__data__ = {
+	    'hash': new _Hash,
+	    'map': new (_Map || _ListCache),
+	    'string': new _Hash
+	  };
+	}
+
+	var _mapCacheClear = mapCacheClear;
+
+	/**
+	 * Checks if `value` is suitable for use as unique object key.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
+	 */
+	function isKeyable(value) {
+	  var type = typeof value;
+	  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
+	    ? (value !== '__proto__')
+	    : (value === null);
+	}
+
+	var _isKeyable = isKeyable;
+
+	/**
+	 * Gets the data for `map`.
+	 *
+	 * @private
+	 * @param {Object} map The map to query.
+	 * @param {string} key The reference key.
+	 * @returns {*} Returns the map data.
+	 */
+	function getMapData(map, key) {
+	  var data = map.__data__;
+	  return _isKeyable(key)
+	    ? data[typeof key == 'string' ? 'string' : 'hash']
+	    : data.map;
+	}
+
+	var _getMapData = getMapData;
+
+	/**
+	 * Removes `key` and its value from the map.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf MapCache
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function mapCacheDelete(key) {
+	  var result = _getMapData(this, key)['delete'](key);
+	  this.size -= result ? 1 : 0;
+	  return result;
+	}
+
+	var _mapCacheDelete = mapCacheDelete;
+
+	/**
+	 * Gets the map value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf MapCache
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function mapCacheGet(key) {
+	  return _getMapData(this, key).get(key);
+	}
+
+	var _mapCacheGet = mapCacheGet;
+
+	/**
+	 * Checks if a map value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf MapCache
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function mapCacheHas(key) {
+	  return _getMapData(this, key).has(key);
+	}
+
+	var _mapCacheHas = mapCacheHas;
+
+	/**
+	 * Sets the map `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf MapCache
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the map cache instance.
+	 */
+	function mapCacheSet(key, value) {
+	  var data = _getMapData(this, key),
+	      size = data.size;
+
+	  data.set(key, value);
+	  this.size += data.size == size ? 0 : 1;
+	  return this;
+	}
+
+	var _mapCacheSet = mapCacheSet;
+
+	/**
+	 * Creates a map cache object to store key-value pairs.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [entries] The key-value pairs to cache.
+	 */
+	function MapCache(entries) {
+	  var index = -1,
+	      length = entries == null ? 0 : entries.length;
+
+	  this.clear();
+	  while (++index < length) {
+	    var entry = entries[index];
+	    this.set(entry[0], entry[1]);
+	  }
+	}
+
+	// Add methods to `MapCache`.
+	MapCache.prototype.clear = _mapCacheClear;
+	MapCache.prototype['delete'] = _mapCacheDelete;
+	MapCache.prototype.get = _mapCacheGet;
+	MapCache.prototype.has = _mapCacheHas;
+	MapCache.prototype.set = _mapCacheSet;
+
+	var _MapCache = MapCache;
+
+	/** Used as the size to enable large array optimizations. */
+	var LARGE_ARRAY_SIZE = 200;
+
+	/**
+	 * Sets the stack `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf Stack
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the stack cache instance.
+	 */
+	function stackSet(key, value) {
+	  var data = this.__data__;
+	  if (data instanceof _ListCache) {
+	    var pairs = data.__data__;
+	    if (!_Map || (pairs.length < LARGE_ARRAY_SIZE - 1)) {
+	      pairs.push([key, value]);
+	      this.size = ++data.size;
+	      return this;
+	    }
+	    data = this.__data__ = new _MapCache(pairs);
+	  }
+	  data.set(key, value);
+	  this.size = data.size;
+	  return this;
+	}
+
+	var _stackSet = stackSet;
+
+	/**
+	 * Creates a stack cache object to store key-value pairs.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [entries] The key-value pairs to cache.
+	 */
+	function Stack(entries) {
+	  var data = this.__data__ = new _ListCache(entries);
+	  this.size = data.size;
+	}
+
+	// Add methods to `Stack`.
+	Stack.prototype.clear = _stackClear;
+	Stack.prototype['delete'] = _stackDelete;
+	Stack.prototype.get = _stackGet;
+	Stack.prototype.has = _stackHas;
+	Stack.prototype.set = _stackSet;
+
+	var _Stack = Stack;
+
+	/** Used to stand-in for `undefined` hash values. */
+	var HASH_UNDEFINED$2 = '__lodash_hash_undefined__';
+
+	/**
+	 * Adds `value` to the array cache.
+	 *
+	 * @private
+	 * @name add
+	 * @memberOf SetCache
+	 * @alias push
+	 * @param {*} value The value to cache.
+	 * @returns {Object} Returns the cache instance.
+	 */
+	function setCacheAdd(value) {
+	  this.__data__.set(value, HASH_UNDEFINED$2);
+	  return this;
+	}
+
+	var _setCacheAdd = setCacheAdd;
+
+	/**
+	 * Checks if `value` is in the array cache.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf SetCache
+	 * @param {*} value The value to search for.
+	 * @returns {number} Returns `true` if `value` is found, else `false`.
+	 */
+	function setCacheHas(value) {
+	  return this.__data__.has(value);
+	}
+
+	var _setCacheHas = setCacheHas;
+
+	/**
+	 *
+	 * Creates an array cache object to store unique values.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [values] The values to cache.
+	 */
+	function SetCache(values) {
+	  var index = -1,
+	      length = values == null ? 0 : values.length;
+
+	  this.__data__ = new _MapCache;
+	  while (++index < length) {
+	    this.add(values[index]);
+	  }
+	}
+
+	// Add methods to `SetCache`.
+	SetCache.prototype.add = SetCache.prototype.push = _setCacheAdd;
+	SetCache.prototype.has = _setCacheHas;
+
+	var _SetCache = SetCache;
+
+	/**
+	 * A specialized version of `_.some` for arrays without support for iteratee
+	 * shorthands.
+	 *
+	 * @private
+	 * @param {Array} [array] The array to iterate over.
+	 * @param {Function} predicate The function invoked per iteration.
+	 * @returns {boolean} Returns `true` if any element passes the predicate check,
+	 *  else `false`.
+	 */
+	function arraySome(array, predicate) {
+	  var index = -1,
+	      length = array == null ? 0 : array.length;
+
+	  while (++index < length) {
+	    if (predicate(array[index], index, array)) {
+	      return true;
+	    }
+	  }
+	  return false;
+	}
+
+	var _arraySome = arraySome;
+
+	/**
+	 * Checks if a `cache` value for `key` exists.
+	 *
+	 * @private
+	 * @param {Object} cache The cache to query.
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function cacheHas(cache, key) {
+	  return cache.has(key);
+	}
+
+	var _cacheHas = cacheHas;
+
+	/** Used to compose bitmasks for value comparisons. */
+	var COMPARE_PARTIAL_FLAG$2 = 1;
+	var COMPARE_UNORDERED_FLAG$1 = 2;
+
+	/**
+	 * A specialized version of `baseIsEqualDeep` for arrays with support for
+	 * partial deep comparisons.
+	 *
+	 * @private
+	 * @param {Array} array The array to compare.
+	 * @param {Array} other The other array to compare.
+	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+	 * @param {Function} customizer The function to customize comparisons.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Object} stack Tracks traversed `array` and `other` objects.
+	 * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
+	 */
+	function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
+	  var isPartial = bitmask & COMPARE_PARTIAL_FLAG$2,
+	      arrLength = array.length,
+	      othLength = other.length;
+
+	  if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
+	    return false;
+	  }
+	  // Assume cyclic values are equal.
+	  var stacked = stack.get(array);
+	  if (stacked && stack.get(other)) {
+	    return stacked == other;
+	  }
+	  var index = -1,
+	      result = true,
+	      seen = (bitmask & COMPARE_UNORDERED_FLAG$1) ? new _SetCache : undefined;
+
+	  stack.set(array, other);
+	  stack.set(other, array);
+
+	  // Ignore non-index properties.
+	  while (++index < arrLength) {
+	    var arrValue = array[index],
+	        othValue = other[index];
+
+	    if (customizer) {
+	      var compared = isPartial
+	        ? customizer(othValue, arrValue, index, other, array, stack)
+	        : customizer(arrValue, othValue, index, array, other, stack);
+	    }
+	    if (compared !== undefined) {
+	      if (compared) {
+	        continue;
+	      }
+	      result = false;
+	      break;
+	    }
+	    // Recursively compare arrays (susceptible to call stack limits).
+	    if (seen) {
+	      if (!_arraySome(other, function(othValue, othIndex) {
+	            if (!_cacheHas(seen, othIndex) &&
+	                (arrValue === othValue || equalFunc(arrValue, othValue, bitmask, customizer, stack))) {
+	              return seen.push(othIndex);
+	            }
+	          })) {
+	        result = false;
+	        break;
+	      }
+	    } else if (!(
+	          arrValue === othValue ||
+	            equalFunc(arrValue, othValue, bitmask, customizer, stack)
+	        )) {
+	      result = false;
+	      break;
+	    }
+	  }
+	  stack['delete'](array);
+	  stack['delete'](other);
+	  return result;
+	}
+
+	var _equalArrays = equalArrays;
+
+	/** Built-in value references. */
+	var Uint8Array$1 = _root$1.Uint8Array;
+
+	var _Uint8Array = Uint8Array$1;
+
+	/**
+	 * Converts `map` to its key-value pairs.
+	 *
+	 * @private
+	 * @param {Object} map The map to convert.
+	 * @returns {Array} Returns the key-value pairs.
+	 */
+	function mapToArray(map) {
+	  var index = -1,
+	      result = Array(map.size);
+
+	  map.forEach(function(value, key) {
+	    result[++index] = [key, value];
+	  });
+	  return result;
+	}
+
+	var _mapToArray = mapToArray;
+
+	/**
+	 * Converts `set` to an array of its values.
+	 *
+	 * @private
+	 * @param {Object} set The set to convert.
+	 * @returns {Array} Returns the values.
+	 */
+	function setToArray(set) {
+	  var index = -1,
+	      result = Array(set.size);
+
+	  set.forEach(function(value) {
+	    result[++index] = value;
+	  });
+	  return result;
+	}
+
+	var _setToArray = setToArray;
+
+	/** Used to compose bitmasks for value comparisons. */
+	var COMPARE_PARTIAL_FLAG$3 = 1;
+	var COMPARE_UNORDERED_FLAG$2 = 2;
+
+	/** `Object#toString` result references. */
+	var boolTag = '[object Boolean]';
+	var dateTag = '[object Date]';
+	var errorTag = '[object Error]';
+	var mapTag = '[object Map]';
+	var numberTag = '[object Number]';
+	var regexpTag = '[object RegExp]';
+	var setTag = '[object Set]';
+	var stringTag = '[object String]';
+	var symbolTag = '[object Symbol]';
+
+	var arrayBufferTag = '[object ArrayBuffer]';
+	var dataViewTag = '[object DataView]';
+
+	/** Used to convert symbols to primitives and strings. */
+	var symbolProto = _Symbol ? _Symbol.prototype : undefined;
+	var symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
+
+	/**
+	 * A specialized version of `baseIsEqualDeep` for comparing objects of
+	 * the same `toStringTag`.
+	 *
+	 * **Note:** This function only supports comparing values with tags of
+	 * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {string} tag The `toStringTag` of the objects to compare.
+	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+	 * @param {Function} customizer The function to customize comparisons.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Object} stack Tracks traversed `object` and `other` objects.
+	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+	 */
+	function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
+	  switch (tag) {
+	    case dataViewTag:
+	      if ((object.byteLength != other.byteLength) ||
+	          (object.byteOffset != other.byteOffset)) {
+	        return false;
+	      }
+	      object = object.buffer;
+	      other = other.buffer;
+
+	    case arrayBufferTag:
+	      if ((object.byteLength != other.byteLength) ||
+	          !equalFunc(new _Uint8Array(object), new _Uint8Array(other))) {
+	        return false;
+	      }
+	      return true;
+
+	    case boolTag:
+	    case dateTag:
+	    case numberTag:
+	      // Coerce booleans to `1` or `0` and dates to milliseconds.
+	      // Invalid dates are coerced to `NaN`.
+	      return eq_1(+object, +other);
+
+	    case errorTag:
+	      return object.name == other.name && object.message == other.message;
+
+	    case regexpTag:
+	    case stringTag:
+	      // Coerce regexes to strings and treat strings, primitives and objects,
+	      // as equal. See http://www.ecma-international.org/ecma-262/7.0/#sec-regexp.prototype.tostring
+	      // for more details.
+	      return object == (other + '');
+
+	    case mapTag:
+	      var convert = _mapToArray;
+
+	    case setTag:
+	      var isPartial = bitmask & COMPARE_PARTIAL_FLAG$3;
+	      convert || (convert = _setToArray);
+
+	      if (object.size != other.size && !isPartial) {
+	        return false;
+	      }
+	      // Assume cyclic values are equal.
+	      var stacked = stack.get(object);
+	      if (stacked) {
+	        return stacked == other;
+	      }
+	      bitmask |= COMPARE_UNORDERED_FLAG$2;
+
+	      // Recursively compare objects (susceptible to call stack limits).
+	      stack.set(object, other);
+	      var result = _equalArrays(convert(object), convert(other), bitmask, customizer, equalFunc, stack);
+	      stack['delete'](object);
+	      return result;
+
+	    case symbolTag:
+	      if (symbolValueOf) {
+	        return symbolValueOf.call(object) == symbolValueOf.call(other);
+	      }
+	  }
+	  return false;
+	}
+
+	var _equalByTag = equalByTag;
+
+	/**
+	 * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
+	 * `keysFunc` and `symbolsFunc` to get the enumerable property names and
+	 * symbols of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Function} keysFunc The function to get the keys of `object`.
+	 * @param {Function} symbolsFunc The function to get the symbols of `object`.
+	 * @returns {Array} Returns the array of property names and symbols.
+	 */
+	function baseGetAllKeys(object, keysFunc, symbolsFunc) {
+	  var result = keysFunc(object);
+	  return isArray_1$2(object) ? result : _arrayPush(result, symbolsFunc(object));
+	}
+
+	var _baseGetAllKeys = baseGetAllKeys;
+
+	/**
+	 * A specialized version of `_.filter` for arrays without support for
+	 * iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Array} [array] The array to iterate over.
+	 * @param {Function} predicate The function invoked per iteration.
+	 * @returns {Array} Returns the new filtered array.
+	 */
+	function arrayFilter(array, predicate) {
+	  var index = -1,
+	      length = array == null ? 0 : array.length,
+	      resIndex = 0,
+	      result = [];
+
+	  while (++index < length) {
+	    var value = array[index];
+	    if (predicate(value, index, array)) {
+	      result[resIndex++] = value;
+	    }
+	  }
+	  return result;
+	}
+
+	var _arrayFilter = arrayFilter;
+
+	/**
+	 * This method returns a new empty array.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.13.0
+	 * @category Util
+	 * @returns {Array} Returns the new empty array.
+	 * @example
+	 *
+	 * var arrays = _.times(2, _.stubArray);
+	 *
+	 * console.log(arrays);
+	 * // => [[], []]
+	 *
+	 * console.log(arrays[0] === arrays[1]);
+	 * // => false
+	 */
+	function stubArray() {
+	  return [];
+	}
+
+	var stubArray_1 = stubArray;
+
+	/** Used for built-in method references. */
+	var objectProto$8 = Object.prototype;
+
+	/** Built-in value references. */
+	var propertyIsEnumerable$1 = objectProto$8.propertyIsEnumerable;
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeGetSymbols = Object.getOwnPropertySymbols;
+
+	/**
+	 * Creates an array of the own enumerable symbols of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of symbols.
+	 */
+	var getSymbols = !nativeGetSymbols ? stubArray_1 : function(object) {
+	  if (object == null) {
+	    return [];
+	  }
+	  object = Object(object);
+	  return _arrayFilter(nativeGetSymbols(object), function(symbol) {
+	    return propertyIsEnumerable$1.call(object, symbol);
+	  });
 	};
 
-	// private properties and methods
+	var _getSymbols = getSymbols;
 
-	var sendRequestByType = {
-	  'text': sendBasicRequest,
-	  'arrayBuffer': sendBasicRequest,
-	  'blob': sendBasicRequest,
-	  'json': sendJsonRequest, // IE11 does not support responseType=json
-	  //'ddsTexture': getDdsTexture,
-	  'imageTexture': sendTextureRequest,
-	  'ddsTexture': sendDdsTextureRequest
-	  // TODO: add support for following types
-	  //'document': sendDocumentRequest,
-	  //'urlEncoded': sendUrlEncodedRequest,
-	  //'formData': sendFormDataRequest,
-	  //'img': sendImgRequest
-	};
+	/**
+	 * The base implementation of `_.times` without support for iteratee shorthands
+	 * or max array length checks.
+	 *
+	 * @private
+	 * @param {number} n The number of times to invoke `iteratee`.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array} Returns the array of results.
+	 */
+	function baseTimes(n, iteratee) {
+	  var index = -1,
+	      result = Array(n);
 
-	var typeByExtension = {
-	  'buffer': 'arrayBuffer',
-	  'txt': 'text',
-	  'json': 'json'
-	  // TODO: enable these once support for those types is provided
-	  //'jpg': 'img',
-	  //'jpeg': 'img',
-	  //'jpe': 'img',
-	  //'png': 'img',
-	  //'gif': 'img',
-	  //'xml': 'document',
-	  //'html': 'document',
-	  //'svg': 'document'
-	};
+	  while (++index < n) {
+	    result[index] = iteratee(index);
+	  }
+	  return result;
+	}
 
-	var textureTypeByExtension = {
-	  '.dds': 'ddsTexture',
-	  '.jpg': 'imageTexture',
-	  '.jpeg': 'imageTexture',
-	  '.jpe': 'imageTexture',
-	  '.png': 'imageTexture',
-	  '.gif': 'imageTexture',
-	  '.svg': 'imageTexture'
-	};
+	var _baseTimes = baseTimes;
 
-	function getType (type, url, data) {
-	  if (!url) return 'text'
-	  var fileName = url.split('/').pop();
-	  var extension = fileName.split('.').pop();
+	/**
+	 * This method returns `false`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.13.0
+	 * @category Util
+	 * @returns {boolean} Returns `false`.
+	 * @example
+	 *
+	 * _.times(2, _.stubFalse);
+	 * // => [false, false]
+	 */
+	function stubFalse() {
+	  return false;
+	}
 
-	  if (!type) {
+	var stubFalse_1 = stubFalse;
 
-	    if (data) {
-	      // estimate dataType from data
-	      if (data instanceof FormData) {
-	        type = 'form-data';
-	      } else if (_.isObject(data)) {
-	        type = 'url-encoded';
+	var isBuffer_1 = createCommonjsModule(function (module, exports) {
+	/** Detect free variable `exports`. */
+	var freeExports = 'object' == 'object' && exports && !exports.nodeType && exports;
+
+	/** Detect free variable `module`. */
+	var freeModule = freeExports && 'object' == 'object' && module && !module.nodeType && module;
+
+	/** Detect the popular CommonJS extension `module.exports`. */
+	var moduleExports = freeModule && freeModule.exports === freeExports;
+
+	/** Built-in value references. */
+	var Buffer = moduleExports ? _root$1.Buffer : undefined;
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined;
+
+	/**
+	 * Checks if `value` is a buffer.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.3.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
+	 * @example
+	 *
+	 * _.isBuffer(new Buffer(2));
+	 * // => true
+	 *
+	 * _.isBuffer(new Uint8Array(2));
+	 * // => false
+	 */
+	var isBuffer = nativeIsBuffer || stubFalse_1;
+
+	module.exports = isBuffer;
+	});
+
+	/** Used as references for various `Number` constants. */
+	var MAX_SAFE_INTEGER = 9007199254740991;
+
+	/** Used to detect unsigned integer values. */
+	var reIsUint = /^(?:0|[1-9]\d*)$/;
+
+	/**
+	 * Checks if `value` is a valid array-like index.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+	 * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+	 */
+	function isIndex(value, length) {
+	  length = length == null ? MAX_SAFE_INTEGER : length;
+	  return !!length &&
+	    (typeof value == 'number' || reIsUint.test(value)) &&
+	    (value > -1 && value % 1 == 0 && value < length);
+	}
+
+	var _isIndex = isIndex;
+
+	/** Used as references for various `Number` constants. */
+	var MAX_SAFE_INTEGER$1 = 9007199254740991;
+
+	/**
+	 * Checks if `value` is a valid array-like length.
+	 *
+	 * **Note:** This method is loosely based on
+	 * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+	 * @example
+	 *
+	 * _.isLength(3);
+	 * // => true
+	 *
+	 * _.isLength(Number.MIN_VALUE);
+	 * // => false
+	 *
+	 * _.isLength(Infinity);
+	 * // => false
+	 *
+	 * _.isLength('3');
+	 * // => false
+	 */
+	function isLength(value) {
+	  return typeof value == 'number' &&
+	    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER$1;
+	}
+
+	var isLength_1 = isLength;
+
+	/** `Object#toString` result references. */
+	var argsTag$2 = '[object Arguments]';
+	var arrayTag$1 = '[object Array]';
+	var boolTag$1 = '[object Boolean]';
+	var dateTag$1 = '[object Date]';
+	var errorTag$1 = '[object Error]';
+	var funcTag$1 = '[object Function]';
+	var mapTag$1 = '[object Map]';
+	var numberTag$1 = '[object Number]';
+	var objectTag$1 = '[object Object]';
+	var regexpTag$1 = '[object RegExp]';
+	var setTag$1 = '[object Set]';
+	var stringTag$1 = '[object String]';
+	var weakMapTag = '[object WeakMap]';
+
+	var arrayBufferTag$1 = '[object ArrayBuffer]';
+	var dataViewTag$1 = '[object DataView]';
+	var float32Tag = '[object Float32Array]';
+	var float64Tag = '[object Float64Array]';
+	var int8Tag = '[object Int8Array]';
+	var int16Tag = '[object Int16Array]';
+	var int32Tag = '[object Int32Array]';
+	var uint8Tag = '[object Uint8Array]';
+	var uint8ClampedTag = '[object Uint8ClampedArray]';
+	var uint16Tag = '[object Uint16Array]';
+	var uint32Tag = '[object Uint32Array]';
+
+	/** Used to identify `toStringTag` values of typed arrays. */
+	var typedArrayTags = {};
+	typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
+	typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
+	typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
+	typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
+	typedArrayTags[uint32Tag] = true;
+	typedArrayTags[argsTag$2] = typedArrayTags[arrayTag$1] =
+	typedArrayTags[arrayBufferTag$1] = typedArrayTags[boolTag$1] =
+	typedArrayTags[dataViewTag$1] = typedArrayTags[dateTag$1] =
+	typedArrayTags[errorTag$1] = typedArrayTags[funcTag$1] =
+	typedArrayTags[mapTag$1] = typedArrayTags[numberTag$1] =
+	typedArrayTags[objectTag$1] = typedArrayTags[regexpTag$1] =
+	typedArrayTags[setTag$1] = typedArrayTags[stringTag$1] =
+	typedArrayTags[weakMapTag] = false;
+
+	/**
+	 * The base implementation of `_.isTypedArray` without Node.js optimizations.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+	 */
+	function baseIsTypedArray(value) {
+	  return isObjectLike_1(value) &&
+	    isLength_1(value.length) && !!typedArrayTags[_baseGetTag(value)];
+	}
+
+	var _baseIsTypedArray = baseIsTypedArray;
+
+	/**
+	 * The base implementation of `_.unary` without support for storing metadata.
+	 *
+	 * @private
+	 * @param {Function} func The function to cap arguments for.
+	 * @returns {Function} Returns the new capped function.
+	 */
+	function baseUnary(func) {
+	  return function(value) {
+	    return func(value);
+	  };
+	}
+
+	var _baseUnary = baseUnary;
+
+	var _nodeUtil = createCommonjsModule(function (module, exports) {
+	/** Detect free variable `exports`. */
+	var freeExports = 'object' == 'object' && exports && !exports.nodeType && exports;
+
+	/** Detect free variable `module`. */
+	var freeModule = freeExports && 'object' == 'object' && module && !module.nodeType && module;
+
+	/** Detect the popular CommonJS extension `module.exports`. */
+	var moduleExports = freeModule && freeModule.exports === freeExports;
+
+	/** Detect free variable `process` from Node.js. */
+	var freeProcess = moduleExports && _freeGlobal.process;
+
+	/** Used to access faster Node.js helpers. */
+	var nodeUtil = (function() {
+	  try {
+	    return freeProcess && freeProcess.binding && freeProcess.binding('util');
+	  } catch (e) {}
+	}());
+
+	module.exports = nodeUtil;
+	});
+
+	/* Node.js helper references. */
+	var nodeIsTypedArray = _nodeUtil && _nodeUtil.isTypedArray;
+
+	/**
+	 * Checks if `value` is classified as a typed array.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 3.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+	 * @example
+	 *
+	 * _.isTypedArray(new Uint8Array);
+	 * // => true
+	 *
+	 * _.isTypedArray([]);
+	 * // => false
+	 */
+	var isTypedArray = nodeIsTypedArray ? _baseUnary(nodeIsTypedArray) : _baseIsTypedArray;
+
+	var isTypedArray_1 = isTypedArray;
+
+	/** Used for built-in method references. */
+	var objectProto$9 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$7 = objectProto$9.hasOwnProperty;
+
+	/**
+	 * Creates an array of the enumerable property names of the array-like `value`.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @param {boolean} inherited Specify returning inherited property names.
+	 * @returns {Array} Returns the array of property names.
+	 */
+	function arrayLikeKeys(value, inherited) {
+	  var isArr = isArray_1$2(value),
+	      isArg = !isArr && isArguments_1(value),
+	      isBuff = !isArr && !isArg && isBuffer_1(value),
+	      isType = !isArr && !isArg && !isBuff && isTypedArray_1(value),
+	      skipIndexes = isArr || isArg || isBuff || isType,
+	      result = skipIndexes ? _baseTimes(value.length, String) : [],
+	      length = result.length;
+
+	  for (var key in value) {
+	    if ((inherited || hasOwnProperty$7.call(value, key)) &&
+	        !(skipIndexes && (
+	           // Safari 9 has enumerable `arguments.length` in strict mode.
+	           key == 'length' ||
+	           // Node.js 0.10 has enumerable non-index properties on buffers.
+	           (isBuff && (key == 'offset' || key == 'parent')) ||
+	           // PhantomJS 2 has enumerable non-index properties on typed arrays.
+	           (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
+	           // Skip index properties.
+	           _isIndex(key, length)
+	        ))) {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+
+	var _arrayLikeKeys = arrayLikeKeys;
+
+	/** Used for built-in method references. */
+	var objectProto$11 = Object.prototype;
+
+	/**
+	 * Checks if `value` is likely a prototype object.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+	 */
+	function isPrototype(value) {
+	  var Ctor = value && value.constructor,
+	      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto$11;
+
+	  return value === proto;
+	}
+
+	var _isPrototype = isPrototype;
+
+	/**
+	 * Creates a unary function that invokes `func` with its argument transformed.
+	 *
+	 * @private
+	 * @param {Function} func The function to wrap.
+	 * @param {Function} transform The argument transform.
+	 * @returns {Function} Returns the new function.
+	 */
+	function overArg(func, transform) {
+	  return function(arg) {
+	    return func(transform(arg));
+	  };
+	}
+
+	var _overArg = overArg;
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeKeys = _overArg(Object.keys, Object);
+
+	var _nativeKeys = nativeKeys;
+
+	/** Used for built-in method references. */
+	var objectProto$10 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$8 = objectProto$10.hasOwnProperty;
+
+	/**
+	 * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 */
+	function baseKeys(object) {
+	  if (!_isPrototype(object)) {
+	    return _nativeKeys(object);
+	  }
+	  var result = [];
+	  for (var key in Object(object)) {
+	    if (hasOwnProperty$8.call(object, key) && key != 'constructor') {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+
+	var _baseKeys = baseKeys;
+
+	/**
+	 * Checks if `value` is array-like. A value is considered array-like if it's
+	 * not a function and has a `value.length` that's an integer greater than or
+	 * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+	 * @example
+	 *
+	 * _.isArrayLike([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArrayLike(document.body.children);
+	 * // => true
+	 *
+	 * _.isArrayLike('abc');
+	 * // => true
+	 *
+	 * _.isArrayLike(_.noop);
+	 * // => false
+	 */
+	function isArrayLike(value) {
+	  return value != null && isLength_1(value.length) && !isFunction_1$3(value);
+	}
+
+	var isArrayLike_1 = isArrayLike;
+
+	/**
+	 * Creates an array of the own enumerable property names of `object`.
+	 *
+	 * **Note:** Non-object values are coerced to objects. See the
+	 * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+	 * for more details.
+	 *
+	 * @static
+	 * @since 0.1.0
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 * @example
+	 *
+	 * function Foo() {
+	 *   this.a = 1;
+	 *   this.b = 2;
+	 * }
+	 *
+	 * Foo.prototype.c = 3;
+	 *
+	 * _.keys(new Foo);
+	 * // => ['a', 'b'] (iteration order is not guaranteed)
+	 *
+	 * _.keys('hi');
+	 * // => ['0', '1']
+	 */
+	function keys(object) {
+	  return isArrayLike_1(object) ? _arrayLikeKeys(object) : _baseKeys(object);
+	}
+
+	var keys_1 = keys;
+
+	/**
+	 * Creates an array of own enumerable property names and symbols of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names and symbols.
+	 */
+	function getAllKeys(object) {
+	  return _baseGetAllKeys(object, keys_1, _getSymbols);
+	}
+
+	var _getAllKeys = getAllKeys;
+
+	/** Used to compose bitmasks for value comparisons. */
+	var COMPARE_PARTIAL_FLAG$4 = 1;
+
+	/** Used for built-in method references. */
+	var objectProto$7 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$6 = objectProto$7.hasOwnProperty;
+
+	/**
+	 * A specialized version of `baseIsEqualDeep` for objects with support for
+	 * partial deep comparisons.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+	 * @param {Function} customizer The function to customize comparisons.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Object} stack Tracks traversed `object` and `other` objects.
+	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+	 */
+	function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
+	  var isPartial = bitmask & COMPARE_PARTIAL_FLAG$4,
+	      objProps = _getAllKeys(object),
+	      objLength = objProps.length,
+	      othProps = _getAllKeys(other),
+	      othLength = othProps.length;
+
+	  if (objLength != othLength && !isPartial) {
+	    return false;
+	  }
+	  var index = objLength;
+	  while (index--) {
+	    var key = objProps[index];
+	    if (!(isPartial ? key in other : hasOwnProperty$6.call(other, key))) {
+	      return false;
+	    }
+	  }
+	  // Assume cyclic values are equal.
+	  var stacked = stack.get(object);
+	  if (stacked && stack.get(other)) {
+	    return stacked == other;
+	  }
+	  var result = true;
+	  stack.set(object, other);
+	  stack.set(other, object);
+
+	  var skipCtor = isPartial;
+	  while (++index < objLength) {
+	    key = objProps[index];
+	    var objValue = object[key],
+	        othValue = other[key];
+
+	    if (customizer) {
+	      var compared = isPartial
+	        ? customizer(othValue, objValue, key, other, object, stack)
+	        : customizer(objValue, othValue, key, object, other, stack);
+	    }
+	    // Recursively compare objects (susceptible to call stack limits).
+	    if (!(compared === undefined
+	          ? (objValue === othValue || equalFunc(objValue, othValue, bitmask, customizer, stack))
+	          : compared
+	        )) {
+	      result = false;
+	      break;
+	    }
+	    skipCtor || (skipCtor = key == 'constructor');
+	  }
+	  if (result && !skipCtor) {
+	    var objCtor = object.constructor,
+	        othCtor = other.constructor;
+
+	    // Non `Object` object instances with different constructors are not equal.
+	    if (objCtor != othCtor &&
+	        ('constructor' in object && 'constructor' in other) &&
+	        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
+	          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
+	      result = false;
+	    }
+	  }
+	  stack['delete'](object);
+	  stack['delete'](other);
+	  return result;
+	}
+
+	var _equalObjects = equalObjects;
+
+	/* Built-in method references that are verified to be native. */
+	var DataView$1 = _getNative(_root$1, 'DataView');
+
+	var _DataView = DataView$1;
+
+	/* Built-in method references that are verified to be native. */
+	var Promise$2 = _getNative(_root$1, 'Promise');
+
+	var _Promise = Promise$2;
+
+	/* Built-in method references that are verified to be native. */
+	var Set = _getNative(_root$1, 'Set');
+
+	var _Set = Set;
+
+	/* Built-in method references that are verified to be native. */
+	var WeakMap = _getNative(_root$1, 'WeakMap');
+
+	var _WeakMap = WeakMap;
+
+	/** `Object#toString` result references. */
+	var mapTag$2 = '[object Map]';
+	var objectTag$2 = '[object Object]';
+	var promiseTag = '[object Promise]';
+	var setTag$2 = '[object Set]';
+	var weakMapTag$1 = '[object WeakMap]';
+
+	var dataViewTag$2 = '[object DataView]';
+
+	/** Used to detect maps, sets, and weakmaps. */
+	var dataViewCtorString = _toSource(_DataView);
+	var mapCtorString = _toSource(_Map);
+	var promiseCtorString = _toSource(_Promise);
+	var setCtorString = _toSource(_Set);
+	var weakMapCtorString = _toSource(_WeakMap);
+
+	/**
+	 * Gets the `toStringTag` of `value`.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {string} Returns the `toStringTag`.
+	 */
+	var getTag = _baseGetTag;
+
+	// Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
+	if ((_DataView && getTag(new _DataView(new ArrayBuffer(1))) != dataViewTag$2) ||
+	    (_Map && getTag(new _Map) != mapTag$2) ||
+	    (_Promise && getTag(_Promise.resolve()) != promiseTag) ||
+	    (_Set && getTag(new _Set) != setTag$2) ||
+	    (_WeakMap && getTag(new _WeakMap) != weakMapTag$1)) {
+	  getTag = function(value) {
+	    var result = _baseGetTag(value),
+	        Ctor = result == objectTag$2 ? value.constructor : undefined,
+	        ctorString = Ctor ? _toSource(Ctor) : '';
+
+	    if (ctorString) {
+	      switch (ctorString) {
+	        case dataViewCtorString: return dataViewTag$2;
+	        case mapCtorString: return mapTag$2;
+	        case promiseCtorString: return promiseTag;
+	        case setCtorString: return setTag$2;
+	        case weakMapCtorString: return weakMapTag$1;
+	      }
+	    }
+	    return result;
+	  };
+	}
+
+	var _getTag = getTag;
+
+	/** Used to compose bitmasks for value comparisons. */
+	var COMPARE_PARTIAL_FLAG$1 = 1;
+
+	/** `Object#toString` result references. */
+	var argsTag$1 = '[object Arguments]';
+	var arrayTag = '[object Array]';
+	var objectTag = '[object Object]';
+
+	/** Used for built-in method references. */
+	var objectProto$6 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$5 = objectProto$6.hasOwnProperty;
+
+	/**
+	 * A specialized version of `baseIsEqual` for arrays and objects which performs
+	 * deep comparisons and tracks traversed objects enabling objects with circular
+	 * references to be compared.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+	 * @param {Function} customizer The function to customize comparisons.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Object} [stack] Tracks traversed `object` and `other` objects.
+	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+	 */
+	function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
+	  var objIsArr = isArray_1$2(object),
+	      othIsArr = isArray_1$2(other),
+	      objTag = objIsArr ? arrayTag : _getTag(object),
+	      othTag = othIsArr ? arrayTag : _getTag(other);
+
+	  objTag = objTag == argsTag$1 ? objectTag : objTag;
+	  othTag = othTag == argsTag$1 ? objectTag : othTag;
+
+	  var objIsObj = objTag == objectTag,
+	      othIsObj = othTag == objectTag,
+	      isSameTag = objTag == othTag;
+
+	  if (isSameTag && isBuffer_1(object)) {
+	    if (!isBuffer_1(other)) {
+	      return false;
+	    }
+	    objIsArr = true;
+	    objIsObj = false;
+	  }
+	  if (isSameTag && !objIsObj) {
+	    stack || (stack = new _Stack);
+	    return (objIsArr || isTypedArray_1(object))
+	      ? _equalArrays(object, other, bitmask, customizer, equalFunc, stack)
+	      : _equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
+	  }
+	  if (!(bitmask & COMPARE_PARTIAL_FLAG$1)) {
+	    var objIsWrapped = objIsObj && hasOwnProperty$5.call(object, '__wrapped__'),
+	        othIsWrapped = othIsObj && hasOwnProperty$5.call(other, '__wrapped__');
+
+	    if (objIsWrapped || othIsWrapped) {
+	      var objUnwrapped = objIsWrapped ? object.value() : object,
+	          othUnwrapped = othIsWrapped ? other.value() : other;
+
+	      stack || (stack = new _Stack);
+	      return equalFunc(objUnwrapped, othUnwrapped, bitmask, customizer, stack);
+	    }
+	  }
+	  if (!isSameTag) {
+	    return false;
+	  }
+	  stack || (stack = new _Stack);
+	  return _equalObjects(object, other, bitmask, customizer, equalFunc, stack);
+	}
+
+	var _baseIsEqualDeep = baseIsEqualDeep;
+
+	/**
+	 * The base implementation of `_.isEqual` which supports partial comparisons
+	 * and tracks traversed objects.
+	 *
+	 * @private
+	 * @param {*} value The value to compare.
+	 * @param {*} other The other value to compare.
+	 * @param {boolean} bitmask The bitmask flags.
+	 *  1 - Unordered comparison
+	 *  2 - Partial comparison
+	 * @param {Function} [customizer] The function to customize comparisons.
+	 * @param {Object} [stack] Tracks traversed `value` and `other` objects.
+	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+	 */
+	function baseIsEqual(value, other, bitmask, customizer, stack) {
+	  if (value === other) {
+	    return true;
+	  }
+	  if (value == null || other == null || (!isObjectLike_1(value) && !isObjectLike_1(other))) {
+	    return value !== value && other !== other;
+	  }
+	  return _baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
+	}
+
+	var _baseIsEqual = baseIsEqual;
+
+	/** Used to compose bitmasks for value comparisons. */
+	var COMPARE_PARTIAL_FLAG = 1;
+	var COMPARE_UNORDERED_FLAG = 2;
+
+	/**
+	 * The base implementation of `_.isMatch` without support for iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Object} object The object to inspect.
+	 * @param {Object} source The object of property values to match.
+	 * @param {Array} matchData The property names, values, and compare flags to match.
+	 * @param {Function} [customizer] The function to customize comparisons.
+	 * @returns {boolean} Returns `true` if `object` is a match, else `false`.
+	 */
+	function baseIsMatch(object, source, matchData, customizer) {
+	  var index = matchData.length,
+	      length = index,
+	      noCustomizer = !customizer;
+
+	  if (object == null) {
+	    return !length;
+	  }
+	  object = Object(object);
+	  while (index--) {
+	    var data = matchData[index];
+	    if ((noCustomizer && data[2])
+	          ? data[1] !== object[data[0]]
+	          : !(data[0] in object)
+	        ) {
+	      return false;
+	    }
+	  }
+	  while (++index < length) {
+	    data = matchData[index];
+	    var key = data[0],
+	        objValue = object[key],
+	        srcValue = data[1];
+
+	    if (noCustomizer && data[2]) {
+	      if (objValue === undefined && !(key in object)) {
+	        return false;
 	      }
 	    } else {
-	      // estimate dataType from URL
-	      type = dataTypeFromUrl(url);
+	      var stack = new _Stack;
+	      if (customizer) {
+	        var result = customizer(objValue, srcValue, key, object, source, stack);
+	      }
+	      if (!(result === undefined
+	            ? _baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG | COMPARE_UNORDERED_FLAG, customizer, stack)
+	            : result
+	          )) {
+	        return false;
+	      }
+	    }
+	  }
+	  return true;
+	}
+
+	var _baseIsMatch = baseIsMatch;
+
+	/**
+	 * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` if suitable for strict
+	 *  equality comparisons, else `false`.
+	 */
+	function isStrictComparable(value) {
+	  return value === value && !isObject_1$3(value);
+	}
+
+	var _isStrictComparable = isStrictComparable;
+
+	/**
+	 * Gets the property names, values, and compare flags of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the match data of `object`.
+	 */
+	function getMatchData(object) {
+	  var result = keys_1(object),
+	      length = result.length;
+
+	  while (length--) {
+	    var key = result[length],
+	        value = object[key];
+
+	    result[length] = [key, value, _isStrictComparable(value)];
+	  }
+	  return result;
+	}
+
+	var _getMatchData = getMatchData;
+
+	/**
+	 * A specialized version of `matchesProperty` for source values suitable
+	 * for strict equality comparisons, i.e. `===`.
+	 *
+	 * @private
+	 * @param {string} key The key of the property to get.
+	 * @param {*} srcValue The value to match.
+	 * @returns {Function} Returns the new spec function.
+	 */
+	function matchesStrictComparable(key, srcValue) {
+	  return function(object) {
+	    if (object == null) {
+	      return false;
+	    }
+	    return object[key] === srcValue &&
+	      (srcValue !== undefined || (key in Object(object)));
+	  };
+	}
+
+	var _matchesStrictComparable = matchesStrictComparable;
+
+	/**
+	 * The base implementation of `_.matches` which doesn't clone `source`.
+	 *
+	 * @private
+	 * @param {Object} source The object of property values to match.
+	 * @returns {Function} Returns the new spec function.
+	 */
+	function baseMatches(source) {
+	  var matchData = _getMatchData(source);
+	  if (matchData.length == 1 && matchData[0][2]) {
+	    return _matchesStrictComparable(matchData[0][0], matchData[0][1]);
+	  }
+	  return function(object) {
+	    return object === source || _baseIsMatch(object, source, matchData);
+	  };
+	}
+
+	var _baseMatches = baseMatches;
+
+	/** `Object#toString` result references. */
+	var symbolTag$1 = '[object Symbol]';
+
+	/**
+	 * Checks if `value` is classified as a `Symbol` primitive or object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
+	 * @example
+	 *
+	 * _.isSymbol(Symbol.iterator);
+	 * // => true
+	 *
+	 * _.isSymbol('abc');
+	 * // => false
+	 */
+	function isSymbol(value) {
+	  return typeof value == 'symbol' ||
+	    (isObjectLike_1(value) && _baseGetTag(value) == symbolTag$1);
+	}
+
+	var isSymbol_1 = isSymbol;
+
+	/** Used to match property names within property paths. */
+	var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/;
+	var reIsPlainProp = /^\w*$/;
+
+	/**
+	 * Checks if `value` is a property name and not a property path.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @param {Object} [object] The object to query keys on.
+	 * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
+	 */
+	function isKey(value, object) {
+	  if (isArray_1$2(value)) {
+	    return false;
+	  }
+	  var type = typeof value;
+	  if (type == 'number' || type == 'symbol' || type == 'boolean' ||
+	      value == null || isSymbol_1(value)) {
+	    return true;
+	  }
+	  return reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
+	    (object != null && value in Object(object));
+	}
+
+	var _isKey = isKey;
+
+	/** Error message constants. */
+	var FUNC_ERROR_TEXT = 'Expected a function';
+
+	/**
+	 * Creates a function that memoizes the result of `func`. If `resolver` is
+	 * provided, it determines the cache key for storing the result based on the
+	 * arguments provided to the memoized function. By default, the first argument
+	 * provided to the memoized function is used as the map cache key. The `func`
+	 * is invoked with the `this` binding of the memoized function.
+	 *
+	 * **Note:** The cache is exposed as the `cache` property on the memoized
+	 * function. Its creation may be customized by replacing the `_.memoize.Cache`
+	 * constructor with one whose instances implement the
+	 * [`Map`](http://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-map-prototype-object)
+	 * method interface of `clear`, `delete`, `get`, `has`, and `set`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Function
+	 * @param {Function} func The function to have its output memoized.
+	 * @param {Function} [resolver] The function to resolve the cache key.
+	 * @returns {Function} Returns the new memoized function.
+	 * @example
+	 *
+	 * var object = { 'a': 1, 'b': 2 };
+	 * var other = { 'c': 3, 'd': 4 };
+	 *
+	 * var values = _.memoize(_.values);
+	 * values(object);
+	 * // => [1, 2]
+	 *
+	 * values(other);
+	 * // => [3, 4]
+	 *
+	 * object.a = 2;
+	 * values(object);
+	 * // => [1, 2]
+	 *
+	 * // Modify the result cache.
+	 * values.cache.set(object, ['a', 'b']);
+	 * values(object);
+	 * // => ['a', 'b']
+	 *
+	 * // Replace `_.memoize.Cache`.
+	 * _.memoize.Cache = WeakMap;
+	 */
+	function memoize(func, resolver) {
+	  if (typeof func != 'function' || (resolver != null && typeof resolver != 'function')) {
+	    throw new TypeError(FUNC_ERROR_TEXT);
+	  }
+	  var memoized = function() {
+	    var args = arguments,
+	        key = resolver ? resolver.apply(this, args) : args[0],
+	        cache = memoized.cache;
+
+	    if (cache.has(key)) {
+	      return cache.get(key);
+	    }
+	    var result = func.apply(this, args);
+	    memoized.cache = cache.set(key, result) || cache;
+	    return result;
+	  };
+	  memoized.cache = new (memoize.Cache || _MapCache);
+	  return memoized;
+	}
+
+	// Expose `MapCache`.
+	memoize.Cache = _MapCache;
+
+	var memoize_1 = memoize;
+
+	/** Used as the maximum memoize cache size. */
+	var MAX_MEMOIZE_SIZE = 500;
+
+	/**
+	 * A specialized version of `_.memoize` which clears the memoized function's
+	 * cache when it exceeds `MAX_MEMOIZE_SIZE`.
+	 *
+	 * @private
+	 * @param {Function} func The function to have its output memoized.
+	 * @returns {Function} Returns the new memoized function.
+	 */
+	function memoizeCapped(func) {
+	  var result = memoize_1(func, function(key) {
+	    if (cache.size === MAX_MEMOIZE_SIZE) {
+	      cache.clear();
+	    }
+	    return key;
+	  });
+
+	  var cache = result.cache;
+	  return result;
+	}
+
+	var _memoizeCapped = memoizeCapped;
+
+	/** Used to match property names within property paths. */
+	var reLeadingDot = /^\./;
+	var rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
+
+	/** Used to match backslashes in property paths. */
+	var reEscapeChar = /\\(\\)?/g;
+
+	/**
+	 * Converts `string` to a property path array.
+	 *
+	 * @private
+	 * @param {string} string The string to convert.
+	 * @returns {Array} Returns the property path array.
+	 */
+	var stringToPath = _memoizeCapped(function(string) {
+	  var result = [];
+	  if (reLeadingDot.test(string)) {
+	    result.push('');
+	  }
+	  string.replace(rePropName, function(match, number, quote, string) {
+	    result.push(quote ? string.replace(reEscapeChar, '$1') : (number || match));
+	  });
+	  return result;
+	});
+
+	var _stringToPath = stringToPath;
+
+	/** Used as references for various `Number` constants. */
+	var INFINITY = 1 / 0;
+
+	/** Used to convert symbols to primitives and strings. */
+	var symbolProto$1 = _Symbol ? _Symbol.prototype : undefined;
+	var symbolToString = symbolProto$1 ? symbolProto$1.toString : undefined;
+
+	/**
+	 * The base implementation of `_.toString` which doesn't convert nullish
+	 * values to empty strings.
+	 *
+	 * @private
+	 * @param {*} value The value to process.
+	 * @returns {string} Returns the string.
+	 */
+	function baseToString(value) {
+	  // Exit early for strings to avoid a performance hit in some environments.
+	  if (typeof value == 'string') {
+	    return value;
+	  }
+	  if (isArray_1$2(value)) {
+	    // Recursively convert values (susceptible to call stack limits).
+	    return _arrayMap(value, baseToString) + '';
+	  }
+	  if (isSymbol_1(value)) {
+	    return symbolToString ? symbolToString.call(value) : '';
+	  }
+	  var result = (value + '');
+	  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+	}
+
+	var _baseToString = baseToString;
+
+	/**
+	 * Converts `value` to a string. An empty string is returned for `null`
+	 * and `undefined` values. The sign of `-0` is preserved.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to convert.
+	 * @returns {string} Returns the converted string.
+	 * @example
+	 *
+	 * _.toString(null);
+	 * // => ''
+	 *
+	 * _.toString(-0);
+	 * // => '-0'
+	 *
+	 * _.toString([1, 2, 3]);
+	 * // => '1,2,3'
+	 */
+	function toString(value) {
+	  return value == null ? '' : _baseToString(value);
+	}
+
+	var toString_1 = toString;
+
+	/**
+	 * Casts `value` to a path array if it's not one.
+	 *
+	 * @private
+	 * @param {*} value The value to inspect.
+	 * @param {Object} [object] The object to query keys on.
+	 * @returns {Array} Returns the cast property path array.
+	 */
+	function castPath(value, object) {
+	  if (isArray_1$2(value)) {
+	    return value;
+	  }
+	  return _isKey(value, object) ? [value] : _stringToPath(toString_1(value));
+	}
+
+	var _castPath = castPath;
+
+	/** Used as references for various `Number` constants. */
+	var INFINITY$1 = 1 / 0;
+
+	/**
+	 * Converts `value` to a string key if it's not a string or symbol.
+	 *
+	 * @private
+	 * @param {*} value The value to inspect.
+	 * @returns {string|symbol} Returns the key.
+	 */
+	function toKey(value) {
+	  if (typeof value == 'string' || isSymbol_1(value)) {
+	    return value;
+	  }
+	  var result = (value + '');
+	  return (result == '0' && (1 / value) == -INFINITY$1) ? '-0' : result;
+	}
+
+	var _toKey = toKey;
+
+	/**
+	 * The base implementation of `_.get` without support for default values.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} path The path of the property to get.
+	 * @returns {*} Returns the resolved value.
+	 */
+	function baseGet(object, path) {
+	  path = _castPath(path, object);
+
+	  var index = 0,
+	      length = path.length;
+
+	  while (object != null && index < length) {
+	    object = object[_toKey(path[index++])];
+	  }
+	  return (index && index == length) ? object : undefined;
+	}
+
+	var _baseGet = baseGet;
+
+	/**
+	 * Gets the value at `path` of `object`. If the resolved value is
+	 * `undefined`, the `defaultValue` is returned in its place.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 3.7.0
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} path The path of the property to get.
+	 * @param {*} [defaultValue] The value returned for `undefined` resolved values.
+	 * @returns {*} Returns the resolved value.
+	 * @example
+	 *
+	 * var object = { 'a': [{ 'b': { 'c': 3 } }] };
+	 *
+	 * _.get(object, 'a[0].b.c');
+	 * // => 3
+	 *
+	 * _.get(object, ['a', '0', 'b', 'c']);
+	 * // => 3
+	 *
+	 * _.get(object, 'a.b.c', 'default');
+	 * // => 'default'
+	 */
+	function get(object, path, defaultValue) {
+	  var result = object == null ? undefined : _baseGet(object, path);
+	  return result === undefined ? defaultValue : result;
+	}
+
+	var get_1 = get;
+
+	/**
+	 * The base implementation of `_.hasIn` without support for deep paths.
+	 *
+	 * @private
+	 * @param {Object} [object] The object to query.
+	 * @param {Array|string} key The key to check.
+	 * @returns {boolean} Returns `true` if `key` exists, else `false`.
+	 */
+	function baseHasIn(object, key) {
+	  return object != null && key in Object(object);
+	}
+
+	var _baseHasIn = baseHasIn;
+
+	/**
+	 * Checks if `path` exists on `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} path The path to check.
+	 * @param {Function} hasFunc The function to check properties.
+	 * @returns {boolean} Returns `true` if `path` exists, else `false`.
+	 */
+	function hasPath(object, path, hasFunc) {
+	  path = _castPath(path, object);
+
+	  var index = -1,
+	      length = path.length,
+	      result = false;
+
+	  while (++index < length) {
+	    var key = _toKey(path[index]);
+	    if (!(result = object != null && hasFunc(object, key))) {
+	      break;
+	    }
+	    object = object[key];
+	  }
+	  if (result || ++index != length) {
+	    return result;
+	  }
+	  length = object == null ? 0 : object.length;
+	  return !!length && isLength_1(length) && _isIndex(key, length) &&
+	    (isArray_1$2(object) || isArguments_1(object));
+	}
+
+	var _hasPath = hasPath;
+
+	/**
+	 * Checks if `path` is a direct or inherited property of `object`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} path The path to check.
+	 * @returns {boolean} Returns `true` if `path` exists, else `false`.
+	 * @example
+	 *
+	 * var object = _.create({ 'a': _.create({ 'b': 2 }) });
+	 *
+	 * _.hasIn(object, 'a');
+	 * // => true
+	 *
+	 * _.hasIn(object, 'a.b');
+	 * // => true
+	 *
+	 * _.hasIn(object, ['a', 'b']);
+	 * // => true
+	 *
+	 * _.hasIn(object, 'b');
+	 * // => false
+	 */
+	function hasIn(object, path) {
+	  return object != null && _hasPath(object, path, _baseHasIn);
+	}
+
+	var hasIn_1 = hasIn;
+
+	/** Used to compose bitmasks for value comparisons. */
+	var COMPARE_PARTIAL_FLAG$5 = 1;
+	var COMPARE_UNORDERED_FLAG$3 = 2;
+
+	/**
+	 * The base implementation of `_.matchesProperty` which doesn't clone `srcValue`.
+	 *
+	 * @private
+	 * @param {string} path The path of the property to get.
+	 * @param {*} srcValue The value to match.
+	 * @returns {Function} Returns the new spec function.
+	 */
+	function baseMatchesProperty(path, srcValue) {
+	  if (_isKey(path) && _isStrictComparable(srcValue)) {
+	    return _matchesStrictComparable(_toKey(path), srcValue);
+	  }
+	  return function(object) {
+	    var objValue = get_1(object, path);
+	    return (objValue === undefined && objValue === srcValue)
+	      ? hasIn_1(object, path)
+	      : _baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG$5 | COMPARE_UNORDERED_FLAG$3);
+	  };
+	}
+
+	var _baseMatchesProperty = baseMatchesProperty;
+
+	/**
+	 * This method returns the first argument it receives.
+	 *
+	 * @static
+	 * @since 0.1.0
+	 * @memberOf _
+	 * @category Util
+	 * @param {*} value Any value.
+	 * @returns {*} Returns `value`.
+	 * @example
+	 *
+	 * var object = { 'a': 1 };
+	 *
+	 * console.log(_.identity(object) === object);
+	 * // => true
+	 */
+	function identity(value) {
+	  return value;
+	}
+
+	var identity_1 = identity;
+
+	/**
+	 * The base implementation of `_.property` without support for deep paths.
+	 *
+	 * @private
+	 * @param {string} key The key of the property to get.
+	 * @returns {Function} Returns the new accessor function.
+	 */
+	function baseProperty(key) {
+	  return function(object) {
+	    return object == null ? undefined : object[key];
+	  };
+	}
+
+	var _baseProperty = baseProperty;
+
+	/**
+	 * A specialized version of `baseProperty` which supports deep paths.
+	 *
+	 * @private
+	 * @param {Array|string} path The path of the property to get.
+	 * @returns {Function} Returns the new accessor function.
+	 */
+	function basePropertyDeep(path) {
+	  return function(object) {
+	    return _baseGet(object, path);
+	  };
+	}
+
+	var _basePropertyDeep = basePropertyDeep;
+
+	/**
+	 * Creates a function that returns the value at `path` of a given object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 2.4.0
+	 * @category Util
+	 * @param {Array|string} path The path of the property to get.
+	 * @returns {Function} Returns the new accessor function.
+	 * @example
+	 *
+	 * var objects = [
+	 *   { 'a': { 'b': 2 } },
+	 *   { 'a': { 'b': 1 } }
+	 * ];
+	 *
+	 * _.map(objects, _.property('a.b'));
+	 * // => [2, 1]
+	 *
+	 * _.map(_.sortBy(objects, _.property(['a', 'b'])), 'a.b');
+	 * // => [1, 2]
+	 */
+	function property(path) {
+	  return _isKey(path) ? _baseProperty(_toKey(path)) : _basePropertyDeep(path);
+	}
+
+	var property_1 = property;
+
+	/**
+	 * The base implementation of `_.iteratee`.
+	 *
+	 * @private
+	 * @param {*} [value=_.identity] The value to convert to an iteratee.
+	 * @returns {Function} Returns the iteratee.
+	 */
+	function baseIteratee(value) {
+	  // Don't store the `typeof` result in a variable to avoid a JIT bug in Safari 9.
+	  // See https://bugs.webkit.org/show_bug.cgi?id=156034 for more details.
+	  if (typeof value == 'function') {
+	    return value;
+	  }
+	  if (value == null) {
+	    return identity_1;
+	  }
+	  if (typeof value == 'object') {
+	    return isArray_1$2(value)
+	      ? _baseMatchesProperty(value[0], value[1])
+	      : _baseMatches(value);
+	  }
+	  return property_1(value);
+	}
+
+	var _baseIteratee = baseIteratee;
+
+	/**
+	 * Creates a base function for methods like `_.forIn` and `_.forOwn`.
+	 *
+	 * @private
+	 * @param {boolean} [fromRight] Specify iterating from right to left.
+	 * @returns {Function} Returns the new base function.
+	 */
+	function createBaseFor(fromRight) {
+	  return function(object, iteratee, keysFunc) {
+	    var index = -1,
+	        iterable = Object(object),
+	        props = keysFunc(object),
+	        length = props.length;
+
+	    while (length--) {
+	      var key = props[fromRight ? length : ++index];
+	      if (iteratee(iterable[key], key, iterable) === false) {
+	        break;
+	      }
+	    }
+	    return object;
+	  };
+	}
+
+	var _createBaseFor = createBaseFor;
+
+	/**
+	 * The base implementation of `baseForOwn` which iterates over `object`
+	 * properties returned by `keysFunc` and invokes `iteratee` for each property.
+	 * Iteratee functions may exit iteration early by explicitly returning `false`.
+	 *
+	 * @private
+	 * @param {Object} object The object to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @param {Function} keysFunc The function to get the keys of `object`.
+	 * @returns {Object} Returns `object`.
+	 */
+	var baseFor = _createBaseFor();
+
+	var _baseFor = baseFor;
+
+	/**
+	 * The base implementation of `_.forOwn` without support for iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Object} object The object to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Object} Returns `object`.
+	 */
+	function baseForOwn(object, iteratee) {
+	  return object && _baseFor(object, iteratee, keys_1);
+	}
+
+	var _baseForOwn = baseForOwn;
+
+	/**
+	 * Creates a `baseEach` or `baseEachRight` function.
+	 *
+	 * @private
+	 * @param {Function} eachFunc The function to iterate over a collection.
+	 * @param {boolean} [fromRight] Specify iterating from right to left.
+	 * @returns {Function} Returns the new base function.
+	 */
+	function createBaseEach(eachFunc, fromRight) {
+	  return function(collection, iteratee) {
+	    if (collection == null) {
+	      return collection;
+	    }
+	    if (!isArrayLike_1(collection)) {
+	      return eachFunc(collection, iteratee);
+	    }
+	    var length = collection.length,
+	        index = fromRight ? length : -1,
+	        iterable = Object(collection);
+
+	    while ((fromRight ? index-- : ++index < length)) {
+	      if (iteratee(iterable[index], index, iterable) === false) {
+	        break;
+	      }
+	    }
+	    return collection;
+	  };
+	}
+
+	var _createBaseEach = createBaseEach;
+
+	/**
+	 * The base implementation of `_.forEach` without support for iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Array|Object} collection The collection to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array|Object} Returns `collection`.
+	 */
+	var baseEach = _createBaseEach(_baseForOwn);
+
+	var _baseEach = baseEach;
+
+	/**
+	 * The base implementation of `_.map` without support for iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Array|Object} collection The collection to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array} Returns the new mapped array.
+	 */
+	function baseMap(collection, iteratee) {
+	  var index = -1,
+	      result = isArrayLike_1(collection) ? Array(collection.length) : [];
+
+	  _baseEach(collection, function(value, key, collection) {
+	    result[++index] = iteratee(value, key, collection);
+	  });
+	  return result;
+	}
+
+	var _baseMap = baseMap;
+
+	/**
+	 * The base implementation of `_.sortBy` which uses `comparer` to define the
+	 * sort order of `array` and replaces criteria objects with their corresponding
+	 * values.
+	 *
+	 * @private
+	 * @param {Array} array The array to sort.
+	 * @param {Function} comparer The function to define sort order.
+	 * @returns {Array} Returns `array`.
+	 */
+	function baseSortBy(array, comparer) {
+	  var length = array.length;
+
+	  array.sort(comparer);
+	  while (length--) {
+	    array[length] = array[length].value;
+	  }
+	  return array;
+	}
+
+	var _baseSortBy = baseSortBy;
+
+	/**
+	 * Compares values to sort them in ascending order.
+	 *
+	 * @private
+	 * @param {*} value The value to compare.
+	 * @param {*} other The other value to compare.
+	 * @returns {number} Returns the sort order indicator for `value`.
+	 */
+	function compareAscending(value, other) {
+	  if (value !== other) {
+	    var valIsDefined = value !== undefined,
+	        valIsNull = value === null,
+	        valIsReflexive = value === value,
+	        valIsSymbol = isSymbol_1(value);
+
+	    var othIsDefined = other !== undefined,
+	        othIsNull = other === null,
+	        othIsReflexive = other === other,
+	        othIsSymbol = isSymbol_1(other);
+
+	    if ((!othIsNull && !othIsSymbol && !valIsSymbol && value > other) ||
+	        (valIsSymbol && othIsDefined && othIsReflexive && !othIsNull && !othIsSymbol) ||
+	        (valIsNull && othIsDefined && othIsReflexive) ||
+	        (!valIsDefined && othIsReflexive) ||
+	        !valIsReflexive) {
+	      return 1;
+	    }
+	    if ((!valIsNull && !valIsSymbol && !othIsSymbol && value < other) ||
+	        (othIsSymbol && valIsDefined && valIsReflexive && !valIsNull && !valIsSymbol) ||
+	        (othIsNull && valIsDefined && valIsReflexive) ||
+	        (!othIsDefined && valIsReflexive) ||
+	        !othIsReflexive) {
+	      return -1;
+	    }
+	  }
+	  return 0;
+	}
+
+	var _compareAscending = compareAscending;
+
+	/**
+	 * Used by `_.orderBy` to compare multiple properties of a value to another
+	 * and stable sort them.
+	 *
+	 * If `orders` is unspecified, all values are sorted in ascending order. Otherwise,
+	 * specify an order of "desc" for descending or "asc" for ascending sort order
+	 * of corresponding values.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {boolean[]|string[]} orders The order to sort by for each property.
+	 * @returns {number} Returns the sort order indicator for `object`.
+	 */
+	function compareMultiple(object, other, orders) {
+	  var index = -1,
+	      objCriteria = object.criteria,
+	      othCriteria = other.criteria,
+	      length = objCriteria.length,
+	      ordersLength = orders.length;
+
+	  while (++index < length) {
+	    var result = _compareAscending(objCriteria[index], othCriteria[index]);
+	    if (result) {
+	      if (index >= ordersLength) {
+	        return result;
+	      }
+	      var order = orders[index];
+	      return result * (order == 'desc' ? -1 : 1);
+	    }
+	  }
+	  // Fixes an `Array#sort` bug in the JS engine embedded in Adobe applications
+	  // that causes it, under certain circumstances, to provide the same value for
+	  // `object` and `other`. See https://github.com/jashkenas/underscore/pull/1247
+	  // for more details.
+	  //
+	  // This also ensures a stable sort in V8 and other engines.
+	  // See https://bugs.chromium.org/p/v8/issues/detail?id=90 for more details.
+	  return object.index - other.index;
+	}
+
+	var _compareMultiple = compareMultiple;
+
+	/**
+	 * The base implementation of `_.orderBy` without param guards.
+	 *
+	 * @private
+	 * @param {Array|Object} collection The collection to iterate over.
+	 * @param {Function[]|Object[]|string[]} iteratees The iteratees to sort by.
+	 * @param {string[]} orders The sort orders of `iteratees`.
+	 * @returns {Array} Returns the new sorted array.
+	 */
+	function baseOrderBy(collection, iteratees, orders) {
+	  var index = -1;
+	  iteratees = _arrayMap(iteratees.length ? iteratees : [identity_1], _baseUnary(_baseIteratee));
+
+	  var result = _baseMap(collection, function(value, key, collection) {
+	    var criteria = _arrayMap(iteratees, function(iteratee) {
+	      return iteratee(value);
+	    });
+	    return { 'criteria': criteria, 'index': ++index, 'value': value };
+	  });
+
+	  return _baseSortBy(result, function(object, other) {
+	    return _compareMultiple(object, other, orders);
+	  });
+	}
+
+	var _baseOrderBy = baseOrderBy;
+
+	/**
+	 * A faster alternative to `Function#apply`, this function invokes `func`
+	 * with the `this` binding of `thisArg` and the arguments of `args`.
+	 *
+	 * @private
+	 * @param {Function} func The function to invoke.
+	 * @param {*} thisArg The `this` binding of `func`.
+	 * @param {Array} args The arguments to invoke `func` with.
+	 * @returns {*} Returns the result of `func`.
+	 */
+	function apply(func, thisArg, args) {
+	  switch (args.length) {
+	    case 0: return func.call(thisArg);
+	    case 1: return func.call(thisArg, args[0]);
+	    case 2: return func.call(thisArg, args[0], args[1]);
+	    case 3: return func.call(thisArg, args[0], args[1], args[2]);
+	  }
+	  return func.apply(thisArg, args);
+	}
+
+	var _apply = apply;
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeMax = Math.max;
+
+	/**
+	 * A specialized version of `baseRest` which transforms the rest array.
+	 *
+	 * @private
+	 * @param {Function} func The function to apply a rest parameter to.
+	 * @param {number} [start=func.length-1] The start position of the rest parameter.
+	 * @param {Function} transform The rest array transform.
+	 * @returns {Function} Returns the new function.
+	 */
+	function overRest(func, start, transform) {
+	  start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
+	  return function() {
+	    var args = arguments,
+	        index = -1,
+	        length = nativeMax(args.length - start, 0),
+	        array = Array(length);
+
+	    while (++index < length) {
+	      array[index] = args[start + index];
+	    }
+	    index = -1;
+	    var otherArgs = Array(start + 1);
+	    while (++index < start) {
+	      otherArgs[index] = args[index];
+	    }
+	    otherArgs[start] = transform(array);
+	    return _apply(func, this, otherArgs);
+	  };
+	}
+
+	var _overRest = overRest;
+
+	/**
+	 * Creates a function that returns `value`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 2.4.0
+	 * @category Util
+	 * @param {*} value The value to return from the new function.
+	 * @returns {Function} Returns the new constant function.
+	 * @example
+	 *
+	 * var objects = _.times(2, _.constant({ 'a': 1 }));
+	 *
+	 * console.log(objects);
+	 * // => [{ 'a': 1 }, { 'a': 1 }]
+	 *
+	 * console.log(objects[0] === objects[1]);
+	 * // => true
+	 */
+	function constant(value) {
+	  return function() {
+	    return value;
+	  };
+	}
+
+	var constant_1 = constant;
+
+	var defineProperty = (function() {
+	  try {
+	    var func = _getNative(Object, 'defineProperty');
+	    func({}, '', {});
+	    return func;
+	  } catch (e) {}
+	}());
+
+	var _defineProperty = defineProperty;
+
+	/**
+	 * The base implementation of `setToString` without support for hot loop shorting.
+	 *
+	 * @private
+	 * @param {Function} func The function to modify.
+	 * @param {Function} string The `toString` result.
+	 * @returns {Function} Returns `func`.
+	 */
+	var baseSetToString = !_defineProperty ? identity_1 : function(func, string) {
+	  return _defineProperty(func, 'toString', {
+	    'configurable': true,
+	    'enumerable': false,
+	    'value': constant_1(string),
+	    'writable': true
+	  });
+	};
+
+	var _baseSetToString = baseSetToString;
+
+	/** Used to detect hot functions by number of calls within a span of milliseconds. */
+	var HOT_COUNT = 800;
+	var HOT_SPAN = 16;
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeNow = Date.now;
+
+	/**
+	 * Creates a function that'll short out and invoke `identity` instead
+	 * of `func` when it's called `HOT_COUNT` or more times in `HOT_SPAN`
+	 * milliseconds.
+	 *
+	 * @private
+	 * @param {Function} func The function to restrict.
+	 * @returns {Function} Returns the new shortable function.
+	 */
+	function shortOut(func) {
+	  var count = 0,
+	      lastCalled = 0;
+
+	  return function() {
+	    var stamp = nativeNow(),
+	        remaining = HOT_SPAN - (stamp - lastCalled);
+
+	    lastCalled = stamp;
+	    if (remaining > 0) {
+	      if (++count >= HOT_COUNT) {
+	        return arguments[0];
+	      }
+	    } else {
+	      count = 0;
+	    }
+	    return func.apply(undefined, arguments);
+	  };
+	}
+
+	var _shortOut = shortOut;
+
+	/**
+	 * Sets the `toString` method of `func` to return `string`.
+	 *
+	 * @private
+	 * @param {Function} func The function to modify.
+	 * @param {Function} string The `toString` result.
+	 * @returns {Function} Returns `func`.
+	 */
+	var setToString = _shortOut(_baseSetToString);
+
+	var _setToString = setToString;
+
+	/**
+	 * The base implementation of `_.rest` which doesn't validate or coerce arguments.
+	 *
+	 * @private
+	 * @param {Function} func The function to apply a rest parameter to.
+	 * @param {number} [start=func.length-1] The start position of the rest parameter.
+	 * @returns {Function} Returns the new function.
+	 */
+	function baseRest(func, start) {
+	  return _setToString(_overRest(func, start, identity_1), func + '');
+	}
+
+	var _baseRest = baseRest;
+
+	/**
+	 * Checks if the given arguments are from an iteratee call.
+	 *
+	 * @private
+	 * @param {*} value The potential iteratee value argument.
+	 * @param {*} index The potential iteratee index or key argument.
+	 * @param {*} object The potential iteratee object argument.
+	 * @returns {boolean} Returns `true` if the arguments are from an iteratee call,
+	 *  else `false`.
+	 */
+	function isIterateeCall(value, index, object) {
+	  if (!isObject_1$3(object)) {
+	    return false;
+	  }
+	  var type = typeof index;
+	  if (type == 'number'
+	        ? (isArrayLike_1(object) && _isIndex(index, object.length))
+	        : (type == 'string' && index in object)
+	      ) {
+	    return eq_1(object[index], value);
+	  }
+	  return false;
+	}
+
+	var _isIterateeCall = isIterateeCall;
+
+	/**
+	 * Creates an array of elements, sorted in ascending order by the results of
+	 * running each element in a collection thru each iteratee. This method
+	 * performs a stable sort, that is, it preserves the original sort order of
+	 * equal elements. The iteratees are invoked with one argument: (value).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Collection
+	 * @param {Array|Object} collection The collection to iterate over.
+	 * @param {...(Function|Function[])} [iteratees=[_.identity]]
+	 *  The iteratees to sort by.
+	 * @returns {Array} Returns the new sorted array.
+	 * @example
+	 *
+	 * var users = [
+	 *   { 'user': 'fred',   'age': 48 },
+	 *   { 'user': 'barney', 'age': 36 },
+	 *   { 'user': 'fred',   'age': 40 },
+	 *   { 'user': 'barney', 'age': 34 }
+	 * ];
+	 *
+	 * _.sortBy(users, [function(o) { return o.user; }]);
+	 * // => objects for [['barney', 36], ['barney', 34], ['fred', 48], ['fred', 40]]
+	 *
+	 * _.sortBy(users, ['user', 'age']);
+	 * // => objects for [['barney', 34], ['barney', 36], ['fred', 40], ['fred', 48]]
+	 */
+	var sortBy = _baseRest(function(collection, iteratees) {
+	  if (collection == null) {
+	    return [];
+	  }
+	  var length = iteratees.length;
+	  if (length > 1 && _isIterateeCall(collection, iteratees[0], iteratees[1])) {
+	    iteratees = [];
+	  } else if (length > 2 && _isIterateeCall(iteratees[0], iteratees[1], iteratees[2])) {
+	    iteratees = [iteratees[0]];
+	  }
+	  return _baseOrderBy(collection, _baseFlatten(iteratees, 1), []);
+	});
+
+	var sortBy_1 = sortBy;
+
+	// main
+
+	function PromiseCache (args) {
+
+	  var args = args || {};
+
+	  this.maxResolvedCache = args.maxResolvedCache || 1000;
+
+	  this._pendingPromises = {};
+	  this._resolvedPromises = {};
+
+	}
+
+	PromiseCache.prototype = {
+
+	  add: function (key, promise) {
+
+	    var self = this;
+
+	    // check if it already exists
+	    if (this._pendingPromises[ key ]) {
+	      return this._pendingPromises[ key ]
+	    }
+	    if (this._resolvedPromises[ key ]) {
+	      return this._resolvedPromises[ key ]
 	    }
 
-	    // fallback to text request
-	    if (!type) {
-	      type = 'text';
+	    // create cache object
+	    var cacheObject = {
+	      key: key,
+	      timestamp: Date.now(),
+	      promise: promise
+	    };
+
+	    // add to store
+	    this._pendingPromises[ key ] = cacheObject;
+
+	    // move to resolved store and update state when resolved
+	    promise.then(function (data) {
+
+	      var cacheObject = self._pendingPromises[ key ];
+	      delete self._pendingPromises[ key ];
+
+	      cacheObject.data = data;
+
+	      self._resolvedPromises[ key ] = cacheObject;
+
+	    }, function () {
+
+	      delete self._pendingPromises[ key ];
+
+	    });
+
+	    // collect garbage
+	    this._collectGarbage();
+
+	    // return cache object
+	    return cacheObject
+
+	  },
+
+	  get: function (key) {
+
+	    // check store
+	    var cacheObject = this._pendingPromises[ key ] || this._resolvedPromises[ key ];
+	    if (!cacheObject) {
+	      return false
 	    }
 
-	  } else if (type === 'texture') {
+	    // update timestamp
+	    cacheObject.timestamp = Date.now();
 
-	    // estimate texture type from URL
-	    type = getTextureTypeFromUrl(url);
+	    // return promise
+	    return cacheObject.promise
+
+	  },
+
+	  purge: function () {
+
+	    for (var key in this._resolvedPromises) {
+	      delete this._resolvedPromises[ key ];
+	    }
+
+	  },
+
+	  _collectGarbage: function () {
+
+	    // sort archive by timestamp
+	    var sortedPromises = sortBy_1(this._resolvedPromises, function (obj) {
+	      return obj.timestamp
+	    });
+
+	    // the amount of cache objects that have to be removed
+	    var removeCount = (sortedPromises.length - this.maxResolvedCache);
+	    if (removeCount <= 0) {
+	      return
+	    }
+
+	    for (var i = 0; i < removeCount; i++) {
+	      delete this._resolvedPromises[ sortedPromises[ i ].key ];
+	    }
 
 	  }
 
-	  return type
-	}
+	};
 
-	var typeByExtensionKeys = Object.keys(typeByExtension);
-	function dataTypeFromUrl (url) {
+	var cache = new PromiseCache();
 
-	  var extension, i, l, urlLow = url.toLowerCase();
+	var fetchTextureByType = {
+	  '.dds': fetchDdsTexture,
+	  '.jpg': fetchImageTexture,
+	  '.jpeg': fetchImageTexture,
+	  '.jpe': fetchImageTexture,
+	  '.png': fetchImageTexture,
+	  '.gif': fetchImageTexture,
+	  '.svg': fetchImageTexture
+	};
 
-	  for (i= 0, l=typeByExtensionKeys.length; i<l; i++ ) {
-	    extension = typeByExtensionKeys[i];
-	    if (urlLow.substring( urlLow.length - extension.length ) === extension) {
-	      return typeByExtension[ extension ]
-	    }
-	  }
+	function fetchTexture (url, queue) {
 
-	  return 'text'
+	  // internals
+	  var cacheKey = url;
 
-	}
-
-	function getTextureTypeFromUrl (url, isTexture) {
+	  // try cache
+	  var promiseFromCache = cache.get(cacheKey);
+	  if (promiseFromCache) return promiseFromCache
 
 	  // get file extension
-	  var search = url.match(/\.[A-Za-z]+(?=\?|$)/i);
+	  var extSearch = url.match(/\.[A-Za-z]+(?=\?|$)/i);
+	  var type = extSearch ? extSearch[0].toLowerCase() : '.jpg';
 
-	  if (search) {
-	    var extension = search[ 0 ].toLowerCase();
-	    return textureTypeByExtension[ extension ]
-	  } else {
-	    return false
+	  if (!fetchTextureByType[type]) {
+	    // unknown texture type. fallback to JPG
+	    console.warn('Unknown texture type ' + type + '. Trying to load as JPG.');
+	    type = '.jpg';
 	  }
+
+	  var promise = fetchTextureByType[type](url);
+
+	  // add to cache
+	  cache.add(cacheKey, promise);
+
+	  return promise
 
 	}
 
@@ -14067,7 +17366,7 @@
 
 	      if (needsUpdate) {
 	        // load new texture
-	        texturePromises[ textureCount ] = request.getTexture(textureS3Key, { queue: queue }).catch(onError);
+	        texturePromises[ textureCount ] = fetchTexture(textureS3Key, queue).catch(onError);
 	        textureKeys[ textureCount ] = textureType;
 	        texture3dKeys[ textureCount ] = textureType3d;
 	        textureCount++;
@@ -14142,7 +17441,7 @@
 	        // everything ok - load lightmap
 	        textureType = TEXTURE_TYPES.UV2;
 	        textureS3Key = _attributes[ textureType ];
-	        texturePromises[ textureCount ] = request.getTexture(textureS3Key, { queue: queue }).catch(onError);
+	        texturePromises[ textureCount ] = fetchTexture(textureS3Key, queue).catch(onError);
 	        textureKeys[ textureCount ] = textureType;
 	        texture3dKeys[ textureCount ] = THREEJS_TEXTURE_TYPES_MAP[ textureType ];
 	        textureCount++;
@@ -14264,6 +17563,9 @@
 	  var lightMapIntensity = args.lightMapIntensity;
 	  var lightMapExposure = args.lightMapExposure;
 
+
+	  material3d.userData = material3d.userData || {};
+	  material3d.userData.data3dMaterial = args.attributes;
 
 	  // transparency
 
@@ -14389,19 +17691,8 @@
 	  // shadows
 
 	  if (mesh3d) {
-	    // (2017/04/05) Interiors are currently not shadow receivers, as this
-	    // would produce many artifacts. However, flat and thin objects laying
-	    // very close to the floor (such as carpets) need to be excepted from
-	    // that rule. This is a temporary way to achieve that.
-	    if (!mesh3d.geometry.boundingBox)
-	      mesh3d.geometry.computeBoundingBox();
-	    var boundingBox = mesh3d.geometry.boundingBox;
-	    var position    = boundingBox.min.clone();
-	    position.applyMatrix4(mesh3d.matrixWorld);
-	    var meshIsFlat          = boundingBox.max.y - boundingBox.min.y < 0.05;
-	    var meshIsOnGroundLevel = position.y < 0.1;
-	    mesh3d.castShadow    = !(meshIsFlat && meshIsOnGroundLevel) && _attributes.castRealTimeShadows;
-	    mesh3d.receiveShadow =  (meshIsFlat && meshIsOnGroundLevel) || _attributes.receiveRealTimeShadows;
+	    mesh3d.castShadow    = _attributes.castRealTimeShadows;
+	    mesh3d.receiveShadow = _attributes.receiveRealTimeShadows;
 	    mesh3d.material.needsUpdate = true; // without this, receiveShadow does not become effective
 	  }
 
@@ -14487,6 +17778,60 @@
 
 	  return loadingTexturesPromise
 	}
+
+	var fragmentShader = "uniform vec3 diffuse;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapExposure;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\n#include <shadowmap_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( diffuse, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #include <normal_flip>\n    #include <normal_fragment>\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}";
+
+	var vertexShader = "varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}";
+
+	// CONFIGS
+
+	var DEFAULT_LIGHT_MAP_INTENSITY$1 = 1.2;
+	var DEFAULT_LIGHT_MAP_EXPOSURE$1 = 0.6;
+	var DEFAULT_LIGHT_MAP_FALLOFF$1 = 0;
+
+	var Io3dMaterial = checkDependencies ({
+	  three: true,
+	  aframe: false
+	}, function makeIo3dMaterial () {
+
+	  function Io3dMaterial( params ) {
+	    THREE.ShaderMaterial.call( this, params );
+
+	    var params = params || {};
+	    this.lightMapExposure = params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1;
+	    this.lightMapFalloff = params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1;
+
+	    this.uniforms = THREE.UniformsUtils.merge( [
+	      THREE.UniformsLib[ "lights" ],
+	      THREE.UniformsLib[ "shadowmap" ],
+	      { diffuse: { value: params.diffuse || new THREE.Color(1.0, 1.0, 1.0) },
+	        map: { value: params.map || null },
+	        specularMap: { value: params.specularMap || null },
+	        alphaMap: { value: params.alphaMap || null },
+	        lightMap: { value: params.lightMap || null },
+	        lightMapIntensity: { value: params.lightMapIntensity || DEFAULT_LIGHT_MAP_INTENSITY$1 },
+	        lightMapFalloff: { value: params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1 },
+	        lightMapExposure: { value: params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1 },
+	        normalMap: { value: params.normalMap || null },
+	        shininess: { value: params.shininess || 1.0 },
+	        specular: { value: params.specular || new THREE.Color(0.25, 0.25, 0.25) },
+	        emissive: { value: params.emissive || new THREE.Color(0.0, 0.0, 0.0) },
+	        opacity: { value: params.opacity || 1 },
+	        offsetRepeat: { value: params.offsetRepeat || new THREE.Vector4( 0, 0, 1, 1) }
+	      }
+	    ]);
+
+	    this.vertexShader = vertexShader;
+	    this.fragmentShader = fragmentShader;
+	    this.lights = true;
+	  }
+
+	  Io3dMaterial.prototype = Object.create(THREE.ShaderMaterial.prototype);
+	  Io3dMaterial.prototype.constructor = Io3dMaterial;
+
+	  return Io3dMaterial
+
+	});
 
 	// TODO: increase performance
 	// TODO: decouple from THREEjs
@@ -14684,60 +18029,6 @@
 	  };
 
 	  return Wireframe
-
-	});
-
-	var fragmentShader = "uniform vec3 diffuse;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapExposure;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\n#include <shadowmap_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( diffuse, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #include <normal_flip>\n    #include <normal_fragment>\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}";
-
-	var vertexShader = "varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}";
-
-	// CONFIGS
-
-	var DEFAULT_LIGHT_MAP_INTENSITY$1 = 1.2;
-	var DEFAULT_LIGHT_MAP_EXPOSURE$1 = 0.6;
-	var DEFAULT_LIGHT_MAP_FALLOFF$1 = 0;
-
-	var Io3dMaterial = checkDependencies ({
-	  three: true,
-	  aframe: false
-	}, function makeIo3dMaterial () {
-
-	  function Io3dMaterial( params ) {
-	    THREE.ShaderMaterial.call( this, params );
-
-	    var params = params || {};
-	    this.lightMapExposure = params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1;
-	    this.lightMapFalloff = params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1;
-
-	    this.uniforms = THREE.UniformsUtils.merge( [
-	      THREE.UniformsLib[ "lights" ],
-	      THREE.UniformsLib[ "shadowmap" ],
-	      { diffuse: { value: params.diffuse || new THREE.Color(1.0, 1.0, 1.0) },
-	        map: { value: params.map || null },
-	        specularMap: { value: params.specularMap || null },
-	        alphaMap: { value: params.alphaMap || null },
-	        lightMap: { value: params.lightMap || null },
-	        lightMapIntensity: { value: params.lightMapIntensity || DEFAULT_LIGHT_MAP_INTENSITY$1 },
-	        lightMapFalloff: { value: params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1 },
-	        lightMapExposure: { value: params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1 },
-	        normalMap: { value: params.normalMap || null },
-	        shininess: { value: params.shininess || 1.0 },
-	        specular: { value: params.specular || new THREE.Color(0.25, 0.25, 0.25) },
-	        emissive: { value: params.emissive || new THREE.Color(0.0, 0.0, 0.0) },
-	        opacity: { value: params.opacity || 1 },
-	        offsetRepeat: { value: params.offsetRepeat || new THREE.Vector4( 0, 0, 1, 1) }
-	      }
-	    ]);
-
-	    this.vertexShader = vertexShader;
-	    this.fragmentShader = fragmentShader;
-	    this.lights = true;
-	  }
-
-	  Io3dMaterial.prototype = Object.create(THREE.ShaderMaterial.prototype);
-	  Io3dMaterial.prototype.constructor = Io3dMaterial;
-
-	  return Io3dMaterial
 
 	});
 
@@ -15512,6 +18803,8 @@
 	      this_.info = result.info; // lightweight info like name, manufacturer, description ...
 	      this_.data3d = result.data3d; // geometries and materials
 
+	      // check for material presets in the furniture sceneStructure definition
+	      var materialPreset = this_.info.sceneStructure && JSON.parse(this_.info.sceneStructure).materials;
 	      // Parse & expose materials
 	      this_.availableMaterials = {};
 	      Object.keys(result.data3d.meshes).forEach(function eachMesh (meshName) {
@@ -15522,6 +18815,10 @@
 	        if (this_.data[materialPropName] !== undefined) {
 	          result.data3d.meshes[meshName].material = this_.data[materialPropName];
 	          this_.el.emit('material-changed', {mesh: meshName, material: this_.data[materialPropName]});
+	        } else if (materialPreset && materialPreset[meshName]) {
+	          // apply presets from the furniture's sceneStructure definition
+	          result.data3d.meshes[meshName].material = materialPreset[meshName];
+	          this_.el.emit('material-changed', {mesh: meshName, material: materialPreset[meshName]});
 	        } else {
 	          // register it as part of the schema for the inspector
 	          var prop = {};
@@ -15677,7 +18974,7 @@
 	  aFrame: true,
 	  onError: function (){
 	    // show aframe dependency warning, since it is unexpected to run aframe on server
-	    if (runtime.isBrowser) console.log('AFRAME library not found: related features will be disabled.');
+	    if (runtime.isBrowser) console.warn('AFRAME library not found: related features will be disabled.');
 	  }
 	}, function registerComponents () {
 	  AFRAME.registerComponent('io3d-data3d', data3dComponent);
@@ -15689,7 +18986,7 @@
 
 	var aFrame = {
 	  three: {
-	    Data3dView: Data3dView,
+	    Data3dView: Data3dView
 	  }
 	};
 
@@ -15716,6 +19013,8 @@
 	    boundingBox: rawInfo.boundingBox,
 	    boundingPoints: rawInfo.boundingPoints,
 	    data3dUrl: convertKeyToUrl(rawInfo.fileKey),
+	    // scene Structure definition
+	    sceneStructure: rawInfo.modelStructure,
 	    // data info
 	    created: rawInfo.createdAt,
 	    updated: rawInfo.updatedAt
@@ -15860,7 +19159,7 @@
 	    if(typeof window !== 'undefined' && !str.match(/^[^:]+:\/\//) && str.substr(0, 2) !== '//') {
 	      if(str[0] === '/') str = str.slice(1);
 	      str = window.location.protocol + '//' + window.location.host + window.location.pathname + str;
-	      console.log('mutated', str);
+	      console.error('mutated', str);
 	    }
 
 	    if (str.substr(0,2) === '//' && typeof window !== 'undefined' && window.location && window.location.protocol) {
@@ -16884,13 +20183,13 @@
 
 	// public methods
 
-	function decodeBuffer (buffer, options) {
+	function decodeBinary (buffer, options) {
 
 	  // API
 	  options = options || {};
-	  var url = options.url;
+	  var url$$1 = options.url;
 
-	  var parsedUrl = Url.parse(url);
+	  var parsedUrl = Url.parse(url$$1);
 	  var rootDir = path.parse(parsedUrl.path || parsedUrl.pathname || '').dir;
 	  var origin = parsedUrl.protocol + '//' + parsedUrl.host;
 
@@ -16945,7 +20244,7 @@
 	  traverseData3d(structure.data3d, function (data3d) {
 
 	    // map typed arrays to payload area in file buffer
-	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url);
+	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url$$1);
 
 	    //  convert relative material keys into absolute once
 	    if (origin && data3d.materials) convertTextureKeys(data3d, origin, rootDir);
@@ -16995,8 +20294,12 @@
 	    // hi-res textures
 	    for (i2 = 0, l2 = TEXTURE_PATH_KEYS.length; i2 < l2; i2++) {
 	      texturePathKey = TEXTURE_PATH_KEYS[i2];
+
 	      if (m[texturePathKey]) {
-	        if (m[texturePathKey][0] === '/') {
+	        if (m[texturePathKey].substring(0,5) === '/http') {
+	          // FIXME: prevent leading slashes being added to absolute paths
+	          m[texturePathKey] = m[texturePathKey].substring(1);
+	        } else if (m[texturePathKey][0] === '/') {
 	          // absolute path
 	          m[texturePathKey] = origin + m[texturePathKey];
 	        } else {
@@ -17010,7 +20313,7 @@
 
 	}
 
-	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url) {
+	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url$$1) {
 
 	  var mesh, i, l, meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
 
@@ -17040,7 +20343,7 @@
 	    }
 
 	    // add cache key
-	    if (url) mesh.cacheKey = url + ':' + meshKeys[i];
+	    if (url$$1) mesh.cacheKey = url$$1 + ':' + meshKeys[i];
 
 	  }
 
@@ -17058,11 +20361,63 @@
 
 	}
 
-	function loadData3d (url, options) {
+	// constants
+	var IS_URL = new RegExp('^http:\\/\\/.*$|^https:\\/\\/.*$');
+	var ID_TO_URL_CACHE = {};
+
+	// main
+	function getUrlFromStorageId (storageId, options) {
+
+	  // API
+	  options = options || {};
+	  var cdn = options.cdn !== undefined ? options.cdn : true;
+	  var encode = options.encode !== undefined ? options.encode : true;
+
+	  // check cache
+	  if (ID_TO_URL_CACHE[storageId + cdn + encode]) {
+	    return ID_TO_URL_CACHE[storageId + cdn + encode]
+	  }
+
+	  // check if storageId is URL already
+	  if (IS_URL.test(storageId)) {
+	    // add to cache
+	    ID_TO_URL_CACHE[ storageId + cdn + encode ] = storageId;
+	    // return URL
+	    return storageId
+	  }
+
+	  // internals
+	  var processedStorageId = storageId;
+
+	  // remove leading slash
+	  var startsWithSlash = /^\/(.*)$/.exec(processedStorageId);
+	  if (startsWithSlash) {
+	    processedStorageId = startsWithSlash[1];
+	  }
+
+	  // encode storageId if containig special chars
+	  if (encode && !/^[\.\-\_\/a-zA-Z0-9]+$/.test(processedStorageId)) {
+	    processedStorageId = encodeURIComponent(processedStorageId);
+	  }
+
+	  // compose url
+	  var url = 'https://' + (cdn ? configs.storageDomain : configs.storageDomainNoCdn) + '/' + processedStorageId;
+
+	  // add to cache
+	  ID_TO_URL_CACHE[ storageId + cdn + encode ] = url;
+	  
+	  return url
+	}
+
+	function loadData3d (val, options) {
+
+	  // could be storageId or URL
+	  var url = getUrlFromStorageId(val);
+
 	  return fetch$1(url, options).then(function(res){
 	    return res.arrayBuffer()
 	  }).then(function(buffer){
-	    return decodeBuffer(buffer, { url: url })
+	    return decodeBinary(buffer, { url: url })
 	  })
 	}
 
@@ -17084,6 +20439,74 @@
 	  search: searchFurniture,
 	  get: getFurniture,
 	  getInfo: getFurnitureInfo
+	};
+
+	var generic = {
+	  params: {
+	    type: {
+	      type: 'string',
+	      possibleValues: ['plan', 'level', 'box', 'wall', 'camera-bookmarks', 'interior', 'group', 'railing', 'window', 'door', 'floor', 'polyfloor', 'floorplan'],
+	      optional: false
+	    },
+	    x: { // x position in meters
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true
+	    },
+	    y: { // y position in meters
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true
+	    },
+	    z: { // z position in meters
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true
+	    },
+	    ry: { // y rotation in angle degrees
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true
+	    },
+	    children: {
+	      //type: 'array-with-objects',
+	      type: 'array',
+	      defaultValue: [],
+	      optional: true
+	    },
+	    id: {
+	      type: 'string',
+	      optional: true
+	    }
+	  }
+	};
+
+	var box = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01
+	    }
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var cameraBookmark = {
+	  params: {}
 	};
 
 	var door = {
@@ -17219,6 +20642,26 @@
 	  possibleChildrenTypes: []
 	};
 
+	var group = {
+	  params: {
+	    src: {
+	      type: 'string',
+	      optional: true
+	    }
+	  },
+	  possibleChildrenTypes: ['interior', 'object', 'wall', 'box', 'group', 'polybox']
+	};
+
+	var interior = {
+	  params: {
+	    src: {
+	      type: 'string',
+	      optional: false
+	    }
+	  },
+	  possibleChildrenTypes: ['interior']
+	};
+
 	var level$1 = {
 	  params: {},
 	  possibleChildrenTypes: ['wall', 'railing', 'floor', 'polyfloor', 'floorplan', 'group', 'box']
@@ -17264,6 +20707,27 @@
 	      type: 'string',
 	      optional: true
 	    }
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var railing = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01
+	    },
 	  },
 	  possibleChildrenTypes: []
 	};
@@ -17335,400 +20799,6 @@
 	  possibleChildrenTypes: []
 	};
 
-	var railing = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01
-	    },
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var generic = {
-	  params: {
-	    type: {
-	      type: 'string',
-	      possibleValues: ['plan', 'level', 'box', 'wall', 'interior', 'group', 'railing', 'window', 'door', 'floor', 'polyfloor', 'floorplan'],
-	      optional: false
-	    },
-	    x: { // x position in meters
-	      type: 'number',
-	      defaultValue: 0,
-	      optional: true
-	    },
-	    y: { // y position in meters
-	      type: 'number',
-	      defaultValue: 0,
-	      optional: true
-	    },
-	    z: { // z position in meters
-	      type: 'number',
-	      defaultValue: 0,
-	      optional: true
-	    },
-	    ry: { // y rotation in angle degrees
-	      type: 'number',
-	      defaultValue: 0,
-	      optional: true
-	    },
-	    children: {
-	      //type: 'array-with-objects',
-	      type: 'array',
-	      defaultValue: [],
-	      optional: true
-	    },
-	    id: {
-	      type: 'string',
-	      optional: true
-	    }
-	  }
-	};
-
-	/**
-	 * A faster alternative to `Function#apply`, this function invokes `func`
-	 * with the `this` binding of `thisArg` and the arguments of `args`.
-	 *
-	 * @private
-	 * @param {Function} func The function to invoke.
-	 * @param {*} thisArg The `this` binding of `func`.
-	 * @param {Array} args The arguments to invoke `func` with.
-	 * @returns {*} Returns the result of `func`.
-	 */
-	function apply(func, thisArg, args) {
-	  switch (args.length) {
-	    case 0: return func.call(thisArg);
-	    case 1: return func.call(thisArg, args[0]);
-	    case 2: return func.call(thisArg, args[0], args[1]);
-	    case 3: return func.call(thisArg, args[0], args[1], args[2]);
-	  }
-	  return func.apply(thisArg, args);
-	}
-
-	var _apply = apply;
-
-	/** Detect free variable `global` from Node.js. */
-	var freeGlobal = typeof commonjsGlobal == 'object' && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
-
-	var _freeGlobal = freeGlobal;
-
-	/** Detect free variable `self`. */
-	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
-
-	/** Used as a reference to the global object. */
-	var root$2 = _freeGlobal || freeSelf || Function('return this')();
-
-	var _root$1 = root$2;
-
-	/** Built-in value references. */
-	var Symbol$1 = _root$1.Symbol;
-
-	var _Symbol = Symbol$1;
-
-	/** Used for built-in method references. */
-	var objectProto$2 = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$2 = objectProto$2.hasOwnProperty;
-
-	/**
-	 * Used to resolve the
-	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
-	 * of values.
-	 */
-	var nativeObjectToString = objectProto$2.toString;
-
-	/** Built-in value references. */
-	var symToStringTag$1 = _Symbol ? _Symbol.toStringTag : undefined;
-
-	/**
-	 * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
-	 *
-	 * @private
-	 * @param {*} value The value to query.
-	 * @returns {string} Returns the raw `toStringTag`.
-	 */
-	function getRawTag(value) {
-	  var isOwn = hasOwnProperty$2.call(value, symToStringTag$1),
-	      tag = value[symToStringTag$1];
-
-	  try {
-	    value[symToStringTag$1] = undefined;
-	    var unmasked = true;
-	  } catch (e) {}
-
-	  var result = nativeObjectToString.call(value);
-	  if (unmasked) {
-	    if (isOwn) {
-	      value[symToStringTag$1] = tag;
-	    } else {
-	      delete value[symToStringTag$1];
-	    }
-	  }
-	  return result;
-	}
-
-	var _getRawTag = getRawTag;
-
-	/** Used for built-in method references. */
-	var objectProto$3 = Object.prototype;
-
-	/**
-	 * Used to resolve the
-	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
-	 * of values.
-	 */
-	var nativeObjectToString$1 = objectProto$3.toString;
-
-	/**
-	 * Converts `value` to a string using `Object.prototype.toString`.
-	 *
-	 * @private
-	 * @param {*} value The value to convert.
-	 * @returns {string} Returns the converted string.
-	 */
-	function objectToString(value) {
-	  return nativeObjectToString$1.call(value);
-	}
-
-	var _objectToString = objectToString;
-
-	/** `Object#toString` result references. */
-	var nullTag = '[object Null]';
-	var undefinedTag = '[object Undefined]';
-
-	/** Built-in value references. */
-	var symToStringTag = _Symbol ? _Symbol.toStringTag : undefined;
-
-	/**
-	 * The base implementation of `getTag` without fallbacks for buggy environments.
-	 *
-	 * @private
-	 * @param {*} value The value to query.
-	 * @returns {string} Returns the `toStringTag`.
-	 */
-	function baseGetTag(value) {
-	  if (value == null) {
-	    return value === undefined ? undefinedTag : nullTag;
-	  }
-	  return (symToStringTag && symToStringTag in Object(value))
-	    ? _getRawTag(value)
-	    : _objectToString(value);
-	}
-
-	var _baseGetTag = baseGetTag;
-
-	/**
-	 * Checks if `value` is the
-	 * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
-	 * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
-	 * @example
-	 *
-	 * _.isObject({});
-	 * // => true
-	 *
-	 * _.isObject([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isObject(_.noop);
-	 * // => true
-	 *
-	 * _.isObject(null);
-	 * // => false
-	 */
-	function isObject$2(value) {
-	  var type = typeof value;
-	  return value != null && (type == 'object' || type == 'function');
-	}
-
-	var isObject_1$3 = isObject$2;
-
-	/** `Object#toString` result references. */
-	var asyncTag = '[object AsyncFunction]';
-	var funcTag = '[object Function]';
-	var genTag = '[object GeneratorFunction]';
-	var proxyTag = '[object Proxy]';
-
-	/**
-	 * Checks if `value` is classified as a `Function` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a function, else `false`.
-	 * @example
-	 *
-	 * _.isFunction(_);
-	 * // => true
-	 *
-	 * _.isFunction(/abc/);
-	 * // => false
-	 */
-	function isFunction$1(value) {
-	  if (!isObject_1$3(value)) {
-	    return false;
-	  }
-	  // The use of `Object#toString` avoids issues with the `typeof` operator
-	  // in Safari 9 which returns 'object' for typed arrays and other constructors.
-	  var tag = _baseGetTag(value);
-	  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
-	}
-
-	var isFunction_1$3 = isFunction$1;
-
-	/** Used to detect overreaching core-js shims. */
-	var coreJsData = _root$1['__core-js_shared__'];
-
-	var _coreJsData = coreJsData;
-
-	/** Used to detect methods masquerading as native. */
-	var maskSrcKey = (function() {
-	  var uid = /[^.]+$/.exec(_coreJsData && _coreJsData.keys && _coreJsData.keys.IE_PROTO || '');
-	  return uid ? ('Symbol(src)_1.' + uid) : '';
-	}());
-
-	/**
-	 * Checks if `func` has its source masked.
-	 *
-	 * @private
-	 * @param {Function} func The function to check.
-	 * @returns {boolean} Returns `true` if `func` is masked, else `false`.
-	 */
-	function isMasked(func) {
-	  return !!maskSrcKey && (maskSrcKey in func);
-	}
-
-	var _isMasked = isMasked;
-
-	/** Used for built-in method references. */
-	var funcProto$1 = Function.prototype;
-
-	/** Used to resolve the decompiled source of functions. */
-	var funcToString$1 = funcProto$1.toString;
-
-	/**
-	 * Converts `func` to its source code.
-	 *
-	 * @private
-	 * @param {Function} func The function to convert.
-	 * @returns {string} Returns the source code.
-	 */
-	function toSource(func) {
-	  if (func != null) {
-	    try {
-	      return funcToString$1.call(func);
-	    } catch (e) {}
-	    try {
-	      return (func + '');
-	    } catch (e) {}
-	  }
-	  return '';
-	}
-
-	var _toSource = toSource;
-
-	/**
-	 * Used to match `RegExp`
-	 * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
-	 */
-	var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
-
-	/** Used to detect host constructors (Safari). */
-	var reIsHostCtor = /^\[object .+?Constructor\]$/;
-
-	/** Used for built-in method references. */
-	var funcProto = Function.prototype;
-	var objectProto$1 = Object.prototype;
-
-	/** Used to resolve the decompiled source of functions. */
-	var funcToString = funcProto.toString;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$1 = objectProto$1.hasOwnProperty;
-
-	/** Used to detect if a method is native. */
-	var reIsNative = RegExp('^' +
-	  funcToString.call(hasOwnProperty$1).replace(reRegExpChar, '\\$&')
-	  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
-	);
-
-	/**
-	 * The base implementation of `_.isNative` without bad shim checks.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a native function,
-	 *  else `false`.
-	 */
-	function baseIsNative(value) {
-	  if (!isObject_1$3(value) || _isMasked(value)) {
-	    return false;
-	  }
-	  var pattern = isFunction_1$3(value) ? reIsNative : reIsHostCtor;
-	  return pattern.test(_toSource(value));
-	}
-
-	var _baseIsNative = baseIsNative;
-
-	/**
-	 * Gets the value at `key` of `object`.
-	 *
-	 * @private
-	 * @param {Object} [object] The object to query.
-	 * @param {string} key The key of the property to get.
-	 * @returns {*} Returns the property value.
-	 */
-	function getValue(object, key) {
-	  return object == null ? undefined : object[key];
-	}
-
-	var _getValue = getValue;
-
-	/**
-	 * Gets the native function at `key` of `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @param {string} key The key of the method to get.
-	 * @returns {*} Returns the function if it's native, else `undefined`.
-	 */
-	function getNative(object, key) {
-	  var value = _getValue(object, key);
-	  return _baseIsNative(value) ? value : undefined;
-	}
-
-	var _getNative = getNative;
-
-	var defineProperty = (function() {
-	  try {
-	    var func = _getNative(Object, 'defineProperty');
-	    func({}, '', {});
-	    return func;
-	  } catch (e) {}
-	}());
-
-	var _defineProperty = defineProperty;
-
 	/**
 	 * The base implementation of `assignValue` and `assignMergeValue` without
 	 * value checks.
@@ -17753,49 +20823,11 @@
 
 	var _baseAssignValue = baseAssignValue;
 
-	/**
-	 * Performs a
-	 * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
-	 * comparison between two values to determine if they are equivalent.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to compare.
-	 * @param {*} other The other value to compare.
-	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
-	 * @example
-	 *
-	 * var object = { 'a': 1 };
-	 * var other = { 'a': 1 };
-	 *
-	 * _.eq(object, object);
-	 * // => true
-	 *
-	 * _.eq(object, other);
-	 * // => false
-	 *
-	 * _.eq('a', 'a');
-	 * // => true
-	 *
-	 * _.eq('a', Object('a'));
-	 * // => false
-	 *
-	 * _.eq(NaN, NaN);
-	 * // => true
-	 */
-	function eq(value, other) {
-	  return value === other || (value !== value && other !== other);
-	}
-
-	var eq_1 = eq;
-
 	/** Used for built-in method references. */
-	var objectProto = Object.prototype;
+	var objectProto$12 = Object.prototype;
 
 	/** Used to check objects for own properties. */
-	var hasOwnProperty = objectProto.hasOwnProperty;
+	var hasOwnProperty$9 = objectProto$12.hasOwnProperty;
 
 	/**
 	 * Assigns `value` to `key` of `object` if the existing value is not equivalent
@@ -17809,7 +20841,7 @@
 	 */
 	function assignValue(object, key, value) {
 	  var objValue = object[key];
-	  if (!(hasOwnProperty.call(object, key) && eq_1(objValue, value)) ||
+	  if (!(hasOwnProperty$9.call(object, key) && eq_1(objValue, value)) ||
 	      (value === undefined && !(key in object))) {
 	    _baseAssignValue(object, key, value);
 	  }
@@ -17856,289 +20888,6 @@
 	var _copyObject = copyObject;
 
 	/**
-	 * This method returns the first argument it receives.
-	 *
-	 * @static
-	 * @since 0.1.0
-	 * @memberOf _
-	 * @category Util
-	 * @param {*} value Any value.
-	 * @returns {*} Returns `value`.
-	 * @example
-	 *
-	 * var object = { 'a': 1 };
-	 *
-	 * console.log(_.identity(object) === object);
-	 * // => true
-	 */
-	function identity(value) {
-	  return value;
-	}
-
-	var identity_1 = identity;
-
-	/* Built-in method references for those with the same name as other `lodash` methods. */
-	var nativeMax = Math.max;
-
-	/**
-	 * A specialized version of `baseRest` which transforms the rest array.
-	 *
-	 * @private
-	 * @param {Function} func The function to apply a rest parameter to.
-	 * @param {number} [start=func.length-1] The start position of the rest parameter.
-	 * @param {Function} transform The rest array transform.
-	 * @returns {Function} Returns the new function.
-	 */
-	function overRest(func, start, transform) {
-	  start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
-	  return function() {
-	    var args = arguments,
-	        index = -1,
-	        length = nativeMax(args.length - start, 0),
-	        array = Array(length);
-
-	    while (++index < length) {
-	      array[index] = args[start + index];
-	    }
-	    index = -1;
-	    var otherArgs = Array(start + 1);
-	    while (++index < start) {
-	      otherArgs[index] = args[index];
-	    }
-	    otherArgs[start] = transform(array);
-	    return _apply(func, this, otherArgs);
-	  };
-	}
-
-	var _overRest = overRest;
-
-	/**
-	 * Creates a function that returns `value`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 2.4.0
-	 * @category Util
-	 * @param {*} value The value to return from the new function.
-	 * @returns {Function} Returns the new constant function.
-	 * @example
-	 *
-	 * var objects = _.times(2, _.constant({ 'a': 1 }));
-	 *
-	 * console.log(objects);
-	 * // => [{ 'a': 1 }, { 'a': 1 }]
-	 *
-	 * console.log(objects[0] === objects[1]);
-	 * // => true
-	 */
-	function constant(value) {
-	  return function() {
-	    return value;
-	  };
-	}
-
-	var constant_1 = constant;
-
-	/**
-	 * The base implementation of `setToString` without support for hot loop shorting.
-	 *
-	 * @private
-	 * @param {Function} func The function to modify.
-	 * @param {Function} string The `toString` result.
-	 * @returns {Function} Returns `func`.
-	 */
-	var baseSetToString = !_defineProperty ? identity_1 : function(func, string) {
-	  return _defineProperty(func, 'toString', {
-	    'configurable': true,
-	    'enumerable': false,
-	    'value': constant_1(string),
-	    'writable': true
-	  });
-	};
-
-	var _baseSetToString = baseSetToString;
-
-	/** Used to detect hot functions by number of calls within a span of milliseconds. */
-	var HOT_COUNT = 800;
-	var HOT_SPAN = 16;
-
-	/* Built-in method references for those with the same name as other `lodash` methods. */
-	var nativeNow = Date.now;
-
-	/**
-	 * Creates a function that'll short out and invoke `identity` instead
-	 * of `func` when it's called `HOT_COUNT` or more times in `HOT_SPAN`
-	 * milliseconds.
-	 *
-	 * @private
-	 * @param {Function} func The function to restrict.
-	 * @returns {Function} Returns the new shortable function.
-	 */
-	function shortOut(func) {
-	  var count = 0,
-	      lastCalled = 0;
-
-	  return function() {
-	    var stamp = nativeNow(),
-	        remaining = HOT_SPAN - (stamp - lastCalled);
-
-	    lastCalled = stamp;
-	    if (remaining > 0) {
-	      if (++count >= HOT_COUNT) {
-	        return arguments[0];
-	      }
-	    } else {
-	      count = 0;
-	    }
-	    return func.apply(undefined, arguments);
-	  };
-	}
-
-	var _shortOut = shortOut;
-
-	/**
-	 * Sets the `toString` method of `func` to return `string`.
-	 *
-	 * @private
-	 * @param {Function} func The function to modify.
-	 * @param {Function} string The `toString` result.
-	 * @returns {Function} Returns `func`.
-	 */
-	var setToString = _shortOut(_baseSetToString);
-
-	var _setToString = setToString;
-
-	/**
-	 * The base implementation of `_.rest` which doesn't validate or coerce arguments.
-	 *
-	 * @private
-	 * @param {Function} func The function to apply a rest parameter to.
-	 * @param {number} [start=func.length-1] The start position of the rest parameter.
-	 * @returns {Function} Returns the new function.
-	 */
-	function baseRest(func, start) {
-	  return _setToString(_overRest(func, start, identity_1), func + '');
-	}
-
-	var _baseRest = baseRest;
-
-	/** Used as references for various `Number` constants. */
-	var MAX_SAFE_INTEGER = 9007199254740991;
-
-	/**
-	 * Checks if `value` is a valid array-like length.
-	 *
-	 * **Note:** This method is loosely based on
-	 * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
-	 * @example
-	 *
-	 * _.isLength(3);
-	 * // => true
-	 *
-	 * _.isLength(Number.MIN_VALUE);
-	 * // => false
-	 *
-	 * _.isLength(Infinity);
-	 * // => false
-	 *
-	 * _.isLength('3');
-	 * // => false
-	 */
-	function isLength(value) {
-	  return typeof value == 'number' &&
-	    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-	}
-
-	var isLength_1 = isLength;
-
-	/**
-	 * Checks if `value` is array-like. A value is considered array-like if it's
-	 * not a function and has a `value.length` that's an integer greater than or
-	 * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
-	 * @example
-	 *
-	 * _.isArrayLike([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isArrayLike(document.body.children);
-	 * // => true
-	 *
-	 * _.isArrayLike('abc');
-	 * // => true
-	 *
-	 * _.isArrayLike(_.noop);
-	 * // => false
-	 */
-	function isArrayLike(value) {
-	  return value != null && isLength_1(value.length) && !isFunction_1$3(value);
-	}
-
-	var isArrayLike_1 = isArrayLike;
-
-	/** Used as references for various `Number` constants. */
-	var MAX_SAFE_INTEGER$1 = 9007199254740991;
-
-	/** Used to detect unsigned integer values. */
-	var reIsUint = /^(?:0|[1-9]\d*)$/;
-
-	/**
-	 * Checks if `value` is a valid array-like index.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
-	 * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
-	 */
-	function isIndex(value, length) {
-	  length = length == null ? MAX_SAFE_INTEGER$1 : length;
-	  return !!length &&
-	    (typeof value == 'number' || reIsUint.test(value)) &&
-	    (value > -1 && value % 1 == 0 && value < length);
-	}
-
-	var _isIndex = isIndex;
-
-	/**
-	 * Checks if the given arguments are from an iteratee call.
-	 *
-	 * @private
-	 * @param {*} value The potential iteratee value argument.
-	 * @param {*} index The potential iteratee index or key argument.
-	 * @param {*} object The potential iteratee object argument.
-	 * @returns {boolean} Returns `true` if the arguments are from an iteratee call,
-	 *  else `false`.
-	 */
-	function isIterateeCall(value, index, object) {
-	  if (!isObject_1$3(object)) {
-	    return false;
-	  }
-	  var type = typeof index;
-	  if (type == 'number'
-	        ? (isArrayLike_1(object) && _isIndex(index, object.length))
-	        : (type == 'string' && index in object)
-	      ) {
-	    return eq_1(object[index], value);
-	  }
-	  return false;
-	}
-
-	var _isIterateeCall = isIterateeCall;
-
-	/**
 	 * Creates a function like `_.assign`.
 	 *
 	 * @private
@@ -18174,372 +20923,6 @@
 	var _createAssigner = createAssigner;
 
 	/**
-	 * The base implementation of `_.times` without support for iteratee shorthands
-	 * or max array length checks.
-	 *
-	 * @private
-	 * @param {number} n The number of times to invoke `iteratee`.
-	 * @param {Function} iteratee The function invoked per iteration.
-	 * @returns {Array} Returns the array of results.
-	 */
-	function baseTimes(n, iteratee) {
-	  var index = -1,
-	      result = Array(n);
-
-	  while (++index < n) {
-	    result[index] = iteratee(index);
-	  }
-	  return result;
-	}
-
-	var _baseTimes = baseTimes;
-
-	/**
-	 * Checks if `value` is object-like. A value is object-like if it's not `null`
-	 * and has a `typeof` result of "object".
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
-	 * @example
-	 *
-	 * _.isObjectLike({});
-	 * // => true
-	 *
-	 * _.isObjectLike([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isObjectLike(_.noop);
-	 * // => false
-	 *
-	 * _.isObjectLike(null);
-	 * // => false
-	 */
-	function isObjectLike(value) {
-	  return value != null && typeof value == 'object';
-	}
-
-	var isObjectLike_1 = isObjectLike;
-
-	/** `Object#toString` result references. */
-	var argsTag = '[object Arguments]';
-
-	/**
-	 * The base implementation of `_.isArguments`.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an `arguments` object,
-	 */
-	function baseIsArguments(value) {
-	  return isObjectLike_1(value) && _baseGetTag(value) == argsTag;
-	}
-
-	var _baseIsArguments = baseIsArguments;
-
-	/** Used for built-in method references. */
-	var objectProto$5 = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$4 = objectProto$5.hasOwnProperty;
-
-	/** Built-in value references. */
-	var propertyIsEnumerable = objectProto$5.propertyIsEnumerable;
-
-	/**
-	 * Checks if `value` is likely an `arguments` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an `arguments` object,
-	 *  else `false`.
-	 * @example
-	 *
-	 * _.isArguments(function() { return arguments; }());
-	 * // => true
-	 *
-	 * _.isArguments([1, 2, 3]);
-	 * // => false
-	 */
-	var isArguments = _baseIsArguments(function() { return arguments; }()) ? _baseIsArguments : function(value) {
-	  return isObjectLike_1(value) && hasOwnProperty$4.call(value, 'callee') &&
-	    !propertyIsEnumerable.call(value, 'callee');
-	};
-
-	var isArguments_1 = isArguments;
-
-	/**
-	 * Checks if `value` is classified as an `Array` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an array, else `false`.
-	 * @example
-	 *
-	 * _.isArray([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isArray(document.body.children);
-	 * // => false
-	 *
-	 * _.isArray('abc');
-	 * // => false
-	 *
-	 * _.isArray(_.noop);
-	 * // => false
-	 */
-	var isArray$2 = Array.isArray;
-
-	var isArray_1$2 = isArray$2;
-
-	/**
-	 * This method returns `false`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.13.0
-	 * @category Util
-	 * @returns {boolean} Returns `false`.
-	 * @example
-	 *
-	 * _.times(2, _.stubFalse);
-	 * // => [false, false]
-	 */
-	function stubFalse() {
-	  return false;
-	}
-
-	var stubFalse_1 = stubFalse;
-
-	var isBuffer_1 = createCommonjsModule(function (module, exports) {
-	/** Detect free variable `exports`. */
-	var freeExports = 'object' == 'object' && exports && !exports.nodeType && exports;
-
-	/** Detect free variable `module`. */
-	var freeModule = freeExports && 'object' == 'object' && module && !module.nodeType && module;
-
-	/** Detect the popular CommonJS extension `module.exports`. */
-	var moduleExports = freeModule && freeModule.exports === freeExports;
-
-	/** Built-in value references. */
-	var Buffer = moduleExports ? _root$1.Buffer : undefined;
-
-	/* Built-in method references for those with the same name as other `lodash` methods. */
-	var nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined;
-
-	/**
-	 * Checks if `value` is a buffer.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.3.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
-	 * @example
-	 *
-	 * _.isBuffer(new Buffer(2));
-	 * // => true
-	 *
-	 * _.isBuffer(new Uint8Array(2));
-	 * // => false
-	 */
-	var isBuffer = nativeIsBuffer || stubFalse_1;
-
-	module.exports = isBuffer;
-	});
-
-	/** `Object#toString` result references. */
-	var argsTag$1 = '[object Arguments]';
-	var arrayTag = '[object Array]';
-	var boolTag = '[object Boolean]';
-	var dateTag = '[object Date]';
-	var errorTag = '[object Error]';
-	var funcTag$1 = '[object Function]';
-	var mapTag = '[object Map]';
-	var numberTag = '[object Number]';
-	var objectTag = '[object Object]';
-	var regexpTag = '[object RegExp]';
-	var setTag = '[object Set]';
-	var stringTag = '[object String]';
-	var weakMapTag = '[object WeakMap]';
-
-	var arrayBufferTag = '[object ArrayBuffer]';
-	var dataViewTag = '[object DataView]';
-	var float32Tag = '[object Float32Array]';
-	var float64Tag = '[object Float64Array]';
-	var int8Tag = '[object Int8Array]';
-	var int16Tag = '[object Int16Array]';
-	var int32Tag = '[object Int32Array]';
-	var uint8Tag = '[object Uint8Array]';
-	var uint8ClampedTag = '[object Uint8ClampedArray]';
-	var uint16Tag = '[object Uint16Array]';
-	var uint32Tag = '[object Uint32Array]';
-
-	/** Used to identify `toStringTag` values of typed arrays. */
-	var typedArrayTags = {};
-	typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
-	typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
-	typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
-	typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
-	typedArrayTags[uint32Tag] = true;
-	typedArrayTags[argsTag$1] = typedArrayTags[arrayTag] =
-	typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
-	typedArrayTags[dataViewTag] = typedArrayTags[dateTag] =
-	typedArrayTags[errorTag] = typedArrayTags[funcTag$1] =
-	typedArrayTags[mapTag] = typedArrayTags[numberTag] =
-	typedArrayTags[objectTag] = typedArrayTags[regexpTag] =
-	typedArrayTags[setTag] = typedArrayTags[stringTag] =
-	typedArrayTags[weakMapTag] = false;
-
-	/**
-	 * The base implementation of `_.isTypedArray` without Node.js optimizations.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
-	 */
-	function baseIsTypedArray(value) {
-	  return isObjectLike_1(value) &&
-	    isLength_1(value.length) && !!typedArrayTags[_baseGetTag(value)];
-	}
-
-	var _baseIsTypedArray = baseIsTypedArray;
-
-	/**
-	 * The base implementation of `_.unary` without support for storing metadata.
-	 *
-	 * @private
-	 * @param {Function} func The function to cap arguments for.
-	 * @returns {Function} Returns the new capped function.
-	 */
-	function baseUnary(func) {
-	  return function(value) {
-	    return func(value);
-	  };
-	}
-
-	var _baseUnary = baseUnary;
-
-	var _nodeUtil = createCommonjsModule(function (module, exports) {
-	/** Detect free variable `exports`. */
-	var freeExports = 'object' == 'object' && exports && !exports.nodeType && exports;
-
-	/** Detect free variable `module`. */
-	var freeModule = freeExports && 'object' == 'object' && module && !module.nodeType && module;
-
-	/** Detect the popular CommonJS extension `module.exports`. */
-	var moduleExports = freeModule && freeModule.exports === freeExports;
-
-	/** Detect free variable `process` from Node.js. */
-	var freeProcess = moduleExports && _freeGlobal.process;
-
-	/** Used to access faster Node.js helpers. */
-	var nodeUtil = (function() {
-	  try {
-	    return freeProcess && freeProcess.binding && freeProcess.binding('util');
-	  } catch (e) {}
-	}());
-
-	module.exports = nodeUtil;
-	});
-
-	/* Node.js helper references. */
-	var nodeIsTypedArray = _nodeUtil && _nodeUtil.isTypedArray;
-
-	/**
-	 * Checks if `value` is classified as a typed array.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 3.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
-	 * @example
-	 *
-	 * _.isTypedArray(new Uint8Array);
-	 * // => true
-	 *
-	 * _.isTypedArray([]);
-	 * // => false
-	 */
-	var isTypedArray = nodeIsTypedArray ? _baseUnary(nodeIsTypedArray) : _baseIsTypedArray;
-
-	var isTypedArray_1 = isTypedArray;
-
-	/** Used for built-in method references. */
-	var objectProto$4 = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$3 = objectProto$4.hasOwnProperty;
-
-	/**
-	 * Creates an array of the enumerable property names of the array-like `value`.
-	 *
-	 * @private
-	 * @param {*} value The value to query.
-	 * @param {boolean} inherited Specify returning inherited property names.
-	 * @returns {Array} Returns the array of property names.
-	 */
-	function arrayLikeKeys(value, inherited) {
-	  var isArr = isArray_1$2(value),
-	      isArg = !isArr && isArguments_1(value),
-	      isBuff = !isArr && !isArg && isBuffer_1(value),
-	      isType = !isArr && !isArg && !isBuff && isTypedArray_1(value),
-	      skipIndexes = isArr || isArg || isBuff || isType,
-	      result = skipIndexes ? _baseTimes(value.length, String) : [],
-	      length = result.length;
-
-	  for (var key in value) {
-	    if ((inherited || hasOwnProperty$3.call(value, key)) &&
-	        !(skipIndexes && (
-	           // Safari 9 has enumerable `arguments.length` in strict mode.
-	           key == 'length' ||
-	           // Node.js 0.10 has enumerable non-index properties on buffers.
-	           (isBuff && (key == 'offset' || key == 'parent')) ||
-	           // PhantomJS 2 has enumerable non-index properties on typed arrays.
-	           (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
-	           // Skip index properties.
-	           _isIndex(key, length)
-	        ))) {
-	      result.push(key);
-	    }
-	  }
-	  return result;
-	}
-
-	var _arrayLikeKeys = arrayLikeKeys;
-
-	/** Used for built-in method references. */
-	var objectProto$7 = Object.prototype;
-
-	/**
-	 * Checks if `value` is likely a prototype object.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
-	 */
-	function isPrototype(value) {
-	  var Ctor = value && value.constructor,
-	      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto$7;
-
-	  return value === proto;
-	}
-
-	var _isPrototype = isPrototype;
-
-	/**
 	 * This function is like
 	 * [`Object.keys`](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
 	 * except that it includes inherited enumerable properties.
@@ -18561,10 +20944,10 @@
 	var _nativeKeysIn = nativeKeysIn;
 
 	/** Used for built-in method references. */
-	var objectProto$6 = Object.prototype;
+	var objectProto$13 = Object.prototype;
 
 	/** Used to check objects for own properties. */
-	var hasOwnProperty$5 = objectProto$6.hasOwnProperty;
+	var hasOwnProperty$10 = objectProto$13.hasOwnProperty;
 
 	/**
 	 * The base implementation of `_.keysIn` which doesn't treat sparse arrays as dense.
@@ -18581,7 +20964,7 @@
 	      result = [];
 
 	  for (var key in object) {
-	    if (!(key == 'constructor' && (isProto || !hasOwnProperty$5.call(object, key)))) {
+	    if (!(key == 'constructor' && (isProto || !hasOwnProperty$10.call(object, key)))) {
 	      result.push(key);
 	    }
 	  }
@@ -18655,10 +21038,10 @@
 	var assignInWith_1 = assignInWith;
 
 	/** Used for built-in method references. */
-	var objectProto$8 = Object.prototype;
+	var objectProto$14 = Object.prototype;
 
 	/** Used to check objects for own properties. */
-	var hasOwnProperty$6 = objectProto$8.hasOwnProperty;
+	var hasOwnProperty$11 = objectProto$14.hasOwnProperty;
 
 	/**
 	 * Used by `_.defaults` to customize its `_.assignIn` use to assign properties
@@ -18674,7 +21057,7 @@
 	 */
 	function customDefaultsAssignIn(objValue, srcValue, key, object) {
 	  if (objValue === undefined ||
-	      (eq_1(objValue, objectProto$8[key]) && !hasOwnProperty$6.call(object, key))) {
+	      (eq_1(objValue, objectProto$14[key]) && !hasOwnProperty$11.call(object, key))) {
 	    return srcValue;
 	  }
 	  return objValue;
@@ -18710,22 +21093,27 @@
 
 	var defaults_1 = defaults$1;
 
+	// import sceneStructure types
 	function getDefaultsByType() {
 	  var types = {
-	    door,
-	    floor,
-	    floorplan,
+	    box: box,
+	    cameraBookmark: cameraBookmark,
+	    door: door,
+	    floor: floor,
+	    floorplan: floorplan,
+	    group: group,
+	    interior: interior,
 	    level: level$1,
-	    plan,
-	    polyfloor,
-	    wall,
-	    window: window$1,
-	    railing
+	    plan: plan,
+	    polyfloor: polyfloor,
+	    railing: railing,
+	    wall: wall,
+	    window: window$1
 	  };
 
 	  var typeSpecificValidations = {};
 
-	  Object.keys(types).forEach(key => {
+	  Object.keys(types).forEach(function(key) {
 	    typeSpecificValidations[key] = {
 	      params: defaults_1({}, generic.params, types[key].params),
 	      possibleChildrenTypes: types[key].possibleChildrenTypes
@@ -18805,10 +21193,10 @@
 	    options = options || {},
 	    spaceId = options.spaceId,
 	    label = options.label,
-	    floorLabels = {};
+	    spaceLabels = {};
 
-	  // make sure we're having a plan and a level object
-	  return verifySceneStructure(sceneStructure)
+	  // make sure we're having a plan, a level object and a
+	  return normalizeInput(sceneStructure)
 	    .then(function(result) {
 	      console.log(result);
 
@@ -18820,24 +21208,27 @@
 	      }
 
 	      // set default space label if none provided
-	      floorLabels[spaceId] = label || 'living';
+	      spaceLabels[spaceId] = label || 'living';
 
+	      // TODO: cleanup params after API review
 	      var params = {
-	        floors: floorLabels,
+	        floors: spaceLabels,
 	        modelStructure: result,
 	        maxResults: 1,
 	        tags: ['generic']
 	      };
 
-	      console.log('autofurnish', params);
+	      // do the actual home staging api call
 	      return callService('Autofurnishing.furnish', { arguments: params })
 	    })
-	    .then(function(result) { return result.furnishings })
-	    .catch(console.error)
+	    .then(getSceneStructureFromFurnishingResult)
+	    .catch(function(error) {
+	      console.error('HomeStaging error:', error);
+	      return bluebird_1.reject('HomeStaging failed - check console for details')
+	    })
 	}
 
-	// TODO: cleanup after API review
-	function verifySceneStructure(input) {
+	function normalizeInput(input) {
 	  if (input.type !== 'plan') {
 	    if (Array.isArray(input)) {
 	      if (input[0].type !== 'level') {
@@ -18864,80 +21255,31 @@
 	      };
 	    } else {
 	      console.error('Furnishing failed - input is invalid:', input);
-	      return Promise.reject('Furnishing failed - check console for details')
+	      return bluebird_1.reject('Furnishing failed - check console for details')
 	    }
 	  }
 	  return normalizeSceneStructure(input)
 	}
 
-	function placeFurnishings (args) {
-	  console.log('placing things', args);
-	  var floorIds = Object.keys(args);
-	  // pick first floor & first result
-	  var promises = [];
-	  floorIds.forEach(function(id) {
-	    var groups = args[id][0].groups;
-	    groups.forEach(g => {
-	      promises.push(getGroup({modelStructure: g}));
-	    });
-	  });
-	  return Promise.all(promises)
+	function getSceneStructureFromFurnishingResult(result) {
+	  var furnishing = result.furnishings;
+	  var spaceIds = Object.keys(furnishing);
+	  if (!uuid.validate(spaceIds[0])) return bluebird_1.reject('No furnishings were found')
+	  var groups = furnishing[spaceIds[0]][0].groups;
+
+	  return bluebird_1.map(groups, getFurnitureGroupData)
+	    .then(normalizeSceneStructure)
 	}
 
-	function getGroup(args) {
-	  var id = args.id || args.modelStructure.src && args.modelStructure.src.substring(1);
+	function getFurnitureGroupData(args) {
+	  var id = args.src.substring(1);
 	  var group;
 	  return callService('Product.read', { arguments: id})
-	    .then(product => {
-	      if (product.categories.indexOf('group') < -1) return
+	    .then(function(product) {
 	      var ms = JSON.parse(product.modelStructure);
-	      console.log(ms, ms.type);
-	      var modelStructure = args.modelStructure || ms;
-	      var position = {x: modelStructure.x, y: modelStructure.y, z: modelStructure.z};
-	      var rotation = modelStructure.ry;
-	      // product groups
-	      if (ms.type === 'group' && ms.children) {
-	        group = addEntity({ position, rotation });
-	        ms.children.forEach(c => {
-	          if (c.type === 'interior') {
-	          var position = {x: c.x, y: c.y, z: c.z};
-	          var rotation = c.ry;
-	          var el = addEntity({key: 'io3d-furniture', id: c.src.substring(1), position, rotation, parent:group});
-	        }
-	      });
-	        // single products
-	      } else if (ms.type === 'interior') group = addEntity({key: 'io3d-furniture', id: product.productResourceId, position, rotation});
-	      return group
+	      var sceneStructure = defaults_1({}, args, ms);
+	      return bluebird_1.resolve(sceneStructure)
 	    })
-	}
-
-	function addEntity(args) {
-	  var
-	    position = args.position || {x: 0, y: 0, z: 0},
-	    ry = args.rotation || 0,
-	    id = args.id,
-	    tag = args.tag || 'a-entity',
-	    key = args.key,
-	    parent = args.parent || document.querySelector("a-scene"),
-	    attributes = args.attributes || {};
-
-	  attributes.position = position.x + ' ' + position.y + ' ' + position.z;
-	  attributes.rotation = '0 ' + ry + ' 0';
-	  if (key === 'io3d-furniture' && id) {
-	    attributes[key] = 'id:' + id;
-	    attributes.productId = id;
-	  }
-	  else if (key === 'io3d-data3d' && id) attributes[key] = 'key:' + id + '; lightMapExposure: 0.8: lightMapIntensity: 1.0;';
-	  var el = document.createElement(tag);
-	  Object.keys(attributes).forEach(key => {
-	    el.setAttribute(key, attributes[key]);
-	  });
-	  if (args.class) {
-	    if (el.classList) el.classList.add(args.class);
-	    else el.className += " " + args.class;
-	  }
-	  if (parent) return parent.appendChild(el)
-	  else console.log('no parent', attributes.id);
 	}
 
 	var userQuery;
@@ -19085,7 +21427,6 @@
 
 	var staging = {
 	  getFurnishings: furnish,
-	  placeFurnishings: placeFurnishings,
 	  replaceFurniture: replaceFurniture
 	};
 
@@ -19774,7 +22115,7 @@
 
 	// main
 
-	function getFromStorage (key, options) {
+	function getFromStorage (storageId, options) {
 
 	  // WIP: for now, assume that this is only being used for data3d
 	  options = options || {};
@@ -19782,46 +22123,18 @@
 
 	  switch(options.type) {
 	    case 'json':
-	      return fetch$1(convertKeyToUrl$1(key, options)).then(function(response) { return response.json() })
+	      return fetch$1(getUrlFromStorageId(storageId, options)).then(function(response) { return response.json() })
 	    break
 	    default:
-	      return loadData3d(convertKeyToUrl$1(key))
+	      return loadData3d(getUrlFromStorageId(storageId))
 	    break
 	  }
 
-	}
-
-	// helpers
-
-	function convertKeyToUrl$1 (key, options) {
-	  // API
-	  options = options || {};
-	  var cdn = options.cdn !== undefined ? options.cdn : true;
-	  var encode = options.encode !== undefined ? options.encode : true;
-	  // check cache
-	  // if (keyToUrlCache[ key + cdn + encode ]) {
-	  //   return keyToUrlCache[ key + cdn + encode ]
-	  // }
-	  // internals
-	  var processedKey = key;
-	  // remove leading slash
-	  var startsWithSlash = /^\/(.*)$/.exec(processedKey);
-	  if (startsWithSlash) {
-	    processedKey = startsWithSlash[1];
-	  }
-	  // encode key if containig special chars
-	  if (encode && !/^[\.\-\_\/a-zA-Z0-9]+$/.test(processedKey)) {
-	    processedKey = encodeURIComponent(processedKey);
-	  }
-	  // compose url
-	  var url = 'https://'+(cdn ? configs.storageDomain : configs.storageDomainNoCdn)+'/' + processedKey;
-	  // add to cache
-	  // keyToUrlCache[ key + cdn + encode ] = url
-	  return url
 	}
 
 	var storage = {
 	  get: getFromStorage,
+	  getUrlFromStorageId: getUrlFromStorageId,
 	  put: putToStorage
 	};
 
@@ -19998,11 +22311,2258 @@
 	  }
 	}
 
+	// TODO: extend this for bakedModel
+	var validTypes = [
+	  'interior',
+	  'group',
+	  'level',
+	  'plan'
+	];
+
+	function toHtml(sceneStructure, options) {
+	  // check if the request was made by a browser
+	  runtime.assertBrowser();
+
+	  // api
+	  options = options || {};
+	  var isArray = Array.isArray(sceneStructure);
+	  sceneStructure = isArray ? sceneStructure : [sceneStructure];
+
+	  // start parsing
+	  return getHtmlFromSceneStructure(sceneStructure)
+	}
+
+	// recursive parsing through sceneStructre
+	function getHtmlFromSceneStructure(sceneStructure, parent) {
+	  var collection = parent ? null : []; // use collection or parent
+	  sceneStructure.forEach(function(element3d) {
+	    if (validTypes.indexOf(element3d.type) > -1) {
+	      var el = addEntity({
+	        attributes: getAttributes(element3d),
+	        parent: parent
+	      });
+	      getHtmlFromSceneStructure(element3d.children, el);
+	      if (collection) collection.push(el);
+	    }
+	  });
+	  return collection
+	}
+
+	// get html attributes from element3d params
+	function getAttributes(element3d) {
+	  var attributes = {
+	    'io3d-uuid': element3d.id,
+	    position: element3d.x + ' ' + element3d.y + ' ' + element3d.z,
+	    rotation: '0 ' + element3d.ry + ' 0'
+	  };
+	  if (element3d.type === 'interior') attributes['io3d-furniture'] = 'id:' + element3d.src.substring(1);
+	  return attributes
+	}
+
+	function addEntity(args) {
+	  var
+	    tag = args.tag || 'a-entity',
+	    parent = args.parent,
+	    attributes = args.attributes || {};
+
+	  var el = document.createElement(tag);
+
+	  Object.keys(attributes).forEach(function(key) {
+	    el.setAttribute(key, attributes[key]);
+	  });
+
+	  if (parent) return parent.appendChild(el)
+	  else return el
+	}
+
 	var scene = {
 	  getViewerUrl: getViewerUrl,
 	  validateSceneStructure: validateSceneStructure,
-	  normalizeSceneStructure: normalizeSceneStructure
+	  normalizeSceneStructure: normalizeSceneStructure,
+	  getHtmlFromSceneStructure: toHtml
 	};
+
+	function traverseData3d$1(data3d, callback) {
+
+	  callback(data3d);
+
+	  if (data3d.children) for (var i=0, l=data3d.children.length; i<l; i++) traverseData3d$1(data3d.children[i], callback);
+
+	}
+
+	// methods
+
+	traverseData3d$1.materials = function traverseMaterials (data3d, callback) {
+	  
+	  (function traverseMaterials_(data3d, callback) {
+
+	    var material;
+	    var materialKeys = data3d.materialKeys || Object.keys(data3d.materials || {});
+	    for (var i = 0; i < materialKeys.length; i++) {
+	      material = data3d.materials[ materialKeys[ i ] ];
+	      callback(material, data3d);
+	    }
+
+	    if (data3d.children) {
+	      for (var i=0, l=data3d.children.length; i<l; i++) {
+	        traverseMaterials_(data3d.children[i], callback);
+	      }
+	    }
+
+	  })(data3d, callback);
+
+	};
+
+	traverseData3d$1.meshes = function traverseMeshes (data3d, callback) {
+
+	  (function traverseMeshes_(data3d, callback) {
+
+	    var mesh, material;
+	    var meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
+	    for (var i = 0; i < meshKeys.length; i++) {
+	      mesh = data3d.meshes[ meshKeys[ i ] ];
+	      material = data3d.materials[ mesh.material ];
+	      callback(mesh, material, data3d);
+	    }
+
+	    if (data3d.children) {
+	      for (var i=0, l=data3d.children.length; i<l; i++) {
+	        traverseMeshes_(data3d.children[i], callback);
+	      }
+	    }
+
+	  })(data3d, callback);
+
+	};
+
+	// API
+
+	var clone = cloneData3d$1;
+	clone.meshes = cloneMeshes;
+	clone.meshe = cloneSingleMesh;
+	clone.materials = cloneMaterials;
+	clone.material = cloneSingleMaterial;
+
+	// methods
+
+	function cloneData3d$1 (_data3d, options) {
+
+	    var clone = {};
+
+	    clone.meshes = cloneMeshes(_data3d.meshes, options);
+	    clone.materials = cloneMaterials(_data3d.materials);
+
+	    if (_data3d.alternativeMaterialsByMeshKey) {
+	      clone.alternativeMaterialsByMeshKey = JSON.parse(JSON.stringify(_data3d.alternativeMaterialsByMeshKey));
+	    }
+	    if (_data3d._params) {
+	      clone._params = _data3d._params;
+	    }
+	    if (_data3d.position) {
+	      clone.position = _data3d.position.slice(0);
+	    }
+	    if (_data3d.rotDeg) {
+	      clone.rotDeg = _data3d.rotDeg.slice(0);
+	    }
+	    if (_data3d.rotRad) {
+	      clone.rotRad = _data3d.rotRad.slice(0);
+	    }
+	    if (_data3d.children) {
+	      clone.children = _data3d.children.map(function(childData3d){
+	        return cloneData3d$1 (childData3d, options)
+	      });
+	    }
+
+	    return clone
+	  }
+	  
+	  function cloneSingleMesh(mesh, options) {
+	    return cloneMeshes({ x:mesh }, options).x
+	  }
+	  
+	  function cloneMeshes (_meshes, options) {
+
+	    if (!_meshes) {
+	      return {}
+	    }
+
+	    // API
+	    options = options || {};
+	    var clonePositions = !!options.clonePositions;
+	    var cloneNormals = !!options.cloneNormals;
+	    var cloneUvs = !!options.cloneUvs;
+	    var cloneUvsLightmap = !!options.cloneUvsLightmap;
+
+	    // internals
+	    var
+	      meshId, _mesh, mesh,
+	      meshKeys = Object.keys(_meshes),
+	      meshes = {};
+
+	    for (var i = 0, l = meshKeys.length; i < l; i++) {
+
+	      meshId = meshKeys[ i ];
+	      mesh = {};
+	      _mesh = _meshes[ meshId ];
+
+	      // vertices
+	      if (_mesh.positions) {
+	        if (clonePositions && (_mesh.positions instanceof Array || _mesh.positions instanceof Float32Array)) {
+	          mesh.positions = _mesh.positions.slice(0);
+	        } else {
+	          mesh.positions = _mesh.positions;
+	        }
+	      }
+
+	      // normals
+	      if (_mesh.normals) {
+	        if (cloneNormals && (_mesh.normals instanceof Array || _mesh.normals instanceof Float32Array)) {
+	          mesh.normals = _mesh.normals.slice(0);
+	        } else {
+	          mesh.normals = _mesh.normals;
+	        }
+	      }
+
+	      // uvs
+	      if (_mesh.uvs) {
+	        if (cloneUvs && (_mesh.uvs instanceof Array || _mesh.uvs instanceof Float32Array)) {
+	          mesh.uvs = _mesh.uvs.slice(0);
+	        } else {
+	          mesh.uvs = _mesh.uvs;
+	        }
+	      }
+
+	      // uvs lightmap
+	      if (_mesh.uvsLightmap) {
+	        if (cloneUvsLightmap && (_mesh.uvsLightmap instanceof Array || _mesh.uvsLightmap instanceof Float32Array)) {
+	          mesh.uvsLightmap = _mesh.uvsLightmap.slice(0);
+	        } else {
+	          mesh.uvsLightmap = _mesh.uvsLightmap;
+	        }
+	      }
+
+	      // other arrays
+	      if (_mesh.matrix) mesh.matrix = _mesh.matrix.slice(0);
+	      if (_mesh.uvMatrix) mesh.uvMatrix = _mesh.uvMatrix.slice(0);
+	      if (_mesh.meshKeys) mesh.meshKeys = _mesh.meshKeys.slice(0);
+	      if (_mesh.position) mesh.position = _mesh.position.slice(0);
+	      if (_mesh.rotDeg) mesh.rotDeg = _mesh.rotDeg.slice(0);
+	      if (_mesh.rotRad) mesh.rotRad = _mesh.rotRad.slice(0);
+	      if (_mesh.scale) mesh.scale= _mesh.scale.slice(0);
+
+	      // primitives
+	      if (_mesh.v) mesh.v = _mesh.v;
+	      if (_mesh.vertexMode) mesh.vertexMode = _mesh.vertexMode;
+	      if (_mesh.side) mesh.side = _mesh.side;
+	      if (_mesh.material) mesh.material = _mesh.material;
+	      if (_mesh.visibleInPersonView) mesh.visibleInPersonView = _mesh.visibleInPersonView;
+	      if (_mesh.visibleInBirdView) mesh.visibleInBirdView = _mesh.visibleInBirdView;
+	      if (_mesh.visibleInFloorplanView) mesh.visibleInFloorplanView = _mesh.visibleInFloorplanView;
+
+	      meshes[ meshId ] = mesh;
+	    }
+
+	    // output
+	    return meshes
+	  }
+	  
+	  function cloneSingleMaterial(material) {
+	    return cloneMaterials({ x:material }).x
+	  }
+	  
+	  function cloneMaterials(_materials) {
+
+	    if (!_materials) {
+	      return {}
+	    }
+
+	    var materialId, _material, materials, material, materialKeys, _attributes, _attributeKeys, attributeKey, type, attributes, isExtended;
+
+	    materialKeys = Object.keys(_materials);
+	    // result
+	    materials = {};
+
+	    if (materialKeys.length === 0) {
+	      return {}
+	    }
+
+	    if (_materials[ materialKeys[0] ].attributes) {
+	      isExtended = true;
+	      // deep copy source
+	      materials = JSON.parse(JSON.stringify(_materials));
+	    } else {
+	      isExtended = false;
+	    }
+
+	    for (var i = 0, l = materialKeys.length; i < l; i++) {
+
+	      materialId = materialKeys[ i ];
+	      _attributes = isExtended ? _materials[ materialId ].attributes : _materials[ materialId ];
+
+	      if (typeof _attributes === 'string') {
+
+	        if (isExtended) {
+	          materials[ materialId ].attributes = _attributes;
+	        } else {
+	          materials[ materialId ] = _attributes;
+	        }
+
+	      } else if (_attributes) {
+
+	        attributes = {};
+	        _attributeKeys = Object.keys(_attributes);
+
+	        for (var j= 0, k=_attributeKeys.length; j<k; j++) {
+	          attributeKey = _attributeKeys[j];
+	          type = typeof _attributes[ attributeKey ];
+	          if (type === 'string' || type === 'number' || type === 'boolean') {
+	            // primitive
+	            attributes[ attributeKey ] = _attributes[ attributeKey ];
+	          } else if (_attributes[ attributeKey ]) {
+	            if (_attributes[ attributeKey ].length === 3) {
+	              // color array
+	              attributes[ attributeKey ] = [
+	                _attributes[ attributeKey ][0],
+	                _attributes[ attributeKey ][1],
+	                _attributes[ attributeKey ][2]
+	              ];
+	            } else if (_attributes[ attributeKey ].length === 2) {
+	              // size array
+	              attributes[ attributeKey ] = [
+	                _attributes[ attributeKey ][0],
+	                _attributes[ attributeKey ][1]
+	              ];
+	            }
+	          }
+	        }
+
+	        if (isExtended) {
+	          materials[ materialId ].attributes = attributes;
+	        } else {
+	          materials[ materialId ] = attributes;
+	        }
+
+	      }
+
+	    }
+
+	    return materials
+
+	  }
+
+	// methods
+
+	function projectAxisY (v) {
+
+	  var uvs = new Float32Array(v.length / 1.5);
+	  var uvPos = 0;
+
+	  var i, l;
+	  for (i = 0, l = v.length; i < l; i += 9) {
+
+	    uvs[uvPos] = v[i + 2];
+	    uvs[uvPos + 1] = v[i];
+	    uvs[uvPos + 2] = v[i + 5];
+	    uvs[uvPos + 3] = v[i + 3];
+	    uvs[uvPos + 4] = v[i + 8];
+	    uvs[uvPos + 5] = v[i + 6];
+	    uvPos += 6;
+
+	  }
+
+	  return uvs
+
+	}
+	projectAxisY.title = 'Project Top Down';
+
+	function architectural (v) {
+
+	  var uvs = new Float32Array(v.length / 1.5);
+	  var uvPos = 0;
+
+	  var i, l, n, components;
+	  for (i = 0, l = v.length; i < l; i += 9) {
+
+	    // calculate face normal
+	    // cross product (a-b) x (c-b)
+	    n = [
+	      (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]),
+	      (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]),
+	      (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3])
+	    ];
+
+	    // normals should be absolute
+	    if (n[0] < 0) {
+	      n[0] *= -1;
+	    }
+	    if (n[1] < 0) {
+	      n[1] *= -1;
+	    }
+	    if (n[2] < 0) {
+	      n[2] *= -1;
+	    }
+
+	    // highest first?
+	    components = [1, 0, 2].sort(function (a, b) {
+	      return n[a] - n[b]
+	    });
+
+	    uvs[uvPos] = v[i + components[1]];
+	    uvs[uvPos + 1] = v[i + components[0]];
+	    uvs[uvPos + 2] = v[i + 3 + components[1]];
+	    uvs[uvPos + 3] = v[i + 3 + components[0]];
+	    uvs[uvPos + 4] = v[i + 6 + components[1]];
+	    uvs[uvPos + 5] = v[i + 6 + components[0]];
+	    uvPos += 6;
+
+	  }
+
+	  return uvs
+
+	}
+	architectural.title = 'Architectural';
+
+	// API
+
+	var getUvsBuffer = {
+	  architectural: architectural,
+	  projectAxisY: projectAxisY
+	};
+
+	var DEBUG = true;
+
+	// methods
+
+	function flat (v) {
+	  // calculate normals for flat shading
+	  var n = new Float32Array(v.length);
+	  var i, l, crx, cry, crz, invScalar;
+	  var hasFaultyTrigons = false;
+	  for (i = 0, l = v.length; i < l; i += 9) {
+	    // cross product (a-b) x (c-b)
+	    crx = (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]);
+	    cry = (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]);
+	    crz = (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3]);
+	    // normalize
+	    invScalar = 1 / Math.sqrt(crx * crx + cry * cry + crz * crz);
+	    // Fallback for trigons that don't span an area
+	    if (invScalar === Infinity) {
+	      invScalar = 0;
+	      hasFaultyTrigons = true;
+	    }
+	    // set normals
+	    n[i] = n[i + 3] = n[i + 6] = crx * invScalar;
+	    n[i + 1] = n[i + 4] = n[i + 7] = cry * invScalar;
+	    n[i + 2] = n[i + 5] = n[i + 8] = crz * invScalar;
+
+	  }
+	  if (DEBUG && hasFaultyTrigons) console.error('Geometry contains trigons that don\'t span an area.');
+	  return n
+	}
+	flat.title = 'Flat';
+
+	function smooth (v) {
+
+	  // output
+
+	  var normals = new Float32Array(v.length);
+
+	  // internals
+
+	  var hash, hashes = [], vertexRelatedNormals = {}, faceNormals, averageNormal;
+	  var n;
+	  var crx, cry, crz, invScalar;
+	  var hasFaultyTrigons = false;
+	  var i, l, i2, l2;
+
+	  ////////// 1. connect vertices to faces
+
+	  // go face by face
+	  for (i = 0, l = v.length; i < l; i += 9) {
+
+	    // calculate face normal
+	    // cross product (a-b) x (c-b)
+	    crx = (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]);
+	    cry = (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]);
+	    crz = (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3]);
+	    // normalize
+	    invScalar = 1 / Math.sqrt(crx * crx + cry * cry + crz * crz);
+	    if (invScalar === Infinity) {
+	      hasFaultyTrigons = true;
+	      invScalar = 0;
+	    }
+	    // set normals
+	    n = [crx * invScalar, cry * invScalar, crz * invScalar];
+
+	    for (i2 = 0, l2 = 9; i2 < l2; i2 += 3) {
+	      hash = v[i + i2] + '_' + v[i + i2 + 1] + '_' + v[i + i2 + 2];
+	      if (!vertexRelatedNormals[hash]) {
+	        vertexRelatedNormals[hash] = {
+	          faceNormals: [n]
+	        };
+	        hashes[hashes.length] = hash;
+	      } else {
+	        vertexRelatedNormals[hash].faceNormals.push(n);
+	      }
+	    }
+	  }
+
+	  ////////// 2. calculate average normals from related face normals
+
+	  var avx, avy, avz;
+	  for (i = 0, l = hashes.length; i < l; i++) {
+	    hash = hashes[i];
+	    faceNormals = vertexRelatedNormals[hash].faceNormals;
+	    avx = 0;
+	    avy = 0;
+	    avz = 0;
+	    for (i2 = 0, l2 = faceNormals.length; i2 < l2; i2++) {
+	      avx += faceNormals[i2][0];
+	      avy += faceNormals[i2][1];
+	      avz += faceNormals[i2][2];
+	    }
+	    // normalize
+	    invScalar = 1 / Math.sqrt(avx * avx + avy * avy + avz * avz);
+	    if (invScalar === Infinity) {
+	      hasFaultyTrigons = true;
+	      invScalar = 0;
+	    }
+	    // set average normal
+	    vertexRelatedNormals[hash].averageNormal = [avx * invScalar, avy * invScalar, avz * invScalar];
+	  }
+
+	  ////////// 3. apply average normals to vertices
+
+	  for (i = 0, l = v.length; i < l; i += 3) {
+	    hash = v[i] + '_' + v[i + 1] + '_' + v[i + 2];
+	    averageNormal = vertexRelatedNormals[hash].averageNormal;
+	    normals[i] = averageNormal[0];
+	    normals[i + 1] = averageNormal[1];
+	    normals[i + 2] = averageNormal[2];
+	  }
+
+	  // return
+	  if (DEBUG && hasFaultyTrigons) console.error('Shade Smooth: Geometry contains trigons that don\'t span an area.');
+	  return normals
+
+	}
+	smooth.title = 'Smooth';
+
+	// API
+
+	var getNormalsBuffer = {
+	  flat: flat,
+	  smooth: smooth,
+	};
+
+	// placeholder
+	function normalizeMaterials(x) { return x; }
+
+	// API
+
+	var consolidate = consolidateData3d$1;
+	consolidate.meshes = consolidateMeshes;
+	consolidate.materials = consolidateMaterials;
+
+	// constants
+
+	var IS_DEBUG_MODE = true;
+	var DEG_TO_RAD = Math.PI / 180;
+	var RAD_TO_DEG = 180 / Math.PI;
+
+	// main
+	function consolidateData3d$1(data3d, options){
+
+	  // API
+	  options = options || {};
+	  var consolidateMaterialsEnabled = options.consolidateMaterials !== undefined ? options.consolidateMaterials : true;
+	  var consolidateMeshesEnabled = options.consolidateMeshes !== undefined ? options.consolidateMeshes : true;
+	  var el3d = options.el3d;
+	  var warningCallback = options.onWarning;
+
+	  // make clone so that we can apply changes
+	  data3d = clone(data3d);
+
+	  // support hierarchy
+	  var resolvePromises = [];
+	  traverseData3d$1(data3d, function(data3d){
+
+	    // add node id
+	    data3d.nodeId = el3d ? el3d.params.id : uuid.generate();
+
+	    // add keys to data3d if not present
+	    data3d.meshes = data3d.meshes || {};
+	    data3d.meshKeys = data3d.meshKeys || Object.keys(data3d.meshes);
+	    data3d.materials = data3d.materials || {};
+	    data3d.materialKeys = data3d.materialKeys || Object.keys(data3d.materials);
+
+	    // add params
+	    if (el3d && !data3d._params) {
+	      data3d._params = el3d.toObject({ recursive: false });
+	    }
+
+	    // add position
+	    if (!data3d.position) {
+	      if (el3d) {
+	        data3d.position = [ el3d.params.x || 0, el3d.params.y || 0, el3d.params.z || 0 ];
+	      } else {
+	        data3d.position = [ 0, 0, 0 ];
+	      }
+	    }
+
+	    // add rotation
+	    if (!data3d.rotRad && !data3d.rotDeg) {
+	      // both missing
+	      if (el3d) {
+	        data3d.rotDeg = [ el3d.params.rx || 0, el3d.params.ry || 0, el3d.params.rz || 0 ];
+	      } else {
+	        data3d.rotDeg = [ 0, 0, 0 ];
+	      }
+	      data3d.rotRad = [ data3d.rotDeg[0] * DEG_TO_RAD, data3d.rotDeg[1] * DEG_TO_RAD, data3d.rotDeg[2] * DEG_TO_RAD ];
+	    } else if (!data3d.rotDeg) {
+	      // only rot deg missing
+	      data3d.rotDeg = [ data3d.rotRad[0] * RAD_TO_DEG, data3d.rotRad[1] * RAD_TO_DEG, data3d.rotRad[2] * RAD_TO_DEG ];
+	    } else {
+	      // only rot rad missing
+	      data3d.rotRad = [ data3d.rotDeg[0] * DEG_TO_RAD, data3d.rotDeg[1] * DEG_TO_RAD, data3d.rotDeg[2] * DEG_TO_RAD ];
+	    }
+
+	    // add children
+	    if (!data3d.children) {
+	      data3d.children = [];
+	    }
+
+	    // resolve meshes
+	    if (consolidateMeshesEnabled) {
+	      data3d.meshes = consolidateMeshes(data3d.meshes, el3d ? el3d.params.id : null);
+	      data3d.meshKeys = Object.keys(data3d.meshes);
+	    }
+
+	    // internals
+	    var
+	      meshes = data3d.meshes,
+	      meshKeys = data3d.meshKeys,
+	      materials = data3d.materials,
+	      nodeId = el3d && el3d.params ? el3d.params.id : null,
+	      i, l, meshId, mesh, materialId, positions, uvs, uvs2, normals, material, materialKeysHaveChanged;
+
+	    // check meshes
+	    for (i = 0, l = meshKeys.length; i < l; i++) {
+
+	      meshId = meshKeys[ i ];
+	      mesh = meshes[ meshId ];
+	      materialId = mesh.material;
+	      material = materials && materials[ materialId ] ? materials[ materialId ] : null;
+	      positions = mesh.positions;
+	      normals = mesh.normals;
+	      uvs = mesh.uvs;
+	      uvs2 = mesh.uvsLightmap;
+
+	      // mesh position
+	      if (!mesh.position) {
+	        mesh.position = [ 0,0,0 ];
+	      }
+
+	      // mesh rotation
+	      if (!mesh.rotRad && !mesh.rotDeg) {
+	        // both missing
+	        mesh.rotDeg = [ 0,0,0 ];
+	        mesh.rotRad = [ 0,0,0 ];
+	      } else if (!mesh.rotDeg) {
+	        // only rot deg missing
+	        mesh.rotDeg = [ mesh.rotRad[0] * RAD_TO_DEG, mesh.rotRad[1] * RAD_TO_DEG, mesh.rotRad[2] * RAD_TO_DEG ];
+	      } else {
+	        // only rot rad missing
+	        mesh.rotRad = [ mesh.rotDeg[0] * DEG_TO_RAD, mesh.rotDeg[1] * DEG_TO_RAD, mesh.rotDeg[2] * DEG_TO_RAD ];
+	      }
+
+	      // mesh scale
+	      if (!mesh.scale) {
+	        mesh.scale = [ 1,1,1 ];
+	      }
+
+	      // mesh in relation to material
+	      if (material) {
+
+	        // check if material with texture has UVs
+	        if (
+	          materialHasTexture(material) &&
+	          (mesh.uvs === undefined || mesh.uvs.length === 0)
+	        ) {
+	          // generate fallback UVs
+	          if (IS_DEBUG_MODE) console.error('Mesh with material "'+materialId+'" has texture(s) has no UVs. Fallback to architectural UV mapping.');
+	          if (warningCallback) warningCallback('Mesh with material "'+materialId+'" has texture(s) has no UVs. Fallback to architectural UV mapping.');
+	          mesh.uvs = getUvsBuffer.architectural(mesh.positions);
+	        }
+
+	        // check if material with lightmap has lightmap uvs
+	        if (
+	          (material.mapLight || material.mapLightPreview) &&
+	          (mesh.uvsLightmap === undefined || mesh.uvsLightmap.length === 0)
+	        ) {
+	          // delete texture references as we can not generate lightmap fallbacks
+	          if (IS_DEBUG_MODE) console.error('Mesh with material "'+materialId+'" has lightmap has no lightmap UVs. Lightmap will be ignored.');
+	          if (warningCallback) warningCallback('Mesh with material "'+materialId+'" has lightmap has no lightmap UVs. Lightmap will be ignored.');
+	          delete material.mapLight;
+	          delete material.mapLightPreview;
+
+	        }
+
+	        // create fallback material
+	      } else {
+	        if (materialId) {
+	          console.error('Node:'+nodeId+' Material by ID "' + materialId + '" not found.', materials);
+	          if (warningCallback) warningCallback('Material by ID "' + materialId + '" not found.');
+	        } else {
+	          materialId = getShortId();
+	          mesh.material = materialId;
+	        }
+	        materials[ materialId ] = {
+	          colorDiffuse: [0.85,0.85,0.85]
+	        };
+	        materialKeysHaveChanged = true;
+	      }
+
+	    }
+
+	    // regenerate material keys if needed
+	    if (materialKeysHaveChanged) {
+	      data3d.materialKeys = Object.keys(materials);
+	    }
+
+	    // resolve materials
+	    if (consolidateMaterialsEnabled) {
+
+	      resolvePromises.push(
+	        consolidateMaterials(data3d.materials).then(function(materials){
+	          data3d.materials = normalizeMaterials(materials);
+	          return data3d
+	        })
+	      );
+
+	    } else {
+
+	      data3d.materials = normalizeMaterials(data3d.materials);
+	      resolvePromises.push(Promise.resolve(data3d));
+
+	    }
+
+	  });
+
+	  return Promise.all(resolvePromises).then(function(){
+	    return data3d
+	  })
+
+	}
+
+	// helpers
+
+	function materialHasTexture(m) {
+	  return m.mapDiffuse ||
+	    m.mapSpecular ||
+	    m.mapNormal ||
+	    m.mapAlpha ||
+	    m.mapDiffusePreview ||
+	    m.mapSpecularPreview ||
+	    m.mapNormalPreview ||
+	    m.mapAlphaPreview
+	}
+
+	function consolidateMaterials(_materials){
+
+	  // TODO: introduce bundled calls to material API to request multiple materials in one call
+
+	  var promiseKeys = [];
+	  var promises = [];
+	  var materialKeys = _materials ? Object.keys(_materials) : [];
+	  var materialKey;
+	  var i, l;
+	  // result
+	  var materials = {};
+
+	  if (!materialKeys.length) {
+	    return Promise.resolve(materials)
+	  }
+
+	  var isExtended = (materialKeys.length && _materials[ materialKeys[0] ].attributes);
+
+	  // process
+	  for (i= 0, l=materialKeys.length; i<l; i++) {
+	    materialKey = materialKeys[i];
+
+	    // shallow clone material
+	    if (isExtended) {
+	      materials[ materialKey ] = _materials[ materialKey ].attributes;
+	    } else {
+	      materials[ materialKey ] = _materials[ materialKey ];
+	    }
+
+	    // convert material ids to attributes
+	    if (typeof materials[ materialKey ] === 'string') {
+	      if (materials[ materialKey ][0] === '#') {
+	        // is hex color definition: convert to rgb
+	        materials[ materialKey ] = {
+	          colorDiffuse: hexToRgb(materials[ materialKey ])
+	        };
+	      } else {
+	        // is global id: get attributes from registry
+	        promiseKeys[ promiseKeys.length ] = materialKey;
+	        promises[ promises.length ] = api.call('Material.get', materials[ materialKey ]);
+	      }
+	    }
+
+	  }
+
+	  if (promiseKeys.length === 0) {
+
+	    return Promise.resolve(normalizeMaterials(materials))
+
+	  } else {
+
+	    return Promise.all(promises).then(function(resolvedMaterials){
+
+	      // replace resolved materials
+	      for (i= 0, l=promiseKeys.length; i<l; i++) {
+	        materials[ promiseKeys[ i ] ] = resolvedMaterials[ i ].attributes;
+	      }
+
+	      return normalizeMaterials(materials)
+
+	    })
+
+	  }
+
+	}
+	  
+	function consolidateMeshes (meshes, nodeId){
+	    
+	    if (!meshes) {
+
+	      return meshes
+
+	    } else {
+
+	      // internals
+	      var
+	        meshKeys = Object.keys(meshes),
+	        i, l, mesh;
+
+	      for (i = 0, l = meshKeys.length; i < l; i++) {
+	        mesh = meshes[ meshKeys[ i ] ];
+
+	        // check if positions are defined
+	        if (mesh.positions === undefined || mesh.positions.length === 0) {
+	          delete meshes[ meshKeys[ i ] ];
+	          continue
+	        }
+	        // check type
+	        else if (!(mesh.positions instanceof Float32Array)) {
+	          // convert to float array if needed
+	          if (mesh.positions instanceof Array) {
+	            mesh.positions = new Float32Array(mesh.positions);
+	          }
+	          // type not supported
+	          else {
+	            if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Position vertices must be of type Float32Array or Array. Mesh will be ignored', mesh.position);
+	            delete meshes[ meshKeys[ i ] ];
+	            continue
+	          }
+	        }
+	        // check if multiple of 9
+	        if (mesh.positions.length/9 % 1 !== 0) {
+	          if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Invalid position vertices count: ' + mesh.positions.length + '. Has to be multiple of 9. Mesh will be ignored.');
+	          delete meshes[ meshKeys[ i ] ];
+	          continue
+	        }
+
+	        // check if normals are defined
+	        if (mesh.normals === undefined || mesh.normals.length === 0) {
+	          mesh.normals = getNormalsBuffer.flat(mesh.positions);
+	        }
+	        // check if normal generation method exists
+	        else if (typeof mesh.normals === 'string') {
+	          if (getNormalsBuffer[ mesh.normals ]) {
+	            // generate normals
+	            mesh.normals = getNormalsBuffer[ mesh.normals ](mesh.positions);
+	          } else {
+	            // unknown shading method. fallback to flat
+	            if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Unknown normal shading method "' + mesh.normals + '". Fallback to flat shading.');
+	            mesh.normals = getNormalsBuffer.flat(mesh.positions);
+	          }
+	        }
+	        // check type
+	        else if (!(mesh.normals instanceof Float32Array)) {
+	          // convert to float array if needed
+	          if (mesh.normals instanceof Array) {
+	            mesh.normals = new Float32Array(mesh.normals);
+	          }
+	          // type not supported
+	          else {
+	            if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Normal vertices should be of type Float32Array or Array. Fallback to flat shading.', mesh.normals);
+	            mesh.normals = getNormalsBuffer.flat(mesh.positions);
+	          }
+	        }
+	        // check count
+	        if (mesh.normals.length !== mesh.positions.length) {
+	          if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Position vertices and normal vertices count has to be the same. Fallback to flat Shading. ', mesh.normals.length, mesh.normals.length);
+	          mesh.normals = getNormalsBuffer.flat(mesh.positions);
+	        }
+
+	        // check uvs channel 1
+	        if (mesh.uvs) {
+	          // defined as string
+	          if (typeof mesh.uvs === 'string') {
+	            // check if uv generation method exists
+	            if (getUvsBuffer[ mesh.uvs ]) {
+	              // generate uvs
+	              mesh.uvs = getUvsBuffer[ mesh.uvs ](mesh.positions);
+	            } else {
+	              // unknown mapping method. fallback to architectural
+	              if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Unknown UV1 mapping method "' + mesh.uvs + '". Fallback to architectural UV mapping.');
+	              mesh.uvs = getUvsBuffer.architectural(mesh.positions);
+	            }
+	          }
+	          // check type
+	          else if (!(mesh.uvs instanceof Float32Array)) {
+	            // convert to float32array if needed
+	            if (mesh.uvs instanceof Array) {
+	              mesh.uvs = new Float32Array(mesh.uvs);
+	            }
+	            // mesh uvs not of supported type
+	            else {
+	              if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' UV Vertices should be of type Float32Array or Array. Fallback to architectural UV mapping.', mesh.uvs);
+	              mesh.uvs = getUvsBuffer.architectural(mesh.positions);
+	            }
+	          }
+	          // check length
+	          if (mesh.uvs.length && mesh.uvs.length * 1.5 !== mesh.positions.length) {
+	            if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Position Vertices and UV vertices count not in ratio of 3:2. Fallback to architectural UV mapping. ', mesh.positions.length, mesh.uvs.length);
+	            mesh.uvs = getUvsBuffer.architectural(mesh.positions);
+	          }
+	        }
+
+	        // check uvs channel 2
+	        if (mesh.uvsLightmap && mesh.uvsLightmap.length && mesh.uvs.length * 1.5 !== mesh.positions.length) {
+	          if (IS_DEBUG_MODE) console.error('Node:'+nodeId+' Position Vertices and Lightmap UV Vertices count not in ratio of 3:2.', mesh.positions.length, mesh.uvs.length);
+	          delete mesh.uvsLightmap;
+	        }
+
+	      }
+
+	      return meshes
+
+	    }
+	  }
+
+	// function
+
+	function wait(duration, passThroughValue) {
+	  return new bluebird_1(function (resolve, reject) {
+	    setTimeout(function(){
+	      resolve(passThroughValue);
+	    }, duration);
+	  })
+	}
+
+	function fetchImage (url) {
+		return new bluebird_1(function (resolve, reject) {
+
+			var img = document.createElement('img');
+			img.crossOrigin = 'Anonymous';
+
+			img.onload = function () {
+				resolve(img);
+			};
+
+			var triedWithCacheBust = false;
+			img.onerror = function () {
+				if(triedWithCacheBust) {
+					reject('Error loading image ' + url);
+				} else {
+					// try again with cache busting to avoid things like #1510
+					triedWithCacheBust = true;
+					img.src = ( url.indexOf('?') > -1 ? '&' : '&' ) + 'cacheBust=' + new Date().getTime();
+				}
+			};
+
+			// initiate image loading
+			img.src = url;
+
+		})
+	}
+
+	// settings
+
+	var DEFAULT_MAX_WIDTH = 2048;
+	var DEFAULT_MAX_HEIGHT = 2048;
+
+	// main
+
+	function scaleDownImage (input, options) {
+	  runtime.assertBrowser();
+
+	  // API
+	  options = options || {};
+	  var maxWidth = options.maxWidth || DEFAULT_MAX_WIDTH;
+	  var maxHeight = options.maxHeight || DEFAULT_MAX_HEIGHT;
+	  var powerOfTwo = !!options.powerOfTwo;
+
+	  // run
+	  return new bluebird_1(function(resolve, reject){
+
+	    // internals
+	    var canvas;
+	    var scale;
+	    var result;
+	    var originalWidth = input.width;
+	    var originalHeight = input.height;
+
+	    // convert original image size to power of two before scaling
+	    // because pixelPerfect algorithm allows only one dimensional scaling
+	    var makePowerOfTwo = powerOfTwo && !(checkPowerOfTwo$1(originalWidth) && checkPowerOfTwo$1(originalHeight));
+	    if (makePowerOfTwo) {
+	      originalWidth = getNearestPowerOfTwo(originalWidth);
+	      originalHeight = getNearestPowerOfTwo(originalHeight);
+	    }
+
+	    // cap width and height to max
+	    var width = Math.min(originalWidth, maxWidth);
+	    var height = Math.min(originalHeight, maxHeight);
+
+	    // scale down smaller size
+	    if (originalWidth < originalHeight) {
+	      width = height * (originalWidth / originalHeight);
+	    } else {
+	      height = width * (originalHeight / originalWidth);
+	    }
+
+	    // normalize input
+	    canvas = getCanvas(input, originalWidth, originalHeight);
+
+	    // scale if needed
+	    scale = width / originalWidth;
+	    if (scale < 1) {
+	      // scale image
+	      result = downScaleCanvas(canvas, width / originalWidth);
+	    } else {
+	      // nothing to scale
+	      result = canvas;
+	    }
+
+	    resolve(result);
+
+	  })
+	}
+
+	// helpers
+
+	function checkPowerOfTwo$1 (value) {
+	  return ( value & ( value - 1 ) ) === 0 && value !== 0
+	}
+
+	function getNearestPowerOfTwo (n) {
+	  // next best power of two
+	  var l = Math.log(n) / Math.LN2;
+	  return Math.pow(2, Math.round(l))
+	}
+
+	function getCanvas(input, width, height) {
+	  var canvas = document.createElement('canvas');
+	  canvas.width = width;
+	  canvas.height = height;
+	  var context = canvas.getContext('2d');
+	  // add filled white background, otherwise transparent png image areas turn black
+	  context.fillStyle="#FFFFFF";
+	  context.fillRect(0,0,width,height);
+	  context.drawImage(input, 0, 0, width, height);
+	  return canvas
+	}
+
+	// scales the canvas by (float) scale < 1
+	// returns a new canvas containing the scaled image.
+	function downScaleCanvas(cv, scale) {
+	  if (!(scale < 1) || !(scale > 0)) throw ('scale must be a positive number <1 ');
+	  scale = normaliseScale(scale);
+	  var tBuffer = new Float32Array(3 * cv.width * cv.height); // temporary buffer Float32 rgb
+	  var sqScale = scale * scale; // square scale =  area of a source pixel within target
+	  var sw = cv.width; // source image width
+	  var sh = cv.height; // source image height
+	  var tw = Math.floor(sw * scale); // target image width
+	  var th = Math.floor(sh * scale); // target image height
+	  var sx = 0, sy = 0, sIndex = 0; // source x,y, index within source array
+	  var tx = 0, ty = 0, yIndex = 0, tIndex = 0; // target x,y, x,y index within target array
+	  var tX = 0, tY = 0; // rounded tx, ty
+	  var w = 0, nw = 0, wx = 0, nwx = 0, wy = 0, nwy = 0; // weight / next weight x / y
+	  // weight is weight of current source point within target.
+	  // next weight is weight of current source point within next target's point.
+	  var crossX = false; // does scaled px cross its current px right border ?
+	  var crossY = false; // does scaled px cross its current px bottom border ?
+	  var sBuffer = cv.getContext('2d').getImageData(0, 0, sw, sh).data; // source buffer 8 bit rgba
+	  var sR = 0, sG = 0,  sB = 0; // source's current point r,g,b
+
+	  for (sy = 0; sy < sh; sy++) {
+	    ty = sy * scale; // y src position within target
+	    tY = 0 | ty;     // rounded : target pixel's y
+	    yIndex = 3 * tY * tw;  // line index within target array
+	    crossY = (tY !== (0 | ( ty + scale )));
+	    if (crossY) { // if pixel is crossing botton target pixel
+	      wy = (tY + 1 - ty); // weight of point within target pixel
+	      nwy = (ty + scale - tY - 1); // ... within y+1 target pixel
+	    }
+	    for (sx = 0; sx < sw; sx++, sIndex += 4) {
+	      tx = sx * scale; // x src position within target
+	      tX = 0 |  tx;    // rounded : target pixel's x
+	      tIndex = yIndex + tX * 3; // target pixel index within target array
+	      crossX = (tX !== (0 | (tx + scale)));
+	      if (crossX) { // if pixel is crossing target pixel's right
+	        wx = (tX + 1 - tx); // weight of point within target pixel
+	        nwx = (tx + scale - tX - 1); // ... within x+1 target pixel
+	      }
+	      sR = sBuffer[sIndex    ];   // retrieving r,g,b for curr src px.
+	      sG = sBuffer[sIndex + 1];
+	      sB = sBuffer[sIndex + 2];
+	      if (!crossX && !crossY) { // pixel does not cross
+	        // just add components weighted by squared scale.
+	        tBuffer[tIndex    ] += sR * sqScale;
+	        tBuffer[tIndex + 1] += sG * sqScale;
+	        tBuffer[tIndex + 2] += sB * sqScale;
+	      } else if (crossX && !crossY) { // cross on X only
+	        w = wx * scale;
+	        // add weighted component for current px
+	        tBuffer[tIndex    ] += sR * w;
+	        tBuffer[tIndex + 1] += sG * w;
+	        tBuffer[tIndex + 2] += sB * w;
+	        // add weighted component for next (tX+1) px
+	        nw = nwx * scale;
+	        tBuffer[tIndex + 3] += sR * nw;
+	        tBuffer[tIndex + 4] += sG * nw;
+	        tBuffer[tIndex + 5] += sB * nw;
+	      } else if (!crossX && crossY) { // cross on Y only
+	        w = wy * scale;
+	        // add weighted component for current px
+	        tBuffer[tIndex    ] += sR * w;
+	        tBuffer[tIndex + 1] += sG * w;
+	        tBuffer[tIndex + 2] += sB * w;
+	        // add weighted component for next (tY+1) px
+	        nw = nwy * scale;
+	        tBuffer[tIndex + 3 * tw    ] += sR * nw;
+	        tBuffer[tIndex + 3 * tw + 1] += sG * nw;
+	        tBuffer[tIndex + 3 * tw + 2] += sB * nw;
+	      } else { // crosses both x and y : four target points involved
+	        // add weighted component for current px
+	        w = wx * wy;
+	        tBuffer[tIndex    ] += sR * w;
+	        tBuffer[tIndex + 1] += sG * w;
+	        tBuffer[tIndex + 2] += sB * w;
+	        // for tX + 1; tY px
+	        nw = nwx * wy;
+	        tBuffer[tIndex + 3] += sR * nw;
+	        tBuffer[tIndex + 4] += sG * nw;
+	        tBuffer[tIndex + 5] += sB * nw;
+	        // for tX ; tY + 1 px
+	        nw = wx * nwy;
+	        tBuffer[tIndex + 3 * tw    ] += sR * nw;
+	        tBuffer[tIndex + 3 * tw + 1] += sG * nw;
+	        tBuffer[tIndex + 3 * tw + 2] += sB * nw;
+	        // for tX + 1 ; tY +1 px
+	        nw = nwx * nwy;
+	        tBuffer[tIndex + 3 * tw + 3] += sR * nw;
+	        tBuffer[tIndex + 3 * tw + 4] += sG * nw;
+	        tBuffer[tIndex + 3 * tw + 5] += sB * nw;
+	      }
+	    } // end for sx
+	  } // end for sy
+
+	  // create result canvas
+	  var resCV = document.createElement('canvas');
+	  resCV.width = tw;
+	  resCV.height = th;
+	  var resCtx = resCV.getContext('2d');
+
+	//    var imgRes = resCtx.getImageData(resCV.width/2 - tw/2, resCV.height/2 - th/2, tw, th);
+	  var imgRes = resCtx.getImageData(0, 0, tw, th);
+	  var tByteBuffer = imgRes.data;
+	  // convert float32 array into a UInt8Clamped Array
+	  var pxIndex = 0; //
+	  for (sIndex = 0, tIndex = 0; pxIndex < tw * th; sIndex += 3, tIndex += 4, pxIndex++) {
+	    tByteBuffer[tIndex] = 0 | ( tBuffer[sIndex]);
+	    tByteBuffer[tIndex + 1] = 0 | (tBuffer[sIndex + 1]);
+	    tByteBuffer[tIndex + 2] = 0 | (tBuffer[sIndex + 2]);
+	    tByteBuffer[tIndex + 3] = 255;
+	    // set back temp buffer
+	    tBuffer[sIndex] = 0;
+	    tBuffer[sIndex + 1] = 0;
+	    tBuffer[sIndex + 2] = 0;
+	  }
+
+	  // writing result to canvas.
+	  resCtx.putImageData(imgRes, 0, 0);
+	  return resCV;
+
+	}
+
+	function log2$1(v) {
+	  // taken from http://graphics.stanford.edu/~seander/bithacks.html
+	  var b =  [ 0x2, 0xC, 0xF0, 0xFF00, 0xFFFF0000 ];
+	  var S =  [1, 2, 4, 8, 16];
+	  var i=0, r=0;
+
+	  for (i = 4; i >= 0; i--) {
+	    if (v & b[i])  {
+	      v >>= S[i];
+	      r |= S[i];
+	    }
+	  }
+	  return r;
+	}
+
+	// normalize a scale <1 to avoid some rounding issue with js numbers
+	function normaliseScale(s) {
+	  if (s>1) throw('s must be <1');
+	  s = 0 | (1/s);
+	  var l = log2$1(s);
+	  var mask = 1 << l;
+	  var accuracy = 4;
+	  while(accuracy && l) { l--; mask |= 1<<l; accuracy--; }
+	  return 1 / ( s & mask );
+	}
+
+	function getDefaultFilename () {
+	  var d = new Date();
+	  return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+	    + '_' + d.getHours() + '-' + d.getMinutes() + '-' + d.getSeconds() + '_' + getShortId()
+	}
+
+	function getBlobFromCanvas (canvas, options) {
+	  runtime.assertBrowser();
+
+	  // API
+	  options = options || {};
+	  var mimeType = options.mimeType || 'image/jpeg'; // can be: 'image/jpeg' or 'image/png'
+	  var quality = options.quality || 98;
+	  var fileName = options.fileName || getDefaultFilename() + (mimeType === 'image/jpeg' ? '.jpg' : '.png');
+
+	  // run
+	  return new bluebird_1(function (resolve, reject) {
+	    canvas.toBlob(function (blob) {
+	      blob.name = fileName;
+	      resolve(blob);
+	    }, mimeType, quality);
+	  })
+
+	}
+
+	var FILE_READ_METHODS = {
+	  undefined: 'readAsText',
+	  text: 'readAsText',
+	  dataUrl: 'readAsDataURL',
+	  binaryString: 'readAsBinaryString',
+	  arrayBuffer: 'readAsArrayBuffer'
+	};
+
+	function readFile(blob, type) {
+	  runtime.assertBrowser();
+	  
+	  return new Promise(function(resolve, reject){
+	    var fileReader = new window.FileReader();
+	    fileReader.onload = function (e) {
+	      // IE 11 requires this
+	      // http://stackoverflow.com/a/32665193/2835973
+	      resolve(fileReader.content || fileReader.result);
+	    };
+	    fileReader.onerror = function (err){
+	      reject(err);
+	    };
+	    // start reading file
+	    fileReader[ FILE_READ_METHODS[type] ](blob);
+	  })
+	}
+
+	function fetchModule (url) {
+	  runtime.assertBrowser('Please use "require()" to fetch modules in server environment.');
+
+	  // module wrapper
+	  window.___modules = window.___modules || {};
+
+	  // return module if it has been loaded already
+	  if (window.___modules[url]) {
+	    return Promise.resolve(window.___modules[url])
+
+	  } else {
+	  // load code and use module wrapper
+	    return fetch$1(url).then(function(response){
+	      return response.text()
+	    }).then(function(code){
+
+	      // check module type
+	      var moduleWrapper;
+	      if (code.indexOf('define(function()') > -1) {
+	        // AMD
+	        moduleWrapper = code+'\nfunction define(cb){ window.___modules["'+url+'"] = cb(); };';
+	      } else {
+	        // CommonJS
+	        moduleWrapper = 'window.___modules["'+url+'"] = (function(){ var exports = {}, module = {exports:exports};'+code+'\nreturn module.exports\n})()';
+	      }
+
+	      var script = document.createElement('script');
+	      try {
+	        script.appendChild(document.createTextNode(moduleWrapper));
+	        document.body.appendChild(script);
+	      } catch (e) {
+	        script.text = moduleWrapper;
+	        document.body.appendChild(script);
+	      }
+	      return window.___modules[url]
+	    })
+
+	  }
+
+	}
+
+	// dependencies
+
+	var TARGA_PARSER_LIB = 'https://cdn.rawgit.com/archilogic-com/roBrowser/e4b5b53a/src/Loaders/Targa.js';
+
+	// main
+
+	function getImageFromFile (file, options) {
+
+	  // API
+	  options = options || {};
+	  var format = options.format;
+
+	  // FIXME get image from blob based on format (to also support DDS, PDF, DXF...)
+	  // at the moment we assume that blob is JPG or PNG
+
+	  var fileName = file.name;
+	  var type = fileName ? fileName.split('.').pop().toLowerCase() : 'jpg';
+
+	  if (type === 'jpg' || type === 'jpeg' || type === 'jpe' || type === 'png') {
+	    return getImageFromJpgOrPngFile(file)
+
+	  } else if (type === 'tga') {
+	    return getImageFromTga(file)
+
+	  } else {
+	    return bluebird_1.reject('Image of type '+type+' not supported')
+
+	  }
+
+	}
+
+	// methods
+
+	function getImageFromJpgOrPngFile (file) {
+	  var filename = file.name;
+	  return new bluebird_1(function(resolve, reject){
+
+	    var image = new Image();
+	    var urlCreator = window.URL || window.webkitURL;
+	    var imageUrl = urlCreator.createObjectURL(file);
+
+	    // event handlers
+	    image.onload = function () {
+	      urlCreator.revokeObjectURL(imageUrl);
+	      resolve(image);
+	    };
+	    image.onerror = function (error) {
+	      urlCreator.revokeObjectURL(imageUrl);
+	      console.error('Error converting image: ' + filename, error);
+	      reject('Error converting image: ' + filename);
+	    };
+
+	    // initiate loading process
+	    image.src = imageUrl;
+
+	  })
+	}
+
+	function getImageFromTga (file) {
+	  return fetchModule(TARGA_PARSER_LIB).then(function(Targa){
+	    return readFile(file, 'arrayBuffer').then(function(buffer){
+	      return new bluebird_1(function(resolve, reject){
+
+	        var
+	          targa = new Targa(),
+	          image = new Image();
+
+	        // add event handlers to image
+	        image.onload = function () {
+	          resolve(image);
+	        };
+	        image.onerror = function (error) {
+	          console.error('Error converting image: ' + file.name, error);
+	          reject('Error converting image: ' + file.name);
+	        };
+
+	        // buffer -> targa
+	        targa.load(new Uint8Array(buffer));
+	        // targa -> image
+	        image.src = targa.getDataURL();
+
+	      })
+	    })
+	  })
+	}
+
+	// main
+
+	function getTextureSet (input) {
+
+	  // internals
+	  var result = {
+	    loRes: null,
+	    source: null,
+	    dds: null
+	  };
+
+	  // normalize input
+	  return getSourceCanvasFromInput(input).then(function (sourceCanvas) {
+
+	    // TODO: readd back hash based optimizations (should happen on server)
+
+	    return bluebird_1.all([
+	      // generate loRes texture localy and upload it
+	      getLoResCanvas(sourceCanvas).then(getBlobFromCanvas).then(putToStorage).then(function (previewStorageId) {
+	        // loRes texture uploaded and ready for use
+	        result.loRes = previewStorageId;
+	      }),
+	      // upload source texture...
+	      getBlobFromCanvas(sourceCanvas).then(putToStorage).then(function (sourceStorageId) {
+	        // ... to have it ready for server side processing
+	        result.source = sourceStorageId;
+	        // ... like DDS conversion (or baking)
+	        return requestDdsConversion(sourceStorageId).then(function (processingId) {
+	          // we know the future DDS storageId but will not wait for conversion being done
+	          // TODO: future DDS file storageId should be fetched from status file using processingId (same as baking)
+	          result.dds = sourceStorageId.replace('.jpg', '.hi-res.gz.dds');
+	        })
+	      })
+	    ])
+
+	  }).then(function () {
+
+	    return result
+
+	  })
+
+	}
+
+	// private methods
+
+	function getSourceCanvasFromInput (input) {
+	  // input can be url, img, canvas or file
+	  return bluebird_1.resolve().then(function () {
+	    if (typeof input === 'string') {
+	      // infoCallback('Loading image '+file.name)
+	      return fetchImage(input)
+	    } else if (input instanceof Blob) {
+	      // infoCallback('Reading image '+file.name)
+	      return getImageFromFile(input)
+	    } else {
+	      return input
+	    }
+	  }).then(function (canvas) {
+	    // infoCallback(file.name + ' - Generating source texture file')
+	    // return canvas
+	    return scaleDownImage(canvas, {
+	      powerOfTwo: false,
+	      maxWidth: 2048,
+	      maxHeight: 2048
+	    })
+	  })
+	}
+
+	function getLoResCanvas (sourceCanvas) {
+	  //infoCallback(file.name + ' - Generating lo-res texture file')
+	  return scaleDownImage(sourceCanvas, {
+	    powerOfTwo: true,
+	    maxWidth: 256,
+	    maxHeight: 256
+	  })
+	}
+
+	function requestDdsConversion (sourceStorageId) {
+	  sourceStorageId = sourceStorageId.substring(1);
+	  return callService('Processing.task.enqueue', {
+	    method: 'convertImage',
+	    params: {
+	      inputFileKey: sourceStorageId,
+	      options: {
+	        outputFormat: 'dds',
+	        outputDirectory: path.parse(sourceStorageId).dir
+	      }
+	    }
+	  })
+	}
+
+	// main
+
+	var getData3dFromThreeJs = checkDependencies({
+	  three: true,
+	  aframe: false
+	}, function () {
+
+	  return function getData3d(object3d) {
+
+	    // API
+	    var sourceObject3d = object3d;
+
+	    // returns data3d when a minimal texture is ready:
+	    // - source textures for server side processing
+	    // - loRes textures for rendering
+	    var texturePromises = [];
+
+	    // internals
+	    var data3d = { meshes: {}, materials: {} };(function traverseThreeSceneGraph (threeObject3D) {
+
+	      threeObject3D.updateMatrixWorld();
+
+	      if (threeObject3D.geometry) {
+
+	        var threeGeometry = threeObject3D.geometry;
+
+	        // ensure buffer geometry
+	        if (threeGeometry.type.indexOf('BufferGeometry') === -1) {
+	          threeGeometry = new THREE.BufferGeometry().fromGeometry(threeGeometry);
+	        }
+
+	        if (threeGeometry.index) {
+	          if (threeGeometry.attributes.colors) {
+	            translateIndexedBufferGeometryWithColor(data3d, threeObject3D, texturePromises);
+	          } else {
+	            translateIndexedBufferGeometry(data3d, threeObject3D, texturePromises);
+	          }
+	        } else {
+	          translateNonIndexedBufferGeometry(data3d, threeObject3D, texturePromises);
+	        }
+
+	      }
+
+	      // parse children
+	      threeObject3D.children.forEach(function(child){
+	        traverseThreeSceneGraph(child);
+	      });
+
+	    })(sourceObject3d);
+
+	    return bluebird_1.all([
+	      consolidate(data3d),
+	      bluebird_1.all(texturePromises)
+	    ]).then(function(results){
+	      // return data3d
+	      return results[0]
+	    })
+
+	  }
+	});
+
+	// helpers
+
+	function translateSceneGraph (data3dMesh, threeObject3D) {
+	  var p = threeObject3D.getWorldPosition();
+	  var r = threeObject3D.getWorldRotation();
+	  var s = threeObject3D.getWorldScale();
+	  data3dMesh.position = [p.x, p.y, p.z];
+	  data3dMesh.rotRad = [r.x, r.y, r.z];
+	  data3dMesh.scale = [s.x, s.y, s.z];
+	}
+
+
+	function translateNonIndexedBufferGeometry (data3d, threeObject3D, texturePromises) {
+
+	  // mesh
+	  var threeGeometry = threeObject3D.geometry;
+	  // create data3d mesh
+	  var data3dMesh = data3d.meshes[threeObject3D.uuid] = {};
+	  // positions
+	  data3dMesh.positions = threeGeometry.attributes.position.array;
+	  // normals
+	  if (threeGeometry.attributes.normal) data3dMesh.normals = threeGeometry.attributes.normal.array;
+	  // uvs
+	  if (threeGeometry.attributes.uv) data3dMesh.uvs = threeGeometry.attributes.uv.array;
+
+	  // material
+	  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, texturePromises);
+
+	  // scene graph
+	  translateSceneGraph(data3dMesh, threeObject3D);
+
+	}
+
+	function translateIndexedBufferGeometry (data3d, threeObject3D, texturePromises) {
+
+	  var threeGeometry = threeObject3D.geometry;
+	  // create data3d mesh
+	  var data3dMesh = data3d.meshes[threeObject3D.uuid] = {};
+
+	  var index = threeGeometry.index.array;
+	  var i = 0, l = threeGeometry.index.array.length;
+
+	  // translate positions
+	  var pIn = threeGeometry.attributes.position.array;
+	  var pOut = new Float32Array(l * 3);
+	  for (i = 0; i < l; i++) {
+	    pOut[i * 3] = pIn[index[i] * 3];
+	    pOut[i * 3 + 1] = pIn[index[i] * 3 + 1];
+	    pOut[i * 3 + 2] = pIn[index[i] * 3 + 2];
+	  }
+	  data3dMesh.positions = pOut;
+
+	  // translate normals
+	  if (threeGeometry.attributes.normal) {
+	    var nIn = threeGeometry.attributes.normal.array;
+	    var nOut = new Float32Array(l * 3);
+	    for (i = 0; i < l; i++) {
+	      nOut[i * 3] = nIn[index[i] * 3];
+	      nOut[i * 3 + 1] = nIn[index[i] * 3 + 1];
+	      nOut[i * 3 + 2] = nIn[index[i] * 3 + 2];
+	    }
+	    data3dMesh.normals = nOut;
+	  }
+
+	  // translate uvs
+	  if (threeGeometry.attributes.uv) {
+	    var uvIn = threeGeometry.attributes.uv.array;
+	    var uvOut = new Float32Array(l * 2);
+	    for (i = 0; i < l; i++) {
+	      nOut[i * 2] = nIn[index[i] * 2];
+	      nOut[i * 2 + 1] = nIn[index[i] * 2 + 1];
+	    }
+	    data3dMesh.normals = nOut;
+	  }
+
+	  // material
+	  var threeMaterial = threeObject3D.material;
+	  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, texturePromises);
+
+	  // scene graph
+	  translateSceneGraph(data3dMesh, threeObject3D);
+
+	}
+
+	function translateIndexedBufferGeometryWithColor (data3d, threeObject3D, texturePromises) {
+
+	  console.log(threeObject3D);
+	  // TODO: add support for vertex colors:
+	  // 1. create material indices
+	  // 2. create separate data3d meshes
+	  // 3. create separate data3d materials
+	  // 4. replace this placeholder function:
+	  translateIndexedBufferGeometry (data3d, threeObject3D, texturePromises);
+
+	}
+
+	function translateMaterial (data3d, data3dMesh, threeObject3D, threeMaterial, texturePromises) {
+
+	  // create data3d material
+	  var data3dMaterial = data3d.materials[threeMaterial.uuid] = {};
+	  // link data3d mesh with material
+	  data3dMesh.material = threeMaterial.uuid;
+
+	  // material attributes
+
+	  translateMaterialNumericValues([
+	    // three attribs -> data3d attribs
+	    ['opacity', 'opacity'],
+	    ['specularCoef', 'shininess'],
+	  ], threeMaterial, data3dMaterial);
+
+	  translateMaterialColors([
+	    // three attribs -> data3d attribs
+	    ['color', 'colorDiffuse'],
+	    ['specular', 'colorSpecular'],
+	    ['emissive', 'colorEmissive']
+	  ], threeMaterial, data3dMaterial);
+
+	  translateMaterialTextures([
+	    // three attribs -> data3d attribs
+	    ['map', 'mapDiffuse'],
+	    ['specularMap', 'mapSpecular'],
+	    ['normalMap', 'mapNormal'],
+	    ['alphaMap', 'mapAlpha']
+	  ], threeMaterial, data3dMaterial, texturePromises);
+
+	}
+
+	function translateMaterialNumericValues(attribMap, threeMaterial, data3dMaterial) {
+
+	  attribMap.forEach(function(attribs){
+	    var threeName = attribs[0], data3dName = attribs[1];
+	    // translate material numeric values from three.js to data3d
+	    if (threeMaterial[threeName] !== undefined) data3dMaterial[data3dName] = threeMaterial[threeName];
+	  });
+
+	}
+
+	function translateMaterialColors(attribMap, threeMaterial, data3dMaterial) {
+
+	  attribMap.forEach(function(attribs){
+	    var threeName = attribs[0], data3dName = attribs[1];
+	    // translate material colors from three.js to data3d
+	    if (threeMaterial[threeName]) data3dMaterial[data3dName] = [
+	      threeMaterial[threeName].r, threeMaterial[threeName].g, threeMaterial[threeName].b
+	    ];
+	  });
+
+	}
+
+	function translateMaterialTextures(attribMap, threeMaterial, data3dMaterial, texturePromises) {
+
+	  attribMap.forEach(function(attribs){
+	    // translate texture from three.js to data3d
+	    var threeAttribName = attribs[0];
+	    var data3dAttribName = attribs[1];
+
+	    // if not compressed get textures from threejs material:
+	    var isNonCompressedImage = threeMaterial[threeAttribName] && threeMaterial[threeAttribName].image && !threeMaterial[threeAttribName].isCompressedTexture;
+	    if (isNonCompressedImage) {
+
+	      var image = threeMaterial[threeName].image;
+	      texturePromises.push(
+	        getTextureSet(image).then(function (result) {
+	          // add texture keys to data3d
+	          data3dMaterial[data3dName + 'Preview'] = result.loRes;
+	          data3dMaterial[data3dName + 'Source'] = result.source;
+	          data3dMaterial[data3dName] = result.dds;
+	        })
+	      );
+
+	    } else {
+	      // fallback to data from data3dMaterial (if available)
+	      var hasOriginalData3dMaterial = threeMaterial.userData && threeMaterial.userData.data3dMaterial && threeMaterial.userData.data3dMaterial[data3dAttribName];
+	      if (hasOriginalData3dMaterial) {
+	        var originalData3dMaterial = threeMaterial.userData.data3dMaterial;
+	        data3dMaterial[data3dAttribName+'Preview'] = originalData3dMaterial[data3dAttribName+'Preview'];
+	        data3dMaterial[data3dAttribName+'Source'] = originalData3dMaterial[data3dAttribName+'Source'];
+	        data3dMaterial[data3dAttribName] = originalData3dMaterial[data3dAttribName];
+	      }
+	    }
+
+	  });
+
+	}
+
+	// API
+
+	var gzip = {
+	  inflate: inflate,
+	  inflateFile: inflateFile,
+	  deflate: deflate,
+	  deflateFile: deflateFile
+	};
+
+	// internals
+
+	var PAKO_LIB = {
+	  deflate: {
+	    url: 'https://cdnjs.cloudflare.com/ajax/libs/pako/1.0.5/pako_deflate.min.js',
+	    module: 'pako/deflate'
+	  },
+	  inflate: {
+	    url: 'https://cdnjs.cloudflare.com/ajax/libs/pako/1.0.5/pako_inflate.min.js',
+	    module: 'pako/inflate'
+	  }
+	};
+
+	// methods
+
+	function inflate (input) {
+	  return loadInflateLib().then(function (pakoInflate) {
+	    return pakoInflate.ungzip(input)
+	  })
+	}
+
+	function inflateFile (gzippedFile) {
+	  return loadInflateLib().then(function (pakoInflate) {
+	    return readFile(gzippedFile, 'arrayBuffer')
+	      .then(pakoInflate.ungzip)
+	      .then(function(arrayBuffer){
+	        var file = new Blob([ arrayBuffer ], { type: getMimeTypeFromFileName(gzippedFile.name) });
+	        // remove '.gz.' tag from filename
+	        if (gzippedFile.name) {
+	          file.name = gzippedFile.name.replace('.gz.','.');
+	        }
+	        return file
+	      })
+	  })
+	}
+
+	function deflate (input) {
+	  return loadDeflateLib().then(function (pakoDeflate) {
+	    return pakoDeflate.gzip(input)
+	  })
+	}
+
+	function deflateFile (file) {
+	  return loadDeflateLib().then(function (pakoDeflate) {
+	    return readFile(file, 'arrayBuffer')
+	      .then(pakoDeflate.gzip)
+	      .then(function(arrayBuffer){
+	        var gzippedFile = new Blob([ arrayBuffer ], { type: 'application/x-gzip' });
+	        // add '.gz.' tag to filename
+	        if (file.name) {
+	          gzippedFile.name = file.name.replace('.','.gz.');
+	        }
+	        return gzippedFile
+	      })
+	  })
+	}
+
+	// helpers
+
+	function loadDeflateLib () {
+	  return runtime.isBrowser ? fetchModule(PAKO_LIB.deflate.url) : Promise.resolve(require(PAKO_LIB.deflate.module))
+	}
+
+	function loadInflateLib () {
+	  return runtime.isBrowser ? fetchModule(PAKO_LIB.inflate.url) : Promise.resolve(require(PAKO_LIB.inflate.module))
+	}
+
+	// config
+
+	var FILE_EXTENSION = '.data3d.buffer';
+	var HEADER_BYTE_LENGTH$1 = 16;
+	var MAGIC_NUMBER$1 = 0x41443344; // AD3D encoded as ASCII characters in hex
+	var VERSION$1 = 1;
+
+	// main
+
+	function encodeBinary (data3d, options) {
+
+	  // API
+	  options = options || {};
+	  var createFile = options.createFile !== undefined ? options.createFile : true;
+	  var gzipFile = options.gzipFile !== undefined ? options.gzipFile : true;
+	  var filename = options.filename || getDefaultFilename() + FILE_EXTENSION;
+	  
+	  // internals
+	  var result = {
+	    buffer: null,
+	    file: null,
+	    warnings: []
+	  };
+	  var resultingPromise;
+	  
+	  // add correct ending
+	  if (filename.substring( filename.length - FILE_EXTENSION.length ) !== FILE_EXTENSION) filename += FILE_EXTENSION;
+	  
+	  // decouple heavy arrays from data3d and store them in dataArrays
+	  
+	  var payloadArrays = [];
+	  var payloadLength = 0;
+	  var meshes, meshKeys, i, l, array, mesh;
+	  var arrayNames = ['positions', 'normals', 'uvs', 'uvsLightmap']; // heavy arrays
+	  var _data3d = clone(data3d);
+	  traverseData3d$1( _data3d, function(data3d){
+	    meshes = data3d.meshes;
+	    meshKeys = data3d.meshKeys || Object.keys(meshes);
+	    for (i=0, l=meshKeys.length; i<l; i++) {
+	      mesh = meshes[ meshKeys[i] ];
+	      arrayNames.forEach(function(name){
+	        array = mesh[name];
+	        if (array) {
+	          if (array.length) {
+	            // remember offset and length
+	            mesh[name + 'Offset'] = payloadLength;
+	            mesh[name + 'Length'] = array.length;
+	            // increase overall offset
+	            payloadLength += array.length;
+	            payloadArrays[payloadArrays.length] = array;
+	          }
+	          // delete heavy array in structure
+	          delete mesh[name];
+	        }
+	      });
+	    }
+	  });
+	  var payloadByteLength = payloadLength * 4;
+	  
+	  // create structure
+	  
+	  var structure = {
+	    version: VERSION$1,
+	    data3d: _data3d
+	  };
+	  
+	  // serialize structure
+	  
+	  var structureString = JSON.stringify( structure, function(key, value) {
+	    if (value instanceof  Float32Array) {
+	      // make typed array look like normal array json (otherwise the will look like objects)
+	      return Array.apply([], value)
+	    } else {
+	      return value
+	    }
+	  });
+	  var structureByteLength = structureString.length * 2;
+	  // byte length has to be a multiple of four! adding one string if it is not
+	  // http://stackoverflow.com/questions/7372124/why-is-creating-a-float32array-with-an-offset-that-isnt-a-multiple-of-the-eleme
+	  if (!isMultipleOf(structureByteLength, 4)) {
+	    structureString += ' ';
+	    structureByteLength += 2;
+	  }
+	  
+	  // create file buffer
+	  
+	  var fileBuffer = new ArrayBuffer( HEADER_BYTE_LENGTH$1 + structureByteLength + payloadByteLength );
+	  
+	  // write structure data into file buffer
+	  
+	  var structureArray = new Uint16Array( fileBuffer, HEADER_BYTE_LENGTH$1, structureByteLength / 2 );
+	  for (i = 0, l = structureString.length; i < l; i++) {
+	    structureArray[i] = structureString.charCodeAt(i);
+	  }
+	  
+	  // write payload into file buffer
+	  
+	  var payloadByteOffset = HEADER_BYTE_LENGTH$1 + structureByteLength;
+	  var payloadArray = new Float32Array( fileBuffer, payloadByteOffset, payloadByteLength / 4 );
+	  var payloadPointer = 0;
+	  for (i = 0, l = payloadArrays.length; i < l; i++) {
+	    array = payloadArrays[i];
+	    payloadArray.set( array, payloadPointer );
+	    payloadPointer += array.length;
+	  }
+	  
+	  // write file header
+	  
+	  var fileHeaderArray = new Int32Array( fileBuffer, 0, HEADER_BYTE_LENGTH$1 / 4 );
+	  // magic number
+	  fileHeaderArray[0] = MAGIC_NUMBER$1;
+	  // version number
+	  fileHeaderArray[1] = VERSION$1;
+	  // structure length
+	  fileHeaderArray[2] = structureByteLength;
+	  // payload length
+	  fileHeaderArray[3] = payloadByteLength;
+	  
+	  result.buffer = fileBuffer;
+	  
+	  if (createFile && !gzipFile) {
+	  
+	    var file = new Blob([ new DataView(fileBuffer) ], { type: 'application/octet-stream' });
+	    file.name = filename;
+	    result.file = file;
+	  
+	  } else if (createFile && gzipFile) {
+	  
+	    resultingPromise = gzip.deflate(fileBuffer)
+	      .then(function (zippedArray) {
+	        var file = new Blob([ zippedArray ], { type: 'application/x-gzip' });
+	        file.name = filename.replace('.', '.gz.');
+	        result.file = file;
+	        return result
+	      });
+	  
+	  }
+	  
+	  // make sure that output is a promise
+	  if (!resultingPromise) {
+	    resultingPromise = bluebird_1.resolve(result);
+	  }
+	  
+	  // return result
+	  return resultingPromise.then(function(){
+	    return createFile ? result.file : result.buffer
+	  })
+
+	}
+
+	// helpers
+
+	function isMultipleOf (value, multiple) {
+	  return Math.ceil(value / multiple) === value / multiple
+	}
+
+	function poll(callback, options) {
+
+	  // API
+	  options = options || {};
+	  var timeout = options.timeout || 10 * 60 * 1000;
+	  var minInterval = options.minInterval || 1000;
+	  var maxInterval = options.maxInterval || 5000;
+	  var intervalIncreaseFactor = options.intervalIncreaseFactor || 1.05;
+
+	  return new bluebird_1(function( fulfill, reject, onCancel ){
+	    var flags = { isCancelled: false };
+	    // cancellation is supported in bluebird version > 3.x
+	    // enable cancellation in Promise.config as it is off by default
+	    if (onCancel) onCancel(function(){ flags.isCancelled = true; });
+	    // start recursive poll
+	    recursivePoll(callback, fulfill, reject, minInterval, maxInterval, intervalIncreaseFactor, 0, timeout, flags);
+	  })
+
+	}
+
+	// helper
+
+	function recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags) {
+
+	  // return if poll has been cancelled in meanwhile
+	  if (flags.isCancelled) return reject('Poll request has been cancelled')
+	  // increase interval
+	  if (interval < maxInterval) interval *= intervalIncreaseFactor;
+	  // check timeout
+	  if (timeElapsed > timeout) return reject('Poll request timed out')
+	  // count time
+	  timeElapsed += interval;
+	  // call
+	  callback(fulfill, reject, function next() {
+	    window.setTimeout(function(){
+	      recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags);
+	    }, interval);
+	  });
+
+	}
+
+	function addCacheBustToQuery (url) {
+	  var cacheBust = '___cacheBust='+Date.now();
+	  if (url.indexOf('?') > -1) {
+	    // url has query: append cache bust
+	    url = url.replace('?','?'+cacheBust+'&');
+	  } else if (url.indexOf('#') > -1) {
+	    // url has no query but hash: prepend cache bust to hash tag
+	    url = url.replace('#', '?'+cacheBust+'#');
+	  } else {
+	    // no query and no hash tag: add cache bust
+	    url = url + '?' + cacheBust;
+	  }
+	  return url
+	}
+
+	function checkIfFileExists (url) {
+	  return fetch$1(
+	    addCacheBustToQuery(url),
+	    {
+	      method: 'HEAD',
+	      cache: 'reload'
+	    }
+	  ).then(function onSuccess(){
+	    return true
+	  }, function onReject(){
+	    return false
+	  })
+	}
+
+	function getTextureKeys (data3d, options) {
+
+	  // API
+	  var options = options || {};
+	  var filter = options.filter;
+
+	  // internals
+	  var cache = {};
+
+	  // internals
+	  traverseData3d$1.materials(data3d, function(material) {
+
+	    var filteredResult, attr, type, format, value;
+	    for (var i=0, l=ATTRIBUTES.length; i<l; i++) {
+
+	      attr = ATTRIBUTES[i];
+	      value = material[attr];
+
+	      // apply filter function if specified in options
+	      if (filter) {
+	        // provide info on type and format of texture to the filter function
+	        type = ATTRIBUTE_TO_TYPE[attr];
+	        format = ATTRIBUTE_TO_FORMAT[attr];
+	        value = filter(value, type, format, material, data3d);
+	      }
+
+	      if (value) cache[value] = true;
+
+	    }
+
+	  });
+
+	  return Object.keys(cache)
+
+	}
+
+	// constants
+
+	var ATTRIBUTES = [
+	  'mapDiffuse',
+	  'mapDiffusePreview',
+	  'mapDiffuseSource',
+	  // specular
+	  'mapSpecular',
+	  'mapSpecularPreview',
+	  'mapSpecularPreview',
+	  // normal
+	  'mapNormal',
+	  'mapNormalPreview',
+	  'mapNormalPreview',
+	  // alpha
+	  'mapAlpha',
+	  'mapAlphaPreview',
+	  'mapAlphaPreview',
+	];
+
+	var ATTRIBUTE_TO_TYPE = {
+	  // diffuse
+	  mapDiffuse: 'diffuse',
+	  mapDiffusePreview: 'diffuse',
+	  mapDiffuseSource: 'diffuse',
+	  // specular
+	  mapSpecular: 'specular',
+	  mapSpecularPreview: 'specular',
+	  mapSpecularPreview: 'specular',
+	  // normal
+	  mapNormal: 'normal',
+	  mapNormalPreview: 'normal',
+	  mapNormalPreview: 'normal',
+	  // alpha
+	  mapAlpha: 'alpha',
+	  mapAlphaPreview: 'alpha',
+	  mapAlphaPreview: 'alpha',
+	};
+
+	var ATTRIBUTE_TO_FORMAT = {
+	  // loRes
+	  mapDiffusePreview: 'loRes',
+	  mapSpecularPreview: 'loRes',
+	  mapNormalPreview: 'loRes',
+	  mapAlphaPreview: 'loRes',
+	  // source
+	  mapDiffuseSource: 'source',
+	  mapSpecularSource: 'source',
+	  mapNormalSource: 'source',
+	  mapAlphaSource: 'source',
+	  // dds
+	  mapDiffuse: 'dds',
+	  mapSpecular: 'dds',
+	  mapNormal: 'dds',
+	  mapAlpha: 'dds',
+	};
+
+	/*
+	input: data3d or storageId to a data3d file
+	returns promise
+	 */
+
+	function whenHiResTexturesReady (input) {
+
+	  // resolves when hi-res textures are available
+	  // - DXT (DDS) for hires on desktop
+	  // - PVRTC for iOS (not yet implemented)
+	  // - ETC1 for Android (not yet implemented)
+
+	  return normalizeInput$2(input).then(function (data3d) {
+
+	    var values = getTextureKeys(data3d, {
+	      filter: function (value, type, format, material, data3d) {
+	        return format === 'dds' ? value : null
+	      }
+	    });
+
+	    return Promise.all(values.map(pollTexture))
+
+	  })
+
+	}
+
+	// helpers
+
+	function normalizeInput$2(input) {
+	  var inputType = typeof input;
+	  if (inputType === 'string') {
+	    // load data3d from URL
+	    return loadData3d(input)
+	  } else if (input instanceof Blob) {
+	    // decode binary data3d
+	    return decodeBinary(input)
+	  } else if (inputType === 'object') {
+	    // data3d object
+	    return Promise.resolve(input)
+	  } else {
+	    return Promise.reject('Unknown param type')
+	  }
+	}
+
+	// poll for DDS storageIds
+
+	function pollTexture(val) {
+
+	  // normalize input to URL
+	  var url = getUrlFromStorageId(val);
+
+	  return poll(function (resolve, reject, next) {
+
+	    checkIfFileExists(url).then(function(exists){
+	      exists ? resolve() : next();
+	    });
+
+	  })
+
+	}
+
+	// main
+
+	/*
+	 input: dom selector referencing aframe element, file, array of files, three.js Object3D
+	 returns storageId
+	 */
+	function publish(input) {
+
+	  return normalizeInput$1(input)
+	    .then(encodeBinary)
+	    .then(putToStorage)
+
+	}
+
+	// public methods
+
+	publish.whenHiResTexturesReady = whenHiResTexturesReady;
+
+	// private methods
+
+	/*
+	 input: dom selector referencing aframe element, file, array of files, three.js Object3D
+	 returns data3d
+	 */
+	function normalizeInput$1(input) {
+
+	  if (typeof input === 'string') {
+
+	    if (input[0] === '#' || input === 'a-scene') {
+	      // selector
+	      return getData3dFromThreeJs(document.querySelector(input).object3D)
+
+	    } else {
+	      // url
+	      return fetch(input).then(function(response){
+	        return response.blob()
+	      }).then(getData3dFromFiles)
+	    }
+
+	  } else if (Array.isArray(input) || input instanceof Blob) {
+	    // files
+	    return getData3dFromFiles(input)
+
+	  } else if (typeof input === 'object' && input.isObject3D) {
+	    // three.js object
+	    return getData3dFromThreeJs(input)
+
+	  } else {
+	    // not supported
+	    throw new Error('Unknown input param')
+	  }
+	}
+
+	/*
+	input: file or array of files
+	returns data3d
+	 */
+	function getData3dFromFiles(files) {
+
+	  // TODO: implement
+	  if (!Arrray.isArray(files)) files = [files];
+	  return Promise.reject('Importing files is not supported yet')
+
+	}
 
 	function convertFloorPlanToBasic3dModel (args) {
 
@@ -20105,6 +24665,69 @@
 	  convertToBasic3dModel: convertFloorPlanToBasic3dModel,
 	  getConversionStatus: getConversionStatus,
 	  recognize: recognize
+	};
+
+	// main
+
+	function getBakeResult (processingId) {
+
+	  return poll(function(resolve, reject, next){
+
+	    var url = 'https://storage-nocdn.3d.io/' + processingId;
+
+	    fetch$1(url).then(function(response) {
+	      return response.json()
+	    }).then(function(message){
+	      var status = message.params.status;
+
+	      if (status === 'ERROR') {
+	        reject(message.params.data);
+	      } else if (status === 'SUCCESS') {
+	        resolve(message.params.data);
+	      } else {
+	        next();
+	      }
+
+	    });
+	  })
+
+	}
+
+	// main
+
+	function bake (storageId, options) {
+
+	  // API
+	  options = options || {};
+	  var sunDirection = sunDirection || [0.7487416646324341, -0.47789104947352223, -0.45935396425474223];
+
+	  // internals
+	  var assetStorageIds = [];
+	  // TODO: reimplement caching mechanism on server side
+	  var cacheKey = null;
+
+	  console.log('Baking file: https://spaces.archilogic.com/3d/?mode=sdk&file='+storageId);
+
+	  return callService('Processing.task.enqueue', {
+	    method: 'bakePreview',
+	    params: {
+	      inputFileKey: storageId,
+	      options: {
+	        inputAssetKeys: assetStorageIds,
+	        sunDirection: sunDirection,
+	        cacheKey: cacheKey
+	      }
+	    }
+	  })
+
+	}
+
+	// public methods
+
+	bake.whenDone = getBakeResult;
+
+	var light = {
+	  bake: bake
 	};
 
 	var css = ".io3d-message-list {\n  z-index: 100001;\n  position: fixed;\n  top: 0;\n  left: 50%;\n  margin-left: -200px;\n  width: 400px;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: normal;\n  letter-spacing: 1px;\n  line-height: 1.3;\n  text-align: center;\n}\n.io3d-message-list .message {\n  display: block;\n  opacity: 0;\n}\n.io3d-message-list .message .spacer {\n  display: block;\n  height: 10px;\n}\n.io3d-message-list .message .text {\n  display: inline-block;\n  padding: 10px 12px 10px 12px;\n  border-radius: 3px;\n  color: white;\n  font-size: 18px;\n}\n.io3d-message-list .message .text a {\n  color: white;\n  text-decoration: none;\n  padding-bottom: 0px;\n  border-bottom: 2px solid white;\n}\n.io3d-message-list .message .neutral {\n  background: rgba(0, 0, 0, 0.9);\n}\n.io3d-message-list .message .success {\n  background: linear-gradient(50deg, rgba(35, 165, 9, 0.93), rgba(102, 194, 10, 0.93));\n}\n.io3d-message-list .message .warning {\n  background: linear-gradient(50deg, rgba(165, 113, 9, 0.93), rgba(194, 169, 10, 0.93));\n}\n.io3d-message-list .message .error {\n  background: linear-gradient(50deg, rgba(165, 9, 22, 0.93), rgba(194, 56, 10, 0.93));\n}\n.io3d-overlay {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  z-index: 100000;\n  position: fixed;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  height: 100%;\n  width: 100%;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: 200;\n  font-size: 18px;\n  letter-spacing: 1px;\n  color: white;\n  text-align: center;\n  line-height: 1.3;\n  background: linear-gradient(70deg, rgba(20, 17, 34, 0.96), rgba(51, 68, 77, 0.96));\n}\n@-webkit-keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@-webkit-keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n@keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n.io3d-overlay .centered-content {\n  display: inline-block;\n  position: relative;\n  top: 50%;\n  text-align: left;\n}\n.io3d-overlay .centered-content .button {\n  margin-right: 4px;\n  margin-top: 1.5em;\n}\n.io3d-overlay .bottom-container {\n  width: 100%;\n  display: block;\n  position: absolute;\n  bottom: 1em;\n}\n.io3d-overlay .bottom-container .bottom-content {\n  display: inline-block;\n  position: relative;\n  margin-left: auto;\n  margin-right: auto;\n  text-align: left;\n  color: rgba(255, 255, 255, 0.35);\n}\n.io3d-overlay .bottom-container .bottom-content .clickable {\n  cursor: pointer;\n  -webkit-transition: color 500ms;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-container .bottom-content .clickable:hover {\n  color: white;\n}\n.io3d-overlay .bottom-container .bottom-content a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  -webkit-transition: color 500ms;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-container .bottom-content a:hover {\n  color: white;\n}\n@-webkit-keyframes content-slide-in {\n  0% {\n    -webkit-transform: translateY(-40%);\n  }\n  100% {\n    -webkit-transform: translateY(-50%);\n  }\n}\n@keyframes content-slide-in {\n  0% {\n    transform: translateY(-40%);\n  }\n  100% {\n    transform: translateY(-50%);\n  }\n}\n@-webkit-keyframes content-slide-out {\n  0% {\n    -webkit-transform: translateY(-50%);\n  }\n  100% {\n    -webkit-transform: translateY(-40%);\n  }\n}\n@keyframes content-slide-out {\n  0% {\n    transform: translateY(-50%);\n  }\n  100% {\n    transform: translateY(-40%);\n  }\n}\n.io3d-overlay h1 {\n  margin: 0 0 0.5em 0;\n  font-size: 42px;\n  font-weight: 200;\n  color: white;\n}\n.io3d-overlay p {\n  margin: 1em 0 0 0;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint {\n  position: relative;\n  margin: 1em 0 0 0;\n  color: rgba(255, 255, 255, 0.35);\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  -webkit-transition: color 600ms;\n  transition: color 600ms;\n}\n.io3d-overlay .hint a:hover {\n  color: white;\n}\n.io3d-overlay .button {\n  cursor: pointer;\n  display: inline-block;\n  color: rgba(255, 255, 255, 0.35);\n  width: 40px;\n  height: 40px;\n  line-height: 32px;\n  border: 2px solid rgba(255, 255, 255, 0.35);\n  border-radius: 50%;\n  text-align: center;\n  font-size: 18px;\n  font-weight: 200;\n  -webkit-transition: opacity 300ms, color 300ms;\n  transition: opacity 300ms, color 300ms;\n}\n.io3d-overlay .button:hover {\n  background-color: rgba(255, 255, 255, 0.1);\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .button-highlighted {\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .close-button {\n  display: block;\n  position: absolute;\n  top: 20px;\n  right: 20px;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay input,\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay textarea {\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-size: 24px;\n  font-weight: normal;\n  letter-spacing: 1px;\n  outline: none;\n  margin: 0 0 0 0;\n  color: white;\n}\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay input:not([type='checkbox']):not([type='range']) {\n  padding: 0.2em 0 0.4em 0;\n  width: 100%;\n  line-height: 20px;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  border-radius: 0px;\n  border: 0px;\n  background: transparent;\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n  -webkit-transition: border-color 1s;\n  transition: border-color 1s;\n}\n.io3d-overlay select:focus,\n.io3d-overlay option:focus,\n.io3d-overlay input:not([type='checkbox']):not([type='range']):focus {\n  border-color: white;\n}\n.io3d-overlay textarea {\n  display: box;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  padding: 0.2em 0 0.4em 0;\n  min-width: 100%;\n  max-width: 100%;\n  line-height: 26px;\n  border: 0px;\n  background: rgba(255, 255, 255, 0.08);\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n}\n.io3d-overlay input[type='checkbox'] {\n  position: relative;\n  height: 20px;\n  vertical-align: bottom;\n  margin: 0;\n}\n.io3d-overlay .reveal-api-key-button {\n  cursor: pointer;\n  position: absolute;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 2px;\n  bottom: 0.7em;\n  padding: 0.1em 0.2em 0.2em 0.2em;\n  line-height: 20px;\n  -webkit-transition: color 600ms;\n  transition: color 600ms;\n}\n.io3d-overlay .reveal-api-key-button:hover {\n  color: white;\n}\n.io3d-overlay a {\n  color: white;\n  text-decoration: none;\n}\n.io3d-overlay .key-menu {\n  position: relative;\n  margin: 3em 0 0 0;\n}\n.io3d-overlay .key-menu .key-image {\n  width: 172px;\n  height: 127px;\n}\n.io3d-overlay .key-menu .key-button {\n  position: absolute;\n  left: 156px;\n  height: 36px;\n  line-height: 36px;\n  background: rgba(255, 255, 255, 0.1);\n  cursor: pointer;\n  padding: 0 14px 0 14px;\n  border-radius: 2px;\n  -webkit-transition: background 300ms linear;\n  transition: background 300ms linear;\n}\n.io3d-overlay .key-menu .key-button:hover {\n  background: rgba(255, 255, 255, 0.3);\n}\n.io3d-overlay .key-menu .go-to-publishable-api-key-ui {\n  top: 11px;\n}\n.io3d-overlay .key-menu .go-to-secret-api-key-ui {\n  bottom: 11px;\n}\n.io3d-overlay .regegenerate-secret-key-button {\n  cursor: pointer;\n}\n.io3d-overlay .publishable-api-keys .list {\n  max-height: 50vh;\n  overflow: auto;\n  padding: 0 15px 0 0;\n}\n.io3d-overlay .publishable-api-keys .list .key-item {\n  position: relative;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 3px;\n  margin-bottom: 12px;\n  padding: 4px 5px 3px 8px;\n}\n.io3d-overlay .publishable-api-keys .list .key {\n  font-weight: 200 !important;\n  border-bottom: 0 !important;\n  margin-bottom: 0 !important;\n  padding: 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .domains {\n  margin: 0 0 0 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .button {\n  position: absolute !important;\n  margin: 0 !important;\n  background-repeat: no-repeat;\n  background-position: center;\n  color: white;\n  opacity: 0.5;\n}\n.io3d-overlay .publishable-api-keys .list .button:hover {\n  opacity: 1;\n}\n.io3d-overlay .publishable-api-keys .list .delete-key-button {\n  right: 8px;\n  top: 9px;\n}\n.io3d-overlay .publishable-api-keys .list .edit-domains-button {\n  positions: absolute;\n  right: 56px;\n  top: 9px;\n  background-size: 75%;\n  padding: 5px;\n}\n.io3d-overlay .publishable-api-keys .generate-new-key-button {\n  margin: 1.5em 0 0 0;\n  display: inline-block;\n  cursor: pointer;\n}\n";
@@ -20661,47 +25284,6 @@
 	function preventBrowserDefaults (event) {
 	  event.stopPropagation();
 	  event.preventDefault();
-	}
-
-	function poll(callback, options) {
-
-	  // API
-	  options = options || {};
-	  var timeout = options.timeout || 10 * 60 * 1000;
-	  var minInterval = options.minInterval || 1000;
-	  var maxInterval = options.maxInterval || 5000;
-	  var intervalIncreaseFactor = options.intervalIncreaseFactor || 1.05;
-
-	  return new bluebird_1(function( fulfill, reject, onCancel ){
-	    var flags = { isCancelled: false };
-	    // cancellation is supported in bluebird version > 3.x
-	    // enable cancellation in Promise.config as it is off by default
-	    if (onCancel) onCancel(function(){ flags.isCancelled = true; });
-	    // start recursive poll
-	    recursivePoll(callback, fulfill, reject, minInterval, maxInterval, intervalIncreaseFactor, 0, timeout, flags);
-	  })
-
-	}
-
-	// helper
-
-	function recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags) {
-
-	  // return if poll has been cancelled in meanwhile
-	  if (flags.isCancelled) return reject('Poll request has been cancelled')
-	  // increase interval
-	  if (interval < maxInterval) interval *= intervalIncreaseFactor;
-	  // check timeout
-	  if (timeElapsed > timeout) return reject('Poll request timed out')
-	  // count time
-	  timeElapsed += interval;
-	  // call
-	  callback(fulfill, reject, function next() {
-	    window.setTimeout(function(){
-	      recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags);
-	    }, interval);
-	  });
-
 	}
 
 	// main
@@ -21987,38 +26569,402 @@
 	  prompt: createPromptUi
 	};
 
-	// function
+	/**
+	 http://www.myersdaily.org/joseph/javascript/md5-text.html
+	 author: Joseph's Myers
+	 http://stackoverflow.com/questions/1655769/fastest-md5-implementation-in-javascript
+	 **/
 
-	function wait(duration, passThroughValue) {
-	  return new bluebird_1(function (resolve, reject) {
-	    setTimeout(function(){
-	      resolve(passThroughValue);
-	    }, duration);
-	  })
+	function md5cycle(x, k) {
+	  var a = x[0], b = x[1], c = x[2], d = x[3];
+
+	  a = ff(a, b, c, d, k[0], 7, -680876936);
+	  d = ff(d, a, b, c, k[1], 12, -389564586);
+	  c = ff(c, d, a, b, k[2], 17,  606105819);
+	  b = ff(b, c, d, a, k[3], 22, -1044525330);
+	  a = ff(a, b, c, d, k[4], 7, -176418897);
+	  d = ff(d, a, b, c, k[5], 12,  1200080426);
+	  c = ff(c, d, a, b, k[6], 17, -1473231341);
+	  b = ff(b, c, d, a, k[7], 22, -45705983);
+	  a = ff(a, b, c, d, k[8], 7,  1770035416);
+	  d = ff(d, a, b, c, k[9], 12, -1958414417);
+	  c = ff(c, d, a, b, k[10], 17, -42063);
+	  b = ff(b, c, d, a, k[11], 22, -1990404162);
+	  a = ff(a, b, c, d, k[12], 7,  1804603682);
+	  d = ff(d, a, b, c, k[13], 12, -40341101);
+	  c = ff(c, d, a, b, k[14], 17, -1502002290);
+	  b = ff(b, c, d, a, k[15], 22,  1236535329);
+
+	  a = gg(a, b, c, d, k[1], 5, -165796510);
+	  d = gg(d, a, b, c, k[6], 9, -1069501632);
+	  c = gg(c, d, a, b, k[11], 14,  643717713);
+	  b = gg(b, c, d, a, k[0], 20, -373897302);
+	  a = gg(a, b, c, d, k[5], 5, -701558691);
+	  d = gg(d, a, b, c, k[10], 9,  38016083);
+	  c = gg(c, d, a, b, k[15], 14, -660478335);
+	  b = gg(b, c, d, a, k[4], 20, -405537848);
+	  a = gg(a, b, c, d, k[9], 5,  568446438);
+	  d = gg(d, a, b, c, k[14], 9, -1019803690);
+	  c = gg(c, d, a, b, k[3], 14, -187363961);
+	  b = gg(b, c, d, a, k[8], 20,  1163531501);
+	  a = gg(a, b, c, d, k[13], 5, -1444681467);
+	  d = gg(d, a, b, c, k[2], 9, -51403784);
+	  c = gg(c, d, a, b, k[7], 14,  1735328473);
+	  b = gg(b, c, d, a, k[12], 20, -1926607734);
+
+	  a = hh(a, b, c, d, k[5], 4, -378558);
+	  d = hh(d, a, b, c, k[8], 11, -2022574463);
+	  c = hh(c, d, a, b, k[11], 16,  1839030562);
+	  b = hh(b, c, d, a, k[14], 23, -35309556);
+	  a = hh(a, b, c, d, k[1], 4, -1530992060);
+	  d = hh(d, a, b, c, k[4], 11,  1272893353);
+	  c = hh(c, d, a, b, k[7], 16, -155497632);
+	  b = hh(b, c, d, a, k[10], 23, -1094730640);
+	  a = hh(a, b, c, d, k[13], 4,  681279174);
+	  d = hh(d, a, b, c, k[0], 11, -358537222);
+	  c = hh(c, d, a, b, k[3], 16, -722521979);
+	  b = hh(b, c, d, a, k[6], 23,  76029189);
+	  a = hh(a, b, c, d, k[9], 4, -640364487);
+	  d = hh(d, a, b, c, k[12], 11, -421815835);
+	  c = hh(c, d, a, b, k[15], 16,  530742520);
+	  b = hh(b, c, d, a, k[2], 23, -995338651);
+
+	  a = ii(a, b, c, d, k[0], 6, -198630844);
+	  d = ii(d, a, b, c, k[7], 10,  1126891415);
+	  c = ii(c, d, a, b, k[14], 15, -1416354905);
+	  b = ii(b, c, d, a, k[5], 21, -57434055);
+	  a = ii(a, b, c, d, k[12], 6,  1700485571);
+	  d = ii(d, a, b, c, k[3], 10, -1894986606);
+	  c = ii(c, d, a, b, k[10], 15, -1051523);
+	  b = ii(b, c, d, a, k[1], 21, -2054922799);
+	  a = ii(a, b, c, d, k[8], 6,  1873313359);
+	  d = ii(d, a, b, c, k[15], 10, -30611744);
+	  c = ii(c, d, a, b, k[6], 15, -1560198380);
+	  b = ii(b, c, d, a, k[13], 21,  1309151649);
+	  a = ii(a, b, c, d, k[4], 6, -145523070);
+	  d = ii(d, a, b, c, k[11], 10, -1120210379);
+	  c = ii(c, d, a, b, k[2], 15,  718787259);
+	  b = ii(b, c, d, a, k[9], 21, -343485551);
+
+	  x[0] = add32(a, x[0]);
+	  x[1] = add32(b, x[1]);
+	  x[2] = add32(c, x[2]);
+	  x[3] = add32(d, x[3]);
+
+	}
+
+	function cmn(q, a, b, x, s, t) {
+	  a = add32(add32(a, q), add32(x, t));
+	  return add32((a << s) | (a >>> (32 - s)), b);
+	}
+
+	function ff(a, b, c, d, x, s, t) {
+	  return cmn((b & c) | ((~b) & d), a, b, x, s, t);
+	}
+
+	function gg(a, b, c, d, x, s, t) {
+	  return cmn((b & d) | (c & (~d)), a, b, x, s, t);
+	}
+
+	function hh(a, b, c, d, x, s, t) {
+	  return cmn(b ^ c ^ d, a, b, x, s, t);
+	}
+
+	function ii(a, b, c, d, x, s, t) {
+	  return cmn(c ^ (b | (~d)), a, b, x, s, t);
+	}
+
+	function md51(s) {
+	//        txt = '';
+	  var n = s.length,
+	    state = [1732584193, -271733879, -1732584194, 271733878], i;
+	  for (i=64; i<=s.length; i+=64) {
+	    md5cycle(state, md5blk(s.substring(i-64, i)));
+	  }
+	  s = s.substring(i-64);
+	  var tail = [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0];
+	  for (i=0; i<s.length; i++)
+	    tail[i>>2] |= s.charCodeAt(i) << ((i%4) << 3);
+	  tail[i>>2] |= 0x80 << ((i%4) << 3);
+	  if (i > 55) {
+	    md5cycle(state, tail);
+	    for (i=0; i<16; i++) tail[i] = 0;
+	  }
+	  tail[14] = n*8;
+	  md5cycle(state, tail);
+	  return state;
+	}
+
+	/* there needs to be support for Unicode here,
+	 * unless we pretend that we can redefine the MD-5
+	 * algorithm for multi-byte characters (perhaps
+	 * by adding every four 16-bit characters and
+	 * shortening the sum to 32 bits). Otherwise
+	 * I suggest performing MD-5 as if every character
+	 * was two bytes--e.g., 0040 0025 = @%--but then
+	 * how will an ordinary MD-5 sum be matched?
+	 * There is no way to standardize text to something
+	 * like UTF-8 before transformation; speed cost is
+	 * utterly prohibitive. The JavaScript standard
+	 * itself needs to look at this: it should start
+	 * providing access to strings as preformed UTF-8
+	 * 8-bit unsigned value arrays.
+	 */
+	function md5blk(s) { /* I figured global was faster.   */
+	  var md5blks = [], i; /* Andy King said do it this way. */
+	  for (i=0; i<64; i+=4) {
+	    md5blks[i>>2] = s.charCodeAt(i)
+	      + (s.charCodeAt(i+1) << 8)
+	      + (s.charCodeAt(i+2) << 16)
+	      + (s.charCodeAt(i+3) << 24);
+	  }
+	  return md5blks;
+	}
+
+	var hex_chr = '0123456789abcdef'.split('');
+
+	function rhex(n)
+	{
+	  var s='', j=0;
+	  for(; j<4; j++)
+	    s += hex_chr[(n >> (j * 8 + 4)) & 0x0F]
+	      + hex_chr[(n >> (j * 8)) & 0x0F];
+	  return s;
+	}
+
+	function hex(x) {
+	  for (var i=0; i<x.length; i++)
+	    x[i] = rhex(x[i]);
+	  return x.join('');
+	}
+
+	/* this function is much faster,
+	 so if possible we use it. Some IEs
+	 are the only ones I know of that
+	 need the idiotic second function,
+	 generated by an if clause.  */
+
+	function add32(a, b) {
+	  return (a + b) & 0xFFFFFFFF;
+	}
+
+	if (md5('hello') != '5d41402abc4b2a76b9719d911017c592') {
+	  
+	}
+
+	// API
+
+	function md5(s) {
+	  return hex(md51(s));
+	}
+
+	/**
+	 *
+	 *  Secure Hash Algorithm (SHA1)
+	 *  http://www.webtoolkit.info/
+	 *
+	 **/
+
+	function sha1 (msg) {
+
+	  function rotate_left(n,s) {
+	    var t4 = ( n<<s ) | (n>>>(32-s));
+	    return t4;
+	  }
+
+	  
+
+	  function cvt_hex(val) {
+	    var str="";
+	    var i;
+	    var v;
+
+	    for( i=7; i>=0; i-- ) {
+	      v = (val>>>(i*4))&0x0f;
+	      str += v.toString(16);
+	    }
+	    return str;
+	  }
+
+
+	  function Utf8Encode(string) {
+	    string = string.replace(/\r\n/g,"\n");
+	    var utftext = "";
+
+	    for (var n = 0; n < string.length; n++) {
+
+	      var c = string.charCodeAt(n);
+
+	      if (c < 128) {
+	        utftext += String.fromCharCode(c);
+	      }
+	      else if((c > 127) && (c < 2048)) {
+	        utftext += String.fromCharCode((c >> 6) | 192);
+	        utftext += String.fromCharCode((c & 63) | 128);
+	      }
+	      else {
+	        utftext += String.fromCharCode((c >> 12) | 224);
+	        utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+	        utftext += String.fromCharCode((c & 63) | 128);
+	      }
+
+	    }
+
+	    return utftext;
+	  }
+
+	  var blockstart;
+	  var i, j;
+	  var W = new Array(80);
+	  var H0 = 0x67452301;
+	  var H1 = 0xEFCDAB89;
+	  var H2 = 0x98BADCFE;
+	  var H3 = 0x10325476;
+	  var H4 = 0xC3D2E1F0;
+	  var A, B, C, D, E;
+	  var temp;
+
+	  msg = Utf8Encode(msg);
+
+	  var msg_len = msg.length;
+
+	  var word_array = new Array();
+	  for( i=0; i<msg_len-3; i+=4 ) {
+	    j = msg.charCodeAt(i)<<24 | msg.charCodeAt(i+1)<<16 |
+	      msg.charCodeAt(i+2)<<8 | msg.charCodeAt(i+3);
+	    word_array.push( j );
+	  }
+
+	  switch( msg_len % 4 ) {
+	    case 0:
+	      i = 0x080000000;
+	      break;
+	    case 1:
+	      i = msg.charCodeAt(msg_len-1)<<24 | 0x0800000;
+	      break;
+
+	    case 2:
+	      i = msg.charCodeAt(msg_len-2)<<24 | msg.charCodeAt(msg_len-1)<<16 | 0x08000;
+	      break;
+
+	    case 3:
+	      i = msg.charCodeAt(msg_len-3)<<24 | msg.charCodeAt(msg_len-2)<<16 | msg.charCodeAt(msg_len-1)<<8	| 0x80;
+	      break;
+	  }
+
+	  word_array.push( i );
+
+	  while( (word_array.length % 16) != 14 ) word_array.push( 0 );
+
+	  word_array.push( msg_len>>>29 );
+	  word_array.push( (msg_len<<3)&0x0ffffffff );
+
+
+	  for ( blockstart=0; blockstart<word_array.length; blockstart+=16 ) {
+
+	    for( i=0; i<16; i++ ) W[i] = word_array[blockstart+i];
+	    for( i=16; i<=79; i++ ) W[i] = rotate_left(W[i-3] ^ W[i-8] ^ W[i-14] ^ W[i-16], 1);
+
+	    A = H0;
+	    B = H1;
+	    C = H2;
+	    D = H3;
+	    E = H4;
+
+	    for( i= 0; i<=19; i++ ) {
+	      temp = (rotate_left(A,5) + ((B&C) | (~B&D)) + E + W[i] + 0x5A827999) & 0x0ffffffff;
+	      E = D;
+	      D = C;
+	      C = rotate_left(B,30);
+	      B = A;
+	      A = temp;
+	    }
+
+	    for( i=20; i<=39; i++ ) {
+	      temp = (rotate_left(A,5) + (B ^ C ^ D) + E + W[i] + 0x6ED9EBA1) & 0x0ffffffff;
+	      E = D;
+	      D = C;
+	      C = rotate_left(B,30);
+	      B = A;
+	      A = temp;
+	    }
+
+	    for( i=40; i<=59; i++ ) {
+	      temp = (rotate_left(A,5) + ((B&C) | (B&D) | (C&D)) + E + W[i] + 0x8F1BBCDC) & 0x0ffffffff;
+	      E = D;
+	      D = C;
+	      C = rotate_left(B,30);
+	      B = A;
+	      A = temp;
+	    }
+
+	    for( i=60; i<=79; i++ ) {
+	      temp = (rotate_left(A,5) + (B ^ C ^ D) + E + W[i] + 0xCA62C1D6) & 0x0ffffffff;
+	      E = D;
+	      D = C;
+	      C = rotate_left(B,30);
+	      B = A;
+	      A = temp;
+	    }
+
+	    H0 = (H0 + A) & 0x0ffffffff;
+	    H1 = (H1 + B) & 0x0ffffffff;
+	    H2 = (H2 + C) & 0x0ffffffff;
+	    H3 = (H3 + D) & 0x0ffffffff;
+	    H4 = (H4 + E) & 0x0ffffffff;
+
+	  }
+
+	  var temp = cvt_hex(H0) + cvt_hex(H1) + cvt_hex(H2) + cvt_hex(H3) + cvt_hex(H4);
+
+	  return temp.toLowerCase();
+
+	}
+
+	function getMd5Hash (file) {
+	  return readFile(file, 'binaryString').then(md5)
 	}
 
 	var utils = {
 
 	  data3d: {
 	    load: loadData3d,
-	    decodeBuffer: decodeBuffer
+	    encodeBinary: encodeBinary,
+	    decodeBinary: decodeBinary,
+	    clone: clone,
+	    traverse: traverseData3d$1
 	  },
 	  ui: ui,
 	  auth: auth,
 	  io: {
 	    fetch: fetch$1,
-	    request: request
+	    fetchModule: fetchModule,
+	    checkIfFileExists: checkIfFileExists
+	  },
+	  image: {
+	    scaleDown: scaleDownImage,
+	    getFromFile: getImageFromFile,
+	    getBlobFromCanvas: getBlobFromCanvas
+	  },
+	  math: {
+	    md5: md5,
+	    sha1: sha1
 	  },
 	  services: {
 	    call: callService
 	  },
-	  getMimeTypeFromFilename: getMimeTypeFromFileName,
+	  file: {
+	    getMimeTypeFromFilename: getMimeTypeFromFileName,
+	    gzip: gzip,
+	    read: readFile,
+	    getMd5Hash: getMd5Hash
+	  },
 	  url: Url,
 	  uuid: uuid,
 	  getShortId: getShortId,
 	  path: path,
 	  wait: wait
-
+	  
 	};
 
 	var io3d$1 = {
@@ -22029,7 +26975,9 @@
 	  staging:staging,
 	  storage: storage,
 	  scene: scene,
+	  publish: publish,
 	  floorPlan: floorPlan,
+	  light: light,
 
 	  // utils
 	  auth: utils.auth,
