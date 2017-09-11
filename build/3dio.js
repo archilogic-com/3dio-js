@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.64
- * @date 2017/09/10 16:54
+ * @version 1.0.0-beta.65
+ * @date 2017/09/11 15:25
  * @branch master
- * @commit fe60efdd5fe39a5afaf6c9d279571340ee5bd22a
+ * @commit 7eba29144a40cdf7a29e5f6ac22eda0a93eea046
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/10 16:54', GIT_BRANCH = 'master', GIT_COMMIT = 'fe60efdd5fe39a5afaf6c9d279571340ee5bd22a'
+	var BUILD_DATE='2017/09/11 15:25', GIT_BRANCH = 'master', GIT_COMMIT = '7eba29144a40cdf7a29e5f6ac22eda0a93eea046'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.64";
+	var version = "1.0.0-beta.65";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -18634,7 +18634,7 @@
 	    headers: headers,
 	    credentials: (isTrustedOrigin ? 'include' : 'omit' ) //TODO: Find a way to allow this more broadly yet safely
 	  }).then(function (response) {
-	    response.text().then(function onParsingSuccess(body){
+	    return response.text().then(function onParsingSuccess(body){
 	      // try to parse JSON in any case because valid JSON-RPC2 errors do have error status too
 	      var message;
 	      try {
@@ -18658,7 +18658,9 @@
 	      // response is not a valid json error message. (most likely a network error)
 	      var errorMessage = 'API request to '+configs.servicesUrl+' failed: '+response.status+': '+response.statusText+'\n'+errorString+'\nOriginal JSON-RPC2 request to 3d.io: '+JSON.stringify(rpcRequest.message, null, 2);
 	      rpcRequest.cancel(errorMessage);
-	    });
+	    })
+	  }).catch(function(error){
+	    rpcRequest.cancel('Error sending request to 3d.io API: "'+(error.code || JSON.stringify(error) )+'"');
 	  });
 
 	}
@@ -18803,6 +18805,8 @@
 	      this_.info = result.info; // lightweight info like name, manufacturer, description ...
 	      this_.data3d = result.data3d; // geometries and materials
 
+	      // check for material presets in the furniture sceneStructure definition
+	      var materialPreset = this_.info.sceneStructure && JSON.parse(this_.info.sceneStructure).materials;
 	      // Parse & expose materials
 	      this_.availableMaterials = {};
 	      Object.keys(result.data3d.meshes).forEach(function eachMesh (meshName) {
@@ -18813,6 +18817,10 @@
 	        if (this_.data[materialPropName] !== undefined) {
 	          result.data3d.meshes[meshName].material = this_.data[materialPropName];
 	          this_.el.emit('material-changed', {mesh: meshName, material: this_.data[materialPropName]});
+	        } else if (materialPreset && materialPreset[meshName]) {
+	          // apply presets from the furniture's sceneStructure definition
+	          result.data3d.meshes[meshName].material = materialPreset[meshName];
+	          this_.el.emit('material-changed', {mesh: meshName, material: materialPreset[meshName]});
 	        } else {
 	          // register it as part of the schema for the inspector
 	          var prop = {};
@@ -19007,6 +19015,8 @@
 	    boundingBox: rawInfo.boundingBox,
 	    boundingPoints: rawInfo.boundingPoints,
 	    data3dUrl: convertKeyToUrl(rawInfo.fileKey),
+	    // scene Structure definition
+	    sceneStructure: rawInfo.modelStructure,
 	    // data info
 	    created: rawInfo.createdAt,
 	    updated: rawInfo.updatedAt
@@ -20238,7 +20248,7 @@
 	    // map typed arrays to payload area in file buffer
 	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url$$1);
 
-	    //  convert relative material keys into absolute once
+	    //  convert relative material keys into absolute one
 	    if (origin && data3d.materials) convertTextureKeys(data3d, origin, rootDir);
 
 	  });
@@ -20353,59 +20363,8 @@
 
 	}
 
-	// constants
-	var IS_URL = new RegExp('^http:\\/\\/.*$|^https:\\/\\/.*$');
-	var ID_TO_URL_CACHE = {};
-
-	// main
-	function getUrlFromStorageId (storageId, options) {
-
-	  // API
-	  options = options || {};
-	  var cdn = options.cdn !== undefined ? options.cdn : true;
-	  var encode = options.encode !== undefined ? options.encode : true;
-
-	  // check cache
-	  if (ID_TO_URL_CACHE[storageId + cdn + encode]) {
-	    return ID_TO_URL_CACHE[storageId + cdn + encode]
-	  }
-
-	  // check if storageId is URL already
-	  if (IS_URL.test(storageId)) {
-	    // add to cache
-	    ID_TO_URL_CACHE[ storageId + cdn + encode ] = storageId;
-	    // return URL
-	    return storageId
-	  }
-
-	  // internals
-	  var processedStorageId = storageId;
-
-	  // remove leading slash
-	  var startsWithSlash = /^\/(.*)$/.exec(processedStorageId);
-	  if (startsWithSlash) {
-	    processedStorageId = startsWithSlash[1];
-	  }
-
-	  // encode storageId if containig special chars
-	  if (encode && !/^[\.\-\_\/a-zA-Z0-9]+$/.test(processedStorageId)) {
-	    processedStorageId = encodeURIComponent(processedStorageId);
-	  }
-
-	  // compose url
-	  var url = 'https://' + (cdn ? configs.storageDomain : configs.storageDomainNoCdn) + '/' + processedStorageId;
-
-	  // add to cache
-	  ID_TO_URL_CACHE[ storageId + cdn + encode ] = url;
+	function loadData3d (url, options) {
 	  
-	  return url
-	}
-
-	function loadData3d (val, options) {
-
-	  // could be storageId or URL
-	  var url = getUrlFromStorageId(val);
-
 	  return fetch$1(url, options).then(function(res){
 	    return res.arrayBuffer()
 	  }).then(function(buffer){
@@ -21509,7 +21468,9 @@
 	var session$ = new BehaviorSubject_1.BehaviorSubject(normalizeSession({}));
 
 	// init
-	getSession();
+	getSession().catch(function(error) {
+	  console.warn('Session info not available: ', error);
+	});
 
 	// update session state every time when tab becomes visible
 	if (runtime.isBrowser) {
@@ -22103,6 +22064,54 @@
 	  var d = new Date();
 	  return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
 	    + '_' + d.getHours() + '-' + d.getMinutes() // + '-' + d.getSeconds()
+	}
+
+	// constants
+	var IS_URL = new RegExp('^http:\\/\\/.*$|^https:\\/\\/.*$');
+	var ID_TO_URL_CACHE = {};
+
+	// main
+	function getUrlFromStorageId (storageId, options) {
+
+	  // API
+	  options = options || {};
+	  var cdn = options.cdn !== undefined ? options.cdn : true;
+	  var encode = options.encode !== undefined ? options.encode : true;
+
+	  // check cache
+	  if (ID_TO_URL_CACHE[storageId + cdn + encode]) {
+	    return ID_TO_URL_CACHE[storageId + cdn + encode]
+	  }
+
+	  // check if storageId is URL already
+	  if (IS_URL.test(storageId)) {
+	    // add to cache
+	    ID_TO_URL_CACHE[ storageId + cdn + encode ] = storageId;
+	    // return URL
+	    return storageId
+	  }
+
+	  // internals
+	  var processedStorageId = storageId;
+
+	  // remove leading slash
+	  var startsWithSlash = /^\/(.*)$/.exec(processedStorageId);
+	  if (startsWithSlash) {
+	    processedStorageId = startsWithSlash[1];
+	  }
+
+	  // encode storageId if containig special chars
+	  if (encode && !/^[\.\-\_\/a-zA-Z0-9]+$/.test(processedStorageId)) {
+	    processedStorageId = encodeURIComponent(processedStorageId);
+	  }
+
+	  // compose url
+	  var url = 'https://' + (cdn ? configs.storageDomain : configs.storageDomainNoCdn) + '/' + processedStorageId;
+
+	  // add to cache
+	  ID_TO_URL_CACHE[ storageId + cdn + encode ] = url;
+	  
+	  return url
 	}
 
 	// main
