@@ -90,7 +90,7 @@ function sendHttpRequest (rpcRequest, secretApiKey, publishableApiKey) {
     headers: headers,
     credentials: (isTrustedOrigin ? 'include' : 'omit' ) //TODO: Find a way to allow this more broadly yet safely
   }).then(function (response) {
-    response.text().then(function onParsingSuccess(body){
+    return response.text().then(function onParsingSuccess(body){
       // try to parse JSON in any case because valid JSON-RPC2 errors do have error status too
       var message
       try {
@@ -115,6 +115,8 @@ function sendHttpRequest (rpcRequest, secretApiKey, publishableApiKey) {
       var errorMessage = 'API request to '+configs.servicesUrl+' failed: '+response.status+': '+response.statusText+'\n'+errorString+'\nOriginal JSON-RPC2 request to 3d.io: '+JSON.stringify(rpcRequest.message, null, 2)
       rpcRequest.cancel(errorMessage)
     })
+  }).catch(function(error){
+    rpcRequest.cancel('Error sending request to 3d.io API: "'+(error.code || JSON.stringify(error) )+'"')
   })
 
 }
