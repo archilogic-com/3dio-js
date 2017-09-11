@@ -16,15 +16,12 @@
 <!-- 3D -->
 <a-scene>
 
-  <a-entity>
-
-    <a-entity io3d-data3d="url:https://storage.3d.io/535e624259ee6b0200000484/170903-1554-hl8t6r/archilogic_2017-09-03_15-47-13_dkhZ1I.gz.data3d.buffer"></a-entity>
-
-  </a-entity>
+  <a-entity io3d-data3d="url:https://storage.3d.io/535e624259ee6b0200000484/170903-1554-hl8t6r/archilogic_2017-09-03_15-47-13_dkhZ1I.gz.data3d.buffer"></a-entity>
 
   <a-sky color="#ECECEC"></a-sky>
 
-  <a-entity camera position="10 16 0" orbit-controls="target:#bake-this;"></a-entity>
+  <a-entity id="cam-target"></a-entity>
+  <a-entity camera position="10 16 0" orbit-controls="target:#cam-target;"></a-entity>
 
 </a-scene>
 
