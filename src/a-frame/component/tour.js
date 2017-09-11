@@ -21,31 +21,30 @@ export default {
   },
 
   init: function () {
-
-    this.el.setAttribute('animation__move', { startEvents: 'doNotFire', property: 'position', easing: 'easeInOutSine', dur: 100 })
-    this.el.setAttribute('animation__turn', { property: 'rotation', easing: 'easeInOutSine', dur: 100 })
-    this._nextWaypointHandler = this._nextWaypoint.bind(this)
     this._currentWayPoint = -1
+    this.el.setAttribute('animation__move', { startEvents: 'doNotFire', pauseEvents: 'pauseTour', resumeEvents:'resumeTour', property: 'position', easing: 'easeInOutSine', dur: 100 })
+    this.el.setAttribute('animation__turn', { startEvents: 'doNotFire', pauseEvents: 'pauseTour', resumeEvents:'resumeTour', property: 'rotation', easing: 'easeInOutSine', dur: 100 })
+    this._nextWaypointHandler = this._nextWaypoint.bind(this)
   },
 
   update: function () {
     this._waypoints = Array.from(this.el.querySelectorAll('[tour-waypoint]'))
 
     if(this.data.autoStart) {
-      this.playTour()
+      startTour().apply(this)
     }
   },
 
   playTour: function () {
-    this._currentWayPoint = -1
-    this._isPlaying = true
-    this.el.addEventListener('animation__move-complete', this._nextWaypointHandler)
-    var next = this._waypoints[++this._currentWayPoint]
-    if (next) this.goTo(next.getAttribute('tour-waypoint'), true)
-    else if (this.data.loop) {
-      this._currentWayPoint = 0
-      this.goTo(this._waypoints[0].getAttribute('tour-waypoint'), true)
+    if (this._isPlaying) {
+      document.querySelector('[tour]').dispatchEvent(new CustomEvent('resumeTour'))
+    } else {
+      startTour.apply(this)
     }
+  },
+
+  pauseTour: function () {
+    document.querySelector('[tour]').dispatchEvent(new CustomEvent('pauseTour'))
   },
 
   stopTour: function () {
@@ -102,6 +101,17 @@ export default {
 
     var next = this._waypoints[++this._currentWayPoint]
     setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying) }.bind(this), this.data.wait || 0)
+  }
+}
+
+function startTour () {
+  this._isPlaying = true
+  this.el.addEventListener('animation__move-complete', this._nextWaypointHandler)
+  var next = this._waypoints[++this._currentWayPoint]
+  if (next) this.goTo(next.getAttribute('tour-waypoint'), true)
+  else if (this.data.loop) {
+    this._currentWayPoint = 0
+    this.goTo(this._waypoints[0].getAttribute('tour-waypoint'), true)
   }
 }
 
