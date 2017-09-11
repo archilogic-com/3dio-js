@@ -238,7 +238,7 @@ export default function loadTextures ( queue, TEXTURE_TYPES, vm, _attributes, ma
 
   // load textures
 
-  var promise, wrap
+  var promise, wrap, isTexture, isTextureToBeLoadedNext
   if (textureCount) {
 
     promise = Promise.all(texturePromises).then(function (textures) {
@@ -246,31 +246,31 @@ export default function loadTextures ( queue, TEXTURE_TYPES, vm, _attributes, ma
       // assign textures
       wrap = WEBGL_WRAP_TYPES[ _attributes.wrap ] || WEBGL_WRAP_TYPES[ 'repeat' ]
       for (i = 0; i < textureCount; i++) {
-        // FIXME:
-        // if (
-        //   // avoid racing conditions
-        // textures[ i ] && textures[ i ].url === material3d._texturesToBeLoaded[ textureKeys[i] ] &&
-        //   // filter texture loading errors
-        // (textures[i] instanceof THREE.CompressedTexture || textures[i] instanceof THREE.Texture)
-        // ){
 
-          // cache
-          countTextureReference(textures[ i ].url)
-          textures[ i ].disposeIfPossible = disposeIfPossible
+        // filter texture loading errors
+        isTexture = textures[i] instanceof THREE.CompressedTexture || textures[i] instanceof THREE.Texture
+        // avoid racing conditions
+        isTextureToBeLoadedNext = textures[i] && textures[i].url === material3d._texturesToBeLoaded[textureKeys[i]]
 
-          // set texture settings
-          textures[ i ].wrapS = wrap
-          textures[ i ].wrapT = wrap
-          textures[ i ].anisotropy = 2
-          // dispose previous texture
-          if (material3d[ texture3dKeys[ i ] ] && material3d[ texture3dKeys[ i ] ].disposeIfPossible) {
-            material3d[ texture3dKeys[ i ] ].disposeIfPossible()
-          }
-          // add new texture
-          material3d[ texture3dKeys[ i ] ] = textures[ i ]
-          material3d.uniforms[ texture3dKeys[ i ] ].value = textures[ i ]
-          material3d[ texture3dKeys[ i ] ].needsUpdate = true
-        // }
+        if (!isTexture || !isTextureToBeLoadedNext) continue
+
+        // cache
+        countTextureReference(textures[ i ].url)
+        textures[ i ].disposeIfPossible = disposeIfPossible
+
+        // set texture settings
+        textures[ i ].wrapS = wrap
+        textures[ i ].wrapT = wrap
+        textures[ i ].anisotropy = 2
+        // dispose previous texture
+        if (material3d[ texture3dKeys[ i ] ] && material3d[ texture3dKeys[ i ] ].disposeIfPossible) {
+          material3d[ texture3dKeys[ i ] ].disposeIfPossible()
+        }
+        // add new texture
+        material3d[ texture3dKeys[ i ] ] = textures[ i ]
+        material3d.uniforms[ texture3dKeys[ i ] ].value = textures[ i ]
+        material3d[ texture3dKeys[ i ] ].needsUpdate = true
+
       }
       // update material
       material3d.needsUpdate = true
