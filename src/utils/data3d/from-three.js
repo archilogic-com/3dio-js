@@ -1,5 +1,5 @@
 import Promise from 'bluebird'
-import normalizeData3d from './consolidate.js'
+import normalizeData3d from './normalize.js'
 import generateTextureSet from './generate-texture-set.js'
 import shortId from '../short-id.js'
 import checkDependencies from '../../a-frame/check-dependencies.js'
