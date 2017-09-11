@@ -31,7 +31,7 @@ export default {
     this._waypoints = Array.from(this.el.querySelectorAll('[tour-waypoint]'))
 
     if(this.data.autoStart) {
-      startTour().apply(this)
+      this.playTour()
     }
   },
 
@@ -39,7 +39,14 @@ export default {
     if (this._isPlaying) {
       document.querySelector('[tour]').dispatchEvent(new CustomEvent('resumeTour'))
     } else {
-      startTour.apply(this)
+      this._isPlaying = true
+      this.el.addEventListener('animation__move-complete', this._nextWaypointHandler)
+      var next = this._waypoints[++this._currentWayPoint]
+      if (next) this.goTo(next.getAttribute('tour-waypoint'), true)
+      else if (this.data.loop) {
+        this._currentWayPoint = 0
+        this.goTo(this._waypoints[0].getAttribute('tour-waypoint'), true)
+      }
     }
   },
 
@@ -101,17 +108,6 @@ export default {
 
     var next = this._waypoints[++this._currentWayPoint]
     setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying) }.bind(this), this.data.wait || 0)
-  }
-}
-
-function startTour () {
-  this._isPlaying = true
-  this.el.addEventListener('animation__move-complete', this._nextWaypointHandler)
-  var next = this._waypoints[++this._currentWayPoint]
-  if (next) this.goTo(next.getAttribute('tour-waypoint'), true)
-  else if (this.data.loop) {
-    this._currentWayPoint = 0
-    this.goTo(this._waypoints[0].getAttribute('tour-waypoint'), true)
   }
 }
 
