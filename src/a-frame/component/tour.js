@@ -36,8 +36,9 @@ export default {
   },
 
   playTour: function () {
+    this._isPaused = false
     if (this._isPlaying) {
-      document.querySelector('[tour]').dispatchEvent(new CustomEvent('resumeTour'))
+      this.el.dispatchEvent(new CustomEvent('resumeTour'))
     } else {
       this._isPlaying = true
       this.el.addEventListener('animation__move-complete', this._nextWaypointHandler)
@@ -51,12 +52,15 @@ export default {
   },
 
   pauseTour: function () {
-    document.querySelector('[tour]').dispatchEvent(new CustomEvent('pauseTour'))
+    this._isPaused = true
+    this.el.dispatchEvent(new CustomEvent('pauseTour'))
   },
 
   stopTour: function () {
+    this.pauseTour()
     this.el.removeEventListener('animation__move-complete', this._nextWaypointHandler)
     this._isPlaying = false
+    this._isPaused = false
   },
 
   goTo: function (label, keepPlaying) {
@@ -78,6 +82,7 @@ export default {
     var currentRotation = entity.getAttribute('rotation')
     var startPosition = AFRAME.utils.coordinates.stringify(currentPosition)
     var startRotation = AFRAME.utils.coordinates.stringify(currentRotation)
+
     // compute distance to adapt speed
     var d = dist(currentPosition, AFRAME.utils.coordinates.parse(newPosition))
     // compute angle difference to adapt speed
@@ -87,6 +92,9 @@ export default {
     if (t > 10000) t = 10000
     // prevent zero length animation
     if (!t) return
+
+    entity.components.animation__move.pauseAnimation()
+    entity.components.animation__turn.pauseAnimation()
     entity.components.animation__move.data.dur = t
     entity.components.animation__move.data.from = startPosition
     entity.components.animation__move.data.to = newPosition
@@ -95,8 +103,10 @@ export default {
     entity.components.animation__turn.data.from = startRotation
     entity.components.animation__turn.data.to = newRotation
     entity.components.animation__turn.update()
-    entity.components.animation__move.resumeAnimation()
-    entity.components.animation__turn.resumeAnimation()
+    if (!this._isPaused) {
+      entity.components.animation__move.resumeAnimation()
+      entity.components.animation__turn.resumeAnimation()
+    }
   },
 
   _nextWaypoint: function () {
@@ -105,7 +115,6 @@ export default {
       if (!this.data.loop) return
       this._currentWayPoint = -1
     }
-
     var next = this._waypoints[++this._currentWayPoint]
     setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying) }.bind(this), this.data.wait || 0)
   }

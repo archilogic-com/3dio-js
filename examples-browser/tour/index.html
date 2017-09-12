@@ -58,7 +58,7 @@
   <a-box color="green" position="0 0 -5"></a-box>
   <a-box color="blue" position="-5 0 0"></a-box>
   <!-- Camera -->
-  <a-entity id="camera" tour="loop:true" camera="userHeight: 1.6" position="1 0 -4" rotation="0 0 0">
+  <a-entity id="camera" tour="loop:true" camera="userHeight: 1.6" position="0 0 0" rotation="0 0 0">
     <a-entity tour-waypoint="Overview" position="5 5 5" rotation="-45 45 0"></a-entity>
     <a-entity tour-waypoint="Red" position="0 0 4" rotation="0 0 0"></a-entity>
     <a-entity tour-waypoint="Green" position="0 0 -2" rotation="0 0 0"></a-entity>
@@ -83,7 +83,6 @@
 
 <script>
 document.querySelectorAll('.btn-toggle-play').forEach(function(el){
-  console.log(el)
   el.onclick=function(){
       var button = el;
       if (button.classList.contains('playing')) {
