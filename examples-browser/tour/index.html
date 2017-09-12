@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href = "style.css" rel = "stylesheet" type = "text/css"/>
+  <link href = "../a-frame/style.css" rel = "stylesheet" type = "text/css"/>
 
   <!-- boilerplate libs -->
   <script src="https://aframe.io/releases/0.6.0/aframe.min.js"></script>
@@ -37,6 +37,18 @@
   nav > button:hover {
     background: rgba(255,255,255,1);
   }
+
+  .btn-toggle-play.playing .play{
+    display: none;
+  }
+
+  .btn-toggle-play.playing .pause{
+    display: inline;
+  }
+
+  .btn-toggle-play .pause{
+    display: none;
+  }
 </style>
 <body>
 
@@ -46,7 +58,7 @@
   <a-box color="green" position="0 0 -5"></a-box>
   <a-box color="blue" position="-5 0 0"></a-box>
   <!-- Camera -->
-  <a-entity id="camera" tour="loop:false" camera="userHeight: 1.6" position="1 0 -4" rotation="0 0 0">
+  <a-entity id="camera" tour="loop:true" camera="userHeight: 1.6" position="0 0 0" rotation="0 0 0">
     <a-entity tour-waypoint="Overview" position="5 5 5" rotation="-45 45 0"></a-entity>
     <a-entity tour-waypoint="Red" position="0 0 4" rotation="0 0 0"></a-entity>
     <a-entity tour-waypoint="Green" position="0 0 -2" rotation="0 0 0"></a-entity>
@@ -63,8 +75,23 @@
   <button onclick="document.querySelector('[camera]').components['tour'].goTo('Red')">Red box</button>
   <button onclick="document.querySelector('[camera]').components['tour'].goTo('Green')">Green box</button>
   <button onclick="document.querySelector('[camera]').components['tour'].goTo('Blue')">Blue box</button>
-  <button onclick="document.querySelector('[camera]').components['tour'].playTour()">&#9658;</button>
+  <button class="btn-toggle-play playing">
+    <span class="play" >&#9658;</span>
+    <span class="pause">&#10074;&#10074;</span>
+  </button>
 <nav>
+
+<script>
+var button = document.querySelector('.btn-toggle-play')
+var tour = document.querySelector('[camera]').components['tour']
+button.addEventListener('click', function () {
+  if (button.classList.toggle('playing')) {
+    tour.playTour()
+  } else {
+    tour.pauseTour()
+  }
+});
+</script>
 
 </body>
 </html>

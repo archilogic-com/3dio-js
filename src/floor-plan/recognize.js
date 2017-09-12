@@ -29,7 +29,8 @@ export default function recognize (args) {
   var args = {
     colorCoded: false,
     floorPlanUrl: url,
-    pixelsPerMeter: pixelsPerMeter
+    pixelsPerMeter: pixelsPerMeter,
+    colorCoded: true
   }
 
   return callService('Recognizer.recognize', {arguments: args})

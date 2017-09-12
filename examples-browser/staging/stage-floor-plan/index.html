@@ -15,13 +15,13 @@
     <a-scene vr-mode-ui="enabled: false">
       <a-camera position="0 5 5" rotation="-20 0 0"></a-camera>
       <a-entity id="cursor" cursor="rayOrigin: mouse"></a-entity>
-      <a-image id="floor-plan" width="13.98" height="16.15" src="https://storage.3d.io/132f8fd0-f7e0-432a-ad21-732f3307e77e/2017-08-31_21-55-19_xExGmY/Grundriss_WE17_s.jpg" rotation="-90 0 0"></a-image>
+      <a-image id="floor-plan" width="15.00" height="15.00" src="https://storage.3d.io/132f8fd0-f7e0-432a-ad21-732f3307e77e/170912-1650-8w2re2/floorplan.jpg" rotation="-90 0 0"></a-image>
     </a-scene>
     <script>
       io3d.config({
-        // use https://spaces.archilogic.com/api/v2 in production
-        servicesUrl: 'https://testing.archilogic.com/api/v2',
-        publishableApiKey: '213edd35-0500-4953-bbc1-b4d7535d604f'
+        // floor plan recognition and home staging need api keys
+        // get yours from https://3d.io
+        publishableApiKey: null
       })
       const cursorEl = document.querySelector('#cursor')
       const btnEl = document.querySelector('button')

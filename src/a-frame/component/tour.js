@@ -21,11 +21,10 @@ export default {
   },
 
   init: function () {
-
-    this.el.setAttribute('animation__move', { startEvents: 'doNotFire', property: 'position', easing: 'easeInOutSine', dur: 100 })
-    this.el.setAttribute('animation__turn', { property: 'rotation', easing: 'easeInOutSine', dur: 100 })
-    this._nextWaypointHandler = this._nextWaypoint.bind(this)
     this._currentWayPoint = -1
+    this.el.setAttribute('animation__move', { startEvents: 'doNotFire', pauseEvents: 'pauseTour', resumeEvents:'resumeTour', property: 'position', easing: 'easeInOutSine', dur: 100 })
+    this.el.setAttribute('animation__turn', { startEvents: 'doNotFire', pauseEvents: 'pauseTour', resumeEvents:'resumeTour', property: 'rotation', easing: 'easeInOutSine', dur: 100 })
+    this._nextWaypointHandler = this._nextWaypoint.bind(this)
   },
 
   update: function () {
@@ -37,20 +36,37 @@ export default {
   },
 
   playTour: function () {
-    this._currentWayPoint = -1
-    this._isPlaying = true
-    this.el.addEventListener('animation__move-complete', this._nextWaypointHandler)
-    var next = this._waypoints[++this._currentWayPoint]
-    if (next) this.goTo(next.getAttribute('tour-waypoint'), true)
-    else if (this.data.loop) {
-      this._currentWayPoint = 0
-      this.goTo(this._waypoints[0].getAttribute('tour-waypoint'), true)
+    if (this._isPlaying) {
+      if(this._isChangingAnimation) {
+        clearTimeout(this._nextAnimationTimeout)
+        this.goTo(this._waypoints[this._currentWayPoint].getAttribute('tour-waypoint'), this._isPlaying)
+      } else {
+        this.el.dispatchEvent(new CustomEvent('resumeTour'))
+      }
+      this._isPaused = false
+    } else {
+      this._isPlaying = true
+      this._isPaused = false
+      this.el.addEventListener('animation__move-complete', this._nextWaypointHandler)
+      var next = this._waypoints[++this._currentWayPoint]
+      if (next) this.goTo(next.getAttribute('tour-waypoint'), true)
+      else if (this.data.loop) {
+        this._currentWayPoint = 0
+        this.goTo(this._waypoints[0].getAttribute('tour-waypoint'), true)
+      }
     }
   },
 
+  pauseTour: function () {
+    this._isPaused = true
+    this.el.dispatchEvent(new CustomEvent('pauseTour'))
+  },
+
   stopTour: function () {
+    this.pauseTour()
     this.el.removeEventListener('animation__move-complete', this._nextWaypointHandler)
     this._isPlaying = false
+    this._isPaused = false
   },
 
   goTo: function (label, keepPlaying) {
@@ -72,6 +88,7 @@ export default {
     var currentRotation = entity.getAttribute('rotation')
     var startPosition = AFRAME.utils.coordinates.stringify(currentPosition)
     var startRotation = AFRAME.utils.coordinates.stringify(currentRotation)
+
     // compute distance to adapt speed
     var d = dist(currentPosition, AFRAME.utils.coordinates.parse(newPosition))
     // compute angle difference to adapt speed
@@ -79,8 +96,12 @@ export default {
     // compute animation time
     var t = Math.round((this.data.move || 3000) / 6 * (d + angle / 30))
     if (t > 10000) t = 10000
+
     // prevent zero length animation
-    if (!t) return
+    if (!t) return this._nextWaypoint()
+
+    entity.components.animation__move.pauseAnimation()
+    entity.components.animation__turn.pauseAnimation()
     entity.components.animation__move.data.dur = t
     entity.components.animation__move.data.from = startPosition
     entity.components.animation__move.data.to = newPosition
@@ -91,6 +112,7 @@ export default {
     entity.components.animation__turn.update()
     entity.components.animation__move.resumeAnimation()
     entity.components.animation__turn.resumeAnimation()
+    this._isChangingAnimation = false
   },
 
   _nextWaypoint: function () {
@@ -99,9 +121,9 @@ export default {
       if (!this.data.loop) return
       this._currentWayPoint = -1
     }
-
+    this._isChangingAnimation = true
     var next = this._waypoints[++this._currentWayPoint]
-    setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying) }.bind(this), this.data.wait || 0)
+    this._nextAnimationTimeout = setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying) }.bind(this), this.data.wait || 0)
   }
 }
 
