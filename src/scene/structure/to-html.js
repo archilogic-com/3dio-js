@@ -49,7 +49,10 @@ function getAttributes(element3d) {
     position: element3d.x + ' ' + element3d.y + ' ' + element3d.z,
     rotation: '0 ' + element3d.ry + ' 0'
   }
-  if (element3d.type === 'interior') attributes['io3d-furniture'] = {id: element3d.src.substring(1)}
+  if (element3d.type === 'interior') {
+    attributes['io3d-furniture'] = {id: element3d.src.substring(1)}
+    attributes['shadow'] = {cast: true, receive: false}
+  }
 
   return attributes
 }
