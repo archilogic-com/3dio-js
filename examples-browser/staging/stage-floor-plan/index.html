@@ -13,7 +13,7 @@
       <input id="inpt-filter" placeholder="filter results" style="width: 200px;"/>
     </div>
     <a-scene vr-mode-ui="enabled: false">
-      <a-camera position="0 5 5"></a-camera>
+      <a-camera position="0 5 5" rotation="-20 0 0"></a-camera>
       <a-entity id="cursor" cursor="rayOrigin: mouse"></a-entity>
       <a-image id="floor-plan" width="13.98" height="16.15" src="https://storage.3d.io/132f8fd0-f7e0-432a-ad21-732f3307e77e/2017-08-31_21-55-19_xExGmY/Grundriss_WE17_s.jpg" rotation="-90 0 0"></a-image>
     </a-scene>
@@ -74,9 +74,10 @@
       function elementClick() {
         let el = cursor.components.raycaster.intersectedEls[0]
         let furniture = el.getAttribute('io3d-furniture')
+        let query = inputEl.value.trim()
         console.log(furniture)
         if (furniture) {
-          io3d.staging.replaceFurniture(el)
+          io3d.staging.replaceFurniture(el, {query})
             .then(result => {
               if (!result) return
               el.setAttribute('position', result.components.position.attrValue)
