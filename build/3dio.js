@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.68
- * @date 2017/09/12 16:22
+ * @version 1.0.0-beta.69
+ * @date 2017/09/12 17:13
  * @branch master
- * @commit f87d393288b63e07423aa2fe4367f5e5b8e6b112
+ * @commit c06e61719c9fcadc727a871c2ac77d03c486e1a3
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/12 16:22', GIT_BRANCH = 'master', GIT_COMMIT = 'f87d393288b63e07423aa2fe4367f5e5b8e6b112'
+	var BUILD_DATE='2017/09/12 17:13', GIT_BRANCH = 'master', GIT_COMMIT = 'c06e61719c9fcadc727a871c2ac77d03c486e1a3'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.68";
+	var version = "1.0.0-beta.69";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -8639,9 +8639,9 @@
 	};
 
 	var thenables = function(Promise, INTERNAL) {
-	var util$$1 = util;
-	var errorObj = util$$1.errorObj;
-	var isObject = util$$1.isObject;
+	var util$$2 = util;
+	var errorObj = util$$2.errorObj;
+	var isObject = util$$2.isObject;
 
 	function tryConvertToPromise(obj, context) {
 	    if (isObject(obj)) {
@@ -8699,7 +8699,7 @@
 	    promise._captureStackTrace();
 	    if (context) context._popContext();
 	    var synchronous = true;
-	    var result = util$$1.tryCatch(then).call(x, resolve, reject);
+	    var result = util$$2.tryCatch(then).call(x, resolve, reject);
 	    synchronous = false;
 
 	    if (promise && result === errorObj) {
@@ -8726,8 +8726,8 @@
 
 	var promise_array = function(Promise, INTERNAL, tryConvertToPromise,
 	    apiRejection, Proxyable) {
-	var util$$1 = util;
-	var isArray = util$$1.isArray;
+	var util$$2 = util;
+	var isArray = util$$2.isArray;
 
 	function toResolutionValue(val) {
 	    switch(val) {
@@ -8748,7 +8748,7 @@
 	    this._totalResolved = 0;
 	    this._init(undefined, -2);
 	}
-	util$$1.inherits(PromiseArray, Proxyable);
+	util$$2.inherits(PromiseArray, Proxyable);
 
 	PromiseArray.prototype.length = function () {
 	    return this._length;
@@ -8783,10 +8783,10 @@
 	            return this._cancel();
 	        }
 	    }
-	    values = util$$1.asArray(values);
+	    values = util$$2.asArray(values);
 	    if (values === null) {
 	        var err = apiRejection(
-	            "expecting an array or an iterable object but got " + util$$1.classString(values)).reason();
+	            "expecting an array or an iterable object but got " + util$$2.classString(values)).reason();
 	        this._promise._rejectCallback(err, false);
 	        return;
 	    }
@@ -8982,8 +8982,8 @@
 	var getDomain = Promise._getDomain;
 	var async = Promise._async;
 	var Warning = errors.Warning;
-	var util$$1 = util;
-	var canAttachTrace = util$$1.canAttachTrace;
+	var util$$2 = util;
+	var canAttachTrace = util$$2.canAttachTrace;
 	var unhandledRejectionHandled;
 	var possiblyUnhandledRejection;
 	var bluebirdFramePattern =
@@ -8994,19 +8994,19 @@
 	var formatStack = null;
 	var indentStackFrames = false;
 	var printWarning;
-	var debugging = !!(util$$1.env("BLUEBIRD_DEBUG") != 0 &&
+	var debugging = !!(util$$2.env("BLUEBIRD_DEBUG") != 0 &&
 	                        (false ||
-	                         util$$1.env("BLUEBIRD_DEBUG") ||
-	                         util$$1.env("NODE_ENV") === "development"));
+	                         util$$2.env("BLUEBIRD_DEBUG") ||
+	                         util$$2.env("NODE_ENV") === "development"));
 
-	var warnings = !!(util$$1.env("BLUEBIRD_WARNINGS") != 0 &&
-	    (debugging || util$$1.env("BLUEBIRD_WARNINGS")));
+	var warnings = !!(util$$2.env("BLUEBIRD_WARNINGS") != 0 &&
+	    (debugging || util$$2.env("BLUEBIRD_WARNINGS")));
 
-	var longStackTraces = !!(util$$1.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
-	    (debugging || util$$1.env("BLUEBIRD_LONG_STACK_TRACES")));
+	var longStackTraces = !!(util$$2.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
+	    (debugging || util$$2.env("BLUEBIRD_LONG_STACK_TRACES")));
 
-	var wForgottenReturn = util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
-	    (warnings || !!util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
+	var wForgottenReturn = util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
+	    (warnings || !!util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
 
 	Promise.prototype.suppressUnhandledRejections = function() {
 	    var target = this._target();
@@ -9078,7 +9078,7 @@
 	    var domain = getDomain();
 	    possiblyUnhandledRejection =
 	        typeof fn === "function" ? (domain === null ?
-	                                            fn : util$$1.domainBind(domain, fn))
+	                                            fn : util$$2.domainBind(domain, fn))
 	                                 : undefined;
 	};
 
@@ -9086,7 +9086,7 @@
 	    var domain = getDomain();
 	    unhandledRejectionHandled =
 	        typeof fn === "function" ? (domain === null ?
-	                                            fn : util$$1.domainBind(domain, fn))
+	                                            fn : util$$2.domainBind(domain, fn))
 	                                 : undefined;
 	};
 
@@ -9124,33 +9124,33 @@
 	    try {
 	        if (typeof CustomEvent === "function") {
 	            var event = new CustomEvent("CustomEvent");
-	            util$$1.global.dispatchEvent(event);
+	            util$$2.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = new CustomEvent(name.toLowerCase(), {
 	                    detail: event,
 	                    cancelable: true
 	                });
-	                return !util$$1.global.dispatchEvent(domEvent);
+	                return !util$$2.global.dispatchEvent(domEvent);
 	            };
 	        } else if (typeof Event === "function") {
 	            var event = new Event("CustomEvent");
-	            util$$1.global.dispatchEvent(event);
+	            util$$2.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = new Event(name.toLowerCase(), {
 	                    cancelable: true
 	                });
 	                domEvent.detail = event;
-	                return !util$$1.global.dispatchEvent(domEvent);
+	                return !util$$2.global.dispatchEvent(domEvent);
 	            };
 	        } else {
 	            var event = document.createEvent("CustomEvent");
 	            event.initCustomEvent("testingtheevent", false, true, {});
-	            util$$1.global.dispatchEvent(event);
+	            util$$2.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = document.createEvent("CustomEvent");
 	                domEvent.initCustomEvent(name.toLowerCase(), false, true,
 	                    event);
-	                return !util$$1.global.dispatchEvent(domEvent);
+	                return !util$$2.global.dispatchEvent(domEvent);
 	            };
 	        }
 	    } catch (e) {}
@@ -9160,21 +9160,21 @@
 	})();
 
 	var fireGlobalEvent = (function() {
-	    if (util$$1.isNode) {
+	    if (util$$2.isNode) {
 	        return function() {
 	            return process.emit.apply(process, arguments);
 	        };
 	    } else {
-	        if (!util$$1.global) {
+	        if (!util$$2.global) {
 	            return function() {
 	                return false;
 	            };
 	        }
 	        return function(name) {
 	            var methodName = "on" + name.toLowerCase();
-	            var method = util$$1.global[methodName];
+	            var method = util$$2.global[methodName];
 	            if (!method) return false;
-	            method.apply(util$$1.global, [].slice.call(arguments, 1));
+	            method.apply(util$$2.global, [].slice.call(arguments, 1));
 	            return true;
 	        };
 	    }
@@ -9237,7 +9237,7 @@
 	        config.warnings = !!warningsOption;
 	        wForgottenReturn = config.warnings;
 
-	        if (util$$1.isObject(warningsOption)) {
+	        if (util$$2.isObject(warningsOption)) {
 	            if ("wForgottenReturn" in warningsOption) {
 	                wForgottenReturn = !!warningsOption.wForgottenReturn;
 	            }
@@ -9300,7 +9300,7 @@
 	        executor(resolve, reject, function(onCancel) {
 	            if (typeof onCancel !== "function") {
 	                throw new TypeError("onCancel must be a function, got: " +
-	                                    util$$1.toString(onCancel));
+	                                    util$$2.toString(onCancel));
 	            }
 	            promise._attachCancellationCallback(onCancel);
 	        });
@@ -9314,7 +9314,7 @@
 
 	    var previousOnCancel = this._onCancel();
 	    if (previousOnCancel !== undefined) {
-	        if (util$$1.isArray(previousOnCancel)) {
+	        if (util$$2.isArray(previousOnCancel)) {
 	            previousOnCancel.push(onCancel);
 	        } else {
 	            this._setOnCancel([previousOnCancel, onCancel]);
@@ -9386,9 +9386,9 @@
 	            trace.attachExtraTrace(error);
 	        } else if (!error.__stackCleaned__) {
 	            var parsed = parseStackAndMessage(error);
-	            util$$1.notEnumerableProp(error, "stack",
+	            util$$2.notEnumerableProp(error, "stack",
 	                parsed.message + "\n" + parsed.stack.join("\n"));
-	            util$$1.notEnumerableProp(error, "__stackCleaned__", true);
+	            util$$2.notEnumerableProp(error, "__stackCleaned__", true);
 	        }
 	    }
 	}
@@ -9559,7 +9559,7 @@
 	function formatAndLogError(error, title, isSoft) {
 	    if (typeof console !== "undefined") {
 	        var message;
-	        if (util$$1.isObject(error)) {
+	        if (util$$2.isObject(error)) {
 	            var stack = error.stack;
 	            message = title + formatStack(stack, error);
 	        } else {
@@ -9606,7 +9606,7 @@
 	            "]";
 	    } else {
 	        str = obj && typeof obj.toString === "function"
-	            ? obj.toString() : util$$1.toString(obj);
+	            ? obj.toString() : util$$2.toString(obj);
 	        var ruselessToString = /\[object [a-zA-Z0-9$_]+\]/;
 	        if (ruselessToString.test(str)) {
 	            try {
@@ -9697,7 +9697,7 @@
 	    captureStackTrace(this, CapturedTrace);
 	    if (length > 32) this.uncycle();
 	}
-	util$$1.inherits(CapturedTrace, Error);
+	util$$2.inherits(CapturedTrace, Error);
 	Context.CapturedTrace = CapturedTrace;
 
 	CapturedTrace.prototype.uncycle = function() {
@@ -9762,8 +9762,8 @@
 	    }
 	    removeCommonRoots(stacks);
 	    removeDuplicateOrEmptyJumps(stacks);
-	    util$$1.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
-	    util$$1.notEnumerableProp(error, "__stackCleaned__", true);
+	    util$$2.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
+	    util$$2.notEnumerableProp(error, "__stackCleaned__", true);
 	};
 
 	var captureStackTrace = (function stackDetection() {
@@ -9843,12 +9843,12 @@
 	    printWarning = function (message) {
 	        console.warn(message);
 	    };
-	    if (util$$1.isNode && process.stderr.isTTY) {
+	    if (util$$2.isNode && process.stderr.isTTY) {
 	        printWarning = function(message, isSoft) {
 	            var color = isSoft ? "\u001b[33m" : "\u001b[31m";
 	            console.warn(color + message + "\u001b[0m\n");
 	        };
-	    } else if (!util$$1.isNode && typeof (new Error().stack) === "string") {
+	    } else if (!util$$2.isNode && typeof (new Error().stack) === "string") {
 	        printWarning = function(message, isSoft) {
 	            console.warn("%c" + message,
 	                        isSoft ? "color: darkorange" : "color: red");
@@ -9895,10 +9895,10 @@
 	};
 
 	var catch_filter = function(NEXT_FILTER) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var getKeys = es5.keys;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 
 	function catchFilter(instances, cb, promise) {
 	    return function(e) {
@@ -9918,7 +9918,7 @@
 	                } else if (matchesPredicate) {
 	                    return tryCatch(cb).call(boundTo, e);
 	                }
-	            } else if (util$$1.isObject(e)) {
+	            } else if (util$$2.isObject(e)) {
 	                var keys = getKeys(item);
 	                for (var j = 0; j < keys.length; ++j) {
 	                    var key = keys[j];
@@ -9937,9 +9937,9 @@
 	};
 
 	var _finally = function(Promise, tryConvertToPromise, NEXT_FILTER) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var CancellationError = Promise.CancellationError;
-	var errorObj = util$$1.errorObj;
+	var errorObj = util$$2.errorObj;
 	var catchFilter = catch_filter(NEXT_FILTER);
 
 	function PassThroughHandlerContext(promise, type, handler) {
@@ -10060,12 +10060,12 @@
 	            j = 0, i;
 	        for (i = 0; i < len - 1; ++i) {
 	            var item = arguments[i];
-	            if (util$$1.isObject(item)) {
+	            if (util$$2.isObject(item)) {
 	                catchInstances[j++] = item;
 	            } else {
 	                return Promise.reject(new TypeError(
 	                    "tapCatch statement predicate: "
-	                    + "expecting an object but got " + util$$1.classString(item)
+	                    + "expecting an object but got " + util$$2.classString(item)
 	                ));
 	            }
 	        }
@@ -10134,12 +10134,12 @@
 
 	var method =
 	function(Promise, INTERNAL, tryConvertToPromise, apiRejection, debug) {
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
 
 	Promise.method = function (fn) {
 	    if (typeof fn !== "function") {
-	        throw new Promise.TypeError("expecting a function but got " + util$$1.classString(fn));
+	        throw new Promise.TypeError("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    return function () {
 	        var ret = new Promise(INTERNAL);
@@ -10156,7 +10156,7 @@
 
 	Promise.attempt = Promise["try"] = function (fn) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    var ret = new Promise(INTERNAL);
 	    ret._captureStackTrace();
@@ -10166,7 +10166,7 @@
 	        debug.deprecated("calling Promise.try with more than 1 argument");
 	        var arg = arguments[1];
 	        var ctx = arguments[2];
-	        value = util$$1.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
+	        value = util$$2.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
 	                                  : tryCatch(fn).call(ctx, arg);
 	    } else {
 	        value = tryCatch(fn)();
@@ -10179,7 +10179,7 @@
 	};
 
 	Promise.prototype._resolveFromSyncValue = function (value) {
-	    if (value === util$$1.errorObj) {
+	    if (value === util$$2.errorObj) {
 	        this._rejectCallback(value.e, false);
 	    } else {
 	        this._resolveCallback(value, true);
@@ -10255,9 +10255,9 @@
 	};
 
 	var cancel = function(Promise, PromiseArray, apiRejection, debug) {
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 	var async = Promise._async;
 
 	Promise.prototype["break"] = Promise.prototype.cancel = function() {
@@ -10345,7 +10345,7 @@
 	};
 
 	Promise.prototype._doInvokeOnCancel = function(onCancelCallback, internalOnly) {
-	    if (util$$1.isArray(onCancelCallback)) {
+	    if (util$$2.isArray(onCancelCallback)) {
 	        for (var i = 0; i < onCancelCallback.length; ++i) {
 	            this._doInvokeOnCancel(onCancelCallback[i], internalOnly);
 	        }
@@ -10535,10 +10535,10 @@
 	var join =
 	function(Promise, PromiseArray, tryConvertToPromise, INTERNAL, async,
 	         getDomain) {
-	var util$$1 = util;
-	var canEvaluate = util$$1.canEvaluate;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var util$$2 = util;
+	var canEvaluate = util$$2.canEvaluate;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 	var reject;
 
 	{
@@ -10682,7 +10682,7 @@
 	                    if (holder.asyncNeeded) {
 	                        var domain = getDomain();
 	                        if (domain !== null) {
-	                            holder.fn = util$$1.domainBind(domain, holder.fn);
+	                            holder.fn = util$$2.domainBind(domain, holder.fn);
 	                        }
 	                    }
 	                    ret._setAsyncGuaranteed();
@@ -10707,16 +10707,16 @@
 	                          INTERNAL,
 	                          debug) {
 	var getDomain = Promise._getDomain;
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 	var async = Promise._async;
 
 	function MappingPromiseArray(promises, fn, limit, _filter) {
 	    this.constructor$(promises);
 	    this._promise._captureStackTrace();
 	    var domain = getDomain();
-	    this._callback = domain === null ? fn : util$$1.domainBind(domain, fn);
+	    this._callback = domain === null ? fn : util$$2.domainBind(domain, fn);
 	    this._preservedValues = _filter === INTERNAL
 	        ? new Array(this.length())
 	        : null;
@@ -10725,7 +10725,7 @@
 	    this._queue = [];
 	    async.invoke(this._asyncInit, this, undefined);
 	}
-	util$$1.inherits(MappingPromiseArray, PromiseArray);
+	util$$2.inherits(MappingPromiseArray, PromiseArray);
 
 	MappingPromiseArray.prototype._asyncInit = function() {
 	    this._init$(undefined, -2);
@@ -10834,7 +10834,7 @@
 
 	function map(promises, fn, options, _filter) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	    }
 
 	    var limit = 0;
@@ -10843,13 +10843,13 @@
 	            if (typeof options.concurrency !== "number") {
 	                return Promise.reject(
 	                    new TypeError("'concurrency' must be a number but it is " +
-	                                    util$$1.classString(options.concurrency)));
+	                                    util$$2.classString(options.concurrency)));
 	            }
 	            limit = options.concurrency;
 	        } else {
 	            return Promise.reject(new TypeError(
 	                            "options argument must be an object but it is " +
-	                             util$$1.classString(options)));
+	                             util$$2.classString(options)));
 	        }
 	    }
 	    limit = typeof limit === "number" &&
@@ -10876,9 +10876,9 @@
 	}
 
 	var call_get = function(Promise) {
-	var util$$1 = util;
-	var canEvaluate = util$$1.canEvaluate;
-	var isIdentifier = util$$1.isIdentifier;
+	var util$$2 = util;
+	var canEvaluate = util$$2.canEvaluate;
+	var isIdentifier = util$$2.isIdentifier;
 
 	var getMethodCaller;
 	var getGetter;
@@ -10939,8 +10939,8 @@
 	    var fn;
 	    if (obj != null) fn = obj[methodName];
 	    if (typeof fn !== "function") {
-	        var message = "Object " + util$$1.classString(obj) + " has no method '" +
-	            util$$1.toString(methodName) + "'";
+	        var message = "Object " + util$$2.classString(obj) + " has no method '" +
+	            util$$2.toString(methodName) + "'";
 	        throw new Promise.TypeError(message);
 	    }
 	    return fn;
@@ -10993,11 +10993,11 @@
 
 	var using = function (Promise, apiRejection, tryConvertToPromise,
 	    createContext, INTERNAL, debug) {
-	    var util$$1 = util;
+	    var util$$2 = util;
 	    var TypeError = errors.TypeError;
 	    var inherits = util.inherits;
-	    var errorObj = util$$1.errorObj;
-	    var tryCatch = util$$1.tryCatch;
+	    var errorObj = util$$2.errorObj;
+	    var tryCatch = util$$2.tryCatch;
 	    var NULL = {};
 
 	    function thrower(e) {
@@ -11120,7 +11120,7 @@
 	                        "you must pass at least 2 arguments to Promise.using");
 	        var fn = arguments[len - 1];
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	        }
 	        var input;
 	        var spreadArgs = true;
@@ -11218,7 +11218,7 @@
 	};
 
 	var timers$1 = function(Promise, INTERNAL, debug) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var TimeoutError = Promise.TimeoutError;
 
 	function HandleWrapper(handle)  {
@@ -11266,7 +11266,7 @@
 	    } else {
 	        err = new TimeoutError(message);
 	    }
-	    util$$1.markAsOriginatingFromRejection(err);
+	    util$$2.markAsOriginatingFromRejection(err);
 	    promise._attachExtraTrace(err);
 	    promise._reject(err);
 
@@ -11316,11 +11316,11 @@
 	                          tryConvertToPromise,
 	                          Proxyable,
 	                          debug) {
-	var errors$$1 = errors;
-	var TypeError = errors$$1.TypeError;
-	var util$$1 = util;
-	var errorObj = util$$1.errorObj;
-	var tryCatch = util$$1.tryCatch;
+	var errors$$2 = errors;
+	var TypeError = errors$$2.TypeError;
+	var util$$2 = util;
+	var errorObj = util$$2.errorObj;
+	var tryCatch = util$$2.tryCatch;
 	var yieldHandlers = [];
 
 	function promiseFromYieldHandler(value, yieldHandlers, traceParent) {
@@ -11363,7 +11363,7 @@
 	    this._yieldedPromise = null;
 	    this._cancellationPhase = false;
 	}
-	util$$1.inherits(PromiseSpawn, Proxyable);
+	util$$2.inherits(PromiseSpawn, Proxyable);
 
 	PromiseSpawn.prototype._isResolved = function() {
 	    return this._promise === null;
@@ -11516,7 +11516,7 @@
 
 	Promise.coroutine.addYieldHandler = function(fn) {
 	    if (typeof fn !== "function") {
-	        throw new TypeError("expecting a function but got " + util$$1.classString(fn));
+	        throw new TypeError("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    yieldHandlers.push(fn);
 	};
@@ -11534,14 +11534,14 @@
 	};
 
 	var nodeify = function(Promise) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var async = Promise._async;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 
 	function spreadAdapter(val, nodeback) {
 	    var promise = this;
-	    if (!util$$1.isArray(val)) return successAdapter.call(promise, val, nodeback);
+	    if (!util$$2.isArray(val)) return successAdapter.call(promise, val, nodeback);
 	    var ret =
 	        tryCatch(nodeback).apply(promise._boundValue(), [null].concat(val));
 	    if (ret === errorObj) {
@@ -11593,11 +11593,11 @@
 
 	var promisify = function(Promise, INTERNAL) {
 	var THIS = {};
-	var util$$1 = util;
+	var util$$2 = util;
 	var nodebackForPromise = nodeback;
-	var withAppended = util$$1.withAppended;
-	var maybeWrapAsError = util$$1.maybeWrapAsError;
-	var canEvaluate = util$$1.canEvaluate;
+	var withAppended = util$$2.withAppended;
+	var maybeWrapAsError = util$$2.maybeWrapAsError;
+	var canEvaluate = util$$2.canEvaluate;
 	var TypeError = errors.TypeError;
 	var defaultSuffix = "Async";
 	var defaultPromisified = {__isPromisified__: true};
@@ -11613,7 +11613,7 @@
 	var noCopyPropsPattern = new RegExp("^(?:" + noCopyProps.join("|") + ")$");
 
 	var defaultFilter = function(name) {
-	    return util$$1.isIdentifier(name) &&
+	    return util$$2.isIdentifier(name) &&
 	        name.charAt(0) !== "_" &&
 	        name !== "constructor";
 	};
@@ -11632,7 +11632,7 @@
 	}
 
 	function hasPromisified(obj, key, suffix) {
-	    var val = util$$1.getDataPropertyOrDefault(obj, key + suffix,
+	    var val = util$$2.getDataPropertyOrDefault(obj, key + suffix,
 	                                            defaultPromisified);
 	    return val ? isPromisified(val) : false;
 	}
@@ -11652,7 +11652,7 @@
 	}
 
 	function promisifiableMethods(obj, suffix, suffixRegexp, filter) {
-	    var keys = util$$1.inheritedDataKeys(obj);
+	    var keys = util$$2.inheritedDataKeys(obj);
 	    var ret = [];
 	    for (var i = 0; i < keys.length; ++i) {
 	        var key = keys[i];
@@ -11689,11 +11689,11 @@
 	};
 
 	var argumentSequence = function(argumentCount) {
-	    return util$$1.filledRange(argumentCount, "_arg", "");
+	    return util$$2.filledRange(argumentCount, "_arg", "");
 	};
 
 	var parameterDeclaration = function(parameterCount) {
-	    return util$$1.filledRange(
+	    return util$$2.filledRange(
 	        Math.max(parameterCount, 3), "_arg", "");
 	};
 
@@ -11790,9 +11790,9 @@
 	                    withAppended,
 	                    maybeWrapAsError,
 	                    nodebackForPromise,
-	                    util$$1.tryCatch,
-	                    util$$1.errorObj,
-	                    util$$1.notEnumerableProp,
+	                    util$$2.tryCatch,
+	                    util$$2.errorObj,
+	                    util$$2.notEnumerableProp,
 	                    INTERNAL);
 	};
 	}
@@ -11819,7 +11819,7 @@
 	        if (!promise._isFateSealed()) promise._setAsyncGuaranteed();
 	        return promise;
 	    }
-	    util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
+	    util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
 	    return promisified;
 	}
 
@@ -11844,11 +11844,11 @@
 	                return makeNodePromisified(key, THIS, key,
 	                                           fn, suffix, multiArgs);
 	            });
-	            util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
+	            util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
 	            obj[promisifiedKey] = promisified;
 	        }
 	    }
-	    util$$1.toFastProperties(obj);
+	    util$$2.toFastProperties(obj);
 	    return obj;
 	}
 
@@ -11859,7 +11859,7 @@
 
 	Promise.promisify = function (fn, options) {
 	    if (typeof fn !== "function") {
-	        throw new TypeError("expecting a function but got " + util$$1.classString(fn));
+	        throw new TypeError("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    if (isPromisified(fn)) {
 	        return fn;
@@ -11868,7 +11868,7 @@
 	    var receiver = options.context === undefined ? THIS : options.context;
 	    var multiArgs = !!options.multiArgs;
 	    var ret = promisify(fn, receiver, multiArgs);
-	    util$$1.copyDescriptors(fn, ret, propsFilter);
+	    util$$2.copyDescriptors(fn, ret, propsFilter);
 	    return ret;
 	};
 
@@ -11885,15 +11885,15 @@
 	    var promisifier = options.promisifier;
 	    if (typeof promisifier !== "function") promisifier = makeNodePromisified;
 
-	    if (!util$$1.isIdentifier(suffix)) {
+	    if (!util$$2.isIdentifier(suffix)) {
 	        throw new RangeError("suffix must be a valid identifier\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
 	    }
 
-	    var keys = util$$1.inheritedDataKeys(target);
+	    var keys = util$$2.inheritedDataKeys(target);
 	    for (var i = 0; i < keys.length; ++i) {
 	        var value = target[keys[i]];
 	        if (keys[i] !== "constructor" &&
-	            util$$1.isClass(value)) {
+	            util$$2.isClass(value)) {
 	            promisifyAll(value.prototype, suffix, filter, promisifier,
 	                multiArgs);
 	            promisifyAll(value, suffix, filter, promisifier, multiArgs);
@@ -11906,9 +11906,9 @@
 
 	var props = function(
 	    Promise, PromiseArray, tryConvertToPromise, apiRejection) {
-	var util$$1 = util;
-	var isObject = util$$1.isObject;
-	var es5$$1 = es5;
+	var util$$2 = util;
+	var isObject = util$$2.isObject;
+	var es5$$2 = es5;
 	var Es6Map;
 	if (typeof Map === "function") Es6Map = Map;
 
@@ -11949,7 +11949,7 @@
 	        entries = mapToEntries(obj);
 	        isMap = true;
 	    } else {
-	        var keys = es5$$1.keys(obj);
+	        var keys = es5$$2.keys(obj);
 	        var len = keys.length;
 	        entries = new Array(len * 2);
 	        for (var i = 0; i < len; ++i) {
@@ -11962,7 +11962,7 @@
 	    this._isMap = isMap;
 	    this._init$(undefined, isMap ? -6 : -3);
 	}
-	util$$1.inherits(PropertiesPromiseArray, PromiseArray);
+	util$$2.inherits(PropertiesPromiseArray, PromiseArray);
 
 	PropertiesPromiseArray.prototype._init = function () {};
 
@@ -12024,7 +12024,7 @@
 
 	var race = function(
 	    Promise, INTERNAL, tryConvertToPromise, apiRejection) {
-	var util$$1 = util;
+	var util$$2 = util;
 
 	var raceLater = function (promise) {
 	    return promise.then(function(array) {
@@ -12038,9 +12038,9 @@
 	    if (maybePromise instanceof Promise) {
 	        return raceLater(maybePromise);
 	    } else {
-	        promises = util$$1.asArray(promises);
+	        promises = util$$2.asArray(promises);
 	        if (promises === null)
-	            return apiRejection("expecting an array or an iterable object but got " + util$$1.classString(promises));
+	            return apiRejection("expecting an array or an iterable object but got " + util$$2.classString(promises));
 	    }
 
 	    var ret = new Promise(INTERNAL);
@@ -12078,13 +12078,13 @@
 	                          INTERNAL,
 	                          debug) {
 	var getDomain = Promise._getDomain;
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
 
 	function ReductionPromiseArray(promises, fn, initialValue, _each) {
 	    this.constructor$(promises);
 	    var domain = getDomain();
-	    this._fn = domain === null ? fn : util$$1.domainBind(domain, fn);
+	    this._fn = domain === null ? fn : util$$2.domainBind(domain, fn);
 	    if (initialValue !== undefined) {
 	        initialValue = Promise.resolve(initialValue);
 	        initialValue._attachCancellationCallback(this);
@@ -12101,7 +12101,7 @@
 	    this._promise._captureStackTrace();
 	    this._init$(undefined, -5);
 	}
-	util$$1.inherits(ReductionPromiseArray, PromiseArray);
+	util$$2.inherits(ReductionPromiseArray, PromiseArray);
 
 	ReductionPromiseArray.prototype._gotAccum = function(accum) {
 	    if (this._eachValues !== undefined && 
@@ -12199,7 +12199,7 @@
 
 	function reduce(promises, fn, initialValue, _each) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    var array = new ReductionPromiseArray(promises, fn, initialValue, _each);
 	    return array.promise();
@@ -12246,12 +12246,12 @@
 	var settle =
 	    function(Promise, PromiseArray, debug) {
 	var PromiseInspection = Promise.PromiseInspection;
-	var util$$1 = util;
+	var util$$2 = util;
 
 	function SettledPromiseArray(values) {
 	    this.constructor$(values);
 	}
-	util$$1.inherits(SettledPromiseArray, PromiseArray);
+	util$$2.inherits(SettledPromiseArray, PromiseArray);
 
 	SettledPromiseArray.prototype._promiseResolved = function (index, inspection) {
 	    this._values[index] = inspection;
@@ -12288,10 +12288,10 @@
 
 	var some =
 	function(Promise, PromiseArray, apiRejection) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var RangeError = errors.RangeError;
 	var AggregateError = errors.AggregateError;
-	var isArray = util$$1.isArray;
+	var isArray = util$$2.isArray;
 	var CANCELLATION = {};
 
 
@@ -12301,7 +12301,7 @@
 	    this._unwrap = false;
 	    this._initialized = false;
 	}
-	util$$1.inherits(SomePromiseArray, PromiseArray);
+	util$$2.inherits(SomePromiseArray, PromiseArray);
 
 	SomePromiseArray.prototype._init = function () {
 	    if (!this._initialized) {
@@ -20215,9 +20215,9 @@
 
 	  // API
 	  options = options || {};
-	  var url = options.url;
+	  var url$$1 = options.url;
 
-	  var parsedUrl = Url.parse(url);
+	  var parsedUrl = Url.parse(url$$1);
 	  var rootDir = path.parse(parsedUrl.path || parsedUrl.pathname || '').dir;
 	  var origin = parsedUrl.protocol + '//' + parsedUrl.host;
 
@@ -20272,7 +20272,7 @@
 	  traverseData3d(structure.data3d, function (data3d) {
 
 	    // map typed arrays to payload area in file buffer
-	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url);
+	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url$$1);
 
 	    //  convert relative material keys into absolute one
 	    if (origin && data3d.materials) convertTextureKeys(data3d, origin, rootDir);
@@ -20341,7 +20341,7 @@
 
 	}
 
-	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url) {
+	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url$$1) {
 
 	  var mesh, i, l, meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
 
@@ -20371,7 +20371,7 @@
 	    }
 
 	    // add cache key
-	    if (url) mesh.cacheKey = url + ':' + meshKeys[i];
+	    if (url$$1) mesh.cacheKey = url$$1 + ':' + meshKeys[i];
 
 	  }
 
@@ -24950,7 +24950,8 @@
 	  var args = {
 	    colorCoded: false,
 	    floorPlanUrl: url,
-	    pixelsPerMeter: pixelsPerMeter
+	    pixelsPerMeter: pixelsPerMeter,
+	    colorCoded: true
 	  };
 
 	  return callService('Recognizer.recognize', {arguments: args})
