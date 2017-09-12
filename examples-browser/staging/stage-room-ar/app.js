@@ -1,3 +1,10 @@
+// set api keys
+io3d.config({
+  // home staging need api keys
+  // get yours from https://3d.io
+  publishableApiKey: null
+})
+
 // UI elements
 var toolButtons = document.querySelectorAll('.btn-tool')
 var styleButtons = document.querySelectorAll('.btn-style')
