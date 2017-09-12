@@ -14,39 +14,53 @@ var config = {
     '3 seater',
     '4 seater'
   ],
-  'edgeAligned': ['sofa', 'shelf', 'sideboad', 'double bed', 'single bed', 'bed']
+  'tag_white_list': [
+    'shelf',
+    'armchair',
+    'sofa',
+    'plant',
+    'sideboard',
+    'coffee table',
+    'dining table',
+    'round',
+    'TV',
+    'lamps',
+    'free standing lamp',
+    'living',
+    'dining',
+    'relaxing',
+    'picture'
+  ],
+  'edgeAligned': ['sofa', 'shelf', 'armchair', 'sideboad', 'double bed', 'single bed', 'bed'],
 }
 
-export default function getAlternatives(id, options) {
-  console.log('get alternatives for', id)
+var getAlternatives = function(id, options) {
   if (typeof id !== 'string') return Promise.reject('invalid input')
 
   options = options || {}
-  var data = {
-    userQuery: options.query || null,
-    searchCount: 0,
-    margin: config['default_margin'],
-    furnitureInfo: null
-  }
 
+  this.userQuery = options.query || null
+  this.searchCount = 0
+  this.margin = config['default_margin']
+  this.furnitureInfo = null
+
+  var self = this
   return getFurnitureInfo(id)
     .then(function(info){
-      data.furnitureInfo = info
-      //margin = config['default_margin']
-      //searchCount = 0
-      var searchQuery = getQuery(data)
+      self.furnitureInfo = info
+      var searchQuery = self.getQuery(self.furnitureInfo)
       return search(searchQuery)
     })
     .then(function(result) {
-      return verifyResult(result, id, data)
+      return self.verifyResult(result, id)
     })
     .catch(function(error) {
       console.error(error)
     })
 }
 
-function verifyResult(result, id, data) {
-  if (data.searchCount > 10 ) {
+getAlternatives.prototype.verifyResult = function(result, id) {
+  if (this.searchCount > 10 ) {
     return Promise.reject(new Error('No furniture was found'))
   }
   var rawResult = result.filter(function(el){
@@ -54,64 +68,68 @@ function verifyResult(result, id, data) {
   });
   // if we didn't find anything in the first place
   // let's increase dimensions a bit
-  if (rawResult.length < 2) {
-    if (data.searchCount >= 3) data.margin += 0.10
-    var searchQuery = getQuery(data);
-    data.searchCount += 1
+  var self = this
+  if (rawResult.length < 1) {
+    if (this.searchCount >= 3) this.margin += 0.10
+    var searchQuery = this.getQuery(this.furnitureInfo);
+    this.searchCount += 1
     return search(searchQuery)
       .then(function(result) {
-        return verifyResult(result, id, data)
+        return self.verifyResult(result, id)
       })
       .catch(function(error) {
-        console.error(error)
+        console.error('catch', searchQuery.query, error)
+        return Promise.reject('No alternatives were found')
       })
   } else {
     var cleanResult = rawResult.map(normalizeFurnitureInfo).map(function(res) {
       return {
         furniture: res,
-        offset: getOffset(data.furnitureInfo, res)
+        offset: getOffset(self.furnitureInfo, res)
       }
     })
     return Promise.resolve(cleanResult)
   }
 }
 
-function search(searchQuery) {
-  // let's make sure we don't have trailing or double spaces
-  searchQuery.query = searchQuery.query.trim().replace(/\s+/g, ' ')
-  console.log(searchQuery.query)
-  return callService('Product.search', {searchQuery: searchQuery, limit: 200})
-}
-
-function getQuery(data) {
+getAlternatives.prototype.getQuery = function(info) {
   var query = config['default_search']
-  var tags = data.furnitureInfo.tags.filter(function(tag) {
+  var tags = this.searchCount < 6 ? info.tags.concat(info.categories) : info.tags
+  tags = tags.filter(function(tag) {
     // removes blacklisted tags as well as 1P, 2P, ...
-    return !config['tag_black_list'].includes(tag) && !/^\d+P$/.test(tag)
+    return config['tag_black_list'].indexOf(tag) < 0 && !/^\d+P$/.test(tag)
   })
-
-  // start removing tags from query when increasing dimensions didn't work
-  if (data.searchCount > 1) tags = tags.slice(0, (tags.length - data.searchCount + 1))
+  // remove secondary tags from query when increasing dimensions didn't work
+  if (this.searchCount > 2) {
+    tags = tags.filter(function(tag) {
+      return config['tag_white_list'].indexOf(tag) > -1
+    })
+  }
 
   query += ' ' + tags.join(' ')
-
-  var categories = data.furnitureInfo.categories
-  var dim = data.furnitureInfo.boundingBox
-
-  query += ' categories:' + categories[0]
-  if (data.userQuery) query += ' ' + data.userQuery
-
+  if (this.userQuery && tags.indexOf('TV') < 0) query += ' ' + this.userQuery
   var searchQuery = {query: query};
+
   // add dimension search params if source provides dimensions
+  var dim = info.boundingBox
+  var self = this
   if (dim) {
     ['length', 'height', 'width'].forEach(function(d) {
-      if (dim[d] -data.margin > 0) {
-        searchQuery[d + 'Min'] = Math.round((dim[d] - data.margin) * 1e2) / 1e2
-        searchQuery[d + 'Max'] = Math.round((dim[d] + data.margin) * 1e2) / 1e2
+      if (dim[d] -self.margin > 0) {
+        searchQuery[d + 'Min'] = Math.round((dim[d] - self.margin) * 1e2) / 1e2
+        searchQuery[d + 'Max'] = Math.round((dim[d] + self.margin) * 1e2) / 1e2
       }
     })
   }
   return searchQuery
+}
+
+// helper
+
+function search(searchQuery) {
+  // let's make sure we don't have trailing or double spaces
+  searchQuery.query = searchQuery.query.trim().replace(/\s+/g, ' ')
+  return callService('Product.search', {searchQuery: searchQuery, limit: 200})
 }
 
 // get offset based on bounding boxes
@@ -140,3 +158,5 @@ function getOffset(a, b) {
   }
   return offset
 }
+
+export default getAlternatives

@@ -1,4 +1,4 @@
-import getFurnitureAlternatives from './get-furniture-alternatives.js'
+import GetFurnitureAlternatives from './get-furniture-alternatives.js'
 import getSceneStructureFromHtml from '../scene/structure/from-html.js'
 import getHtmlFromSceneStructure from '../scene/structure/to-html.js'
 import normalizeSceneStructure from '../scene/structure/normalize.js'
@@ -31,7 +31,7 @@ export default function replaceFurniture (input, options) {
 
       var promises = []
       Object.keys(furnitureIds).forEach(function(id) {
-        promises.push(getFurnitureAlternatives(id, options))
+        promises.push(new GetFurnitureAlternatives(id, options))
       })
 
       return Promise.all(promises)
@@ -105,7 +105,7 @@ function updateElementsById(sceneStructure, id, replacement) {
 
   sceneStructure = sceneStructure.map(function(element3d) {
     // furniture id is stored in src param
-    if (element3d.type === 'interior' && element3d.src.substring(1) === id) {
+    if (element3d.type === 'interior' && element3d.src.substring(1) === id && replacement.furniture) {
       // apply new id
       element3d.src = '!' + replacement.furniture.id
       // compute new position for items that differ in size and mesh origin
