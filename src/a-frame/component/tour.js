@@ -96,8 +96,9 @@ export default {
     // compute animation time
     var t = Math.round((this.data.move || 3000) / 6 * (d + angle / 30))
     if (t > 10000) t = 10000
+
     // prevent zero length animation
-    if (!t) return
+    if (!t) return this._nextWaypoint()
 
     entity.components.animation__move.pauseAnimation()
     entity.components.animation__turn.pauseAnimation()
