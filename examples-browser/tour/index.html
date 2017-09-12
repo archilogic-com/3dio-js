@@ -82,16 +82,13 @@
 <nav>
 
 <script>
-document.querySelectorAll('.btn-toggle-play').forEach(function(el){
-  el.onclick=function(){
-      var button = el;
-      if (button.classList.contains('playing')) {
-        button.classList.remove('playing')
-        document.querySelector('[camera]').components['tour'].pauseTour()
-      } else {
-        button.classList.add('playing')
-        document.querySelector('[camera]').components['tour'].playTour()
-      }
+var button = document.querySelector('.btn-toggle-play')
+var tour = document.querySelector('[camera]').components['tour']
+button.addEventListener('click', function () {
+  if (button.classList.toggle('playing')) {
+    tour.playTour()
+  } else {
+    tour.pauseTour()
   }
 });
 </script>

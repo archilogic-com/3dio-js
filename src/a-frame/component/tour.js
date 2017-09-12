@@ -36,11 +36,17 @@ export default {
   },
 
   playTour: function () {
-    this._isPaused = false
     if (this._isPlaying) {
-      this.el.dispatchEvent(new CustomEvent('resumeTour'))
+      if(this._isChangingAnimation) {
+        clearTimeout(this._nextAnimationTimeout)
+        this.goTo(this._waypoints[this._currentWayPoint].getAttribute('tour-waypoint'), this._isPlaying)
+      } else {
+        this.el.dispatchEvent(new CustomEvent('resumeTour'))
+      }
+      this._isPaused = false
     } else {
       this._isPlaying = true
+      this._isPaused = false
       this.el.addEventListener('animation__move-complete', this._nextWaypointHandler)
       var next = this._waypoints[++this._currentWayPoint]
       if (next) this.goTo(next.getAttribute('tour-waypoint'), true)
@@ -103,10 +109,9 @@ export default {
     entity.components.animation__turn.data.from = startRotation
     entity.components.animation__turn.data.to = newRotation
     entity.components.animation__turn.update()
-    if (!this._isPaused) {
-      entity.components.animation__move.resumeAnimation()
-      entity.components.animation__turn.resumeAnimation()
-    }
+    entity.components.animation__move.resumeAnimation()
+    entity.components.animation__turn.resumeAnimation()
+    this._isChangingAnimation = false
   },
 
   _nextWaypoint: function () {
@@ -115,8 +120,9 @@ export default {
       if (!this.data.loop) return
       this._currentWayPoint = -1
     }
+    this._isChangingAnimation = true
     var next = this._waypoints[++this._currentWayPoint]
-    setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying) }.bind(this), this.data.wait || 0)
+    this._nextAnimationTimeout = setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying) }.bind(this), this.data.wait || 0)
   }
 }
 
