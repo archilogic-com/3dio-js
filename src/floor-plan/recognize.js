@@ -2,7 +2,6 @@ import callService  from '../utils/services/call.js'
 import normalizeSceneStructure from '../scene/structure/normalize.js'
 
 export default function recognize (args) {
-  console.log('starting recognition')
   var el = typeof args === 'string' ? document.querySelector(args) : null
 
   var url, width, height, pixelsPerMeter
@@ -16,8 +15,6 @@ export default function recognize (args) {
     // TODO: fetch image directly to make sure we get it
     var texture = el.components.material.material.map.image
     pixelsPerMeter = getPixelPerMeterRatio(texture.width, texture.height, width, height)
-
-    console.log(url, width, height, pixelsPerMeter)
 
   } else {
     return

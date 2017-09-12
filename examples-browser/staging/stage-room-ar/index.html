@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>homeStaging demo</title>
+  <!-- aframe library -->
+  <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+  <script src="https://rawgit.com/google-ar/three.ar.js/master/dist/three.ar.js"></script>
+  <script src="https://rawgit.com/chenzlabs/aframe-ar/master/dist/aframe-ar.js"></script>
+  <script src="../../../build/3dio.js?pk=acef26ed-bda9-48ac-baa4-822501dcd046"></script>
+  <style>
+    .controls {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 100px;
+      z-index: 1000;
+      display: none;
+    }
+    button {
+      display: inline-block;
+      border: solid 2px black;
+      outline: none;
+      background: rgba(255,255,255,0.2);
+      color: black;
+      font-weight: bold;
+      font-size: 16px;
+      letter-spacing: 1px;
+      margin: 0 0 6px 0;
+      padding: 3px 10px;
+      width: 80px;
+      cursor: pointer;
+    }
+    button:hover, button.active {
+      background: #222;
+      color: white;
+    }
+    #styles {
+      display: none;
+    }
+  </style>
+  <script src="./line-element.js"></script>
+  <script>
+    AFRAME.registerComponent('shadow-material', {
+      init: function () {
+        this.material = this.el.getOrCreateObject3D('mesh').material = new THREE.ShadowMaterial();
+        this.material.opacity = 0.3;
+      }
+    });
+  </script>
+</head>
+<body>
+  <div class="controls">
+    <div id="tools">
+      <!-- tools to draw basic floor plan -->
+      <button class="btn-tool" id="wall">wall</button>
+      <button class="btn-tool" id="window">window</button>
+      <button class="btn-tool" id="door">door</button>
+    </div>
+    <button id="furnish">furnish</button>
+    <div id="styles">
+      <!-- style filters for furnishings -->
+      <button class="btn-style" id="nordic">nordic</button>
+      <button class="btn-style" id="minimal">minimal</button>
+      <button class="btn-style" id="urban">urban</button>
+    </div>
+  </div>
+  <a-scene ar shadow="type: pcfsoft">
+    <a-entity light="type:directional; castShadow:true; intensity:0.5; shadowCameraTop:10;" position="0 2 0"></a-entity>
+    <a-entity light="type:ambient; color:#bbb"></a-entity>
+    <a-plane class="collidable" width="50" height="50" rotation="-90 0 0" shadow="receive:true" material="color:#0c9; opacity:0.2"></a-plane>
+    <a-entity id="furnishings"></a-entity>
+    <a-entity id="drawing"></a-entity>
+    <a-camera look-controls>
+      <a-entity id="raycaster"
+                cursor="rayOrigin: mouse; fuse:false;"
+                position="0 0 -1"
+                visible="false"
+                raycaster="objects: .collidable"
+                material="color: black; shader: flat">
+      </a-entity>
+    </a-camera>
+  </a-scene>
+  <script src="./app.js"></script>
+</body>
+</html>

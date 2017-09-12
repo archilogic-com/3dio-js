@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.65
- * @date 2017/09/11 15:25
- * @branch master
- * @commit 7eba29144a40cdf7a29e5f6ac22eda0a93eea046
+ * @date 2017/09/12 02:25
+ * @branch io3d.homeStaging.replaceFurniture
+ * @commit 19abbc7d927b16a789e61b489aed5be6abce5572
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/11 15:25', GIT_BRANCH = 'master', GIT_COMMIT = '7eba29144a40cdf7a29e5f6ac22eda0a93eea046'
+	var BUILD_DATE='2017/09/12 02:25', GIT_BRANCH = 'io3d.homeStaging.replaceFurniture', GIT_COMMIT = '19abbc7d927b16a789e61b489aed5be6abce5572'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.65";
@@ -8639,9 +8639,9 @@
 	};
 
 	var thenables = function(Promise, INTERNAL) {
-	var util$$2 = util;
-	var errorObj = util$$2.errorObj;
-	var isObject = util$$2.isObject;
+	var util$$1 = util;
+	var errorObj = util$$1.errorObj;
+	var isObject = util$$1.isObject;
 
 	function tryConvertToPromise(obj, context) {
 	    if (isObject(obj)) {
@@ -8699,7 +8699,7 @@
 	    promise._captureStackTrace();
 	    if (context) context._popContext();
 	    var synchronous = true;
-	    var result = util$$2.tryCatch(then).call(x, resolve, reject);
+	    var result = util$$1.tryCatch(then).call(x, resolve, reject);
 	    synchronous = false;
 
 	    if (promise && result === errorObj) {
@@ -8726,8 +8726,8 @@
 
 	var promise_array = function(Promise, INTERNAL, tryConvertToPromise,
 	    apiRejection, Proxyable) {
-	var util$$2 = util;
-	var isArray = util$$2.isArray;
+	var util$$1 = util;
+	var isArray = util$$1.isArray;
 
 	function toResolutionValue(val) {
 	    switch(val) {
@@ -8748,7 +8748,7 @@
 	    this._totalResolved = 0;
 	    this._init(undefined, -2);
 	}
-	util$$2.inherits(PromiseArray, Proxyable);
+	util$$1.inherits(PromiseArray, Proxyable);
 
 	PromiseArray.prototype.length = function () {
 	    return this._length;
@@ -8783,10 +8783,10 @@
 	            return this._cancel();
 	        }
 	    }
-	    values = util$$2.asArray(values);
+	    values = util$$1.asArray(values);
 	    if (values === null) {
 	        var err = apiRejection(
-	            "expecting an array or an iterable object but got " + util$$2.classString(values)).reason();
+	            "expecting an array or an iterable object but got " + util$$1.classString(values)).reason();
 	        this._promise._rejectCallback(err, false);
 	        return;
 	    }
@@ -8982,8 +8982,8 @@
 	var getDomain = Promise._getDomain;
 	var async = Promise._async;
 	var Warning = errors.Warning;
-	var util$$2 = util;
-	var canAttachTrace = util$$2.canAttachTrace;
+	var util$$1 = util;
+	var canAttachTrace = util$$1.canAttachTrace;
 	var unhandledRejectionHandled;
 	var possiblyUnhandledRejection;
 	var bluebirdFramePattern =
@@ -8994,19 +8994,19 @@
 	var formatStack = null;
 	var indentStackFrames = false;
 	var printWarning;
-	var debugging = !!(util$$2.env("BLUEBIRD_DEBUG") != 0 &&
+	var debugging = !!(util$$1.env("BLUEBIRD_DEBUG") != 0 &&
 	                        (false ||
-	                         util$$2.env("BLUEBIRD_DEBUG") ||
-	                         util$$2.env("NODE_ENV") === "development"));
+	                         util$$1.env("BLUEBIRD_DEBUG") ||
+	                         util$$1.env("NODE_ENV") === "development"));
 
-	var warnings = !!(util$$2.env("BLUEBIRD_WARNINGS") != 0 &&
-	    (debugging || util$$2.env("BLUEBIRD_WARNINGS")));
+	var warnings = !!(util$$1.env("BLUEBIRD_WARNINGS") != 0 &&
+	    (debugging || util$$1.env("BLUEBIRD_WARNINGS")));
 
-	var longStackTraces = !!(util$$2.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
-	    (debugging || util$$2.env("BLUEBIRD_LONG_STACK_TRACES")));
+	var longStackTraces = !!(util$$1.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
+	    (debugging || util$$1.env("BLUEBIRD_LONG_STACK_TRACES")));
 
-	var wForgottenReturn = util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
-	    (warnings || !!util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
+	var wForgottenReturn = util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
+	    (warnings || !!util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
 
 	Promise.prototype.suppressUnhandledRejections = function() {
 	    var target = this._target();
@@ -9078,7 +9078,7 @@
 	    var domain = getDomain();
 	    possiblyUnhandledRejection =
 	        typeof fn === "function" ? (domain === null ?
-	                                            fn : util$$2.domainBind(domain, fn))
+	                                            fn : util$$1.domainBind(domain, fn))
 	                                 : undefined;
 	};
 
@@ -9086,7 +9086,7 @@
 	    var domain = getDomain();
 	    unhandledRejectionHandled =
 	        typeof fn === "function" ? (domain === null ?
-	                                            fn : util$$2.domainBind(domain, fn))
+	                                            fn : util$$1.domainBind(domain, fn))
 	                                 : undefined;
 	};
 
@@ -9124,33 +9124,33 @@
 	    try {
 	        if (typeof CustomEvent === "function") {
 	            var event = new CustomEvent("CustomEvent");
-	            util$$2.global.dispatchEvent(event);
+	            util$$1.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = new CustomEvent(name.toLowerCase(), {
 	                    detail: event,
 	                    cancelable: true
 	                });
-	                return !util$$2.global.dispatchEvent(domEvent);
+	                return !util$$1.global.dispatchEvent(domEvent);
 	            };
 	        } else if (typeof Event === "function") {
 	            var event = new Event("CustomEvent");
-	            util$$2.global.dispatchEvent(event);
+	            util$$1.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = new Event(name.toLowerCase(), {
 	                    cancelable: true
 	                });
 	                domEvent.detail = event;
-	                return !util$$2.global.dispatchEvent(domEvent);
+	                return !util$$1.global.dispatchEvent(domEvent);
 	            };
 	        } else {
 	            var event = document.createEvent("CustomEvent");
 	            event.initCustomEvent("testingtheevent", false, true, {});
-	            util$$2.global.dispatchEvent(event);
+	            util$$1.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = document.createEvent("CustomEvent");
 	                domEvent.initCustomEvent(name.toLowerCase(), false, true,
 	                    event);
-	                return !util$$2.global.dispatchEvent(domEvent);
+	                return !util$$1.global.dispatchEvent(domEvent);
 	            };
 	        }
 	    } catch (e) {}
@@ -9160,21 +9160,21 @@
 	})();
 
 	var fireGlobalEvent = (function() {
-	    if (util$$2.isNode) {
+	    if (util$$1.isNode) {
 	        return function() {
 	            return process.emit.apply(process, arguments);
 	        };
 	    } else {
-	        if (!util$$2.global) {
+	        if (!util$$1.global) {
 	            return function() {
 	                return false;
 	            };
 	        }
 	        return function(name) {
 	            var methodName = "on" + name.toLowerCase();
-	            var method = util$$2.global[methodName];
+	            var method = util$$1.global[methodName];
 	            if (!method) return false;
-	            method.apply(util$$2.global, [].slice.call(arguments, 1));
+	            method.apply(util$$1.global, [].slice.call(arguments, 1));
 	            return true;
 	        };
 	    }
@@ -9237,7 +9237,7 @@
 	        config.warnings = !!warningsOption;
 	        wForgottenReturn = config.warnings;
 
-	        if (util$$2.isObject(warningsOption)) {
+	        if (util$$1.isObject(warningsOption)) {
 	            if ("wForgottenReturn" in warningsOption) {
 	                wForgottenReturn = !!warningsOption.wForgottenReturn;
 	            }
@@ -9300,7 +9300,7 @@
 	        executor(resolve, reject, function(onCancel) {
 	            if (typeof onCancel !== "function") {
 	                throw new TypeError("onCancel must be a function, got: " +
-	                                    util$$2.toString(onCancel));
+	                                    util$$1.toString(onCancel));
 	            }
 	            promise._attachCancellationCallback(onCancel);
 	        });
@@ -9314,7 +9314,7 @@
 
 	    var previousOnCancel = this._onCancel();
 	    if (previousOnCancel !== undefined) {
-	        if (util$$2.isArray(previousOnCancel)) {
+	        if (util$$1.isArray(previousOnCancel)) {
 	            previousOnCancel.push(onCancel);
 	        } else {
 	            this._setOnCancel([previousOnCancel, onCancel]);
@@ -9386,9 +9386,9 @@
 	            trace.attachExtraTrace(error);
 	        } else if (!error.__stackCleaned__) {
 	            var parsed = parseStackAndMessage(error);
-	            util$$2.notEnumerableProp(error, "stack",
+	            util$$1.notEnumerableProp(error, "stack",
 	                parsed.message + "\n" + parsed.stack.join("\n"));
-	            util$$2.notEnumerableProp(error, "__stackCleaned__", true);
+	            util$$1.notEnumerableProp(error, "__stackCleaned__", true);
 	        }
 	    }
 	}
@@ -9559,7 +9559,7 @@
 	function formatAndLogError(error, title, isSoft) {
 	    if (typeof console !== "undefined") {
 	        var message;
-	        if (util$$2.isObject(error)) {
+	        if (util$$1.isObject(error)) {
 	            var stack = error.stack;
 	            message = title + formatStack(stack, error);
 	        } else {
@@ -9606,7 +9606,7 @@
 	            "]";
 	    } else {
 	        str = obj && typeof obj.toString === "function"
-	            ? obj.toString() : util$$2.toString(obj);
+	            ? obj.toString() : util$$1.toString(obj);
 	        var ruselessToString = /\[object [a-zA-Z0-9$_]+\]/;
 	        if (ruselessToString.test(str)) {
 	            try {
@@ -9697,7 +9697,7 @@
 	    captureStackTrace(this, CapturedTrace);
 	    if (length > 32) this.uncycle();
 	}
-	util$$2.inherits(CapturedTrace, Error);
+	util$$1.inherits(CapturedTrace, Error);
 	Context.CapturedTrace = CapturedTrace;
 
 	CapturedTrace.prototype.uncycle = function() {
@@ -9762,8 +9762,8 @@
 	    }
 	    removeCommonRoots(stacks);
 	    removeDuplicateOrEmptyJumps(stacks);
-	    util$$2.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
-	    util$$2.notEnumerableProp(error, "__stackCleaned__", true);
+	    util$$1.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
+	    util$$1.notEnumerableProp(error, "__stackCleaned__", true);
 	};
 
 	var captureStackTrace = (function stackDetection() {
@@ -9843,12 +9843,12 @@
 	    printWarning = function (message) {
 	        console.warn(message);
 	    };
-	    if (util$$2.isNode && process.stderr.isTTY) {
+	    if (util$$1.isNode && process.stderr.isTTY) {
 	        printWarning = function(message, isSoft) {
 	            var color = isSoft ? "\u001b[33m" : "\u001b[31m";
 	            console.warn(color + message + "\u001b[0m\n");
 	        };
-	    } else if (!util$$2.isNode && typeof (new Error().stack) === "string") {
+	    } else if (!util$$1.isNode && typeof (new Error().stack) === "string") {
 	        printWarning = function(message, isSoft) {
 	            console.warn("%c" + message,
 	                        isSoft ? "color: darkorange" : "color: red");
@@ -9895,10 +9895,10 @@
 	};
 
 	var catch_filter = function(NEXT_FILTER) {
-	var util$$2 = util;
+	var util$$1 = util;
 	var getKeys = es5.keys;
-	var tryCatch = util$$2.tryCatch;
-	var errorObj = util$$2.errorObj;
+	var tryCatch = util$$1.tryCatch;
+	var errorObj = util$$1.errorObj;
 
 	function catchFilter(instances, cb, promise) {
 	    return function(e) {
@@ -9918,7 +9918,7 @@
 	                } else if (matchesPredicate) {
 	                    return tryCatch(cb).call(boundTo, e);
 	                }
-	            } else if (util$$2.isObject(e)) {
+	            } else if (util$$1.isObject(e)) {
 	                var keys = getKeys(item);
 	                for (var j = 0; j < keys.length; ++j) {
 	                    var key = keys[j];
@@ -9937,9 +9937,9 @@
 	};
 
 	var _finally = function(Promise, tryConvertToPromise, NEXT_FILTER) {
-	var util$$2 = util;
+	var util$$1 = util;
 	var CancellationError = Promise.CancellationError;
-	var errorObj = util$$2.errorObj;
+	var errorObj = util$$1.errorObj;
 	var catchFilter = catch_filter(NEXT_FILTER);
 
 	function PassThroughHandlerContext(promise, type, handler) {
@@ -10060,12 +10060,12 @@
 	            j = 0, i;
 	        for (i = 0; i < len - 1; ++i) {
 	            var item = arguments[i];
-	            if (util$$2.isObject(item)) {
+	            if (util$$1.isObject(item)) {
 	                catchInstances[j++] = item;
 	            } else {
 	                return Promise.reject(new TypeError(
 	                    "tapCatch statement predicate: "
-	                    + "expecting an object but got " + util$$2.classString(item)
+	                    + "expecting an object but got " + util$$1.classString(item)
 	                ));
 	            }
 	        }
@@ -10134,12 +10134,12 @@
 
 	var method =
 	function(Promise, INTERNAL, tryConvertToPromise, apiRejection, debug) {
-	var util$$2 = util;
-	var tryCatch = util$$2.tryCatch;
+	var util$$1 = util;
+	var tryCatch = util$$1.tryCatch;
 
 	Promise.method = function (fn) {
 	    if (typeof fn !== "function") {
-	        throw new Promise.TypeError("expecting a function but got " + util$$2.classString(fn));
+	        throw new Promise.TypeError("expecting a function but got " + util$$1.classString(fn));
 	    }
 	    return function () {
 	        var ret = new Promise(INTERNAL);
@@ -10156,7 +10156,7 @@
 
 	Promise.attempt = Promise["try"] = function (fn) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
 	    }
 	    var ret = new Promise(INTERNAL);
 	    ret._captureStackTrace();
@@ -10166,7 +10166,7 @@
 	        debug.deprecated("calling Promise.try with more than 1 argument");
 	        var arg = arguments[1];
 	        var ctx = arguments[2];
-	        value = util$$2.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
+	        value = util$$1.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
 	                                  : tryCatch(fn).call(ctx, arg);
 	    } else {
 	        value = tryCatch(fn)();
@@ -10179,7 +10179,7 @@
 	};
 
 	Promise.prototype._resolveFromSyncValue = function (value) {
-	    if (value === util$$2.errorObj) {
+	    if (value === util$$1.errorObj) {
 	        this._rejectCallback(value.e, false);
 	    } else {
 	        this._resolveCallback(value, true);
@@ -10255,9 +10255,9 @@
 	};
 
 	var cancel = function(Promise, PromiseArray, apiRejection, debug) {
-	var util$$2 = util;
-	var tryCatch = util$$2.tryCatch;
-	var errorObj = util$$2.errorObj;
+	var util$$1 = util;
+	var tryCatch = util$$1.tryCatch;
+	var errorObj = util$$1.errorObj;
 	var async = Promise._async;
 
 	Promise.prototype["break"] = Promise.prototype.cancel = function() {
@@ -10345,7 +10345,7 @@
 	};
 
 	Promise.prototype._doInvokeOnCancel = function(onCancelCallback, internalOnly) {
-	    if (util$$2.isArray(onCancelCallback)) {
+	    if (util$$1.isArray(onCancelCallback)) {
 	        for (var i = 0; i < onCancelCallback.length; ++i) {
 	            this._doInvokeOnCancel(onCancelCallback[i], internalOnly);
 	        }
@@ -10535,10 +10535,10 @@
 	var join =
 	function(Promise, PromiseArray, tryConvertToPromise, INTERNAL, async,
 	         getDomain) {
-	var util$$2 = util;
-	var canEvaluate = util$$2.canEvaluate;
-	var tryCatch = util$$2.tryCatch;
-	var errorObj = util$$2.errorObj;
+	var util$$1 = util;
+	var canEvaluate = util$$1.canEvaluate;
+	var tryCatch = util$$1.tryCatch;
+	var errorObj = util$$1.errorObj;
 	var reject;
 
 	{
@@ -10682,7 +10682,7 @@
 	                    if (holder.asyncNeeded) {
 	                        var domain = getDomain();
 	                        if (domain !== null) {
-	                            holder.fn = util$$2.domainBind(domain, holder.fn);
+	                            holder.fn = util$$1.domainBind(domain, holder.fn);
 	                        }
 	                    }
 	                    ret._setAsyncGuaranteed();
@@ -10707,16 +10707,16 @@
 	                          INTERNAL,
 	                          debug) {
 	var getDomain = Promise._getDomain;
-	var util$$2 = util;
-	var tryCatch = util$$2.tryCatch;
-	var errorObj = util$$2.errorObj;
+	var util$$1 = util;
+	var tryCatch = util$$1.tryCatch;
+	var errorObj = util$$1.errorObj;
 	var async = Promise._async;
 
 	function MappingPromiseArray(promises, fn, limit, _filter) {
 	    this.constructor$(promises);
 	    this._promise._captureStackTrace();
 	    var domain = getDomain();
-	    this._callback = domain === null ? fn : util$$2.domainBind(domain, fn);
+	    this._callback = domain === null ? fn : util$$1.domainBind(domain, fn);
 	    this._preservedValues = _filter === INTERNAL
 	        ? new Array(this.length())
 	        : null;
@@ -10725,7 +10725,7 @@
 	    this._queue = [];
 	    async.invoke(this._asyncInit, this, undefined);
 	}
-	util$$2.inherits(MappingPromiseArray, PromiseArray);
+	util$$1.inherits(MappingPromiseArray, PromiseArray);
 
 	MappingPromiseArray.prototype._asyncInit = function() {
 	    this._init$(undefined, -2);
@@ -10834,7 +10834,7 @@
 
 	function map(promises, fn, options, _filter) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
 	    }
 
 	    var limit = 0;
@@ -10843,13 +10843,13 @@
 	            if (typeof options.concurrency !== "number") {
 	                return Promise.reject(
 	                    new TypeError("'concurrency' must be a number but it is " +
-	                                    util$$2.classString(options.concurrency)));
+	                                    util$$1.classString(options.concurrency)));
 	            }
 	            limit = options.concurrency;
 	        } else {
 	            return Promise.reject(new TypeError(
 	                            "options argument must be an object but it is " +
-	                             util$$2.classString(options)));
+	                             util$$1.classString(options)));
 	        }
 	    }
 	    limit = typeof limit === "number" &&
@@ -10876,9 +10876,9 @@
 	}
 
 	var call_get = function(Promise) {
-	var util$$2 = util;
-	var canEvaluate = util$$2.canEvaluate;
-	var isIdentifier = util$$2.isIdentifier;
+	var util$$1 = util;
+	var canEvaluate = util$$1.canEvaluate;
+	var isIdentifier = util$$1.isIdentifier;
 
 	var getMethodCaller;
 	var getGetter;
@@ -10939,8 +10939,8 @@
 	    var fn;
 	    if (obj != null) fn = obj[methodName];
 	    if (typeof fn !== "function") {
-	        var message = "Object " + util$$2.classString(obj) + " has no method '" +
-	            util$$2.toString(methodName) + "'";
+	        var message = "Object " + util$$1.classString(obj) + " has no method '" +
+	            util$$1.toString(methodName) + "'";
 	        throw new Promise.TypeError(message);
 	    }
 	    return fn;
@@ -10993,11 +10993,11 @@
 
 	var using = function (Promise, apiRejection, tryConvertToPromise,
 	    createContext, INTERNAL, debug) {
-	    var util$$2 = util;
+	    var util$$1 = util;
 	    var TypeError = errors.TypeError;
 	    var inherits = util.inherits;
-	    var errorObj = util$$2.errorObj;
-	    var tryCatch = util$$2.tryCatch;
+	    var errorObj = util$$1.errorObj;
+	    var tryCatch = util$$1.tryCatch;
 	    var NULL = {};
 
 	    function thrower(e) {
@@ -11120,7 +11120,7 @@
 	                        "you must pass at least 2 arguments to Promise.using");
 	        var fn = arguments[len - 1];
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
 	        }
 	        var input;
 	        var spreadArgs = true;
@@ -11218,7 +11218,7 @@
 	};
 
 	var timers$1 = function(Promise, INTERNAL, debug) {
-	var util$$2 = util;
+	var util$$1 = util;
 	var TimeoutError = Promise.TimeoutError;
 
 	function HandleWrapper(handle)  {
@@ -11266,7 +11266,7 @@
 	    } else {
 	        err = new TimeoutError(message);
 	    }
-	    util$$2.markAsOriginatingFromRejection(err);
+	    util$$1.markAsOriginatingFromRejection(err);
 	    promise._attachExtraTrace(err);
 	    promise._reject(err);
 
@@ -11316,11 +11316,11 @@
 	                          tryConvertToPromise,
 	                          Proxyable,
 	                          debug) {
-	var errors$$2 = errors;
-	var TypeError = errors$$2.TypeError;
-	var util$$2 = util;
-	var errorObj = util$$2.errorObj;
-	var tryCatch = util$$2.tryCatch;
+	var errors$$1 = errors;
+	var TypeError = errors$$1.TypeError;
+	var util$$1 = util;
+	var errorObj = util$$1.errorObj;
+	var tryCatch = util$$1.tryCatch;
 	var yieldHandlers = [];
 
 	function promiseFromYieldHandler(value, yieldHandlers, traceParent) {
@@ -11363,7 +11363,7 @@
 	    this._yieldedPromise = null;
 	    this._cancellationPhase = false;
 	}
-	util$$2.inherits(PromiseSpawn, Proxyable);
+	util$$1.inherits(PromiseSpawn, Proxyable);
 
 	PromiseSpawn.prototype._isResolved = function() {
 	    return this._promise === null;
@@ -11516,7 +11516,7 @@
 
 	Promise.coroutine.addYieldHandler = function(fn) {
 	    if (typeof fn !== "function") {
-	        throw new TypeError("expecting a function but got " + util$$2.classString(fn));
+	        throw new TypeError("expecting a function but got " + util$$1.classString(fn));
 	    }
 	    yieldHandlers.push(fn);
 	};
@@ -11534,14 +11534,14 @@
 	};
 
 	var nodeify = function(Promise) {
-	var util$$2 = util;
+	var util$$1 = util;
 	var async = Promise._async;
-	var tryCatch = util$$2.tryCatch;
-	var errorObj = util$$2.errorObj;
+	var tryCatch = util$$1.tryCatch;
+	var errorObj = util$$1.errorObj;
 
 	function spreadAdapter(val, nodeback) {
 	    var promise = this;
-	    if (!util$$2.isArray(val)) return successAdapter.call(promise, val, nodeback);
+	    if (!util$$1.isArray(val)) return successAdapter.call(promise, val, nodeback);
 	    var ret =
 	        tryCatch(nodeback).apply(promise._boundValue(), [null].concat(val));
 	    if (ret === errorObj) {
@@ -11593,11 +11593,11 @@
 
 	var promisify = function(Promise, INTERNAL) {
 	var THIS = {};
-	var util$$2 = util;
+	var util$$1 = util;
 	var nodebackForPromise = nodeback;
-	var withAppended = util$$2.withAppended;
-	var maybeWrapAsError = util$$2.maybeWrapAsError;
-	var canEvaluate = util$$2.canEvaluate;
+	var withAppended = util$$1.withAppended;
+	var maybeWrapAsError = util$$1.maybeWrapAsError;
+	var canEvaluate = util$$1.canEvaluate;
 	var TypeError = errors.TypeError;
 	var defaultSuffix = "Async";
 	var defaultPromisified = {__isPromisified__: true};
@@ -11613,7 +11613,7 @@
 	var noCopyPropsPattern = new RegExp("^(?:" + noCopyProps.join("|") + ")$");
 
 	var defaultFilter = function(name) {
-	    return util$$2.isIdentifier(name) &&
+	    return util$$1.isIdentifier(name) &&
 	        name.charAt(0) !== "_" &&
 	        name !== "constructor";
 	};
@@ -11632,7 +11632,7 @@
 	}
 
 	function hasPromisified(obj, key, suffix) {
-	    var val = util$$2.getDataPropertyOrDefault(obj, key + suffix,
+	    var val = util$$1.getDataPropertyOrDefault(obj, key + suffix,
 	                                            defaultPromisified);
 	    return val ? isPromisified(val) : false;
 	}
@@ -11652,7 +11652,7 @@
 	}
 
 	function promisifiableMethods(obj, suffix, suffixRegexp, filter) {
-	    var keys = util$$2.inheritedDataKeys(obj);
+	    var keys = util$$1.inheritedDataKeys(obj);
 	    var ret = [];
 	    for (var i = 0; i < keys.length; ++i) {
 	        var key = keys[i];
@@ -11689,11 +11689,11 @@
 	};
 
 	var argumentSequence = function(argumentCount) {
-	    return util$$2.filledRange(argumentCount, "_arg", "");
+	    return util$$1.filledRange(argumentCount, "_arg", "");
 	};
 
 	var parameterDeclaration = function(parameterCount) {
-	    return util$$2.filledRange(
+	    return util$$1.filledRange(
 	        Math.max(parameterCount, 3), "_arg", "");
 	};
 
@@ -11790,9 +11790,9 @@
 	                    withAppended,
 	                    maybeWrapAsError,
 	                    nodebackForPromise,
-	                    util$$2.tryCatch,
-	                    util$$2.errorObj,
-	                    util$$2.notEnumerableProp,
+	                    util$$1.tryCatch,
+	                    util$$1.errorObj,
+	                    util$$1.notEnumerableProp,
 	                    INTERNAL);
 	};
 	}
@@ -11819,7 +11819,7 @@
 	        if (!promise._isFateSealed()) promise._setAsyncGuaranteed();
 	        return promise;
 	    }
-	    util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
+	    util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
 	    return promisified;
 	}
 
@@ -11844,11 +11844,11 @@
 	                return makeNodePromisified(key, THIS, key,
 	                                           fn, suffix, multiArgs);
 	            });
-	            util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
+	            util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
 	            obj[promisifiedKey] = promisified;
 	        }
 	    }
-	    util$$2.toFastProperties(obj);
+	    util$$1.toFastProperties(obj);
 	    return obj;
 	}
 
@@ -11859,7 +11859,7 @@
 
 	Promise.promisify = function (fn, options) {
 	    if (typeof fn !== "function") {
-	        throw new TypeError("expecting a function but got " + util$$2.classString(fn));
+	        throw new TypeError("expecting a function but got " + util$$1.classString(fn));
 	    }
 	    if (isPromisified(fn)) {
 	        return fn;
@@ -11868,7 +11868,7 @@
 	    var receiver = options.context === undefined ? THIS : options.context;
 	    var multiArgs = !!options.multiArgs;
 	    var ret = promisify(fn, receiver, multiArgs);
-	    util$$2.copyDescriptors(fn, ret, propsFilter);
+	    util$$1.copyDescriptors(fn, ret, propsFilter);
 	    return ret;
 	};
 
@@ -11885,15 +11885,15 @@
 	    var promisifier = options.promisifier;
 	    if (typeof promisifier !== "function") promisifier = makeNodePromisified;
 
-	    if (!util$$2.isIdentifier(suffix)) {
+	    if (!util$$1.isIdentifier(suffix)) {
 	        throw new RangeError("suffix must be a valid identifier\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
 	    }
 
-	    var keys = util$$2.inheritedDataKeys(target);
+	    var keys = util$$1.inheritedDataKeys(target);
 	    for (var i = 0; i < keys.length; ++i) {
 	        var value = target[keys[i]];
 	        if (keys[i] !== "constructor" &&
-	            util$$2.isClass(value)) {
+	            util$$1.isClass(value)) {
 	            promisifyAll(value.prototype, suffix, filter, promisifier,
 	                multiArgs);
 	            promisifyAll(value, suffix, filter, promisifier, multiArgs);
@@ -11906,9 +11906,9 @@
 
 	var props = function(
 	    Promise, PromiseArray, tryConvertToPromise, apiRejection) {
-	var util$$2 = util;
-	var isObject = util$$2.isObject;
-	var es5$$2 = es5;
+	var util$$1 = util;
+	var isObject = util$$1.isObject;
+	var es5$$1 = es5;
 	var Es6Map;
 	if (typeof Map === "function") Es6Map = Map;
 
@@ -11949,7 +11949,7 @@
 	        entries = mapToEntries(obj);
 	        isMap = true;
 	    } else {
-	        var keys = es5$$2.keys(obj);
+	        var keys = es5$$1.keys(obj);
 	        var len = keys.length;
 	        entries = new Array(len * 2);
 	        for (var i = 0; i < len; ++i) {
@@ -11962,7 +11962,7 @@
 	    this._isMap = isMap;
 	    this._init$(undefined, isMap ? -6 : -3);
 	}
-	util$$2.inherits(PropertiesPromiseArray, PromiseArray);
+	util$$1.inherits(PropertiesPromiseArray, PromiseArray);
 
 	PropertiesPromiseArray.prototype._init = function () {};
 
@@ -12024,7 +12024,7 @@
 
 	var race = function(
 	    Promise, INTERNAL, tryConvertToPromise, apiRejection) {
-	var util$$2 = util;
+	var util$$1 = util;
 
 	var raceLater = function (promise) {
 	    return promise.then(function(array) {
@@ -12038,9 +12038,9 @@
 	    if (maybePromise instanceof Promise) {
 	        return raceLater(maybePromise);
 	    } else {
-	        promises = util$$2.asArray(promises);
+	        promises = util$$1.asArray(promises);
 	        if (promises === null)
-	            return apiRejection("expecting an array or an iterable object but got " + util$$2.classString(promises));
+	            return apiRejection("expecting an array or an iterable object but got " + util$$1.classString(promises));
 	    }
 
 	    var ret = new Promise(INTERNAL);
@@ -12078,13 +12078,13 @@
 	                          INTERNAL,
 	                          debug) {
 	var getDomain = Promise._getDomain;
-	var util$$2 = util;
-	var tryCatch = util$$2.tryCatch;
+	var util$$1 = util;
+	var tryCatch = util$$1.tryCatch;
 
 	function ReductionPromiseArray(promises, fn, initialValue, _each) {
 	    this.constructor$(promises);
 	    var domain = getDomain();
-	    this._fn = domain === null ? fn : util$$2.domainBind(domain, fn);
+	    this._fn = domain === null ? fn : util$$1.domainBind(domain, fn);
 	    if (initialValue !== undefined) {
 	        initialValue = Promise.resolve(initialValue);
 	        initialValue._attachCancellationCallback(this);
@@ -12101,7 +12101,7 @@
 	    this._promise._captureStackTrace();
 	    this._init$(undefined, -5);
 	}
-	util$$2.inherits(ReductionPromiseArray, PromiseArray);
+	util$$1.inherits(ReductionPromiseArray, PromiseArray);
 
 	ReductionPromiseArray.prototype._gotAccum = function(accum) {
 	    if (this._eachValues !== undefined && 
@@ -12199,7 +12199,7 @@
 
 	function reduce(promises, fn, initialValue, _each) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
 	    }
 	    var array = new ReductionPromiseArray(promises, fn, initialValue, _each);
 	    return array.promise();
@@ -12246,12 +12246,12 @@
 	var settle =
 	    function(Promise, PromiseArray, debug) {
 	var PromiseInspection = Promise.PromiseInspection;
-	var util$$2 = util;
+	var util$$1 = util;
 
 	function SettledPromiseArray(values) {
 	    this.constructor$(values);
 	}
-	util$$2.inherits(SettledPromiseArray, PromiseArray);
+	util$$1.inherits(SettledPromiseArray, PromiseArray);
 
 	SettledPromiseArray.prototype._promiseResolved = function (index, inspection) {
 	    this._values[index] = inspection;
@@ -12288,10 +12288,10 @@
 
 	var some =
 	function(Promise, PromiseArray, apiRejection) {
-	var util$$2 = util;
+	var util$$1 = util;
 	var RangeError = errors.RangeError;
 	var AggregateError = errors.AggregateError;
-	var isArray = util$$2.isArray;
+	var isArray = util$$1.isArray;
 	var CANCELLATION = {};
 
 
@@ -12301,7 +12301,7 @@
 	    this._unwrap = false;
 	    this._initialized = false;
 	}
-	util$$2.inherits(SomePromiseArray, PromiseArray);
+	util$$1.inherits(SomePromiseArray, PromiseArray);
 
 	SomePromiseArray.prototype._init = function () {
 	    if (!this._initialized) {
@@ -17458,7 +17458,7 @@
 
 	  // load textures
 
-	  var promise, wrap;
+	  var promise, wrap, isTexture, isTextureToBeLoadedNext;
 	  if (textureCount) {
 
 	    promise = bluebird_1.all(texturePromises).then(function (textures) {
@@ -17466,31 +17466,31 @@
 	      // assign textures
 	      wrap = WEBGL_WRAP_TYPES[ _attributes.wrap ] || WEBGL_WRAP_TYPES[ 'repeat' ];
 	      for (i = 0; i < textureCount; i++) {
-	        // FIXME:
-	        // if (
-	        //   // avoid racing conditions
-	        // textures[ i ] && textures[ i ].url === material3d._texturesToBeLoaded[ textureKeys[i] ] &&
-	        //   // filter texture loading errors
-	        // (textures[i] instanceof THREE.CompressedTexture || textures[i] instanceof THREE.Texture)
-	        // ){
 
-	          // cache
-	          countTextureReference(textures[ i ].url);
-	          textures[ i ].disposeIfPossible = disposeIfPossible;
+	        // filter texture loading errors
+	        isTexture = textures[i] instanceof THREE.CompressedTexture || textures[i] instanceof THREE.Texture;
+	        // avoid racing conditions
+	        isTextureToBeLoadedNext = textures[i] && textures[i].url === material3d._texturesToBeLoaded[textureKeys[i]];
 
-	          // set texture settings
-	          textures[ i ].wrapS = wrap;
-	          textures[ i ].wrapT = wrap;
-	          textures[ i ].anisotropy = 2;
-	          // dispose previous texture
-	          if (material3d[ texture3dKeys[ i ] ] && material3d[ texture3dKeys[ i ] ].disposeIfPossible) {
-	            material3d[ texture3dKeys[ i ] ].disposeIfPossible();
-	          }
-	          // add new texture
-	          material3d[ texture3dKeys[ i ] ] = textures[ i ];
-	          material3d.uniforms[ texture3dKeys[ i ] ].value = textures[ i ];
-	          material3d[ texture3dKeys[ i ] ].needsUpdate = true;
-	        // }
+	        if (!isTexture || !isTextureToBeLoadedNext) continue
+
+	        // cache
+	        countTextureReference(textures[ i ].url);
+	        textures[ i ].disposeIfPossible = disposeIfPossible;
+
+	        // set texture settings
+	        textures[ i ].wrapS = wrap;
+	        textures[ i ].wrapT = wrap;
+	        textures[ i ].anisotropy = 2;
+	        // dispose previous texture
+	        if (material3d[ texture3dKeys[ i ] ] && material3d[ texture3dKeys[ i ] ].disposeIfPossible) {
+	          material3d[ texture3dKeys[ i ] ].disposeIfPossible();
+	        }
+	        // add new texture
+	        material3d[ texture3dKeys[ i ] ] = textures[ i ];
+	        material3d.uniforms[ texture3dKeys[ i ] ].value = textures[ i ];
+	        material3d[ texture3dKeys[ i ] ].needsUpdate = true;
+
 	      }
 	      // update material
 	      material3d.needsUpdate = true;
@@ -17607,6 +17607,7 @@
 	  material3d.diffuse = diffuse;
 	  material3d.uniforms.diffuse.value = new THREE.Color(diffuse.r, diffuse.g, diffuse.b);
 
+	  // We are not using color ambient
 	  /*if (_attributes.colorAmbient) {
 	    // material3d.ambient.r = _attributes.colorAmbient[ 0 ]
 	    // material3d.ambient.g = _attributes.colorAmbient[ 1 ]
@@ -17779,9 +17780,9 @@
 	  return loadingTexturesPromise
 	}
 
-	var fragmentShader = "uniform vec3 diffuse;\r\nuniform vec3 emissive;\r\nuniform vec3 specular;\r\nuniform float shininess;\r\nuniform float opacity;\r\n\r\n#include <common>\r\n#include <packing>\r\n#include <uv_pars_fragment>\r\n#include <uv2_pars_fragment>\r\n#include <map_pars_fragment>\r\n#include <alphamap_pars_fragment>\r\n\r\n// Replaces <lightmap_pars_fragment>;\r\n\r\n#ifdef USE_LIGHTMAP\r\n\tuniform sampler2D lightMap;\r\n\tuniform float lightMapIntensity;\r\n\tuniform float lightMapExposure;\r\n\tuniform float lightMapFalloff;\r\n#endif\r\n\r\n#include <normalmap_pars_fragment>\r\n#include <specularmap_pars_fragment>\r\n\r\n#include <bsdfs>\r\n#include <lights_pars>\r\n#include <lights_phong_pars_fragment>\r\n#include <shadowmap_pars_fragment>\r\n\r\n\r\nvoid main() {\r\n\r\n    vec4 diffuseColor = vec4( diffuse, opacity );\r\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\r\n\r\n    vec3 totalEmissiveRadiance = emissive;\r\n\r\n    #include <map_fragment>\r\n    #include <alphamap_fragment>\r\n    #include <alphatest_fragment>\r\n    #include <specularmap_fragment>\r\n    #include <normal_flip>\r\n    #include <normal_fragment>\r\n\r\n    // accumulation\r\n    #include <lights_phong_fragment>\r\n\r\n    // Start of <light-template> replace block\r\n    GeometricContext geometry;\r\n\r\n    geometry.position = - vViewPosition;\r\n    geometry.normal = normal;\r\n    geometry.viewDir = normalize( vViewPosition );\r\n\r\n    IncidentLight directLight;\r\n\r\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        PointLight pointLight;\r\n\r\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\r\n\r\n            pointLight = pointLights[ i ];\r\n\r\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        SpotLight spotLight;\r\n\r\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\r\n\r\n            spotLight = spotLights[ i ];\r\n\r\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        DirectionalLight directionalLight;\r\n\r\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\r\n\r\n            directionalLight = directionalLights[ i ];\r\n\r\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\r\n\r\n        RectAreaLight rectAreaLight;\r\n\r\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\r\n\r\n            rectAreaLight = rectAreaLights[ i ];\r\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if defined( RE_IndirectDiffuse )\r\n\r\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\r\n\r\n        #ifdef USE_LIGHTMAP\r\n\r\n            // compute the light value\r\n            vec3 unit = vec3(1.0);\r\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\r\n            // compute the light intensity modifier\r\n            vec3 modifier = -lightMapFalloff * light * light + unit;\r\n            // apply light\r\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\r\n\r\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\r\n\r\n                lightMapIrradiance *= PI; // factor of PI should not be present; included here to prevent breakage\r\n\r\n            #endif\r\n\r\n            irradiance += lightMapIrradiance;\r\n\r\n        #endif\r\n\r\n        #if ( NUM_HEMI_LIGHTS > 0 )\r\n\r\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\r\n\r\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\r\n\r\n            }\r\n\r\n        #endif\r\n\r\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\r\n\r\n    #endif\r\n    // End of <light-template> replace block\r\n\r\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\r\n\r\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\r\n\r\n}";
+	var fragmentShader = "uniform vec3 diffuse;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapExposure;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\n#include <shadowmap_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( diffuse, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #include <normal_flip>\n    #include <normal_fragment>\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}";
 
-	var vertexShader = "varying vec3 vViewPosition;\r\n\r\n#ifndef FLAT_SHADED\r\n\tvarying vec3 vNormal;\r\n#endif\r\n\r\n#include <uv_pars_vertex>\r\n#include <uv2_pars_vertex>\r\n#include <shadowmap_pars_vertex>\r\n\r\nvoid main()\r\n{\r\n//  vUv = uv;\r\n  #include <uv_vertex>\r\n  #include <uv2_vertex>\r\n\r\n  #include <beginnormal_vertex>\r\n  #include <defaultnormal_vertex>\r\n\r\n  #ifndef FLAT_SHADED\r\n    // Normal computed with derivatives when FLAT_SHADED\r\n  \tvNormal = normalize( transformedNormal );\r\n  #endif\r\n\r\n  #include <begin_vertex>\r\n  #include <project_vertex>\r\n\r\n  vViewPosition = - mvPosition.xyz;\r\n\r\n  #include <worldpos_vertex>\r\n  #include <shadowmap_vertex>\r\n\r\n}";
+	var vertexShader = "varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}";
 
 	// CONFIGS
 
@@ -19049,8 +19050,11 @@
 	  var apiErrorCount = 0;
 	  // call API
 	  function callApi () {
+	    // let's make sure we don't have trailing or double spaces
+	    query = 'isPublished:true ' + query;
+	    query = query.trim().replace(/\s+/g, ' ');
 	    return callService('Product.search', {
-	      searchQuery: {query: 'isPublished:true ' + query},
+	      searchQuery: {query: query},
 	      limit: limit
 	      // TODO: add this param once #251 https://github.com/archilogic-com/services/issues/251 is resolved
 	      //offset: offset
@@ -20189,9 +20193,9 @@
 
 	  // API
 	  options = options || {};
-	  var url$$1 = options.url;
+	  var url = options.url;
 
-	  var parsedUrl = Url.parse(url$$1);
+	  var parsedUrl = Url.parse(url);
 	  var rootDir = path.parse(parsedUrl.path || parsedUrl.pathname || '').dir;
 	  var origin = parsedUrl.protocol + '//' + parsedUrl.host;
 
@@ -20246,7 +20250,7 @@
 	  traverseData3d(structure.data3d, function (data3d) {
 
 	    // map typed arrays to payload area in file buffer
-	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url$$1);
+	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url);
 
 	    //  convert relative material keys into absolute one
 	    if (origin && data3d.materials) convertTextureKeys(data3d, origin, rootDir);
@@ -20315,7 +20319,7 @@
 
 	}
 
-	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url$$1) {
+	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url) {
 
 	  var mesh, i, l, meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
 
@@ -20345,7 +20349,7 @@
 	    }
 
 	    // add cache key
-	    if (url$$1) mesh.cacheKey = url$$1 + ':' + meshKeys[i];
+	    if (url) mesh.cacheKey = url + ':' + meshKeys[i];
 
 	  }
 
@@ -21146,11 +21150,11 @@
 	    label = options.label,
 	    spaceLabels = {};
 
-	  // make sure we're having a plan, a level object and a
+	  // make sure we're having a plan and a level object
 	  return normalizeInput(sceneStructure)
 	    .then(function(result) {
-	      console.log(result);
 
+	      // choose first space if none is specified
 	      if (!spaceId) {
 	        var polyfloors = result.children[0].children.filter(function(element3d) {
 	          return element3d.type === 'polyfloor'
@@ -21159,7 +21163,7 @@
 	      }
 
 	      // set default space label if none provided
-	      spaceLabels[spaceId] = label || 'living';
+	      spaceLabels[spaceId] = label || 'dining_living';
 
 	      // TODO: cleanup params after API review
 	      var params = {
@@ -21179,6 +21183,7 @@
 	    })
 	}
 
+	// completes sceneStructure with plan and level object
 	function normalizeInput(input) {
 	  if (input.type !== 'plan') {
 	    if (Array.isArray(input)) {
@@ -21216,33 +21221,32 @@
 	  var furnishing = result.furnishings;
 	  var spaceIds = Object.keys(furnishing);
 	  if (!uuid.validate(spaceIds[0])) return bluebird_1.reject('No furnishings were found')
+
+	  // get furniture groups from api result
 	  var groups = furnishing[spaceIds[0]][0].groups;
 
+	  // get normailzed sceneStructure for each furniture group
 	  return bluebird_1.map(groups, getFurnitureGroupData)
 	    .then(normalizeSceneStructure)
 	}
 
-	function getFurnitureGroupData(args) {
-	  var id = args.src.substring(1);
-	  var group;
+	// combine data from staging API with data from furniture API
+	function getFurnitureGroupData(group) {
+	  var id = group.src.substring(1);
+	  // get raw data from Furniture API
 	  return callService('Product.read', { arguments: id})
-	    .then(function(product) {
-	      var ms = JSON.parse(product.modelStructure);
-	      var sceneStructure = defaults_1({}, args, ms);
+	    .then(function(furniture) {
+	      // get sceneStructure from Furniture API -> info on type and possible children
+	      var sceneStructure = JSON.parse(furniture.modelStructure);
+	      // combine data from both API calls to turn result into full sceneStructure
+	      sceneStructure = defaults_1({}, group, sceneStructure);
 	      return bluebird_1.resolve(sceneStructure)
 	    })
 	}
 
-	var userQuery;
-	var searchCount;
-	var margin;
-	var furnitureInfo;
-	var position;
-	var rotation;
-
 	var config = {
 	  'default_margin': 0.1,
-	  'default_search': '-generic isPublished:true',
+	  'default_search': 'isPublished:true -generic',
 	  'tag_black_list': [
 	    'simplygon',
 	    'hasChangeableMaterials',
@@ -21252,37 +21256,53 @@
 	    '3 seater',
 	    '4 seater'
 	  ],
+	  'tag_white_list': [
+	    'shelf',
+	    'armchair',
+	    'sofa',
+	    'plant',
+	    'sideboard',
+	    'coffee table',
+	    'dining table',
+	    'round',
+	    'TV',
+	    'lamps',
+	    'free standing lamp',
+	    'living',
+	    'dining',
+	    'relaxing',
+	    'picture'
+	  ],
+	  'edgeAligned': ['sofa', 'shelf', 'armchair', 'sideboad', 'double bed', 'single bed', 'bed'],
 	};
 
-	function replaceFurniture (args) {
-	  // API
-	  var args = args || {};
-	  var id = args.id;
+	var getAlternatives = function(id, options) {
+	  if (typeof id !== 'string') return Promise.reject('invalid input')
 
-	  userQuery = args.query || null;
-	  position = args.position || {x: 0, y: 0, z: 0};
-	  rotation = args.rotation || {x: 0, y: 0, z: 0};
-	  // TODO: check config for publishable api key
-	  // reject when no publishable or not white listed domain
-	  // we need to call furniture info first in order to obtain data3d URL
+	  options = options || {};
+
+	  this.userQuery = options.query || null;
+	  this.searchCount = 0;
+	  this.margin = config['default_margin'];
+	  this.furnitureInfo = null;
+
+	  var self = this;
 	  return getFurnitureInfo(id)
 	    .then(function(info){
-	      furnitureInfo = info;
-	      margin = config['default_margin'];
-	      searchCount = 0;
-	      var searchQuery = getQuery(furnitureInfo);
+	      self.furnitureInfo = info;
+	      var searchQuery = self.getQuery(self.furnitureInfo);
 	      return search(searchQuery)
 	    })
 	    .then(function(result) {
-	      return verifyResult(result, id)
+	      return self.verifyResult(result, id)
 	    })
 	    .catch(function(error) {
-	      console.error(error.message);
+	      console.error(error);
 	    })
-	}
+	};
 
-	function verifyResult(result, id) {
-	  if (searchCount > 10 ) {
+	getAlternatives.prototype.verifyResult = function(result, id) {
+	  if (this.searchCount > 10 ) {
 	    return Promise.reject(new Error('No furniture was found'))
 	  }
 	  var rawResult = result.filter(function(el){
@@ -21290,66 +21310,79 @@
 	  });
 	  // if we didn't find anything in the first place
 	  // let's increase dimensions a bit
-	  if (rawResult.length < 2) {
-	    if (searchCount >= 3) margin += 0.10;
-	    var searchQuery = getQuery(furnitureInfo);
-	    searchCount += 1;
-	    return search(searchQuery).then(function(result) {
-	      return verifyResult(result, id)
-	    })
+	  var self = this;
+	  if (rawResult.length < 1) {
+	    if (this.searchCount >= 3) this.margin += 0.10;
+	    var searchQuery = this.getQuery(this.furnitureInfo);
+	    this.searchCount += 1;
+	    return search(searchQuery)
+	      .then(function(result) {
+	        return self.verifyResult(result, id)
+	      })
+	      .catch(function(error) {
+	        console.error('catch', searchQuery.query, error);
+	        return Promise.reject('No alternatives were found')
+	      })
 	  } else {
 	    var cleanResult = rawResult.map(normalizeFurnitureInfo).map(function(res) {
 	      return {
 	        furniture: res,
-	        position: computeNewPosition(furnitureInfo, res)
+	        offset: getOffset(self.furnitureInfo, res)
 	      }
 	    });
 	    return Promise.resolve(cleanResult)
 	  }
-	}
+	};
 
-	function search(searchQuery) {
-	  return callService('Product.search', {searchQuery: searchQuery, limit: 200})
-	}
-
-	function getQuery(info) {
+	getAlternatives.prototype.getQuery = function(info) {
 	  var query = config['default_search'];
-	  var tags = info.tags.filter(function(tag) {
+	  var tags = this.searchCount < 6 ? info.tags.concat(info.categories) : info.tags;
+	  tags = tags.filter(function(tag) {
 	    // removes blacklisted tags as well as 1P, 2P, ...
-	    return !config['tag_black_list'].includes(tag) && !/^\d+P$/.test(tag)
+	    return config['tag_black_list'].indexOf(tag) < 0 && !/^\d+P$/.test(tag)
 	  });
-
-	  // start removing tags from query when increasing dimensions didn't work
-	  if (searchCount > 1) tags = tags.slice(0, (tags.length - searchCount + 1));
+	  // remove secondary tags from query when increasing dimensions didn't work
+	  if (this.searchCount > 2) {
+	    tags = tags.filter(function(tag) {
+	      return config['tag_white_list'].indexOf(tag) > -1
+	    });
+	  }
 
 	  query += ' ' + tags.join(' ');
-
-	  var categories = info.categories;
-	  var dim = info.boundingBox;
-
-	  query += ' categories:' + categories[0];
-	  if (userQuery) query += ' ' + userQuery;
-
-	  query = query.trim();
+	  if (this.userQuery && tags.indexOf('TV') < 0) query += ' ' + this.userQuery;
 	  var searchQuery = {query: query};
+
 	  // add dimension search params if source provides dimensions
+	  var dim = info.boundingBox;
+	  var self = this;
 	  if (dim) {
 	    ['length', 'height', 'width'].forEach(function(d) {
-	      if (dim[d] -margin > 0) {
-	        searchQuery[d + 'Min'] = Math.round((dim[d] - margin) * 1e2) / 1e2;
-	        searchQuery[d + 'Max'] = Math.round((dim[d] + margin) * 1e2) / 1e2;
+	      if (dim[d] -self.margin > 0) {
+	        searchQuery[d + 'Min'] = Math.round((dim[d] - self.margin) * 1e2) / 1e2;
+	        searchQuery[d + 'Max'] = Math.round((dim[d] + self.margin) * 1e2) / 1e2;
 	      }
 	    });
 	  }
 	  return searchQuery
+	};
+
+	// helper
+
+	function search(searchQuery) {
+	  // let's make sure we don't have trailing or double spaces
+	  searchQuery.query = searchQuery.query.trim().replace(/\s+/g, ' ');
+	  return callService('Product.search', {searchQuery: searchQuery, limit: 200})
 	}
 
-	function computeNewPosition(a, b) {
-	  var edgeAligned = ['sofa', 'shelf', 'sideboad', 'double bed', 'single bed', 'bed'];
+	// get offset based on bounding boxes
+	function getOffset(a, b) {
+	  // for elements that are aligned at the wall we want to compute the offset accordingly
+	  var edgeAligned = config.edgeAligned;
+
 	  var tags = a.tags;
 	  a = a.boundingPoints;
 	  b = b.boundingPoints;
-	  if (!a || !b) return position
+	  if (!a || !b) return {x: 0, y:0, z:0}
 
 	  // check if the furniture's virtual origin should be center or edge
 	  var isEdgeAligned = edgeAligned.some(function(t) { return tags.includes(t) });
@@ -21365,13 +21398,245 @@
 	    y: 0,
 	    z: zOffset
 	  };
+	  return offset
+	}
 
-	  var s = Math.sin(rotation.y / 180 * Math.PI);
-	  var c = Math.cos(rotation.y / 180 * Math.PI);
+	function getSceneStructureFromHtml(el) {
+	  if (!isValidElement(el)) {
+	    console.error('element is not an "a-entity" DOM element');
+	  }
+	  var
+	    position = el.getAttribute('position'),
+	    rotation = el.getAttribute('rotation'),
+	    furnitureInfo = el.getAttribute('io3d-furniture'),
+	    furnitureUuid = el.getAttribute('io3d-uuid'),
+	    sceneStructure;
+
+	  sceneStructure = {
+	    x: position.x,
+	    y: position.y,
+	    z: position.z,
+	    ry: rotation.y,
+	    type: 'interior',
+	    src: '!' + furnitureInfo.id,
+	    id: furnitureUuid || uuid.generate()
+	  };
+
+	  return sceneStructure
+	}
+
+
+	// Returns true if it is a DOM element with nodeName a-entity
+	// https://stackoverflow.com/a/384380/2835973
+	function isValidElement(o){
+	  return (
+	    typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
+	      o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string" && o.nodeName.toLowerCase() === 'a-entity'
+	  );
+	}
+
+	// TODO: extend this for bakedModel
+	var validTypes = [
+	  'interior',
+	  'group',
+	  'level',
+	  'plan'
+	];
+
+	function toHtml(sceneStructure, options) {
+	  if (!sceneStructure) {
+	    console.error('nothing to convert');
+	    return
+	  }
+	  // check if the request was made by a browser
+	  runtime.assertBrowser();
+
+	  // api
+	  options = options || {};
+	  var isArray = Array.isArray(sceneStructure);
+	  sceneStructure = isArray ? sceneStructure : [sceneStructure];
+
+	  // start parsing
+	  var html = getHtmlFromSceneStructure(sceneStructure);
+	  return isArray ? html : html[0]
+	}
+
+	// recursive parsing through sceneStructre
+	function getHtmlFromSceneStructure(sceneStructure, parent) {
+	  var collection = parent ? null : []; // use collection or parent
+	  sceneStructure.forEach(function(element3d) {
+	    if (validTypes.indexOf(element3d.type) > -1) {
+	      var el = addEntity({
+	        attributes: getAttributes(element3d),
+	        parent: parent
+	      });
+	      if (element3d.children && element3d.children.length) getHtmlFromSceneStructure(element3d.children, el);
+	      if (collection) collection.push(el);
+	    }
+	  });
+	  return collection
+	}
+
+	// get html attributes from element3d params
+	function getAttributes(element3d) {
+	  var attributes = {
+	    'io3d-uuid': element3d.id,
+	    position: element3d.x + ' ' + element3d.y + ' ' + element3d.z,
+	    rotation: '0 ' + element3d.ry + ' 0'
+	  };
+	  if (element3d.type === 'interior') {
+	    attributes['io3d-furniture'] = {id: element3d.src.substring(1)};
+	    attributes['shadow'] = {cast: true, receive: false};
+	  }
+
+	  return attributes
+	}
+
+	function addEntity(args) {
+	  var
+	    tag = args.tag || 'a-entity',
+	    parent = args.parent,
+	    attributes = args.attributes || {};
+
+	  var el = document.createElement(tag);
+
+	  Object.keys(attributes).forEach(function(key) {
+	    el.setAttribute(key, attributes[key]);
+	  });
+
+	  if (parent) return parent.appendChild(el)
+	  else return el
+	}
+
+	// consumes sceneStructure or DOM elements
+	// replaces furniture Ids and adjusts positioning
+	// outputs input type
+	function replaceFurniture (input, options) {
+
+	  options = options || {};
+	  var query = options.query;
+	  // defaults to pick a random item from alternatives
+	  var random = options.random || true;
+	  var furnitureIds;
+
+	  // check for DOM element
+	  var isDomElement = isElement(input);
+	  if (isDomElement) {
+	    // convert to sceneStructure
+	    input = getSceneStructureFromHtml(input);
+	  }
+
+	  return normalizeSceneStructure(input)
+	    .then(function(sceneStructure) {
+	      furnitureIds = getIdsFromSceneStructure(sceneStructure);
+
+	      if (Object.keys(furnitureIds).length === 0) return bluebird_1.reject('No valid furniture elements were found')
+
+	      var promises = [];
+	      Object.keys(furnitureIds).forEach(function(id) {
+	        promises.push(new getAlternatives(id, options));
+	      });
+
+	      return bluebird_1.all(promises)
+	    })
+	    .then(function(result) {
+	      var alternatives = {};
+	      Object.keys(furnitureIds).forEach(function(id, index) {
+	        alternatives[id] = result[index];
+	      });
+
+	      // replace params in furniture elements
+	      var sceneStructure = updateSceneStructureWithResult(input, alternatives, random);
+	      if (isDomElement) {
+	        return toHtml(sceneStructure)
+	      } else return sceneStructure
+	    })
+	    .catch(function(error) {
+	      console.error(error);
+	      return bluebird_1.reject(error)
+	    })
+	}
+
+	function getIdsFromSceneStructure(sceneStructure) {
+	  var isArray = Array.isArray(sceneStructure);
+	  sceneStructure = isArray ? sceneStructure : [sceneStructure];
+
+	  var collection = {};
+	  sceneStructure.forEach(function(element3d) {
+	    // get all furniture elements = type: 'interior'
+	    if (element3d.type === 'interior' && element3d.src && typeof element3d.src === 'string') collection[element3d.src.substring(1)] = true;
+	    // recursively search through scene structure
+	    if (element3d.children && element3d.children.length) {
+	      collection = defaults_1({}, collection, getIdsFromSceneStructure (element3d.children));
+	    }
+	  });
+	  return collection
+	}
+
+	// Returns true if it is a DOM element
+	// https://stackoverflow.com/a/384380/2835973
+	function isElement(o){
+	  return (
+	    typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
+	      o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
+	  );
+	}
+
+	function updateSceneStructureWithResult(input, alternatives, random) {
+	  var
+	    sceneStructure = input,
+	    replacement,
+	    index = 0;
+
+	  Object.keys(alternatives).forEach(function(id) {
+
+	    if (!alternatives[id] || !alternatives[id].length) return
+	    // we the pick a random item or take the first one
+	    if (random) index = Math.floor(Math.random() * alternatives[id].length);
+
+	    replacement = alternatives[id][index];
+
+	    sceneStructure = updateElementsById(sceneStructure, id, replacement);
+	  });
+	  return sceneStructure
+	}
+
+	// search by furniture id and replace params
+	function updateElementsById(sceneStructure, id, replacement) {
+	  var isArray = Array.isArray(sceneStructure);
+	  sceneStructure = isArray ? sceneStructure : [sceneStructure];
+
+	  sceneStructure = sceneStructure.map(function(element3d) {
+	    // furniture id is stored in src param
+	    if (element3d.type === 'interior' && element3d.src.substring(1) === id && replacement.furniture) {
+	      // apply new id
+	      element3d.src = '!' + replacement.furniture.id;
+	      // compute new position for items that differ in size and mesh origin
+	      var newPosition = getNewPosition(element3d, replacement.offset);
+	      // apply new position
+	      element3d.x = newPosition.x;
+	      element3d.y = newPosition.y;
+	      element3d.z = newPosition.z;
+	    }
+	    // recursivley search tree
+	    if (element3d.children && element3d.children.length) {
+	      element3d.children = updateElementsById(element3d.children, id, replacement);
+	    }
+	    return element3d
+	  });
+
+	  return isArray ? sceneStructure : sceneStructure[0]
+	}
+
+	// compute new position based on bounding boxes
+	function getNewPosition(element3d, offset) {
+
+	  var s = Math.sin(element3d.ry / 180 * Math.PI);
+	  var c = Math.cos(element3d.ry / 180 * Math.PI);
 	  var newPosition = {
-	    x: position.x + offset.x * c + offset.z * s,
-	    y: position.y + offset.y,
-	    z: position.z - offset.x * s + offset.z * c
+	    x: element3d.x + offset.x * c + offset.z * s,
+	    y: element3d.y + offset.y,
+	    z: element3d.z - offset.x * s + offset.z * c
 	  };
 	  return newPosition
 	}
@@ -22310,70 +22575,6 @@
 	  } else {
 	    return typeof value
 	  }
-	}
-
-	// TODO: extend this for bakedModel
-	var validTypes = [
-	  'interior',
-	  'group',
-	  'level',
-	  'plan'
-	];
-
-	function toHtml(sceneStructure, options) {
-	  // check if the request was made by a browser
-	  runtime.assertBrowser();
-
-	  // api
-	  options = options || {};
-	  var isArray = Array.isArray(sceneStructure);
-	  sceneStructure = isArray ? sceneStructure : [sceneStructure];
-
-	  // start parsing
-	  return getHtmlFromSceneStructure(sceneStructure)
-	}
-
-	// recursive parsing through sceneStructre
-	function getHtmlFromSceneStructure(sceneStructure, parent) {
-	  var collection = parent ? null : []; // use collection or parent
-	  sceneStructure.forEach(function(element3d) {
-	    if (validTypes.indexOf(element3d.type) > -1) {
-	      var el = addEntity({
-	        attributes: getAttributes(element3d),
-	        parent: parent
-	      });
-	      getHtmlFromSceneStructure(element3d.children, el);
-	      if (collection) collection.push(el);
-	    }
-	  });
-	  return collection
-	}
-
-	// get html attributes from element3d params
-	function getAttributes(element3d) {
-	  var attributes = {
-	    'io3d-uuid': element3d.id,
-	    position: element3d.x + ' ' + element3d.y + ' ' + element3d.z,
-	    rotation: '0 ' + element3d.ry + ' 0'
-	  };
-	  if (element3d.type === 'interior') attributes['io3d-furniture'] = 'id:' + element3d.src.substring(1);
-	  return attributes
-	}
-
-	function addEntity(args) {
-	  var
-	    tag = args.tag || 'a-entity',
-	    parent = args.parent,
-	    attributes = args.attributes || {};
-
-	  var el = document.createElement(tag);
-
-	  Object.keys(attributes).forEach(function(key) {
-	    el.setAttribute(key, attributes[key]);
-	  });
-
-	  if (parent) return parent.appendChild(el)
-	  else return el
 	}
 
 	var scene = {
@@ -24700,7 +24901,6 @@
 	}
 
 	function recognize (args) {
-	  console.log('starting recognition');
 	  var el = typeof args === 'string' ? document.querySelector(args) : null;
 
 	  var url, width, height, pixelsPerMeter;
@@ -24714,8 +24914,6 @@
 	    // TODO: fetch image directly to make sure we get it
 	    var texture = el.components.material.material.map.image;
 	    pixelsPerMeter = getPixelPerMeterRatio(texture.width, texture.height, width, height);
-
-	    console.log(url, width, height, pixelsPerMeter);
 
 	  } else {
 	    return
@@ -24847,7 +25045,7 @@
 	      } else {
 	        throw 'Only basic tags like "<div>" without attributes are currently supported. (No queries and no HTML strings)'
 	      }
-	    } else if (isElement(x)) {
+	    } else if (isElement$1(x)) {
 	      // only add convenience methods
 	      extendWithConvenienceMethods(x);
 	    } else {
@@ -24857,7 +25055,7 @@
 	};
 
 	// utils
-	el.isElement = isElement;
+	el.isElement = isElement$1;
 
 	// helpers
 
@@ -24895,7 +25093,7 @@
 	    return el
 	  };
 	  el.append = function append (o) {
-	    if (o) isElement(o) ? el.appendChild(o) : el.innerHTML = o;
+	    if (o) isElement$1(o) ? el.appendChild(o) : el.innerHTML = o;
 	    return el
 	  };
 	  el.appendTo = function appendToElement (parentEl) {
@@ -24934,7 +25132,7 @@
 
 	// Returns true if it is a DOM element
 	// https://stackoverflow.com/a/384380/2835973
-	function isElement(o){
+	function isElement$1(o){
 	  return (
 	    typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
 	      o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"

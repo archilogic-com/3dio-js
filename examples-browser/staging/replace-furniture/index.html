@@ -3,34 +3,10 @@
   <head>
     <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
     <script src="../../../build/3dio.js"></script>
-    <style>
-      input {
-        height: 30px;
-        font-size: 16px;
-        padding: 0px 12px;
-        outline: none;
-        border: 0;
-        border-bottom: 1px solid #333;
-        margin: 0 10px 20px 0;
-      }
-      button {
-        outline: none;
-        height: 32px;
-        font-size: 16px;
-        padding: 7px 12px;
-        border: 1px solid #333;
-        background: white;
-        cursor: pointer;
-        margin: 0 10px 20px 0;
-      }
-      button:hover {
-        background: #333;
-        color: white;
-      }
-    </style>
+    <link href="../style.css" rel="stylesheet">
   </head>
   <body>
-    <div style="position: absolute; z-index:1000; top: 10px; left: 10px;">
+    <div class="controls">
       <button id="rnd-btn">pick random</button>
       <button id="change-btn">replace with similar furniture</button><br>
       <input id="inpt-id" placeholder="enter id" style="width: 200px;"/>
@@ -55,7 +31,7 @@
     </a-scene>
     <script>
       furnitureId = 'edd99bfc-a597-4fb4-bf92-04916e6d5dfc'
-      const furniture = document.querySelector('a-entity#furniture')
+      const furnitureEl = document.querySelector('a-entity#furniture')
       const rndBtn = document.querySelector('#rnd-btn')
       const idInput = document.querySelector('input#inpt-id')
       const queryInput = document.querySelector('input#inpt-filter')
@@ -79,17 +55,22 @@
         })
       })
       changeBtn.addEventListener('click', function() {
-        let furnitureId = furniture.getAttribute('io3d-furniture').id
-        let rotation = furniture.getAttribute('rotation')
-        let position = furniture.getAttribute('position')
         let query = queryInput.value.trim()
-        io3d.homeStaging.replaceFurniture(furnitureId, { query, rotation, position }).then(result => {
-          if (!result || result.length === 0 ) return
-          let item = result[Math.floor(Math.random() * result.length)]
-          furniture.setAttribute('io3d-furniture', {'id': item.furniture.id})
-          furniture.setAttribute('position', AFRAME.utils.coordinates.stringify(item.position))
-          idInput.value = item.furniture.id
-        })
+        // call replace furniture method by providing the furniture DOM element
+        io3d.staging.replaceFurniture(furnitureEl, {query})
+          .then(result => {
+            if (!result) return
+
+            //var elements = io3d.scene.getHtmlFromSceneStructure(result)
+            console.log(result)
+
+            // apply values from result
+            furnitureEl.setAttribute('position', result.components.position.attrValue)
+            furnitureEl.setAttribute('io3d-furniture', result.components['io3d-furniture'].attrValue)
+
+            // alternative: replace node with new node
+            // furnitureEl.parentNode.replaceChild(elements[0], furnitureEl)
+          })
       })
 
       function validateUuid (str) {
