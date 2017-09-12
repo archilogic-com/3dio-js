@@ -4,14 +4,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="style.css" rel="stylesheet" type="text/css"/>
 
-  <!-- boilerplate libs -->
+  <!-- boilerplate libs
   <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+  -->
+  <script src="../_libs/aframe.0.6.1.min.js"></script>
 
-  <script src="https://cdn.rawgit.com/tizzle/aframe-orbit-controls-component/v0.1.12/dist/aframe-orbit-controls-component.min.js"></script>
+  bEWe7XrrOjG
+
+  <script src="../_libs/aframe-orbit-controls-component.min.js"></script>
   <!-- 3dio lib -->
   <script src="../../../build/3dio.js"></script>
 
-  <script src="https://rawgit.com/archilogic-com/aframe-gblock/master/dist/gblock.js"></script>
+  <script src="../_libs/gblock.js"></script>
 
 
 </head>
@@ -33,13 +37,13 @@
     https://vr.google.com/objects/fi8pX6r6GBI
     -->
 
-    <a-entity gblock="https://vr.google.com/objects/bEWe7XrrOjG" position="-19.646 72.878 1.225" scale="20 20 20" rotation="0 -90 0"></a-entity>
+    <a-entity gblock="../_models/bEWe7XrrOjG/model.gltf" position="-19.646 72.878 1.225" scale="20 20 20" rotation="0 90 0"></a-entity>
 
   </a-entity>
 
   <a-sky color="#ECECEC"></a-sky>
 
-  <a-entity camera position="10 16 0" orbit-controls="target:#bake-this;"></a-entity>
+  <a-entity camera position="20 26 0" orbit-controls="target:#bake-this;"></a-entity>
 
 </a-scene>
 
@@ -61,6 +65,19 @@
 	})
 
 	function bakeLightMaps(selector) {
+
+	  io3d.utils.data3d.fromThree(
+      document.querySelector(selector).object3D
+    ).then(function(data3d){
+      var parent = new THREE.Object3D()
+      parent.position.set(0,0,60)
+      var view = new io3d.aFrame.three.Data3dView({
+        parent: parent
+      }).set(data3d)
+      document.querySelector(selector).object3D.add(parent)
+    })
+
+	  return
 
 	  var message
 

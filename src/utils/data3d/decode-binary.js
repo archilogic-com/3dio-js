@@ -96,7 +96,7 @@ export default function decodeBinary (buffer, options) {
     // map typed arrays to payload area in file buffer
     mapArraysToBuffer(data3d, buffer, payloadByteOffset, url)
 
-    //  convert relative material keys into absolute once
+    //  convert relative material keys into absolute one
     if (origin && data3d.materials) convertTextureKeys(data3d, origin, rootDir)
 
   })

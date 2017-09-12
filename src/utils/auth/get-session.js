@@ -6,7 +6,9 @@ import Promise from 'bluebird'
 import log from 'js-logger'
 
 // init
-getSession()
+getSession().catch(function(error) {
+  console.warn('Session info not available: ', error)
+})
 
 // update session state every time when tab becomes visible
 if (runtime.isBrowser) {
