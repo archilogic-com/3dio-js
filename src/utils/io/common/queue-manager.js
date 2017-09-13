@@ -39,74 +39,79 @@ for (var i = 0, l = _queuesLength; i < l; i++) {
 
 window.loadingQueueAlgorithm     = 'overstep-one-fenced';
 window.loadingQueuePipelineDepth = maxConcurrentQueuedRequests;
-//window.loadingQueueGraph         = false;
-//if (window.loadingQueueGraph)
-//  window.loadingPerformanceHistory = new PerformanceGraph.PerformanceHistory(64);
-//
-//window.loadingQueueShowInfo = function() {
-//  function padRight(text, fieldLength) {
-//    return text + Array(fieldLength - text.length + 1).join(' ');
-//  }
-//  function padLeft(text, fieldLength) {
-//    return Array(fieldLength - text.length + 1).join(' ') + text;
-//  }
-//  var text = '';
-//  var keys = Object.keys(window.queueInfo);
-//  var baseTime;
-//  if (keys.length > 0) {
-//    var baseKey   = keys[0];
-//    var baseValue = window.queueInfo[baseKey];
-//    baseTime = baseValue.timeFirst;
-//    text += '(' + baseTime.toFixed(1) + ')\n'
-//  }
-//  for (var i = 0; i < keys.length; i++) {
-//    var key   = keys[i];
-//    var value = window.queueInfo[key];
-//    text += padRight(keys[i], 28) + ': ';
-//    if (value.requestCount > 0) {
-//      var t1 = value.timeFirst - baseTime;
-//      var t2 = value.timeLast - baseTime;
-//      var t1Str = t1.toFixed(1);
-//      var t2Str = t2.toFixed(1);
-//      var t3, d, t3Str, dStr;
-//      if (value.timeLastFinished) {
-//        t3 = value.timeLastFinished - baseTime;
-//        d  = t3 - t1;
-//        t3Str = t3.toFixed(1);
-//        dStr  = d.toFixed(1);
-//      } else {
-//        t3Str = '-';
-//        dStr  = '-';
-//      }
-//      text += padLeft(t1Str, 5) + ' - ' + padLeft(t2Str, 5) + ' / ' + padLeft(t3Str, 5) + ' (' + padLeft(dStr, 5) + ') [' + padLeft(value.requestCount.toString(), 4) + ']\n';
-//    } else
-//      text += '<inactive>\n'
-//  }
-//  console.log(text);
-//}
-//
-//window.loadingQueueProcessData = function() {
-//  var loadingQueueDataLines = window.loadingQueueData.split('\n');
-//  var i = 0;
-//  while (i < loadingQueueDataLines.length) {
-//    var line = loadingQueueDataLines[i];
-//    var count = 0;
-//    for (var j = i; i < loadingQueueDataLines.length; j++) {
-//      var nextLine = loadingQueueDataLines[j];
-//      if (line === nextLine)
-//        count++;
-//      else
-//        break;
-//    }
-//    if (count > 8) {
-//      loadingQueueDataLines.splice(i + 4, count - 8, ' ');
-//      loadingQueueDataLines.
-//        i += 4
-//    } else
-//      i += 1;
-//  }
-//  window.loadingQueueDataShort = loadingQueueDataLines.join('\n');
-//}
+
+/*
+
+(2017/09/13) Performance monitoring code
+
+window.loadingQueueGraph         = false;
+if (window.loadingQueueGraph)
+  window.loadingPerformanceHistory = new PerformanceGraph.PerformanceHistory(64);
+
+window.loadingQueueShowInfo = function() {
+  function padRight(text, fieldLength) {
+    return text + Array(fieldLength - text.length + 1).join(' ');
+  }
+  function padLeft(text, fieldLength) {
+    return Array(fieldLength - text.length + 1).join(' ') + text;
+ }
+ var text = '';
+ var keys = Object.keys(window.queueInfo);
+ var baseTime;
+ if (keys.length > 0) {
+   var baseKey   = keys[0];
+   var baseValue = window.queueInfo[baseKey];
+   baseTime = baseValue.timeFirst;
+   text += '(' + baseTime.toFixed(1) + ')\n'
+ }
+ for (var i = 0; i < keys.length; i++) {
+   var key   = keys[i];
+   var value = window.queueInfo[key];
+   text += padRight(keys[i], 28) + ': ';
+   if (value.requestCount > 0) {
+     var t1 = value.timeFirst - baseTime;
+     var t2 = value.timeLast - baseTime;
+     var t1Str = t1.toFixed(1);
+     var t2Str = t2.toFixed(1);
+     var t3, d, t3Str, dStr;
+     if (value.timeLastFinished) {
+       t3 = value.timeLastFinished - baseTime;
+       d  = t3 - t1;
+       t3Str = t3.toFixed(1);
+       dStr  = d.toFixed(1);
+     } else {
+       t3Str = '-';
+       dStr  = '-';
+     }
+     text += padLeft(t1Str, 5) + ' - ' + padLeft(t2Str, 5) + ' / ' + padLeft(t3Str, 5) + ' (' + padLeft(dStr, 5) + ') [' + padLeft(value.requestCount.toString(), 4) + ']\n';
+   } else
+     text += '<inactive>\n'
+ }
+ console.log(text);
+}
+
+window.loadingQueueProcessData = function() {
+ var loadingQueueDataLines = window.loadingQueueData.split('\n');
+ var i = 0;
+ while (i < loadingQueueDataLines.length) {
+   var line = loadingQueueDataLines[i];
+   var count = 0;
+   for (var j = i; i < loadingQueueDataLines.length; j++) {
+     var nextLine = loadingQueueDataLines[j];
+     if (line === nextLine)
+       count++;
+     else
+       break;
+   }
+   if (count > 8) {
+     loadingQueueDataLines.splice(i + 4, count - 8, ' ');
+     loadingQueueDataLines.
+       i += 4
+   } else
+     i += 1;
+ }
+ window.loadingQueueDataShort = loadingQueueDataLines.join('\n');
+}
 
 function _addPerformanceEntry() {
   var performanceEntry = window.loadingPerformanceHistory.newEntry(PerformanceGraph.PerformanceEntry);
@@ -129,6 +134,8 @@ function _appendLoadingQueueData() {
   }
   window.loadingQueueData += entry;
 }
+
+*/
 
 function _startRequest(queueName) {
   // Update queue tracking information
@@ -237,16 +244,18 @@ function _processQueue() {
     _doProcessQueueOverstepOneFenced()
   else
     throw 'Http._processQueue: Unknown loading queue processing algorithm.'
+  /* (2017/09/13) Performance monitoring code
   if (_queuesChanged) {
     if (window.loadingQueueGraph)
       _addPerformanceEntry();
     _appendLoadingQueueData();
     _queuesChanged = false;
   }
+  */
 }
 
 function _enqueue(queueName, url){
-  
+
   //// fallback to last queue
   //if (!_queues[queueName]) queueName = queuesByPriority[_queuesLength-1]
 
