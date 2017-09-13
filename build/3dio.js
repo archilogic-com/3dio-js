@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.69
- * @date 2017/09/13 13:21
+ * @date 2017/09/14 01:13
  * @branch loading-queue
- * @commit 46b4f5be30f0310440e2937ba392b42f87dff241
+ * @commit cebc3044e865a64ca7f2a33ded390031fe3031ad
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/13 13:21', GIT_BRANCH = 'loading-queue', GIT_COMMIT = '46b4f5be30f0310440e2937ba392b42f87dff241'
+	var BUILD_DATE='2017/09/14 01:13', GIT_BRANCH = 'loading-queue', GIT_COMMIT = 'cebc3044e865a64ca7f2a33ded390031fe3031ad'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.69";
@@ -13828,7 +13828,6 @@
 	  // console.log('[' + (' ' + _concurrentRequests).slice(-2) + ']: Starting ' + queueName);
 	  var queue = _queues[queueName];
 	  var request = queue.shift();
-	  console.log('start ',queueName);
 	  request.start();
 	}
 
