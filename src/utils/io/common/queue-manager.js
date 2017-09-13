@@ -149,7 +149,6 @@ function _startRequest(queueName) {
   // console.log('[' + (' ' + _concurrentRequests).slice(-2) + ']: Starting ' + queueName);
   var queue = _queues[queueName];
   var request = queue.shift();
-  console.log('start ',queueName)
   request.start();
 }
 
