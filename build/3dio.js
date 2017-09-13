@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.69
- * @date 2017/09/12 17:13
+ * @date 2017/09/13 08:44
  * @branch master
- * @commit c06e61719c9fcadc727a871c2ac77d03c486e1a3
+ * @commit b4ae930f6109a4c70527d83dd1fd0d94b60cf704
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/12 17:13', GIT_BRANCH = 'master', GIT_COMMIT = 'c06e61719c9fcadc727a871c2ac77d03c486e1a3'
+	var BUILD_DATE='2017/09/13 08:44', GIT_BRANCH = 'master', GIT_COMMIT = 'b4ae930f6109a4c70527d83dd1fd0d94b60cf704'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.69";
@@ -13677,6 +13677,306 @@
 	  })
 	}
 
+	// configs
+
+	var maxConcurrentQueuedRequests = 15; // not queued requests are not limited in running parallel
+	var queuesByPriority = [
+	  'architectureGeometries',
+	  'architectureTexturesLoRes',
+	  'interiorGeometries',
+	  'interiorTexturesLoRes',
+	  'architectureTexturesHiRes',
+	  'interiorTexturesHiRes'
+	];
+
+	var queueFences = [
+	  false,
+	  false,
+	  true,
+	  false,
+	  false
+	];
+
+	// prepare objects for queueing
+	var _queues = {};
+	var _queueFences = {};
+	var _queuesChanged = false;
+	window.queueInfo = {};
+	var _queuesLength = queuesByPriority.length;
+	var _concurrentRequests = 0;
+	var _concurrentPerQueue = {};
+	window.loadingQueueData = '';
+
+	var queueName;
+	for (var i$1 = 0, l = _queuesLength; i$1 < l; i$1++) {
+	  queueName = queuesByPriority[i$1];
+	  _queues[queueName] = [];
+	  _queueFences[queueName] = queueFences[i$1];
+	  window.queueInfo[queueName] = {requestCount: 0};
+	  _concurrentPerQueue[queueName] = 0;
+	}
+
+	window.loadingQueueAlgorithm     = 'overstep-one-fenced';
+	window.loadingQueuePipelineDepth = maxConcurrentQueuedRequests;
+	//window.loadingQueueGraph         = false;
+	//if (window.loadingQueueGraph)
+	//  window.loadingPerformanceHistory = new PerformanceGraph.PerformanceHistory(64);
+	//
+	//window.loadingQueueShowInfo = function() {
+	//  function padRight(text, fieldLength) {
+	//    return text + Array(fieldLength - text.length + 1).join(' ');
+	//  }
+	//  function padLeft(text, fieldLength) {
+	//    return Array(fieldLength - text.length + 1).join(' ') + text;
+	//  }
+	//  var text = '';
+	//  var keys = Object.keys(window.queueInfo);
+	//  var baseTime;
+	//  if (keys.length > 0) {
+	//    var baseKey   = keys[0];
+	//    var baseValue = window.queueInfo[baseKey];
+	//    baseTime = baseValue.timeFirst;
+	//    text += '(' + baseTime.toFixed(1) + ')\n'
+	//  }
+	//  for (var i = 0; i < keys.length; i++) {
+	//    var key   = keys[i];
+	//    var value = window.queueInfo[key];
+	//    text += padRight(keys[i], 28) + ': ';
+	//    if (value.requestCount > 0) {
+	//      var t1 = value.timeFirst - baseTime;
+	//      var t2 = value.timeLast - baseTime;
+	//      var t1Str = t1.toFixed(1);
+	//      var t2Str = t2.toFixed(1);
+	//      var t3, d, t3Str, dStr;
+	//      if (value.timeLastFinished) {
+	//        t3 = value.timeLastFinished - baseTime;
+	//        d  = t3 - t1;
+	//        t3Str = t3.toFixed(1);
+	//        dStr  = d.toFixed(1);
+	//      } else {
+	//        t3Str = '-';
+	//        dStr  = '-';
+	//      }
+	//      text += padLeft(t1Str, 5) + ' - ' + padLeft(t2Str, 5) + ' / ' + padLeft(t3Str, 5) + ' (' + padLeft(dStr, 5) + ') [' + padLeft(value.requestCount.toString(), 4) + ']\n';
+	//    } else
+	//      text += '<inactive>\n'
+	//  }
+	//  console.log(text);
+	//}
+	//
+	//window.loadingQueueProcessData = function() {
+	//  var loadingQueueDataLines = window.loadingQueueData.split('\n');
+	//  var i = 0;
+	//  while (i < loadingQueueDataLines.length) {
+	//    var line = loadingQueueDataLines[i];
+	//    var count = 0;
+	//    for (var j = i; i < loadingQueueDataLines.length; j++) {
+	//      var nextLine = loadingQueueDataLines[j];
+	//      if (line === nextLine)
+	//        count++;
+	//      else
+	//        break;
+	//    }
+	//    if (count > 8) {
+	//      loadingQueueDataLines.splice(i + 4, count - 8, ' ');
+	//      loadingQueueDataLines.
+	//        i += 4
+	//    } else
+	//      i += 1;
+	//  }
+	//  window.loadingQueueDataShort = loadingQueueDataLines.join('\n');
+	//}
+
+	function _addPerformanceEntry() {
+	  var performanceEntry = window.loadingPerformanceHistory.newEntry(PerformanceGraph.PerformanceEntry);
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    performanceEntry[queueName] = _concurrentPerQueue[queueName];
+	  }
+	  // performanceEntry.none = window.loadingQueuePipelineDepth - _concurrentRequests;
+	}
+
+	function _appendLoadingQueueData() {
+	  var entry = '';
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    entry += _concurrentPerQueue[queueName].toString();
+	    if (i < _queuesLength - 1)
+	      entry += ', ';
+	    else
+	      entry += '\n';
+	  }
+	  window.loadingQueueData += entry;
+	}
+
+	function _startRequest(queueName) {
+	  // Update queue tracking information
+	  var queueInfo = window.queueInfo[queueName];
+	  var time = performance.now() / 1000;
+	  if (typeof queueInfo.timeFirst === 'undefined') {
+	    queueInfo.timeFirst = time;
+	    queueInfo.timeLast  = time;
+	  } else
+	    queueInfo.timeLast  = time;
+	  queueInfo.requestCount++;
+	  // Update concurrent request counts
+	  _concurrentPerQueue[queueName] += 1;
+	  _concurrentRequests++;
+	  //
+	  _queuesChanged = true;
+	  // Start request
+	  // console.log('[' + (' ' + _concurrentRequests).slice(-2) + ']: Starting ' + queueName);
+	  var queue = _queues[queueName];
+	  var request = queue.shift();
+	  console.log('start ',queueName);
+	  request.start();
+	}
+
+	function _doProcessQueueOriginal() {
+	  if (_concurrentRequests >= window.loadingQueuePipelineDepth)
+	    return;
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    if (_queues[queueName].length > 0) {
+	      _startRequest(queueName);
+	      break;
+	    } else if (_concurrentPerQueue[queueName] !== 0)
+	      break;
+	  }
+	}
+
+	function _doProcessQueueOriginalFixed(){
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+	      _startRequest(queueName);
+	    if (_concurrentPerQueue[queueName] !== 0)
+	      break;
+	  }
+	}
+
+	function _doProcessQueueOverstep(){
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+	      _startRequest(queueName);
+	  }
+	}
+
+	function _doProcessQueueOverstepOne(){
+	  var anchorStage = null;
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+	      _startRequest(queueName);
+	    if (anchorStage === null && _concurrentPerQueue[queueName] !== 0)
+	      anchorStage = i;
+	    if (anchorStage !== null && i - anchorStage > 0)
+	      break;
+	  }
+	}
+
+	function _doProcessQueueOverstepFenced(){
+	  var anchorStage = null;
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+	      _startRequest(queueName);
+	    if (anchorStage === null && _concurrentPerQueue[queueName] !== 0)
+	      anchorStage = i;
+	    if (anchorStage !== null && _queueFences[queueName])
+	      break;
+	  }
+	}
+
+	function _doProcessQueueOverstepOneFenced(){
+	  var anchorStage = null;
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+	      _startRequest(queueName);
+	    if (anchorStage === null && _concurrentPerQueue[queueName] !== 0)
+	      anchorStage = i;
+	    if (anchorStage !== null && (_queueFences[queueName] || (i - anchorStage > 0)))
+	      break;
+	  }
+	}
+
+	function _processQueue() {
+	  if (window.loadingQueueAlgorithm === 'original')
+	    _doProcessQueueOriginal();
+	  else if (window.loadingQueueAlgorithm === 'original-fixed')
+	    _doProcessQueueOriginalFixed();
+	  else if (window.loadingQueueAlgorithm === 'overstep')
+	    _doProcessQueueOverstep();
+	  else if (window.loadingQueueAlgorithm === 'overstep-one')
+	    _doProcessQueueOverstepOne();
+	  else if (window.loadingQueueAlgorithm === 'overstep-fenced')
+	    _doProcessQueueOverstepFenced();
+	  else if (window.loadingQueueAlgorithm === 'overstep-one-fenced')
+	    _doProcessQueueOverstepOneFenced();
+	  else
+	    throw 'Http._processQueue: Unknown loading queue processing algorithm.'
+	  if (_queuesChanged) {
+	    if (window.loadingQueueGraph)
+	      _addPerformanceEntry();
+	    _appendLoadingQueueData();
+	    _queuesChanged = false;
+	  }
+	}
+
+	function _enqueue(queueName, url){
+	  
+	  //// fallback to last queue
+	  //if (!_queues[queueName]) queueName = queuesByPriority[_queuesLength-1]
+
+	  // fallback to first queue
+	  if (!_queues[queueName]) {
+	    if (queueName) console.error('onknown queue ', queueName);
+	    queueName = queuesByPriority[0];
+	  }
+
+	  // create promise and add to queue
+	  return new Promise(function(resolve, reject){
+	    // has to be asynchronous in order to decouple queue processing from synchronous code
+	    setTimeout(function(){
+	      var queue = _queues[queueName];
+	      queue[ queue.length ] = { url: url, start: resolve };
+	      _processQueue();
+	    },1);
+	  })
+
+	}
+
+	function _dequeue(queueName, url) {
+	  var queueInfo = window.queueInfo[queueName];
+	  if (!queueInfo) {
+	    if (queueName) console.warn('Queue info not found for queue name "'+queueName+'"');
+	    return
+	  }
+	  var time = performance.now() / 1000;
+	  queueInfo.timeLastFinished = time;
+	  var t1 = queueInfo.timeFirst;
+	  var t2 = queueInfo.timeLast;
+	  var t3 = queueInfo.timeLastFinished;
+	  var d  = t3 - t1;
+	  _concurrentPerQueue[queueName] -= 1;
+	  _concurrentRequests -= 1;
+	  _queuesChanged = true;
+	  _processQueue();
+	}
+
+	// expose API
+
+	var queueManager = {
+	  enqueue: _enqueue,
+	  dequeue: _dequeue
+	};
+
+	window.setInterval(function(){
+	  _processQueue();
+	},1000);
+
 	/**
 	 * Appends the elements of `values` to `array`.
 	 *
@@ -17193,8 +17493,8 @@
 	  '.svg': fetchImageTexture
 	};
 
-	function fetchTexture (url, queue) {
-
+	function fetchTexture (url, queueName) {
+	  
 	  // internals
 	  var cacheKey = url;
 
@@ -17212,7 +17512,21 @@
 	    type = '.jpg';
 	  }
 
-	  var promise = fetchTextureByType[type](url);
+	  var promise = queueManager.enqueue(queueName, url).then(function(){
+
+	    return fetchTextureByType[type](url)
+
+	  }).then(function(texture){
+
+	    queueManager.dequeue(queueName, url);
+	    return texture
+
+	  }).catch(function (error) {
+
+	    queueManager.dequeue(queueName, url);
+	    return bluebird_1.reject(error)
+
+	  });
 
 	  // add to cache
 	  cache.add(cacheKey, promise);
@@ -17296,8 +17610,8 @@
 
 	// class
 
-	function loadTextures ( queue, TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, resetTexturesOnLoadStart) {
-
+	function loadTextureSet ( queueName, TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, resetTexturesOnLoadStart) {
+	  
 	  // new textures
 
 	  var
@@ -17366,7 +17680,7 @@
 
 	      if (needsUpdate) {
 	        // load new texture
-	        texturePromises[ textureCount ] = fetchTexture(textureS3Key, queue).catch(onError);
+	        texturePromises[ textureCount ] = fetchTexture(textureS3Key, queueName).catch(onError);
 	        textureKeys[ textureCount ] = textureType;
 	        texture3dKeys[ textureCount ] = textureType3d;
 	        textureCount++;
@@ -17441,7 +17755,7 @@
 	        // everything ok - load lightmap
 	        textureType = TEXTURE_TYPES.UV2;
 	        textureS3Key = _attributes[ textureType ];
-	        texturePromises[ textureCount ] = fetchTexture(textureS3Key, queue).catch(onError);
+	        texturePromises[ textureCount ] = fetchTexture(textureS3Key, queueName).catch(onError);
 	        textureKeys[ textureCount ] = textureType;
 	        texture3dKeys[ textureCount ] = THREEJS_TEXTURE_TYPES_MAP[ textureType ];
 	        textureCount++;
@@ -17717,7 +18031,7 @@
 
 	  var
 	    loadingTexturesPromise,
-	    loadingQueue,
+	    loadingQueueName,
 	    isLoadingLoResTextures,
 	    hasLoResTextures = _attributes.mapDiffusePreview || _attributes.mapSpecularPreview || _attributes.mapNormalPreview || _attributes.mapAlphaPreview || _attributes.mapLightPreview,
 	    // hasHiResTextures = _attributes.mapDiffuse || _attributes.mapSpecular || _attributes.mapNormal || _attributes.mapAlpha || _attributes.mapLight,
@@ -17727,15 +18041,15 @@
 
 	  if (!hiResTexturesEnabled || (hasLoResTextures && !material3d.firstTextureLoaded)) {
 	    if (loadingQueuePrefix) {
-	      loadingQueue = loadingQueuePrefix + 'TexturesLoRes';
+	      loadingQueueName = loadingQueuePrefix + 'TexturesLoRes';
 	    }
-	    loadingTexturesPromise = loadTextures(loadingQueue, LO_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
+	    loadingTexturesPromise = loadTextureSet(loadingQueueName, LO_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
 	    isLoadingLoResTextures = true;
 	  } else {
 	    if (loadingQueuePrefix) {
-	      loadingQueue = loadingQueuePrefix + 'TexturesHiRes';
+	      loadingQueueName = loadingQueuePrefix + 'TexturesHiRes';
 	    }
-	    loadingTexturesPromise = loadTextures(loadingQueue, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
+	    loadingTexturesPromise = loadTextureSet(loadingQueueName, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
 	    isLoadingLoResTextures = false;
 	  }
 
@@ -17769,9 +18083,9 @@
 	  if (isLoadingLoResTextures && hiResTexturesEnabled) {
 	    loadingTexturesPromise.then(function(){
 	      if (loadingQueuePrefix) {
-	        loadingQueue = loadingQueuePrefix + 'TexturesHiRes';
+	        loadingQueueName = loadingQueuePrefix + 'TexturesHiRes';
 	      }
-	      loadTextures(loadingQueue, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
+	      loadTextureSet(loadingQueueName, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
 	    });
 	  }
 
@@ -17780,9 +18094,9 @@
 	  return loadingTexturesPromise
 	}
 
-	var fragmentShader = "uniform vec3 diffuse;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapExposure;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\n#include <shadowmap_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( diffuse, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #include <normal_flip>\n    #include <normal_fragment>\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}";
+	var fragmentShader = "uniform vec3 diffuse;\r\nuniform vec3 emissive;\r\nuniform vec3 specular;\r\nuniform float shininess;\r\nuniform float opacity;\r\n\r\n#include <common>\r\n#include <packing>\r\n#include <uv_pars_fragment>\r\n#include <uv2_pars_fragment>\r\n#include <map_pars_fragment>\r\n#include <alphamap_pars_fragment>\r\n\r\n// Replaces <lightmap_pars_fragment>;\r\n\r\n#ifdef USE_LIGHTMAP\r\n\tuniform sampler2D lightMap;\r\n\tuniform float lightMapIntensity;\r\n\tuniform float lightMapExposure;\r\n\tuniform float lightMapFalloff;\r\n#endif\r\n\r\n#include <normalmap_pars_fragment>\r\n#include <specularmap_pars_fragment>\r\n\r\n#include <bsdfs>\r\n#include <lights_pars>\r\n#include <lights_phong_pars_fragment>\r\n#include <shadowmap_pars_fragment>\r\n\r\n\r\nvoid main() {\r\n\r\n    vec4 diffuseColor = vec4( diffuse, opacity );\r\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\r\n\r\n    vec3 totalEmissiveRadiance = emissive;\r\n\r\n    #include <map_fragment>\r\n    #include <alphamap_fragment>\r\n    #include <alphatest_fragment>\r\n    #include <specularmap_fragment>\r\n    #include <normal_flip>\r\n    #include <normal_fragment>\r\n\r\n    // accumulation\r\n    #include <lights_phong_fragment>\r\n\r\n    // Start of <light-template> replace block\r\n    GeometricContext geometry;\r\n\r\n    geometry.position = - vViewPosition;\r\n    geometry.normal = normal;\r\n    geometry.viewDir = normalize( vViewPosition );\r\n\r\n    IncidentLight directLight;\r\n\r\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        PointLight pointLight;\r\n\r\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\r\n\r\n            pointLight = pointLights[ i ];\r\n\r\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        SpotLight spotLight;\r\n\r\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\r\n\r\n            spotLight = spotLights[ i ];\r\n\r\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        DirectionalLight directionalLight;\r\n\r\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\r\n\r\n            directionalLight = directionalLights[ i ];\r\n\r\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\r\n\r\n        RectAreaLight rectAreaLight;\r\n\r\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\r\n\r\n            rectAreaLight = rectAreaLights[ i ];\r\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if defined( RE_IndirectDiffuse )\r\n\r\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\r\n\r\n        #ifdef USE_LIGHTMAP\r\n\r\n            // compute the light value\r\n            vec3 unit = vec3(1.0);\r\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\r\n            // compute the light intensity modifier\r\n            vec3 modifier = -lightMapFalloff * light * light + unit;\r\n            // apply light\r\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\r\n\r\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\r\n\r\n                lightMapIrradiance *= PI; // factor of PI should not be present; included here to prevent breakage\r\n\r\n            #endif\r\n\r\n            irradiance += lightMapIrradiance;\r\n\r\n        #endif\r\n\r\n        #if ( NUM_HEMI_LIGHTS > 0 )\r\n\r\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\r\n\r\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\r\n\r\n            }\r\n\r\n        #endif\r\n\r\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\r\n\r\n    #endif\r\n    // End of <light-template> replace block\r\n\r\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\r\n\r\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\r\n\r\n}";
 
-	var vertexShader = "varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}";
+	var vertexShader = "varying vec3 vViewPosition;\r\n\r\n#ifndef FLAT_SHADED\r\n\tvarying vec3 vNormal;\r\n#endif\r\n\r\n#include <uv_pars_vertex>\r\n#include <uv2_pars_vertex>\r\n#include <shadowmap_pars_vertex>\r\n\r\nvoid main()\r\n{\r\n//  vUv = uv;\r\n  #include <uv_vertex>\r\n  #include <uv2_vertex>\r\n\r\n  #include <beginnormal_vertex>\r\n  #include <defaultnormal_vertex>\r\n\r\n  #ifndef FLAT_SHADED\r\n    // Normal computed with derivatives when FLAT_SHADED\r\n  \tvNormal = normalize( transformedNormal );\r\n  #endif\r\n\r\n  #include <begin_vertex>\r\n  #include <project_vertex>\r\n\r\n  vViewPosition = - mvPosition.xyz;\r\n\r\n  #include <worldpos_vertex>\r\n  #include <shadowmap_vertex>\r\n\r\n}";
 
 	// CONFIGS
 
@@ -18131,7 +18445,9 @@
 	            material3d.name = materialId;
 	            if (!materials) {
 	              // there is no material properties. using default properties
-	              setMaterial({ material3d: material3d });
+	              setMaterial({
+	                material3d: material3d
+	              });
 	            }
 	            self._materials3d[ meshId ] = material3d;
 	          }
@@ -18749,12 +19065,22 @@
 	    // create new one
 	    this_.mesh = new THREE.Object3D();
 	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
-	    this.el.data3dView = this.data3dView
+	    this.el.data3dView = this.data3dView;
 	    // load 3d file
-	    ;(key ? io3d.storage.get(key) : io3d.utils.data3d.load(url)).then(function (data3d) {
+	    Promise.resolve().then(function(){
+	      if (key) {
+	        return io3d.storage.get(key, { loadingQueuePrefix: 'architecture' })
+	      } else {
+	        return io3d.utils.data3d.load(url, { loadingQueuePrefix: 'architecture' })
+	      }
+	    }).then(function (data3d) {
 	      this_.el.data3d = data3d;
 	      // update view
-	      this_.data3dView.set(data3d, { lightMapIntensity: lightMapIntensity, lightMapExposure: lightMapExposure });
+	      this_.data3dView.set(data3d, {
+	        lightMapIntensity: lightMapIntensity,
+	        lightMapExposure: lightMapExposure,
+	        loadingQueuePrefix: 'architecture'
+	      });
 	      this_.el.setObject3D('mesh', this_.mesh);
 	      // emit event
 	      this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
@@ -18836,7 +19162,9 @@
 	      });
 
 	      // update view
-	      this_.data3dView.set(result.data3d);
+	      this_.data3dView.set(result.data3d, {
+	        loadingQueuePrefix: 'interior'
+	      });
 	      this_.el.data3d = result.data3d;
 	      this_.el.setObject3D('mesh', this_.mesh);
 	      // emit event
@@ -20122,12 +20450,12 @@
 
 
 
-	for (var i$1 = 0, len = autoEscapeMap.length; i$1 < len; ++i$1) {
-	  autoEscapeMap[i$1] = "";
+	for (var i$2 = 0, len = autoEscapeMap.length; i$2 < len; ++i$2) {
+	  autoEscapeMap[i$2] = "";
 	}
 
-	for (var i$1 = 0, len = autoEscape.length; i$1 < len; ++i$1) {
-	  var c = autoEscape[i$1];
+	for (var i$2 = 0, len = autoEscape.length; i$2 < len; ++i$2) {
+	  var c = autoEscape[i$2];
 	  var esc = encodeURIComponent(c);
 	  if (esc === c) {
 	    esc = escape(c);
@@ -20390,18 +20718,43 @@
 	}
 
 	function loadData3d (url, options) {
-	  
-	  return fetch$1(url, options).then(function(res){
-	    return res.arrayBuffer()
-	  }).then(function(buffer){
-	    return decodeBinary(buffer, { url: url })
+
+	  options = options || {};
+	  var queueName;
+	  if (options.queueName) {
+	    queueName = options.queueName;
+	  } else if (options.loadingQueuePrefix) {
+	    queueName = options.loadingQueuePrefix + 'Geometries';
+	  }
+
+	  // run
+
+	  return queueManager.enqueue(queueName, url).then(function(){
+
+	    return fetch$1(url, options).then(function(res){
+
+	      return res.arrayBuffer()
+
+	    }).then(function(buffer){
+
+	      queueManager.dequeue(queueName, url);
+	      return decodeBinary(buffer, { url: url })
+
+	    })
+
+	  }).catch(function (error) {
+
+	    queueManager.dequeue(queueName, url);
+	    return bluebird_1.reject(error)
+
 	  })
+	  
 	}
 
 	function getFurniture (id) {
 	  // we need to call furniture info first in order to obtain data3d URL
 	  return getFurnitureInfo(id).then(function(info){
-	    return loadData3d(info.data3dUrl).then(function(data3d){
+	    return loadData3d(info.data3dUrl, { loadingQueuePrefix: 'interior' }).then(function(data3d){
 	      return {
 	        // contains lightweight metadata like designer name and description
 	        info: info,
@@ -22408,13 +22761,19 @@
 	  // WIP: for now, assume that this is only being used for data3d
 	  options = options || {};
 	  options.type = options.type || 'data3d'; // TODO: support more types
+	  var queueName = options.queueName;
+	  var loadingQueuePrefix = options.loadingQueuePrefix;
 
 	  switch(options.type) {
 	    case 'json':
+	      // do not use queue for generic JSON requests
 	      return fetch$1(getUrlFromStorageId(storageId, options)).then(function(response) { return response.json() })
 	    break
 	    default:
-	      return loadData3d(getUrlFromStorageId(storageId))
+	      return loadData3d(getUrlFromStorageId(storageId), {
+	        queueName: queueName,
+	        loadingQueuePrefix: loadingQueuePrefix
+	      })
 	    break
 	  }
 

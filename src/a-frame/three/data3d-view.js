@@ -102,7 +102,9 @@ export default checkDependencies({
             material3d.name = materialId
             if (!materials) {
               // there is no material properties. using default properties
-              setMaterial({ material3d: material3d })
+              setMaterial({
+                material3d: material3d
+              })
             }
             self._materials3d[ meshId ] = material3d
           }

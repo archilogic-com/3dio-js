@@ -76,8 +76,8 @@ function disposeIfPossible () {
 
 // class
 
-export default function loadTextures ( queue, TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, resetTexturesOnLoadStart) {
-
+export default function loadTextureSet ( queueName, TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, resetTexturesOnLoadStart) {
+  
   // new textures
 
   var
@@ -146,7 +146,7 @@ export default function loadTextures ( queue, TEXTURE_TYPES, vm, _attributes, ma
 
       if (needsUpdate) {
         // load new texture
-        texturePromises[ textureCount ] = fetchTexture(textureS3Key, queue).catch(onError)
+        texturePromises[ textureCount ] = fetchTexture(textureS3Key, queueName).catch(onError)
         textureKeys[ textureCount ] = textureType
         texture3dKeys[ textureCount ] = textureType3d
         textureCount++
@@ -221,7 +221,7 @@ export default function loadTextures ( queue, TEXTURE_TYPES, vm, _attributes, ma
         // everything ok - load lightmap
         textureType = TEXTURE_TYPES.UV2
         textureS3Key = _attributes[ textureType ]
-        texturePromises[ textureCount ] = fetchTexture(textureS3Key, queue).catch(onError)
+        texturePromises[ textureCount ] = fetchTexture(textureS3Key, queueName).catch(onError)
         textureKeys[ textureCount ] = textureType
         texture3dKeys[ textureCount ] = THREEJS_TEXTURE_TYPES_MAP[ textureType ]
         textureCount++

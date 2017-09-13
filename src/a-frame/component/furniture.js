@@ -62,7 +62,9 @@ export default {
       })
 
       // update view
-      this_.data3dView.set(result.data3d)
+      this_.data3dView.set(result.data3d, {
+        loadingQueuePrefix: 'interior'
+      })
       this_.el.data3d = result.data3d
       this_.el.setObject3D('mesh', this_.mesh)
       // emit event
