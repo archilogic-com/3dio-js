@@ -94,8 +94,9 @@ export default {
     // compute angle difference to adapt speed
     var angle = Math.abs(currentRotation.y - AFRAME.utils.coordinates.parse(newRotation).y)
     // compute animation time
-    var t = Math.round((this.data.move || 3000) / 6 * (d + angle / 30))
-    if (t > 10000) t = 10000
+    // add 1 to the this.data.move parameter to allow users to specify 0 without the animation cancelling out
+    var t = Math.round((this.data.move === undefined ? 3000 : this.data.move + 1) / 6 * (d + angle / 30))
+    if (t > Math.max(10000, this.data.move)) t = Math.max(10000, this.data.move)
 
     // prevent zero length animation
     if (!t) return this._nextWaypoint()
@@ -123,7 +124,7 @@ export default {
     }
     this._isChangingAnimation = true
     var next = this._waypoints[++this._currentWayPoint]
-    this._nextAnimationTimeout = setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying) }.bind(this), this.data.wait || 0)
+    this._nextAnimationTimeout = setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying) }.bind(this), this.data.wait === undefined ? 0 : this.data.wait)
   }
 }
 
