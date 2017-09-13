@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.69
- * @date 2017/09/12 17:13
- * @branch master
- * @commit c06e61719c9fcadc727a871c2ac77d03c486e1a3
+ * @date 2017/09/14 01:23
+ * @branch data3d-cache
+ * @commit 625b6f487e7b2cc394b01f0ae8b6bf724d69fa99
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/12 17:13', GIT_BRANCH = 'master', GIT_COMMIT = 'c06e61719c9fcadc727a871c2ac77d03c486e1a3'
+	var BUILD_DATE='2017/09/14 01:23', GIT_BRANCH = 'data3d-cache', GIT_COMMIT = '625b6f487e7b2cc394b01f0ae8b6bf724d69fa99'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.69";
@@ -17780,9 +17780,9 @@
 	  return loadingTexturesPromise
 	}
 
-	var fragmentShader = "uniform vec3 diffuse;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapExposure;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\n#include <shadowmap_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( diffuse, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #include <normal_flip>\n    #include <normal_fragment>\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}";
+	var fragmentShader = "uniform vec3 diffuse;\r\nuniform vec3 emissive;\r\nuniform vec3 specular;\r\nuniform float shininess;\r\nuniform float opacity;\r\n\r\n#include <common>\r\n#include <packing>\r\n#include <uv_pars_fragment>\r\n#include <uv2_pars_fragment>\r\n#include <map_pars_fragment>\r\n#include <alphamap_pars_fragment>\r\n\r\n// Replaces <lightmap_pars_fragment>;\r\n\r\n#ifdef USE_LIGHTMAP\r\n\tuniform sampler2D lightMap;\r\n\tuniform float lightMapIntensity;\r\n\tuniform float lightMapExposure;\r\n\tuniform float lightMapFalloff;\r\n#endif\r\n\r\n#include <normalmap_pars_fragment>\r\n#include <specularmap_pars_fragment>\r\n\r\n#include <bsdfs>\r\n#include <lights_pars>\r\n#include <lights_phong_pars_fragment>\r\n#include <shadowmap_pars_fragment>\r\n\r\n\r\nvoid main() {\r\n\r\n    vec4 diffuseColor = vec4( diffuse, opacity );\r\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\r\n\r\n    vec3 totalEmissiveRadiance = emissive;\r\n\r\n    #include <map_fragment>\r\n    #include <alphamap_fragment>\r\n    #include <alphatest_fragment>\r\n    #include <specularmap_fragment>\r\n    #include <normal_flip>\r\n    #include <normal_fragment>\r\n\r\n    // accumulation\r\n    #include <lights_phong_fragment>\r\n\r\n    // Start of <light-template> replace block\r\n    GeometricContext geometry;\r\n\r\n    geometry.position = - vViewPosition;\r\n    geometry.normal = normal;\r\n    geometry.viewDir = normalize( vViewPosition );\r\n\r\n    IncidentLight directLight;\r\n\r\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        PointLight pointLight;\r\n\r\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\r\n\r\n            pointLight = pointLights[ i ];\r\n\r\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        SpotLight spotLight;\r\n\r\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\r\n\r\n            spotLight = spotLights[ i ];\r\n\r\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        DirectionalLight directionalLight;\r\n\r\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\r\n\r\n            directionalLight = directionalLights[ i ];\r\n\r\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\r\n\r\n        RectAreaLight rectAreaLight;\r\n\r\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\r\n\r\n            rectAreaLight = rectAreaLights[ i ];\r\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if defined( RE_IndirectDiffuse )\r\n\r\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\r\n\r\n        #ifdef USE_LIGHTMAP\r\n\r\n            // compute the light value\r\n            vec3 unit = vec3(1.0);\r\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\r\n            // compute the light intensity modifier\r\n            vec3 modifier = -lightMapFalloff * light * light + unit;\r\n            // apply light\r\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\r\n\r\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\r\n\r\n                lightMapIrradiance *= PI; // factor of PI should not be present; included here to prevent breakage\r\n\r\n            #endif\r\n\r\n            irradiance += lightMapIrradiance;\r\n\r\n        #endif\r\n\r\n        #if ( NUM_HEMI_LIGHTS > 0 )\r\n\r\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\r\n\r\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\r\n\r\n            }\r\n\r\n        #endif\r\n\r\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\r\n\r\n    #endif\r\n    // End of <light-template> replace block\r\n\r\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\r\n\r\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\r\n\r\n}";
 
-	var vertexShader = "varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}";
+	var vertexShader = "varying vec3 vViewPosition;\r\n\r\n#ifndef FLAT_SHADED\r\n\tvarying vec3 vNormal;\r\n#endif\r\n\r\n#include <uv_pars_vertex>\r\n#include <uv2_pars_vertex>\r\n#include <shadowmap_pars_vertex>\r\n\r\nvoid main()\r\n{\r\n//  vUv = uv;\r\n  #include <uv_vertex>\r\n  #include <uv2_vertex>\r\n\r\n  #include <beginnormal_vertex>\r\n  #include <defaultnormal_vertex>\r\n\r\n  #ifndef FLAT_SHADED\r\n    // Normal computed with derivatives when FLAT_SHADED\r\n  \tvNormal = normalize( transformedNormal );\r\n  #endif\r\n\r\n  #include <begin_vertex>\r\n  #include <project_vertex>\r\n\r\n  vViewPosition = - mvPosition.xyz;\r\n\r\n  #include <worldpos_vertex>\r\n  #include <shadowmap_vertex>\r\n\r\n}";
 
 	// CONFIGS
 
@@ -18774,6 +18774,233 @@
 
 	};
 
+	// API
+
+	var clone = cloneData3d$1;
+	clone.withPayload = cloneData3dWithPayload;
+	clone.meshes = cloneMeshes;
+	clone.meshe = cloneSingleMesh;
+	clone.materials = cloneMaterials;
+	clone.material = cloneSingleMaterial;
+
+	// methods
+
+	function cloneData3d$1 (_data3d, options) {
+
+	  var clone = {};
+
+	  clone.meshes = cloneMeshes(_data3d.meshes, options);
+	  clone.materials = cloneMaterials(_data3d.materials);
+
+	  if (_data3d.alternativeMaterialsByMeshKey) {
+	    clone.alternativeMaterialsByMeshKey = JSON.parse(JSON.stringify(_data3d.alternativeMaterialsByMeshKey));
+	  }
+	  if (_data3d._params) {
+	    clone._params = _data3d._params;
+	  }
+	  if (_data3d.position) {
+	    clone.position = _data3d.position.slice(0);
+	  }
+	  if (_data3d.rotDeg) {
+	    clone.rotDeg = _data3d.rotDeg.slice(0);
+	  }
+	  if (_data3d.rotRad) {
+	    clone.rotRad = _data3d.rotRad.slice(0);
+	  }
+	  if (_data3d.children) {
+	    clone.children = _data3d.children.map(function (childData3d) {
+	      return cloneData3d$1(childData3d, options)
+	    });
+	  }
+
+	  return clone
+	}
+
+	function cloneData3dWithPayload (data3d) {
+	  // payload = heavy arrays containing geometry & uv data
+	  return cloneData3d$1(data3d, {
+	    clonePositions: true,
+	    cloneNormals: true,
+	    cloneUvs: true,
+	    cloneUvsLightmap: true
+	  })
+	}
+
+	function cloneSingleMesh (mesh, options) {
+	  return cloneMeshes({x: mesh}, options).x
+	}
+
+	function cloneMeshes (_meshes, options) {
+
+	  if (!_meshes) {
+	    return {}
+	  }
+
+	  // API
+	  options = options || {};
+	  var clonePositions = !!options.clonePositions;
+	  var cloneNormals = !!options.cloneNormals;
+	  var cloneUvs = !!options.cloneUvs;
+	  var cloneUvsLightmap = !!options.cloneUvsLightmap;
+
+	  // internals
+	  var
+	    meshId, _mesh, mesh,
+	    meshKeys = Object.keys(_meshes),
+	    meshes = {};
+
+	  for (var i = 0, l = meshKeys.length; i < l; i++) {
+
+	    meshId = meshKeys[i];
+	    mesh = {};
+	    _mesh = _meshes[meshId];
+
+	    // vertices
+	    if (_mesh.positions) {
+	      if (clonePositions && (_mesh.positions instanceof Array || _mesh.positions instanceof Float32Array)) {
+	        mesh.positions = _mesh.positions.slice(0);
+	      } else {
+	        mesh.positions = _mesh.positions;
+	      }
+	    }
+
+	    // normals
+	    if (_mesh.normals) {
+	      if (cloneNormals && (_mesh.normals instanceof Array || _mesh.normals instanceof Float32Array)) {
+	        mesh.normals = _mesh.normals.slice(0);
+	      } else {
+	        mesh.normals = _mesh.normals;
+	      }
+	    }
+
+	    // uvs
+	    if (_mesh.uvs) {
+	      if (cloneUvs && (_mesh.uvs instanceof Array || _mesh.uvs instanceof Float32Array)) {
+	        mesh.uvs = _mesh.uvs.slice(0);
+	      } else {
+	        mesh.uvs = _mesh.uvs;
+	      }
+	    }
+
+	    // uvs lightmap
+	    if (_mesh.uvsLightmap) {
+	      if (cloneUvsLightmap && (_mesh.uvsLightmap instanceof Array || _mesh.uvsLightmap instanceof Float32Array)) {
+	        mesh.uvsLightmap = _mesh.uvsLightmap.slice(0);
+	      } else {
+	        mesh.uvsLightmap = _mesh.uvsLightmap;
+	      }
+	    }
+
+	    // other arrays
+	    if (_mesh.matrix) mesh.matrix = _mesh.matrix.slice(0);
+	    if (_mesh.uvMatrix) mesh.uvMatrix = _mesh.uvMatrix.slice(0);
+	    if (_mesh.meshKeys) mesh.meshKeys = _mesh.meshKeys.slice(0);
+	    if (_mesh.position) mesh.position = _mesh.position.slice(0);
+	    if (_mesh.rotDeg) mesh.rotDeg = _mesh.rotDeg.slice(0);
+	    if (_mesh.rotRad) mesh.rotRad = _mesh.rotRad.slice(0);
+	    if (_mesh.scale) mesh.scale = _mesh.scale.slice(0);
+
+	    // primitives
+	    if (_mesh.v) mesh.v = _mesh.v;
+	    if (_mesh.vertexMode) mesh.vertexMode = _mesh.vertexMode;
+	    if (_mesh.side) mesh.side = _mesh.side;
+	    if (_mesh.material) mesh.material = _mesh.material;
+	    if (_mesh.visibleInPersonView) mesh.visibleInPersonView = _mesh.visibleInPersonView;
+	    if (_mesh.visibleInBirdView) mesh.visibleInBirdView = _mesh.visibleInBirdView;
+	    if (_mesh.visibleInFloorplanView) mesh.visibleInFloorplanView = _mesh.visibleInFloorplanView;
+
+	    meshes[meshId] = mesh;
+	  }
+
+	  // output
+	  return meshes
+	}
+
+	function cloneSingleMaterial (material) {
+	  return cloneMaterials({x: material}).x
+	}
+
+	function cloneMaterials (_materials) {
+
+	  if (!_materials) {
+	    return {}
+	  }
+
+	  var materialId, _material, materials, material, materialKeys, _attributes, _attributeKeys, attributeKey, type,
+	    attributes, isExtended;
+
+	  materialKeys = Object.keys(_materials);
+	  // result
+	  materials = {};
+
+	  if (materialKeys.length === 0) {
+	    return {}
+	  }
+
+	  if (_materials[materialKeys[0]].attributes) {
+	    isExtended = true;
+	    // deep copy source
+	    materials = JSON.parse(JSON.stringify(_materials));
+	  } else {
+	    isExtended = false;
+	  }
+
+	  for (var i = 0, l = materialKeys.length; i < l; i++) {
+
+	    materialId = materialKeys[i];
+	    _attributes = isExtended ? _materials[materialId].attributes : _materials[materialId];
+
+	    if (typeof _attributes === 'string') {
+
+	      if (isExtended) {
+	        materials[materialId].attributes = _attributes;
+	      } else {
+	        materials[materialId] = _attributes;
+	      }
+
+	    } else if (_attributes) {
+
+	      attributes = {};
+	      _attributeKeys = Object.keys(_attributes);
+
+	      for (var j = 0, k = _attributeKeys.length; j < k; j++) {
+	        attributeKey = _attributeKeys[j];
+	        type = typeof _attributes[attributeKey];
+	        if (type === 'string' || type === 'number' || type === 'boolean') {
+	          // primitive
+	          attributes[attributeKey] = _attributes[attributeKey];
+	        } else if (_attributes[attributeKey]) {
+	          if (_attributes[attributeKey].length === 3) {
+	            // color array
+	            attributes[attributeKey] = [
+	              _attributes[attributeKey][0],
+	              _attributes[attributeKey][1],
+	              _attributes[attributeKey][2]
+	            ];
+	          } else if (_attributes[attributeKey].length === 2) {
+	            // size array
+	            attributes[attributeKey] = [
+	              _attributes[attributeKey][0],
+	              _attributes[attributeKey][1]
+	            ];
+	          }
+	        }
+	      }
+
+	      if (isExtended) {
+	        materials[materialId].attributes = attributes;
+	      } else {
+	        materials[materialId] = attributes;
+	      }
+
+	    }
+
+	  }
+
+	  return materials
+
+	}
+
 	var furnitureComponent = {
 
 	  schema: {
@@ -18788,7 +19015,9 @@
 
 	  update: function () {
 	    var this_ = this;
-	    var furnitureId = this_.data.id;
+	    var el = this.el;
+	    var data = this.data;
+	    var furnitureId = data.id;
 
 	    // check params
 	    if (!furnitureId || furnitureId === '') return
@@ -18802,46 +19031,63 @@
 
 	    // get furniture data
 	    io3d.furniture.get(furnitureId).then(function (result) {
+
+	      var info = result.info; // lightweight info like name, manufacturer, description...
+	      var data3d = result.data3d; // geometries and materials
+	      var availableMaterials = {};
+
 	      // Expose properties
-	      this_.info = result.info; // lightweight info like name, manufacturer, description ...
-	      this_.data3d = result.data3d; // geometries and materials
+	      this_.info = info;
+	      this_.data3d = data3d;
+	      this_.availableMaterials = availableMaterials;
 
 	      // check for material presets in the furniture sceneStructure definition
-	      var materialPreset = this_.info.sceneStructure && JSON.parse(this_.info.sceneStructure).materials;
-	      // Parse & expose materials
-	      this_.availableMaterials = {};
-	      Object.keys(result.data3d.meshes).forEach(function eachMesh (meshName) {
-	        this_.availableMaterials[meshName] = result.data3d.alternativeMaterialsByMeshKey ? result.data3d.alternativeMaterialsByMeshKey[meshName] : result.data3d.meshes[meshName].material;
+	      var materialPreset = info.sceneStructure && JSON.parse(info.sceneStructure).materials;
+	      // Parse materials
+	      Object.keys(data3d.meshes).forEach(function eachMesh (meshId) {
+	        availableMaterials[meshId] = data3d.alternativeMaterialsByMeshKey ? data3d.alternativeMaterialsByMeshKey[meshId] : data3d.meshes[meshId].material;
 
-	        //update material based on inspector
-	        var materialPropName = 'material_' + meshName.replace(/\s/g, '_');
-	        if (this_.data[materialPropName] !== undefined) {
-	          result.data3d.meshes[meshName].material = this_.data[materialPropName];
-	          this_.el.emit('material-changed', {mesh: meshName, material: this_.data[materialPropName]});
-	        } else if (materialPreset && materialPreset[meshName]) {
-	          // apply presets from the furniture's sceneStructure definition
-	          result.data3d.meshes[meshName].material = materialPreset[meshName];
-	          this_.el.emit('material-changed', {mesh: meshName, material: materialPreset[meshName]});
+	        // clone data3d to avoid reference mix up
+	        data3d = this_.data3d = clone(data3d);
+	        // get material name from inspector
+	        var materialPropName = 'material_' + meshId.replace(/\s/g, '_');
+	        // get materialId from a-frame attribute or from furniture API scene structure preset
+	        var newMaterialId =  data[materialPropName] || (materialPreset ? materialPreset[meshId] : null);
+
+	        // set custom material if available
+	        if (newMaterialId) {
+
+	          // update material
+	          data3d.meshes[meshId].material = newMaterialId;
+	          // trigger event
+	          el.emit('material-changed', {mesh: meshId, material: newMaterialId});
+
 	        } else {
+
 	          // register it as part of the schema for the inspector
 	          var prop = {};
 	          prop[materialPropName] = {
 	            type: 'string',
-	            default: result.data3d.meshes[meshName].material,
-	            oneOf: result.data3d.alternativeMaterialsByMeshKey ? result.data3d.alternativeMaterialsByMeshKey[meshName] : result.data3d.meshes[meshName].material
+	            default: data3d.meshes[meshId].material,
+	            oneOf: data3d.alternativeMaterialsByMeshKey ? data3d.alternativeMaterialsByMeshKey[meshId] : data3d.meshes[meshId].material
 	          };
 	          this_.extendSchema(prop);
-	          this_.data[materialPropName] = result.data3d.meshes[meshName].material;
+	          this_.data[materialPropName] = data3d.meshes[meshId].material;
+
 	        }
 	      });
 
 	      // update view
-	      this_.data3dView.set(result.data3d);
-	      this_.el.data3d = result.data3d;
+	      this_.data3dView.set(data3d);
+	      this_.el.data3d = data3d;
 	      this_.el.setObject3D('mesh', this_.mesh);
-	      // emit event
-	      if (this_._prevId !== furnitureId) this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
-	      this_._prevId = furnitureId;
+
+	      // emit events
+	      if (this_._previousFurnitureId !== furnitureId) {
+	        this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
+	        this_._previousFurnitureId = furnitureId;
+	      }
+
 	    });
 	  },
 
@@ -20389,13 +20635,31 @@
 
 	}
 
+	// private shared
+
+	var cache$1 = new PromiseCache();
+
+	// main
+
 	function loadData3d (url, options) {
-	  
-	  return fetch$1(url, options).then(function(res){
+
+	  // try cache
+	  var cacheKey = url;
+	  var promiseFromCache = cache$1.get(cacheKey);
+	  if (promiseFromCache) return promiseFromCache
+
+	  // fetch
+	  var promise = fetch$1(url, options).then(function(res){
 	    return res.arrayBuffer()
 	  }).then(function(buffer){
 	    return decodeBinary(buffer, { url: url })
-	  })
+	  });
+
+	  // add to cache
+	  cache$1.add(cacheKey, promise);
+
+	  return promise
+
 	}
 
 	function getFurniture (id) {
@@ -22658,221 +22922,6 @@
 	  })(data3d, callback);
 
 	};
-
-	// API
-
-	var clone = cloneData3d$1;
-	clone.meshes = cloneMeshes;
-	clone.meshe = cloneSingleMesh;
-	clone.materials = cloneMaterials;
-	clone.material = cloneSingleMaterial;
-
-	// methods
-
-	function cloneData3d$1 (_data3d, options) {
-
-	    var clone = {};
-
-	    clone.meshes = cloneMeshes(_data3d.meshes, options);
-	    clone.materials = cloneMaterials(_data3d.materials);
-
-	    if (_data3d.alternativeMaterialsByMeshKey) {
-	      clone.alternativeMaterialsByMeshKey = JSON.parse(JSON.stringify(_data3d.alternativeMaterialsByMeshKey));
-	    }
-	    if (_data3d._params) {
-	      clone._params = _data3d._params;
-	    }
-	    if (_data3d.position) {
-	      clone.position = _data3d.position.slice(0);
-	    }
-	    if (_data3d.rotDeg) {
-	      clone.rotDeg = _data3d.rotDeg.slice(0);
-	    }
-	    if (_data3d.rotRad) {
-	      clone.rotRad = _data3d.rotRad.slice(0);
-	    }
-	    if (_data3d.children) {
-	      clone.children = _data3d.children.map(function(childData3d){
-	        return cloneData3d$1 (childData3d, options)
-	      });
-	    }
-
-	    return clone
-	  }
-	  
-	  function cloneSingleMesh(mesh, options) {
-	    return cloneMeshes({ x:mesh }, options).x
-	  }
-	  
-	  function cloneMeshes (_meshes, options) {
-
-	    if (!_meshes) {
-	      return {}
-	    }
-
-	    // API
-	    options = options || {};
-	    var clonePositions = !!options.clonePositions;
-	    var cloneNormals = !!options.cloneNormals;
-	    var cloneUvs = !!options.cloneUvs;
-	    var cloneUvsLightmap = !!options.cloneUvsLightmap;
-
-	    // internals
-	    var
-	      meshId, _mesh, mesh,
-	      meshKeys = Object.keys(_meshes),
-	      meshes = {};
-
-	    for (var i = 0, l = meshKeys.length; i < l; i++) {
-
-	      meshId = meshKeys[ i ];
-	      mesh = {};
-	      _mesh = _meshes[ meshId ];
-
-	      // vertices
-	      if (_mesh.positions) {
-	        if (clonePositions && (_mesh.positions instanceof Array || _mesh.positions instanceof Float32Array)) {
-	          mesh.positions = _mesh.positions.slice(0);
-	        } else {
-	          mesh.positions = _mesh.positions;
-	        }
-	      }
-
-	      // normals
-	      if (_mesh.normals) {
-	        if (cloneNormals && (_mesh.normals instanceof Array || _mesh.normals instanceof Float32Array)) {
-	          mesh.normals = _mesh.normals.slice(0);
-	        } else {
-	          mesh.normals = _mesh.normals;
-	        }
-	      }
-
-	      // uvs
-	      if (_mesh.uvs) {
-	        if (cloneUvs && (_mesh.uvs instanceof Array || _mesh.uvs instanceof Float32Array)) {
-	          mesh.uvs = _mesh.uvs.slice(0);
-	        } else {
-	          mesh.uvs = _mesh.uvs;
-	        }
-	      }
-
-	      // uvs lightmap
-	      if (_mesh.uvsLightmap) {
-	        if (cloneUvsLightmap && (_mesh.uvsLightmap instanceof Array || _mesh.uvsLightmap instanceof Float32Array)) {
-	          mesh.uvsLightmap = _mesh.uvsLightmap.slice(0);
-	        } else {
-	          mesh.uvsLightmap = _mesh.uvsLightmap;
-	        }
-	      }
-
-	      // other arrays
-	      if (_mesh.matrix) mesh.matrix = _mesh.matrix.slice(0);
-	      if (_mesh.uvMatrix) mesh.uvMatrix = _mesh.uvMatrix.slice(0);
-	      if (_mesh.meshKeys) mesh.meshKeys = _mesh.meshKeys.slice(0);
-	      if (_mesh.position) mesh.position = _mesh.position.slice(0);
-	      if (_mesh.rotDeg) mesh.rotDeg = _mesh.rotDeg.slice(0);
-	      if (_mesh.rotRad) mesh.rotRad = _mesh.rotRad.slice(0);
-	      if (_mesh.scale) mesh.scale= _mesh.scale.slice(0);
-
-	      // primitives
-	      if (_mesh.v) mesh.v = _mesh.v;
-	      if (_mesh.vertexMode) mesh.vertexMode = _mesh.vertexMode;
-	      if (_mesh.side) mesh.side = _mesh.side;
-	      if (_mesh.material) mesh.material = _mesh.material;
-	      if (_mesh.visibleInPersonView) mesh.visibleInPersonView = _mesh.visibleInPersonView;
-	      if (_mesh.visibleInBirdView) mesh.visibleInBirdView = _mesh.visibleInBirdView;
-	      if (_mesh.visibleInFloorplanView) mesh.visibleInFloorplanView = _mesh.visibleInFloorplanView;
-
-	      meshes[ meshId ] = mesh;
-	    }
-
-	    // output
-	    return meshes
-	  }
-	  
-	  function cloneSingleMaterial(material) {
-	    return cloneMaterials({ x:material }).x
-	  }
-	  
-	  function cloneMaterials(_materials) {
-
-	    if (!_materials) {
-	      return {}
-	    }
-
-	    var materialId, _material, materials, material, materialKeys, _attributes, _attributeKeys, attributeKey, type, attributes, isExtended;
-
-	    materialKeys = Object.keys(_materials);
-	    // result
-	    materials = {};
-
-	    if (materialKeys.length === 0) {
-	      return {}
-	    }
-
-	    if (_materials[ materialKeys[0] ].attributes) {
-	      isExtended = true;
-	      // deep copy source
-	      materials = JSON.parse(JSON.stringify(_materials));
-	    } else {
-	      isExtended = false;
-	    }
-
-	    for (var i = 0, l = materialKeys.length; i < l; i++) {
-
-	      materialId = materialKeys[ i ];
-	      _attributes = isExtended ? _materials[ materialId ].attributes : _materials[ materialId ];
-
-	      if (typeof _attributes === 'string') {
-
-	        if (isExtended) {
-	          materials[ materialId ].attributes = _attributes;
-	        } else {
-	          materials[ materialId ] = _attributes;
-	        }
-
-	      } else if (_attributes) {
-
-	        attributes = {};
-	        _attributeKeys = Object.keys(_attributes);
-
-	        for (var j= 0, k=_attributeKeys.length; j<k; j++) {
-	          attributeKey = _attributeKeys[j];
-	          type = typeof _attributes[ attributeKey ];
-	          if (type === 'string' || type === 'number' || type === 'boolean') {
-	            // primitive
-	            attributes[ attributeKey ] = _attributes[ attributeKey ];
-	          } else if (_attributes[ attributeKey ]) {
-	            if (_attributes[ attributeKey ].length === 3) {
-	              // color array
-	              attributes[ attributeKey ] = [
-	                _attributes[ attributeKey ][0],
-	                _attributes[ attributeKey ][1],
-	                _attributes[ attributeKey ][2]
-	              ];
-	            } else if (_attributes[ attributeKey ].length === 2) {
-	              // size array
-	              attributes[ attributeKey ] = [
-	                _attributes[ attributeKey ][0],
-	                _attributes[ attributeKey ][1]
-	              ];
-	            }
-	          }
-	        }
-
-	        if (isExtended) {
-	          materials[ materialId ].attributes = attributes;
-	        } else {
-	          materials[ materialId ] = attributes;
-	        }
-
-	      }
-
-	    }
-
-	    return materials
-
-	  }
 
 	// methods
 
