@@ -58,7 +58,7 @@ export default checkDependencies({
         meshKeys = data3d.meshKeys,
         materials = data3d.materials || this.materials,
         materialKeys = data3d.materialKeys,
-        loadingQueuePrefix = data3d.loadingQueuePrefix || options.loadingQueuePrefix,
+        loadingQueuePrefix = data3d.loadingQueuePrefix || options.loadingQueuePrefix || 'architecture',
         onFirstTextureSetLoaded = options.onFirstTextureSetLoaded,
         lightMapIntensity = options.lightMapIntensity,
         lightMapExposure = options.lightMapExposure
@@ -102,7 +102,9 @@ export default checkDependencies({
             material3d.name = materialId
             if (!materials) {
               // there is no material properties. using default properties
-              setMaterial({ material3d: material3d })
+              setMaterial({
+                material3d: material3d
+              })
             }
             self._materials3d[ meshId ] = material3d
           }

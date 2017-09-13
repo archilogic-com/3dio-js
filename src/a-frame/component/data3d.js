@@ -86,10 +86,20 @@ export default {
     this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh})
     this.el.data3dView = this.data3dView
     // load 3d file
-    ;(key ? io3d.storage.get(key) : io3d.utils.data3d.load(url)).then(function (data3d) {
+    Promise.resolve().then(function(){
+      if (key) {
+        return io3d.storage.get(key, { loadingQueuePrefix: 'architecture' })
+      } else {
+        return io3d.utils.data3d.load(url, { loadingQueuePrefix: 'architecture' })
+      }
+    }).then(function (data3d) {
       this_.el.data3d = data3d
       // update view
-      this_.data3dView.set(data3d, { lightMapIntensity: lightMapIntensity, lightMapExposure: lightMapExposure })
+      this_.data3dView.set(data3d, {
+        lightMapIntensity: lightMapIntensity,
+        lightMapExposure: lightMapExposure,
+        loadingQueuePrefix: 'architecture'
+      })
       this_.el.setObject3D('mesh', this_.mesh)
       // emit event
       this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
