@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.70
- * @date 2017/09/13 13:47
+ * @version 1.0.0-beta.71
+ * @date 2017/09/13 17:59
  * @branch master
- * @commit 5080237be6d8d303ce2e09813d7a2cdbe6bd8c3e
+ * @commit 0deb041607d2fa32db56c08624ea61e3b310181a
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/13 13:47', GIT_BRANCH = 'master', GIT_COMMIT = '5080237be6d8d303ce2e09813d7a2cdbe6bd8c3e'
+	var BUILD_DATE='2017/09/13 17:59', GIT_BRANCH = 'master', GIT_COMMIT = '0deb041607d2fa32db56c08624ea61e3b310181a'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.70";
+	var version = "1.0.0-beta.71";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -18952,8 +18952,9 @@
 	    // compute angle difference to adapt speed
 	    var angle = Math.abs(currentRotation.y - AFRAME.utils.coordinates.parse(newRotation).y);
 	    // compute animation time
-	    var t = Math.round((this.data.move === undefined ? 3000 : this.data.move) / 6 * (d + angle / 30));
-	    if (t > 10000) t = 10000;
+	    // add 1 to the this.data.move parameter to allow users to specify 0 without the animation cancelling out
+	    var t = Math.round((this.data.move === undefined ? 3000 : this.data.move + 1) / 6 * (d + angle / 30));
+	    if (t > Math.max(10000, this.data.move)) t = Math.max(10000, this.data.move);
 
 	    // prevent zero length animation
 	    if (!t) return this._nextWaypoint()
