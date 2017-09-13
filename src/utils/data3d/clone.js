@@ -1,6 +1,7 @@
 // API
 
 var clone = cloneData3d
+clone.withPayload = cloneData3dWithPayload
 clone.meshes = cloneMeshes
 clone.meshe = cloneSingleMesh
 clone.materials = cloneMaterials
@@ -39,6 +40,16 @@ function cloneData3d (_data3d, options) {
   }
 
   return clone
+}
+
+function cloneData3dWithPayload (data3d) {
+  // payload = heavy arrays containing geometry & uv data
+  return cloneData3d(data3d, {
+    clonePositions: true,
+    cloneNormals: true,
+    cloneUvs: true,
+    cloneUvsLightmap: true
+  })
 }
 
 function cloneSingleMesh (mesh, options) {
