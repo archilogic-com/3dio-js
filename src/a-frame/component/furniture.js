@@ -75,7 +75,9 @@ export default {
       })
 
       // update view
-      this_.data3dView.set(data3d)
+      this_.data3dView.set(data3d, {
+        loadingQueuePrefix: 'interior'
+      })
       this_.el.data3d = data3d
       this_.el.setObject3D('mesh', this_.mesh)
 
