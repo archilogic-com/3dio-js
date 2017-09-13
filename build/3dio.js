@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.69
- * @date 2017/09/13 08:44
- * @branch master
- * @commit b4ae930f6109a4c70527d83dd1fd0d94b60cf704
+ * @date 2017/09/13 13:21
+ * @branch loading-queue
+ * @commit 46b4f5be30f0310440e2937ba392b42f87dff241
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/13 08:44', GIT_BRANCH = 'master', GIT_COMMIT = 'b4ae930f6109a4c70527d83dd1fd0d94b60cf704'
+	var BUILD_DATE='2017/09/13 13:21', GIT_BRANCH = 'loading-queue', GIT_COMMIT = '46b4f5be30f0310440e2937ba392b42f87dff241'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.69";
@@ -18401,7 +18401,7 @@
 	        meshKeys = data3d.meshKeys,
 	        materials = data3d.materials || this.materials,
 	        materialKeys = data3d.materialKeys,
-	        loadingQueuePrefix = data3d.loadingQueuePrefix || options.loadingQueuePrefix,
+	        loadingQueuePrefix = data3d.loadingQueuePrefix || options.loadingQueuePrefix || 'architecture',
 	        onFirstTextureSetLoaded = options.onFirstTextureSetLoaded,
 	        lightMapIntensity = options.lightMapIntensity,
 	        lightMapExposure = options.lightMapExposure;
