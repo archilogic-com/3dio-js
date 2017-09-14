@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.71
- * @date 2017/09/14 11:12
+ * @date 2017/09/14 11:46
  * @branch master
- * @commit bd8458467cffc20cc5a2b239596f147278065cb5
+ * @commit ad99b58a34375f0b4046bbf532c8ce2e1602cde6
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/14 11:12', GIT_BRANCH = 'master', GIT_COMMIT = 'bd8458467cffc20cc5a2b239596f147278065cb5'
+	var BUILD_DATE='2017/09/14 11:46', GIT_BRANCH = 'master', GIT_COMMIT = 'ad99b58a34375f0b4046bbf532c8ce2e1602cde6'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.71";
@@ -19357,6 +19357,140 @@
 	  return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2) + Math.pow(c, 2))
 	}
 
+	var lightingComponent = {
+
+	  schema: {
+	    preset: {
+	      type: 'string',
+	      default: 'malibu'
+	    },
+	    intensity: {
+	      type: 'float',
+	      default: 1
+	    },
+	    saturation: {
+	      type: 'float',
+	      default: 1
+	    }
+	  },
+
+	  init: function () {
+
+	    this.cam = document.querySelector('a-entity[camera]').object3D;
+
+	    // main
+	    var lighting = new THREE.Object3D();
+	    this.el.setObject3D('lighting', lighting);
+
+	    // lights moving with camera
+	    this.movingWithCamera = new THREE.Object3D();
+	    lighting.add(this.movingWithCamera);
+
+	    // static lights
+	    this.static = new THREE.Object3D();
+	    lighting.add(this.static);
+
+	  },
+
+	  update: function () {
+
+	    this.remove();
+
+	    createPreset[this.data.preset](
+	      this.movingWithCamera,
+	      this.static,
+	      this.data.intensity,
+	      this.data.saturation
+	    );
+
+	  },
+
+	  remove: function () {
+
+	    this.movingWithCamera.children.forEach(function (child) {
+	      child.parent.remove(child);
+	    });
+
+	    this.static.children.forEach(function (child) {
+	      child.parent.remove(child);
+	    });
+
+	  },
+
+	  tick: function (dt) {
+
+	    this.movingWithCamera.position.copy(this.cam.position);
+	    this.movingWithCamera.rotation.copy(this.cam.rotation);
+
+	  }
+
+	};
+
+	// configs
+
+	var SHADOW_CAMERA_NEAR = 1;
+	var SHADOW_CAMERA_FAR = 60;
+	var SHADOW_SIZE = 40; // real size of shadow map in meters
+	var SHADOW_MAP_SIZE = 1024; // pixel size of shadow map
+	var SHADOW_BIAS = 0.001;
+	var SHADOW_DARKNESS = 0.2;
+
+	// light presets
+
+	var createPreset = {
+	  malibu: function(movingWithCamera, staticLights, intensity, saturation) {
+
+	    var target = new THREE.Object3D();
+	    movingWithCamera.add(target);
+
+	    // spec: left (orange) / right (blue)
+
+	    var leftColor = new THREE.Color().setHSL(0.095, 0.5, 0.6); // orange
+	    var rightColor = new THREE.Color().setHSL(0.6, 0.4, 0.6); // blue
+	    var leftRightSpec = new THREE.HemisphereLight(leftColor, rightColor, 0.6 * intensity);
+	    leftRightSpec.position.set(-500, 200, 200);
+	    leftRightSpec.target = target;
+	    movingWithCamera.add(leftRightSpec);
+
+	    // fspec: front / back
+
+	    var frontColor = new THREE.Color().setHSL(0, 0, 0.3);
+	    var backColor = new THREE.Color().setHSL(0, 0, 0.8);
+	    var frontBackSpec = new THREE.HemisphereLight(frontColor, backColor, 0.5 * intensity);
+	    frontBackSpec.position.set(0, 100, -10000);
+	    frontBackSpec.target = target;
+	    movingWithCamera.add(frontBackSpec);
+
+	    // ambient
+
+	    var ambientColor = new THREE.Color().setHSL(0,0,0.3 * intensity);
+	    var ambient = new THREE.AmbientLight(ambientColor);
+	    staticLights.add(ambient);
+
+	    // sun & shadow
+
+	    var sunTarget = new THREE.Object3D();
+	    staticLights.add(sunTarget);
+
+	    var sunColor = new THREE.Color().setHSL(0,0,1);
+	    var sun = new THREE.DirectionalLight(sunColor, 0 * intensity);
+	    sun.position.set(100, 100, 0);
+	    sun.target = sunTarget;
+	    sun.shadow.camera.visible = false; // helper
+	    sun.castShadow = true;
+	    sun.shadowMapEnabled = true;
+	    sun.shadow.bias = SHADOW_BIAS;
+	    sun.shadow.darkness = SHADOW_DARKNESS;
+	    sun.shadow.mapSize.width = sun.shadow.mapSize.height = SHADOW_MAP_SIZE;
+	    sun.shadow.camera.near = SHADOW_CAMERA_NEAR;
+	    sun.shadow.camera.Far = SHADOW_CAMERA_FAR;
+	    sun.shadow.camera.right = sun.shadow.camera.top = SHADOW_SIZE / 2;
+	    sun.shadow.camera.left = sun.shadow.camera.bottom = -SHADOW_SIZE / 2;
+	    staticLights.add(sun);
+
+	  }
+	};
+
 	// initialize aframe components
 
 	checkDependencies({
@@ -19370,6 +19504,7 @@
 	  AFRAME.registerComponent('io3d-data3d', data3dComponent);
 	  AFRAME.registerComponent('io3d-furniture', furnitureComponent);
 	  AFRAME.registerComponent('tour', tourComponent);
+	  AFRAME.registerComponent('lighting', lightingComponent);
 	});
 
 	// export
@@ -22285,52 +22420,53 @@
 	 * Login in user using credentials
 	 * @function io3d.auth.logIn
 	 * @param {object} args
-	 * @param {string} args.email - User email or username
+	 * @param {string} args.username - User username or email
 	 * @param {string} args.password - User password
 	 */
 
-	function logIn (args) {
-
+	function logIn(args) {
 	  var credentials = {
-	    email: args.email,
+	    username: args.username || args.email,
 	    password: args.password || uuid.generate()
 	  };
 
 	  // log out first
-	  logger.debug('Sending API login request for user "' + credentials.email + '" ...');
-	  return callService('User.logOut').then(function onLogoutSuccess() {
-
-	    // send log in request
-	    return callService('User.logIn', {
-	      loginData: {
-	        resourceName: credentials.email,
-	        password: credentials.password
+	  logger.debug(
+	    'Sending API login request for user "' + credentials.username + '" ...'
+	  );
+	  return callService('User.logOut')
+	    .then(function onLogoutSuccess() {
+	      // send log in request
+	      return callService('User.logIn', {
+	        loginData: {
+	          resourceName: credentials.username,
+	          password: credentials.password
+	        }
+	      })
+	    })
+	    .then(function onLoginSuccess() {
+	      // request session to verify login with a separate request
+	      return getSession()
+	    })
+	    .then(function onSessionSuccess(session) {
+	      if (session.isAuthenticated) {
+	        logger.debug(
+	          'API: User "' + session.user.email + '" logged in successfully.'
+	        );
+	        return session
+	      } else {
+	        if(runtime.isNode) return bluebird_1.reject('io3d.auth.logIn cannot be used in node.js. Please use secret key authentication instead. See https://3d.io/docs/api/1/get-started-node-server.html#using-secret-api-key for further info.')
+	        else return bluebird_1.reject('Log in error: Session could not been established.')
 	      }
 	    })
-
-	  }).then(function onLoginSuccess () {
-
-	    // request session to verify login with a separate request
-	    return getSession()
-
-	  }).then(function onSessionSuccess (session) {
-
-	    if (session.isAuthenticated) {
-	      logger.debug('API: User "' + session.user.email + '" logged in successfully.');
-	      return session
-	    } else {
-	      if(runtime.isNode) return bluebird_1.reject('io3d.auth.logIn cannot be used in node.js. Please use secret key authentication instead. See https://3d.io/docs/api/1/get-started-node-server.html#using-secret-api-key for further info.')
-	      else return bluebird_1.reject('Log in error: Session could not been established.')
-	    }
-
-	  }).catch(function onError (error) {
-
-	    // login failed
-	    logger.debug('API: Could not log in user "' + credentials.email + '".', error);
-	    return bluebird_1.reject(error)
-
-	  })
-
+	    .catch(function onError(error) {
+	      // login failed
+	      logger.debug(
+	        'API: Could not log in user "' + credentials.username + '".',
+	        error
+	      );
+	      return bluebird_1.reject(error)
+	    })
 	}
 
 	/**
