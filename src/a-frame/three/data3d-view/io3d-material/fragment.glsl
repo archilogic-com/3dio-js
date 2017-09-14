@@ -40,7 +40,8 @@ void main() {
     #include <alphamap_fragment>
     #include <alphatest_fragment>
     #include <specularmap_fragment>
-    //include <normal_fragment>
+
+    // Start of <normal_fragment> replace block
     #ifdef FLAT_SHADED
 
       // Workaround for Adreno/Nexus5 not able able to do dFdx( vViewPosition ) ...
@@ -70,6 +71,7 @@ void main() {
       normal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );
 
     #endif
+    // End of <normal_fragment> replace block
 
     // accumulation
     #include <lights_phong_fragment>
