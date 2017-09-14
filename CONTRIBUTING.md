@@ -57,6 +57,8 @@ to in-depth information about the design and implementation process.
     - Additional information for the reviewer
     
 ### Review process
+* Assign yourself as the assignee
+* Choose a reviewer for the pull request, usually there is a lead in the suggestions.
 
 **Role of the Reviewer**
 * Approve changes in code snippets and give final permission to merge
