@@ -1,4 +1,3 @@
-import checkDependencies from '../check-dependencies.js'
 import cloneData3d from '../../utils/data3d/clone.js'
 
 export default {
