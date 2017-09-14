@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+    <script src="../../../build/3dio.js"></script>
+    <link href="style.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="controls">
+      <input id="inpt-id" placeholder="enter scene id" style="width: 400px;"/>
+    </div>
+    <a-scene antialias="true" shadow="type: pcfsoft">
+    </a-scene>
+    <script>
+      const id = '6350c07d-9c8d-44d1-881c-9218ff1b3682'
+      const idInput = document.querySelector('input#inpt-id')
+      const sceneEl = document.querySelector('a-scene')
+
+      let addedElement
+
+      idInput.value = id
+      loadScene(id)
+
+      idInput.addEventListener('input', function() {
+        var sceneId = idInput.value
+        if (io3d.utils.uuid.validate(sceneId)) loadScene(sceneId)
+        else io3d.ui.message('no valid id', 4000, 'warning')
+      })
+
+      function loadScene(id) {
+        io3d.scene.getHtml(id)
+          .then(result => {
+            if (addedElement) sceneEl.removeChild(addedElement)
+            addedElement = result
+            sceneEl.appendChild(result)
+          })
+          .catch(error => {
+              console.log(error)
+          })
+      }
+    </script>
+  </body>
+</html>
