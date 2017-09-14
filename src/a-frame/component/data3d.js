@@ -1,4 +1,3 @@
-import checkDependencies from '../check-dependencies.js'
 import callService from '../../utils/services/call'
 
 export default {

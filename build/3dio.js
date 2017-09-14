@@ -1,10 +1,17 @@
 /**
  * @preserve
  * @name 3dio
+<<<<<<< HEAD
  * @version 1.0.0-beta.69
  * @date 2017/09/14 01:23
  * @branch data3d-cache
  * @commit 625b6f487e7b2cc394b01f0ae8b6bf724d69fa99
+=======
+ * @version 1.0.0-beta.71
+ * @date 2017/09/14 11:12
+ * @branch master
+ * @commit bd8458467cffc20cc5a2b239596f147278065cb5
+>>>>>>> master
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +25,11 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
+<<<<<<< HEAD
 	var BUILD_DATE='2017/09/14 01:23', GIT_BRANCH = 'data3d-cache', GIT_COMMIT = '625b6f487e7b2cc394b01f0ae8b6bf724d69fa99'
+=======
+	var BUILD_DATE='2017/09/14 11:12', GIT_BRANCH = 'master', GIT_COMMIT = 'bd8458467cffc20cc5a2b239596f147278065cb5'
+>>>>>>> master
 
 	var name = "3dio";
 	var version = "1.0.0-beta.69";
@@ -13677,6 +13688,317 @@
 	  })
 	}
 
+<<<<<<< HEAD
+=======
+	// configs
+
+	var maxConcurrentQueuedRequests = 15; // not queued requests are not limited in running parallel
+	var queuesByPriority = [
+	  'architectureGeometries',
+	  'architectureTexturesLoRes',
+	  'interiorGeometries',
+	  'interiorTexturesLoRes',
+	  'architectureTexturesHiRes',
+	  'interiorTexturesHiRes'
+	];
+
+	var queueFences = [
+	  false,
+	  false,
+	  true,
+	  false,
+	  false
+	];
+
+	// prepare objects for queueing
+	var _queues = {};
+	var _queueFences = {};
+	var _queuesChanged = false;
+	window.queueInfo = {};
+	var _queuesLength = queuesByPriority.length;
+	var _concurrentRequests = 0;
+	var _concurrentPerQueue = {};
+	window.loadingQueueData = '';
+
+	var queueName;
+	for (var i$1 = 0, l = _queuesLength; i$1 < l; i$1++) {
+	  queueName = queuesByPriority[i$1];
+	  _queues[queueName] = [];
+	  _queueFences[queueName] = queueFences[i$1];
+	  window.queueInfo[queueName] = {requestCount: 0};
+	  _concurrentPerQueue[queueName] = 0;
+	}
+
+	window.loadingQueueAlgorithm     = 'overstep-one-fenced';
+	window.loadingQueuePipelineDepth = maxConcurrentQueuedRequests;
+
+	/*
+
+	(2017/09/13) Performance monitoring code
+
+	window.loadingQueueGraph         = false;
+	if (window.loadingQueueGraph)
+	  window.loadingPerformanceHistory = new PerformanceGraph.PerformanceHistory(64);
+
+	window.loadingQueueShowInfo = function() {
+	  function padRight(text, fieldLength) {
+	    return text + Array(fieldLength - text.length + 1).join(' ');
+	  }
+	  function padLeft(text, fieldLength) {
+	    return Array(fieldLength - text.length + 1).join(' ') + text;
+	 }
+	 var text = '';
+	 var keys = Object.keys(window.queueInfo);
+	 var baseTime;
+	 if (keys.length > 0) {
+	   var baseKey   = keys[0];
+	   var baseValue = window.queueInfo[baseKey];
+	   baseTime = baseValue.timeFirst;
+	   text += '(' + baseTime.toFixed(1) + ')\n'
+	 }
+	 for (var i = 0; i < keys.length; i++) {
+	   var key   = keys[i];
+	   var value = window.queueInfo[key];
+	   text += padRight(keys[i], 28) + ': ';
+	   if (value.requestCount > 0) {
+	     var t1 = value.timeFirst - baseTime;
+	     var t2 = value.timeLast - baseTime;
+	     var t1Str = t1.toFixed(1);
+	     var t2Str = t2.toFixed(1);
+	     var t3, d, t3Str, dStr;
+	     if (value.timeLastFinished) {
+	       t3 = value.timeLastFinished - baseTime;
+	       d  = t3 - t1;
+	       t3Str = t3.toFixed(1);
+	       dStr  = d.toFixed(1);
+	     } else {
+	       t3Str = '-';
+	       dStr  = '-';
+	     }
+	     text += padLeft(t1Str, 5) + ' - ' + padLeft(t2Str, 5) + ' / ' + padLeft(t3Str, 5) + ' (' + padLeft(dStr, 5) + ') [' + padLeft(value.requestCount.toString(), 4) + ']\n';
+	   } else
+	     text += '<inactive>\n'
+	 }
+	 console.log(text);
+	}
+
+	window.loadingQueueProcessData = function() {
+	 var loadingQueueDataLines = window.loadingQueueData.split('\n');
+	 var i = 0;
+	 while (i < loadingQueueDataLines.length) {
+	   var line = loadingQueueDataLines[i];
+	   var count = 0;
+	   for (var j = i; i < loadingQueueDataLines.length; j++) {
+	     var nextLine = loadingQueueDataLines[j];
+	     if (line === nextLine)
+	       count++;
+	     else
+	       break;
+	   }
+	   if (count > 8) {
+	     loadingQueueDataLines.splice(i + 4, count - 8, ' ');
+	     loadingQueueDataLines.
+	       i += 4
+	   } else
+	     i += 1;
+	 }
+	 window.loadingQueueDataShort = loadingQueueDataLines.join('\n');
+	}
+
+	function _addPerformanceEntry() {
+	  var performanceEntry = window.loadingPerformanceHistory.newEntry(PerformanceGraph.PerformanceEntry);
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    performanceEntry[queueName] = _concurrentPerQueue[queueName];
+	  }
+	  // performanceEntry.none = window.loadingQueuePipelineDepth - _concurrentRequests;
+	}
+
+	function _appendLoadingQueueData() {
+	  var entry = '';
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    entry += _concurrentPerQueue[queueName].toString();
+	    if (i < _queuesLength - 1)
+	      entry += ', ';
+	    else
+	      entry += '\n';
+	  }
+	  window.loadingQueueData += entry;
+	}
+
+	*/
+
+	function _startRequest(queueName) {
+	  // Update queue tracking information
+	  var queueInfo = window.queueInfo[queueName];
+	  var time = performance.now() / 1000;
+	  if (typeof queueInfo.timeFirst === 'undefined') {
+	    queueInfo.timeFirst = time;
+	    queueInfo.timeLast  = time;
+	  } else
+	    queueInfo.timeLast  = time;
+	  queueInfo.requestCount++;
+	  // Update concurrent request counts
+	  _concurrentPerQueue[queueName] += 1;
+	  _concurrentRequests++;
+	  //
+	  _queuesChanged = true;
+	  // Start request
+	  // console.log('[' + (' ' + _concurrentRequests).slice(-2) + ']: Starting ' + queueName);
+	  var queue = _queues[queueName];
+	  var request = queue.shift();
+	  request.start();
+	}
+
+	function _doProcessQueueOriginal() {
+	  if (_concurrentRequests >= window.loadingQueuePipelineDepth)
+	    return;
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    if (_queues[queueName].length > 0) {
+	      _startRequest(queueName);
+	      break;
+	    } else if (_concurrentPerQueue[queueName] !== 0)
+	      break;
+	  }
+	}
+
+	function _doProcessQueueOriginalFixed(){
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+	      _startRequest(queueName);
+	    if (_concurrentPerQueue[queueName] !== 0)
+	      break;
+	  }
+	}
+
+	function _doProcessQueueOverstep(){
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+	      _startRequest(queueName);
+	  }
+	}
+
+	function _doProcessQueueOverstepOne(){
+	  var anchorStage = null;
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+	      _startRequest(queueName);
+	    if (anchorStage === null && _concurrentPerQueue[queueName] !== 0)
+	      anchorStage = i;
+	    if (anchorStage !== null && i - anchorStage > 0)
+	      break;
+	  }
+	}
+
+	function _doProcessQueueOverstepFenced(){
+	  var anchorStage = null;
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+	      _startRequest(queueName);
+	    if (anchorStage === null && _concurrentPerQueue[queueName] !== 0)
+	      anchorStage = i;
+	    if (anchorStage !== null && _queueFences[queueName])
+	      break;
+	  }
+	}
+
+	function _doProcessQueueOverstepOneFenced(){
+	  var anchorStage = null;
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+	      _startRequest(queueName);
+	    if (anchorStage === null && _concurrentPerQueue[queueName] !== 0)
+	      anchorStage = i;
+	    if (anchorStage !== null && (_queueFences[queueName] || (i - anchorStage > 0)))
+	      break;
+	  }
+	}
+
+	function _processQueue() {
+	  if (window.loadingQueueAlgorithm === 'original')
+	    _doProcessQueueOriginal();
+	  else if (window.loadingQueueAlgorithm === 'original-fixed')
+	    _doProcessQueueOriginalFixed();
+	  else if (window.loadingQueueAlgorithm === 'overstep')
+	    _doProcessQueueOverstep();
+	  else if (window.loadingQueueAlgorithm === 'overstep-one')
+	    _doProcessQueueOverstepOne();
+	  else if (window.loadingQueueAlgorithm === 'overstep-fenced')
+	    _doProcessQueueOverstepFenced();
+	  else if (window.loadingQueueAlgorithm === 'overstep-one-fenced')
+	    _doProcessQueueOverstepOneFenced();
+	  else
+	    throw 'Http._processQueue: Unknown loading queue processing algorithm.'
+	  /* (2017/09/13) Performance monitoring code
+	  if (_queuesChanged) {
+	    if (window.loadingQueueGraph)
+	      _addPerformanceEntry();
+	    _appendLoadingQueueData();
+	    _queuesChanged = false;
+	  }
+	  */
+	}
+
+	function _enqueue(queueName, url){
+
+	  //// fallback to last queue
+	  //if (!_queues[queueName]) queueName = queuesByPriority[_queuesLength-1]
+
+	  // fallback to first queue
+	  if (!_queues[queueName]) {
+	    if (queueName) console.error('onknown queue ', queueName);
+	    queueName = queuesByPriority[0];
+	  }
+
+	  // create promise and add to queue
+	  return new Promise(function(resolve, reject){
+	    // has to be asynchronous in order to decouple queue processing from synchronous code
+	    setTimeout(function(){
+	      var queue = _queues[queueName];
+	      queue[ queue.length ] = { url: url, start: resolve };
+	      _processQueue();
+	    },1);
+	  })
+
+	}
+
+	function _dequeue(queueName, url) {
+	  var queueInfo = window.queueInfo[queueName];
+	  if (!queueInfo) {
+	    if (queueName) console.warn('Queue info not found for queue name "'+queueName+'"');
+	    return
+	  }
+	  var time = performance.now() / 1000;
+	  queueInfo.timeLastFinished = time;
+	  var t1 = queueInfo.timeFirst;
+	  var t2 = queueInfo.timeLast;
+	  var t3 = queueInfo.timeLastFinished;
+	  var d  = t3 - t1;
+	  _concurrentPerQueue[queueName] -= 1;
+	  _concurrentRequests -= 1;
+	  _queuesChanged = true;
+	  _processQueue();
+	}
+
+	// expose API
+
+	var queueManager = {
+	  enqueue: _enqueue,
+	  dequeue: _dequeue
+	};
+
+	window.setInterval(function(){
+	  _processQueue();
+	},1000);
+
+>>>>>>> master
 	/**
 	 * Appends the elements of `values` to `array`.
 	 *
@@ -17580,6 +17902,15 @@
 	  //      material3d.alphaTest = alphaTest
 	  //    }
 
+	  // normal map factor
+
+	  if (_attributes.mapNormalFactor !== undefined) {
+	    material3d.normalScale = new THREE.Vector2( _attributes.mapNormalFactor, _attributes.mapNormalFactor );
+	  } else {
+	    material3d.normalScale = new THREE.Vector2( 0.8, 0.8 );
+	  }
+	  material3d.uniforms.normalScale.value = material3d.normalScale;
+
 	  // specular coefficient
 
 	  material3d.shininess = (_attributes.specularCoef !== undefined) ? (_attributes.specularCoef ) : 0.1;
@@ -17789,6 +18120,7 @@
 	var DEFAULT_LIGHT_MAP_INTENSITY$1 = 1.2;
 	var DEFAULT_LIGHT_MAP_EXPOSURE$1 = 0.6;
 	var DEFAULT_LIGHT_MAP_FALLOFF$1 = 0;
+	var DEFAULT_NORMAL_MAP_FACTOR = new THREE.Vector2( 0.8, 0.8 );
 
 	var Io3dMaterial = checkDependencies ({
 	  three: true,
@@ -17797,11 +18129,11 @@
 
 	  function Io3dMaterial( params ) {
 	    THREE.ShaderMaterial.call( this, params );
-
+	    
 	    var params = params || {};
 	    this.lightMapExposure = params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1;
 	    this.lightMapFalloff = params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1;
-
+	    
 	    this.uniforms = THREE.UniformsUtils.merge( [
 	      THREE.UniformsLib[ "lights" ],
 	      THREE.UniformsLib[ "shadowmap" ],
@@ -17814,6 +18146,7 @@
 	        lightMapFalloff: { value: params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1 },
 	        lightMapExposure: { value: params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1 },
 	        normalMap: { value: params.normalMap || null },
+	        normalScale: { value: params.normalScale || DEFAULT_NORMAL_MAP_FACTOR },
 	        shininess: { value: params.shininess || 1.0 },
 	        specular: { value: params.specular || new THREE.Color(0.25, 0.25, 0.25) },
 	        emissive: { value: params.emissive || new THREE.Color(0.0, 0.0, 0.0) },
@@ -22193,7 +22526,8 @@
 	      logger.debug('API: User "' + session.user.email + '" logged in successfully.');
 	      return session
 	    } else {
-	      return bluebird_1.reject('Log in error: Session could not been established.')
+	      if(runtime.isNode) return bluebird_1.reject('io3d.auth.logIn cannot be used in node.js. Please use secret key authentication instead. See https://3d.io/docs/api/1/get-started-node-server.html#using-secret-api-key for further info.')
+	      else return bluebird_1.reject('Log in error: Session could not been established.')
 	    }
 
 	  }).catch(function onError (error) {

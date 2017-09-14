@@ -61,6 +61,15 @@ export default function setMaterial (args) {
   //      material3d.alphaTest = alphaTest
   //    }
 
+  // normal map factor
+
+  if (_attributes.mapNormalFactor !== undefined) {
+    material3d.normalScale = new THREE.Vector2( _attributes.mapNormalFactor, _attributes.mapNormalFactor )
+  } else {
+    material3d.normalScale = new THREE.Vector2( 0.8, 0.8 )
+  }
+  material3d.uniforms.normalScale.value = material3d.normalScale
+
   // specular coefficient
 
   material3d.shininess = (_attributes.specularCoef !== undefined) ? (_attributes.specularCoef ) : 0.1
