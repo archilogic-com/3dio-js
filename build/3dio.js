@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.72
- * @date 2017/09/14 23:28
- * @branch scene-api
- * @commit d2a857db9e9f840f2aee2f2e3b6b087001f667e2
+ * @date 2017/09/18 18:12
+ * @branch HEAD
+ * @commit 4e21e4a3408ff1b42bb9316c392846a7c9a55374
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/14 23:28', GIT_BRANCH = 'scene-api', GIT_COMMIT = 'd2a857db9e9f840f2aee2f2e3b6b087001f667e2'
+	var BUILD_DATE='2017/09/18 18:12', GIT_BRANCH = 'HEAD', GIT_COMMIT = '4e21e4a3408ff1b42bb9316c392846a7c9a55374'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.72";
@@ -30,7 +30,7 @@
 	var author = {"name":"archilogic","email":"dev.rocks@archilogic.com","url":"https://archilogic.com"};
 	var main = "index.js";
 	var scripts = {"start":"gulp dev-browser","dev-browser":"gulp dev-browser","dev-node":"gulp dev-node","test":"ava","build":"gulp build","release":"ava && gulp release"};
-	var dependencies = {"bluebird":"^3.5.0","form-data":"^2.1.4","js-logger":"^1.3.0","lodash":"^4.17.4","node-fetch":"2.0.0-alpha.8","pako":"^1.0.5","rxjs":"^5.4.2","three":"^0.85.2","whatwg-fetch":"^2.0.3"};
+	var dependencies = {"bluebird":"^3.5.0","form-data":"^2.1.4","js-logger":"^1.3.0","lodash":"^4.17.4","node-fetch":"2.0.0-alpha.8","pako":"^1.0.5","performance-now":"^2.1.0","rxjs":"^5.4.2","three":"^0.85.2","whatwg-fetch":"^2.0.3"};
 	var devDependencies = {"ava":"^0.22.0","babel-runtime":"^6.25.0","chalk":"^2.0.1","confirm-cli":"^0.4.0","del":"^3.0.0","gulp":"github:gulpjs/gulp#4.0","gulp-git":"^2.4.1","gulp-gzip":"^1.4.0","gulp-less":"^3.3.2","gulp-s3":"^0.11.0","gulp-watch":"^4.3.11","lite-server":"^2.3.0","moment":"^2.18.1","rollup":"^0.41.6","rollup-plugin-commonjs":"^8.0.2","rollup-plugin-json":"^2.1.1","rollup-plugin-less":"^0.1.3","rollup-plugin-node-resolve":"^3.0.0","through2":"^2.0.3","uglify-js":"^3.0.10","vinyl":"^2.1.0"};
 	var packageJson = {
 		name: name,
@@ -7354,6 +7354,34 @@
 	      return output
 	    };
 	  })();
+	}
+
+	// performance.now()
+	if (runtime.isBrowser) {
+
+	  // browser polyfill
+	  // inspired by:
+	  // https://gist.github.com/paulirish/5438650
+	  // note: if we need performance.mark and other methods we might want to replace this with:
+	  // https://www.npmjs.com/package/performance-polyfill
+	  if (!window.performance) {
+	    window.performance = {};
+	  }
+	  if (!window.performance.now){
+	    var navigationStart = performance.timing ? performance.timing.navigationStart : null;
+	    var nowOffset = navigationStart || Date.now();
+	    window.performance.now = function now(){
+	      return Date.now() - nowOffset
+	    };
+	  }
+
+	} else {
+
+	  // node: use module
+	  global.performance = {
+	    now: require('performance-now')
+	  };
+
 	}
 
 	var logger = createCommonjsModule(function (module) {
