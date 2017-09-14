@@ -1,5 +1,3 @@
-import checkDependencies from '../check-dependencies.js'
-
 export default {
 
   schema: {
