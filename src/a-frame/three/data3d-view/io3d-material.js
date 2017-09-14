@@ -2,17 +2,19 @@ import checkDependencies from '../../check-dependencies.js'
 import fragmentShader from './io3d-material/fragment.glsl'
 import vertexShader from './io3d-material/vertex.glsl'
 
-// CONFIGS
-
 export default checkDependencies ({
   three: true,
   aframe: false
 }, function makeIo3dMaterial () {
 
+  // CONFIGS
+
   var DEFAULT_LIGHT_MAP_INTENSITY = 1.2
   var DEFAULT_LIGHT_MAP_EXPOSURE = 0.6
   var DEFAULT_LIGHT_MAP_FALLOFF = 0
   var DEFAULT_NORMAL_MAP_FACTOR = new THREE.Vector2(0.8, 0.8)
+
+  // main
 
   function Io3dMaterial( params ) {
     THREE.ShaderMaterial.call( this, params )
