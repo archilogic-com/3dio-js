@@ -19,6 +19,7 @@ var queueFences = [
 ]
 
 // internals
+
 var queues = {}
 var queueFences = {}
 var queuesChanged = false
@@ -26,9 +27,6 @@ var queueInfo = {}
 var queuesLength = queuesByPriority.length
 var concurrentRequests = 0
 var concurrentPerQueue = {}
-var loadingQueueData = ''
-var loadingQueueAlgorithm     = 'overstep-one-fenced';
-var loadingQueuePipelineDepth = maxConcurrentQueuedRequests;
 var queueName
 for (var i = 0, l = queuesLength; i < l; i++) {
   queueName = queuesByPriority[i]
@@ -44,7 +42,7 @@ function startRequest(queueName) {
   // Update queue tracking information
   var info = queueInfo[queueName];
   var time = performance.now() / 1000;
-  if (typeof info.timeFirst === 'undefined') {
+  if (info.timeFirst) {
     info.timeFirst = time;
     info.timeLast  = time;
   } else
@@ -53,7 +51,7 @@ function startRequest(queueName) {
   // Update concurrent request counts
   concurrentPerQueue[queueName] += 1;
   concurrentRequests++;
-  //
+  // set flag
   queuesChanged = true;
   // Start request
   var queue = queues[queueName];
@@ -65,7 +63,7 @@ function processQueue() {
   var anchorStage = null;
   for (var i = 0; i < queuesLength; i++) {
     var queueName = queuesByPriority[i];
-    while (queues[queueName].length > 0 && concurrentRequests < loadingQueuePipelineDepth)
+    while (queues[queueName].length > 0 && concurrentRequests < maxConcurrentQueuedRequests)
       startRequest(queueName)
     if (anchorStage === null && concurrentPerQueue[queueName] !== 0)
       anchorStage = i;
