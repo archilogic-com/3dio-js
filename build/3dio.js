@@ -4,7 +4,7 @@
  * @version 1.0.0-beta.73
  * @date 2017/09/18 18:12
  * @branch HEAD
- * @commit dd3695cdd7debedfd17e0cf36bd71407da27e292
+ * @commit 6268c942a842f7b138a0eaadcf9e9b8836e68c45
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/18 18:12', GIT_BRANCH = 'HEAD', GIT_COMMIT = 'dd3695cdd7debedfd17e0cf36bd71407da27e292'
+	var BUILD_DATE='2017/09/18 18:12', GIT_BRANCH = 'HEAD', GIT_COMMIT = '6268c942a842f7b138a0eaadcf9e9b8836e68c45'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.73";
@@ -17952,17 +17952,19 @@
 
 	var vertexShader = "varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}";
 
-	// CONFIGS
-
 	var Io3dMaterial = checkDependencies ({
 	  three: true,
 	  aframe: false
 	}, function makeIo3dMaterial () {
 
+	  // CONFIGS
+
 	  var DEFAULT_LIGHT_MAP_INTENSITY = 1.2;
 	  var DEFAULT_LIGHT_MAP_EXPOSURE = 0.6;
 	  var DEFAULT_LIGHT_MAP_FALLOFF = 0;
 	  var DEFAULT_NORMAL_MAP_FACTOR = new THREE.Vector2(0.8, 0.8);
+
+	  // main
 
 	  function Io3dMaterial( params ) {
 	    THREE.ShaderMaterial.call( this, params );
