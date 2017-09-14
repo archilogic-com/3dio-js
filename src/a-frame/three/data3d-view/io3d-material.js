@@ -4,23 +4,23 @@ import vertexShader from './io3d-material/vertex.glsl'
 
 // CONFIGS
 
-var DEFAULT_LIGHT_MAP_INTENSITY = 1.2
-var DEFAULT_LIGHT_MAP_EXPOSURE = 0.6
-var DEFAULT_LIGHT_MAP_FALLOFF = 0
-var DEFAULT_NORMAL_MAP_FACTOR = new THREE.Vector2( 0.8, 0.8 )
-
 export default checkDependencies ({
   three: true,
   aframe: false
 }, function makeIo3dMaterial () {
 
+  var DEFAULT_LIGHT_MAP_INTENSITY = 1.2
+  var DEFAULT_LIGHT_MAP_EXPOSURE = 0.6
+  var DEFAULT_LIGHT_MAP_FALLOFF = 0
+  var DEFAULT_NORMAL_MAP_FACTOR = new THREE.Vector2(0.8, 0.8)
+
   function Io3dMaterial( params ) {
     THREE.ShaderMaterial.call( this, params )
-    
+
     var params = params || {}
     this.lightMapExposure = params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE
     this.lightMapFalloff = params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF
-    
+
     this.uniforms = THREE.UniformsUtils.merge( [
       THREE.UniformsLib[ "lights" ],
       THREE.UniformsLib[ "shadowmap" ],
