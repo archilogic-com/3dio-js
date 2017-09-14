@@ -1,11 +1,14 @@
 import runtime from '../../core/runtime.js'
+import poll from '../../utils/poll.js'
+import getFromStorage from '../../storage/get.js'
 
 // TODO: extend this for bakedModel
 var validTypes = [
   'interior',
   'group',
   'level',
-  'plan'
+  'plan',
+  'object'
 ]
 
 export default function toHtml(sceneStructure, options) {
@@ -35,6 +38,9 @@ function getHtmlFromSceneStructure(sceneStructure, parent) {
         attributes: getAttributes(element3d),
         parent: parent
       })
+      if (element3d.type === 'level' && (element3d.bakeRegularStatusFileKey || element3d.bakePreviewStatusFileKey)) {
+        updateOnBake(el, element3d.bakeRegularStatusFileKey || element3d.bakePreviewStatusFileKey)
+      }
       if (element3d.children && element3d.children.length) getHtmlFromSceneStructure(element3d.children, el)
       if (collection) collection.push(el)
     }
@@ -49,9 +55,19 @@ function getAttributes(element3d) {
     position: element3d.x + ' ' + element3d.y + ' ' + element3d.z,
     rotation: '0 ' + element3d.ry + ' 0'
   }
-  if (element3d.type === 'interior') {
-    attributes['io3d-furniture'] = {id: element3d.src.substring(1)}
-    attributes['shadow'] = {cast: true, receive: false}
+
+  switch (element3d.type) {
+    case 'level':
+      attributes['io3d-data3d'] = { key: element3d.bakedModelUrl }
+    break
+    case 'interior':
+      attributes['io3d-furniture'] = { id: element3d.src.substring(1) }
+      attributes['shadow'] = { cast: true, receive: false }
+    break
+    case 'object':
+      attributes['io3d-data3d'] = { key: element3d.object }
+      attributes['shadow'] = { cast: true, receive: true }
+    break
   }
 
   return attributes
@@ -71,4 +87,39 @@ function addEntity(args) {
 
   if (parent) return parent.appendChild(el)
   else return el
+}
+
+function updateOnBake(htmlElement, statusFileKey) {
+  pollStatusFile(statusFileKey)
+    .then(function (bakedModelKey) {
+      htmlElement.setAttribute('io3d-data3d', { key: bakedModelKey })
+    })
+}
+
+// TODO: Migrate that to a shared helper
+
+function pollStatusFile(fileKey) {
+  return poll(function onPoll(onSuccess, onError, next) {
+    /*
+    1. Read status file content
+    2. Check if we're done -> call onSuccess
+       Check if it failed  -> call onError
+       Otherwise call next
+     */
+    getFromStorage(fileKey, { type: "json", cdn: false }).then(function checkContent(content) {
+      if (content && content.params) {
+        switch (content.params.status) {
+          case 'SUCCESS':
+            onSuccess(content.params.data)
+            break
+          case 'PROCESSING':
+          case 'ENQUEUED':
+            next()
+            break
+          default:
+            onError(content.params.data)
+        }
+      }
+    })
+  })
 }

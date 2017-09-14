@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.72
- * @date 2017/09/14 16:47
+ * @date 2017/09/14 23:28
  * @branch scene-api
- * @commit 3cc6844851cdaf1dcffafab5df08877bd59e8441
+ * @commit d2a857db9e9f840f2aee2f2e3b6b087001f667e2
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/14 16:47', GIT_BRANCH = 'scene-api', GIT_COMMIT = '3cc6844851cdaf1dcffafab5df08877bd59e8441'
+	var BUILD_DATE='2017/09/14 23:28', GIT_BRANCH = 'scene-api', GIT_COMMIT = 'd2a857db9e9f840f2aee2f2e3b6b087001f667e2'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.72";
@@ -21882,12 +21882,127 @@
 	  );
 	}
 
+	function poll(callback, options) {
+
+	  // API
+	  options = options || {};
+	  var timeout = options.timeout || 10 * 60 * 1000;
+	  var minInterval = options.minInterval || 1000;
+	  var maxInterval = options.maxInterval || 5000;
+	  var intervalIncreaseFactor = options.intervalIncreaseFactor || 1.05;
+
+	  return new bluebird_1(function( fulfill, reject, onCancel ){
+	    var flags = { isCancelled: false };
+	    // cancellation is supported in bluebird version > 3.x
+	    // enable cancellation in Promise.config as it is off by default
+	    if (onCancel) onCancel(function(){ flags.isCancelled = true; });
+	    // start recursive poll
+	    recursivePoll(callback, fulfill, reject, minInterval, maxInterval, intervalIncreaseFactor, 0, timeout, flags);
+	  })
+
+	}
+
+	// helper
+
+	function recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags) {
+
+	  // return if poll has been cancelled in meanwhile
+	  if (flags.isCancelled) return reject('Poll request has been cancelled')
+	  // increase interval
+	  if (interval < maxInterval) interval *= intervalIncreaseFactor;
+	  // check timeout
+	  if (timeElapsed > timeout) return reject('Poll request timed out')
+	  // count time
+	  timeElapsed += interval;
+	  // call
+	  callback(fulfill, reject, function next() {
+	    window.setTimeout(function(){
+	      recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags);
+	    }, interval);
+	  });
+
+	}
+
+	// constants
+	var IS_URL = new RegExp('^http:\\/\\/.*$|^https:\\/\\/.*$');
+	var ID_TO_URL_CACHE = {};
+
+	// main
+	function getUrlFromStorageId (storageId, options) {
+
+	  // API
+	  options = options || {};
+	  var cdn = options.cdn !== undefined ? options.cdn : true;
+	  var encode = options.encode !== undefined ? options.encode : true;
+
+	  // check cache
+	  if (ID_TO_URL_CACHE[storageId + cdn + encode]) {
+	    return ID_TO_URL_CACHE[storageId + cdn + encode]
+	  }
+
+	  // check if storageId is URL already
+	  if (IS_URL.test(storageId)) {
+	    // add to cache
+	    ID_TO_URL_CACHE[ storageId + cdn + encode ] = storageId;
+	    // return URL
+	    return storageId
+	  }
+
+	  // internals
+	  var processedStorageId = storageId;
+
+	  // remove leading slash
+	  var startsWithSlash = /^\/(.*)$/.exec(processedStorageId);
+	  if (startsWithSlash) {
+	    processedStorageId = startsWithSlash[1];
+	  }
+
+	  // encode storageId if containig special chars
+	  if (encode && !/^[\.\-\_\/a-zA-Z0-9]+$/.test(processedStorageId)) {
+	    processedStorageId = encodeURIComponent(processedStorageId);
+	  }
+
+	  // compose url
+	  var url = 'https://' + (cdn ? configs.storageDomain : configs.storageDomainNoCdn) + '/' + processedStorageId;
+
+	  // add to cache
+	  ID_TO_URL_CACHE[ storageId + cdn + encode ] = url;
+	  
+	  return url
+	}
+
+	// main
+
+	function getFromStorage (storageId, options) {
+
+	  // WIP: for now, assume that this is only being used for data3d
+	  options = options || {};
+	  options.type = options.type || 'data3d'; // TODO: support more types
+	  var queueName = options.queueName;
+	  var loadingQueuePrefix = options.loadingQueuePrefix;
+
+	  switch(options.type) {
+	    case 'json':
+	      // do not use queue for generic JSON requests
+	      return fetch$1(getUrlFromStorageId(storageId, options)).then(function(response) { return response.json() })
+	    break
+	    default:
+	      return loadData3d(getUrlFromStorageId(storageId), {
+	        queueName: queueName,
+	        loadingQueuePrefix: loadingQueuePrefix
+	      })
+	    break
+	  }
+
+	}
+
 	// TODO: extend this for bakedModel
 	var validTypes = [
 	  'interior',
 	  'group',
 	  'level',
-	  'plan'
+	  'plan',
+	  'object'
 	];
 
 	function toHtml(sceneStructure, options) {
@@ -21917,6 +22032,9 @@
 	        attributes: getAttributes(element3d),
 	        parent: parent
 	      });
+	      if (element3d.type === 'level' && (element3d.bakeRegularStatusFileKey || element3d.bakePreviewStatusFileKey)) {
+	        updateOnBake(el, element3d.bakeRegularStatusFileKey || element3d.bakePreviewStatusFileKey);
+	      }
 	      if (element3d.children && element3d.children.length) getHtmlFromSceneStructure(element3d.children, el);
 	      if (collection) collection.push(el);
 	    }
@@ -21931,9 +22049,19 @@
 	    position: element3d.x + ' ' + element3d.y + ' ' + element3d.z,
 	    rotation: '0 ' + element3d.ry + ' 0'
 	  };
-	  if (element3d.type === 'interior') {
-	    attributes['io3d-furniture'] = {id: element3d.src.substring(1)};
-	    attributes['shadow'] = {cast: true, receive: false};
+
+	  switch (element3d.type) {
+	    case 'level':
+	      attributes['io3d-data3d'] = { key: element3d.bakedModelUrl };
+	    break
+	    case 'interior':
+	      attributes['io3d-furniture'] = { id: element3d.src.substring(1) };
+	      attributes['shadow'] = { cast: true, receive: false };
+	    break
+	    case 'object':
+	      attributes['io3d-data3d'] = { key: element3d.object };
+	      attributes['shadow'] = { cast: true, receive: true };
+	    break
 	  }
 
 	  return attributes
@@ -21953,6 +22081,41 @@
 
 	  if (parent) return parent.appendChild(el)
 	  else return el
+	}
+
+	function updateOnBake(htmlElement, statusFileKey) {
+	  pollStatusFile(statusFileKey)
+	    .then(function (bakedModelKey) {
+	      htmlElement.setAttribute('io3d-data3d', { key: bakedModelKey });
+	    });
+	}
+
+	// TODO: Migrate that to a shared helper
+
+	function pollStatusFile(fileKey) {
+	  return poll(function onPoll(onSuccess, onError, next) {
+	    /*
+	    1. Read status file content
+	    2. Check if we're done -> call onSuccess
+	       Check if it failed  -> call onError
+	       Otherwise call next
+	     */
+	    getFromStorage(fileKey, { type: "json", cdn: false }).then(function checkContent(content) {
+	      if (content && content.params) {
+	        switch (content.params.status) {
+	          case 'SUCCESS':
+	            onSuccess(content.params.data);
+	            break
+	          case 'PROCESSING':
+	          case 'ENQUEUED':
+	            next();
+	            break
+	          default:
+	            onError(content.params.data);
+	        }
+	      }
+	    });
+	  })
 	}
 
 	// consumes sceneStructure or DOM elements
@@ -22780,79 +22943,6 @@
 	    + '_' + d.getHours() + '-' + d.getMinutes() // + '-' + d.getSeconds()
 	}
 
-	// constants
-	var IS_URL = new RegExp('^http:\\/\\/.*$|^https:\\/\\/.*$');
-	var ID_TO_URL_CACHE = {};
-
-	// main
-	function getUrlFromStorageId (storageId, options) {
-
-	  // API
-	  options = options || {};
-	  var cdn = options.cdn !== undefined ? options.cdn : true;
-	  var encode = options.encode !== undefined ? options.encode : true;
-
-	  // check cache
-	  if (ID_TO_URL_CACHE[storageId + cdn + encode]) {
-	    return ID_TO_URL_CACHE[storageId + cdn + encode]
-	  }
-
-	  // check if storageId is URL already
-	  if (IS_URL.test(storageId)) {
-	    // add to cache
-	    ID_TO_URL_CACHE[ storageId + cdn + encode ] = storageId;
-	    // return URL
-	    return storageId
-	  }
-
-	  // internals
-	  var processedStorageId = storageId;
-
-	  // remove leading slash
-	  var startsWithSlash = /^\/(.*)$/.exec(processedStorageId);
-	  if (startsWithSlash) {
-	    processedStorageId = startsWithSlash[1];
-	  }
-
-	  // encode storageId if containig special chars
-	  if (encode && !/^[\.\-\_\/a-zA-Z0-9]+$/.test(processedStorageId)) {
-	    processedStorageId = encodeURIComponent(processedStorageId);
-	  }
-
-	  // compose url
-	  var url = 'https://' + (cdn ? configs.storageDomain : configs.storageDomainNoCdn) + '/' + processedStorageId;
-
-	  // add to cache
-	  ID_TO_URL_CACHE[ storageId + cdn + encode ] = url;
-	  
-	  return url
-	}
-
-	// main
-
-	function getFromStorage (storageId, options) {
-
-	  // WIP: for now, assume that this is only being used for data3d
-	  options = options || {};
-	  options.type = options.type || 'data3d'; // TODO: support more types
-	  var queueName = options.queueName;
-	  var loadingQueuePrefix = options.loadingQueuePrefix;
-
-	  switch(options.type) {
-	    case 'json':
-	      // do not use queue for generic JSON requests
-	      return fetch$1(getUrlFromStorageId(storageId, options)).then(function(response) { return response.json() })
-	    break
-	    default:
-	      return loadData3d(getUrlFromStorageId(storageId), {
-	        queueName: queueName,
-	        loadingQueuePrefix: loadingQueuePrefix
-	      })
-	    break
-	  }
-
-	}
-
 	var storage = {
 	  get: getFromStorage,
 	  getUrlFromStorageId: getUrlFromStorageId,
@@ -22860,6 +22950,7 @@
 	};
 
 	function getSceneStructure (id) {
+	  if (!uuid.validate(id)) return Promise.reject('id not valid')
 	  return callService('Model.read', { arguments: {resourceId:id}})
 	    .then(function(result) {
 	      var sceneStructure = result.modelStructure;
@@ -22869,6 +22960,11 @@
 	      sceneStructure.modelResourceName = result.modelResourceName;
 	      return sceneStructure
 	    })
+	}
+
+	function getHtml(id) {
+	  return getSceneStructure(id)
+	    .then(toHtml)
 	}
 
 	function getViewerUrl (args) {
@@ -23046,6 +23142,7 @@
 
 	var scene = {
 	  getStructure: getSceneStructure,
+	  getHtml: getHtml,
 	  getViewerUrl: getViewerUrl,
 	  validateSceneStructure: validateSceneStructure,
 	  normalizeSceneStructure: normalizeSceneStructure,
@@ -24823,47 +24920,6 @@
 
 	function isMultipleOf (value, multiple) {
 	  return Math.ceil(value / multiple) === value / multiple
-	}
-
-	function poll(callback, options) {
-
-	  // API
-	  options = options || {};
-	  var timeout = options.timeout || 10 * 60 * 1000;
-	  var minInterval = options.minInterval || 1000;
-	  var maxInterval = options.maxInterval || 5000;
-	  var intervalIncreaseFactor = options.intervalIncreaseFactor || 1.05;
-
-	  return new bluebird_1(function( fulfill, reject, onCancel ){
-	    var flags = { isCancelled: false };
-	    // cancellation is supported in bluebird version > 3.x
-	    // enable cancellation in Promise.config as it is off by default
-	    if (onCancel) onCancel(function(){ flags.isCancelled = true; });
-	    // start recursive poll
-	    recursivePoll(callback, fulfill, reject, minInterval, maxInterval, intervalIncreaseFactor, 0, timeout, flags);
-	  })
-
-	}
-
-	// helper
-
-	function recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags) {
-
-	  // return if poll has been cancelled in meanwhile
-	  if (flags.isCancelled) return reject('Poll request has been cancelled')
-	  // increase interval
-	  if (interval < maxInterval) interval *= intervalIncreaseFactor;
-	  // check timeout
-	  if (timeElapsed > timeout) return reject('Poll request timed out')
-	  // count time
-	  timeElapsed += interval;
-	  // call
-	  callback(fulfill, reject, function next() {
-	    window.setTimeout(function(){
-	      recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags);
-	    }, interval);
-	  });
-
 	}
 
 	function addCacheBustToQuery (url) {
