@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.82
- * @date 2017/09/28 17:38
+ * @version 1.0.0-beta.71
+ * @date 2017/09/14 11:46
  * @branch master
- * @commit 311beb05e51330d79c0bb0d4222fab433ed92ade
+ * @commit ad99b58a34375f0b4046bbf532c8ce2e1602cde6
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/28 17:38', GIT_BRANCH = 'master', GIT_COMMIT = '311beb05e51330d79c0bb0d4222fab433ed92ade'
+	var BUILD_DATE='2017/09/14 11:46', GIT_BRANCH = 'master', GIT_COMMIT = 'ad99b58a34375f0b4046bbf532c8ce2e1602cde6'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.82";
+	var version = "1.0.0-beta.71";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -30,8 +30,8 @@
 	var author = {"name":"archilogic","email":"dev.rocks@archilogic.com","url":"https://archilogic.com"};
 	var main = "index.js";
 	var scripts = {"start":"gulp dev-browser","dev-browser":"gulp dev-browser","dev-node":"gulp dev-node","test":"gulp test","build":"gulp build","release":"gulp release"};
-	var dependencies = {"bluebird":"^3.5.0","form-data":"^2.1.4","js-logger":"^1.3.0","lodash":"^4.17.4","node-fetch":"2.0.0-alpha.8","pako":"^1.0.5","performance-now":"^2.1.0","rxjs":"^5.4.2","three":"^0.85.2","whatwg-fetch":"^2.0.3"};
-	var devDependencies = {"ava":"^0.22.0","babel-runtime":"^6.25.0","chalk":"^2.0.1","confirm-cli":"^0.4.0","del":"^3.0.0","gulp":"github:gulpjs/gulp#4.0","gulp-ava":"^0.18.0","gulp-git":"^2.4.1","gulp-gzip":"^1.4.0","gulp-less":"^3.3.2","gulp-s3":"^0.11.0","gulp-watch":"^4.3.11","lite-server":"^2.3.0","moment":"^2.18.1","rollup":"^0.41.6","rollup-plugin-commonjs":"^8.0.2","rollup-plugin-json":"^2.1.1","rollup-plugin-less":"^0.1.3","rollup-plugin-node-resolve":"^3.0.0","through2":"^2.0.3","uglify-js":"^3.0.10"};
+	var dependencies = {"bluebird":"^3.5.0","form-data":"^2.1.4","js-logger":"^1.3.0","lodash":"^4.17.4","node-fetch":"2.0.0-alpha.8","pako":"^1.0.5","rxjs":"^5.4.2","three":"^0.85.2","whatwg-fetch":"^2.0.3"};
+	var devDependencies = {"babel-runtime":"^6.25.0","chalk":"^2.0.1","confirm-cli":"^0.4.0","del":"^3.0.0","gulp":"github:gulpjs/gulp#4.0","gulp-git":"^2.4.1","gulp-gzip":"^1.4.0","gulp-less":"^3.3.2","gulp-s3":"^0.11.0","gulp-watch":"^4.3.11","lite-server":"^2.3.0","moment":"^2.18.1","rollup":"^0.41.6","rollup-plugin-commonjs":"^8.0.2","rollup-plugin-json":"^2.1.1","rollup-plugin-less":"^0.1.3","rollup-plugin-node-resolve":"^3.0.0","through2":"^2.0.3","uglify-js":"^3.0.10","vinyl":"^2.1.0"};
 	var packageJson = {
 		name: name,
 		version: version,
@@ -7356,34 +7356,6 @@
 	  })();
 	}
 
-	// performance.now()
-	if (runtime.isBrowser) {
-
-	  // browser polyfill
-	  // inspired by:
-	  // https://gist.github.com/paulirish/5438650
-	  // note: if we need performance.mark and other methods we might want to replace this with:
-	  // https://www.npmjs.com/package/performance-polyfill
-	  if (!window.performance) {
-	    window.performance = {};
-	  }
-	  if (!window.performance.now){
-	    var navigationStart = performance.timing ? performance.timing.navigationStart : null;
-	    var nowOffset = navigationStart || Date.now();
-	    window.performance.now = function now(){
-	      return Date.now() - nowOffset
-	    };
-	  }
-
-	} else {
-
-	  // node: use module
-	  global.performance = {
-	    now: require('performance-now')
-	  };
-
-	}
-
 	var logger = createCommonjsModule(function (module) {
 	/*!
 	 * js-logger - http://github.com/jonnyreeves/js-logger
@@ -7660,10 +7632,10 @@
 	// default configs values
 
 	var defaults = Object.freeze({
-	  logLevel: 'warn',
+	  logLevel:      'warn',
 	  publishableApiKey: getPublishableApiKeyFromUrl(),
 	  secretApiKey: null,
-	  servicesUrl: 'https://spaces.archilogic.com/api/v2',
+	  servicesUrl:   'https://spaces.archilogic.com/api/v2',
 	  storageDomain: 'storage.3d.io',
 	  storageDomainNoCdn: 'storage-nocdn.3d.io'
 	});
@@ -7672,8 +7644,8 @@
 
 	var LOG_STRING_TO_ENUM = {
 	  error: logger.ERROR,
-	  warn: logger.WARN,
-	  info: logger.INFO,
+	  warn:  logger.WARN,
+	  info:  logger.INFO,
 	  debug: logger.DEBUG
 	};
 
@@ -7696,6 +7668,7 @@
 	  if (runtime.isBrowser && args.secretApiKey) {
 	    logger.error('The secret API key is not supposed to be used in browser environments!\nPlease see https://3d.io/docs/api/1/get-started-browser.html#secret-api-key for more information.');
 	  }
+
 
 	  // simply copy over the other configs
 	  var key, keys = Object.keys(args);
@@ -7748,7 +7721,7 @@
 	    var scripts = document.getElementsByTagName('script');
 	    var libNameRegex = new RegExp('(\/3dio\.js|\/3dio\.min\.js)');
 	    // iterating backwarts as the last script is most likely the current one
-	    for (var i = scripts.length - 1; i > -1; i--) {
+	    for (var i=scripts.length-1; i>-1; i--) {
 	      src = scripts[i].getAttribute('src');
 	      if (libNameRegex.exec(src)) {
 	        libUrl = src;
@@ -7791,21 +7764,6 @@
 	    return false
 	  }
 	}
-
-	var fetch$1 = (function(){
-
-	  if (runtime.isNode) {
-	    return require('node-fetch')
-	  } else if (typeof fetch !== 'undefined') {
-	    return fetch
-	  } else {
-	    console.warn('Missing global fetch API.');
-	    return function() {
-	      throw new Error('Missing global fetch API.')
-	    }
-	  }
-
-	})();
 
 	var es5 = createCommonjsModule(function (module) {
 	var isES5 = (function(){
@@ -8681,9 +8639,9 @@
 	};
 
 	var thenables = function(Promise, INTERNAL) {
-	var util$$1 = util;
-	var errorObj = util$$1.errorObj;
-	var isObject = util$$1.isObject;
+	var util$$2 = util;
+	var errorObj = util$$2.errorObj;
+	var isObject = util$$2.isObject;
 
 	function tryConvertToPromise(obj, context) {
 	    if (isObject(obj)) {
@@ -8741,7 +8699,7 @@
 	    promise._captureStackTrace();
 	    if (context) context._popContext();
 	    var synchronous = true;
-	    var result = util$$1.tryCatch(then).call(x, resolve, reject);
+	    var result = util$$2.tryCatch(then).call(x, resolve, reject);
 	    synchronous = false;
 
 	    if (promise && result === errorObj) {
@@ -8768,8 +8726,8 @@
 
 	var promise_array = function(Promise, INTERNAL, tryConvertToPromise,
 	    apiRejection, Proxyable) {
-	var util$$1 = util;
-	var isArray = util$$1.isArray;
+	var util$$2 = util;
+	var isArray = util$$2.isArray;
 
 	function toResolutionValue(val) {
 	    switch(val) {
@@ -8790,7 +8748,7 @@
 	    this._totalResolved = 0;
 	    this._init(undefined, -2);
 	}
-	util$$1.inherits(PromiseArray, Proxyable);
+	util$$2.inherits(PromiseArray, Proxyable);
 
 	PromiseArray.prototype.length = function () {
 	    return this._length;
@@ -8825,10 +8783,10 @@
 	            return this._cancel();
 	        }
 	    }
-	    values = util$$1.asArray(values);
+	    values = util$$2.asArray(values);
 	    if (values === null) {
 	        var err = apiRejection(
-	            "expecting an array or an iterable object but got " + util$$1.classString(values)).reason();
+	            "expecting an array or an iterable object but got " + util$$2.classString(values)).reason();
 	        this._promise._rejectCallback(err, false);
 	        return;
 	    }
@@ -9024,8 +8982,8 @@
 	var getDomain = Promise._getDomain;
 	var async = Promise._async;
 	var Warning = errors.Warning;
-	var util$$1 = util;
-	var canAttachTrace = util$$1.canAttachTrace;
+	var util$$2 = util;
+	var canAttachTrace = util$$2.canAttachTrace;
 	var unhandledRejectionHandled;
 	var possiblyUnhandledRejection;
 	var bluebirdFramePattern =
@@ -9036,19 +8994,19 @@
 	var formatStack = null;
 	var indentStackFrames = false;
 	var printWarning;
-	var debugging = !!(util$$1.env("BLUEBIRD_DEBUG") != 0 &&
+	var debugging = !!(util$$2.env("BLUEBIRD_DEBUG") != 0 &&
 	                        (false ||
-	                         util$$1.env("BLUEBIRD_DEBUG") ||
-	                         util$$1.env("NODE_ENV") === "development"));
+	                         util$$2.env("BLUEBIRD_DEBUG") ||
+	                         util$$2.env("NODE_ENV") === "development"));
 
-	var warnings = !!(util$$1.env("BLUEBIRD_WARNINGS") != 0 &&
-	    (debugging || util$$1.env("BLUEBIRD_WARNINGS")));
+	var warnings = !!(util$$2.env("BLUEBIRD_WARNINGS") != 0 &&
+	    (debugging || util$$2.env("BLUEBIRD_WARNINGS")));
 
-	var longStackTraces = !!(util$$1.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
-	    (debugging || util$$1.env("BLUEBIRD_LONG_STACK_TRACES")));
+	var longStackTraces = !!(util$$2.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
+	    (debugging || util$$2.env("BLUEBIRD_LONG_STACK_TRACES")));
 
-	var wForgottenReturn = util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
-	    (warnings || !!util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
+	var wForgottenReturn = util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
+	    (warnings || !!util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
 
 	Promise.prototype.suppressUnhandledRejections = function() {
 	    var target = this._target();
@@ -9120,7 +9078,7 @@
 	    var domain = getDomain();
 	    possiblyUnhandledRejection =
 	        typeof fn === "function" ? (domain === null ?
-	                                            fn : util$$1.domainBind(domain, fn))
+	                                            fn : util$$2.domainBind(domain, fn))
 	                                 : undefined;
 	};
 
@@ -9128,7 +9086,7 @@
 	    var domain = getDomain();
 	    unhandledRejectionHandled =
 	        typeof fn === "function" ? (domain === null ?
-	                                            fn : util$$1.domainBind(domain, fn))
+	                                            fn : util$$2.domainBind(domain, fn))
 	                                 : undefined;
 	};
 
@@ -9166,33 +9124,33 @@
 	    try {
 	        if (typeof CustomEvent === "function") {
 	            var event = new CustomEvent("CustomEvent");
-	            util$$1.global.dispatchEvent(event);
+	            util$$2.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = new CustomEvent(name.toLowerCase(), {
 	                    detail: event,
 	                    cancelable: true
 	                });
-	                return !util$$1.global.dispatchEvent(domEvent);
+	                return !util$$2.global.dispatchEvent(domEvent);
 	            };
 	        } else if (typeof Event === "function") {
 	            var event = new Event("CustomEvent");
-	            util$$1.global.dispatchEvent(event);
+	            util$$2.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = new Event(name.toLowerCase(), {
 	                    cancelable: true
 	                });
 	                domEvent.detail = event;
-	                return !util$$1.global.dispatchEvent(domEvent);
+	                return !util$$2.global.dispatchEvent(domEvent);
 	            };
 	        } else {
 	            var event = document.createEvent("CustomEvent");
 	            event.initCustomEvent("testingtheevent", false, true, {});
-	            util$$1.global.dispatchEvent(event);
+	            util$$2.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = document.createEvent("CustomEvent");
 	                domEvent.initCustomEvent(name.toLowerCase(), false, true,
 	                    event);
-	                return !util$$1.global.dispatchEvent(domEvent);
+	                return !util$$2.global.dispatchEvent(domEvent);
 	            };
 	        }
 	    } catch (e) {}
@@ -9202,21 +9160,21 @@
 	})();
 
 	var fireGlobalEvent = (function() {
-	    if (util$$1.isNode) {
+	    if (util$$2.isNode) {
 	        return function() {
 	            return process.emit.apply(process, arguments);
 	        };
 	    } else {
-	        if (!util$$1.global) {
+	        if (!util$$2.global) {
 	            return function() {
 	                return false;
 	            };
 	        }
 	        return function(name) {
 	            var methodName = "on" + name.toLowerCase();
-	            var method = util$$1.global[methodName];
+	            var method = util$$2.global[methodName];
 	            if (!method) return false;
-	            method.apply(util$$1.global, [].slice.call(arguments, 1));
+	            method.apply(util$$2.global, [].slice.call(arguments, 1));
 	            return true;
 	        };
 	    }
@@ -9279,7 +9237,7 @@
 	        config.warnings = !!warningsOption;
 	        wForgottenReturn = config.warnings;
 
-	        if (util$$1.isObject(warningsOption)) {
+	        if (util$$2.isObject(warningsOption)) {
 	            if ("wForgottenReturn" in warningsOption) {
 	                wForgottenReturn = !!warningsOption.wForgottenReturn;
 	            }
@@ -9342,7 +9300,7 @@
 	        executor(resolve, reject, function(onCancel) {
 	            if (typeof onCancel !== "function") {
 	                throw new TypeError("onCancel must be a function, got: " +
-	                                    util$$1.toString(onCancel));
+	                                    util$$2.toString(onCancel));
 	            }
 	            promise._attachCancellationCallback(onCancel);
 	        });
@@ -9356,7 +9314,7 @@
 
 	    var previousOnCancel = this._onCancel();
 	    if (previousOnCancel !== undefined) {
-	        if (util$$1.isArray(previousOnCancel)) {
+	        if (util$$2.isArray(previousOnCancel)) {
 	            previousOnCancel.push(onCancel);
 	        } else {
 	            this._setOnCancel([previousOnCancel, onCancel]);
@@ -9428,9 +9386,9 @@
 	            trace.attachExtraTrace(error);
 	        } else if (!error.__stackCleaned__) {
 	            var parsed = parseStackAndMessage(error);
-	            util$$1.notEnumerableProp(error, "stack",
+	            util$$2.notEnumerableProp(error, "stack",
 	                parsed.message + "\n" + parsed.stack.join("\n"));
-	            util$$1.notEnumerableProp(error, "__stackCleaned__", true);
+	            util$$2.notEnumerableProp(error, "__stackCleaned__", true);
 	        }
 	    }
 	}
@@ -9601,7 +9559,7 @@
 	function formatAndLogError(error, title, isSoft) {
 	    if (typeof console !== "undefined") {
 	        var message;
-	        if (util$$1.isObject(error)) {
+	        if (util$$2.isObject(error)) {
 	            var stack = error.stack;
 	            message = title + formatStack(stack, error);
 	        } else {
@@ -9648,7 +9606,7 @@
 	            "]";
 	    } else {
 	        str = obj && typeof obj.toString === "function"
-	            ? obj.toString() : util$$1.toString(obj);
+	            ? obj.toString() : util$$2.toString(obj);
 	        var ruselessToString = /\[object [a-zA-Z0-9$_]+\]/;
 	        if (ruselessToString.test(str)) {
 	            try {
@@ -9739,7 +9697,7 @@
 	    captureStackTrace(this, CapturedTrace);
 	    if (length > 32) this.uncycle();
 	}
-	util$$1.inherits(CapturedTrace, Error);
+	util$$2.inherits(CapturedTrace, Error);
 	Context.CapturedTrace = CapturedTrace;
 
 	CapturedTrace.prototype.uncycle = function() {
@@ -9804,8 +9762,8 @@
 	    }
 	    removeCommonRoots(stacks);
 	    removeDuplicateOrEmptyJumps(stacks);
-	    util$$1.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
-	    util$$1.notEnumerableProp(error, "__stackCleaned__", true);
+	    util$$2.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
+	    util$$2.notEnumerableProp(error, "__stackCleaned__", true);
 	};
 
 	var captureStackTrace = (function stackDetection() {
@@ -9885,12 +9843,12 @@
 	    printWarning = function (message) {
 	        console.warn(message);
 	    };
-	    if (util$$1.isNode && process.stderr.isTTY) {
+	    if (util$$2.isNode && process.stderr.isTTY) {
 	        printWarning = function(message, isSoft) {
 	            var color = isSoft ? "\u001b[33m" : "\u001b[31m";
 	            console.warn(color + message + "\u001b[0m\n");
 	        };
-	    } else if (!util$$1.isNode && typeof (new Error().stack) === "string") {
+	    } else if (!util$$2.isNode && typeof (new Error().stack) === "string") {
 	        printWarning = function(message, isSoft) {
 	            console.warn("%c" + message,
 	                        isSoft ? "color: darkorange" : "color: red");
@@ -9937,10 +9895,10 @@
 	};
 
 	var catch_filter = function(NEXT_FILTER) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var getKeys = es5.keys;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 
 	function catchFilter(instances, cb, promise) {
 	    return function(e) {
@@ -9960,7 +9918,7 @@
 	                } else if (matchesPredicate) {
 	                    return tryCatch(cb).call(boundTo, e);
 	                }
-	            } else if (util$$1.isObject(e)) {
+	            } else if (util$$2.isObject(e)) {
 	                var keys = getKeys(item);
 	                for (var j = 0; j < keys.length; ++j) {
 	                    var key = keys[j];
@@ -9979,9 +9937,9 @@
 	};
 
 	var _finally = function(Promise, tryConvertToPromise, NEXT_FILTER) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var CancellationError = Promise.CancellationError;
-	var errorObj = util$$1.errorObj;
+	var errorObj = util$$2.errorObj;
 	var catchFilter = catch_filter(NEXT_FILTER);
 
 	function PassThroughHandlerContext(promise, type, handler) {
@@ -10102,12 +10060,12 @@
 	            j = 0, i;
 	        for (i = 0; i < len - 1; ++i) {
 	            var item = arguments[i];
-	            if (util$$1.isObject(item)) {
+	            if (util$$2.isObject(item)) {
 	                catchInstances[j++] = item;
 	            } else {
 	                return Promise.reject(new TypeError(
 	                    "tapCatch statement predicate: "
-	                    + "expecting an object but got " + util$$1.classString(item)
+	                    + "expecting an object but got " + util$$2.classString(item)
 	                ));
 	            }
 	        }
@@ -10176,12 +10134,12 @@
 
 	var method =
 	function(Promise, INTERNAL, tryConvertToPromise, apiRejection, debug) {
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
 
 	Promise.method = function (fn) {
 	    if (typeof fn !== "function") {
-	        throw new Promise.TypeError("expecting a function but got " + util$$1.classString(fn));
+	        throw new Promise.TypeError("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    return function () {
 	        var ret = new Promise(INTERNAL);
@@ -10198,7 +10156,7 @@
 
 	Promise.attempt = Promise["try"] = function (fn) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    var ret = new Promise(INTERNAL);
 	    ret._captureStackTrace();
@@ -10208,7 +10166,7 @@
 	        debug.deprecated("calling Promise.try with more than 1 argument");
 	        var arg = arguments[1];
 	        var ctx = arguments[2];
-	        value = util$$1.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
+	        value = util$$2.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
 	                                  : tryCatch(fn).call(ctx, arg);
 	    } else {
 	        value = tryCatch(fn)();
@@ -10221,7 +10179,7 @@
 	};
 
 	Promise.prototype._resolveFromSyncValue = function (value) {
-	    if (value === util$$1.errorObj) {
+	    if (value === util$$2.errorObj) {
 	        this._rejectCallback(value.e, false);
 	    } else {
 	        this._resolveCallback(value, true);
@@ -10297,9 +10255,9 @@
 	};
 
 	var cancel = function(Promise, PromiseArray, apiRejection, debug) {
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 	var async = Promise._async;
 
 	Promise.prototype["break"] = Promise.prototype.cancel = function() {
@@ -10387,7 +10345,7 @@
 	};
 
 	Promise.prototype._doInvokeOnCancel = function(onCancelCallback, internalOnly) {
-	    if (util$$1.isArray(onCancelCallback)) {
+	    if (util$$2.isArray(onCancelCallback)) {
 	        for (var i = 0; i < onCancelCallback.length; ++i) {
 	            this._doInvokeOnCancel(onCancelCallback[i], internalOnly);
 	        }
@@ -10577,10 +10535,10 @@
 	var join =
 	function(Promise, PromiseArray, tryConvertToPromise, INTERNAL, async,
 	         getDomain) {
-	var util$$1 = util;
-	var canEvaluate = util$$1.canEvaluate;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var util$$2 = util;
+	var canEvaluate = util$$2.canEvaluate;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 	var reject;
 
 	{
@@ -10724,7 +10682,7 @@
 	                    if (holder.asyncNeeded) {
 	                        var domain = getDomain();
 	                        if (domain !== null) {
-	                            holder.fn = util$$1.domainBind(domain, holder.fn);
+	                            holder.fn = util$$2.domainBind(domain, holder.fn);
 	                        }
 	                    }
 	                    ret._setAsyncGuaranteed();
@@ -10749,16 +10707,16 @@
 	                          INTERNAL,
 	                          debug) {
 	var getDomain = Promise._getDomain;
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 	var async = Promise._async;
 
 	function MappingPromiseArray(promises, fn, limit, _filter) {
 	    this.constructor$(promises);
 	    this._promise._captureStackTrace();
 	    var domain = getDomain();
-	    this._callback = domain === null ? fn : util$$1.domainBind(domain, fn);
+	    this._callback = domain === null ? fn : util$$2.domainBind(domain, fn);
 	    this._preservedValues = _filter === INTERNAL
 	        ? new Array(this.length())
 	        : null;
@@ -10767,7 +10725,7 @@
 	    this._queue = [];
 	    async.invoke(this._asyncInit, this, undefined);
 	}
-	util$$1.inherits(MappingPromiseArray, PromiseArray);
+	util$$2.inherits(MappingPromiseArray, PromiseArray);
 
 	MappingPromiseArray.prototype._asyncInit = function() {
 	    this._init$(undefined, -2);
@@ -10876,7 +10834,7 @@
 
 	function map(promises, fn, options, _filter) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	    }
 
 	    var limit = 0;
@@ -10885,13 +10843,13 @@
 	            if (typeof options.concurrency !== "number") {
 	                return Promise.reject(
 	                    new TypeError("'concurrency' must be a number but it is " +
-	                                    util$$1.classString(options.concurrency)));
+	                                    util$$2.classString(options.concurrency)));
 	            }
 	            limit = options.concurrency;
 	        } else {
 	            return Promise.reject(new TypeError(
 	                            "options argument must be an object but it is " +
-	                             util$$1.classString(options)));
+	                             util$$2.classString(options)));
 	        }
 	    }
 	    limit = typeof limit === "number" &&
@@ -10918,9 +10876,9 @@
 	}
 
 	var call_get = function(Promise) {
-	var util$$1 = util;
-	var canEvaluate = util$$1.canEvaluate;
-	var isIdentifier = util$$1.isIdentifier;
+	var util$$2 = util;
+	var canEvaluate = util$$2.canEvaluate;
+	var isIdentifier = util$$2.isIdentifier;
 
 	var getMethodCaller;
 	var getGetter;
@@ -10981,8 +10939,8 @@
 	    var fn;
 	    if (obj != null) fn = obj[methodName];
 	    if (typeof fn !== "function") {
-	        var message = "Object " + util$$1.classString(obj) + " has no method '" +
-	            util$$1.toString(methodName) + "'";
+	        var message = "Object " + util$$2.classString(obj) + " has no method '" +
+	            util$$2.toString(methodName) + "'";
 	        throw new Promise.TypeError(message);
 	    }
 	    return fn;
@@ -11035,11 +10993,11 @@
 
 	var using = function (Promise, apiRejection, tryConvertToPromise,
 	    createContext, INTERNAL, debug) {
-	    var util$$1 = util;
+	    var util$$2 = util;
 	    var TypeError = errors.TypeError;
 	    var inherits = util.inherits;
-	    var errorObj = util$$1.errorObj;
-	    var tryCatch = util$$1.tryCatch;
+	    var errorObj = util$$2.errorObj;
+	    var tryCatch = util$$2.tryCatch;
 	    var NULL = {};
 
 	    function thrower(e) {
@@ -11162,7 +11120,7 @@
 	                        "you must pass at least 2 arguments to Promise.using");
 	        var fn = arguments[len - 1];
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	        }
 	        var input;
 	        var spreadArgs = true;
@@ -11260,7 +11218,7 @@
 	};
 
 	var timers$1 = function(Promise, INTERNAL, debug) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var TimeoutError = Promise.TimeoutError;
 
 	function HandleWrapper(handle)  {
@@ -11308,7 +11266,7 @@
 	    } else {
 	        err = new TimeoutError(message);
 	    }
-	    util$$1.markAsOriginatingFromRejection(err);
+	    util$$2.markAsOriginatingFromRejection(err);
 	    promise._attachExtraTrace(err);
 	    promise._reject(err);
 
@@ -11358,11 +11316,11 @@
 	                          tryConvertToPromise,
 	                          Proxyable,
 	                          debug) {
-	var errors$$1 = errors;
-	var TypeError = errors$$1.TypeError;
-	var util$$1 = util;
-	var errorObj = util$$1.errorObj;
-	var tryCatch = util$$1.tryCatch;
+	var errors$$2 = errors;
+	var TypeError = errors$$2.TypeError;
+	var util$$2 = util;
+	var errorObj = util$$2.errorObj;
+	var tryCatch = util$$2.tryCatch;
 	var yieldHandlers = [];
 
 	function promiseFromYieldHandler(value, yieldHandlers, traceParent) {
@@ -11405,7 +11363,7 @@
 	    this._yieldedPromise = null;
 	    this._cancellationPhase = false;
 	}
-	util$$1.inherits(PromiseSpawn, Proxyable);
+	util$$2.inherits(PromiseSpawn, Proxyable);
 
 	PromiseSpawn.prototype._isResolved = function() {
 	    return this._promise === null;
@@ -11558,7 +11516,7 @@
 
 	Promise.coroutine.addYieldHandler = function(fn) {
 	    if (typeof fn !== "function") {
-	        throw new TypeError("expecting a function but got " + util$$1.classString(fn));
+	        throw new TypeError("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    yieldHandlers.push(fn);
 	};
@@ -11576,14 +11534,14 @@
 	};
 
 	var nodeify = function(Promise) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var async = Promise._async;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 
 	function spreadAdapter(val, nodeback) {
 	    var promise = this;
-	    if (!util$$1.isArray(val)) return successAdapter.call(promise, val, nodeback);
+	    if (!util$$2.isArray(val)) return successAdapter.call(promise, val, nodeback);
 	    var ret =
 	        tryCatch(nodeback).apply(promise._boundValue(), [null].concat(val));
 	    if (ret === errorObj) {
@@ -11635,11 +11593,11 @@
 
 	var promisify = function(Promise, INTERNAL) {
 	var THIS = {};
-	var util$$1 = util;
+	var util$$2 = util;
 	var nodebackForPromise = nodeback;
-	var withAppended = util$$1.withAppended;
-	var maybeWrapAsError = util$$1.maybeWrapAsError;
-	var canEvaluate = util$$1.canEvaluate;
+	var withAppended = util$$2.withAppended;
+	var maybeWrapAsError = util$$2.maybeWrapAsError;
+	var canEvaluate = util$$2.canEvaluate;
 	var TypeError = errors.TypeError;
 	var defaultSuffix = "Async";
 	var defaultPromisified = {__isPromisified__: true};
@@ -11655,7 +11613,7 @@
 	var noCopyPropsPattern = new RegExp("^(?:" + noCopyProps.join("|") + ")$");
 
 	var defaultFilter = function(name) {
-	    return util$$1.isIdentifier(name) &&
+	    return util$$2.isIdentifier(name) &&
 	        name.charAt(0) !== "_" &&
 	        name !== "constructor";
 	};
@@ -11674,7 +11632,7 @@
 	}
 
 	function hasPromisified(obj, key, suffix) {
-	    var val = util$$1.getDataPropertyOrDefault(obj, key + suffix,
+	    var val = util$$2.getDataPropertyOrDefault(obj, key + suffix,
 	                                            defaultPromisified);
 	    return val ? isPromisified(val) : false;
 	}
@@ -11694,7 +11652,7 @@
 	}
 
 	function promisifiableMethods(obj, suffix, suffixRegexp, filter) {
-	    var keys = util$$1.inheritedDataKeys(obj);
+	    var keys = util$$2.inheritedDataKeys(obj);
 	    var ret = [];
 	    for (var i = 0; i < keys.length; ++i) {
 	        var key = keys[i];
@@ -11731,11 +11689,11 @@
 	};
 
 	var argumentSequence = function(argumentCount) {
-	    return util$$1.filledRange(argumentCount, "_arg", "");
+	    return util$$2.filledRange(argumentCount, "_arg", "");
 	};
 
 	var parameterDeclaration = function(parameterCount) {
-	    return util$$1.filledRange(
+	    return util$$2.filledRange(
 	        Math.max(parameterCount, 3), "_arg", "");
 	};
 
@@ -11832,9 +11790,9 @@
 	                    withAppended,
 	                    maybeWrapAsError,
 	                    nodebackForPromise,
-	                    util$$1.tryCatch,
-	                    util$$1.errorObj,
-	                    util$$1.notEnumerableProp,
+	                    util$$2.tryCatch,
+	                    util$$2.errorObj,
+	                    util$$2.notEnumerableProp,
 	                    INTERNAL);
 	};
 	}
@@ -11861,7 +11819,7 @@
 	        if (!promise._isFateSealed()) promise._setAsyncGuaranteed();
 	        return promise;
 	    }
-	    util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
+	    util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
 	    return promisified;
 	}
 
@@ -11886,11 +11844,11 @@
 	                return makeNodePromisified(key, THIS, key,
 	                                           fn, suffix, multiArgs);
 	            });
-	            util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
+	            util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
 	            obj[promisifiedKey] = promisified;
 	        }
 	    }
-	    util$$1.toFastProperties(obj);
+	    util$$2.toFastProperties(obj);
 	    return obj;
 	}
 
@@ -11901,7 +11859,7 @@
 
 	Promise.promisify = function (fn, options) {
 	    if (typeof fn !== "function") {
-	        throw new TypeError("expecting a function but got " + util$$1.classString(fn));
+	        throw new TypeError("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    if (isPromisified(fn)) {
 	        return fn;
@@ -11910,7 +11868,7 @@
 	    var receiver = options.context === undefined ? THIS : options.context;
 	    var multiArgs = !!options.multiArgs;
 	    var ret = promisify(fn, receiver, multiArgs);
-	    util$$1.copyDescriptors(fn, ret, propsFilter);
+	    util$$2.copyDescriptors(fn, ret, propsFilter);
 	    return ret;
 	};
 
@@ -11927,15 +11885,15 @@
 	    var promisifier = options.promisifier;
 	    if (typeof promisifier !== "function") promisifier = makeNodePromisified;
 
-	    if (!util$$1.isIdentifier(suffix)) {
+	    if (!util$$2.isIdentifier(suffix)) {
 	        throw new RangeError("suffix must be a valid identifier\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
 	    }
 
-	    var keys = util$$1.inheritedDataKeys(target);
+	    var keys = util$$2.inheritedDataKeys(target);
 	    for (var i = 0; i < keys.length; ++i) {
 	        var value = target[keys[i]];
 	        if (keys[i] !== "constructor" &&
-	            util$$1.isClass(value)) {
+	            util$$2.isClass(value)) {
 	            promisifyAll(value.prototype, suffix, filter, promisifier,
 	                multiArgs);
 	            promisifyAll(value, suffix, filter, promisifier, multiArgs);
@@ -11948,9 +11906,9 @@
 
 	var props = function(
 	    Promise, PromiseArray, tryConvertToPromise, apiRejection) {
-	var util$$1 = util;
-	var isObject = util$$1.isObject;
-	var es5$$1 = es5;
+	var util$$2 = util;
+	var isObject = util$$2.isObject;
+	var es5$$2 = es5;
 	var Es6Map;
 	if (typeof Map === "function") Es6Map = Map;
 
@@ -11991,7 +11949,7 @@
 	        entries = mapToEntries(obj);
 	        isMap = true;
 	    } else {
-	        var keys = es5$$1.keys(obj);
+	        var keys = es5$$2.keys(obj);
 	        var len = keys.length;
 	        entries = new Array(len * 2);
 	        for (var i = 0; i < len; ++i) {
@@ -12004,7 +11962,7 @@
 	    this._isMap = isMap;
 	    this._init$(undefined, isMap ? -6 : -3);
 	}
-	util$$1.inherits(PropertiesPromiseArray, PromiseArray);
+	util$$2.inherits(PropertiesPromiseArray, PromiseArray);
 
 	PropertiesPromiseArray.prototype._init = function () {};
 
@@ -12066,7 +12024,7 @@
 
 	var race = function(
 	    Promise, INTERNAL, tryConvertToPromise, apiRejection) {
-	var util$$1 = util;
+	var util$$2 = util;
 
 	var raceLater = function (promise) {
 	    return promise.then(function(array) {
@@ -12080,9 +12038,9 @@
 	    if (maybePromise instanceof Promise) {
 	        return raceLater(maybePromise);
 	    } else {
-	        promises = util$$1.asArray(promises);
+	        promises = util$$2.asArray(promises);
 	        if (promises === null)
-	            return apiRejection("expecting an array or an iterable object but got " + util$$1.classString(promises));
+	            return apiRejection("expecting an array or an iterable object but got " + util$$2.classString(promises));
 	    }
 
 	    var ret = new Promise(INTERNAL);
@@ -12120,13 +12078,13 @@
 	                          INTERNAL,
 	                          debug) {
 	var getDomain = Promise._getDomain;
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
 
 	function ReductionPromiseArray(promises, fn, initialValue, _each) {
 	    this.constructor$(promises);
 	    var domain = getDomain();
-	    this._fn = domain === null ? fn : util$$1.domainBind(domain, fn);
+	    this._fn = domain === null ? fn : util$$2.domainBind(domain, fn);
 	    if (initialValue !== undefined) {
 	        initialValue = Promise.resolve(initialValue);
 	        initialValue._attachCancellationCallback(this);
@@ -12143,7 +12101,7 @@
 	    this._promise._captureStackTrace();
 	    this._init$(undefined, -5);
 	}
-	util$$1.inherits(ReductionPromiseArray, PromiseArray);
+	util$$2.inherits(ReductionPromiseArray, PromiseArray);
 
 	ReductionPromiseArray.prototype._gotAccum = function(accum) {
 	    if (this._eachValues !== undefined && 
@@ -12241,7 +12199,7 @@
 
 	function reduce(promises, fn, initialValue, _each) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    var array = new ReductionPromiseArray(promises, fn, initialValue, _each);
 	    return array.promise();
@@ -12288,12 +12246,12 @@
 	var settle =
 	    function(Promise, PromiseArray, debug) {
 	var PromiseInspection = Promise.PromiseInspection;
-	var util$$1 = util;
+	var util$$2 = util;
 
 	function SettledPromiseArray(values) {
 	    this.constructor$(values);
 	}
-	util$$1.inherits(SettledPromiseArray, PromiseArray);
+	util$$2.inherits(SettledPromiseArray, PromiseArray);
 
 	SettledPromiseArray.prototype._promiseResolved = function (index, inspection) {
 	    this._values[index] = inspection;
@@ -12330,10 +12288,10 @@
 
 	var some =
 	function(Promise, PromiseArray, apiRejection) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var RangeError = errors.RangeError;
 	var AggregateError = errors.AggregateError;
-	var isArray = util$$1.isArray;
+	var isArray = util$$2.isArray;
 	var CANCELLATION = {};
 
 
@@ -12343,7 +12301,7 @@
 	    this._unwrap = false;
 	    this._initialized = false;
 	}
-	util$$1.inherits(SomePromiseArray, PromiseArray);
+	util$$2.inherits(SomePromiseArray, PromiseArray);
 
 	SomePromiseArray.prototype._init = function () {
 	    if (!this._initialized) {
@@ -13327,685 +13285,1019 @@
 	bluebird$2.noConflict = noConflict;
 	var bluebird_1 = bluebird$2;
 
-	var PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+	var DDS_MAGIC = 0x20534444;
 
-	/**
-	 * Generate an UUID as specified in RFC4122
-	 */
+	var DDSD_MIPMAPCOUNT = 0x20000;
 
-	var uuid = {};
+	var DDSCAPS2_CUBEMAP = 0x200;
 
-	uuid.generate = function generateUuid () {
-	  var d = Date.now();
-	  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-	    var r = (d + Math.random() * 16) % 16 | 0;
-	    d = Math.floor(d / 16);
-	    return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-	  });
-	  return uuid
-	};
-
-	/**
-	 * Validates UUID as specified in RFC4122
-	 */
-
-	uuid.validate = function validateUuid (str) {
-	  if (!str || typeof str !== "string") return false
-	  return PATTERN.test(str)
-	};
-
-	// main
-
-	function JsonRpc2Client () {
-
-	  this._openRequests = {}; // open request cache (indexed by request id)
-	  this._closedRequestIds = [];
-
-	}
-
-	JsonRpc2Client.prototype = {
-
-	  // private methods
-
-	  _handleError: function (message, additionalInfo) {
-	    console.error(message, additionalInfo);
-	  },
-
-	  _closeRequest: function(id) {
-	    // remove request from open request cache
-	    delete this._openRequests[ id ];
-	    // remember closed request
-	    this._closedRequestIds.push(id);
-	  },
-
-	  // public methods
-
-	  createRequest: function (methodName, params) {
-
-	    var self = this;
-
-	    var id = uuid.generate();
-	    var timestamp = Date.now();
-	    var message = {
-	      jsonrpc: '2.0',
-	      method: methodName,
-	      params: params,
-	      id: id
-	    };
-	    var request = {
-	      id: id,
-	      message: message,
-	      timestamp: timestamp
-	    };
-	    var promise = new bluebird_1(function(resolve, reject){
-	      request._resolve = resolve;
-	      request._reject = reject;
-	      request.cancel = reject;
-	    });
-	    request.promise = promise;
-
-	    // remember open request
-	    self._openRequests[ id ] = request;
-
-	    // handle closing of request independent of promise fate
-	    promise.finally(function(){
-	      self._closeRequest(id);
-	    }).catch(function(){
-	      self._closeRequest(id);
-	    });
-
-	    // return request
-	    return request
-
-	  },
-
-	  handleResponse: function (response) {
-
-	    var id = response.id;
-	    var request = this._openRequests[ id ];
-
-	    if (id === undefined) {
-	      // not valid JSON-RPC2 response
-	      if (runtime.isDebugMode) console.error('Incoming message is not a valid JSON-RPC2 response (ID should be present as string, number or null).', response);
-
-	    } else if (request) {
-
-	      // response to an open request
-	      if (response.error) {
-	        if (response.error.message) {
-	          // valid JSON-RPC2 error message. log only in debug mode
-	          if (runtime.isDebugMode) console.error('API error response: "'+response.error.message+'"\nResponse JSON-RPC2 ID: '+id+'\nOriginal JSON-RPC2 request: '+JSON.stringify(request.message, null, 2));
-	          request._reject(response.error.message);
-	        } else {
-	          // non-standard (unexpected) error: log everything into console
-	          console.error('API error (not JSON-RPC2 standard): '+JSON.stringify(response)+'\nOriginal JSON-RPC2 request: '+JSON.stringify(request.message, null, 2));
-	          request._reject('Undefined Error. Check console for details.');
-	        }
-	      } else {
-	        // success
-	        request._resolve(response.result);
-	      }
-
-	    } else if (this._closedRequestIds.indexOf(id) !== -1) {
-	      // Request has been closed already or timed out
-	      if (runtime.isDebugMode) console.error('JSON-RPC2 request has already been responded, canceled or timed out.', id);
-
-	    } else if (id === null) {
-	      // id = null (valid according to JSON-RPC2 specs. but can not be matched with request. should be avoided!)
-	      if (runtime.isDebugMode) console.error('Incoming JSON-RPC2 response has ID = null.', response);
-
-	    } else {
-	      // unknown id
-	      if (runtime.isDebugMode) console.error('Incoming JSON-RPC2 response has an unknown ID.', id);
-
-	    }
-
-	  }
-
-	};
-
-	// import cache from './common/promise-cache.js'
+	var DDPF_FOURCC = 0x4;
 
 	// internals
-	var rpcClient = new JsonRpc2Client();
 
-	// main
+	var FOURCC_DXT1 = fourCCToInt32("DXT1");
+	var FOURCC_DXT3 = fourCCToInt32("DXT3");
+	var FOURCC_DXT5 = fourCCToInt32("DXT5");
 
-	// TODO: add api.onMethod('methodName')
-	// TODO: add api.onNotification('methodName')
+	// functions
 
-	function callService (methodName, params, options) {
+	function fourCCToInt32 (value) {
 
-	  // API
-	  params = params || {};
-	  options = options || {};
-	  var secretApiKey = options.secretApiKey || configs.secretApiKey;
-	  var publishableApiKey = options.publishableApiKey || configs.publishableApiKey;
-
-	  // try cache
-	  // var cacheKey
-	  // if (useCache) {
-	  //   cacheKey = JSON.stringify([methodName, params, options])
-	  //   var promiseFromCache = cache.get(cacheKey)
-	  //   if (promiseFromCache) {
-	  //     return promiseFromCache
-	  //   }
-	  // }
-
-	  // internals
-	  var rpcRequest = rpcClient.createRequest(methodName, params);
-
-	  sendHttpRequest(rpcRequest, secretApiKey, publishableApiKey);
-
-	  // add to cache
-	  // if (useCache) {
-	  //   cache.add(cacheKey, rpcRequest.promise)
-	  // }
-
-	  return rpcRequest.promise
+	  return value.charCodeAt(0) +
+	    (value.charCodeAt(1) << 8) +
+	    (value.charCodeAt(2) << 16) +
+	    (value.charCodeAt(3) << 24);
 
 	}
 
-	function sendHttpRequest (rpcRequest, secretApiKey, publishableApiKey) {
+	function int32ToFourCC (value) {
 
-	  var isTrustedOrigin = ( runtime.isBrowser && window.location.href.match(/^[^\:]+:\/\/([^\.]+\.)?(3d\.io|archilogic.com|localhost)(:\d+)?\//) );
-	  var headers = { 'Content-Type': 'application/json' };
-	  if (secretApiKey) headers['X-Secret-Key'] = secretApiKey;
-	  if (publishableApiKey) headers['X-Publishable-Key'] = publishableApiKey;
+	  return String.fromCharCode(
+	    value & 0xff,
+	    (value >> 8) & 0xff,
+	    (value >> 16) & 0xff,
+	    (value >> 24) & 0xff
+	  );
+	}
 
-	  // send request
-	  fetch$1(configs.servicesUrl, {
-	    body: JSON.stringify(rpcRequest.message),
-	    method: 'POST',
-	    headers: headers,
-	    credentials: (isTrustedOrigin ? 'include' : 'omit' ) //TODO: Find a way to allow this more broadly yet safely
-	  }).then(function (response) {
-	    return response.text().then(function onParsingSuccess(body){
-	      // try to parse JSON in any case because valid JSON-RPC2 errors do have error status too
-	      var message;
-	      try {
-	        message = JSON.parse(body);
-	      } catch (error) {
-	        return bluebird_1.reject('JSON parsing Error: "'+error+'" Response body: "'+body+'"')
-	      }
-	      // rpc client will handle JSON-RPC2 success messages and errors and resolve or reject prcRequest promise accordingly
-	      rpcClient.handleResponse(message);
-	    }).catch(function onParsingError(error){
-	      var errorString = '';
-	      if (error instanceof Error || typeof error === 'string') {
-	        errorString = error;
+	function loadARGBMip (buffer, dataOffset, width, height) {
+	  var dataLength = width * height * 4;
+	  var srcBuffer = new Uint8Array(buffer, dataOffset, dataLength);
+	  var byteArray = new Uint8Array(dataLength);
+	  var dst = 0;
+	  var src = 0;
+	  for (var y = 0; y < height; y++) {
+	    for (var x = 0; x < width; x++) {
+	      var b = srcBuffer[ src ];
+	      src++;
+	      var g = srcBuffer[ src ];
+	      src++;
+	      var r = srcBuffer[ src ];
+	      src++;
+	      var a = srcBuffer[ src ];
+	      src++;
+	      byteArray[ dst ] = r;
+	      dst++;  //r
+	      byteArray[ dst ] = g;
+	      dst++;  //g
+	      byteArray[ dst ] = b;
+	      dst++;  //b
+	      byteArray[ dst ] = a;
+	      dst++;  //a
+	    }
+	  }
+	  return byteArray;
+	}
+
+	function parse (buffer, loadMipmaps) {
+
+	  var dds = { mipmaps: [], width: 0, height: 0, format: null, mipmapCount: 1 };
+
+	  var headerLengthInt = 31; // The header length in 32 bit ints
+
+	  // Offsets into the header array
+
+	  var off_magic = 0;
+
+	  var off_size = 1;
+	  var off_flags = 2;
+	  var off_height = 3;
+	  var off_width = 4;
+
+	  var off_mipmapCount = 7;
+
+	  var off_pfFlags = 20;
+	  var off_pfFourCC = 21;
+	  var off_RGBBitCount = 22;
+	  var off_RBitMask = 23;
+	  var off_GBitMask = 24;
+	  var off_BBitMask = 25;
+	  var off_ABitMask = 26;
+
+	  var off_caps = 27;
+	  var off_caps2 = 28;
+	  var off_caps3 = 29;
+	  var off_caps4 = 30;
+
+	  // Parse header
+
+	  var header = new Int32Array(buffer, 0, headerLengthInt);
+
+	  if (header[ off_magic ] !== DDS_MAGIC) {
+
+	    console.error('THREE.DDSLoader.parse: Invalid magic number in DDS header.');
+	    return dds;
+
+	  }
+
+	  if (!header[ off_pfFlags ] & DDPF_FOURCC) {
+
+	    console.error('THREE.DDSLoader.parse: Unsupported format, must contain a FourCC code.');
+	    return dds;
+
+	  }
+
+	  var blockBytes;
+
+	  var fourCC = header[ off_pfFourCC ];
+
+	  var isRGBAUncompressed = false;
+
+	  switch (fourCC) {
+
+	    case FOURCC_DXT1:
+
+	      blockBytes = 8;
+	      dds.format = THREE.RGB_S3TC_DXT1_Format;
+	      break;
+
+	    case FOURCC_DXT3:
+
+	      blockBytes = 16;
+	      dds.format = THREE.RGBA_S3TC_DXT3_Format;
+	      break;
+
+	    case FOURCC_DXT5:
+
+	      blockBytes = 16;
+	      dds.format = THREE.RGBA_S3TC_DXT5_Format;
+	      break;
+
+	    default:
+
+	      if (header[ off_RGBBitCount ] == 32
+	        && header[ off_RBitMask ] & 0xff0000
+	        && header[ off_GBitMask ] & 0xff00
+	        && header[ off_BBitMask ] & 0xff
+	        && header[ off_ABitMask ] & 0xff000000) {
+	        isRGBAUncompressed = true;
+	        blockBytes = 64;
+	        dds.format = THREE.RGBAFormat;
 	      } else {
+	        console.error('THREE.DDSLoader.parse: Unsupported FourCC code ', int32ToFourCC(fourCC));
+	        return dds;
+	      }
+	  }
+
+	  dds.mipmapCount = 1;
+
+	  if (header[ off_flags ] & DDSD_MIPMAPCOUNT && loadMipmaps !== false) {
+
+	    dds.mipmapCount = Math.max(1, header[ off_mipmapCount ]);
+
+	  }
+
+	  //TODO: Verify that all faces of the cubemap are present with DDSCAPS2_CUBEMAP_POSITIVEX, etc.
+
+	  dds.isCubemap = header[ off_caps2 ] & DDSCAPS2_CUBEMAP ? true : false;
+
+	  dds.width = header[ off_width ];
+	  dds.height = header[ off_height ];
+
+	  var dataOffset = header[ off_size ] + 4;
+
+	  // Extract mipmaps buffers
+
+	  var width = dds.width;
+	  var height = dds.height;
+
+	  var faces = dds.isCubemap ? 6 : 1;
+
+	  for (var face = 0; face < faces; face++) {
+
+	    for (var i = 0; i < dds.mipmapCount; i++) {
+
+	      var byteArray, dataLength;
+	      if (isRGBAUncompressed) {
+	        byteArray = loadARGBMip(buffer, dataOffset, width, height);
+	        dataLength = byteArray.length;
+	      } else {
+	        dataLength = Math.max(4, width) / 4 * Math.max(4, height) / 4 * blockBytes;
+	        byteArray = new Uint8Array(buffer, dataOffset, dataLength);
+	      }
+
+	      var mipmap = { "data": byteArray, "width": width, "height": height };
+	      dds.mipmaps.push(mipmap);
+
+	      dataOffset += dataLength;
+
+	      width = Math.max(width * 0.5, 1);
+	      height = Math.max(height * 0.5, 1);
+
+	    }
+
+	    width = dds.width;
+	    height = dds.height;
+
+	  }
+
+	  return dds;
+
+	}
+
+	function log2 (x) {
+	  return Math.log(x) / Math.LN2
+	}
+
+	// load function
+
+	function fetchDdsTexture (url) {
+	  return new bluebird_1(function (resolve, reject) {
+
+	    var xhr = new XMLHttpRequest();
+
+	    xhr.onload = function (event) {
+
+	      if (xhr.status >= 200 && xhr.status < 300) {
+
+	        var buffer = xhr.response,
+	          dds;
+
+	        // parse data
 	        try {
-	          errorString = JSON.stringify(error, null, 2);
+	          dds = parse(buffer, true);
 	        } catch (e) {
-	          errorString = error && error.toString ? error.toString() : '';
-	        }
-	      }
-	      // response is not a valid json error message. (most likely a network error)
-	      var errorMessage = 'API request to '+configs.servicesUrl+' failed: '+response.status+': '+response.statusText+'\n'+errorString+'\nOriginal JSON-RPC2 request to 3d.io: '+JSON.stringify(rpcRequest.message, null, 2);
-	      rpcRequest.cancel(errorMessage);
-	    })
-	  }).catch(function(error){
-	    rpcRequest.cancel('Error sending request to 3d.io API: "'+(error.code || JSON.stringify(error) )+'"');
-	  });
-
-	}
-
-	var data3dComponent = {
-
-	  schema: {
-	    url: {
-	      type: 'string',
-	      default: ''
-	    },
-	    key: {
-	      type: 'string',
-	      default: ''
-	    },
-	    scene: {
-	      type: 'string',
-	      default: ''
-	    },
-	    lightMapIntensity: {
-	      type: 'float',
-	      default: 1.2,
-	      parse: function (value) {
-	        if (parseFloat(value) >= 0.0) {
-	          return parseFloat(value)
-	        }
-	        return -100.0 // = fallback to value from data3d file
-	      }
-	    },
-	    lightMapExposure: {
-	      type: 'float',
-	      default: 0.6,
-	      parse: function (value) {
-	        if (parseFloat(value)) {
-	          return parseFloat(value)
-	        }
-	        return -100.0 // = fallback to value from data3d file
-	      }
-	    }
-	  },
-
-	  init: function () {
-	  },
-
-	  update: function () {
-	    var this_ = this;
-	    var url = this_.data.url || this_.data.URL;
-	    var key = this_.data.key || this_.data.KEY;
-	    var scene = this_.data.scene;
-	    var lightMapIntensity = this_.data.lightMapIntensity;
-	    var lightMapExposure = this_.data.lightMapExposure;
-
-	    if(scene !== '') {
-	      callService('Model.read', {arguments: { resourceId: scene}}).then(function onResult(result) {
-	        var level = result.modelStructure.children.filter(function(item) { return item.type === 'level' })[0];
-	        if (!level) {
-	          console.error('Unable to load data3d from scene ' + scene + ': The scene does not contain data in the expected format. Error was: No level found.');
+	          var message = 'Error Loading DDS Texture\n' + url + '\n' + e.name + ': ' + e.message;
+	          console.error(message);
+	          reject(message);
 	          return
 	        }
-	        if (!level.bakedModelUrl) {
-	          console.error('Unable to load data3d from scene ' + scene + ': The scene is not baked. Enable realistic lighting on this scene. Error was: No baked data3d present.');
+
+	        // See OpenGL ES 2.0.25 p. 81 paragraph 1 for the number of required mipmaps.
+	        var mipmapCount = log2(Math.max(dds.width, dds.height)) + 1;
+	        if (dds.mipmapCount != mipmapCount) {
+	          console.error('Reading DDS texture failed: ' + url + '\nmipmaps counted: ' + dds.mipmapCount + ', should be: ' + mipmapCount +
+	            '\nPlease make sure you have mipmap generation enabled when creating DDS textures from images.');
+	          reject('Error parsing DDS. Wrong mipmaps count. ' + url);
 	          return
 	        }
-	        var bakedModel = level.bakedModelUrl;
-	        if (bakedModel.split('.')[bakedModel.split('.').length - 1] !== 'buffer') {
-	          console.error('Unable to load data3d from scene ' + scene + ': The scene is not in Data3D format. Disable and enable realistic lighting on this scene. Error was: No buffer3d found.');
-	          return
-	        }
-	        this_.data.key = bakedModel;
-	        key = bakedModel;
-	        console.log('Loading scene', key);
-	        this_.data.scene = '';
-	        this_.update();
-	      }).catch(function onApiError(err) {
-	        console.error('Unable to load data3d from scene ' + scene + ': The API returned an error. Error was:', err);
-	      });
-	    }
 
-	    // check params
-	    if ((!url || url === '') && (!key || key === '')) return
+	        // create compressed texture
+	        var texture = new THREE.CompressedTexture();
 
-	    // remove old mesh
-	    this_.remove();
+	        texture.format = dds.format;
+	        texture.mipmaps = dds.mipmaps;
+	        texture.image.width = dds.width;
+	        texture.image.height = dds.height;
+	        texture.image.src = url;
+	        texture.sourceFile = url;
+	        texture.url = url;
+	        texture.bufferByteLength = buffer.byteLength;
 
-	    // create new one
-	    this_.mesh = new THREE.Object3D();
-	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
-	    this_.el.data3dView = this_.data3dView;
+	        // gl.generateMipmap fails for compressed textures
+	        // mipmaps must be embedded in the DDS file
+	        // or texture filters must not use mipmapping
+	        texture.generateMipmaps = false;
 
-	    // load 3d file
-	    Promise.resolve().then(function(){
-	      if (key) {
-	        return io3d.storage.get(key, { loadingQueuePrefix: 'architecture' })
+	        resolve(texture);
+
 	      } else {
-	        return io3d.utils.data3d.load(url, { loadingQueuePrefix: 'architecture' })
+	        reject({
+	          message: 'Http Request error',
+	          url: url,
+	          status: xhr.status,
+	          headers: xhr.getAllResponseHeaders(),
+	          event: event
+	        });
 	      }
-	    }).then(function (data3d) {
-	      this_.el.data3d = data3d;
-	      // update view
-	      this_.data3dView.set(data3d, {
-	        lightMapIntensity: lightMapIntensity,
-	        lightMapExposure: lightMapExposure,
-	        loadingQueuePrefix: 'architecture'
+
+	    };
+	    xhr.onerror = function (event) {
+	      reject({
+	        message: 'Http Request error',
+	        url: url,
+	        status: xhr.status,
+	        headers: xhr.getAllResponseHeaders(),
+	        event: event
 	      });
-	      this_.el.setObject3D('mesh', this_.mesh);
-	      // emit event
-	      this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
-	    });
-	  },
+	    };
 
-	  remove: function () {
-	    if (this.data3dView) {
-	      this.data3dView.destroy();
-	      this.data3dView = null;
-	      this.el.data3dView = null;
-	    }
-	    if (this.mesh) {
-	      this.el.removeObject3D('mesh');
-	      this.mesh = null;
-	    }
-	  }
+	    xhr.open('GET', url, true);
+	    xhr.crossOrigin = "Anonymous";
+	    xhr.responseType = 'arraybuffer';
+	    xhr.send(null);
 
-	};
-
-	// API
-
-	var clone = cloneData3d$1;
-	clone.withPayload = cloneData3dWithPayload;
-	clone.meshes = cloneMeshes;
-	clone.meshe = cloneSingleMesh;
-	clone.materials = cloneMaterials;
-	clone.material = cloneSingleMaterial;
-
-	// methods
-
-	function cloneData3d$1 (_data3d, options) {
-
-	  var clone = {};
-
-	  clone.meshes = cloneMeshes(_data3d.meshes, options);
-	  clone.materials = cloneMaterials(_data3d.materials);
-
-	  if (_data3d.alternativeMaterialsByMeshKey) {
-	    clone.alternativeMaterialsByMeshKey = JSON.parse(JSON.stringify(_data3d.alternativeMaterialsByMeshKey));
-	  }
-	  if (_data3d._params) {
-	    clone._params = _data3d._params;
-	  }
-	  if (_data3d.position) {
-	    clone.position = _data3d.position.slice(0);
-	  }
-	  if (_data3d.rotDeg) {
-	    clone.rotDeg = _data3d.rotDeg.slice(0);
-	  }
-	  if (_data3d.rotRad) {
-	    clone.rotRad = _data3d.rotRad.slice(0);
-	  }
-	  if (_data3d.children) {
-	    clone.children = _data3d.children.map(function (childData3d) {
-	      return cloneData3d$1(childData3d, options)
-	    });
-	  }
-
-	  return clone
-	}
-
-	function cloneData3dWithPayload (data3d) {
-	  // payload = heavy arrays containing geometry & uv data
-	  return cloneData3d$1(data3d, {
-	    clonePositions: true,
-	    cloneNormals: true,
-	    cloneUvs: true,
-	    cloneUvsLightmap: true
 	  })
 	}
 
-	function cloneSingleMesh (mesh, options) {
-	  return cloneMeshes({x: mesh}, options).x
+	// internals
+
+	// graphic card max supported texture size
+	var MAX_TEXTURE_SIZE = runtime.has.webGl ? runtime.webGl.maxTextureSize || 2048 : 2048;
+
+	// helpers
+
+	function checkPowerOfTwo (value) {
+	  return ( value & ( value - 1 ) ) === 0 && value !== 0
 	}
 
-	function cloneMeshes (_meshes, options) {
-
-	  if (!_meshes) {
-	    return {}
+	function nearestPowerOfTwoOrMaxTextureSize (n) {
+	  // max texture size supported by vga
+	  if (n > MAX_TEXTURE_SIZE) {
+	    return MAX_TEXTURE_SIZE
 	  }
-
-	  // API
-	  options = options || {};
-	  var clonePositions = !!options.clonePositions;
-	  var cloneNormals = !!options.cloneNormals;
-	  var cloneUvs = !!options.cloneUvs;
-	  var cloneUvsLightmap = !!options.cloneUvsLightmap;
-
-	  // internals
-	  var
-	    meshId, _mesh, mesh,
-	    meshKeys = Object.keys(_meshes),
-	    meshes = {};
-
-	  for (var i = 0, l = meshKeys.length; i < l; i++) {
-
-	    meshId = meshKeys[i];
-	    mesh = {};
-	    _mesh = _meshes[meshId];
-
-	    // vertices
-	    if (_mesh.positions) {
-	      if (clonePositions && (_mesh.positions instanceof Array || _mesh.positions instanceof Float32Array)) {
-	        mesh.positions = _mesh.positions.slice(0);
-	      } else {
-	        mesh.positions = _mesh.positions;
-	      }
-	    }
-
-	    // normals
-	    if (_mesh.normals) {
-	      if (cloneNormals && (_mesh.normals instanceof Array || _mesh.normals instanceof Float32Array)) {
-	        mesh.normals = _mesh.normals.slice(0);
-	      } else {
-	        mesh.normals = _mesh.normals;
-	      }
-	    }
-
-	    // uvs
-	    if (_mesh.uvs) {
-	      if (cloneUvs && (_mesh.uvs instanceof Array || _mesh.uvs instanceof Float32Array)) {
-	        mesh.uvs = _mesh.uvs.slice(0);
-	      } else {
-	        mesh.uvs = _mesh.uvs;
-	      }
-	    }
-
-	    // uvs lightmap
-	    if (_mesh.uvsLightmap) {
-	      if (cloneUvsLightmap && (_mesh.uvsLightmap instanceof Array || _mesh.uvsLightmap instanceof Float32Array)) {
-	        mesh.uvsLightmap = _mesh.uvsLightmap.slice(0);
-	      } else {
-	        mesh.uvsLightmap = _mesh.uvsLightmap;
-	      }
-	    }
-
-	    // other arrays
-	    if (_mesh.matrix) mesh.matrix = _mesh.matrix.slice(0);
-	    if (_mesh.uvMatrix) mesh.uvMatrix = _mesh.uvMatrix.slice(0);
-	    if (_mesh.meshKeys) mesh.meshKeys = _mesh.meshKeys.slice(0);
-	    if (_mesh.position) mesh.position = _mesh.position.slice(0);
-	    if (_mesh.rotDeg) mesh.rotDeg = _mesh.rotDeg.slice(0);
-	    if (_mesh.rotRad) mesh.rotRad = _mesh.rotRad.slice(0);
-	    if (_mesh.scale) mesh.scale = _mesh.scale.slice(0);
-
-	    // primitives
-	    if (_mesh.v) mesh.v = _mesh.v;
-	    if (_mesh.vertexMode) mesh.vertexMode = _mesh.vertexMode;
-	    if (_mesh.side) mesh.side = _mesh.side;
-	    if (_mesh.material) mesh.material = _mesh.material;
-	    if (_mesh.visibleInPersonView) mesh.visibleInPersonView = _mesh.visibleInPersonView;
-	    if (_mesh.visibleInBirdView) mesh.visibleInBirdView = _mesh.visibleInBirdView;
-	    if (_mesh.visibleInFloorplanView) mesh.visibleInFloorplanView = _mesh.visibleInFloorplanView;
-
-	    meshes[meshId] = mesh;
-	  }
-
-	  // output
-	  return meshes
+	  // next best power of two
+	  var l = Math.log(n) / Math.LN2;
+	  return Math.pow(2, Math.round(l))
 	}
 
-	function cloneSingleMaterial (material) {
-	  return cloneMaterials({x: material}).x
+	function resizeImage (image, url) {
+
+	  var width = nearestPowerOfTwoOrMaxTextureSize(image.width);
+	  var height = nearestPowerOfTwoOrMaxTextureSize(image.height);
+
+	  var canvas = document.createElement('canvas');
+	  canvas.width = width;
+	  canvas.height = height;
+	  canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+
+	  console.log('Image size not compatible. Image has been resized from ' + image.width + 'x' + image.height + 'px to ' + canvas.width + 'x' + canvas.height +
+	    'px.\n' + url);
+
+	  return canvas
 	}
 
-	function cloneMaterials (_materials) {
+	// function
 
-	  if (!_materials) {
-	    return {}
-	  }
+	function fetchImageTexture (url) {
+	  return new bluebird_1(function (resolve, reject) {
 
-	  var materialId, _material, materials, material, materialKeys, _attributes, _attributeKeys, attributeKey, type,
-	    attributes, isExtended;
+	    var image = document.createElement('img');
+	    image.crossOrigin = 'Anonymous';
 
-	  materialKeys = Object.keys(_materials);
-	  // result
-	  materials = {};
+	    image.onload = function () {
 
-	  if (materialKeys.length === 0) {
-	    return {}
-	  }
+	      var texture = new THREE.Texture();
 
-	  if (_materials[materialKeys[0]].attributes) {
-	    isExtended = true;
-	    // deep copy source
-	    materials = JSON.parse(JSON.stringify(_materials));
-	  } else {
-	    isExtended = false;
-	  }
+	      texture.sourceFile = url;
+	      texture.url = url;
 
-	  for (var i = 0, l = materialKeys.length; i < l; i++) {
+	      // image size compatibility check
 
-	    materialId = materialKeys[i];
-	    _attributes = isExtended ? _materials[materialId].attributes : _materials[materialId];
+	      var isPowerOfTwo = (checkPowerOfTwo(image.width) && checkPowerOfTwo(image.height));
+	      var isNotTooBig = (image.width <= MAX_TEXTURE_SIZE && image.height <= MAX_TEXTURE_SIZE);
 
-	    if (typeof _attributes === 'string') {
+	      if (isPowerOfTwo && isNotTooBig) {
 
-	      if (isExtended) {
-	        materials[materialId].attributes = _attributes;
+	        // use image as it is
+	        texture.image = image;
+
 	      } else {
-	        materials[materialId] = _attributes;
+
+	        // resize image to make it compatible
+	        texture.image = resizeImage(image, url);
+	        // add url reference
+	        texture.image.src = url;
+
 	      }
 
-	    } else if (_attributes) {
+	      resolve(texture);
 
-	      attributes = {};
-	      _attributeKeys = Object.keys(_attributes);
+	    };
 
-	      for (var j = 0, k = _attributeKeys.length; j < k; j++) {
-	        attributeKey = _attributeKeys[j];
-	        type = typeof _attributes[attributeKey];
-	        if (type === 'string' || type === 'number' || type === 'boolean') {
-	          // primitive
-	          attributes[attributeKey] = _attributes[attributeKey];
-	        } else if (_attributes[attributeKey]) {
-	          if (_attributes[attributeKey].length === 3) {
-	            // color array
-	            attributes[attributeKey] = [
-	              _attributes[attributeKey][0],
-	              _attributes[attributeKey][1],
-	              _attributes[attributeKey][2]
-	            ];
-	          } else if (_attributes[attributeKey].length === 2) {
-	            // size array
-	            attributes[attributeKey] = [
-	              _attributes[attributeKey][0],
-	              _attributes[attributeKey][1]
-	            ];
-	          }
+	    var triedWithCacheBust = false;
+	    image.onerror = function () {
+	      if(triedWithCacheBust) {
+	        reject('Error loading texture ' + url);
+	      } else {
+	        // try again with cache busting to avoid things like #1510
+	        triedWithCacheBust = true;
+	        if (url.indexOf('?') === -1) {
+	          url += '?cacheBust=' + new Date().getTime();
+	        } else {
+	          url += '&cacheBust=' + new Date().getTime();
 	        }
+	        image.src = url;
 	      }
+	    };
 
-	      if (isExtended) {
-	        materials[materialId].attributes = attributes;
-	      } else {
-	        materials[materialId] = attributes;
-	      }
+	    // initiate image loading
+	    image.src = url;
 
-	    }
+	  })
+	}
 
+	// configs
+
+	var maxConcurrentQueuedRequests = 15; // not queued requests are not limited in running parallel
+	var queuesByPriority = [
+	  'architectureGeometries',
+	  'architectureTexturesLoRes',
+	  'interiorGeometries',
+	  'interiorTexturesLoRes',
+	  'architectureTexturesHiRes',
+	  'interiorTexturesHiRes'
+	];
+
+	var queueFences = [
+	  false,
+	  false,
+	  true,
+	  false,
+	  false
+	];
+
+	// prepare objects for queueing
+	var _queues = {};
+	var _queueFences = {};
+	var _queuesChanged = false;
+	window.queueInfo = {};
+	var _queuesLength = queuesByPriority.length;
+	var _concurrentRequests = 0;
+	var _concurrentPerQueue = {};
+	window.loadingQueueData = '';
+
+	var queueName;
+	for (var i$1 = 0, l = _queuesLength; i$1 < l; i$1++) {
+	  queueName = queuesByPriority[i$1];
+	  _queues[queueName] = [];
+	  _queueFences[queueName] = queueFences[i$1];
+	  window.queueInfo[queueName] = {requestCount: 0};
+	  _concurrentPerQueue[queueName] = 0;
+	}
+
+	window.loadingQueueAlgorithm     = 'overstep-one-fenced';
+	window.loadingQueuePipelineDepth = maxConcurrentQueuedRequests;
+
+	/*
+
+	(2017/09/13) Performance monitoring code
+
+	window.loadingQueueGraph         = false;
+	if (window.loadingQueueGraph)
+	  window.loadingPerformanceHistory = new PerformanceGraph.PerformanceHistory(64);
+
+	window.loadingQueueShowInfo = function() {
+	  function padRight(text, fieldLength) {
+	    return text + Array(fieldLength - text.length + 1).join(' ');
+	  }
+	  function padLeft(text, fieldLength) {
+	    return Array(fieldLength - text.length + 1).join(' ') + text;
+	 }
+	 var text = '';
+	 var keys = Object.keys(window.queueInfo);
+	 var baseTime;
+	 if (keys.length > 0) {
+	   var baseKey   = keys[0];
+	   var baseValue = window.queueInfo[baseKey];
+	   baseTime = baseValue.timeFirst;
+	   text += '(' + baseTime.toFixed(1) + ')\n'
+	 }
+	 for (var i = 0; i < keys.length; i++) {
+	   var key   = keys[i];
+	   var value = window.queueInfo[key];
+	   text += padRight(keys[i], 28) + ': ';
+	   if (value.requestCount > 0) {
+	     var t1 = value.timeFirst - baseTime;
+	     var t2 = value.timeLast - baseTime;
+	     var t1Str = t1.toFixed(1);
+	     var t2Str = t2.toFixed(1);
+	     var t3, d, t3Str, dStr;
+	     if (value.timeLastFinished) {
+	       t3 = value.timeLastFinished - baseTime;
+	       d  = t3 - t1;
+	       t3Str = t3.toFixed(1);
+	       dStr  = d.toFixed(1);
+	     } else {
+	       t3Str = '-';
+	       dStr  = '-';
+	     }
+	     text += padLeft(t1Str, 5) + ' - ' + padLeft(t2Str, 5) + ' / ' + padLeft(t3Str, 5) + ' (' + padLeft(dStr, 5) + ') [' + padLeft(value.requestCount.toString(), 4) + ']\n';
+	   } else
+	     text += '<inactive>\n'
+	 }
+	 console.log(text);
+	}
+
+	window.loadingQueueProcessData = function() {
+	 var loadingQueueDataLines = window.loadingQueueData.split('\n');
+	 var i = 0;
+	 while (i < loadingQueueDataLines.length) {
+	   var line = loadingQueueDataLines[i];
+	   var count = 0;
+	   for (var j = i; i < loadingQueueDataLines.length; j++) {
+	     var nextLine = loadingQueueDataLines[j];
+	     if (line === nextLine)
+	       count++;
+	     else
+	       break;
+	   }
+	   if (count > 8) {
+	     loadingQueueDataLines.splice(i + 4, count - 8, ' ');
+	     loadingQueueDataLines.
+	       i += 4
+	   } else
+	     i += 1;
+	 }
+	 window.loadingQueueDataShort = loadingQueueDataLines.join('\n');
+	}
+
+	function _addPerformanceEntry() {
+	  var performanceEntry = window.loadingPerformanceHistory.newEntry(PerformanceGraph.PerformanceEntry);
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    performanceEntry[queueName] = _concurrentPerQueue[queueName];
+	  }
+	  // performanceEntry.none = window.loadingQueuePipelineDepth - _concurrentRequests;
+	}
+
+	function _appendLoadingQueueData() {
+	  var entry = '';
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    entry += _concurrentPerQueue[queueName].toString();
+	    if (i < _queuesLength - 1)
+	      entry += ', ';
+	    else
+	      entry += '\n';
+	  }
+	  window.loadingQueueData += entry;
+	}
+
+	*/
+
+	function _startRequest(queueName) {
+	  // Update queue tracking information
+	  var queueInfo = window.queueInfo[queueName];
+	  var time = performance.now() / 1000;
+	  if (typeof queueInfo.timeFirst === 'undefined') {
+	    queueInfo.timeFirst = time;
+	    queueInfo.timeLast  = time;
+	  } else
+	    queueInfo.timeLast  = time;
+	  queueInfo.requestCount++;
+	  // Update concurrent request counts
+	  _concurrentPerQueue[queueName] += 1;
+	  _concurrentRequests++;
+	  //
+	  _queuesChanged = true;
+	  // Start request
+	  // console.log('[' + (' ' + _concurrentRequests).slice(-2) + ']: Starting ' + queueName);
+	  var queue = _queues[queueName];
+	  var request = queue.shift();
+	  request.start();
+	}
+
+	function _doProcessQueueOriginal() {
+	  if (_concurrentRequests >= window.loadingQueuePipelineDepth)
+	    return;
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    if (_queues[queueName].length > 0) {
+	      _startRequest(queueName);
+	      break;
+	    } else if (_concurrentPerQueue[queueName] !== 0)
+	      break;
+	  }
+	}
+
+	function _doProcessQueueOriginalFixed(){
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+	      _startRequest(queueName);
+	    if (_concurrentPerQueue[queueName] !== 0)
+	      break;
+	  }
+	}
+
+	function _doProcessQueueOverstep(){
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+	      _startRequest(queueName);
+	  }
+	}
+
+	function _doProcessQueueOverstepOne(){
+	  var anchorStage = null;
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+	      _startRequest(queueName);
+	    if (anchorStage === null && _concurrentPerQueue[queueName] !== 0)
+	      anchorStage = i;
+	    if (anchorStage !== null && i - anchorStage > 0)
+	      break;
+	  }
+	}
+
+	function _doProcessQueueOverstepFenced(){
+	  var anchorStage = null;
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+	      _startRequest(queueName);
+	    if (anchorStage === null && _concurrentPerQueue[queueName] !== 0)
+	      anchorStage = i;
+	    if (anchorStage !== null && _queueFences[queueName])
+	      break;
+	  }
+	}
+
+	function _doProcessQueueOverstepOneFenced(){
+	  var anchorStage = null;
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+	      _startRequest(queueName);
+	    if (anchorStage === null && _concurrentPerQueue[queueName] !== 0)
+	      anchorStage = i;
+	    if (anchorStage !== null && (_queueFences[queueName] || (i - anchorStage > 0)))
+	      break;
+	  }
+	}
+
+	function _processQueue() {
+	  if (window.loadingQueueAlgorithm === 'original')
+	    _doProcessQueueOriginal();
+	  else if (window.loadingQueueAlgorithm === 'original-fixed')
+	    _doProcessQueueOriginalFixed();
+	  else if (window.loadingQueueAlgorithm === 'overstep')
+	    _doProcessQueueOverstep();
+	  else if (window.loadingQueueAlgorithm === 'overstep-one')
+	    _doProcessQueueOverstepOne();
+	  else if (window.loadingQueueAlgorithm === 'overstep-fenced')
+	    _doProcessQueueOverstepFenced();
+	  else if (window.loadingQueueAlgorithm === 'overstep-one-fenced')
+	    _doProcessQueueOverstepOneFenced();
+	  else
+	    throw 'Http._processQueue: Unknown loading queue processing algorithm.'
+	  /* (2017/09/13) Performance monitoring code
+	  if (_queuesChanged) {
+	    if (window.loadingQueueGraph)
+	      _addPerformanceEntry();
+	    _appendLoadingQueueData();
+	    _queuesChanged = false;
+	  }
+	  */
+	}
+
+	function _enqueue(queueName, url){
+
+	  //// fallback to last queue
+	  //if (!_queues[queueName]) queueName = queuesByPriority[_queuesLength-1]
+
+	  // fallback to first queue
+	  if (!_queues[queueName]) {
+	    if (queueName) console.error('onknown queue ', queueName);
+	    queueName = queuesByPriority[0];
 	  }
 
-	  return materials
+	  // create promise and add to queue
+	  return new Promise(function(resolve, reject){
+	    // has to be asynchronous in order to decouple queue processing from synchronous code
+	    setTimeout(function(){
+	      var queue = _queues[queueName];
+	      queue[ queue.length ] = { url: url, start: resolve };
+	      _processQueue();
+	    },1);
+	  })
 
 	}
 
-	var furnitureComponent = {
-
-	  schema: {
-	    id: {
-	      type: 'string',
-	      default: '10344b13-d981-47a0-90ac-f048ee2780a6'
-	    }
-	  },
-
-	  init: function () {
-	  },
-
-	  update: function () {
-	    var this_ = this;
-	    var el = this.el;
-	    var data = this.data;
-	    var furnitureId = data.id;
-
-	    // check params
-	    if (!furnitureId || furnitureId === '') return
-
-	    // remove old mesh
-	    this_.remove();
-
-	    // create new one
-	    this_.mesh = new THREE.Object3D();
-	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
-	    this_.el.data3dView = this_.data3dView;
-
-	    // get furniture data
-	    io3d.furniture.get(furnitureId).then(function (result) {
-
-	      var info = result.info; // lightweight info like name, manufacturer, description...
-	      var data3d = result.data3d; // geometries and materials
-	      var availableMaterials = {};
-
-	      // Expose properties
-	      this_.info = info;
-	      this_.data3d = data3d;
-	      this_.availableMaterials = availableMaterials;
-
-	      // check for material presets in the furniture sceneStructure definition
-	      var materialPreset = info.sceneStructure && JSON.parse(info.sceneStructure).materials;
-	      // Parse materials
-	      Object.keys(data3d.meshes).forEach(function eachMesh (meshId) {
-	        availableMaterials[meshId] = data3d.alternativeMaterialsByMeshKey ? data3d.alternativeMaterialsByMeshKey[meshId] : data3d.meshes[meshId].material;
-
-	        // clone data3d to avoid reference mix up
-	        data3d = this_.data3d = clone(data3d);
-	        // get material name from inspector
-	        var materialPropName = 'material_' + meshId.replace(/\s/g, '_');
-	        // get materialId from a-frame attribute or from furniture API scene structure preset
-	        var newMaterialId =  data[materialPropName] || (materialPreset ? materialPreset[meshId] : null);
-
-	        // update view with custom material (if available)
-	        if (newMaterialId) {
-	          // update material
-	          data3d.meshes[meshId].material = newMaterialId;
-	          // trigger event
-	          el.emit('material-changed', {mesh: meshId, material: newMaterialId});
-	        }
-
-	        // register changeable materials schema
-	        // (not all furniture have changeable materials)
-	        if (data3d.alternativeMaterialsByMeshKey && data3d.alternativeMaterialsByMeshKey[meshId]) {
-	          // extend schema with changeable material
-	          var prop = {};
-	          prop[materialPropName] = {
-	            type: 'string',
-	            default: data3d.meshes[meshId].material,
-	            oneOf: data3d.alternativeMaterialsByMeshKey[meshId]
-	          };
-	          this_.extendSchema(prop);
-	          // update current params
-	          this_.data[materialPropName] = data3d.meshes[meshId].material;
-	        }
-
-	      });
-
-	      // update view
-	      this_.data3dView.set(data3d, {
-	        loadingQueuePrefix: 'interior'
-	      });
-	      this_.el.data3d = data3d;
-	      this_.el.setObject3D('mesh', this_.mesh);
-
-	      // emit events
-	      if (this_._previousFurnitureId !== furnitureId) {
-	        this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
-	        this_._previousFurnitureId = furnitureId;
-	      }
-
-	    });
-	  },
-
-	  remove: function () {
-	    if (this.data3dView) {
-	      this.data3dView.destroy();
-	      this.data3dView = null;
-	      this.el.data3dView = null;
-	    }
-	    if (this.mesh) {
-	      this.el.removeObject3D('mesh');
-	      this.mesh = null;
-	    }
+	function _dequeue(queueName, url) {
+	  var queueInfo = window.queueInfo[queueName];
+	  if (!queueInfo) {
+	    if (queueName) console.warn('Queue info not found for queue name "'+queueName+'"');
+	    return
 	  }
+	  var time = performance.now() / 1000;
+	  queueInfo.timeLastFinished = time;
+	  var t1 = queueInfo.timeFirst;
+	  var t2 = queueInfo.timeLast;
+	  var t3 = queueInfo.timeLastFinished;
+	  var d  = t3 - t1;
+	  _concurrentPerQueue[queueName] -= 1;
+	  _concurrentRequests -= 1;
+	  _queuesChanged = true;
+	  _processQueue();
+	}
 
+	// expose API
+
+	var queueManager = {
+	  enqueue: _enqueue,
+	  dequeue: _dequeue
 	};
+
+	window.setInterval(function(){
+	  _processQueue();
+	},1000);
+
+	/**
+	 * Appends the elements of `values` to `array`.
+	 *
+	 * @private
+	 * @param {Array} array The array to modify.
+	 * @param {Array} values The values to append.
+	 * @returns {Array} Returns `array`.
+	 */
+	function arrayPush(array, values) {
+	  var index = -1,
+	      length = values.length,
+	      offset = array.length;
+
+	  while (++index < length) {
+	    array[offset + index] = values[index];
+	  }
+	  return array;
+	}
+
+	var _arrayPush = arrayPush;
+
+	/** Detect free variable `global` from Node.js. */
+	var freeGlobal = typeof commonjsGlobal == 'object' && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
+
+	var _freeGlobal = freeGlobal;
+
+	/** Detect free variable `self`. */
+	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+	/** Used as a reference to the global object. */
+	var root$2 = _freeGlobal || freeSelf || Function('return this')();
+
+	var _root$1 = root$2;
+
+	/** Built-in value references. */
+	var Symbol$1 = _root$1.Symbol;
+
+	var _Symbol = Symbol$1;
+
+	/** Used for built-in method references. */
+	var objectProto$1 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$1 = objectProto$1.hasOwnProperty;
+
+	/**
+	 * Used to resolve the
+	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var nativeObjectToString = objectProto$1.toString;
+
+	/** Built-in value references. */
+	var symToStringTag$1 = _Symbol ? _Symbol.toStringTag : undefined;
+
+	/**
+	 * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {string} Returns the raw `toStringTag`.
+	 */
+	function getRawTag(value) {
+	  var isOwn = hasOwnProperty$1.call(value, symToStringTag$1),
+	      tag = value[symToStringTag$1];
+
+	  try {
+	    value[symToStringTag$1] = undefined;
+	    var unmasked = true;
+	  } catch (e) {}
+
+	  var result = nativeObjectToString.call(value);
+	  if (unmasked) {
+	    if (isOwn) {
+	      value[symToStringTag$1] = tag;
+	    } else {
+	      delete value[symToStringTag$1];
+	    }
+	  }
+	  return result;
+	}
+
+	var _getRawTag = getRawTag;
+
+	/** Used for built-in method references. */
+	var objectProto$2 = Object.prototype;
+
+	/**
+	 * Used to resolve the
+	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var nativeObjectToString$1 = objectProto$2.toString;
+
+	/**
+	 * Converts `value` to a string using `Object.prototype.toString`.
+	 *
+	 * @private
+	 * @param {*} value The value to convert.
+	 * @returns {string} Returns the converted string.
+	 */
+	function objectToString(value) {
+	  return nativeObjectToString$1.call(value);
+	}
+
+	var _objectToString = objectToString;
+
+	/** `Object#toString` result references. */
+	var nullTag = '[object Null]';
+	var undefinedTag = '[object Undefined]';
+
+	/** Built-in value references. */
+	var symToStringTag = _Symbol ? _Symbol.toStringTag : undefined;
+
+	/**
+	 * The base implementation of `getTag` without fallbacks for buggy environments.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {string} Returns the `toStringTag`.
+	 */
+	function baseGetTag(value) {
+	  if (value == null) {
+	    return value === undefined ? undefinedTag : nullTag;
+	  }
+	  return (symToStringTag && symToStringTag in Object(value))
+	    ? _getRawTag(value)
+	    : _objectToString(value);
+	}
+
+	var _baseGetTag = baseGetTag;
+
+	/**
+	 * Checks if `value` is object-like. A value is object-like if it's not `null`
+	 * and has a `typeof` result of "object".
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+	 * @example
+	 *
+	 * _.isObjectLike({});
+	 * // => true
+	 *
+	 * _.isObjectLike([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObjectLike(_.noop);
+	 * // => false
+	 *
+	 * _.isObjectLike(null);
+	 * // => false
+	 */
+	function isObjectLike(value) {
+	  return value != null && typeof value == 'object';
+	}
+
+	var isObjectLike_1 = isObjectLike;
+
+	/** `Object#toString` result references. */
+	var argsTag = '[object Arguments]';
+
+	/**
+	 * The base implementation of `_.isArguments`.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+	 */
+	function baseIsArguments(value) {
+	  return isObjectLike_1(value) && _baseGetTag(value) == argsTag;
+	}
+
+	var _baseIsArguments = baseIsArguments;
+
+	/** Used for built-in method references. */
+	var objectProto = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+
+	/** Built-in value references. */
+	var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+
+	/**
+	 * Checks if `value` is likely an `arguments` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+	 *  else `false`.
+	 * @example
+	 *
+	 * _.isArguments(function() { return arguments; }());
+	 * // => true
+	 *
+	 * _.isArguments([1, 2, 3]);
+	 * // => false
+	 */
+	var isArguments = _baseIsArguments(function() { return arguments; }()) ? _baseIsArguments : function(value) {
+	  return isObjectLike_1(value) && hasOwnProperty.call(value, 'callee') &&
+	    !propertyIsEnumerable.call(value, 'callee');
+	};
+
+	var isArguments_1 = isArguments;
+
+	/**
+	 * Checks if `value` is classified as an `Array` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+	 * @example
+	 *
+	 * _.isArray([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArray(document.body.children);
+	 * // => false
+	 *
+	 * _.isArray('abc');
+	 * // => false
+	 *
+	 * _.isArray(_.noop);
+	 * // => false
+	 */
+	var isArray$2 = Array.isArray;
+
+	var isArray_1$2 = isArray$2;
+
+	/** Built-in value references. */
+	var spreadableSymbol = _Symbol ? _Symbol.isConcatSpreadable : undefined;
+
+	/**
+	 * Checks if `value` is a flattenable `arguments` object or array.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is flattenable, else `false`.
+	 */
+	function isFlattenable(value) {
+	  return isArray_1$2(value) || isArguments_1(value) ||
+	    !!(spreadableSymbol && value && value[spreadableSymbol]);
+	}
+
+	var _isFlattenable = isFlattenable;
+
+	/**
+	 * The base implementation of `_.flatten` with support for restricting flattening.
+	 *
+	 * @private
+	 * @param {Array} array The array to flatten.
+	 * @param {number} depth The maximum recursion depth.
+	 * @param {boolean} [predicate=isFlattenable] The function invoked per iteration.
+	 * @param {boolean} [isStrict] Restrict to values that pass `predicate` checks.
+	 * @param {Array} [result=[]] The initial result value.
+	 * @returns {Array} Returns the new flattened array.
+	 */
+	function baseFlatten(array, depth, predicate, isStrict, result) {
+	  var index = -1,
+	      length = array.length;
+
+	  predicate || (predicate = _isFlattenable);
+	  result || (result = []);
+
+	  while (++index < length) {
+	    var value = array[index];
+	    if (depth > 0 && predicate(value)) {
+	      if (depth > 1) {
+	        // Recursively flatten arrays (susceptible to call stack limits).
+	        baseFlatten(value, depth - 1, predicate, isStrict, result);
+	      } else {
+	        _arrayPush(result, value);
+	      }
+	    } else if (!isStrict) {
+	      result[result.length] = value;
+	    }
+	  }
+	  return result;
+	}
+
+	var _baseFlatten = baseFlatten;
+
+	/**
+	 * A specialized version of `_.map` for arrays without support for iteratee
+	 * shorthands.
+	 *
+	 * @private
+	 * @param {Array} [array] The array to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array} Returns the new mapped array.
+	 */
+	function arrayMap(array, iteratee) {
+	  var index = -1,
+	      length = array == null ? 0 : array.length,
+	      result = Array(length);
+
+	  while (++index < length) {
+	    result[index] = iteratee(array[index], index, array);
+	  }
+	  return result;
+	}
+
+	var _arrayMap = arrayMap;
 
 	/**
 	 * Removes all key-value entries from the list cache.
@@ -14261,117 +14553,6 @@
 
 	var _stackHas = stackHas;
 
-	/** Detect free variable `global` from Node.js. */
-	var freeGlobal = typeof commonjsGlobal == 'object' && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
-
-	var _freeGlobal = freeGlobal;
-
-	/** Detect free variable `self`. */
-	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
-
-	/** Used as a reference to the global object. */
-	var root$2 = _freeGlobal || freeSelf || Function('return this')();
-
-	var _root$1 = root$2;
-
-	/** Built-in value references. */
-	var Symbol$1 = _root$1.Symbol;
-
-	var _Symbol = Symbol$1;
-
-	/** Used for built-in method references. */
-	var objectProto$1 = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$1 = objectProto$1.hasOwnProperty;
-
-	/**
-	 * Used to resolve the
-	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
-	 * of values.
-	 */
-	var nativeObjectToString = objectProto$1.toString;
-
-	/** Built-in value references. */
-	var symToStringTag$1 = _Symbol ? _Symbol.toStringTag : undefined;
-
-	/**
-	 * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
-	 *
-	 * @private
-	 * @param {*} value The value to query.
-	 * @returns {string} Returns the raw `toStringTag`.
-	 */
-	function getRawTag(value) {
-	  var isOwn = hasOwnProperty$1.call(value, symToStringTag$1),
-	      tag = value[symToStringTag$1];
-
-	  try {
-	    value[symToStringTag$1] = undefined;
-	    var unmasked = true;
-	  } catch (e) {}
-
-	  var result = nativeObjectToString.call(value);
-	  if (unmasked) {
-	    if (isOwn) {
-	      value[symToStringTag$1] = tag;
-	    } else {
-	      delete value[symToStringTag$1];
-	    }
-	  }
-	  return result;
-	}
-
-	var _getRawTag = getRawTag;
-
-	/** Used for built-in method references. */
-	var objectProto$2 = Object.prototype;
-
-	/**
-	 * Used to resolve the
-	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
-	 * of values.
-	 */
-	var nativeObjectToString$1 = objectProto$2.toString;
-
-	/**
-	 * Converts `value` to a string using `Object.prototype.toString`.
-	 *
-	 * @private
-	 * @param {*} value The value to convert.
-	 * @returns {string} Returns the converted string.
-	 */
-	function objectToString(value) {
-	  return nativeObjectToString$1.call(value);
-	}
-
-	var _objectToString = objectToString;
-
-	/** `Object#toString` result references. */
-	var nullTag = '[object Null]';
-	var undefinedTag = '[object Undefined]';
-
-	/** Built-in value references. */
-	var symToStringTag = _Symbol ? _Symbol.toStringTag : undefined;
-
-	/**
-	 * The base implementation of `getTag` without fallbacks for buggy environments.
-	 *
-	 * @private
-	 * @param {*} value The value to query.
-	 * @returns {string} Returns the `toStringTag`.
-	 */
-	function baseGetTag(value) {
-	  if (value == null) {
-	    return value === undefined ? undefinedTag : nullTag;
-	  }
-	  return (symToStringTag && symToStringTag in Object(value))
-	    ? _getRawTag(value)
-	    : _objectToString(value);
-	}
-
-	var _baseGetTag = baseGetTag;
-
 	/**
 	 * Checks if `value` is the
 	 * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
@@ -14406,8 +14587,8 @@
 
 	/** `Object#toString` result references. */
 	var asyncTag = '[object AsyncFunction]';
-	var funcTag$1 = '[object Function]';
-	var genTag$1 = '[object GeneratorFunction]';
+	var funcTag = '[object Function]';
+	var genTag = '[object GeneratorFunction]';
 	var proxyTag = '[object Proxy]';
 
 	/**
@@ -14434,7 +14615,7 @@
 	  // The use of `Object#toString` avoids issues with the `typeof` operator
 	  // in Safari 9 which returns 'object' for typed arrays and other constructors.
 	  var tag = _baseGetTag(value);
-	  return tag == funcTag$1 || tag == genTag$1 || tag == asyncTag || tag == proxyTag;
+	  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
 	}
 
 	var isFunction_1$3 = isFunction$1;
@@ -14501,17 +14682,17 @@
 
 	/** Used for built-in method references. */
 	var funcProto = Function.prototype;
-	var objectProto = Object.prototype;
+	var objectProto$3 = Object.prototype;
 
 	/** Used to resolve the decompiled source of functions. */
 	var funcToString = funcProto.toString;
 
 	/** Used to check objects for own properties. */
-	var hasOwnProperty = objectProto.hasOwnProperty;
+	var hasOwnProperty$2 = objectProto$3.hasOwnProperty;
 
 	/** Used to detect if a method is native. */
 	var reIsNative = RegExp('^' +
-	  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
+	  funcToString.call(hasOwnProperty$2).replace(reRegExpChar, '\\$&')
 	  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
 	);
 
@@ -14608,10 +14789,10 @@
 	var HASH_UNDEFINED = '__lodash_hash_undefined__';
 
 	/** Used for built-in method references. */
-	var objectProto$3 = Object.prototype;
+	var objectProto$4 = Object.prototype;
 
 	/** Used to check objects for own properties. */
-	var hasOwnProperty$2 = objectProto$3.hasOwnProperty;
+	var hasOwnProperty$3 = objectProto$4.hasOwnProperty;
 
 	/**
 	 * Gets the hash value for `key`.
@@ -14628,16 +14809,16 @@
 	    var result = data[key];
 	    return result === HASH_UNDEFINED ? undefined : result;
 	  }
-	  return hasOwnProperty$2.call(data, key) ? data[key] : undefined;
+	  return hasOwnProperty$3.call(data, key) ? data[key] : undefined;
 	}
 
 	var _hashGet = hashGet;
 
 	/** Used for built-in method references. */
-	var objectProto$4 = Object.prototype;
+	var objectProto$5 = Object.prototype;
 
 	/** Used to check objects for own properties. */
-	var hasOwnProperty$3 = objectProto$4.hasOwnProperty;
+	var hasOwnProperty$4 = objectProto$5.hasOwnProperty;
 
 	/**
 	 * Checks if a hash value for `key` exists.
@@ -14650,7 +14831,7 @@
 	 */
 	function hashHas(key) {
 	  var data = this.__data__;
-	  return _nativeCreate ? (data[key] !== undefined) : hasOwnProperty$3.call(data, key);
+	  return _nativeCreate ? (data[key] !== undefined) : hasOwnProperty$4.call(data, key);
 	}
 
 	var _hashHas = hashHas;
@@ -14902,1877 +15083,6 @@
 
 	var _Stack = Stack;
 
-	/**
-	 * A specialized version of `_.forEach` for arrays without support for
-	 * iteratee shorthands.
-	 *
-	 * @private
-	 * @param {Array} [array] The array to iterate over.
-	 * @param {Function} iteratee The function invoked per iteration.
-	 * @returns {Array} Returns `array`.
-	 */
-	function arrayEach(array, iteratee) {
-	  var index = -1,
-	      length = array == null ? 0 : array.length;
-
-	  while (++index < length) {
-	    if (iteratee(array[index], index, array) === false) {
-	      break;
-	    }
-	  }
-	  return array;
-	}
-
-	var _arrayEach = arrayEach;
-
-	var defineProperty = (function() {
-	  try {
-	    var func = _getNative(Object, 'defineProperty');
-	    func({}, '', {});
-	    return func;
-	  } catch (e) {}
-	}());
-
-	var _defineProperty = defineProperty;
-
-	/**
-	 * The base implementation of `assignValue` and `assignMergeValue` without
-	 * value checks.
-	 *
-	 * @private
-	 * @param {Object} object The object to modify.
-	 * @param {string} key The key of the property to assign.
-	 * @param {*} value The value to assign.
-	 */
-	function baseAssignValue(object, key, value) {
-	  if (key == '__proto__' && _defineProperty) {
-	    _defineProperty(object, key, {
-	      'configurable': true,
-	      'enumerable': true,
-	      'value': value,
-	      'writable': true
-	    });
-	  } else {
-	    object[key] = value;
-	  }
-	}
-
-	var _baseAssignValue = baseAssignValue;
-
-	/** Used for built-in method references. */
-	var objectProto$5 = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$4 = objectProto$5.hasOwnProperty;
-
-	/**
-	 * Assigns `value` to `key` of `object` if the existing value is not equivalent
-	 * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
-	 * for equality comparisons.
-	 *
-	 * @private
-	 * @param {Object} object The object to modify.
-	 * @param {string} key The key of the property to assign.
-	 * @param {*} value The value to assign.
-	 */
-	function assignValue(object, key, value) {
-	  var objValue = object[key];
-	  if (!(hasOwnProperty$4.call(object, key) && eq_1(objValue, value)) ||
-	      (value === undefined && !(key in object))) {
-	    _baseAssignValue(object, key, value);
-	  }
-	}
-
-	var _assignValue = assignValue;
-
-	/**
-	 * Copies properties of `source` to `object`.
-	 *
-	 * @private
-	 * @param {Object} source The object to copy properties from.
-	 * @param {Array} props The property identifiers to copy.
-	 * @param {Object} [object={}] The object to copy properties to.
-	 * @param {Function} [customizer] The function to customize copied values.
-	 * @returns {Object} Returns `object`.
-	 */
-	function copyObject(source, props, object, customizer) {
-	  var isNew = !object;
-	  object || (object = {});
-
-	  var index = -1,
-	      length = props.length;
-
-	  while (++index < length) {
-	    var key = props[index];
-
-	    var newValue = customizer
-	      ? customizer(object[key], source[key], key, object, source)
-	      : undefined;
-
-	    if (newValue === undefined) {
-	      newValue = source[key];
-	    }
-	    if (isNew) {
-	      _baseAssignValue(object, key, newValue);
-	    } else {
-	      _assignValue(object, key, newValue);
-	    }
-	  }
-	  return object;
-	}
-
-	var _copyObject = copyObject;
-
-	/**
-	 * The base implementation of `_.times` without support for iteratee shorthands
-	 * or max array length checks.
-	 *
-	 * @private
-	 * @param {number} n The number of times to invoke `iteratee`.
-	 * @param {Function} iteratee The function invoked per iteration.
-	 * @returns {Array} Returns the array of results.
-	 */
-	function baseTimes(n, iteratee) {
-	  var index = -1,
-	      result = Array(n);
-
-	  while (++index < n) {
-	    result[index] = iteratee(index);
-	  }
-	  return result;
-	}
-
-	var _baseTimes = baseTimes;
-
-	/**
-	 * Checks if `value` is object-like. A value is object-like if it's not `null`
-	 * and has a `typeof` result of "object".
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
-	 * @example
-	 *
-	 * _.isObjectLike({});
-	 * // => true
-	 *
-	 * _.isObjectLike([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isObjectLike(_.noop);
-	 * // => false
-	 *
-	 * _.isObjectLike(null);
-	 * // => false
-	 */
-	function isObjectLike(value) {
-	  return value != null && typeof value == 'object';
-	}
-
-	var isObjectLike_1 = isObjectLike;
-
-	/** `Object#toString` result references. */
-	var argsTag$1 = '[object Arguments]';
-
-	/**
-	 * The base implementation of `_.isArguments`.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an `arguments` object,
-	 */
-	function baseIsArguments(value) {
-	  return isObjectLike_1(value) && _baseGetTag(value) == argsTag$1;
-	}
-
-	var _baseIsArguments = baseIsArguments;
-
-	/** Used for built-in method references. */
-	var objectProto$7 = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$6 = objectProto$7.hasOwnProperty;
-
-	/** Built-in value references. */
-	var propertyIsEnumerable = objectProto$7.propertyIsEnumerable;
-
-	/**
-	 * Checks if `value` is likely an `arguments` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an `arguments` object,
-	 *  else `false`.
-	 * @example
-	 *
-	 * _.isArguments(function() { return arguments; }());
-	 * // => true
-	 *
-	 * _.isArguments([1, 2, 3]);
-	 * // => false
-	 */
-	var isArguments = _baseIsArguments(function() { return arguments; }()) ? _baseIsArguments : function(value) {
-	  return isObjectLike_1(value) && hasOwnProperty$6.call(value, 'callee') &&
-	    !propertyIsEnumerable.call(value, 'callee');
-	};
-
-	var isArguments_1 = isArguments;
-
-	/**
-	 * Checks if `value` is classified as an `Array` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an array, else `false`.
-	 * @example
-	 *
-	 * _.isArray([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isArray(document.body.children);
-	 * // => false
-	 *
-	 * _.isArray('abc');
-	 * // => false
-	 *
-	 * _.isArray(_.noop);
-	 * // => false
-	 */
-	var isArray$2 = Array.isArray;
-
-	var isArray_1$2 = isArray$2;
-
-	/**
-	 * This method returns `false`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.13.0
-	 * @category Util
-	 * @returns {boolean} Returns `false`.
-	 * @example
-	 *
-	 * _.times(2, _.stubFalse);
-	 * // => [false, false]
-	 */
-	function stubFalse() {
-	  return false;
-	}
-
-	var stubFalse_1 = stubFalse;
-
-	var isBuffer_1 = createCommonjsModule(function (module, exports) {
-	/** Detect free variable `exports`. */
-	var freeExports = 'object' == 'object' && exports && !exports.nodeType && exports;
-
-	/** Detect free variable `module`. */
-	var freeModule = freeExports && 'object' == 'object' && module && !module.nodeType && module;
-
-	/** Detect the popular CommonJS extension `module.exports`. */
-	var moduleExports = freeModule && freeModule.exports === freeExports;
-
-	/** Built-in value references. */
-	var Buffer = moduleExports ? _root$1.Buffer : undefined;
-
-	/* Built-in method references for those with the same name as other `lodash` methods. */
-	var nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined;
-
-	/**
-	 * Checks if `value` is a buffer.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.3.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
-	 * @example
-	 *
-	 * _.isBuffer(new Buffer(2));
-	 * // => true
-	 *
-	 * _.isBuffer(new Uint8Array(2));
-	 * // => false
-	 */
-	var isBuffer = nativeIsBuffer || stubFalse_1;
-
-	module.exports = isBuffer;
-	});
-
-	/** Used as references for various `Number` constants. */
-	var MAX_SAFE_INTEGER = 9007199254740991;
-
-	/** Used to detect unsigned integer values. */
-	var reIsUint = /^(?:0|[1-9]\d*)$/;
-
-	/**
-	 * Checks if `value` is a valid array-like index.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
-	 * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
-	 */
-	function isIndex(value, length) {
-	  length = length == null ? MAX_SAFE_INTEGER : length;
-	  return !!length &&
-	    (typeof value == 'number' || reIsUint.test(value)) &&
-	    (value > -1 && value % 1 == 0 && value < length);
-	}
-
-	var _isIndex = isIndex;
-
-	/** Used as references for various `Number` constants. */
-	var MAX_SAFE_INTEGER$1 = 9007199254740991;
-
-	/**
-	 * Checks if `value` is a valid array-like length.
-	 *
-	 * **Note:** This method is loosely based on
-	 * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
-	 * @example
-	 *
-	 * _.isLength(3);
-	 * // => true
-	 *
-	 * _.isLength(Number.MIN_VALUE);
-	 * // => false
-	 *
-	 * _.isLength(Infinity);
-	 * // => false
-	 *
-	 * _.isLength('3');
-	 * // => false
-	 */
-	function isLength(value) {
-	  return typeof value == 'number' &&
-	    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER$1;
-	}
-
-	var isLength_1 = isLength;
-
-	/** `Object#toString` result references. */
-	var argsTag$2 = '[object Arguments]';
-	var arrayTag$1 = '[object Array]';
-	var boolTag$1 = '[object Boolean]';
-	var dateTag$1 = '[object Date]';
-	var errorTag$1 = '[object Error]';
-	var funcTag$2 = '[object Function]';
-	var mapTag$1 = '[object Map]';
-	var numberTag$1 = '[object Number]';
-	var objectTag$1 = '[object Object]';
-	var regexpTag$1 = '[object RegExp]';
-	var setTag$1 = '[object Set]';
-	var stringTag$1 = '[object String]';
-	var weakMapTag$1 = '[object WeakMap]';
-
-	var arrayBufferTag$1 = '[object ArrayBuffer]';
-	var dataViewTag$1 = '[object DataView]';
-	var float32Tag$1 = '[object Float32Array]';
-	var float64Tag$1 = '[object Float64Array]';
-	var int8Tag$1 = '[object Int8Array]';
-	var int16Tag$1 = '[object Int16Array]';
-	var int32Tag$1 = '[object Int32Array]';
-	var uint8Tag$1 = '[object Uint8Array]';
-	var uint8ClampedTag$1 = '[object Uint8ClampedArray]';
-	var uint16Tag$1 = '[object Uint16Array]';
-	var uint32Tag$1 = '[object Uint32Array]';
-
-	/** Used to identify `toStringTag` values of typed arrays. */
-	var typedArrayTags = {};
-	typedArrayTags[float32Tag$1] = typedArrayTags[float64Tag$1] =
-	typedArrayTags[int8Tag$1] = typedArrayTags[int16Tag$1] =
-	typedArrayTags[int32Tag$1] = typedArrayTags[uint8Tag$1] =
-	typedArrayTags[uint8ClampedTag$1] = typedArrayTags[uint16Tag$1] =
-	typedArrayTags[uint32Tag$1] = true;
-	typedArrayTags[argsTag$2] = typedArrayTags[arrayTag$1] =
-	typedArrayTags[arrayBufferTag$1] = typedArrayTags[boolTag$1] =
-	typedArrayTags[dataViewTag$1] = typedArrayTags[dateTag$1] =
-	typedArrayTags[errorTag$1] = typedArrayTags[funcTag$2] =
-	typedArrayTags[mapTag$1] = typedArrayTags[numberTag$1] =
-	typedArrayTags[objectTag$1] = typedArrayTags[regexpTag$1] =
-	typedArrayTags[setTag$1] = typedArrayTags[stringTag$1] =
-	typedArrayTags[weakMapTag$1] = false;
-
-	/**
-	 * The base implementation of `_.isTypedArray` without Node.js optimizations.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
-	 */
-	function baseIsTypedArray(value) {
-	  return isObjectLike_1(value) &&
-	    isLength_1(value.length) && !!typedArrayTags[_baseGetTag(value)];
-	}
-
-	var _baseIsTypedArray = baseIsTypedArray;
-
-	/**
-	 * The base implementation of `_.unary` without support for storing metadata.
-	 *
-	 * @private
-	 * @param {Function} func The function to cap arguments for.
-	 * @returns {Function} Returns the new capped function.
-	 */
-	function baseUnary(func) {
-	  return function(value) {
-	    return func(value);
-	  };
-	}
-
-	var _baseUnary = baseUnary;
-
-	var _nodeUtil = createCommonjsModule(function (module, exports) {
-	/** Detect free variable `exports`. */
-	var freeExports = 'object' == 'object' && exports && !exports.nodeType && exports;
-
-	/** Detect free variable `module`. */
-	var freeModule = freeExports && 'object' == 'object' && module && !module.nodeType && module;
-
-	/** Detect the popular CommonJS extension `module.exports`. */
-	var moduleExports = freeModule && freeModule.exports === freeExports;
-
-	/** Detect free variable `process` from Node.js. */
-	var freeProcess = moduleExports && _freeGlobal.process;
-
-	/** Used to access faster Node.js helpers. */
-	var nodeUtil = (function() {
-	  try {
-	    return freeProcess && freeProcess.binding && freeProcess.binding('util');
-	  } catch (e) {}
-	}());
-
-	module.exports = nodeUtil;
-	});
-
-	/* Node.js helper references. */
-	var nodeIsTypedArray = _nodeUtil && _nodeUtil.isTypedArray;
-
-	/**
-	 * Checks if `value` is classified as a typed array.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 3.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
-	 * @example
-	 *
-	 * _.isTypedArray(new Uint8Array);
-	 * // => true
-	 *
-	 * _.isTypedArray([]);
-	 * // => false
-	 */
-	var isTypedArray = nodeIsTypedArray ? _baseUnary(nodeIsTypedArray) : _baseIsTypedArray;
-
-	var isTypedArray_1 = isTypedArray;
-
-	/** Used for built-in method references. */
-	var objectProto$6 = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$5 = objectProto$6.hasOwnProperty;
-
-	/**
-	 * Creates an array of the enumerable property names of the array-like `value`.
-	 *
-	 * @private
-	 * @param {*} value The value to query.
-	 * @param {boolean} inherited Specify returning inherited property names.
-	 * @returns {Array} Returns the array of property names.
-	 */
-	function arrayLikeKeys(value, inherited) {
-	  var isArr = isArray_1$2(value),
-	      isArg = !isArr && isArguments_1(value),
-	      isBuff = !isArr && !isArg && isBuffer_1(value),
-	      isType = !isArr && !isArg && !isBuff && isTypedArray_1(value),
-	      skipIndexes = isArr || isArg || isBuff || isType,
-	      result = skipIndexes ? _baseTimes(value.length, String) : [],
-	      length = result.length;
-
-	  for (var key in value) {
-	    if ((inherited || hasOwnProperty$5.call(value, key)) &&
-	        !(skipIndexes && (
-	           // Safari 9 has enumerable `arguments.length` in strict mode.
-	           key == 'length' ||
-	           // Node.js 0.10 has enumerable non-index properties on buffers.
-	           (isBuff && (key == 'offset' || key == 'parent')) ||
-	           // PhantomJS 2 has enumerable non-index properties on typed arrays.
-	           (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
-	           // Skip index properties.
-	           _isIndex(key, length)
-	        ))) {
-	      result.push(key);
-	    }
-	  }
-	  return result;
-	}
-
-	var _arrayLikeKeys = arrayLikeKeys;
-
-	/** Used for built-in method references. */
-	var objectProto$9 = Object.prototype;
-
-	/**
-	 * Checks if `value` is likely a prototype object.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
-	 */
-	function isPrototype(value) {
-	  var Ctor = value && value.constructor,
-	      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto$9;
-
-	  return value === proto;
-	}
-
-	var _isPrototype = isPrototype;
-
-	/**
-	 * Creates a unary function that invokes `func` with its argument transformed.
-	 *
-	 * @private
-	 * @param {Function} func The function to wrap.
-	 * @param {Function} transform The argument transform.
-	 * @returns {Function} Returns the new function.
-	 */
-	function overArg(func, transform) {
-	  return function(arg) {
-	    return func(transform(arg));
-	  };
-	}
-
-	var _overArg = overArg;
-
-	/* Built-in method references for those with the same name as other `lodash` methods. */
-	var nativeKeys = _overArg(Object.keys, Object);
-
-	var _nativeKeys = nativeKeys;
-
-	/** Used for built-in method references. */
-	var objectProto$8 = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$7 = objectProto$8.hasOwnProperty;
-
-	/**
-	 * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names.
-	 */
-	function baseKeys(object) {
-	  if (!_isPrototype(object)) {
-	    return _nativeKeys(object);
-	  }
-	  var result = [];
-	  for (var key in Object(object)) {
-	    if (hasOwnProperty$7.call(object, key) && key != 'constructor') {
-	      result.push(key);
-	    }
-	  }
-	  return result;
-	}
-
-	var _baseKeys = baseKeys;
-
-	/**
-	 * Checks if `value` is array-like. A value is considered array-like if it's
-	 * not a function and has a `value.length` that's an integer greater than or
-	 * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
-	 * @example
-	 *
-	 * _.isArrayLike([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isArrayLike(document.body.children);
-	 * // => true
-	 *
-	 * _.isArrayLike('abc');
-	 * // => true
-	 *
-	 * _.isArrayLike(_.noop);
-	 * // => false
-	 */
-	function isArrayLike(value) {
-	  return value != null && isLength_1(value.length) && !isFunction_1$3(value);
-	}
-
-	var isArrayLike_1 = isArrayLike;
-
-	/**
-	 * Creates an array of the own enumerable property names of `object`.
-	 *
-	 * **Note:** Non-object values are coerced to objects. See the
-	 * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
-	 * for more details.
-	 *
-	 * @static
-	 * @since 0.1.0
-	 * @memberOf _
-	 * @category Object
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names.
-	 * @example
-	 *
-	 * function Foo() {
-	 *   this.a = 1;
-	 *   this.b = 2;
-	 * }
-	 *
-	 * Foo.prototype.c = 3;
-	 *
-	 * _.keys(new Foo);
-	 * // => ['a', 'b'] (iteration order is not guaranteed)
-	 *
-	 * _.keys('hi');
-	 * // => ['0', '1']
-	 */
-	function keys(object) {
-	  return isArrayLike_1(object) ? _arrayLikeKeys(object) : _baseKeys(object);
-	}
-
-	var keys_1 = keys;
-
-	/**
-	 * The base implementation of `_.assign` without support for multiple sources
-	 * or `customizer` functions.
-	 *
-	 * @private
-	 * @param {Object} object The destination object.
-	 * @param {Object} source The source object.
-	 * @returns {Object} Returns `object`.
-	 */
-	function baseAssign(object, source) {
-	  return object && _copyObject(source, keys_1(source), object);
-	}
-
-	var _baseAssign = baseAssign;
-
-	/**
-	 * This function is like
-	 * [`Object.keys`](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
-	 * except that it includes inherited enumerable properties.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names.
-	 */
-	function nativeKeysIn(object) {
-	  var result = [];
-	  if (object != null) {
-	    for (var key in Object(object)) {
-	      result.push(key);
-	    }
-	  }
-	  return result;
-	}
-
-	var _nativeKeysIn = nativeKeysIn;
-
-	/** Used for built-in method references. */
-	var objectProto$10 = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$8 = objectProto$10.hasOwnProperty;
-
-	/**
-	 * The base implementation of `_.keysIn` which doesn't treat sparse arrays as dense.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names.
-	 */
-	function baseKeysIn(object) {
-	  if (!isObject_1$3(object)) {
-	    return _nativeKeysIn(object);
-	  }
-	  var isProto = _isPrototype(object),
-	      result = [];
-
-	  for (var key in object) {
-	    if (!(key == 'constructor' && (isProto || !hasOwnProperty$8.call(object, key)))) {
-	      result.push(key);
-	    }
-	  }
-	  return result;
-	}
-
-	var _baseKeysIn = baseKeysIn;
-
-	/**
-	 * Creates an array of the own and inherited enumerable property names of `object`.
-	 *
-	 * **Note:** Non-object values are coerced to objects.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 3.0.0
-	 * @category Object
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names.
-	 * @example
-	 *
-	 * function Foo() {
-	 *   this.a = 1;
-	 *   this.b = 2;
-	 * }
-	 *
-	 * Foo.prototype.c = 3;
-	 *
-	 * _.keysIn(new Foo);
-	 * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
-	 */
-	function keysIn$1(object) {
-	  return isArrayLike_1(object) ? _arrayLikeKeys(object, true) : _baseKeysIn(object);
-	}
-
-	var keysIn_1 = keysIn$1;
-
-	/**
-	 * The base implementation of `_.assignIn` without support for multiple sources
-	 * or `customizer` functions.
-	 *
-	 * @private
-	 * @param {Object} object The destination object.
-	 * @param {Object} source The source object.
-	 * @returns {Object} Returns `object`.
-	 */
-	function baseAssignIn(object, source) {
-	  return object && _copyObject(source, keysIn_1(source), object);
-	}
-
-	var _baseAssignIn = baseAssignIn;
-
-	var _cloneBuffer = createCommonjsModule(function (module, exports) {
-	/** Detect free variable `exports`. */
-	var freeExports = 'object' == 'object' && exports && !exports.nodeType && exports;
-
-	/** Detect free variable `module`. */
-	var freeModule = freeExports && 'object' == 'object' && module && !module.nodeType && module;
-
-	/** Detect the popular CommonJS extension `module.exports`. */
-	var moduleExports = freeModule && freeModule.exports === freeExports;
-
-	/** Built-in value references. */
-	var Buffer = moduleExports ? _root$1.Buffer : undefined,
-	    allocUnsafe = Buffer ? Buffer.allocUnsafe : undefined;
-
-	/**
-	 * Creates a clone of  `buffer`.
-	 *
-	 * @private
-	 * @param {Buffer} buffer The buffer to clone.
-	 * @param {boolean} [isDeep] Specify a deep clone.
-	 * @returns {Buffer} Returns the cloned buffer.
-	 */
-	function cloneBuffer(buffer, isDeep) {
-	  if (isDeep) {
-	    return buffer.slice();
-	  }
-	  var length = buffer.length,
-	      result = allocUnsafe ? allocUnsafe(length) : new buffer.constructor(length);
-
-	  buffer.copy(result);
-	  return result;
-	}
-
-	module.exports = cloneBuffer;
-	});
-
-	/**
-	 * Copies the values of `source` to `array`.
-	 *
-	 * @private
-	 * @param {Array} source The array to copy values from.
-	 * @param {Array} [array=[]] The array to copy values to.
-	 * @returns {Array} Returns `array`.
-	 */
-	function copyArray(source, array) {
-	  var index = -1,
-	      length = source.length;
-
-	  array || (array = Array(length));
-	  while (++index < length) {
-	    array[index] = source[index];
-	  }
-	  return array;
-	}
-
-	var _copyArray = copyArray;
-
-	/**
-	 * A specialized version of `_.filter` for arrays without support for
-	 * iteratee shorthands.
-	 *
-	 * @private
-	 * @param {Array} [array] The array to iterate over.
-	 * @param {Function} predicate The function invoked per iteration.
-	 * @returns {Array} Returns the new filtered array.
-	 */
-	function arrayFilter(array, predicate) {
-	  var index = -1,
-	      length = array == null ? 0 : array.length,
-	      resIndex = 0,
-	      result = [];
-
-	  while (++index < length) {
-	    var value = array[index];
-	    if (predicate(value, index, array)) {
-	      result[resIndex++] = value;
-	    }
-	  }
-	  return result;
-	}
-
-	var _arrayFilter = arrayFilter;
-
-	/**
-	 * This method returns a new empty array.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.13.0
-	 * @category Util
-	 * @returns {Array} Returns the new empty array.
-	 * @example
-	 *
-	 * var arrays = _.times(2, _.stubArray);
-	 *
-	 * console.log(arrays);
-	 * // => [[], []]
-	 *
-	 * console.log(arrays[0] === arrays[1]);
-	 * // => false
-	 */
-	function stubArray() {
-	  return [];
-	}
-
-	var stubArray_1 = stubArray;
-
-	/** Used for built-in method references. */
-	var objectProto$11 = Object.prototype;
-
-	/** Built-in value references. */
-	var propertyIsEnumerable$1 = objectProto$11.propertyIsEnumerable;
-
-	/* Built-in method references for those with the same name as other `lodash` methods. */
-	var nativeGetSymbols = Object.getOwnPropertySymbols;
-
-	/**
-	 * Creates an array of the own enumerable symbols of `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of symbols.
-	 */
-	var getSymbols = !nativeGetSymbols ? stubArray_1 : function(object) {
-	  if (object == null) {
-	    return [];
-	  }
-	  object = Object(object);
-	  return _arrayFilter(nativeGetSymbols(object), function(symbol) {
-	    return propertyIsEnumerable$1.call(object, symbol);
-	  });
-	};
-
-	var _getSymbols = getSymbols;
-
-	/**
-	 * Copies own symbols of `source` to `object`.
-	 *
-	 * @private
-	 * @param {Object} source The object to copy symbols from.
-	 * @param {Object} [object={}] The object to copy symbols to.
-	 * @returns {Object} Returns `object`.
-	 */
-	function copySymbols(source, object) {
-	  return _copyObject(source, _getSymbols(source), object);
-	}
-
-	var _copySymbols = copySymbols;
-
-	/**
-	 * Appends the elements of `values` to `array`.
-	 *
-	 * @private
-	 * @param {Array} array The array to modify.
-	 * @param {Array} values The values to append.
-	 * @returns {Array} Returns `array`.
-	 */
-	function arrayPush(array, values) {
-	  var index = -1,
-	      length = values.length,
-	      offset = array.length;
-
-	  while (++index < length) {
-	    array[offset + index] = values[index];
-	  }
-	  return array;
-	}
-
-	var _arrayPush = arrayPush;
-
-	/** Built-in value references. */
-	var getPrototype = _overArg(Object.getPrototypeOf, Object);
-
-	var _getPrototype = getPrototype;
-
-	/* Built-in method references for those with the same name as other `lodash` methods. */
-	var nativeGetSymbols$1 = Object.getOwnPropertySymbols;
-
-	/**
-	 * Creates an array of the own and inherited enumerable symbols of `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of symbols.
-	 */
-	var getSymbolsIn = !nativeGetSymbols$1 ? stubArray_1 : function(object) {
-	  var result = [];
-	  while (object) {
-	    _arrayPush(result, _getSymbols(object));
-	    object = _getPrototype(object);
-	  }
-	  return result;
-	};
-
-	var _getSymbolsIn = getSymbolsIn;
-
-	/**
-	 * Copies own and inherited symbols of `source` to `object`.
-	 *
-	 * @private
-	 * @param {Object} source The object to copy symbols from.
-	 * @param {Object} [object={}] The object to copy symbols to.
-	 * @returns {Object} Returns `object`.
-	 */
-	function copySymbolsIn(source, object) {
-	  return _copyObject(source, _getSymbolsIn(source), object);
-	}
-
-	var _copySymbolsIn = copySymbolsIn;
-
-	/**
-	 * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
-	 * `keysFunc` and `symbolsFunc` to get the enumerable property names and
-	 * symbols of `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @param {Function} keysFunc The function to get the keys of `object`.
-	 * @param {Function} symbolsFunc The function to get the symbols of `object`.
-	 * @returns {Array} Returns the array of property names and symbols.
-	 */
-	function baseGetAllKeys(object, keysFunc, symbolsFunc) {
-	  var result = keysFunc(object);
-	  return isArray_1$2(object) ? result : _arrayPush(result, symbolsFunc(object));
-	}
-
-	var _baseGetAllKeys = baseGetAllKeys;
-
-	/**
-	 * Creates an array of own enumerable property names and symbols of `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names and symbols.
-	 */
-	function getAllKeys(object) {
-	  return _baseGetAllKeys(object, keys_1, _getSymbols);
-	}
-
-	var _getAllKeys = getAllKeys;
-
-	/**
-	 * Creates an array of own and inherited enumerable property names and
-	 * symbols of `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names and symbols.
-	 */
-	function getAllKeysIn(object) {
-	  return _baseGetAllKeys(object, keysIn_1, _getSymbolsIn);
-	}
-
-	var _getAllKeysIn = getAllKeysIn;
-
-	/* Built-in method references that are verified to be native. */
-	var DataView$1 = _getNative(_root$1, 'DataView');
-
-	var _DataView = DataView$1;
-
-	/* Built-in method references that are verified to be native. */
-	var Promise$2 = _getNative(_root$1, 'Promise');
-
-	var _Promise = Promise$2;
-
-	/* Built-in method references that are verified to be native. */
-	var Set = _getNative(_root$1, 'Set');
-
-	var _Set = Set;
-
-	/* Built-in method references that are verified to be native. */
-	var WeakMap = _getNative(_root$1, 'WeakMap');
-
-	var _WeakMap = WeakMap;
-
-	/** `Object#toString` result references. */
-	var mapTag$2 = '[object Map]';
-	var objectTag$2 = '[object Object]';
-	var promiseTag = '[object Promise]';
-	var setTag$2 = '[object Set]';
-	var weakMapTag$2 = '[object WeakMap]';
-
-	var dataViewTag$2 = '[object DataView]';
-
-	/** Used to detect maps, sets, and weakmaps. */
-	var dataViewCtorString = _toSource(_DataView);
-	var mapCtorString = _toSource(_Map);
-	var promiseCtorString = _toSource(_Promise);
-	var setCtorString = _toSource(_Set);
-	var weakMapCtorString = _toSource(_WeakMap);
-
-	/**
-	 * Gets the `toStringTag` of `value`.
-	 *
-	 * @private
-	 * @param {*} value The value to query.
-	 * @returns {string} Returns the `toStringTag`.
-	 */
-	var getTag = _baseGetTag;
-
-	// Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
-	if ((_DataView && getTag(new _DataView(new ArrayBuffer(1))) != dataViewTag$2) ||
-	    (_Map && getTag(new _Map) != mapTag$2) ||
-	    (_Promise && getTag(_Promise.resolve()) != promiseTag) ||
-	    (_Set && getTag(new _Set) != setTag$2) ||
-	    (_WeakMap && getTag(new _WeakMap) != weakMapTag$2)) {
-	  getTag = function(value) {
-	    var result = _baseGetTag(value),
-	        Ctor = result == objectTag$2 ? value.constructor : undefined,
-	        ctorString = Ctor ? _toSource(Ctor) : '';
-
-	    if (ctorString) {
-	      switch (ctorString) {
-	        case dataViewCtorString: return dataViewTag$2;
-	        case mapCtorString: return mapTag$2;
-	        case promiseCtorString: return promiseTag;
-	        case setCtorString: return setTag$2;
-	        case weakMapCtorString: return weakMapTag$2;
-	      }
-	    }
-	    return result;
-	  };
-	}
-
-	var _getTag = getTag;
-
-	/** Used for built-in method references. */
-	var objectProto$12 = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$9 = objectProto$12.hasOwnProperty;
-
-	/**
-	 * Initializes an array clone.
-	 *
-	 * @private
-	 * @param {Array} array The array to clone.
-	 * @returns {Array} Returns the initialized clone.
-	 */
-	function initCloneArray(array) {
-	  var length = array.length,
-	      result = array.constructor(length);
-
-	  // Add properties assigned by `RegExp#exec`.
-	  if (length && typeof array[0] == 'string' && hasOwnProperty$9.call(array, 'index')) {
-	    result.index = array.index;
-	    result.input = array.input;
-	  }
-	  return result;
-	}
-
-	var _initCloneArray = initCloneArray;
-
-	/** Built-in value references. */
-	var Uint8Array$1 = _root$1.Uint8Array;
-
-	var _Uint8Array = Uint8Array$1;
-
-	/**
-	 * Creates a clone of `arrayBuffer`.
-	 *
-	 * @private
-	 * @param {ArrayBuffer} arrayBuffer The array buffer to clone.
-	 * @returns {ArrayBuffer} Returns the cloned array buffer.
-	 */
-	function cloneArrayBuffer(arrayBuffer) {
-	  var result = new arrayBuffer.constructor(arrayBuffer.byteLength);
-	  new _Uint8Array(result).set(new _Uint8Array(arrayBuffer));
-	  return result;
-	}
-
-	var _cloneArrayBuffer = cloneArrayBuffer;
-
-	/**
-	 * Creates a clone of `dataView`.
-	 *
-	 * @private
-	 * @param {Object} dataView The data view to clone.
-	 * @param {boolean} [isDeep] Specify a deep clone.
-	 * @returns {Object} Returns the cloned data view.
-	 */
-	function cloneDataView(dataView, isDeep) {
-	  var buffer = isDeep ? _cloneArrayBuffer(dataView.buffer) : dataView.buffer;
-	  return new dataView.constructor(buffer, dataView.byteOffset, dataView.byteLength);
-	}
-
-	var _cloneDataView = cloneDataView;
-
-	/**
-	 * Adds the key-value `pair` to `map`.
-	 *
-	 * @private
-	 * @param {Object} map The map to modify.
-	 * @param {Array} pair The key-value pair to add.
-	 * @returns {Object} Returns `map`.
-	 */
-	function addMapEntry(map, pair) {
-	  // Don't return `map.set` because it's not chainable in IE 11.
-	  map.set(pair[0], pair[1]);
-	  return map;
-	}
-
-	var _addMapEntry = addMapEntry;
-
-	/**
-	 * A specialized version of `_.reduce` for arrays without support for
-	 * iteratee shorthands.
-	 *
-	 * @private
-	 * @param {Array} [array] The array to iterate over.
-	 * @param {Function} iteratee The function invoked per iteration.
-	 * @param {*} [accumulator] The initial value.
-	 * @param {boolean} [initAccum] Specify using the first element of `array` as
-	 *  the initial value.
-	 * @returns {*} Returns the accumulated value.
-	 */
-	function arrayReduce(array, iteratee, accumulator, initAccum) {
-	  var index = -1,
-	      length = array == null ? 0 : array.length;
-
-	  if (initAccum && length) {
-	    accumulator = array[++index];
-	  }
-	  while (++index < length) {
-	    accumulator = iteratee(accumulator, array[index], index, array);
-	  }
-	  return accumulator;
-	}
-
-	var _arrayReduce = arrayReduce;
-
-	/**
-	 * Converts `map` to its key-value pairs.
-	 *
-	 * @private
-	 * @param {Object} map The map to convert.
-	 * @returns {Array} Returns the key-value pairs.
-	 */
-	function mapToArray(map) {
-	  var index = -1,
-	      result = Array(map.size);
-
-	  map.forEach(function(value, key) {
-	    result[++index] = [key, value];
-	  });
-	  return result;
-	}
-
-	var _mapToArray = mapToArray;
-
-	/** Used to compose bitmasks for cloning. */
-	var CLONE_DEEP_FLAG$1 = 1;
-
-	/**
-	 * Creates a clone of `map`.
-	 *
-	 * @private
-	 * @param {Object} map The map to clone.
-	 * @param {Function} cloneFunc The function to clone values.
-	 * @param {boolean} [isDeep] Specify a deep clone.
-	 * @returns {Object} Returns the cloned map.
-	 */
-	function cloneMap(map, isDeep, cloneFunc) {
-	  var array = isDeep ? cloneFunc(_mapToArray(map), CLONE_DEEP_FLAG$1) : _mapToArray(map);
-	  return _arrayReduce(array, _addMapEntry, new map.constructor);
-	}
-
-	var _cloneMap = cloneMap;
-
-	/** Used to match `RegExp` flags from their coerced string values. */
-	var reFlags = /\w*$/;
-
-	/**
-	 * Creates a clone of `regexp`.
-	 *
-	 * @private
-	 * @param {Object} regexp The regexp to clone.
-	 * @returns {Object} Returns the cloned regexp.
-	 */
-	function cloneRegExp(regexp) {
-	  var result = new regexp.constructor(regexp.source, reFlags.exec(regexp));
-	  result.lastIndex = regexp.lastIndex;
-	  return result;
-	}
-
-	var _cloneRegExp = cloneRegExp;
-
-	/**
-	 * Adds `value` to `set`.
-	 *
-	 * @private
-	 * @param {Object} set The set to modify.
-	 * @param {*} value The value to add.
-	 * @returns {Object} Returns `set`.
-	 */
-	function addSetEntry(set, value) {
-	  // Don't return `set.add` because it's not chainable in IE 11.
-	  set.add(value);
-	  return set;
-	}
-
-	var _addSetEntry = addSetEntry;
-
-	/**
-	 * Converts `set` to an array of its values.
-	 *
-	 * @private
-	 * @param {Object} set The set to convert.
-	 * @returns {Array} Returns the values.
-	 */
-	function setToArray(set) {
-	  var index = -1,
-	      result = Array(set.size);
-
-	  set.forEach(function(value) {
-	    result[++index] = value;
-	  });
-	  return result;
-	}
-
-	var _setToArray = setToArray;
-
-	/** Used to compose bitmasks for cloning. */
-	var CLONE_DEEP_FLAG$2 = 1;
-
-	/**
-	 * Creates a clone of `set`.
-	 *
-	 * @private
-	 * @param {Object} set The set to clone.
-	 * @param {Function} cloneFunc The function to clone values.
-	 * @param {boolean} [isDeep] Specify a deep clone.
-	 * @returns {Object} Returns the cloned set.
-	 */
-	function cloneSet(set, isDeep, cloneFunc) {
-	  var array = isDeep ? cloneFunc(_setToArray(set), CLONE_DEEP_FLAG$2) : _setToArray(set);
-	  return _arrayReduce(array, _addSetEntry, new set.constructor);
-	}
-
-	var _cloneSet = cloneSet;
-
-	/** Used to convert symbols to primitives and strings. */
-	var symbolProto = _Symbol ? _Symbol.prototype : undefined;
-	var symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
-
-	/**
-	 * Creates a clone of the `symbol` object.
-	 *
-	 * @private
-	 * @param {Object} symbol The symbol object to clone.
-	 * @returns {Object} Returns the cloned symbol object.
-	 */
-	function cloneSymbol(symbol) {
-	  return symbolValueOf ? Object(symbolValueOf.call(symbol)) : {};
-	}
-
-	var _cloneSymbol = cloneSymbol;
-
-	/**
-	 * Creates a clone of `typedArray`.
-	 *
-	 * @private
-	 * @param {Object} typedArray The typed array to clone.
-	 * @param {boolean} [isDeep] Specify a deep clone.
-	 * @returns {Object} Returns the cloned typed array.
-	 */
-	function cloneTypedArray(typedArray, isDeep) {
-	  var buffer = isDeep ? _cloneArrayBuffer(typedArray.buffer) : typedArray.buffer;
-	  return new typedArray.constructor(buffer, typedArray.byteOffset, typedArray.length);
-	}
-
-	var _cloneTypedArray = cloneTypedArray;
-
-	/** `Object#toString` result references. */
-	var boolTag$2 = '[object Boolean]';
-	var dateTag$2 = '[object Date]';
-	var mapTag$3 = '[object Map]';
-	var numberTag$2 = '[object Number]';
-	var regexpTag$2 = '[object RegExp]';
-	var setTag$3 = '[object Set]';
-	var stringTag$2 = '[object String]';
-	var symbolTag$1 = '[object Symbol]';
-
-	var arrayBufferTag$2 = '[object ArrayBuffer]';
-	var dataViewTag$3 = '[object DataView]';
-	var float32Tag$2 = '[object Float32Array]';
-	var float64Tag$2 = '[object Float64Array]';
-	var int8Tag$2 = '[object Int8Array]';
-	var int16Tag$2 = '[object Int16Array]';
-	var int32Tag$2 = '[object Int32Array]';
-	var uint8Tag$2 = '[object Uint8Array]';
-	var uint8ClampedTag$2 = '[object Uint8ClampedArray]';
-	var uint16Tag$2 = '[object Uint16Array]';
-	var uint32Tag$2 = '[object Uint32Array]';
-
-	/**
-	 * Initializes an object clone based on its `toStringTag`.
-	 *
-	 * **Note:** This function only supports cloning values with tags of
-	 * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
-	 *
-	 * @private
-	 * @param {Object} object The object to clone.
-	 * @param {string} tag The `toStringTag` of the object to clone.
-	 * @param {Function} cloneFunc The function to clone values.
-	 * @param {boolean} [isDeep] Specify a deep clone.
-	 * @returns {Object} Returns the initialized clone.
-	 */
-	function initCloneByTag(object, tag, cloneFunc, isDeep) {
-	  var Ctor = object.constructor;
-	  switch (tag) {
-	    case arrayBufferTag$2:
-	      return _cloneArrayBuffer(object);
-
-	    case boolTag$2:
-	    case dateTag$2:
-	      return new Ctor(+object);
-
-	    case dataViewTag$3:
-	      return _cloneDataView(object, isDeep);
-
-	    case float32Tag$2: case float64Tag$2:
-	    case int8Tag$2: case int16Tag$2: case int32Tag$2:
-	    case uint8Tag$2: case uint8ClampedTag$2: case uint16Tag$2: case uint32Tag$2:
-	      return _cloneTypedArray(object, isDeep);
-
-	    case mapTag$3:
-	      return _cloneMap(object, isDeep, cloneFunc);
-
-	    case numberTag$2:
-	    case stringTag$2:
-	      return new Ctor(object);
-
-	    case regexpTag$2:
-	      return _cloneRegExp(object);
-
-	    case setTag$3:
-	      return _cloneSet(object, isDeep, cloneFunc);
-
-	    case symbolTag$1:
-	      return _cloneSymbol(object);
-	  }
-	}
-
-	var _initCloneByTag = initCloneByTag;
-
-	/** Built-in value references. */
-	var objectCreate = Object.create;
-
-	/**
-	 * The base implementation of `_.create` without support for assigning
-	 * properties to the created object.
-	 *
-	 * @private
-	 * @param {Object} proto The object to inherit from.
-	 * @returns {Object} Returns the new object.
-	 */
-	var baseCreate = (function() {
-	  function object() {}
-	  return function(proto) {
-	    if (!isObject_1$3(proto)) {
-	      return {};
-	    }
-	    if (objectCreate) {
-	      return objectCreate(proto);
-	    }
-	    object.prototype = proto;
-	    var result = new object;
-	    object.prototype = undefined;
-	    return result;
-	  };
-	}());
-
-	var _baseCreate = baseCreate;
-
-	/**
-	 * Initializes an object clone.
-	 *
-	 * @private
-	 * @param {Object} object The object to clone.
-	 * @returns {Object} Returns the initialized clone.
-	 */
-	function initCloneObject(object) {
-	  return (typeof object.constructor == 'function' && !_isPrototype(object))
-	    ? _baseCreate(_getPrototype(object))
-	    : {};
-	}
-
-	var _initCloneObject = initCloneObject;
-
-	/** Used to compose bitmasks for cloning. */
-	var CLONE_DEEP_FLAG = 1;
-	var CLONE_FLAT_FLAG = 2;
-	var CLONE_SYMBOLS_FLAG$1 = 4;
-
-	/** `Object#toString` result references. */
-	var argsTag = '[object Arguments]';
-	var arrayTag = '[object Array]';
-	var boolTag = '[object Boolean]';
-	var dateTag = '[object Date]';
-	var errorTag = '[object Error]';
-	var funcTag = '[object Function]';
-	var genTag = '[object GeneratorFunction]';
-	var mapTag = '[object Map]';
-	var numberTag = '[object Number]';
-	var objectTag = '[object Object]';
-	var regexpTag = '[object RegExp]';
-	var setTag = '[object Set]';
-	var stringTag = '[object String]';
-	var symbolTag = '[object Symbol]';
-	var weakMapTag = '[object WeakMap]';
-
-	var arrayBufferTag = '[object ArrayBuffer]';
-	var dataViewTag = '[object DataView]';
-	var float32Tag = '[object Float32Array]';
-	var float64Tag = '[object Float64Array]';
-	var int8Tag = '[object Int8Array]';
-	var int16Tag = '[object Int16Array]';
-	var int32Tag = '[object Int32Array]';
-	var uint8Tag = '[object Uint8Array]';
-	var uint8ClampedTag = '[object Uint8ClampedArray]';
-	var uint16Tag = '[object Uint16Array]';
-	var uint32Tag = '[object Uint32Array]';
-
-	/** Used to identify `toStringTag` values supported by `_.clone`. */
-	var cloneableTags = {};
-	cloneableTags[argsTag] = cloneableTags[arrayTag] =
-	cloneableTags[arrayBufferTag] = cloneableTags[dataViewTag] =
-	cloneableTags[boolTag] = cloneableTags[dateTag] =
-	cloneableTags[float32Tag] = cloneableTags[float64Tag] =
-	cloneableTags[int8Tag] = cloneableTags[int16Tag] =
-	cloneableTags[int32Tag] = cloneableTags[mapTag] =
-	cloneableTags[numberTag] = cloneableTags[objectTag] =
-	cloneableTags[regexpTag] = cloneableTags[setTag] =
-	cloneableTags[stringTag] = cloneableTags[symbolTag] =
-	cloneableTags[uint8Tag] = cloneableTags[uint8ClampedTag] =
-	cloneableTags[uint16Tag] = cloneableTags[uint32Tag] = true;
-	cloneableTags[errorTag] = cloneableTags[funcTag] =
-	cloneableTags[weakMapTag] = false;
-
-	/**
-	 * The base implementation of `_.clone` and `_.cloneDeep` which tracks
-	 * traversed objects.
-	 *
-	 * @private
-	 * @param {*} value The value to clone.
-	 * @param {boolean} bitmask The bitmask flags.
-	 *  1 - Deep clone
-	 *  2 - Flatten inherited properties
-	 *  4 - Clone symbols
-	 * @param {Function} [customizer] The function to customize cloning.
-	 * @param {string} [key] The key of `value`.
-	 * @param {Object} [object] The parent object of `value`.
-	 * @param {Object} [stack] Tracks traversed objects and their clone counterparts.
-	 * @returns {*} Returns the cloned value.
-	 */
-	function baseClone(value, bitmask, customizer, key, object, stack) {
-	  var result,
-	      isDeep = bitmask & CLONE_DEEP_FLAG,
-	      isFlat = bitmask & CLONE_FLAT_FLAG,
-	      isFull = bitmask & CLONE_SYMBOLS_FLAG$1;
-
-	  if (customizer) {
-	    result = object ? customizer(value, key, object, stack) : customizer(value);
-	  }
-	  if (result !== undefined) {
-	    return result;
-	  }
-	  if (!isObject_1$3(value)) {
-	    return value;
-	  }
-	  var isArr = isArray_1$2(value);
-	  if (isArr) {
-	    result = _initCloneArray(value);
-	    if (!isDeep) {
-	      return _copyArray(value, result);
-	    }
-	  } else {
-	    var tag = _getTag(value),
-	        isFunc = tag == funcTag || tag == genTag;
-
-	    if (isBuffer_1(value)) {
-	      return _cloneBuffer(value, isDeep);
-	    }
-	    if (tag == objectTag || tag == argsTag || (isFunc && !object)) {
-	      result = (isFlat || isFunc) ? {} : _initCloneObject(value);
-	      if (!isDeep) {
-	        return isFlat
-	          ? _copySymbolsIn(value, _baseAssignIn(result, value))
-	          : _copySymbols(value, _baseAssign(result, value));
-	      }
-	    } else {
-	      if (!cloneableTags[tag]) {
-	        return object ? value : {};
-	      }
-	      result = _initCloneByTag(value, tag, baseClone, isDeep);
-	    }
-	  }
-	  // Check for circular references and return its corresponding clone.
-	  stack || (stack = new _Stack);
-	  var stacked = stack.get(value);
-	  if (stacked) {
-	    return stacked;
-	  }
-	  stack.set(value, result);
-
-	  var keysFunc = isFull
-	    ? (isFlat ? _getAllKeysIn : _getAllKeys)
-	    : (isFlat ? keysIn : keys_1);
-
-	  var props = isArr ? undefined : keysFunc(value);
-	  _arrayEach(props || value, function(subValue, key) {
-	    if (props) {
-	      key = subValue;
-	      subValue = value[key];
-	    }
-	    // Recursively populate clone (susceptible to call stack limits).
-	    _assignValue(result, key, baseClone(subValue, bitmask, customizer, key, value, stack));
-	  });
-	  return result;
-	}
-
-	var _baseClone = baseClone;
-
-	/** Used to compose bitmasks for cloning. */
-	var CLONE_SYMBOLS_FLAG = 4;
-
-	/**
-	 * Creates a shallow clone of `value`.
-	 *
-	 * **Note:** This method is loosely based on the
-	 * [structured clone algorithm](https://mdn.io/Structured_clone_algorithm)
-	 * and supports cloning arrays, array buffers, booleans, date objects, maps,
-	 * numbers, `Object` objects, regexes, sets, strings, symbols, and typed
-	 * arrays. The own enumerable properties of `arguments` objects are cloned
-	 * as plain objects. An empty object is returned for uncloneable values such
-	 * as error objects, functions, DOM nodes, and WeakMaps.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to clone.
-	 * @returns {*} Returns the cloned value.
-	 * @see _.cloneDeep
-	 * @example
-	 *
-	 * var objects = [{ 'a': 1 }, { 'b': 2 }];
-	 *
-	 * var shallow = _.clone(objects);
-	 * console.log(shallow[0] === objects[0]);
-	 * // => true
-	 */
-	function clone$1(value) {
-	  return _baseClone(value, CLONE_SYMBOLS_FLAG);
-	}
-
-	var clone_1 = clone$1;
-
-	var tourComponent = {
-	  schema: {
-	    autoStart: {
-	      type: 'boolean',
-	      default: true
-	    },
-	    loop: {
-	      type: 'boolean',
-	      default: true
-	    },
-	    wait: {
-	      type: 'number',
-	      default: 2000
-	    },
-	    move: {
-	      type: 'number',
-	      default: 3000
-	    }
-	  },
-
-	  init: function () {
-	    this._currentWayPoint = -1;
-	    this.el.setAttribute('animation__move', { startEvents: 'doNotFire', pauseEvents: 'pauseTour', resumeEvents:'resumeTour', property: 'position', easing: 'easeInOutSine', dur: 100 });
-	    this.el.setAttribute('animation__turn', { startEvents: 'doNotFire', pauseEvents: 'pauseTour', resumeEvents:'resumeTour', property: 'rotation', easing: 'easeInOutSine', dur: 100 });
-	    this._nextWaypointHandler = this._nextWaypoint.bind(this);
-	  },
-
-	  update: function () {
-	    this._waypoints = Array.from(this.el.querySelectorAll('[tour-waypoint]'));
-
-	    if(this.data.autoStart) {
-	      this.playTour();
-	    }
-	  },
-
-	  playTour: function () {
-	    if (this._isPlaying) {
-	      if(this._isChangingAnimation) {
-	        clearTimeout(this._nextAnimationTimeout);
-	        this.goTo(this._waypoints[this._currentWayPoint].getAttribute('tour-waypoint'), this._isPlaying);
-	      } else {
-	        this.el.dispatchEvent(new CustomEvent('resumeTour'));
-	      }
-	      this._isPaused = false;
-	    } else {
-	      this._isPlaying = true;
-	      this._isPaused = false;
-	      this.el.addEventListener('animation__move-complete', this._nextWaypointHandler);
-	      var next = this._waypoints[++this._currentWayPoint];
-	      if (next) this.goTo(next.getAttribute('tour-waypoint'), true);
-	      else if (this.data.loop) {
-	        this._currentWayPoint = 0;
-	        this.goTo(this._waypoints[0].getAttribute('tour-waypoint'), true);
-	      }
-	    }
-	  },
-
-	  pauseTour: function () {
-	    this._isPaused = true;
-	    this.el.dispatchEvent(new CustomEvent('pauseTour'));
-	  },
-
-	  stopTour: function () {
-	    this.pauseTour();
-	    this.el.removeEventListener('animation__move-complete', this._nextWaypointHandler);
-	    this._isPlaying = false;
-	    this._isPaused = false;
-	  },
-
-	  goTo: function (label, keepPlaying) {
-	    this._isPlaying = !!keepPlaying;
-	    var target = this._waypoints.find(function (item) { return item.getAttribute('tour-waypoint') === label });
-	    if (!target) {
-	      console.error('The given waypoint '+ label + ' does not exist. Available waypoints:', this._waypoints.map(function (elem) { elem.getAttribute('tour-waypoint'); }));
-	      return
-	    }
-
-	    this.animate(target);
-	  },
-
-	  setViewPoint: function (mode) {
-	    var HEIGHT_PERSON = 1.4;
-	    var HEIGHT_BIRDS_EYE = 7;
-	    var ANGLE_PERSON = 0;
-	    var ANGLE_BIRDS_EYE = -60;
-	    if (['person', 'bird'].indexOf(mode) < -1) {
-	      console.error('not supported camera mode: ' + mode);
-	      return
-	    }
-	    this._isPlaying = false;
-	    var pos = clone_1(this.el.getAttribute('position'));
-	    var rot = clone_1(this.el.getAttribute('rotation'));
-	    pos.y = mode === 'person' ? HEIGHT_PERSON : HEIGHT_BIRDS_EYE;
-	    rot.x = mode === 'person' ? ANGLE_PERSON : ANGLE_BIRDS_EYE;
-	    var target = {
-	      position: AFRAME.utils.coordinates.stringify(pos),
-	      rotation: AFRAME.utils.coordinates.stringify(rot)
-	    };
-	    this.animate(target);
-	  },
-
-	  animate: function (bookmark) {
-	    var isDomElement = isElement(bookmark);
-	    var entity = this.el;
-	    var newPosition = isDomElement ? bookmark.getAttribute('position') : bookmark.position;
-	    var newRotation = isDomElement ? bookmark.getAttribute('rotation') : bookmark.rotation;
-	    var currentPosition = entity.getAttribute('position');
-	    var currentRotation = entity.getAttribute('rotation');
-	    var startPosition = AFRAME.utils.coordinates.stringify(currentPosition);
-	    var startRotation = AFRAME.utils.coordinates.stringify(currentRotation);
-
-	    // compute distance to adapt speed
-	    var d = dist(currentPosition, AFRAME.utils.coordinates.parse(newPosition));
-	    // compute angle difference to adapt speed
-	    var angle = Math.abs(currentRotation.y - AFRAME.utils.coordinates.parse(newRotation).y);
-	    // compute animation time
-	    // add 1 to the this.data.move parameter to allow users to specify 0 without the animation cancelling out
-	    var t = Math.round((this.data.move === undefined ? 3000 : this.data.move + 1) / 6 * (d + angle / 30));
-	    if (t > Math.max(10000, this.data.move)) t = Math.max(10000, this.data.move);
-
-	    // prevent zero length animation
-	    if (!t) return this._nextWaypoint()
-
-	    entity.components.animation__move.pauseAnimation();
-	    entity.components.animation__turn.pauseAnimation();
-	    entity.components.animation__move.data.dur = t;
-	    entity.components.animation__move.data.from = startPosition;
-	    entity.components.animation__move.data.to = newPosition;
-	    entity.components.animation__move.update();
-	    entity.components.animation__turn.data.dur = t;
-	    entity.components.animation__turn.data.from = startRotation;
-	    entity.components.animation__turn.data.to = newRotation;
-	    entity.components.animation__turn.update();
-	    entity.components.animation__move.resumeAnimation();
-	    entity.components.animation__turn.resumeAnimation();
-	    this._isChangingAnimation = false;
-	  },
-
-	  _nextWaypoint: function () {
-	    if (!this._isPlaying) return this.stopTour()
-	    if (this._currentWayPoint === this._waypoints.length - 1) {
-	      if (!this.data.loop) return
-	      this._currentWayPoint = -1;
-	    }
-	    this._isChangingAnimation = true;
-	    var next = this._waypoints[++this._currentWayPoint];
-	    this._nextAnimationTimeout = setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying); }.bind(this), this.data.wait === undefined ? 0 : this.data.wait);
-	  }
-	};
-
-	function dist(p, q) {
-	  var a = parseFloat(q.x) - parseFloat(p.x);
-	  var b = parseFloat(q.y) - parseFloat(p.y);
-	  var c = parseFloat(q.z) - parseFloat(p.z);
-	  return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2) + Math.pow(c, 2))
-	}
-
-	// Returns true if it is a DOM element
-	// https://stackoverflow.com/a/384380/2835973
-	function isElement(o){
-	  var DOM_ELEMENT = 1;
-	  return (
-	    typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
-	      o && typeof o === "object" && o !== null && o.nodeType === DOM_ELEMENT && typeof o.nodeName==="string"
-	  );
-	}
-
-	/** Built-in value references. */
-	var spreadableSymbol = _Symbol ? _Symbol.isConcatSpreadable : undefined;
-
-	/**
-	 * Checks if `value` is a flattenable `arguments` object or array.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is flattenable, else `false`.
-	 */
-	function isFlattenable(value) {
-	  return isArray_1$2(value) || isArguments_1(value) ||
-	    !!(spreadableSymbol && value && value[spreadableSymbol]);
-	}
-
-	var _isFlattenable = isFlattenable;
-
-	/**
-	 * The base implementation of `_.flatten` with support for restricting flattening.
-	 *
-	 * @private
-	 * @param {Array} array The array to flatten.
-	 * @param {number} depth The maximum recursion depth.
-	 * @param {boolean} [predicate=isFlattenable] The function invoked per iteration.
-	 * @param {boolean} [isStrict] Restrict to values that pass `predicate` checks.
-	 * @param {Array} [result=[]] The initial result value.
-	 * @returns {Array} Returns the new flattened array.
-	 */
-	function baseFlatten(array, depth, predicate, isStrict, result) {
-	  var index = -1,
-	      length = array.length;
-
-	  predicate || (predicate = _isFlattenable);
-	  result || (result = []);
-
-	  while (++index < length) {
-	    var value = array[index];
-	    if (depth > 0 && predicate(value)) {
-	      if (depth > 1) {
-	        // Recursively flatten arrays (susceptible to call stack limits).
-	        baseFlatten(value, depth - 1, predicate, isStrict, result);
-	      } else {
-	        _arrayPush(result, value);
-	      }
-	    } else if (!isStrict) {
-	      result[result.length] = value;
-	    }
-	  }
-	  return result;
-	}
-
-	var _baseFlatten = baseFlatten;
-
-	/**
-	 * A specialized version of `_.map` for arrays without support for iteratee
-	 * shorthands.
-	 *
-	 * @private
-	 * @param {Array} [array] The array to iterate over.
-	 * @param {Function} iteratee The function invoked per iteration.
-	 * @returns {Array} Returns the new mapped array.
-	 */
-	function arrayMap(array, iteratee) {
-	  var index = -1,
-	      length = array == null ? 0 : array.length,
-	      result = Array(length);
-
-	  while (++index < length) {
-	    result[index] = iteratee(array[index], index, array);
-	  }
-	  return result;
-	}
-
-	var _arrayMap = arrayMap;
-
 	/** Used to stand-in for `undefined` hash values. */
 	var HASH_UNDEFINED$2 = '__lodash_hash_undefined__';
 
@@ -16950,27 +15260,70 @@
 
 	var _equalArrays = equalArrays;
 
+	/** Built-in value references. */
+	var Uint8Array$1 = _root$1.Uint8Array;
+
+	var _Uint8Array = Uint8Array$1;
+
+	/**
+	 * Converts `map` to its key-value pairs.
+	 *
+	 * @private
+	 * @param {Object} map The map to convert.
+	 * @returns {Array} Returns the key-value pairs.
+	 */
+	function mapToArray(map) {
+	  var index = -1,
+	      result = Array(map.size);
+
+	  map.forEach(function(value, key) {
+	    result[++index] = [key, value];
+	  });
+	  return result;
+	}
+
+	var _mapToArray = mapToArray;
+
+	/**
+	 * Converts `set` to an array of its values.
+	 *
+	 * @private
+	 * @param {Object} set The set to convert.
+	 * @returns {Array} Returns the values.
+	 */
+	function setToArray(set) {
+	  var index = -1,
+	      result = Array(set.size);
+
+	  set.forEach(function(value) {
+	    result[++index] = value;
+	  });
+	  return result;
+	}
+
+	var _setToArray = setToArray;
+
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG$3 = 1;
 	var COMPARE_UNORDERED_FLAG$2 = 2;
 
 	/** `Object#toString` result references. */
-	var boolTag$3 = '[object Boolean]';
-	var dateTag$3 = '[object Date]';
-	var errorTag$2 = '[object Error]';
-	var mapTag$4 = '[object Map]';
-	var numberTag$3 = '[object Number]';
-	var regexpTag$3 = '[object RegExp]';
-	var setTag$4 = '[object Set]';
-	var stringTag$3 = '[object String]';
-	var symbolTag$2 = '[object Symbol]';
+	var boolTag = '[object Boolean]';
+	var dateTag = '[object Date]';
+	var errorTag = '[object Error]';
+	var mapTag = '[object Map]';
+	var numberTag = '[object Number]';
+	var regexpTag = '[object RegExp]';
+	var setTag = '[object Set]';
+	var stringTag = '[object String]';
+	var symbolTag = '[object Symbol]';
 
-	var arrayBufferTag$3 = '[object ArrayBuffer]';
-	var dataViewTag$4 = '[object DataView]';
+	var arrayBufferTag = '[object ArrayBuffer]';
+	var dataViewTag = '[object DataView]';
 
 	/** Used to convert symbols to primitives and strings. */
-	var symbolProto$1 = _Symbol ? _Symbol.prototype : undefined;
-	var symbolValueOf$1 = symbolProto$1 ? symbolProto$1.valueOf : undefined;
+	var symbolProto = _Symbol ? _Symbol.prototype : undefined;
+	var symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
 
 	/**
 	 * A specialized version of `baseIsEqualDeep` for comparing objects of
@@ -16991,7 +15344,7 @@
 	 */
 	function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
 	  switch (tag) {
-	    case dataViewTag$4:
+	    case dataViewTag:
 	      if ((object.byteLength != other.byteLength) ||
 	          (object.byteOffset != other.byteOffset)) {
 	        return false;
@@ -16999,34 +15352,34 @@
 	      object = object.buffer;
 	      other = other.buffer;
 
-	    case arrayBufferTag$3:
+	    case arrayBufferTag:
 	      if ((object.byteLength != other.byteLength) ||
 	          !equalFunc(new _Uint8Array(object), new _Uint8Array(other))) {
 	        return false;
 	      }
 	      return true;
 
-	    case boolTag$3:
-	    case dateTag$3:
-	    case numberTag$3:
+	    case boolTag:
+	    case dateTag:
+	    case numberTag:
 	      // Coerce booleans to `1` or `0` and dates to milliseconds.
 	      // Invalid dates are coerced to `NaN`.
 	      return eq_1(+object, +other);
 
-	    case errorTag$2:
+	    case errorTag:
 	      return object.name == other.name && object.message == other.message;
 
-	    case regexpTag$3:
-	    case stringTag$3:
+	    case regexpTag:
+	    case stringTag:
 	      // Coerce regexes to strings and treat strings, primitives and objects,
 	      // as equal. See http://www.ecma-international.org/ecma-262/7.0/#sec-regexp.prototype.tostring
 	      // for more details.
 	      return object == (other + '');
 
-	    case mapTag$4:
+	    case mapTag:
 	      var convert = _mapToArray;
 
-	    case setTag$4:
+	    case setTag:
 	      var isPartial = bitmask & COMPARE_PARTIAL_FLAG$3;
 	      convert || (convert = _setToArray);
 
@@ -17046,9 +15399,9 @@
 	      stack['delete'](object);
 	      return result;
 
-	    case symbolTag$2:
-	      if (symbolValueOf$1) {
-	        return symbolValueOf$1.call(object) == symbolValueOf$1.call(other);
+	    case symbolTag:
+	      if (symbolValueOf) {
+	        return symbolValueOf.call(object) == symbolValueOf.call(other);
 	      }
 	  }
 	  return false;
@@ -17056,14 +15409,555 @@
 
 	var _equalByTag = equalByTag;
 
+	/**
+	 * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
+	 * `keysFunc` and `symbolsFunc` to get the enumerable property names and
+	 * symbols of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Function} keysFunc The function to get the keys of `object`.
+	 * @param {Function} symbolsFunc The function to get the symbols of `object`.
+	 * @returns {Array} Returns the array of property names and symbols.
+	 */
+	function baseGetAllKeys(object, keysFunc, symbolsFunc) {
+	  var result = keysFunc(object);
+	  return isArray_1$2(object) ? result : _arrayPush(result, symbolsFunc(object));
+	}
+
+	var _baseGetAllKeys = baseGetAllKeys;
+
+	/**
+	 * A specialized version of `_.filter` for arrays without support for
+	 * iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Array} [array] The array to iterate over.
+	 * @param {Function} predicate The function invoked per iteration.
+	 * @returns {Array} Returns the new filtered array.
+	 */
+	function arrayFilter(array, predicate) {
+	  var index = -1,
+	      length = array == null ? 0 : array.length,
+	      resIndex = 0,
+	      result = [];
+
+	  while (++index < length) {
+	    var value = array[index];
+	    if (predicate(value, index, array)) {
+	      result[resIndex++] = value;
+	    }
+	  }
+	  return result;
+	}
+
+	var _arrayFilter = arrayFilter;
+
+	/**
+	 * This method returns a new empty array.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.13.0
+	 * @category Util
+	 * @returns {Array} Returns the new empty array.
+	 * @example
+	 *
+	 * var arrays = _.times(2, _.stubArray);
+	 *
+	 * console.log(arrays);
+	 * // => [[], []]
+	 *
+	 * console.log(arrays[0] === arrays[1]);
+	 * // => false
+	 */
+	function stubArray() {
+	  return [];
+	}
+
+	var stubArray_1 = stubArray;
+
+	/** Used for built-in method references. */
+	var objectProto$8 = Object.prototype;
+
+	/** Built-in value references. */
+	var propertyIsEnumerable$1 = objectProto$8.propertyIsEnumerable;
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeGetSymbols = Object.getOwnPropertySymbols;
+
+	/**
+	 * Creates an array of the own enumerable symbols of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of symbols.
+	 */
+	var getSymbols = !nativeGetSymbols ? stubArray_1 : function(object) {
+	  if (object == null) {
+	    return [];
+	  }
+	  object = Object(object);
+	  return _arrayFilter(nativeGetSymbols(object), function(symbol) {
+	    return propertyIsEnumerable$1.call(object, symbol);
+	  });
+	};
+
+	var _getSymbols = getSymbols;
+
+	/**
+	 * The base implementation of `_.times` without support for iteratee shorthands
+	 * or max array length checks.
+	 *
+	 * @private
+	 * @param {number} n The number of times to invoke `iteratee`.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array} Returns the array of results.
+	 */
+	function baseTimes(n, iteratee) {
+	  var index = -1,
+	      result = Array(n);
+
+	  while (++index < n) {
+	    result[index] = iteratee(index);
+	  }
+	  return result;
+	}
+
+	var _baseTimes = baseTimes;
+
+	/**
+	 * This method returns `false`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.13.0
+	 * @category Util
+	 * @returns {boolean} Returns `false`.
+	 * @example
+	 *
+	 * _.times(2, _.stubFalse);
+	 * // => [false, false]
+	 */
+	function stubFalse() {
+	  return false;
+	}
+
+	var stubFalse_1 = stubFalse;
+
+	var isBuffer_1 = createCommonjsModule(function (module, exports) {
+	/** Detect free variable `exports`. */
+	var freeExports = 'object' == 'object' && exports && !exports.nodeType && exports;
+
+	/** Detect free variable `module`. */
+	var freeModule = freeExports && 'object' == 'object' && module && !module.nodeType && module;
+
+	/** Detect the popular CommonJS extension `module.exports`. */
+	var moduleExports = freeModule && freeModule.exports === freeExports;
+
+	/** Built-in value references. */
+	var Buffer = moduleExports ? _root$1.Buffer : undefined;
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined;
+
+	/**
+	 * Checks if `value` is a buffer.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.3.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
+	 * @example
+	 *
+	 * _.isBuffer(new Buffer(2));
+	 * // => true
+	 *
+	 * _.isBuffer(new Uint8Array(2));
+	 * // => false
+	 */
+	var isBuffer = nativeIsBuffer || stubFalse_1;
+
+	module.exports = isBuffer;
+	});
+
+	/** Used as references for various `Number` constants. */
+	var MAX_SAFE_INTEGER = 9007199254740991;
+
+	/** Used to detect unsigned integer values. */
+	var reIsUint = /^(?:0|[1-9]\d*)$/;
+
+	/**
+	 * Checks if `value` is a valid array-like index.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+	 * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+	 */
+	function isIndex(value, length) {
+	  length = length == null ? MAX_SAFE_INTEGER : length;
+	  return !!length &&
+	    (typeof value == 'number' || reIsUint.test(value)) &&
+	    (value > -1 && value % 1 == 0 && value < length);
+	}
+
+	var _isIndex = isIndex;
+
+	/** Used as references for various `Number` constants. */
+	var MAX_SAFE_INTEGER$1 = 9007199254740991;
+
+	/**
+	 * Checks if `value` is a valid array-like length.
+	 *
+	 * **Note:** This method is loosely based on
+	 * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+	 * @example
+	 *
+	 * _.isLength(3);
+	 * // => true
+	 *
+	 * _.isLength(Number.MIN_VALUE);
+	 * // => false
+	 *
+	 * _.isLength(Infinity);
+	 * // => false
+	 *
+	 * _.isLength('3');
+	 * // => false
+	 */
+	function isLength(value) {
+	  return typeof value == 'number' &&
+	    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER$1;
+	}
+
+	var isLength_1 = isLength;
+
+	/** `Object#toString` result references. */
+	var argsTag$2 = '[object Arguments]';
+	var arrayTag$1 = '[object Array]';
+	var boolTag$1 = '[object Boolean]';
+	var dateTag$1 = '[object Date]';
+	var errorTag$1 = '[object Error]';
+	var funcTag$1 = '[object Function]';
+	var mapTag$1 = '[object Map]';
+	var numberTag$1 = '[object Number]';
+	var objectTag$1 = '[object Object]';
+	var regexpTag$1 = '[object RegExp]';
+	var setTag$1 = '[object Set]';
+	var stringTag$1 = '[object String]';
+	var weakMapTag = '[object WeakMap]';
+
+	var arrayBufferTag$1 = '[object ArrayBuffer]';
+	var dataViewTag$1 = '[object DataView]';
+	var float32Tag = '[object Float32Array]';
+	var float64Tag = '[object Float64Array]';
+	var int8Tag = '[object Int8Array]';
+	var int16Tag = '[object Int16Array]';
+	var int32Tag = '[object Int32Array]';
+	var uint8Tag = '[object Uint8Array]';
+	var uint8ClampedTag = '[object Uint8ClampedArray]';
+	var uint16Tag = '[object Uint16Array]';
+	var uint32Tag = '[object Uint32Array]';
+
+	/** Used to identify `toStringTag` values of typed arrays. */
+	var typedArrayTags = {};
+	typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
+	typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
+	typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
+	typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
+	typedArrayTags[uint32Tag] = true;
+	typedArrayTags[argsTag$2] = typedArrayTags[arrayTag$1] =
+	typedArrayTags[arrayBufferTag$1] = typedArrayTags[boolTag$1] =
+	typedArrayTags[dataViewTag$1] = typedArrayTags[dateTag$1] =
+	typedArrayTags[errorTag$1] = typedArrayTags[funcTag$1] =
+	typedArrayTags[mapTag$1] = typedArrayTags[numberTag$1] =
+	typedArrayTags[objectTag$1] = typedArrayTags[regexpTag$1] =
+	typedArrayTags[setTag$1] = typedArrayTags[stringTag$1] =
+	typedArrayTags[weakMapTag] = false;
+
+	/**
+	 * The base implementation of `_.isTypedArray` without Node.js optimizations.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+	 */
+	function baseIsTypedArray(value) {
+	  return isObjectLike_1(value) &&
+	    isLength_1(value.length) && !!typedArrayTags[_baseGetTag(value)];
+	}
+
+	var _baseIsTypedArray = baseIsTypedArray;
+
+	/**
+	 * The base implementation of `_.unary` without support for storing metadata.
+	 *
+	 * @private
+	 * @param {Function} func The function to cap arguments for.
+	 * @returns {Function} Returns the new capped function.
+	 */
+	function baseUnary(func) {
+	  return function(value) {
+	    return func(value);
+	  };
+	}
+
+	var _baseUnary = baseUnary;
+
+	var _nodeUtil = createCommonjsModule(function (module, exports) {
+	/** Detect free variable `exports`. */
+	var freeExports = 'object' == 'object' && exports && !exports.nodeType && exports;
+
+	/** Detect free variable `module`. */
+	var freeModule = freeExports && 'object' == 'object' && module && !module.nodeType && module;
+
+	/** Detect the popular CommonJS extension `module.exports`. */
+	var moduleExports = freeModule && freeModule.exports === freeExports;
+
+	/** Detect free variable `process` from Node.js. */
+	var freeProcess = moduleExports && _freeGlobal.process;
+
+	/** Used to access faster Node.js helpers. */
+	var nodeUtil = (function() {
+	  try {
+	    return freeProcess && freeProcess.binding && freeProcess.binding('util');
+	  } catch (e) {}
+	}());
+
+	module.exports = nodeUtil;
+	});
+
+	/* Node.js helper references. */
+	var nodeIsTypedArray = _nodeUtil && _nodeUtil.isTypedArray;
+
+	/**
+	 * Checks if `value` is classified as a typed array.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 3.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+	 * @example
+	 *
+	 * _.isTypedArray(new Uint8Array);
+	 * // => true
+	 *
+	 * _.isTypedArray([]);
+	 * // => false
+	 */
+	var isTypedArray = nodeIsTypedArray ? _baseUnary(nodeIsTypedArray) : _baseIsTypedArray;
+
+	var isTypedArray_1 = isTypedArray;
+
+	/** Used for built-in method references. */
+	var objectProto$9 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$7 = objectProto$9.hasOwnProperty;
+
+	/**
+	 * Creates an array of the enumerable property names of the array-like `value`.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @param {boolean} inherited Specify returning inherited property names.
+	 * @returns {Array} Returns the array of property names.
+	 */
+	function arrayLikeKeys(value, inherited) {
+	  var isArr = isArray_1$2(value),
+	      isArg = !isArr && isArguments_1(value),
+	      isBuff = !isArr && !isArg && isBuffer_1(value),
+	      isType = !isArr && !isArg && !isBuff && isTypedArray_1(value),
+	      skipIndexes = isArr || isArg || isBuff || isType,
+	      result = skipIndexes ? _baseTimes(value.length, String) : [],
+	      length = result.length;
+
+	  for (var key in value) {
+	    if ((inherited || hasOwnProperty$7.call(value, key)) &&
+	        !(skipIndexes && (
+	           // Safari 9 has enumerable `arguments.length` in strict mode.
+	           key == 'length' ||
+	           // Node.js 0.10 has enumerable non-index properties on buffers.
+	           (isBuff && (key == 'offset' || key == 'parent')) ||
+	           // PhantomJS 2 has enumerable non-index properties on typed arrays.
+	           (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
+	           // Skip index properties.
+	           _isIndex(key, length)
+	        ))) {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+
+	var _arrayLikeKeys = arrayLikeKeys;
+
+	/** Used for built-in method references. */
+	var objectProto$11 = Object.prototype;
+
+	/**
+	 * Checks if `value` is likely a prototype object.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+	 */
+	function isPrototype(value) {
+	  var Ctor = value && value.constructor,
+	      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto$11;
+
+	  return value === proto;
+	}
+
+	var _isPrototype = isPrototype;
+
+	/**
+	 * Creates a unary function that invokes `func` with its argument transformed.
+	 *
+	 * @private
+	 * @param {Function} func The function to wrap.
+	 * @param {Function} transform The argument transform.
+	 * @returns {Function} Returns the new function.
+	 */
+	function overArg(func, transform) {
+	  return function(arg) {
+	    return func(transform(arg));
+	  };
+	}
+
+	var _overArg = overArg;
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeKeys = _overArg(Object.keys, Object);
+
+	var _nativeKeys = nativeKeys;
+
+	/** Used for built-in method references. */
+	var objectProto$10 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$8 = objectProto$10.hasOwnProperty;
+
+	/**
+	 * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 */
+	function baseKeys(object) {
+	  if (!_isPrototype(object)) {
+	    return _nativeKeys(object);
+	  }
+	  var result = [];
+	  for (var key in Object(object)) {
+	    if (hasOwnProperty$8.call(object, key) && key != 'constructor') {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+
+	var _baseKeys = baseKeys;
+
+	/**
+	 * Checks if `value` is array-like. A value is considered array-like if it's
+	 * not a function and has a `value.length` that's an integer greater than or
+	 * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+	 * @example
+	 *
+	 * _.isArrayLike([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArrayLike(document.body.children);
+	 * // => true
+	 *
+	 * _.isArrayLike('abc');
+	 * // => true
+	 *
+	 * _.isArrayLike(_.noop);
+	 * // => false
+	 */
+	function isArrayLike(value) {
+	  return value != null && isLength_1(value.length) && !isFunction_1$3(value);
+	}
+
+	var isArrayLike_1 = isArrayLike;
+
+	/**
+	 * Creates an array of the own enumerable property names of `object`.
+	 *
+	 * **Note:** Non-object values are coerced to objects. See the
+	 * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+	 * for more details.
+	 *
+	 * @static
+	 * @since 0.1.0
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 * @example
+	 *
+	 * function Foo() {
+	 *   this.a = 1;
+	 *   this.b = 2;
+	 * }
+	 *
+	 * Foo.prototype.c = 3;
+	 *
+	 * _.keys(new Foo);
+	 * // => ['a', 'b'] (iteration order is not guaranteed)
+	 *
+	 * _.keys('hi');
+	 * // => ['0', '1']
+	 */
+	function keys(object) {
+	  return isArrayLike_1(object) ? _arrayLikeKeys(object) : _baseKeys(object);
+	}
+
+	var keys_1 = keys;
+
+	/**
+	 * Creates an array of own enumerable property names and symbols of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names and symbols.
+	 */
+	function getAllKeys(object) {
+	  return _baseGetAllKeys(object, keys_1, _getSymbols);
+	}
+
+	var _getAllKeys = getAllKeys;
+
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG$4 = 1;
 
 	/** Used for built-in method references. */
-	var objectProto$14 = Object.prototype;
+	var objectProto$7 = Object.prototype;
 
 	/** Used to check objects for own properties. */
-	var hasOwnProperty$11 = objectProto$14.hasOwnProperty;
+	var hasOwnProperty$6 = objectProto$7.hasOwnProperty;
 
 	/**
 	 * A specialized version of `baseIsEqualDeep` for objects with support for
@@ -17091,7 +15985,7 @@
 	  var index = objLength;
 	  while (index--) {
 	    var key = objProps[index];
-	    if (!(isPartial ? key in other : hasOwnProperty$11.call(other, key))) {
+	    if (!(isPartial ? key in other : hasOwnProperty$6.call(other, key))) {
 	      return false;
 	    }
 	  }
@@ -17144,19 +16038,90 @@
 
 	var _equalObjects = equalObjects;
 
+	/* Built-in method references that are verified to be native. */
+	var DataView$1 = _getNative(_root$1, 'DataView');
+
+	var _DataView = DataView$1;
+
+	/* Built-in method references that are verified to be native. */
+	var Promise$2 = _getNative(_root$1, 'Promise');
+
+	var _Promise = Promise$2;
+
+	/* Built-in method references that are verified to be native. */
+	var Set = _getNative(_root$1, 'Set');
+
+	var _Set = Set;
+
+	/* Built-in method references that are verified to be native. */
+	var WeakMap = _getNative(_root$1, 'WeakMap');
+
+	var _WeakMap = WeakMap;
+
+	/** `Object#toString` result references. */
+	var mapTag$2 = '[object Map]';
+	var objectTag$2 = '[object Object]';
+	var promiseTag = '[object Promise]';
+	var setTag$2 = '[object Set]';
+	var weakMapTag$1 = '[object WeakMap]';
+
+	var dataViewTag$2 = '[object DataView]';
+
+	/** Used to detect maps, sets, and weakmaps. */
+	var dataViewCtorString = _toSource(_DataView);
+	var mapCtorString = _toSource(_Map);
+	var promiseCtorString = _toSource(_Promise);
+	var setCtorString = _toSource(_Set);
+	var weakMapCtorString = _toSource(_WeakMap);
+
+	/**
+	 * Gets the `toStringTag` of `value`.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {string} Returns the `toStringTag`.
+	 */
+	var getTag = _baseGetTag;
+
+	// Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
+	if ((_DataView && getTag(new _DataView(new ArrayBuffer(1))) != dataViewTag$2) ||
+	    (_Map && getTag(new _Map) != mapTag$2) ||
+	    (_Promise && getTag(_Promise.resolve()) != promiseTag) ||
+	    (_Set && getTag(new _Set) != setTag$2) ||
+	    (_WeakMap && getTag(new _WeakMap) != weakMapTag$1)) {
+	  getTag = function(value) {
+	    var result = _baseGetTag(value),
+	        Ctor = result == objectTag$2 ? value.constructor : undefined,
+	        ctorString = Ctor ? _toSource(Ctor) : '';
+
+	    if (ctorString) {
+	      switch (ctorString) {
+	        case dataViewCtorString: return dataViewTag$2;
+	        case mapCtorString: return mapTag$2;
+	        case promiseCtorString: return promiseTag;
+	        case setCtorString: return setTag$2;
+	        case weakMapCtorString: return weakMapTag$1;
+	      }
+	    }
+	    return result;
+	  };
+	}
+
+	var _getTag = getTag;
+
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG$1 = 1;
 
 	/** `Object#toString` result references. */
-	var argsTag$3 = '[object Arguments]';
-	var arrayTag$2 = '[object Array]';
-	var objectTag$3 = '[object Object]';
+	var argsTag$1 = '[object Arguments]';
+	var arrayTag = '[object Array]';
+	var objectTag = '[object Object]';
 
 	/** Used for built-in method references. */
-	var objectProto$13 = Object.prototype;
+	var objectProto$6 = Object.prototype;
 
 	/** Used to check objects for own properties. */
-	var hasOwnProperty$10 = objectProto$13.hasOwnProperty;
+	var hasOwnProperty$5 = objectProto$6.hasOwnProperty;
 
 	/**
 	 * A specialized version of `baseIsEqual` for arrays and objects which performs
@@ -17175,14 +16140,14 @@
 	function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
 	  var objIsArr = isArray_1$2(object),
 	      othIsArr = isArray_1$2(other),
-	      objTag = objIsArr ? arrayTag$2 : _getTag(object),
-	      othTag = othIsArr ? arrayTag$2 : _getTag(other);
+	      objTag = objIsArr ? arrayTag : _getTag(object),
+	      othTag = othIsArr ? arrayTag : _getTag(other);
 
-	  objTag = objTag == argsTag$3 ? objectTag$3 : objTag;
-	  othTag = othTag == argsTag$3 ? objectTag$3 : othTag;
+	  objTag = objTag == argsTag$1 ? objectTag : objTag;
+	  othTag = othTag == argsTag$1 ? objectTag : othTag;
 
-	  var objIsObj = objTag == objectTag$3,
-	      othIsObj = othTag == objectTag$3,
+	  var objIsObj = objTag == objectTag,
+	      othIsObj = othTag == objectTag,
 	      isSameTag = objTag == othTag;
 
 	  if (isSameTag && isBuffer_1(object)) {
@@ -17199,8 +16164,8 @@
 	      : _equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
 	  }
 	  if (!(bitmask & COMPARE_PARTIAL_FLAG$1)) {
-	    var objIsWrapped = objIsObj && hasOwnProperty$10.call(object, '__wrapped__'),
-	        othIsWrapped = othIsObj && hasOwnProperty$10.call(other, '__wrapped__');
+	    var objIsWrapped = objIsObj && hasOwnProperty$5.call(object, '__wrapped__'),
+	        othIsWrapped = othIsObj && hasOwnProperty$5.call(other, '__wrapped__');
 
 	    if (objIsWrapped || othIsWrapped) {
 	      var objUnwrapped = objIsWrapped ? object.value() : object,
@@ -17382,7 +16347,7 @@
 	var _baseMatches = baseMatches;
 
 	/** `Object#toString` result references. */
-	var symbolTag$3 = '[object Symbol]';
+	var symbolTag$1 = '[object Symbol]';
 
 	/**
 	 * Checks if `value` is classified as a `Symbol` primitive or object.
@@ -17403,7 +16368,7 @@
 	 */
 	function isSymbol(value) {
 	  return typeof value == 'symbol' ||
-	    (isObjectLike_1(value) && _baseGetTag(value) == symbolTag$3);
+	    (isObjectLike_1(value) && _baseGetTag(value) == symbolTag$1);
 	}
 
 	var isSymbol_1 = isSymbol;
@@ -17563,8 +16528,8 @@
 	var INFINITY = 1 / 0;
 
 	/** Used to convert symbols to primitives and strings. */
-	var symbolProto$2 = _Symbol ? _Symbol.prototype : undefined;
-	var symbolToString = symbolProto$2 ? symbolProto$2.toString : undefined;
+	var symbolProto$1 = _Symbol ? _Symbol.prototype : undefined;
+	var symbolToString = symbolProto$1 ? symbolProto$1.toString : undefined;
 
 	/**
 	 * The base implementation of `_.toString` which doesn't convert nullish
@@ -18255,6 +17220,16 @@
 
 	var constant_1 = constant;
 
+	var defineProperty = (function() {
+	  try {
+	    var func = _getNative(Object, 'defineProperty');
+	    func({}, '', {});
+	    return func;
+	  } catch (e) {}
+	}());
+
+	var _defineProperty = defineProperty;
+
 	/**
 	 * The base implementation of `setToString` without support for hot loop shorting.
 	 *
@@ -18512,798 +17487,6 @@
 
 	  }
 
-	};
-
-	var promiseCache$1 = new PromiseCache();
-
-	function fetchScript (url) {
-	  runtime.assertBrowser('Please use "require()" to fetch modules in server environment.');
-
-	  // module wrapper
-	  window.___modules = window.___modules || {};
-
-	  // return module if it has been loaded already
-	  if (window.___modules[url]) {
-	    return Promise.resolve(window.___modules[url])
-
-	  } else {
-
-	    // try promise cache (could be in loading state)
-	    var promiseFromCache = promiseCache$1.get(url);
-	    if (promiseFromCache) return promiseFromCache
-
-	    // load code and use module wrapper
-	    var fetchPromise = fetch$1(url).then(function(response){
-	      if (!response.ok) throw 'Could not load script from URL: '+url
-	      return response.text()
-	    }).then(function(code){
-
-	      // check module type
-	      var moduleWrapper;
-	      if (code.indexOf('define(function()') > -1) {
-	        // AMD
-	        moduleWrapper = code+'\nfunction define(cb){ window.___modules["'+url+'"] = cb(); };';
-	      } else {
-	        // CommonJS
-	        moduleWrapper = 'window.___modules["'+url+'"] = (function(){ var exports = {}, module = {exports:exports};'+code+'\nreturn module.exports\n})()';
-	      }
-
-	      var script = document.createElement('script');
-	      try {
-	        script.appendChild(document.createTextNode(moduleWrapper));
-	        document.body.appendChild(script);
-	      } catch (e) {
-	        script.text = moduleWrapper;
-	        document.body.appendChild(script);
-	      }
-	      return window.___modules[url]
-	    });
-
-	    // add to cache
-	    promiseCache$1.add(url, fetchPromise);
-
-	    return fetchPromise
-
-	  }
-
-	}
-
-	var fragmentShader = {"text":"uniform vec3 u_color;\nuniform float u_metallic;\nuniform float u_roughness;\nuniform vec3 u_light0Pos;\nuniform vec3 u_light0Color;\nuniform vec3 u_light1Pos;\nuniform vec3 u_light1Color;\nuniform mat4 u_modelMatrix;\nuniform sampler2D u_reflectionCube;\nuniform sampler2D u_reflectionCubeBlur;","base64":"data:text/plain;base64,dW5pZm9ybSB2ZWMzIHVfY29sb3I7CnVuaWZvcm0gZmxvYXQgdV9tZXRhbGxpYzsKdW5pZm9ybSBmbG9hdCB1X3JvdWdobmVzczsKdW5pZm9ybSB2ZWMzIHVfbGlnaHQwUG9zOwp1bmlmb3JtIHZlYzMgdV9saWdodDBDb2xvcjsKdW5pZm9ybSB2ZWMzIHVfbGlnaHQxUG9zOwp1bmlmb3JtIHZlYzMgdV9saWdodDFDb2xvcjsKdW5pZm9ybSBtYXQ0IHVfbW9kZWxNYXRyaXg7CnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmU7CnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmVCbHVyOw=="};
-
-	var vertexShader = {"text":"varying vec3 v_normal;\nvarying vec3 v_position;\nvarying vec3 v_binormal;\nvarying vec3 v_tangent;\n","base64":"data:text/plain;base64,dmFyeWluZyB2ZWMzIHZfbm9ybWFsOwp2YXJ5aW5nIHZlYzMgdl9wb3NpdGlvbjsKdmFyeWluZyB2ZWMzIHZfYmlub3JtYWw7CnZhcnlpbmcgdmVjMyB2X3RhbmdlbnQ7Cg=="};
-
-	// TODO: Replace placeholder shaders by original ones (requires fixing projection matrix)
-	// configs
-
-	var LEGACY_GLFT_LOADER_URL = 'https://cdn.rawgit.com/mrdoob/three.js/r86/examples/js/loaders/GLTFLoader.js';
-	var GBLOCK_API_GET_OFFICIAL_GLTF_URL = 'https://us-central1-gblock-api.cloudfunctions.net/get-gltf-url/?url=';
-
-	// internals
-
-	var promiseCache = new PromiseCache();
-
-	// aframe module
-
-	var gBlockComponent = {
-
-	  schema: {type: 'asset'},
-
-	  init: function () {
-
-	    this.model = null;
-
-	  },
-
-	  update: function () {
-
-	    var self = this;
-	    var el = this.el;
-	    var src = this.data;
-
-	    if (!src) { return; }
-
-	    this.remove();
-
-	    bluebird_1.all([
-	      getGltfUrl(src),
-	      fetchGblockLoader()
-	    ]).then(function (results) {
-
-	      var gltfUrl = results[0];
-	      var GblockLoader = results[1];
-
-	      // load glTF model from original URL
-	      new GblockLoader().load( gltfUrl, function onLoaded (gltfModel) {
-
-	        self.model = gltfModel.scene || gltfModel.scenes[0];
-	        // FIXME: adapt projection matrix in original shaders and do not replace materials
-	        self.model.traverse(function (child) {
-	          if (child.material) child.material = new THREE.MeshPhongMaterial({ vertexColors: THREE.VertexColors });
-	        });
-	        self.model.animations = gltfModel.animations;
-
-	        el.setObject3D('mesh', self.model);
-	        el.emit('model-loaded', {format: 'gltf', model: self.model});
-
-	      }, function onProgress() {
-	        // do nothing
-
-	      }, function onError(error) {
-
-	        console.error('ERROR loading gblock model "'+ src +'" : ' + error);
-	        el.emit('model-error', { message: error });
-
-	      });
-
-	    }).catch(function(errorMessage){
-	      console.error('ERROR loading gblock model from "' + src +'" : ' + errorMessage);
-	      el.emit('model-error', { message: errorMessage });
-	    });
-
-	  },
-
-	  remove: function () {
-
-	    if (!this.model) { return; }
-	    this.el.removeObject3D('mesh');
-
-	  }
-
-	};
-
-	// private shared methods
-
-	// FIXME: Replace this with an official API URL once available
-	// This API call is only needed to obtain the official glTF URL of a google block model.
-	// The glTF itself is not being proxied and gets fetched from https://vr.google.com/downloads/* directly.
-	// https://github.com/archilogic-com/aframe-gblock/issues/1
-	// API server code: server/index.js
-	// try promise cache (could be in loading state)
-	function getGltfUrl (src) {
-
-	  // try cache
-	  var getUrlPromise = promiseCache.get(src);
-
-	  if (!getUrlPromise) {
-
-	    getUrlPromise = fetch(GBLOCK_API_GET_OFFICIAL_GLTF_URL + src).then(function (response) {
-
-	      // parse response
-	      return response.json().then(function (message) {
-	        if (response.ok) {
-	          // return glTF URL
-	          return message.gltfUrl
-	        } else {
-	          // handle error response
-	          var status = response.status;
-	          var errorMessage = message.message;
-	          console.error('ERROR loading gblock model "'+ src +'" : ' + status + ' "' + errorMessage + '"');
-	          return bluebird_1.reject(errorMessage)
-	        }
-	      }).catch(function(error){
-	        // handle server error
-	        var errorMessage = '3dio.js: Error parsing gblock API server JSON response: ' + error;
-	        console.error(errorMessage);
-	        return bluebird_1.reject(errorMessage)
-	      })
-
-	    });
-
-	    // add to cache
-	    promiseCache.add(src, getUrlPromise);
-
-	  }
-
-	  return getUrlPromise
-
-	}
-
-	// loader has to be created asynchronously because we have to fetch legacy glTF loader script
-	var GblockLoaderPromise;
-	function fetchGblockLoader() {
-
-	  if (!GblockLoaderPromise) {
-
-	    // legacy loader will overwrite THREE.GLTFLoader so we need to keep reference to it
-	    THREE.___OriginalGLTFLoader = THREE.GLTFLoader;
-
-	    GblockLoaderPromise = fetchScript(LEGACY_GLFT_LOADER_URL).then(function(){
-
-	      // keep reference to fetched legacy loader
-	      var LegacyGLTFLoader = THREE.GLTFLoader;
-
-	      // restore current GLTFLoader
-	      THREE.GLTFLoader = THREE.___OriginalGLTFLoader;
-
-	      // create modified GLTF loader for google blocks
-	      function GBlockLoader () {
-
-	        LegacyGLTFLoader.call(this);
-
-	        var self = this;
-
-	        this._parse = this.parse;
-	        this.parse = function (data, path, onLoad, onError) {
-	          // convert uint8 to json
-	          var json = JSON.parse(convertUint8ArrayToString(data));
-	          // use base64 shaders
-	          Object.keys(json.shaders).forEach(function (key, i) {
-	            // Replacing original shaders with placeholders
-	            if (key.indexOf('fragment') > -1) json.shaders[key].uri = fragmentShader.base64;
-	            else if (key.indexOf('vertex') > -1) json.shaders[key].uri = vertexShader.base64;
-	          });
-	          // convert json to uint8
-	          var uint8array = new TextEncoder('utf-8').encode(JSON.stringify(json));
-	          // parse data
-	          self._parse.call(self, uint8array, path, onLoad, onError);
-	        };
-
-	      }
-	      GBlockLoader.prototype = LegacyGLTFLoader.prototype;
-
-	      // expose loader
-	      return GBlockLoader
-
-	    });
-
-	  }
-
-	  return GblockLoaderPromise
-
-	}
-
-	// from https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/GLTFLoader.js
-	function convertUint8ArrayToString (array) {
-	  if (window.TextDecoder !== undefined) {
-	    return new TextDecoder().decode(array)
-	  }
-	  // Avoid the String.fromCharCode.apply(null, array) shortcut, which
-	  // throws a "maximum call stack size exceeded" error for large arrays.
-	  var s = '';
-	  for (var i = 0, il = array.length; i < il; i++) {
-	    s += String.fromCharCode(array[i]);
-	  }
-	  return s;
-	}
-
-	// internals
-
-	var INSPECTOR_PLUGINS_URL = 'https://dist.3d.io/3dio-inspector-plugins/0.x.x/3dio-inspector-plugins.js';
-
-	function init() {
-
-	  if (window.AFRAME && window.AFRAME.INSPECTOR && window.AFRAME.INSPECTOR.opened) {
-	    // inspector opened: load immediately
-	    loadPlugins();
-	  } else {
-	    // initialize on inspector ready event
-	    window.addEventListener('inspector-loaded', loadPlugins);
-	  }
-
-	// methods
-
-	  function loadPlugins () {
-	    if (window.io3d.aFrame.pluginsLoaded) return
-	    fetchScript(INSPECTOR_PLUGINS_URL).catch(function(error){
-	      console.error('Could not load inspector plugins: '+error);
-	    });
-	  }
-
-	}
-
-	// expose API
-
-	var inspectorPluginsLauncher = {
-	  init: init
-	};
-
-	var DDS_MAGIC = 0x20534444;
-
-	var DDSD_MIPMAPCOUNT = 0x20000;
-
-	var DDSCAPS2_CUBEMAP = 0x200;
-
-	var DDPF_FOURCC = 0x4;
-
-	// internals
-
-	var FOURCC_DXT1 = fourCCToInt32("DXT1");
-	var FOURCC_DXT3 = fourCCToInt32("DXT3");
-	var FOURCC_DXT5 = fourCCToInt32("DXT5");
-
-	// functions
-
-	function fourCCToInt32 (value) {
-
-	  return value.charCodeAt(0) +
-	    (value.charCodeAt(1) << 8) +
-	    (value.charCodeAt(2) << 16) +
-	    (value.charCodeAt(3) << 24);
-
-	}
-
-	function int32ToFourCC (value) {
-
-	  return String.fromCharCode(
-	    value & 0xff,
-	    (value >> 8) & 0xff,
-	    (value >> 16) & 0xff,
-	    (value >> 24) & 0xff
-	  );
-	}
-
-	function loadARGBMip (buffer, dataOffset, width, height) {
-	  var dataLength = width * height * 4;
-	  var srcBuffer = new Uint8Array(buffer, dataOffset, dataLength);
-	  var byteArray = new Uint8Array(dataLength);
-	  var dst = 0;
-	  var src = 0;
-	  for (var y = 0; y < height; y++) {
-	    for (var x = 0; x < width; x++) {
-	      var b = srcBuffer[ src ];
-	      src++;
-	      var g = srcBuffer[ src ];
-	      src++;
-	      var r = srcBuffer[ src ];
-	      src++;
-	      var a = srcBuffer[ src ];
-	      src++;
-	      byteArray[ dst ] = r;
-	      dst++;  //r
-	      byteArray[ dst ] = g;
-	      dst++;  //g
-	      byteArray[ dst ] = b;
-	      dst++;  //b
-	      byteArray[ dst ] = a;
-	      dst++;  //a
-	    }
-	  }
-	  return byteArray;
-	}
-
-	function parse (buffer, loadMipmaps) {
-
-	  var dds = { mipmaps: [], width: 0, height: 0, format: null, mipmapCount: 1 };
-
-	  var headerLengthInt = 31; // The header length in 32 bit ints
-
-	  // Offsets into the header array
-
-	  var off_magic = 0;
-
-	  var off_size = 1;
-	  var off_flags = 2;
-	  var off_height = 3;
-	  var off_width = 4;
-
-	  var off_mipmapCount = 7;
-
-	  var off_pfFlags = 20;
-	  var off_pfFourCC = 21;
-	  var off_RGBBitCount = 22;
-	  var off_RBitMask = 23;
-	  var off_GBitMask = 24;
-	  var off_BBitMask = 25;
-	  var off_ABitMask = 26;
-
-	  var off_caps = 27;
-	  var off_caps2 = 28;
-	  var off_caps3 = 29;
-	  var off_caps4 = 30;
-
-	  // Parse header
-
-	  var header = new Int32Array(buffer, 0, headerLengthInt);
-
-	  if (header[ off_magic ] !== DDS_MAGIC) {
-
-	    console.error('THREE.DDSLoader.parse: Invalid magic number in DDS header.');
-	    return dds;
-
-	  }
-
-	  if (!header[ off_pfFlags ] & DDPF_FOURCC) {
-
-	    console.error('THREE.DDSLoader.parse: Unsupported format, must contain a FourCC code.');
-	    return dds;
-
-	  }
-
-	  var blockBytes;
-
-	  var fourCC = header[ off_pfFourCC ];
-
-	  var isRGBAUncompressed = false;
-
-	  switch (fourCC) {
-
-	    case FOURCC_DXT1:
-
-	      blockBytes = 8;
-	      dds.format = THREE.RGB_S3TC_DXT1_Format;
-	      break;
-
-	    case FOURCC_DXT3:
-
-	      blockBytes = 16;
-	      dds.format = THREE.RGBA_S3TC_DXT3_Format;
-	      break;
-
-	    case FOURCC_DXT5:
-
-	      blockBytes = 16;
-	      dds.format = THREE.RGBA_S3TC_DXT5_Format;
-	      break;
-
-	    default:
-
-	      if (header[ off_RGBBitCount ] == 32
-	        && header[ off_RBitMask ] & 0xff0000
-	        && header[ off_GBitMask ] & 0xff00
-	        && header[ off_BBitMask ] & 0xff
-	        && header[ off_ABitMask ] & 0xff000000) {
-	        isRGBAUncompressed = true;
-	        blockBytes = 64;
-	        dds.format = THREE.RGBAFormat;
-	      } else {
-	        console.error('THREE.DDSLoader.parse: Unsupported FourCC code ', int32ToFourCC(fourCC));
-	        return dds;
-	      }
-	  }
-
-	  dds.mipmapCount = 1;
-
-	  if (header[ off_flags ] & DDSD_MIPMAPCOUNT && loadMipmaps !== false) {
-
-	    dds.mipmapCount = Math.max(1, header[ off_mipmapCount ]);
-
-	  }
-
-	  //TODO: Verify that all faces of the cubemap are present with DDSCAPS2_CUBEMAP_POSITIVEX, etc.
-
-	  dds.isCubemap = header[ off_caps2 ] & DDSCAPS2_CUBEMAP ? true : false;
-
-	  dds.width = header[ off_width ];
-	  dds.height = header[ off_height ];
-
-	  var dataOffset = header[ off_size ] + 4;
-
-	  // Extract mipmaps buffers
-
-	  var width = dds.width;
-	  var height = dds.height;
-
-	  var faces = dds.isCubemap ? 6 : 1;
-
-	  for (var face = 0; face < faces; face++) {
-
-	    for (var i = 0; i < dds.mipmapCount; i++) {
-
-	      var byteArray, dataLength;
-	      if (isRGBAUncompressed) {
-	        byteArray = loadARGBMip(buffer, dataOffset, width, height);
-	        dataLength = byteArray.length;
-	      } else {
-	        dataLength = Math.max(4, width) / 4 * Math.max(4, height) / 4 * blockBytes;
-	        byteArray = new Uint8Array(buffer, dataOffset, dataLength);
-	      }
-
-	      var mipmap = { "data": byteArray, "width": width, "height": height };
-	      dds.mipmaps.push(mipmap);
-
-	      dataOffset += dataLength;
-
-	      width = Math.max(width * 0.5, 1);
-	      height = Math.max(height * 0.5, 1);
-
-	    }
-
-	    width = dds.width;
-	    height = dds.height;
-
-	  }
-
-	  return dds;
-
-	}
-
-	function log2 (x) {
-	  return Math.log(x) / Math.LN2
-	}
-
-	// load function
-
-	function fetchDdsTexture (url) {
-	  return new bluebird_1(function (resolve, reject) {
-
-	    var xhr = new XMLHttpRequest();
-
-	    xhr.onload = function (event) {
-
-	      if (xhr.status >= 200 && xhr.status < 300) {
-
-	        var buffer = xhr.response,
-	          dds;
-
-	        // parse data
-	        try {
-	          dds = parse(buffer, true);
-	        } catch (e) {
-	          var message = 'Error Loading DDS Texture\n' + url + '\n' + e.name + ': ' + e.message;
-	          console.error(message);
-	          reject(message);
-	          return
-	        }
-
-	        // See OpenGL ES 2.0.25 p. 81 paragraph 1 for the number of required mipmaps.
-	        var mipmapCount = log2(Math.max(dds.width, dds.height)) + 1;
-	        if (dds.mipmapCount != mipmapCount) {
-	          console.error('Reading DDS texture failed: ' + url + '\nmipmaps counted: ' + dds.mipmapCount + ', should be: ' + mipmapCount +
-	            '\nPlease make sure you have mipmap generation enabled when creating DDS textures from images.');
-	          reject('Error parsing DDS. Wrong mipmaps count. ' + url);
-	          return
-	        }
-
-	        // create compressed texture
-	        var texture = new THREE.CompressedTexture();
-
-	        texture.format = dds.format;
-	        texture.mipmaps = dds.mipmaps;
-	        texture.image.width = dds.width;
-	        texture.image.height = dds.height;
-	        texture.image.src = url;
-	        texture.sourceFile = url;
-	        texture.url = url;
-	        texture.bufferByteLength = buffer.byteLength;
-
-	        // gl.generateMipmap fails for compressed textures
-	        // mipmaps must be embedded in the DDS file
-	        // or texture filters must not use mipmapping
-	        texture.generateMipmaps = false;
-
-	        resolve(texture);
-
-	      } else {
-	        reject({
-	          message: 'Http Request error',
-	          url: url,
-	          status: xhr.status,
-	          headers: xhr.getAllResponseHeaders(),
-	          event: event
-	        });
-	      }
-
-	    };
-	    xhr.onerror = function (event) {
-	      reject({
-	        message: 'Http Request error',
-	        url: url,
-	        status: xhr.status,
-	        headers: xhr.getAllResponseHeaders(),
-	        event: event
-	      });
-	    };
-
-	    xhr.open('GET', url, true);
-	    xhr.crossOrigin = "Anonymous";
-	    xhr.responseType = 'arraybuffer';
-	    xhr.send(null);
-
-	  })
-	}
-
-	// internals
-
-	// graphic card max supported texture size
-	var MAX_TEXTURE_SIZE = runtime.has.webGl ? runtime.webGl.maxTextureSize || 2048 : 2048;
-
-	// helpers
-
-	function checkPowerOfTwo (value) {
-	  return ( value & ( value - 1 ) ) === 0 && value !== 0
-	}
-
-	function nearestPowerOfTwoOrMaxTextureSize (n) {
-	  // max texture size supported by vga
-	  if (n > MAX_TEXTURE_SIZE) {
-	    return MAX_TEXTURE_SIZE
-	  }
-	  // next best power of two
-	  var l = Math.log(n) / Math.LN2;
-	  return Math.pow(2, Math.round(l))
-	}
-
-	function resizeImage (image, url) {
-
-	  var width = nearestPowerOfTwoOrMaxTextureSize(image.width);
-	  var height = nearestPowerOfTwoOrMaxTextureSize(image.height);
-
-	  var canvas = document.createElement('canvas');
-	  canvas.width = width;
-	  canvas.height = height;
-	  canvas.getContext('2d').drawImage(image, 0, 0, width, height);
-
-	  console.log('Image size not compatible. Image has been resized from ' + image.width + 'x' + image.height + 'px to ' + canvas.width + 'x' + canvas.height +
-	    'px.\n' + url);
-
-	  return canvas
-	}
-
-	// function
-
-	function fetchImageTexture (url) {
-	  return new bluebird_1(function (resolve, reject) {
-
-	    var image = document.createElement('img');
-	    image.crossOrigin = 'Anonymous';
-
-	    image.onload = function () {
-
-	      var texture = new THREE.Texture();
-
-	      texture.sourceFile = url;
-	      texture.url = url;
-
-	      // image size compatibility check
-
-	      var isPowerOfTwo = (checkPowerOfTwo(image.width) && checkPowerOfTwo(image.height));
-	      var isNotTooBig = (image.width <= MAX_TEXTURE_SIZE && image.height <= MAX_TEXTURE_SIZE);
-
-	      if (isPowerOfTwo && isNotTooBig) {
-
-	        // use image as it is
-	        texture.image = image;
-
-	      } else {
-
-	        // resize image to make it compatible
-	        texture.image = resizeImage(image, url);
-	        // add url reference
-	        texture.image.src = url;
-
-	      }
-
-	      resolve(texture);
-
-	    };
-
-	    var triedWithCacheBust = false;
-	    image.onerror = function () {
-	      if(triedWithCacheBust) {
-	        reject('Error loading texture ' + url);
-	      } else {
-	        // try again with cache busting to avoid things like #1510
-	        triedWithCacheBust = true;
-	        if (url.indexOf('?') === -1) {
-	          url += '?cacheBust=' + new Date().getTime();
-	        } else {
-	          url += '&cacheBust=' + new Date().getTime();
-	        }
-	        image.src = url;
-	      }
-	    };
-
-	    // initiate image loading
-	    image.src = url;
-
-	  })
-	}
-
-	// configs
-
-	var maxConcurrentQueuedRequests = 15; // not queued requests are not limited in running parallel
-	var queuesByPriority = [
-	  'architectureGeometries',
-	  'architectureTexturesLoRes',
-	  'interiorGeometries',
-	  'interiorTexturesLoRes',
-	  'architectureTexturesHiRes',
-	  'interiorTexturesHiRes'
-	];
-
-	var queueFences = [
-	  false,
-	  false,
-	  true,
-	  false,
-	  false
-	];
-
-	// internals
-
-	var queues = {};
-	var queueFences = {};
-	var queuesChanged = false;
-	var queueInfo = {};
-	var queuesLength = queuesByPriority.length;
-	var concurrentRequests = 0;
-	var concurrentPerQueue = {};
-	var queueName;
-	for (var i$1 = 0, l = queuesLength; i$1 < l; i$1++) {
-	  queueName = queuesByPriority[i$1];
-	  queues[queueName] = [];
-	  queueFences[queueName] = queueFences[i$1];
-	  queueInfo[queueName] = {requestCount: 0};
-	  concurrentPerQueue[queueName] = 0;
-	}
-
-	// private methods
-
-	function startRequest(queueName) {
-	  // Update queue tracking information
-	  var info = queueInfo[queueName];
-	  var time = performance.now() / 1000;
-	  if (info.timeFirst) {
-	    info.timeFirst = time;
-	    info.timeLast  = time;
-	  } else
-	    info.timeLast  = time;
-	  info.requestCount++;
-	  // Update concurrent request counts
-	  concurrentPerQueue[queueName] += 1;
-	  concurrentRequests++;
-	  // set flag
-	  queuesChanged = true;
-	  // Start request
-	  var queue = queues[queueName];
-	  var request = queue.shift();
-	  request.start();
-	}
-
-	function processQueue() {
-	  var anchorStage = null;
-	  for (var i = 0; i < queuesLength; i++) {
-	    var queueName = queuesByPriority[i];
-	    while (queues[queueName].length > 0 && concurrentRequests < maxConcurrentQueuedRequests)
-	      startRequest(queueName);
-	    if (anchorStage === null && concurrentPerQueue[queueName] !== 0)
-	      anchorStage = i;
-	    if (anchorStage !== null && (queueFences[queueName] || (i - anchorStage > 0)))
-	      break;
-	  }
-	}
-
-	// public methods
-
-	function enqueue(queueName, url){
-
-	  // fallback to first queue
-	  if (!queues[queueName]) {
-	    if (queueName) console.error('onknown queue ', queueName);
-	    queueName = queuesByPriority[0];
-	  }
-
-	  // create promise and add to queue
-	  return new Promise(function(resolve, reject){
-	    // has to be asynchronous in order to decouple queue processing from synchronous code
-	    setTimeout(function(){
-	      var queue = queues[queueName];
-	      queue[ queue.length ] = { url: url, start: resolve };
-	      processQueue();
-	    },1);
-	  })
-
-	}
-
-	function dequeue(queueName, url) {
-	  var info = queueInfo[queueName];
-	  if (!info) {
-	    if (queueName) console.warn('Queue info not found for queue name "'+queueName+'"');
-	    return
-	  }
-	  info.timeLastFinished = performance.now() / 1000;
-	  concurrentPerQueue[queueName] -= 1;
-	  concurrentRequests -= 1;
-	  queuesChanged = true;
-	  processQueue();
-	}
-
-	// expose API
-
-	var queueManager = {
-	  enqueue: enqueue,
-	  dequeue: dequeue,
-	  info: queueInfo
 	};
 
 	var cache = new PromiseCache();
@@ -19706,7 +17889,10 @@
 	  material3d.userData = material3d.userData || {};
 	  material3d.userData.data3dMaterial = args.attributes;
 
-	  // opacity
+	  // transparency
+
+	  //     material3d.transparent = true
+	  //     material3d.opacity = 0.55
 
 	  // depth buffer
 	  //    if (material3d.opacity < 1) {
@@ -19715,20 +17901,6 @@
 	  //      if (alphaTest < 0) alphaTest = 0
 	  //      material3d.alphaTest = alphaTest
 	  //    }
-
-	  if (_attributes.opacity !== undefined && _attributes.opacity < 1) {
-	    // 0 = fully transparent, 1 = non-transparent
-	    material3d.transparent = true;
-	    material3d.opacity = _attributes.opacity;
-	  } else if (_attributes.mapAlpha) {
-	    // has alpha map
-	    material3d.transparent = true;
-	    material3d.opacity = 1;
-	  } else {
-	    material3d.transparent = false;
-	    material3d.opacity = 1;
-	  }
-	  material3d.uniforms.opacity = { value: material3d.opacity };
 
 	  // normal map factor
 
@@ -19763,8 +17935,8 @@
 	      diffuse.b = 0.85;
 	    }
 	  }
-	  material3d.color = diffuse;
-	  material3d.uniforms.color.value = new THREE.Color(diffuse.r, diffuse.g, diffuse.b);
+	  material3d.diffuse = diffuse;
+	  material3d.uniforms.diffuse.value = new THREE.Color(diffuse.r, diffuse.g, diffuse.b);
 
 	  // We are not using color ambient
 	  /*if (_attributes.colorAmbient) {
@@ -19898,7 +18070,23 @@
 	    isLoadingLoResTextures = false;
 	  }
 
+
+	  // set opacity after textures have loaded
 	  loadingTexturesPromise.then(function(){
+
+	    if (_attributes.opacity !== undefined && _attributes.opacity < 1) {
+	      // 0 = fully transparent, 1 = non-transparent
+	      material3d.transparent = true;
+	      material3d.opacity = _attributes.opacity;
+	    } else if (_attributes.mapAlpha) {
+	      // has alpha map
+	      material3d.transparent = true;
+	      material3d.opacity = 1;
+	    } else {
+	      material3d.transparent = false;
+	      material3d.opacity = 1;
+	    }
+	    material3d.uniforms.opacity = { value: material3d.opacity };
 
 	    // trigger callback
 	    if (onFirstTextureSetLoaded) onFirstTextureSetLoaded();
@@ -19923,42 +18111,40 @@
 	  return loadingTexturesPromise
 	}
 
-	var fragmentShader$1 = {"text":"uniform vec3 color;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapExposure;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\n#include <shadowmap_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( color, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #ifdef FLAT_SHADED\n      vec3 fdx = vec3( dFdx( vViewPosition.x ), dFdx( vViewPosition.y ), dFdx( vViewPosition.z ) );\n      vec3 fdy = vec3( dFdy( vViewPosition.x ), dFdy( vViewPosition.y ), dFdy( vViewPosition.z ) );\n      vec3 normal = normalize( cross( fdx, fdy ) );\n    #else\n      vec3 normal = normalize( vNormal );\n      #ifdef DOUBLE_SIDED\n        normal = normal * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n      #endif\n    #endif\n    #ifdef USE_NORMALMAP\n      normal = perturbNormal2Arb( -vViewPosition, normal );\n    #elif defined( USE_BUMPMAP )\n      normal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );\n    #endif\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}","base64":"data:text/plain;base64,dW5pZm9ybSB2ZWMzIGNvbG9yOwp1bmlmb3JtIHZlYzMgZW1pc3NpdmU7CnVuaWZvcm0gdmVjMyBzcGVjdWxhcjsKdW5pZm9ybSBmbG9hdCBzaGluaW5lc3M7CnVuaWZvcm0gZmxvYXQgb3BhY2l0eTsKI2luY2x1ZGUgPGNvbW1vbj4KI2luY2x1ZGUgPHBhY2tpbmc+CiNpbmNsdWRlIDx1dl9wYXJzX2ZyYWdtZW50PgojaW5jbHVkZSA8dXYyX3BhcnNfZnJhZ21lbnQ+CiNpbmNsdWRlIDxtYXBfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPGFscGhhbWFwX3BhcnNfZnJhZ21lbnQ+CiNpZmRlZiBVU0VfTElHSFRNQVAKCXVuaWZvcm0gc2FtcGxlcjJEIGxpZ2h0TWFwOwoJdW5pZm9ybSBmbG9hdCBsaWdodE1hcEludGVuc2l0eTsKCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBFeHBvc3VyZTsKCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBGYWxsb2ZmOwojZW5kaWYKI2luY2x1ZGUgPG5vcm1hbG1hcF9wYXJzX2ZyYWdtZW50PgojaW5jbHVkZSA8c3BlY3VsYXJtYXBfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPGJzZGZzPgojaW5jbHVkZSA8bGlnaHRzX3BhcnM+CiNpbmNsdWRlIDxsaWdodHNfcGhvbmdfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPHNoYWRvd21hcF9wYXJzX2ZyYWdtZW50Pgp2b2lkIG1haW4oKSB7CiAgICB2ZWM0IGRpZmZ1c2VDb2xvciA9IHZlYzQoIGNvbG9yLCBvcGFjaXR5ICk7CiAgICBSZWZsZWN0ZWRMaWdodCByZWZsZWN0ZWRMaWdodCA9IFJlZmxlY3RlZExpZ2h0KCB2ZWMzKCAwLjAgKSwgdmVjMyggMC4wICksIHZlYzMoIDAuMCApLCB2ZWMzKCAwLjAgKSApOwogICAgdmVjMyB0b3RhbEVtaXNzaXZlUmFkaWFuY2UgPSBlbWlzc2l2ZTsKICAgICNpbmNsdWRlIDxtYXBfZnJhZ21lbnQ+CiAgICAjaW5jbHVkZSA8YWxwaGFtYXBfZnJhZ21lbnQ+CiAgICAjaW5jbHVkZSA8YWxwaGF0ZXN0X2ZyYWdtZW50PgogICAgI2luY2x1ZGUgPHNwZWN1bGFybWFwX2ZyYWdtZW50PgogICAgI2lmZGVmIEZMQVRfU0hBREVECiAgICAgIHZlYzMgZmR4ID0gdmVjMyggZEZkeCggdlZpZXdQb3NpdGlvbi54ICksIGRGZHgoIHZWaWV3UG9zaXRpb24ueSApLCBkRmR4KCB2Vmlld1Bvc2l0aW9uLnogKSApOwogICAgICB2ZWMzIGZkeSA9IHZlYzMoIGRGZHkoIHZWaWV3UG9zaXRpb24ueCApLCBkRmR5KCB2Vmlld1Bvc2l0aW9uLnkgKSwgZEZkeSggdlZpZXdQb3NpdGlvbi56ICkgKTsKICAgICAgdmVjMyBub3JtYWwgPSBub3JtYWxpemUoIGNyb3NzKCBmZHgsIGZkeSApICk7CiAgICAjZWxzZQogICAgICB2ZWMzIG5vcm1hbCA9IG5vcm1hbGl6ZSggdk5vcm1hbCApOwogICAgICAjaWZkZWYgRE9VQkxFX1NJREVECiAgICAgICAgbm9ybWFsID0gbm9ybWFsICogKCBmbG9hdCggZ2xfRnJvbnRGYWNpbmcgKSAqIDIuMCAtIDEuMCApOwogICAgICAjZW5kaWYKICAgICNlbmRpZgogICAgI2lmZGVmIFVTRV9OT1JNQUxNQVAKICAgICAgbm9ybWFsID0gcGVydHVyYk5vcm1hbDJBcmIoIC12Vmlld1Bvc2l0aW9uLCBub3JtYWwgKTsKICAgICNlbGlmIGRlZmluZWQoIFVTRV9CVU1QTUFQICkKICAgICAgbm9ybWFsID0gcGVydHVyYk5vcm1hbEFyYiggLXZWaWV3UG9zaXRpb24sIG5vcm1hbCwgZEhkeHlfZndkKCkgKTsKICAgICNlbmRpZgogICAgI2luY2x1ZGUgPGxpZ2h0c19waG9uZ19mcmFnbWVudD4KICAgIEdlb21ldHJpY0NvbnRleHQgZ2VvbWV0cnk7CiAgICBnZW9tZXRyeS5wb3NpdGlvbiA9IC0gdlZpZXdQb3NpdGlvbjsKICAgIGdlb21ldHJ5Lm5vcm1hbCA9IG5vcm1hbDsKICAgIGdlb21ldHJ5LnZpZXdEaXIgPSBub3JtYWxpemUoIHZWaWV3UG9zaXRpb24gKTsKICAgIEluY2lkZW50TGlnaHQgZGlyZWN0TGlnaHQ7CiAgICAjaWYgKCBOVU1fUE9JTlRfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdCApCiAgICAgICAgUG9pbnRMaWdodCBwb2ludExpZ2h0OwogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9QT0lOVF9MSUdIVFM7IGkgKysgKSB7CiAgICAgICAgICAgIHBvaW50TGlnaHQgPSBwb2ludExpZ2h0c1sgaSBdOwogICAgICAgICAgICBnZXRQb2ludERpcmVjdExpZ2h0SXJyYWRpYW5jZSggcG9pbnRMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7CiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQCiAgICAgICAgICAgIGRpcmVjdExpZ2h0LmNvbG9yICo9IGFsbCggYnZlYzIoIHBvaW50TGlnaHQuc2hhZG93LCBkaXJlY3RMaWdodC52aXNpYmxlICkgKSA/IGdldFBvaW50U2hhZG93KCBwb2ludFNoYWRvd01hcFsgaSBdLCBwb2ludExpZ2h0LnNoYWRvd01hcFNpemUsIHBvaW50TGlnaHQuc2hhZG93QmlhcywgcG9pbnRMaWdodC5zaGFkb3dSYWRpdXMsIHZQb2ludFNoYWRvd0Nvb3JkWyBpIF0gKSA6IDEuMDsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIFJFX0RpcmVjdCggZGlyZWN0TGlnaHQsIGdlb21ldHJ5LCBtYXRlcmlhbCwgcmVmbGVjdGVkTGlnaHQgKTsKICAgICAgICB9CiAgICAjZW5kaWYKICAgICNpZiAoIE5VTV9TUE9UX0xJR0hUUyA+IDAgKSAmJiBkZWZpbmVkKCBSRV9EaXJlY3QgKQogICAgICAgIFNwb3RMaWdodCBzcG90TGlnaHQ7CiAgICAgICAgZm9yICggaW50IGkgPSAwOyBpIDwgTlVNX1NQT1RfTElHSFRTOyBpICsrICkgewogICAgICAgICAgICBzcG90TGlnaHQgPSBzcG90TGlnaHRzWyBpIF07CiAgICAgICAgICAgIGdldFNwb3REaXJlY3RMaWdodElycmFkaWFuY2UoIHNwb3RMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7CiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQCiAgICAgICAgICAgIGRpcmVjdExpZ2h0LmNvbG9yICo9IGFsbCggYnZlYzIoIHNwb3RMaWdodC5zaGFkb3csIGRpcmVjdExpZ2h0LnZpc2libGUgKSApID8gZ2V0U2hhZG93KCBzcG90U2hhZG93TWFwWyBpIF0sIHNwb3RMaWdodC5zaGFkb3dNYXBTaXplLCBzcG90TGlnaHQuc2hhZG93Qmlhcywgc3BvdExpZ2h0LnNoYWRvd1JhZGl1cywgdlNwb3RTaGFkb3dDb29yZFsgaSBdICkgOiAxLjA7CiAgICAgICAgICAgICNlbmRpZgogICAgICAgICAgICBSRV9EaXJlY3QoIGRpcmVjdExpZ2h0LCBnZW9tZXRyeSwgbWF0ZXJpYWwsIHJlZmxlY3RlZExpZ2h0ICk7CiAgICAgICAgfQogICAgI2VuZGlmCiAgICAjaWYgKCBOVU1fRElSX0xJR0hUUyA+IDAgKSAmJiBkZWZpbmVkKCBSRV9EaXJlY3QgKQogICAgICAgIERpcmVjdGlvbmFsTGlnaHQgZGlyZWN0aW9uYWxMaWdodDsKICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fRElSX0xJR0hUUzsgaSArKyApIHsKICAgICAgICAgICAgZGlyZWN0aW9uYWxMaWdodCA9IGRpcmVjdGlvbmFsTGlnaHRzWyBpIF07CiAgICAgICAgICAgIGdldERpcmVjdGlvbmFsRGlyZWN0TGlnaHRJcnJhZGlhbmNlKCBkaXJlY3Rpb25hbExpZ2h0LCBnZW9tZXRyeSwgZGlyZWN0TGlnaHQgKTsKICAgICAgICAgICAgI2lmZGVmIFVTRV9TSEFET1dNQVAKICAgICAgICAgICAgZGlyZWN0TGlnaHQuY29sb3IgKj0gYWxsKCBidmVjMiggZGlyZWN0aW9uYWxMaWdodC5zaGFkb3csIGRpcmVjdExpZ2h0LnZpc2libGUgKSApID8gZ2V0U2hhZG93KCBkaXJlY3Rpb25hbFNoYWRvd01hcFsgaSBdLCBkaXJlY3Rpb25hbExpZ2h0LnNoYWRvd01hcFNpemUsIGRpcmVjdGlvbmFsTGlnaHQuc2hhZG93QmlhcywgZGlyZWN0aW9uYWxMaWdodC5zaGFkb3dSYWRpdXMsIHZEaXJlY3Rpb25hbFNoYWRvd0Nvb3JkWyBpIF0gKSA6IDEuMDsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIFJFX0RpcmVjdCggZGlyZWN0TGlnaHQsIGdlb21ldHJ5LCBtYXRlcmlhbCwgcmVmbGVjdGVkTGlnaHQgKTsKICAgICAgICB9CiAgICAjZW5kaWYKICAgICNpZiAoIE5VTV9SRUNUX0FSRUFfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdF9SZWN0QXJlYSApCiAgICAgICAgUmVjdEFyZWFMaWdodCByZWN0QXJlYUxpZ2h0OwogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9SRUNUX0FSRUFfTElHSFRTOyBpICsrICkgewogICAgICAgICAgICByZWN0QXJlYUxpZ2h0ID0gcmVjdEFyZWFMaWdodHNbIGkgXTsKICAgICAgICAgICAgUkVfRGlyZWN0X1JlY3RBcmVhKCByZWN0QXJlYUxpZ2h0LCBnZW9tZXRyeSwgbWF0ZXJpYWwsIHJlZmxlY3RlZExpZ2h0ICk7CiAgICAgICAgfQogICAgI2VuZGlmCiAgICAjaWYgZGVmaW5lZCggUkVfSW5kaXJlY3REaWZmdXNlICkKICAgICAgICB2ZWMzIGlycmFkaWFuY2UgPSBnZXRBbWJpZW50TGlnaHRJcnJhZGlhbmNlKCBhbWJpZW50TGlnaHRDb2xvciApOwogICAgICAgICNpZmRlZiBVU0VfTElHSFRNQVAKICAgICAgICAgICAgdmVjMyB1bml0ID0gdmVjMygxLjApOwogICAgICAgICAgICB2ZWMzIGxpZ2h0ID0gMi4wICogKHRleHR1cmUyRCggbGlnaHRNYXAsIHZVdjIgKS54eXogLSBsaWdodE1hcEV4cG9zdXJlICogdW5pdCk7CiAgICAgICAgICAgIHZlYzMgbW9kaWZpZXIgPSAtbGlnaHRNYXBGYWxsb2ZmICogbGlnaHQgKiBsaWdodCArIHVuaXQ7CiAgICAgICAgICAgIHZlYzMgbGlnaHRNYXBJcnJhZGlhbmNlID0gbGlnaHQgKiBtb2RpZmllciAqIGxpZ2h0TWFwSW50ZW5zaXR5OwogICAgICAgICAgICAjaWZuZGVmIFBIWVNJQ0FMTFlfQ09SUkVDVF9MSUdIVFMKICAgICAgICAgICAgICAgIGxpZ2h0TWFwSXJyYWRpYW5jZSAqPSBQSTsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIGlycmFkaWFuY2UgKz0gbGlnaHRNYXBJcnJhZGlhbmNlOwogICAgICAgICNlbmRpZgogICAgICAgICNpZiAoIE5VTV9IRU1JX0xJR0hUUyA+IDAgKQogICAgICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fSEVNSV9MSUdIVFM7IGkgKysgKSB7CiAgICAgICAgICAgICAgICBpcnJhZGlhbmNlICs9IGdldEhlbWlzcGhlcmVMaWdodElycmFkaWFuY2UoIGhlbWlzcGhlcmVMaWdodHNbIGkgXSwgZ2VvbWV0cnkgKTsKICAgICAgICAgICAgfQogICAgICAgICNlbmRpZgogICAgICAgIFJFX0luZGlyZWN0RGlmZnVzZSggaXJyYWRpYW5jZSwgZ2VvbWV0cnksIG1hdGVyaWFsLCByZWZsZWN0ZWRMaWdodCApOwogICAgI2VuZGlmCiAgICB2ZWMzIG91dGdvaW5nTGlnaHQgPSByZWZsZWN0ZWRMaWdodC5kaXJlY3REaWZmdXNlICsgcmVmbGVjdGVkTGlnaHQuaW5kaXJlY3REaWZmdXNlICsgcmVmbGVjdGVkTGlnaHQuZGlyZWN0U3BlY3VsYXIgKyByZWZsZWN0ZWRMaWdodC5pbmRpcmVjdFNwZWN1bGFyICsgdG90YWxFbWlzc2l2ZVJhZGlhbmNlOwogICAgZ2xfRnJhZ0NvbG9yID0gdmVjNCggb3V0Z29pbmdMaWdodCwgZGlmZnVzZUNvbG9yLmEgKTsKfQ=="};
+	var fragmentShader = "uniform vec3 diffuse;\r\nuniform vec3 emissive;\r\nuniform vec3 specular;\r\nuniform float shininess;\r\nuniform float opacity;\r\n\r\n#include <common>\r\n#include <packing>\r\n#include <uv_pars_fragment>\r\n#include <uv2_pars_fragment>\r\n#include <map_pars_fragment>\r\n#include <alphamap_pars_fragment>\r\n\r\n// Replaces <lightmap_pars_fragment>;\r\n\r\n#ifdef USE_LIGHTMAP\r\n\tuniform sampler2D lightMap;\r\n\tuniform float lightMapIntensity;\r\n\tuniform float lightMapExposure;\r\n\tuniform float lightMapFalloff;\r\n#endif\r\n\r\n#include <normalmap_pars_fragment>\r\n#include <specularmap_pars_fragment>\r\n\r\n#include <bsdfs>\r\n#include <lights_pars>\r\n#include <lights_phong_pars_fragment>\r\n#include <shadowmap_pars_fragment>\r\n\r\n\r\nvoid main() {\r\n\r\n    vec4 diffuseColor = vec4( diffuse, opacity );\r\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\r\n\r\n    vec3 totalEmissiveRadiance = emissive;\r\n\r\n    #include <map_fragment>\r\n    #include <alphamap_fragment>\r\n    #include <alphatest_fragment>\r\n    #include <specularmap_fragment>\r\n    #include <normal_flip>\r\n    #include <normal_fragment>\r\n\r\n    // accumulation\r\n    #include <lights_phong_fragment>\r\n\r\n    // Start of <light-template> replace block\r\n    GeometricContext geometry;\r\n\r\n    geometry.position = - vViewPosition;\r\n    geometry.normal = normal;\r\n    geometry.viewDir = normalize( vViewPosition );\r\n\r\n    IncidentLight directLight;\r\n\r\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        PointLight pointLight;\r\n\r\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\r\n\r\n            pointLight = pointLights[ i ];\r\n\r\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        SpotLight spotLight;\r\n\r\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\r\n\r\n            spotLight = spotLights[ i ];\r\n\r\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        DirectionalLight directionalLight;\r\n\r\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\r\n\r\n            directionalLight = directionalLights[ i ];\r\n\r\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\r\n\r\n        RectAreaLight rectAreaLight;\r\n\r\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\r\n\r\n            rectAreaLight = rectAreaLights[ i ];\r\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if defined( RE_IndirectDiffuse )\r\n\r\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\r\n\r\n        #ifdef USE_LIGHTMAP\r\n\r\n            // compute the light value\r\n            vec3 unit = vec3(1.0);\r\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\r\n            // compute the light intensity modifier\r\n            vec3 modifier = -lightMapFalloff * light * light + unit;\r\n            // apply light\r\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\r\n\r\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\r\n\r\n                lightMapIrradiance *= PI; // factor of PI should not be present; included here to prevent breakage\r\n\r\n            #endif\r\n\r\n            irradiance += lightMapIrradiance;\r\n\r\n        #endif\r\n\r\n        #if ( NUM_HEMI_LIGHTS > 0 )\r\n\r\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\r\n\r\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\r\n\r\n            }\r\n\r\n        #endif\r\n\r\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\r\n\r\n    #endif\r\n    // End of <light-template> replace block\r\n\r\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\r\n\r\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\r\n\r\n}";
 
-	var vertexShader$1 = {"text":"varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}","base64":"data:text/plain;base64,dmFyeWluZyB2ZWMzIHZWaWV3UG9zaXRpb247CiNpZm5kZWYgRkxBVF9TSEFERUQKCXZhcnlpbmcgdmVjMyB2Tm9ybWFsOwojZW5kaWYKI2luY2x1ZGUgPHV2X3BhcnNfdmVydGV4PgojaW5jbHVkZSA8dXYyX3BhcnNfdmVydGV4PgojaW5jbHVkZSA8c2hhZG93bWFwX3BhcnNfdmVydGV4Pgp2b2lkIG1haW4oKQp7CiAgI2luY2x1ZGUgPHV2X3ZlcnRleD4KICAjaW5jbHVkZSA8dXYyX3ZlcnRleD4KICAjaW5jbHVkZSA8YmVnaW5ub3JtYWxfdmVydGV4PgogICNpbmNsdWRlIDxkZWZhdWx0bm9ybWFsX3ZlcnRleD4KICAjaWZuZGVmIEZMQVRfU0hBREVECiAgCXZOb3JtYWwgPSBub3JtYWxpemUoIHRyYW5zZm9ybWVkTm9ybWFsICk7CiAgI2VuZGlmCiAgI2luY2x1ZGUgPGJlZ2luX3ZlcnRleD4KICAjaW5jbHVkZSA8cHJvamVjdF92ZXJ0ZXg+CiAgdlZpZXdQb3NpdGlvbiA9IC0gbXZQb3NpdGlvbi54eXo7CiAgI2luY2x1ZGUgPHdvcmxkcG9zX3ZlcnRleD4KICAjaW5jbHVkZSA8c2hhZG93bWFwX3ZlcnRleD4KfQ=="};
+	var vertexShader = "varying vec3 vViewPosition;\r\n\r\n#ifndef FLAT_SHADED\r\n\tvarying vec3 vNormal;\r\n#endif\r\n\r\n#include <uv_pars_vertex>\r\n#include <uv2_pars_vertex>\r\n#include <shadowmap_pars_vertex>\r\n\r\nvoid main()\r\n{\r\n//  vUv = uv;\r\n  #include <uv_vertex>\r\n  #include <uv2_vertex>\r\n\r\n  #include <beginnormal_vertex>\r\n  #include <defaultnormal_vertex>\r\n\r\n  #ifndef FLAT_SHADED\r\n    // Normal computed with derivatives when FLAT_SHADED\r\n  \tvNormal = normalize( transformedNormal );\r\n  #endif\r\n\r\n  #include <begin_vertex>\r\n  #include <project_vertex>\r\n\r\n  vViewPosition = - mvPosition.xyz;\r\n\r\n  #include <worldpos_vertex>\r\n  #include <shadowmap_vertex>\r\n\r\n}";
+
+	// CONFIGS
+
+	var DEFAULT_LIGHT_MAP_INTENSITY$1 = 1.2;
+	var DEFAULT_LIGHT_MAP_EXPOSURE$1 = 0.6;
+	var DEFAULT_LIGHT_MAP_FALLOFF$1 = 0;
+	var DEFAULT_NORMAL_MAP_FACTOR = new THREE.Vector2( 0.8, 0.8 );
 
 	var Io3dMaterial = checkDependencies ({
 	  three: true,
 	  aframe: false
 	}, function makeIo3dMaterial () {
 
-	  // CONFIGS
-
-	  var DEFAULT_LIGHT_MAP_INTENSITY = 1.2;
-	  var DEFAULT_LIGHT_MAP_EXPOSURE = 0.6;
-	  var DEFAULT_LIGHT_MAP_FALLOFF = 0;
-	  var DEFAULT_NORMAL_MAP_FACTOR = new THREE.Vector2(0.8, 0.8);
-
-	  // main
-
 	  function Io3dMaterial( params ) {
 	    THREE.ShaderMaterial.call( this, params );
-
+	    
 	    var params = params || {};
-	    this.lightMapExposure = params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE;
-	    this.lightMapFalloff = params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF;
-
+	    this.lightMapExposure = params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1;
+	    this.lightMapFalloff = params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1;
+	    
 	    this.uniforms = THREE.UniformsUtils.merge( [
 	      THREE.UniformsLib[ "lights" ],
 	      THREE.UniformsLib[ "shadowmap" ],
-	      { color: { value: params.color || new THREE.Color(1.0, 1.0, 1.0) },
+	      { diffuse: { value: params.diffuse || new THREE.Color(1.0, 1.0, 1.0) },
 	        map: { value: params.map || null },
 	        specularMap: { value: params.specularMap || null },
 	        alphaMap: { value: params.alphaMap || null },
 	        lightMap: { value: params.lightMap || null },
-	        lightMapIntensity: { value: params.lightMapIntensity || DEFAULT_LIGHT_MAP_INTENSITY },
-	        lightMapFalloff: { value: params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF },
-	        lightMapExposure: { value: params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE },
+	        lightMapIntensity: { value: params.lightMapIntensity || DEFAULT_LIGHT_MAP_INTENSITY$1 },
+	        lightMapFalloff: { value: params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1 },
+	        lightMapExposure: { value: params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1 },
 	        normalMap: { value: params.normalMap || null },
 	        normalScale: { value: params.normalScale || DEFAULT_NORMAL_MAP_FACTOR },
 	        shininess: { value: params.shininess || 1.0 },
@@ -19969,8 +18155,8 @@
 	      }
 	    ]);
 
-	    this.vertexShader = vertexShader$1.text;
-	    this.fragmentShader = fragmentShader$1.text;
+	    this.vertexShader = vertexShader;
+	    this.fragmentShader = fragmentShader;
 	    this.lights = true;
 	  }
 
@@ -20576,9 +18762,736 @@
 
 	});
 
-	// components
-	// other
-	// dependency check (for node.js compatibility)
+	var fetch$1 = (function(){
+
+	  if (runtime.isNode) {
+	    return require('node-fetch')
+	  } else if (typeof fetch !== 'undefined') {
+	    return fetch
+	  } else {
+	    console.warn('Missing global fetch API.');
+	    return function() {
+	      throw new Error('Missing global fetch API.')
+	    }
+	  }
+
+	})();
+
+	var PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+	/**
+	 * Generate an UUID as specified in RFC4122
+	 */
+
+	var uuid = {};
+
+	uuid.generate = function generateUuid () {
+	  var d = Date.now();
+	  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+	    var r = (d + Math.random() * 16) % 16 | 0;
+	    d = Math.floor(d / 16);
+	    return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+	  });
+	  return uuid
+	};
+
+	/**
+	 * Validates UUID as specified in RFC4122
+	 */
+
+	uuid.validate = function validateUuid (str) {
+	  if (!str || typeof str !== "string") return false
+	  return PATTERN.test(str)
+	};
+
+	// main
+
+	function JsonRpc2Client () {
+
+	  this._openRequests = {}; // open request cache (indexed by request id)
+	  this._closedRequestIds = [];
+
+	}
+
+	JsonRpc2Client.prototype = {
+
+	  // private methods
+
+	  _handleError: function (message, additionalInfo) {
+	    console.error(message, additionalInfo);
+	  },
+
+	  _closeRequest: function(id) {
+	    // remove request from open request cache
+	    delete this._openRequests[ id ];
+	    // remember closed request
+	    this._closedRequestIds.push(id);
+	  },
+
+	  // public methods
+
+	  createRequest: function (methodName, params) {
+
+	    var self = this;
+
+	    var id = uuid.generate();
+	    var timestamp = Date.now();
+	    var message = {
+	      jsonrpc: '2.0',
+	      method: methodName,
+	      params: params,
+	      id: id
+	    };
+	    var request = {
+	      id: id,
+	      message: message,
+	      timestamp: timestamp
+	    };
+	    var promise = new bluebird_1(function(resolve, reject){
+	      request._resolve = resolve;
+	      request._reject = reject;
+	      request.cancel = reject;
+	    });
+	    request.promise = promise;
+
+	    // remember open request
+	    self._openRequests[ id ] = request;
+
+	    // handle closing of request independent of promise fate
+	    promise.finally(function(){
+	      self._closeRequest(id);
+	    }).catch(function(){
+	      self._closeRequest(id);
+	    });
+
+	    // return request
+	    return request
+
+	  },
+
+	  handleResponse: function (response) {
+
+	    var id = response.id;
+	    var request = this._openRequests[ id ];
+
+	    if (id === undefined) {
+	      // not valid JSON-RPC2 response
+	      if (runtime.isDebugMode) console.error('Incoming message is not a valid JSON-RPC2 response (ID should be present as string, number or null).', response);
+
+	    } else if (request) {
+
+	      // response to an open request
+	      if (response.error) {
+	        if (response.error.message) {
+	          // valid JSON-RPC2 error message. log only in debug mode
+	          if (runtime.isDebugMode) console.error('API error response: "'+response.error.message+'"\nResponse JSON-RPC2 ID: '+id+'\nOriginal JSON-RPC2 request: '+JSON.stringify(request.message, null, 2));
+	          request._reject(response.error.message);
+	        } else {
+	          // non-standard (unexpected) error: log everything into console
+	          console.error('API error (not JSON-RPC2 standard): '+JSON.stringify(response)+'\nOriginal JSON-RPC2 request: '+JSON.stringify(request.message, null, 2));
+	          request._reject('Undefined Error. Check console for details.');
+	        }
+	      } else {
+	        // success
+	        request._resolve(response.result);
+	      }
+
+	    } else if (this._closedRequestIds.indexOf(id) !== -1) {
+	      // Request has been closed already or timed out
+	      if (runtime.isDebugMode) console.error('JSON-RPC2 request has already been responded, canceled or timed out.', id);
+
+	    } else if (id === null) {
+	      // id = null (valid according to JSON-RPC2 specs. but can not be matched with request. should be avoided!)
+	      if (runtime.isDebugMode) console.error('Incoming JSON-RPC2 response has ID = null.', response);
+
+	    } else {
+	      // unknown id
+	      if (runtime.isDebugMode) console.error('Incoming JSON-RPC2 response has an unknown ID.', id);
+
+	    }
+
+	  }
+
+	};
+
+	// import cache from './common/promise-cache.js'
+
+	// internals
+	var rpcClient = new JsonRpc2Client();
+
+	// main
+
+	// TODO: add api.onMethod('methodName')
+	// TODO: add api.onNotification('methodName')
+
+	function callService (methodName, params, options) {
+
+	  // API
+	  params = params || {};
+	  options = options || {};
+	  var secretApiKey = options.secretApiKey || configs.secretApiKey;
+	  var publishableApiKey = options.publishableApiKey || configs.publishableApiKey;
+
+	  // try cache
+	  // var cacheKey
+	  // if (useCache) {
+	  //   cacheKey = JSON.stringify([methodName, params, options])
+	  //   var promiseFromCache = cache.get(cacheKey)
+	  //   if (promiseFromCache) {
+	  //     return promiseFromCache
+	  //   }
+	  // }
+
+	  // internals
+	  var rpcRequest = rpcClient.createRequest(methodName, params);
+
+	  sendHttpRequest(rpcRequest, secretApiKey, publishableApiKey);
+
+	  // add to cache
+	  // if (useCache) {
+	  //   cache.add(cacheKey, rpcRequest.promise)
+	  // }
+
+	  return rpcRequest.promise
+
+	}
+
+	function sendHttpRequest (rpcRequest, secretApiKey, publishableApiKey) {
+
+	  var isTrustedOrigin = ( runtime.isBrowser && window.location.href.match(/^[^\:]+:\/\/([^\.]+\.)?(3d\.io|archilogic.com|localhost)(:\d+)?\//) );
+	  var headers = { 'Content-Type': 'application/json' };
+	  if (secretApiKey) headers['X-Secret-Key'] = secretApiKey;
+	  if (publishableApiKey) headers['X-Publishable-Key'] = publishableApiKey;
+
+	  // send request
+	  fetch$1(configs.servicesUrl, {
+	    body: JSON.stringify(rpcRequest.message),
+	    method: 'POST',
+	    headers: headers,
+	    credentials: (isTrustedOrigin ? 'include' : 'omit' ) //TODO: Find a way to allow this more broadly yet safely
+	  }).then(function (response) {
+	    return response.text().then(function onParsingSuccess(body){
+	      // try to parse JSON in any case because valid JSON-RPC2 errors do have error status too
+	      var message;
+	      try {
+	        message = JSON.parse(body);
+	      } catch (error) {
+	        return bluebird_1.reject('JSON parsing Error: "'+error+'" Response body: "'+body+'"')
+	      }
+	      // rpc client will handle JSON-RPC2 success messages and errors and resolve or reject prcRequest promise accordingly
+	      rpcClient.handleResponse(message);
+	    }).catch(function onParsingError(error){
+	      var errorString = '';
+	      if (error instanceof Error || typeof error === 'string') {
+	        errorString = error;
+	      } else {
+	        try {
+	          errorString = JSON.stringify(error, null, 2);
+	        } catch (e) {
+	          errorString = error && error.toString ? error.toString() : '';
+	        }
+	      }
+	      // response is not a valid json error message. (most likely a network error)
+	      var errorMessage = 'API request to '+configs.servicesUrl+' failed: '+response.status+': '+response.statusText+'\n'+errorString+'\nOriginal JSON-RPC2 request to 3d.io: '+JSON.stringify(rpcRequest.message, null, 2);
+	      rpcRequest.cancel(errorMessage);
+	    })
+	  }).catch(function(error){
+	    rpcRequest.cancel('Error sending request to 3d.io API: "'+(error.code || JSON.stringify(error) )+'"');
+	  });
+
+	}
+
+	var data3dComponent = {
+
+	  schema: {
+	    url: {
+	      type: 'string',
+	      default: ''
+	    },
+	    key: {
+	      type: 'string',
+	      default: ''
+	    },
+	    scene: {
+	      type: 'string',
+	      default: ''
+	    },
+	    lightMapIntensity: {
+	      type: 'float',
+	      default: 1.2,
+	      parse: function (value) {
+	        if (parseFloat(value) >= 0.0) {
+	          return parseFloat(value)
+	        }
+	        return -100.0 // = fallback to value from data3d file
+	      }
+	    },
+	    lightMapExposure: {
+	      type: 'float',
+	      default: 0.6,
+	      parse: function (value) {
+	        if (parseFloat(value)) {
+	          return parseFloat(value)
+	        }
+	        return -100.0 // = fallback to value from data3d file
+	      }
+	    }
+	  },
+
+	  init: function () {
+	  },
+
+	  update: function () {
+	    var this_ = this;
+	    var url = this_.data.url || this_.data.URL;
+	    var key = this_.data.key || this_.data.KEY;
+	    var scene = this_.data.scene;
+	    var lightMapIntensity = this_.data.lightMapIntensity;
+	    var lightMapExposure = this_.data.lightMapExposure;
+
+	    if(scene !== '') {
+	      callService('Model.read', {arguments: { resourceId: scene}}).then(function onResult(result) {
+	        var level = result.modelStructure.children.filter(function(item) { return item.type === 'level' })[0];
+	        if (!level) {
+	          console.error('Unable to load data3d from scene ' + scene + ': The scene does not contain data in the expected format. Error was: No level found.');
+	          return
+	        }
+	        if (!level.bakedModelUrl) {
+	          console.error('Unable to load data3d from scene ' + scene + ': The scene is not baked. Enable realistic lighting on this scene. Error was: No baked data3d present.');
+	          return
+	        }
+	        var bakedModel = level.bakedModelUrl;
+	        if (bakedModel.split('.')[bakedModel.split('.').length - 1] !== 'buffer') {
+	          console.error('Unable to load data3d from scene ' + scene + ': The scene is not in Data3D format. Disable and enable realistic lighting on this scene. Error was: No buffer3d found.');
+	          return
+	        }
+	        this_.data.key = bakedModel;
+	        key = bakedModel;
+	        console.log('Loading scene', key);
+	        this_.data.scene = '';
+	        this_.update();
+	      }).catch(function onApiError(err) {
+	        console.error('Unable to load data3d from scene ' + scene + ': The API returned an error. Error was:', err);
+	      });
+	    }
+
+	    // check params
+	    if ((!url || url === '') && (!key || key === '')) return
+
+	    // remove old mesh
+	    this_.remove();
+
+	    // create new one
+	    this_.mesh = new THREE.Object3D();
+	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
+	    this.el.data3dView = this.data3dView;
+	    // load 3d file
+	    Promise.resolve().then(function(){
+	      if (key) {
+	        return io3d.storage.get(key, { loadingQueuePrefix: 'architecture' })
+	      } else {
+	        return io3d.utils.data3d.load(url, { loadingQueuePrefix: 'architecture' })
+	      }
+	    }).then(function (data3d) {
+	      this_.el.data3d = data3d;
+	      // update view
+	      this_.data3dView.set(data3d, {
+	        lightMapIntensity: lightMapIntensity,
+	        lightMapExposure: lightMapExposure,
+	        loadingQueuePrefix: 'architecture'
+	      });
+	      this_.el.setObject3D('mesh', this_.mesh);
+	      // emit event
+	      this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
+	    });
+	  },
+
+	  remove: function () {
+	    if (this.data3dView) {
+	      this.data3dView.destroy();
+	      this.data3dView = null;
+	    }
+	    if (this.mesh) {
+	      this.el.removeObject3D('mesh');
+	      this.mesh = null;
+	    }
+	  }
+
+	};
+
+	var furnitureComponent = {
+
+	  schema: {
+	    id: {
+	      type: 'string',
+	      default: '10344b13-d981-47a0-90ac-f048ee2780a6'
+	    }
+	  },
+
+	  init: function () {
+	  },
+
+	  update: function () {
+	    var this_ = this;
+	    var el = this.el;
+	    var data = this.data;
+	    var furnitureId = data.id;
+
+	    // check params
+	    if (!furnitureId || furnitureId === '') return
+
+	    // remove old mesh
+	    this_.remove();
+
+	    // create new one
+	    this_.mesh = new THREE.Object3D();
+	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
+
+	    // get furniture data
+	    io3d.furniture.get(furnitureId).then(function (result) {
+
+	      var info = result.info; // lightweight info like name, manufacturer, description...
+	      var data3d = result.data3d; // geometries and materials
+	      var availableMaterials = {};
+
+	      // Expose properties
+	      this_.info = info;
+	      this_.data3d = data3d;
+	      this_.availableMaterials = availableMaterials;
+
+	      // check for material presets in the furniture sceneStructure definition
+	      var materialPreset = info.sceneStructure && JSON.parse(info.sceneStructure).materials;
+	      // Parse materials
+	      Object.keys(data3d.meshes).forEach(function eachMesh (meshId) {
+	        availableMaterials[meshId] = data3d.alternativeMaterialsByMeshKey ? data3d.alternativeMaterialsByMeshKey[meshId] : data3d.meshes[meshId].material;
+
+	        // get material name from inspector
+	        var materialPropName = 'material_' + meshId.replace(/\s/g, '_');
+	        // get materialId from a-frame attribute or from furniture API scene structure preset
+	        var newMaterialId =  data[materialPropName] || (materialPreset ? materialPreset[meshId] : null);
+
+	        // set custom material if available
+	        if (newMaterialId) {
+
+	          // update material
+	          data3d.meshes[meshId].material = newMaterialId;
+	          // trigger event
+	          el.emit('material-changed', {mesh: meshId, material: newMaterialId});
+
+	        } else {
+
+	          // register it as part of the schema for the inspector
+	          var prop = {};
+	          prop[materialPropName] = {
+	            type: 'string',
+	            default: data3d.meshes[meshId].material,
+	            oneOf: data3d.alternativeMaterialsByMeshKey ? data3d.alternativeMaterialsByMeshKey[meshId] : data3d.meshes[meshId].material
+	          };
+	          this_.extendSchema(prop);
+	          this_.data[materialPropName] = data3d.meshes[meshId].material;
+
+	        }
+	      });
+
+	      // update view
+	      this_.data3dView.set(data3d, {
+	        loadingQueuePrefix: 'interior'
+	      });
+	      this_.el.data3d = data3d;
+	      this_.el.setObject3D('mesh', this_.mesh);
+
+	      // emit events
+	      if (this_._previousFurnitureId !== furnitureId) {
+	        this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
+	        this_._previousFurnitureId = furnitureId;
+	      }
+
+	    });
+	  },
+
+	  remove: function () {
+	    if (this.data3dView) {
+	      this.data3dView.destroy();
+	      this.data3dView = null;
+	    }
+	    if (this.mesh) {
+	      this.el.removeObject3D('mesh');
+	      this.mesh = null;
+	    }
+	  }
+
+	};
+
+	var tourComponent = {
+	  schema: {
+	    autoStart: {
+	      type: 'boolean',
+	      default: true
+	    },
+	    loop: {
+	      type: 'boolean',
+	      default: true
+	    },
+	    wait: {
+	      type: 'number',
+	      default: 2000
+	    },
+	    move: {
+	      type: 'number',
+	      default: 3000
+	    }
+	  },
+
+	  init: function () {
+	    this._currentWayPoint = -1;
+	    this.el.setAttribute('animation__move', { startEvents: 'doNotFire', pauseEvents: 'pauseTour', resumeEvents:'resumeTour', property: 'position', easing: 'easeInOutSine', dur: 100 });
+	    this.el.setAttribute('animation__turn', { startEvents: 'doNotFire', pauseEvents: 'pauseTour', resumeEvents:'resumeTour', property: 'rotation', easing: 'easeInOutSine', dur: 100 });
+	    this._nextWaypointHandler = this._nextWaypoint.bind(this);
+	  },
+
+	  update: function () {
+	    this._waypoints = Array.from(this.el.querySelectorAll('[tour-waypoint]'));
+
+	    if(this.data.autoStart) {
+	      this.playTour();
+	    }
+	  },
+
+	  playTour: function () {
+	    if (this._isPlaying) {
+	      if(this._isChangingAnimation) {
+	        clearTimeout(this._nextAnimationTimeout);
+	        this.goTo(this._waypoints[this._currentWayPoint].getAttribute('tour-waypoint'), this._isPlaying);
+	      } else {
+	        this.el.dispatchEvent(new CustomEvent('resumeTour'));
+	      }
+	      this._isPaused = false;
+	    } else {
+	      this._isPlaying = true;
+	      this._isPaused = false;
+	      this.el.addEventListener('animation__move-complete', this._nextWaypointHandler);
+	      var next = this._waypoints[++this._currentWayPoint];
+	      if (next) this.goTo(next.getAttribute('tour-waypoint'), true);
+	      else if (this.data.loop) {
+	        this._currentWayPoint = 0;
+	        this.goTo(this._waypoints[0].getAttribute('tour-waypoint'), true);
+	      }
+	    }
+	  },
+
+	  pauseTour: function () {
+	    this._isPaused = true;
+	    this.el.dispatchEvent(new CustomEvent('pauseTour'));
+	  },
+
+	  stopTour: function () {
+	    this.pauseTour();
+	    this.el.removeEventListener('animation__move-complete', this._nextWaypointHandler);
+	    this._isPlaying = false;
+	    this._isPaused = false;
+	  },
+
+	  goTo: function (label, keepPlaying) {
+	    this._isPlaying = !!keepPlaying;
+	    var target = this._waypoints.find(function (item) { return item.getAttribute('tour-waypoint') === label });
+	    if (!target) {
+	      console.error('The given waypoint '+ label + ' does not exist. Available waypoints:', this._waypoints.map(function (elem) { elem.getAttribute('tour-waypoint'); }));
+	      return
+	    }
+
+	    this.animate(target);
+	  },
+
+	  animate: function (bookmark) {
+	    var entity = this.el;
+	    var newPosition = bookmark.getAttribute('position');
+	    var newRotation = bookmark.getAttribute('rotation');
+	    var currentPosition = entity.getAttribute('position');
+	    var currentRotation = entity.getAttribute('rotation');
+	    var startPosition = AFRAME.utils.coordinates.stringify(currentPosition);
+	    var startRotation = AFRAME.utils.coordinates.stringify(currentRotation);
+
+	    // compute distance to adapt speed
+	    var d = dist(currentPosition, AFRAME.utils.coordinates.parse(newPosition));
+	    // compute angle difference to adapt speed
+	    var angle = Math.abs(currentRotation.y - AFRAME.utils.coordinates.parse(newRotation).y);
+	    // compute animation time
+	    // add 1 to the this.data.move parameter to allow users to specify 0 without the animation cancelling out
+	    var t = Math.round((this.data.move === undefined ? 3000 : this.data.move + 1) / 6 * (d + angle / 30));
+	    if (t > Math.max(10000, this.data.move)) t = Math.max(10000, this.data.move);
+
+	    // prevent zero length animation
+	    if (!t) return this._nextWaypoint()
+
+	    entity.components.animation__move.pauseAnimation();
+	    entity.components.animation__turn.pauseAnimation();
+	    entity.components.animation__move.data.dur = t;
+	    entity.components.animation__move.data.from = startPosition;
+	    entity.components.animation__move.data.to = newPosition;
+	    entity.components.animation__move.update();
+	    entity.components.animation__turn.data.dur = t;
+	    entity.components.animation__turn.data.from = startRotation;
+	    entity.components.animation__turn.data.to = newRotation;
+	    entity.components.animation__turn.update();
+	    entity.components.animation__move.resumeAnimation();
+	    entity.components.animation__turn.resumeAnimation();
+	    this._isChangingAnimation = false;
+	  },
+
+	  _nextWaypoint: function () {
+	    if (!this._isPlaying) return this.stopTour()
+	    if (this._currentWayPoint === this._waypoints.length - 1) {
+	      if (!this.data.loop) return
+	      this._currentWayPoint = -1;
+	    }
+	    this._isChangingAnimation = true;
+	    var next = this._waypoints[++this._currentWayPoint];
+	    this._nextAnimationTimeout = setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying); }.bind(this), this.data.wait === undefined ? 0 : this.data.wait);
+	  }
+	};
+
+	function dist(p, q) {
+	  var a = parseFloat(q.x) - parseFloat(p.x);
+	  var b = parseFloat(q.y) - parseFloat(p.y);
+	  var c = parseFloat(q.z) - parseFloat(p.z);
+	  return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2) + Math.pow(c, 2))
+	}
+
+	var lightingComponent = {
+
+	  schema: {
+	    preset: {
+	      type: 'string',
+	      default: 'malibu'
+	    },
+	    intensity: {
+	      type: 'float',
+	      default: 1
+	    },
+	    saturation: {
+	      type: 'float',
+	      default: 1
+	    }
+	  },
+
+	  init: function () {
+
+	    this.cam = document.querySelector('a-entity[camera]').object3D;
+
+	    // main
+	    var lighting = new THREE.Object3D();
+	    this.el.setObject3D('lighting', lighting);
+
+	    // lights moving with camera
+	    this.movingWithCamera = new THREE.Object3D();
+	    lighting.add(this.movingWithCamera);
+
+	    // static lights
+	    this.static = new THREE.Object3D();
+	    lighting.add(this.static);
+
+	  },
+
+	  update: function () {
+
+	    this.remove();
+
+	    createPreset[this.data.preset](
+	      this.movingWithCamera,
+	      this.static,
+	      this.data.intensity,
+	      this.data.saturation
+	    );
+
+	  },
+
+	  remove: function () {
+
+	    this.movingWithCamera.children.forEach(function (child) {
+	      child.parent.remove(child);
+	    });
+
+	    this.static.children.forEach(function (child) {
+	      child.parent.remove(child);
+	    });
+
+	  },
+
+	  tick: function (dt) {
+
+	    this.movingWithCamera.position.copy(this.cam.position);
+	    this.movingWithCamera.rotation.copy(this.cam.rotation);
+
+	  }
+
+	};
+
+	// configs
+
+	var SHADOW_CAMERA_NEAR = 1;
+	var SHADOW_CAMERA_FAR = 60;
+	var SHADOW_SIZE = 40; // real size of shadow map in meters
+	var SHADOW_MAP_SIZE = 1024; // pixel size of shadow map
+	var SHADOW_BIAS = 0.001;
+	var SHADOW_DARKNESS = 0.2;
+
+	// light presets
+
+	var createPreset = {
+	  malibu: function(movingWithCamera, staticLights, intensity, saturation) {
+
+	    var target = new THREE.Object3D();
+	    movingWithCamera.add(target);
+
+	    // spec: left (orange) / right (blue)
+
+	    var leftColor = new THREE.Color().setHSL(0.095, 0.5, 0.6); // orange
+	    var rightColor = new THREE.Color().setHSL(0.6, 0.4, 0.6); // blue
+	    var leftRightSpec = new THREE.HemisphereLight(leftColor, rightColor, 0.6 * intensity);
+	    leftRightSpec.position.set(-500, 200, 200);
+	    leftRightSpec.target = target;
+	    movingWithCamera.add(leftRightSpec);
+
+	    // fspec: front / back
+
+	    var frontColor = new THREE.Color().setHSL(0, 0, 0.3);
+	    var backColor = new THREE.Color().setHSL(0, 0, 0.8);
+	    var frontBackSpec = new THREE.HemisphereLight(frontColor, backColor, 0.5 * intensity);
+	    frontBackSpec.position.set(0, 100, -10000);
+	    frontBackSpec.target = target;
+	    movingWithCamera.add(frontBackSpec);
+
+	    // ambient
+
+	    var ambientColor = new THREE.Color().setHSL(0,0,0.3 * intensity);
+	    var ambient = new THREE.AmbientLight(ambientColor);
+	    staticLights.add(ambient);
+
+	    // sun & shadow
+
+	    var sunTarget = new THREE.Object3D();
+	    staticLights.add(sunTarget);
+
+	    var sunColor = new THREE.Color().setHSL(0,0,1);
+	    var sun = new THREE.DirectionalLight(sunColor, 0 * intensity);
+	    sun.position.set(100, 100, 0);
+	    sun.target = sunTarget;
+	    sun.shadow.camera.visible = false; // helper
+	    sun.castShadow = true;
+	    sun.shadowMapEnabled = true;
+	    sun.shadow.bias = SHADOW_BIAS;
+	    sun.shadow.darkness = SHADOW_DARKNESS;
+	    sun.shadow.mapSize.width = sun.shadow.mapSize.height = SHADOW_MAP_SIZE;
+	    sun.shadow.camera.near = SHADOW_CAMERA_NEAR;
+	    sun.shadow.camera.Far = SHADOW_CAMERA_FAR;
+	    sun.shadow.camera.right = sun.shadow.camera.top = SHADOW_SIZE / 2;
+	    sun.shadow.camera.left = sun.shadow.camera.bottom = -SHADOW_SIZE / 2;
+	    staticLights.add(sun);
+
+	  }
+	};
+
+	// initialize aframe components
 
 	checkDependencies({
 	  three: false,
@@ -20588,25 +19501,10 @@
 	    if (runtime.isBrowser) console.warn('AFRAME library not found: related features will be disabled.');
 	  }
 	}, function registerComponents () {
-
-	  // register components
-
 	  AFRAME.registerComponent('io3d-data3d', data3dComponent);
 	  AFRAME.registerComponent('io3d-furniture', furnitureComponent);
 	  AFRAME.registerComponent('tour', tourComponent);
-	  // check if gblock component has already been registered
-	  if (AFRAME.components.gblock) {
-	    // legacy warning in case gblock has been registered using https://github.com/archilogic-com/aframe-gblock/
-	    console.error('3dio.js error: Please remove any other "<script>" tags registering the "gblock" A-Frame component. This component is included in 3dio.js');
-	  } else {
-	    AFRAME.registerComponent('gblock', gBlockComponent);
-	  }
-
-
-	  // init plugin launcher
-
-	  inspectorPluginsLauncher.init();
-
+	  AFRAME.registerComponent('lighting', lightingComponent);
 	});
 
 	// export
@@ -20639,7 +19537,6 @@
 	    // geometry
 	    boundingBox: rawInfo.boundingBox,
 	    boundingPoints: rawInfo.boundingPoints,
-	    data3dStorageId: rawInfo.fileKey,
 	    data3dUrl: convertKeyToUrl(rawInfo.fileKey),
 	    // scene Structure definition
 	    sceneStructure: rawInfo.modelStructure,
@@ -21784,9 +20681,6 @@
 	Url.prototype._autoEscapeMap = autoEscapeMap;
 	Url.prototype._afterQueryAutoEscapeMap = afterQueryAutoEscapeMap;
 
-	// constants
-	var IS_URL = new RegExp('^http:\\/\\/.*$|^https:\\/\\/.*$');
-
 	// configs
 
 	var HEADER_BYTE_LENGTH = 16;
@@ -21821,9 +20715,9 @@
 
 	  // API
 	  options = options || {};
-	  var url = options.url;
+	  var url$$1 = options.url;
 
-	  var parsedUrl = Url.parse(url);
+	  var parsedUrl = Url.parse(url$$1);
 	  var rootDir = path.parse(parsedUrl.path || parsedUrl.pathname || '').dir;
 	  var origin = parsedUrl.protocol + '//' + parsedUrl.host;
 
@@ -21878,7 +20772,7 @@
 	  traverseData3d(structure.data3d, function (data3d) {
 
 	    // map typed arrays to payload area in file buffer
-	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url);
+	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url$$1);
 
 	    //  convert relative material keys into absolute one
 	    if (origin && data3d.materials) convertTextureKeys(data3d, origin, rootDir);
@@ -21930,10 +20824,7 @@
 	      texturePathKey = TEXTURE_PATH_KEYS[i2];
 
 	      if (m[texturePathKey]) {
-	        if (IS_URL.test(m[texturePathKey])) {
-	          // is full URL already
-	          m[texturePathKey] = m[texturePathKey];
-	        } else if (m[texturePathKey].substring(0,5) === '/http') {
+	        if (m[texturePathKey].substring(0,5) === '/http') {
 	          // FIXME: prevent leading slashes being added to absolute paths
 	          m[texturePathKey] = m[texturePathKey].substring(1);
 	        } else if (m[texturePathKey][0] === '/') {
@@ -21950,7 +20841,7 @@
 
 	}
 
-	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url) {
+	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url$$1) {
 
 	  var mesh, i, l, meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
 
@@ -21980,7 +20871,7 @@
 	    }
 
 	    // add cache key
-	    if (url) mesh.cacheKey = url + ':' + meshKeys[i];
+	    if (url$$1) mesh.cacheKey = url$$1 + ':' + meshKeys[i];
 
 	  }
 
@@ -21998,31 +20889,38 @@
 
 	}
 
-	// private shared
-
-	var cache$1 = new PromiseCache();
-
-	// main
-
 	function loadData3d (url, options) {
 
-	  // try cache
-	  var cacheKey = url;
-	  var promiseFromCache = cache$1.get(cacheKey);
-	  if (promiseFromCache) return promiseFromCache
+	  options = options || {};
+	  var queueName;
+	  if (options.queueName) {
+	    queueName = options.queueName;
+	  } else if (options.loadingQueuePrefix) {
+	    queueName = options.loadingQueuePrefix + 'Geometries';
+	  }
 
-	  // fetch
-	  var promise = fetch$1(url, options).then(function(res){
-	    return res.arrayBuffer()
-	  }).then(function(buffer){
-	    return decodeBinary(buffer, { url: url })
-	  });
+	  // run
 
-	  // add to cache
-	  cache$1.add(cacheKey, promise);
+	  return queueManager.enqueue(queueName, url).then(function(){
 
-	  return promise
+	    return fetch$1(url, options).then(function(res){
 
+	      return res.arrayBuffer()
+
+	    }).then(function(buffer){
+
+	      queueManager.dequeue(queueName, url);
+	      return decodeBinary(buffer, { url: url })
+
+	    })
+
+	  }).catch(function (error) {
+
+	    queueManager.dequeue(queueName, url);
+	    return bluebird_1.reject(error)
+
+	  })
+	  
 	}
 
 	function getFurniture (id) {
@@ -22404,6 +21302,94 @@
 	};
 
 	/**
+	 * The base implementation of `assignValue` and `assignMergeValue` without
+	 * value checks.
+	 *
+	 * @private
+	 * @param {Object} object The object to modify.
+	 * @param {string} key The key of the property to assign.
+	 * @param {*} value The value to assign.
+	 */
+	function baseAssignValue(object, key, value) {
+	  if (key == '__proto__' && _defineProperty) {
+	    _defineProperty(object, key, {
+	      'configurable': true,
+	      'enumerable': true,
+	      'value': value,
+	      'writable': true
+	    });
+	  } else {
+	    object[key] = value;
+	  }
+	}
+
+	var _baseAssignValue = baseAssignValue;
+
+	/** Used for built-in method references. */
+	var objectProto$12 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$9 = objectProto$12.hasOwnProperty;
+
+	/**
+	 * Assigns `value` to `key` of `object` if the existing value is not equivalent
+	 * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+	 * for equality comparisons.
+	 *
+	 * @private
+	 * @param {Object} object The object to modify.
+	 * @param {string} key The key of the property to assign.
+	 * @param {*} value The value to assign.
+	 */
+	function assignValue(object, key, value) {
+	  var objValue = object[key];
+	  if (!(hasOwnProperty$9.call(object, key) && eq_1(objValue, value)) ||
+	      (value === undefined && !(key in object))) {
+	    _baseAssignValue(object, key, value);
+	  }
+	}
+
+	var _assignValue = assignValue;
+
+	/**
+	 * Copies properties of `source` to `object`.
+	 *
+	 * @private
+	 * @param {Object} source The object to copy properties from.
+	 * @param {Array} props The property identifiers to copy.
+	 * @param {Object} [object={}] The object to copy properties to.
+	 * @param {Function} [customizer] The function to customize copied values.
+	 * @returns {Object} Returns `object`.
+	 */
+	function copyObject(source, props, object, customizer) {
+	  var isNew = !object;
+	  object || (object = {});
+
+	  var index = -1,
+	      length = props.length;
+
+	  while (++index < length) {
+	    var key = props[index];
+
+	    var newValue = customizer
+	      ? customizer(object[key], source[key], key, object, source)
+	      : undefined;
+
+	    if (newValue === undefined) {
+	      newValue = source[key];
+	    }
+	    if (isNew) {
+	      _baseAssignValue(object, key, newValue);
+	    } else {
+	      _assignValue(object, key, newValue);
+	    }
+	  }
+	  return object;
+	}
+
+	var _copyObject = copyObject;
+
+	/**
 	 * Creates a function like `_.assign`.
 	 *
 	 * @private
@@ -22437,6 +21423,86 @@
 	}
 
 	var _createAssigner = createAssigner;
+
+	/**
+	 * This function is like
+	 * [`Object.keys`](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+	 * except that it includes inherited enumerable properties.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 */
+	function nativeKeysIn(object) {
+	  var result = [];
+	  if (object != null) {
+	    for (var key in Object(object)) {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+
+	var _nativeKeysIn = nativeKeysIn;
+
+	/** Used for built-in method references. */
+	var objectProto$13 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$10 = objectProto$13.hasOwnProperty;
+
+	/**
+	 * The base implementation of `_.keysIn` which doesn't treat sparse arrays as dense.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 */
+	function baseKeysIn(object) {
+	  if (!isObject_1$3(object)) {
+	    return _nativeKeysIn(object);
+	  }
+	  var isProto = _isPrototype(object),
+	      result = [];
+
+	  for (var key in object) {
+	    if (!(key == 'constructor' && (isProto || !hasOwnProperty$10.call(object, key)))) {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+
+	var _baseKeysIn = baseKeysIn;
+
+	/**
+	 * Creates an array of the own and inherited enumerable property names of `object`.
+	 *
+	 * **Note:** Non-object values are coerced to objects.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 3.0.0
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 * @example
+	 *
+	 * function Foo() {
+	 *   this.a = 1;
+	 *   this.b = 2;
+	 * }
+	 *
+	 * Foo.prototype.c = 3;
+	 *
+	 * _.keysIn(new Foo);
+	 * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
+	 */
+	function keysIn(object) {
+	  return isArrayLike_1(object) ? _arrayLikeKeys(object, true) : _baseKeysIn(object);
+	}
+
+	var keysIn_1 = keysIn;
 
 	/**
 	 * This method is like `_.assignIn` except that it accepts `customizer`
@@ -22474,10 +21540,10 @@
 	var assignInWith_1 = assignInWith;
 
 	/** Used for built-in method references. */
-	var objectProto$15 = Object.prototype;
+	var objectProto$14 = Object.prototype;
 
 	/** Used to check objects for own properties. */
-	var hasOwnProperty$12 = objectProto$15.hasOwnProperty;
+	var hasOwnProperty$11 = objectProto$14.hasOwnProperty;
 
 	/**
 	 * Used by `_.defaults` to customize its `_.assignIn` use to assign properties
@@ -22493,7 +21559,7 @@
 	 */
 	function customDefaultsAssignIn(objValue, srcValue, key, object) {
 	  if (objValue === undefined ||
-	      (eq_1(objValue, objectProto$15[key]) && !hasOwnProperty$12.call(object, key))) {
+	      (eq_1(objValue, objectProto$14[key]) && !hasOwnProperty$11.call(object, key))) {
 	    return srcValue;
 	  }
 	  return objValue;
@@ -23001,7 +22067,7 @@
 	  var furnitureIds;
 
 	  // check for DOM element
-	  var isDomElement = isElement$1(input);
+	  var isDomElement = isElement(input);
 	  if (isDomElement) {
 	    // convert to sceneStructure
 	    input = getSceneStructureFromHtml(input);
@@ -23056,7 +22122,7 @@
 
 	// Returns true if it is a DOM element
 	// https://stackoverflow.com/a/384380/2835973
-	function isElement$1(o){
+	function isElement(o){
 	  return (
 	    typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
 	      o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
@@ -23687,9 +22753,9 @@
 	  // get user id
 	  return auth.getSession().then(function(session){
 	    if (isTemplateKey) {
-	      if (session.isAuthenticated || configs.secretApiKey) {
+	      if (session.isAuthenticated) {
 	        // replace user id in template key
-	        return key.replace('{{userId}}', session.user.id || configs.secretApiKey )
+	        return key.replace( '{{userId}}', session.user.id )
 	      } else {
 	        console.error('Using key parameter with template syntax requires authentication.');
 	        // reject with user friendly error message
@@ -23815,7 +22881,7 @@
 	}
 
 	// constants
-	var IS_URL$1 = new RegExp('^http:\\/\\/.*$|^https:\\/\\/.*$');
+	var IS_URL = new RegExp('^http:\\/\\/.*$|^https:\\/\\/.*$');
 	var ID_TO_URL_CACHE = {};
 
 	// main
@@ -23832,7 +22898,7 @@
 	  }
 
 	  // check if storageId is URL already
-	  if (IS_URL$1.test(storageId)) {
+	  if (IS_URL.test(storageId)) {
 	    // add to cache
 	    ID_TO_URL_CACHE[ storageId + cdn + encode ] = storageId;
 	    // return URL
@@ -23887,228 +22953,10 @@
 
 	}
 
-	// main
-	function getNoCdnUrlFromStorageId (storageId) {
-
-	  return getUrlFromStorageId(storageId, { cdn: false })
-
-	}
-
-	// constants
-	var URL_TO_ID_CACHE = {};
-	var IS_URL$2 = new RegExp(
-	  '^(http(s?))\\:\\/\\/(' +
-	    configs.storageDomain +
-	    '|' +
-	    configs.storageDomainNoCdn +
-	    ')'
-	);
-
-	// main
-	function getStorageIdFromUrl(url) {
-	  // check cache
-	  if (URL_TO_ID_CACHE[url]) return URL_TO_ID_CACHE[url]
-
-	  // check if url is valid url
-	  if (IS_URL$2.test(url)) {
-	    var storageId = url.replace(IS_URL$2, '');
-	    // add to cache
-	    URL_TO_ID_CACHE[url] = storageId;
-	    return storageId
-
-	  } else {
-	    console.error('Provided URL is not a valid URL:', url);
-	    return undefined
-	  }
-
-	}
-
-	function traverseData3d$1(data3d, callback) {
-
-	  callback(data3d);
-
-	  if (data3d.children) for (var i=0, l=data3d.children.length; i<l; i++) traverseData3d$1(data3d.children[i], callback);
-
-	}
-
-	// methods
-
-	traverseData3d$1.materials = function traverseMaterials (data3d, callback) {
-	  
-	  (function traverseMaterials_(data3d, callback) {
-
-	    var material;
-	    var materialKeys = data3d.materialKeys || Object.keys(data3d.materials || {});
-	    for (var i = 0; i < materialKeys.length; i++) {
-	      material = data3d.materials[ materialKeys[ i ] ];
-	      callback(material, data3d);
-	    }
-
-	    if (data3d.children) {
-	      for (var i=0, l=data3d.children.length; i<l; i++) {
-	        traverseMaterials_(data3d.children[i], callback);
-	      }
-	    }
-
-	  })(data3d, callback);
-
-	};
-
-	traverseData3d$1.meshes = function traverseMeshes (data3d, callback) {
-
-	  (function traverseMeshes_(data3d, callback) {
-
-	    var mesh, material;
-	    var meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
-	    for (var i = 0; i < meshKeys.length; i++) {
-	      mesh = data3d.meshes[ meshKeys[ i ] ];
-	      material = data3d.materials[ mesh.material ];
-	      callback(mesh, material, data3d);
-	    }
-
-	    if (data3d.children) {
-	      for (var i=0, l=data3d.children.length; i<l; i++) {
-	        traverseMeshes_(data3d.children[i], callback);
-	      }
-	    }
-
-	  })(data3d, callback);
-
-	};
-
-	function getTextureKeys(data3d, options) {
-	  // API
-	  var options = options || {};
-	  var filter = options.filter;
-
-	  // internals
-	  var cache = {};
-
-	  // internals
-	  traverseData3d$1.materials(data3d, function(material) {
-	    var filteredResult, attr, type, format, value;
-	    for (var i = 0, l = ATTRIBUTES.length; i < l; i++) {
-	      attr = ATTRIBUTES[i];
-	      value = material[attr];
-
-	      // apply filter function if specified in options
-	      if (filter) {
-	        // provide info on type and format of texture to the filter function
-	        type = ATTRIBUTE_TO_TYPE[attr];
-	        format = ATTRIBUTE_TO_FORMAT[attr];
-	        value = filter(value, type, format, material, data3d);
-	      }
-
-	      if (value) cache[value] = true;
-	    }
-	  });
-
-	  return Object.keys(cache)
-	}
-
-	// constants
-
-	var ATTRIBUTES = [
-	  'mapDiffuse',
-	  'mapDiffusePreview',
-	  'mapDiffuseSource',
-	  // specular
-	  'mapSpecular',
-	  'mapSpecularPreview',
-	  'mapSpecularSource',
-	  // normal
-	  'mapNormal',
-	  'mapNormalPreview',
-	  'mapNormalSource',
-	  // alpha
-	  'mapAlpha',
-	  'mapAlphaPreview',
-	  'mapAlphaSource'
-	];
-
-	var ATTRIBUTE_TO_TYPE = {
-	  // diffuse
-	  mapDiffuse: 'diffuse',
-	  mapDiffusePreview: 'diffuse',
-	  mapDiffuseSource: 'diffuse',
-	  // specular
-	  mapSpecular: 'specular',
-	  mapSpecularPreview: 'specular',
-	  mapSpecularSource: 'specular',
-	  // normal
-	  mapNormal: 'normal',
-	  mapNormalPreview: 'normal',
-	  mapNormalSource: 'normal',
-	  // alpha
-	  mapAlpha: 'alpha',
-	  mapAlphaPreview: 'alpha',
-	  mapAlphaSource: 'alpha'
-	};
-
-	var ATTRIBUTE_TO_FORMAT = {
-	  // loRes
-	  mapDiffusePreview: 'loRes',
-	  mapSpecularPreview: 'loRes',
-	  mapNormalPreview: 'loRes',
-	  mapAlphaPreview: 'loRes',
-	  // source
-	  mapDiffuseSource: 'source',
-	  mapSpecularSource: 'source',
-	  mapNormalSource: 'source',
-	  mapAlphaSource: 'source',
-	  // dds
-	  mapDiffuse: 'dds',
-	  mapSpecular: 'dds',
-	  mapNormal: 'dds',
-	  mapAlpha: 'dds'
-	};
-
-	function getConvertableTextures(storageId) {
-	  var url = getUrlFromStorageId(storageId);
-	  return loadData3d(url)
-	    .then(function(data3d) {
-	      return getTextureKeys(data3d)
-	    })
-	    .then(function(textures) {
-	      return textures.map(getStorageIdFromUrl)
-	    })
-	}
-
-	function getConverter(format) {
-	  return function convert(storageId, options) {
-	    // API
-	    options = options || {};
-	    var filename = options.filename !== undefined ? options.filename : null;
-
-	    return getConvertableTextures(storageId).then(function(textureKeys) {
-	      return callService('Processing.task.enqueue', {
-	        method: 'convert',
-	        params: {
-	          inputFileKey: storageId,
-	          options: {
-	            inputAssetKeys: textureKeys,
-	            outputFormat: format,
-	            outputFilename: filename
-	          }
-	        }
-	      })
-	    })
-	  }
-	}
-
-	var convert = {
-	  exportDae: getConverter('dae'),
-	  exportObj: getConverter('obj')
-	};
-
 	var storage = {
 	  get: getFromStorage,
-	  put: putToStorage,
 	  getUrlFromStorageId: getUrlFromStorageId,
-	  getNoCdnUrlFromStorageId: getNoCdnUrlFromStorageId,
-	  getStorageIdFromUrl: getStorageIdFromUrl,
-	  exportObj: convert.exportObj,
-	  exportDae: convert.exportDae
+	  put: putToStorage
 	};
 
 	function getViewerUrl (args) {
@@ -24290,6 +23138,286 @@
 	  normalizeSceneStructure: normalizeSceneStructure,
 	  getHtmlFromSceneStructure: toHtml
 	};
+
+	function traverseData3d$1(data3d, callback) {
+
+	  callback(data3d);
+
+	  if (data3d.children) for (var i=0, l=data3d.children.length; i<l; i++) traverseData3d$1(data3d.children[i], callback);
+
+	}
+
+	// methods
+
+	traverseData3d$1.materials = function traverseMaterials (data3d, callback) {
+	  
+	  (function traverseMaterials_(data3d, callback) {
+
+	    var material;
+	    var materialKeys = data3d.materialKeys || Object.keys(data3d.materials || {});
+	    for (var i = 0; i < materialKeys.length; i++) {
+	      material = data3d.materials[ materialKeys[ i ] ];
+	      callback(material, data3d);
+	    }
+
+	    if (data3d.children) {
+	      for (var i=0, l=data3d.children.length; i<l; i++) {
+	        traverseMaterials_(data3d.children[i], callback);
+	      }
+	    }
+
+	  })(data3d, callback);
+
+	};
+
+	traverseData3d$1.meshes = function traverseMeshes (data3d, callback) {
+
+	  (function traverseMeshes_(data3d, callback) {
+
+	    var mesh, material;
+	    var meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
+	    for (var i = 0; i < meshKeys.length; i++) {
+	      mesh = data3d.meshes[ meshKeys[ i ] ];
+	      material = data3d.materials[ mesh.material ];
+	      callback(mesh, material, data3d);
+	    }
+
+	    if (data3d.children) {
+	      for (var i=0, l=data3d.children.length; i<l; i++) {
+	        traverseMeshes_(data3d.children[i], callback);
+	      }
+	    }
+
+	  })(data3d, callback);
+
+	};
+
+	// API
+
+	var clone = cloneData3d$1;
+	clone.withPayload = cloneData3dWithPayload;
+	clone.meshes = cloneMeshes;
+	clone.meshe = cloneSingleMesh;
+	clone.materials = cloneMaterials;
+	clone.material = cloneSingleMaterial;
+
+	// methods
+
+	function cloneData3d$1 (_data3d, options) {
+
+	  var clone = {};
+
+	  clone.meshes = cloneMeshes(_data3d.meshes, options);
+	  clone.materials = cloneMaterials(_data3d.materials);
+
+	  if (_data3d.alternativeMaterialsByMeshKey) {
+	    clone.alternativeMaterialsByMeshKey = JSON.parse(JSON.stringify(_data3d.alternativeMaterialsByMeshKey));
+	  }
+	  if (_data3d._params) {
+	    clone._params = _data3d._params;
+	  }
+	  if (_data3d.position) {
+	    clone.position = _data3d.position.slice(0);
+	  }
+	  if (_data3d.rotDeg) {
+	    clone.rotDeg = _data3d.rotDeg.slice(0);
+	  }
+	  if (_data3d.rotRad) {
+	    clone.rotRad = _data3d.rotRad.slice(0);
+	  }
+	  if (_data3d.children) {
+	    clone.children = _data3d.children.map(function (childData3d) {
+	      return cloneData3d$1(childData3d, options)
+	    });
+	  }
+
+	  return clone
+	}
+
+	function cloneData3dWithPayload (data3d) {
+	  // payload = heavy arrays containing geometry & uv data
+	  return cloneData3d$1(data3d, {
+	    clonePositions: true,
+	    cloneNormals: true,
+	    cloneUvs: true,
+	    cloneUvsLightmap: true
+	  })
+	}
+
+	function cloneSingleMesh (mesh, options) {
+	  return cloneMeshes({x: mesh}, options).x
+	}
+
+	function cloneMeshes (_meshes, options) {
+
+	  if (!_meshes) {
+	    return {}
+	  }
+
+	  // API
+	  options = options || {};
+	  var clonePositions = !!options.clonePositions;
+	  var cloneNormals = !!options.cloneNormals;
+	  var cloneUvs = !!options.cloneUvs;
+	  var cloneUvsLightmap = !!options.cloneUvsLightmap;
+
+	  // internals
+	  var
+	    meshId, _mesh, mesh,
+	    meshKeys = Object.keys(_meshes),
+	    meshes = {};
+
+	  for (var i = 0, l = meshKeys.length; i < l; i++) {
+
+	    meshId = meshKeys[i];
+	    mesh = {};
+	    _mesh = _meshes[meshId];
+
+	    // vertices
+	    if (_mesh.positions) {
+	      if (clonePositions && (_mesh.positions instanceof Array || _mesh.positions instanceof Float32Array)) {
+	        mesh.positions = _mesh.positions.slice(0);
+	      } else {
+	        mesh.positions = _mesh.positions;
+	      }
+	    }
+
+	    // normals
+	    if (_mesh.normals) {
+	      if (cloneNormals && (_mesh.normals instanceof Array || _mesh.normals instanceof Float32Array)) {
+	        mesh.normals = _mesh.normals.slice(0);
+	      } else {
+	        mesh.normals = _mesh.normals;
+	      }
+	    }
+
+	    // uvs
+	    if (_mesh.uvs) {
+	      if (cloneUvs && (_mesh.uvs instanceof Array || _mesh.uvs instanceof Float32Array)) {
+	        mesh.uvs = _mesh.uvs.slice(0);
+	      } else {
+	        mesh.uvs = _mesh.uvs;
+	      }
+	    }
+
+	    // uvs lightmap
+	    if (_mesh.uvsLightmap) {
+	      if (cloneUvsLightmap && (_mesh.uvsLightmap instanceof Array || _mesh.uvsLightmap instanceof Float32Array)) {
+	        mesh.uvsLightmap = _mesh.uvsLightmap.slice(0);
+	      } else {
+	        mesh.uvsLightmap = _mesh.uvsLightmap;
+	      }
+	    }
+
+	    // other arrays
+	    if (_mesh.matrix) mesh.matrix = _mesh.matrix.slice(0);
+	    if (_mesh.uvMatrix) mesh.uvMatrix = _mesh.uvMatrix.slice(0);
+	    if (_mesh.meshKeys) mesh.meshKeys = _mesh.meshKeys.slice(0);
+	    if (_mesh.position) mesh.position = _mesh.position.slice(0);
+	    if (_mesh.rotDeg) mesh.rotDeg = _mesh.rotDeg.slice(0);
+	    if (_mesh.rotRad) mesh.rotRad = _mesh.rotRad.slice(0);
+	    if (_mesh.scale) mesh.scale = _mesh.scale.slice(0);
+
+	    // primitives
+	    if (_mesh.v) mesh.v = _mesh.v;
+	    if (_mesh.vertexMode) mesh.vertexMode = _mesh.vertexMode;
+	    if (_mesh.side) mesh.side = _mesh.side;
+	    if (_mesh.material) mesh.material = _mesh.material;
+	    if (_mesh.visibleInPersonView) mesh.visibleInPersonView = _mesh.visibleInPersonView;
+	    if (_mesh.visibleInBirdView) mesh.visibleInBirdView = _mesh.visibleInBirdView;
+	    if (_mesh.visibleInFloorplanView) mesh.visibleInFloorplanView = _mesh.visibleInFloorplanView;
+
+	    meshes[meshId] = mesh;
+	  }
+
+	  // output
+	  return meshes
+	}
+
+	function cloneSingleMaterial (material) {
+	  return cloneMaterials({x: material}).x
+	}
+
+	function cloneMaterials (_materials) {
+
+	  if (!_materials) {
+	    return {}
+	  }
+
+	  var materialId, _material, materials, material, materialKeys, _attributes, _attributeKeys, attributeKey, type,
+	    attributes, isExtended;
+
+	  materialKeys = Object.keys(_materials);
+	  // result
+	  materials = {};
+
+	  if (materialKeys.length === 0) {
+	    return {}
+	  }
+
+	  if (_materials[materialKeys[0]].attributes) {
+	    isExtended = true;
+	    // deep copy source
+	    materials = JSON.parse(JSON.stringify(_materials));
+	  } else {
+	    isExtended = false;
+	  }
+
+	  for (var i = 0, l = materialKeys.length; i < l; i++) {
+
+	    materialId = materialKeys[i];
+	    _attributes = isExtended ? _materials[materialId].attributes : _materials[materialId];
+
+	    if (typeof _attributes === 'string') {
+
+	      if (isExtended) {
+	        materials[materialId].attributes = _attributes;
+	      } else {
+	        materials[materialId] = _attributes;
+	      }
+
+	    } else if (_attributes) {
+
+	      attributes = {};
+	      _attributeKeys = Object.keys(_attributes);
+
+	      for (var j = 0, k = _attributeKeys.length; j < k; j++) {
+	        attributeKey = _attributeKeys[j];
+	        type = typeof _attributes[attributeKey];
+	        if (type === 'string' || type === 'number' || type === 'boolean') {
+	          // primitive
+	          attributes[attributeKey] = _attributes[attributeKey];
+	        } else if (_attributes[attributeKey]) {
+	          if (_attributes[attributeKey].length === 3) {
+	            // color array
+	            attributes[attributeKey] = [
+	              _attributes[attributeKey][0],
+	              _attributes[attributeKey][1],
+	              _attributes[attributeKey][2]
+	            ];
+	          } else if (_attributes[attributeKey].length === 2) {
+	            // size array
+	            attributes[attributeKey] = [
+	              _attributes[attributeKey][0],
+	              _attributes[attributeKey][1]
+	            ];
+	          }
+	        }
+	      }
+
+	      if (isExtended) {
+	        materials[materialId].attributes = attributes;
+	      } else {
+	        materials[materialId] = attributes;
+	      }
+
+	    }
+
+	  }
+
+	  return materials
+
+	}
 
 	// methods
 
@@ -25219,6 +24347,47 @@
 	  })
 	}
 
+	function fetchModule (url) {
+	  runtime.assertBrowser('Please use "require()" to fetch modules in server environment.');
+
+	  // module wrapper
+	  window.___modules = window.___modules || {};
+
+	  // return module if it has been loaded already
+	  if (window.___modules[url]) {
+	    return Promise.resolve(window.___modules[url])
+
+	  } else {
+	  // load code and use module wrapper
+	    return fetch$1(url).then(function(response){
+	      return response.text()
+	    }).then(function(code){
+
+	      // check module type
+	      var moduleWrapper;
+	      if (code.indexOf('define(function()') > -1) {
+	        // AMD
+	        moduleWrapper = code+'\nfunction define(cb){ window.___modules["'+url+'"] = cb(); };';
+	      } else {
+	        // CommonJS
+	        moduleWrapper = 'window.___modules["'+url+'"] = (function(){ var exports = {}, module = {exports:exports};'+code+'\nreturn module.exports\n})()';
+	      }
+
+	      var script = document.createElement('script');
+	      try {
+	        script.appendChild(document.createTextNode(moduleWrapper));
+	        document.body.appendChild(script);
+	      } catch (e) {
+	        script.text = moduleWrapper;
+	        document.body.appendChild(script);
+	      }
+	      return window.___modules[url]
+	    })
+
+	  }
+
+	}
+
 	// dependencies
 
 	var TARGA_PARSER_LIB = 'https://cdn.rawgit.com/archilogic-com/roBrowser/e4b5b53a/src/Loaders/Targa.js';
@@ -25278,7 +24447,7 @@
 	}
 
 	function getImageFromTga (file) {
-	  return fetchScript(TARGA_PARSER_LIB).then(function(Targa){
+	  return fetchModule(TARGA_PARSER_LIB).then(function(Targa){
 	    return readFile(file, 'arrayBuffer').then(function(buffer){
 	      return new bluebird_1(function(resolve, reject){
 
@@ -25403,7 +24572,7 @@
 	  aframe: false
 	}, function () {
 
-	  return function getData3dFromThreeJs(object3d) {
+	  return function getData3d(object3d) {
 	    
 	    // returns data3d when a minimal texture is ready:
 	    // - source textures for server side processing
@@ -25411,26 +24580,7 @@
 	    var texturePromises = [];
 
 	    // internals
-
-	    var data3d = { meshes: {}, materials: {} };
-	    var meshCounter = 0;
-	    var materialCounter = 0;
-
-	    // private methods
-
-	    function getMeshId () {
-	      meshCounter++;
-	      return 'mesh_' + meshCounter
-	    }
-
-	    function getMaterialId () {
-	      materialCounter++;
-	      return 'material_' + materialCounter
-	    }
-
-	    // traverse scene graph
-
-	    (function traverseThreeSceneGraph (threeObject3D) {
+	    var data3d = { meshes: {}, materials: {} };(function traverseThreeSceneGraph (threeObject3D) {
 
 	      threeObject3D.updateMatrixWorld();
 
@@ -25443,19 +24593,14 @@
 	          threeGeometry = new THREE.BufferGeometry().fromGeometry(threeGeometry);
 	        }
 
-	        // translate only geometries with faces
-	        if (threeGeometry.attributes.position.array.length) {
-
-	          if (threeGeometry.index) {
-	            if (threeGeometry.attributes.color) {
-	              translateIndexedBufferGeometryWithColor(data3d, threeObject3D, getMeshId, getMaterialId);
-	            } else {
-	              translateIndexedBufferGeometry(data3d, threeObject3D, getMeshId, getMaterialId, texturePromises);
-	            }
+	        if (threeGeometry.index) {
+	          if (threeGeometry.attributes.color) {
+	            translateIndexedBufferGeometryWithColor(data3d, threeObject3D);
 	          } else {
-	            translateNonIndexedBufferGeometry(data3d, threeObject3D, getMeshId, getMaterialId, texturePromises);
+	            translateIndexedBufferGeometry(data3d, threeObject3D, texturePromises);
 	          }
-
+	        } else {
+	          translateNonIndexedBufferGeometry(data3d, threeObject3D, texturePromises);
 	        }
 
 	      }
@@ -25467,8 +24612,12 @@
 
 	    })(object3d);
 
-	    return bluebird_1.all(texturePromises).then(function(){
-	      return consolidate(data3d)
+	    return bluebird_1.all([
+	      consolidate(data3d),
+	      bluebird_1.all(texturePromises)
+	    ]).then(function(results){
+	      // return data3d
+	      return results[0]
 	    })
 
 	  }
@@ -25486,12 +24635,12 @@
 	}
 
 
-	function translateNonIndexedBufferGeometry (data3d, threeObject3D, getMeshId, getMaterialId, texturePromises) {
+	function translateNonIndexedBufferGeometry (data3d, threeObject3D, texturePromises) {
 
 	  // mesh
 	  var threeGeometry = threeObject3D.geometry;
 	  // create data3d mesh
-	  var data3dMesh = data3d.meshes[getMeshId()] = {};
+	  var data3dMesh = data3d.meshes[threeObject3D.uuid] = {};
 	  // positions
 	  data3dMesh.positions = threeGeometry.attributes.position.array;
 	  // normals
@@ -25500,18 +24649,18 @@
 	  if (threeGeometry.attributes.uv) data3dMesh.uvs = threeGeometry.attributes.uv.array;
 
 	  // material
-	  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, getMaterialId, texturePromises);
+	  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, texturePromises);
 
 	  // scene graph
 	  translateSceneGraph(data3dMesh, threeObject3D);
 
 	}
 
-	function translateIndexedBufferGeometry (data3d, threeObject3D, getMeshId, getMaterialId, texturePromises) {
+	function translateIndexedBufferGeometry (data3d, threeObject3D, texturePromises) {
 
 	  var threeGeometry = threeObject3D.geometry;
 	  // create data3d mesh
-	  var data3dMesh = data3d.meshes[getMeshId()] = {};
+	  var data3dMesh = data3d.meshes[threeObject3D.uuid] = {};
 
 	  var index = threeGeometry.index.array;
 	  var i = 0, l = threeGeometry.index.array.length;
@@ -25550,14 +24699,15 @@
 	  }
 
 	  // material
-	  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, getMaterialId, texturePromises);
+	  var threeMaterial = threeObject3D.material;
+	  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, texturePromises);
 
 	  // scene graph
 	  translateSceneGraph(data3dMesh, threeObject3D);
 
 	}
 
-	function translateIndexedBufferGeometryWithColor (data3d, threeObject3D, getMeshId, getMaterialId) {
+	function translateIndexedBufferGeometryWithColor (data3d, threeObject3D) {
 
 	  var colorMap = {};
 
@@ -25581,7 +24731,7 @@
 	    if (colorMap[colorKey]) {
 	      colorMap[colorKey].faceCount++;
 	    } else {
-	      materialId = getMaterialId();
+	      materialId = getShortId();
 	      colorMap[colorKey] = {
 	        faceCount: 1,
 	        materialId: materialId
@@ -25604,7 +24754,7 @@
 	      colorMap[key].normalIndex = 0;
 	    }
 	    // create data3d mesh
-	    var meshId = getMeshId();
+	    var meshId = getShortId();
 	    var data3dMesh = data3d.meshes[meshId] = {
 	      positions: colorMap[key].positions,
 	      normals: colorMap[key].normals,
@@ -25667,23 +24817,20 @@
 
 	}
 
-	function translateMaterial (data3d, data3dMesh, threeObject3D, threeMaterial, getMaterialId, texturePromises) {
+	function translateMaterial (data3d, data3dMesh, threeObject3D, threeMaterial, texturePromises) {
 
-	  var materialId = getMaterialId();
 	  // create data3d material
-	  var data3dMaterial = data3d.materials[materialId] = {};
+	  var data3dMaterial = data3d.materials[threeMaterial.uuid] = {};
 	  // link data3d mesh with material
-	  data3dMesh.material = materialId;
+	  data3dMesh.material = threeMaterial.uuid;
 
 	  // material attributes
 
 	  translateMaterialNumericValues([
 	    // three attribs -> data3d attribs
 	    ['opacity', 'opacity'],
-	    ['shininess', 'specularCoef']
+	    ['specularCoef', 'shininess'],
 	  ], threeMaterial, data3dMaterial);
-
-	  translateMaterialNormalScale(threeMaterial, data3dMaterial);
 
 	  translateMaterialColors([
 	    // three attribs -> data3d attribs
@@ -25712,12 +24859,6 @@
 
 	}
 
-	function translateMaterialNormalScale(threeMaterial, data3dMaterial) {
-
-	  if (threeMaterial.normalScale) data3dMaterial.mapNormalFactor = threeMaterial.normalScale.x;
-
-	}
-
 	function translateMaterialColors(attribMap, threeMaterial, data3dMaterial) {
 
 	  attribMap.forEach(function(attribs){
@@ -25737,46 +24878,29 @@
 	    var threeAttribName = attribs[0];
 	    var data3dAttribName = attribs[1];
 
-	    var image = threeMaterial[threeAttribName] ? threeMaterial[threeAttribName].image : null;
+	    // if not compressed get textures from threejs material:
+	    var isNonCompressedImage = threeMaterial[threeAttribName] && threeMaterial[threeAttribName].image && !threeMaterial[threeAttribName].isCompressedTexture;
+	    if (isNonCompressedImage) {
 
-	    if (!(image && image.src)) return
-
-	    var isCompressedTexture = threeMaterial[threeAttribName].isCompressedTexture;
-	    var originalData3dMaterial = threeMaterial.userData && threeMaterial.userData.data3dMaterial ? threeMaterial.userData.data3dMaterial : null;
-
-	    if (isCompressedTexture) {
-
-	      // try original data3dMaterial...
-	      if (
-	        // material has original data3dMaterial properties
-	        originalData3dMaterial
-	        // source texture is available
-	        && originalData3dMaterial[data3dAttribName+'Source']
-	        // current compressed texture is the same as the one in original texture set
-	        && originalData3dMaterial[data3dAttribName].indexOf(image.src) > -1
-	      ) {
-	        // use texture set from original material
-	        data3dMaterial[data3dAttribName+'Source'] = getStorageIdFromUrl( originalData3dMaterial[data3dAttribName+'Source'] );
-	        data3dMaterial[data3dAttribName+'Preview'] = getStorageIdFromUrl( originalData3dMaterial[data3dAttribName+'Preview'] );
-	        data3dMaterial[data3dAttribName] = getStorageIdFromUrl( originalData3dMaterial[data3dAttribName] );
-
-	      } else {
-	        // log warning
-	        console.warn('Texture "'+ image.src +'" could not be converted into data3d texture set.');
-	      }
-
-	    } else {
-
-	      // use texture from threejs material
+	      var image = threeMaterial[threeName].image;
 	      texturePromises.push(
 	        getTextureSet(image).then(function (result) {
 	          // add texture keys to data3d
-	          data3dMaterial[data3dAttribName + 'Preview'] = result.loRes;
-	          data3dMaterial[data3dAttribName + 'Source'] = result.source;
-	          data3dMaterial[data3dAttribName] = result.dds;
+	          data3dMaterial[data3dName + 'Preview'] = result.loRes;
+	          data3dMaterial[data3dName + 'Source'] = result.source;
+	          data3dMaterial[data3dName] = result.dds;
 	        })
 	      );
 
+	    } else {
+	      // fallback to data from data3dMaterial (if available)
+	      var hasOriginalData3dMaterial = threeMaterial.userData && threeMaterial.userData.data3dMaterial && threeMaterial.userData.data3dMaterial[data3dAttribName];
+	      if (hasOriginalData3dMaterial) {
+	        var originalData3dMaterial = threeMaterial.userData.data3dMaterial;
+	        data3dMaterial[data3dAttribName+'Preview'] = originalData3dMaterial[data3dAttribName+'Preview'];
+	        data3dMaterial[data3dAttribName+'Source'] = originalData3dMaterial[data3dAttribName+'Source'];
+	        data3dMaterial[data3dAttribName] = originalData3dMaterial[data3dAttribName];
+	      }
 	    }
 
 	  });
@@ -25852,11 +24976,11 @@
 	// helpers
 
 	function loadDeflateLib () {
-	  return runtime.isBrowser ? fetchScript(PAKO_LIB.deflate.url) : Promise.resolve(require(PAKO_LIB.deflate.module))
+	  return runtime.isBrowser ? fetchModule(PAKO_LIB.deflate.url) : Promise.resolve(require(PAKO_LIB.deflate.module))
 	}
 
 	function loadInflateLib () {
-	  return runtime.isBrowser ? fetchScript(PAKO_LIB.inflate.url) : Promise.resolve(require(PAKO_LIB.inflate.module))
+	  return runtime.isBrowser ? fetchModule(PAKO_LIB.inflate.url) : Promise.resolve(require(PAKO_LIB.inflate.module))
 	}
 
 	// config
@@ -26072,23 +25196,114 @@
 	}
 
 	function checkIfFileExists (url) {
-
-	  if (!url) return Promise.reject('Please provide file URL string as param.')
-
-	  return fetch$1( addCacheBustToQuery(url), {
-	    method: 'HEAD',
-	    cache: 'reload'
-	  }).then(function onSuccess (response) {
-	    // response.ok provides boolean type information on request status
-	    // https://developer.mozilla.org/en-US/docs/Web/API/Response/ok
-	    return response.ok
-	  }, function onReject () {
+	  return fetch$1(
+	    addCacheBustToQuery(url),
+	    {
+	      method: 'HEAD',
+	      cache: 'reload'
+	    }
+	  ).then(function onSuccess(){
+	    return true
+	  }, function onReject(){
 	    return false
 	  })
 	}
 
+	function getTextureKeys (data3d, options) {
+
+	  // API
+	  var options = options || {};
+	  var filter = options.filter;
+
+	  // internals
+	  var cache = {};
+
+	  // internals
+	  traverseData3d$1.materials(data3d, function(material) {
+
+	    var filteredResult, attr, type, format, value;
+	    for (var i=0, l=ATTRIBUTES.length; i<l; i++) {
+
+	      attr = ATTRIBUTES[i];
+	      value = material[attr];
+
+	      // apply filter function if specified in options
+	      if (filter) {
+	        // provide info on type and format of texture to the filter function
+	        type = ATTRIBUTE_TO_TYPE[attr];
+	        format = ATTRIBUTE_TO_FORMAT[attr];
+	        value = filter(value, type, format, material, data3d);
+	      }
+
+	      if (value) cache[value] = true;
+
+	    }
+
+	  });
+
+	  return Object.keys(cache)
+
+	}
+
+	// constants
+
+	var ATTRIBUTES = [
+	  'mapDiffuse',
+	  'mapDiffusePreview',
+	  'mapDiffuseSource',
+	  // specular
+	  'mapSpecular',
+	  'mapSpecularPreview',
+	  'mapSpecularPreview',
+	  // normal
+	  'mapNormal',
+	  'mapNormalPreview',
+	  'mapNormalPreview',
+	  // alpha
+	  'mapAlpha',
+	  'mapAlphaPreview',
+	  'mapAlphaPreview',
+	];
+
+	var ATTRIBUTE_TO_TYPE = {
+	  // diffuse
+	  mapDiffuse: 'diffuse',
+	  mapDiffusePreview: 'diffuse',
+	  mapDiffuseSource: 'diffuse',
+	  // specular
+	  mapSpecular: 'specular',
+	  mapSpecularPreview: 'specular',
+	  mapSpecularPreview: 'specular',
+	  // normal
+	  mapNormal: 'normal',
+	  mapNormalPreview: 'normal',
+	  mapNormalPreview: 'normal',
+	  // alpha
+	  mapAlpha: 'alpha',
+	  mapAlphaPreview: 'alpha',
+	  mapAlphaPreview: 'alpha',
+	};
+
+	var ATTRIBUTE_TO_FORMAT = {
+	  // loRes
+	  mapDiffusePreview: 'loRes',
+	  mapSpecularPreview: 'loRes',
+	  mapNormalPreview: 'loRes',
+	  mapAlphaPreview: 'loRes',
+	  // source
+	  mapDiffuseSource: 'source',
+	  mapSpecularSource: 'source',
+	  mapNormalSource: 'source',
+	  mapAlphaSource: 'source',
+	  // dds
+	  mapDiffuse: 'dds',
+	  mapSpecular: 'dds',
+	  mapNormal: 'dds',
+	  mapAlpha: 'dds',
+	};
+
 	/*
-	input: data3d (object or binary) or storageId (referencing data3d)
+	input: data3d or storageId to a data3d file
 	returns promise
 	 */
 
@@ -26119,8 +25334,7 @@
 	  var inputType = typeof input;
 	  if (inputType === 'string') {
 	    // load data3d from URL
-	    var url = getUrlFromStorageId(input);
-	    return loadData3d(url)
+	    return loadData3d(input)
 	  } else if (input instanceof Blob) {
 	    // decode binary data3d
 	    return decodeBinary(input)
@@ -26134,9 +25348,10 @@
 
 	// poll for DDS storageIds
 
-	function pollTexture(storageId) {
+	function pollTexture(val) {
 
-	  var url = getNoCdnUrlFromStorageId(storageId);
+	  // normalize input to URL
+	  var url = getUrlFromStorageId(val);
 
 	  return poll(function (resolve, reject, next) {
 
@@ -26316,43 +25531,44 @@
 
 	// main
 
-	function getResult(processingId) {
-	  return poll(function(resolve, reject, next) {
-	    var url = 'https://' + configs.storageDomainNoCdn + '/' + processingId;
+	function getBakeResult (processingId) {
 
-	    fetch$1(url)
-	      .then(function(response) {
-	        return response.json()
-	      })
-	      .then(function(message) {
-	        var status = message.params.status;
+	  return poll(function(resolve, reject, next){
 
-	        if (status === 'ERROR') {
-	          reject(message.params.data);
-	        } else if (status === 'SUCCESS') {
-	          resolve(message.params.data);
-	        } else {
-	          next();
-	        }
-	      });
+	    var url = 'https://storage-nocdn.3d.io/' + processingId;
+
+	    fetch$1(url).then(function(response) {
+	      return response.json()
+	    }).then(function(message){
+	      var status = message.params.status;
+
+	      if (status === 'ERROR') {
+	        reject(message.params.data);
+	      } else if (status === 'SUCCESS') {
+	        resolve(message.params.data);
+	      } else {
+	        next();
+	      }
+
+	    });
 	  })
+
 	}
 
 	// main
 
-	function bake(storageId, options) {
+	function bake (storageId, options) {
+
 	  // API
 	  options = options || {};
-	  var sunDirection = sunDirection || [
-	    0.7487416646324341,
-	    -0.47789104947352223,
-	    -0.45935396425474223
-	  ];
+	  var sunDirection = sunDirection || [0.7487416646324341, -0.47789104947352223, -0.45935396425474223];
 
 	  // internals
 	  var assetStorageIds = [];
 	  // TODO: reimplement caching mechanism on server side
 	  var cacheKey = null;
+
+	  console.log('Baking file: https://spaces.archilogic.com/3d/?mode=sdk&file='+storageId);
 
 	  return callService('Processing.task.enqueue', {
 	    method: 'bakePreview',
@@ -26365,16 +25581,16 @@
 	      }
 	    }
 	  })
+
 	}
+
+	// public methods
+
+	bake.whenDone = getBakeResult;
 
 	var light = {
 	  bake: bake
 	};
-
-	function getData3dInspectorUrl (storageId) {
-	  // TODO: replace spaces SDK with mini app to inspect data3d files
-	  return 'https://spaces.archilogic.com/3d/?mode=sdk&file='+storageId
-	}
 
 	var css = ".io3d-message-list {\n  z-index: 100001;\n  position: fixed;\n  top: 0;\n  left: 50%;\n  margin-left: -200px;\n  width: 400px;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: normal;\n  letter-spacing: 1px;\n  line-height: 1.3;\n  text-align: center;\n}\n.io3d-message-list .message {\n  display: block;\n  opacity: 0;\n}\n.io3d-message-list .message .spacer {\n  display: block;\n  height: 10px;\n}\n.io3d-message-list .message .text {\n  display: inline-block;\n  padding: 10px 12px 10px 12px;\n  border-radius: 3px;\n  color: white;\n  font-size: 18px;\n}\n.io3d-message-list .message .text a {\n  color: white;\n  text-decoration: none;\n  padding-bottom: 0px;\n  border-bottom: 2px solid white;\n}\n.io3d-message-list .message .neutral {\n  background: rgba(0, 0, 0, 0.9);\n}\n.io3d-message-list .message .success {\n  background: linear-gradient(50deg, rgba(35, 165, 9, 0.93), rgba(102, 194, 10, 0.93));\n}\n.io3d-message-list .message .warning {\n  background: linear-gradient(50deg, rgba(165, 113, 9, 0.93), rgba(194, 169, 10, 0.93));\n}\n.io3d-message-list .message .error {\n  background: linear-gradient(50deg, rgba(165, 9, 22, 0.93), rgba(194, 56, 10, 0.93));\n}\n.io3d-overlay {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  z-index: 100000;\n  position: fixed;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  height: 100%;\n  width: 100%;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: 200;\n  font-size: 18px;\n  letter-spacing: 1px;\n  color: white;\n  text-align: center;\n  line-height: 1.3;\n  background: linear-gradient(70deg, rgba(20, 17, 34, 0.96), rgba(51, 68, 77, 0.96));\n}\n@-webkit-keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@-webkit-keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n@keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n.io3d-overlay .centered-content {\n  display: inline-block;\n  position: relative;\n  top: 50%;\n  text-align: left;\n}\n.io3d-overlay .centered-content .button {\n  margin-right: 4px;\n  margin-top: 1.5em;\n}\n.io3d-overlay .bottom-container {\n  width: 100%;\n  display: block;\n  position: absolute;\n  bottom: 1em;\n}\n.io3d-overlay .bottom-container .bottom-content {\n  display: inline-block;\n  position: relative;\n  margin-left: auto;\n  margin-right: auto;\n  text-align: left;\n  color: rgba(255, 255, 255, 0.35);\n}\n.io3d-overlay .bottom-container .bottom-content .clickable {\n  cursor: pointer;\n  -webkit-transition: color 500ms;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-container .bottom-content .clickable:hover {\n  color: white;\n}\n.io3d-overlay .bottom-container .bottom-content a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  -webkit-transition: color 500ms;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-container .bottom-content a:hover {\n  color: white;\n}\n@-webkit-keyframes content-slide-in {\n  0% {\n    -webkit-transform: translateY(-40%);\n  }\n  100% {\n    -webkit-transform: translateY(-50%);\n  }\n}\n@keyframes content-slide-in {\n  0% {\n    transform: translateY(-40%);\n  }\n  100% {\n    transform: translateY(-50%);\n  }\n}\n@-webkit-keyframes content-slide-out {\n  0% {\n    -webkit-transform: translateY(-50%);\n  }\n  100% {\n    -webkit-transform: translateY(-40%);\n  }\n}\n@keyframes content-slide-out {\n  0% {\n    transform: translateY(-50%);\n  }\n  100% {\n    transform: translateY(-40%);\n  }\n}\n.io3d-overlay h1 {\n  margin: 0 0 0.5em 0;\n  font-size: 42px;\n  font-weight: 200;\n  color: white;\n}\n.io3d-overlay p {\n  margin: 1em 0 0 0;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint {\n  position: relative;\n  margin: 1em 0 0 0;\n  color: rgba(255, 255, 255, 0.35);\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  -webkit-transition: color 600ms;\n  transition: color 600ms;\n}\n.io3d-overlay .hint a:hover {\n  color: white;\n}\n.io3d-overlay .button {\n  cursor: pointer;\n  display: inline-block;\n  color: rgba(255, 255, 255, 0.35);\n  width: 40px;\n  height: 40px;\n  line-height: 32px;\n  border: 2px solid rgba(255, 255, 255, 0.35);\n  border-radius: 50%;\n  text-align: center;\n  font-size: 18px;\n  font-weight: 200;\n  -webkit-transition: opacity 300ms, color 300ms;\n  transition: opacity 300ms, color 300ms;\n}\n.io3d-overlay .button:hover {\n  background-color: rgba(255, 255, 255, 0.1);\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .button-highlighted {\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .close-button {\n  display: block;\n  position: absolute;\n  top: 20px;\n  right: 20px;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay input,\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay textarea {\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-size: 24px;\n  font-weight: normal;\n  letter-spacing: 1px;\n  outline: none;\n  margin: 0 0 0 0;\n  color: white;\n}\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay input:not([type='checkbox']):not([type='range']) {\n  padding: 0.2em 0 0.4em 0;\n  width: 100%;\n  line-height: 20px;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  border-radius: 0px;\n  border: 0px;\n  background: transparent;\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n  -webkit-transition: border-color 1s;\n  transition: border-color 1s;\n}\n.io3d-overlay select:focus,\n.io3d-overlay option:focus,\n.io3d-overlay input:not([type='checkbox']):not([type='range']):focus {\n  border-color: white;\n}\n.io3d-overlay textarea {\n  display: box;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  padding: 0.2em 0 0.4em 0;\n  min-width: 100%;\n  max-width: 100%;\n  line-height: 26px;\n  border: 0px;\n  background: rgba(255, 255, 255, 0.08);\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n}\n.io3d-overlay input[type='checkbox'] {\n  position: relative;\n  height: 20px;\n  vertical-align: bottom;\n  margin: 0;\n}\n.io3d-overlay .reveal-api-key-button {\n  cursor: pointer;\n  position: absolute;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 2px;\n  bottom: 0.7em;\n  padding: 0.1em 0.2em 0.2em 0.2em;\n  line-height: 20px;\n  -webkit-transition: color 600ms;\n  transition: color 600ms;\n}\n.io3d-overlay .reveal-api-key-button:hover {\n  color: white;\n}\n.io3d-overlay a {\n  color: white;\n  text-decoration: none;\n}\n.io3d-overlay .key-menu {\n  position: relative;\n  margin: 3em 0 0 0;\n}\n.io3d-overlay .key-menu .key-image {\n  width: 172px;\n  height: 127px;\n}\n.io3d-overlay .key-menu .key-button {\n  position: absolute;\n  left: 156px;\n  height: 36px;\n  line-height: 36px;\n  background: rgba(255, 255, 255, 0.1);\n  cursor: pointer;\n  padding: 0 14px 0 14px;\n  border-radius: 2px;\n  -webkit-transition: background 300ms linear;\n  transition: background 300ms linear;\n}\n.io3d-overlay .key-menu .key-button:hover {\n  background: rgba(255, 255, 255, 0.3);\n}\n.io3d-overlay .key-menu .go-to-publishable-api-key-ui {\n  top: 11px;\n}\n.io3d-overlay .key-menu .go-to-secret-api-key-ui {\n  bottom: 11px;\n}\n.io3d-overlay .regegenerate-secret-key-button {\n  cursor: pointer;\n}\n.io3d-overlay .publishable-api-keys .list {\n  max-height: 50vh;\n  overflow: auto;\n  padding: 0 15px 0 0;\n}\n.io3d-overlay .publishable-api-keys .list .key-item {\n  position: relative;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 3px;\n  margin-bottom: 12px;\n  padding: 4px 5px 3px 8px;\n}\n.io3d-overlay .publishable-api-keys .list .key {\n  font-weight: 200 !important;\n  border-bottom: 0 !important;\n  margin-bottom: 0 !important;\n  padding: 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .domains {\n  margin: 0 0 0 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .button {\n  position: absolute !important;\n  margin: 0 !important;\n  background-repeat: no-repeat;\n  background-position: center;\n  color: white;\n  opacity: 0.5;\n}\n.io3d-overlay .publishable-api-keys .list .button:hover {\n  opacity: 1;\n}\n.io3d-overlay .publishable-api-keys .list .delete-key-button {\n  right: 8px;\n  top: 9px;\n}\n.io3d-overlay .publishable-api-keys .list .edit-domains-button {\n  positions: absolute;\n  right: 56px;\n  top: 9px;\n  background-size: 75%;\n  padding: 5px;\n}\n.io3d-overlay .publishable-api-keys .generate-new-key-button {\n  margin: 1.5em 0 0 0;\n  display: inline-block;\n  cursor: pointer;\n}\n";
 
@@ -26397,7 +25613,7 @@
 	      } else {
 	        throw 'Only basic tags like "<div>" without attributes are currently supported. (No queries and no HTML strings)'
 	      }
-	    } else if (isElement$2(x)) {
+	    } else if (isElement$1(x)) {
 	      // only add convenience methods
 	      extendWithConvenienceMethods(x);
 	    } else {
@@ -26407,7 +25623,7 @@
 	};
 
 	// utils
-	el.isElement = isElement$2;
+	el.isElement = isElement$1;
 
 	// helpers
 
@@ -26444,12 +25660,8 @@
 	    child ? el.removeChild(child) : el.parentNode.removeChild(el);
 	    return el
 	  };
-	  el.empty = function emptyElement () {
-	    while (el.lastChild) el.removeChild(el.lastChild);
-	    return el
-	  };
 	  el.append = function append (o) {
-	    if (o) isElement$2(o) ? el.appendChild(o) : el.innerHTML = o;
+	    if (o) isElement$1(o) ? el.appendChild(o) : el.innerHTML = o;
 	    return el
 	  };
 	  el.appendTo = function appendToElement (parentEl) {
@@ -26488,7 +25700,7 @@
 
 	// Returns true if it is a DOM element
 	// https://stackoverflow.com/a/384380/2835973
-	function isElement$2(o){
+	function isElement$1(o){
 	  return (
 	    typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
 	      o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
@@ -26977,9 +26189,10 @@
 	    centerEl.style['animation'] = '600ms content-slide-in cubic-bezier(0.2, 0.80, 0.5, 1)';
 	    centerEl.style['-webkit-animation-fill-mode'] = 'forwards';
 	    centerEl.style['animation-fill-mode'] = 'forwards';
-
-	    // trigger callback function
-	    if (callback && typeof callback === 'function') setTimeout(function(){ callback();}, 500);
+	    
+	    if (callback && typeof callback === 'function') setTimeout(function(){
+	      callback();
+	    }, 500);
 
 	    return result
 	  }
@@ -27002,9 +26215,10 @@
 	    setTimeout(function(){
 	      mainEl.remove();
 	    }, 600);
-
 	    // trigger callback function
-	    if (callback && typeof callback === 'function') setTimeout(function(){ callback(); }, 300);
+	    setTimeout(function(){
+	      if (callback && typeof callback === 'function') callback();
+	    }, 300);
 
 	    return result
 	  }
@@ -27439,7 +26653,7 @@
 	    var activationTabEl = el('<div>').hide().appendTo(centerEl);
 
 	    el('<p>',{
-	      html: 'Check your email for<br>support@3d.io<br>and set your password.<br><br>Then simply return here ;)'
+	      html: 'Check your email for<br>support@archilogic.com<br>and set your password.<br><br>Then simply return here ;)'
 	    }).appendTo(activationTabEl);
 
 	    // methods
@@ -28190,6 +27404,7 @@
 	if (runtime.isBrowser) {
 	  var style = document.createElement('style');
 	  style.setAttribute('media', 'screen');
+	  //style.innerHTML = css
 	  style.appendChild(document.createTextNode(css));
 	  document.head.appendChild(style);
 	}
@@ -28578,16 +27793,15 @@
 	    load: loadData3d,
 	    encodeBinary: encodeBinary,
 	    decodeBinary: decodeBinary,
-	    fromThreeJs: getData3dFromThreeJs,
+	    fromThree: getData3dFromThreeJs,
 	    clone: clone,
-	    traverse: traverseData3d$1,
-	    getInspectorUrl: getData3dInspectorUrl
+	    traverse: traverseData3d$1
 	  },
 	  ui: ui,
 	  auth: auth,
 	  io: {
 	    fetch: fetch$1,
-	    fetchScript: fetchScript,
+	    fetchModule: fetchModule,
 	    checkIfFileExists: checkIfFileExists
 	  },
 	  image: {
@@ -28608,15 +27822,12 @@
 	    read: readFile,
 	    getMd5Hash: getMd5Hash
 	  },
-	  processing: {
-	    whenDone: getResult
-	  },
 	  url: Url,
 	  uuid: uuid,
 	  getShortId: getShortId,
 	  path: path,
 	  wait: wait
-
+	  
 	};
 
 	var io3d$1 = {
