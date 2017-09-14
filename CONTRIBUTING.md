@@ -50,6 +50,9 @@ to in-depth information about the design and implementation process.
     - How does a new feature work
     - How are the changes affecting the users
     
+    How to test:
+    - How has this feature been tested?
+    
     Notes:
     - Additional information for the reviewer
     
