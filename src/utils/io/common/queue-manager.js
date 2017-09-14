@@ -22,30 +22,29 @@ var queueFences = [
 var _queues = {}
 var _queueFences = {}
 var _queuesChanged = false
-window.queueInfo = {}
+var queueInfo = {}
 var _queuesLength = queuesByPriority.length
 var _concurrentRequests = 0
 var _concurrentPerQueue = {}
-window.loadingQueueData = ''
+var loadingQueueData = ''
+var loadingQueueAlgorithm     = 'overstep-one-fenced';
+var loadingQueuePipelineDepth = maxConcurrentQueuedRequests;
 
 var queueName
 for (var i = 0, l = _queuesLength; i < l; i++) {
   queueName = queuesByPriority[i]
   _queues[queueName] = []
   _queueFences[queueName] = queueFences[i]
-  window.queueInfo[queueName] = {requestCount: 0}
+  queueInfo[queueName] = {requestCount: 0}
   _concurrentPerQueue[queueName] = 0
 }
-
-window.loadingQueueAlgorithm     = 'overstep-one-fenced';
-window.loadingQueuePipelineDepth = maxConcurrentQueuedRequests;
 
 /*
 
 (2017/09/13) Performance monitoring code
 
-window.loadingQueueGraph         = false;
-if (window.loadingQueueGraph)
+loadingQueueGraph         = false;
+if (loadingQueueGraph)
   window.loadingPerformanceHistory = new PerformanceGraph.PerformanceHistory(64);
 
 window.loadingQueueShowInfo = function() {
@@ -56,17 +55,17 @@ window.loadingQueueShowInfo = function() {
     return Array(fieldLength - text.length + 1).join(' ') + text;
  }
  var text = '';
- var keys = Object.keys(window.queueInfo);
+ var keys = Object.keys(queueInfo);
  var baseTime;
  if (keys.length > 0) {
    var baseKey   = keys[0];
-   var baseValue = window.queueInfo[baseKey];
+   var baseValue = queueInfo[baseKey];
    baseTime = baseValue.timeFirst;
    text += '(' + baseTime.toFixed(1) + ')\n'
  }
  for (var i = 0; i < keys.length; i++) {
    var key   = keys[i];
-   var value = window.queueInfo[key];
+   var value = queueInfo[key];
    text += padRight(keys[i], 28) + ': ';
    if (value.requestCount > 0) {
      var t1 = value.timeFirst - baseTime;
@@ -119,7 +118,7 @@ function _addPerformanceEntry() {
     var queueName = queuesByPriority[i];
     performanceEntry[queueName] = _concurrentPerQueue[queueName];
   }
-  // performanceEntry.none = window.loadingQueuePipelineDepth - _concurrentRequests;
+  // performanceEntry.none = loadingQueuePipelineDepth - _concurrentRequests;
 }
 
 function _appendLoadingQueueData() {
@@ -139,14 +138,14 @@ function _appendLoadingQueueData() {
 
 function _startRequest(queueName) {
   // Update queue tracking information
-  var queueInfo = window.queueInfo[queueName];
+  var info = queueInfo[queueName];
   var time = performance.now() / 1000;
-  if (typeof queueInfo.timeFirst === 'undefined') {
-    queueInfo.timeFirst = time;
-    queueInfo.timeLast  = time;
+  if (typeof info.timeFirst === 'undefined') {
+    info.timeFirst = time;
+    info.timeLast  = time;
   } else
-    queueInfo.timeLast  = time;
-  queueInfo.requestCount++;
+    info.timeLast  = time;
+  info.requestCount++;
   // Update concurrent request counts
   _concurrentPerQueue[queueName] += 1;
   _concurrentRequests++;
@@ -160,7 +159,7 @@ function _startRequest(queueName) {
 }
 
 function _doProcessQueueOriginal() {
-  if (_concurrentRequests >= window.loadingQueuePipelineDepth)
+  if (_concurrentRequests >= loadingQueuePipelineDepth)
     return;
   for (var i = 0; i < _queuesLength; i++) {
     var queueName = queuesByPriority[i];
@@ -175,7 +174,7 @@ function _doProcessQueueOriginal() {
 function _doProcessQueueOriginalFixed(){
   for (var i = 0; i < _queuesLength; i++) {
     var queueName = queuesByPriority[i];
-    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+    while (_queues[queueName].length > 0 && _concurrentRequests < loadingQueuePipelineDepth)
       _startRequest(queueName)
     if (_concurrentPerQueue[queueName] !== 0)
       break;
@@ -185,7 +184,7 @@ function _doProcessQueueOriginalFixed(){
 function _doProcessQueueOverstep(){
   for (var i = 0; i < _queuesLength; i++) {
     var queueName = queuesByPriority[i];
-    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+    while (_queues[queueName].length > 0 && _concurrentRequests < loadingQueuePipelineDepth)
       _startRequest(queueName)
   }
 }
@@ -194,7 +193,7 @@ function _doProcessQueueOverstepOne(){
   var anchorStage = null;
   for (var i = 0; i < _queuesLength; i++) {
     var queueName = queuesByPriority[i];
-    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+    while (_queues[queueName].length > 0 && _concurrentRequests < loadingQueuePipelineDepth)
       _startRequest(queueName)
     if (anchorStage === null && _concurrentPerQueue[queueName] !== 0)
       anchorStage = i;
@@ -207,7 +206,7 @@ function _doProcessQueueOverstepFenced(){
   var anchorStage = null;
   for (var i = 0; i < _queuesLength; i++) {
     var queueName = queuesByPriority[i];
-    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+    while (_queues[queueName].length > 0 && _concurrentRequests < loadingQueuePipelineDepth)
       _startRequest(queueName)
     if (anchorStage === null && _concurrentPerQueue[queueName] !== 0)
       anchorStage = i;
@@ -220,7 +219,7 @@ function _doProcessQueueOverstepOneFenced(){
   var anchorStage = null;
   for (var i = 0; i < _queuesLength; i++) {
     var queueName = queuesByPriority[i];
-    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+    while (_queues[queueName].length > 0 && _concurrentRequests < loadingQueuePipelineDepth)
       _startRequest(queueName)
     if (anchorStage === null && _concurrentPerQueue[queueName] !== 0)
       anchorStage = i;
@@ -230,23 +229,23 @@ function _doProcessQueueOverstepOneFenced(){
 }
 
 function _processQueue() {
-  if (window.loadingQueueAlgorithm === 'original')
+  if (loadingQueueAlgorithm === 'original')
     _doProcessQueueOriginal()
-  else if (window.loadingQueueAlgorithm === 'original-fixed')
+  else if (loadingQueueAlgorithm === 'original-fixed')
     _doProcessQueueOriginalFixed()
-  else if (window.loadingQueueAlgorithm === 'overstep')
+  else if (loadingQueueAlgorithm === 'overstep')
     _doProcessQueueOverstep()
-  else if (window.loadingQueueAlgorithm === 'overstep-one')
+  else if (loadingQueueAlgorithm === 'overstep-one')
     _doProcessQueueOverstepOne()
-  else if (window.loadingQueueAlgorithm === 'overstep-fenced')
+  else if (loadingQueueAlgorithm === 'overstep-fenced')
     _doProcessQueueOverstepFenced()
-  else if (window.loadingQueueAlgorithm === 'overstep-one-fenced')
+  else if (loadingQueueAlgorithm === 'overstep-one-fenced')
     _doProcessQueueOverstepOneFenced()
   else
     throw 'Http._processQueue: Unknown loading queue processing algorithm.'
   /* (2017/09/13) Performance monitoring code
   if (_queuesChanged) {
-    if (window.loadingQueueGraph)
+    if (loadingQueueGraph)
       _addPerformanceEntry();
     _appendLoadingQueueData();
     _queuesChanged = false;
@@ -278,16 +277,16 @@ function _enqueue(queueName, url){
 }
 
 function _dequeue(queueName, url) {
-  var queueInfo = window.queueInfo[queueName];
-  if (!queueInfo) {
+  var info = queueInfo[queueName];
+  if (!info) {
     if (queueName) console.warn('Queue info not found for queue name "'+queueName+'"')
     return
   }
   var time = performance.now() / 1000;
-  queueInfo.timeLastFinished = time;
-  var t1 = queueInfo.timeFirst;
-  var t2 = queueInfo.timeLast;
-  var t3 = queueInfo.timeLastFinished;
+  info.timeLastFinished = time;
+  var t1 = info.timeFirst;
+  var t2 = info.timeLast;
+  var t3 = info.timeLastFinished;
   var d  = t3 - t1;
   _concurrentPerQueue[queueName] -= 1
   _concurrentRequests -= 1
@@ -301,9 +300,5 @@ var queueManager = {
   enqueue: _enqueue,
   dequeue: _dequeue
 }
-
-window.setInterval(function(){
-  _processQueue()
-},1000)
 
 export default queueManager
