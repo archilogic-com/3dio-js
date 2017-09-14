@@ -18,28 +18,29 @@ var queueFences = [
   false
 ]
 
-// prepare objects for queueing
-var _queues = {}
-var _queueFences = {}
-var _queuesChanged = false
+// internals
+var queues = {}
+var queueFences = {}
+var queuesChanged = false
 var queueInfo = {}
-var _queuesLength = queuesByPriority.length
-var _concurrentRequests = 0
-var _concurrentPerQueue = {}
+var queuesLength = queuesByPriority.length
+var concurrentRequests = 0
+var concurrentPerQueue = {}
 var loadingQueueData = ''
 var loadingQueueAlgorithm     = 'overstep-one-fenced';
 var loadingQueuePipelineDepth = maxConcurrentQueuedRequests;
-
 var queueName
-for (var i = 0, l = _queuesLength; i < l; i++) {
+for (var i = 0, l = queuesLength; i < l; i++) {
   queueName = queuesByPriority[i]
-  _queues[queueName] = []
-  _queueFences[queueName] = queueFences[i]
+  queues[queueName] = []
+  queueFences[queueName] = queueFences[i]
   queueInfo[queueName] = {requestCount: 0}
-  _concurrentPerQueue[queueName] = 0
+  concurrentPerQueue[queueName] = 0
 }
 
-function _startRequest(queueName) {
+// private methods
+
+function startRequest(queueName) {
   // Update queue tracking information
   var info = queueInfo[queueName];
   var time = performance.now() / 1000;
@@ -50,34 +51,35 @@ function _startRequest(queueName) {
     info.timeLast  = time;
   info.requestCount++;
   // Update concurrent request counts
-  _concurrentPerQueue[queueName] += 1;
-  _concurrentRequests++;
+  concurrentPerQueue[queueName] += 1;
+  concurrentRequests++;
   //
-  _queuesChanged = true;
+  queuesChanged = true;
   // Start request
-  // console.log('[' + (' ' + _concurrentRequests).slice(-2) + ']: Starting ' + queueName);
-  var queue = _queues[queueName];
+  var queue = queues[queueName];
   var request = queue.shift();
   request.start();
 }
 
-function _processQueue() {
+function processQueue() {
   var anchorStage = null;
-  for (var i = 0; i < _queuesLength; i++) {
+  for (var i = 0; i < queuesLength; i++) {
     var queueName = queuesByPriority[i];
-    while (_queues[queueName].length > 0 && _concurrentRequests < loadingQueuePipelineDepth)
-      _startRequest(queueName)
-    if (anchorStage === null && _concurrentPerQueue[queueName] !== 0)
+    while (queues[queueName].length > 0 && concurrentRequests < loadingQueuePipelineDepth)
+      startRequest(queueName)
+    if (anchorStage === null && concurrentPerQueue[queueName] !== 0)
       anchorStage = i;
-    if (anchorStage !== null && (_queueFences[queueName] || (i - anchorStage > 0)))
+    if (anchorStage !== null && (queueFences[queueName] || (i - anchorStage > 0)))
       break;
   }
 }
 
-function _enqueue(queueName, url){
+// public methods
+
+function enqueue(queueName, url){
 
   // fallback to first queue
-  if (!_queues[queueName]) {
+  if (!queues[queueName]) {
     if (queueName) console.error('onknown queue ', queueName)
     queueName = queuesByPriority[0]
   }
@@ -86,37 +88,33 @@ function _enqueue(queueName, url){
   return new Promise(function(resolve, reject){
     // has to be asynchronous in order to decouple queue processing from synchronous code
     setTimeout(function(){
-      var queue = _queues[queueName]
+      var queue = queues[queueName]
       queue[ queue.length ] = { url: url, start: resolve }
-      _processQueue()
+      processQueue()
     },1)
   })
 
 }
 
-function _dequeue(queueName, url) {
+function dequeue(queueName, url) {
   var info = queueInfo[queueName];
   if (!info) {
     if (queueName) console.warn('Queue info not found for queue name "'+queueName+'"')
     return
   }
-  var time = performance.now() / 1000;
-  info.timeLastFinished = time;
-  var t1 = info.timeFirst;
-  var t2 = info.timeLast;
-  var t3 = info.timeLastFinished;
-  var d  = t3 - t1;
-  _concurrentPerQueue[queueName] -= 1
-  _concurrentRequests -= 1
-  _queuesChanged = true;
-  _processQueue()
+  info.timeLastFinished = performance.now() / 1000;
+  concurrentPerQueue[queueName] -= 1
+  concurrentRequests -= 1
+  queuesChanged = true;
+  processQueue()
 }
 
 // expose API
 
 var queueManager = {
-  enqueue: _enqueue,
-  dequeue: _dequeue
+  enqueue: enqueue,
+  dequeue: dequeue,
+  info: queueInfo
 }
 
 export default queueManager
