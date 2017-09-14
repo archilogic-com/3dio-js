@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.72
+ * @version 1.0.0-beta.73
  * @date 2017/09/18 18:12
  * @branch HEAD
- * @commit 4e21e4a3408ff1b42bb9316c392846a7c9a55374
+ * @commit dd3695cdd7debedfd17e0cf36bd71407da27e292
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/18 18:12', GIT_BRANCH = 'HEAD', GIT_COMMIT = '4e21e4a3408ff1b42bb9316c392846a7c9a55374'
+	var BUILD_DATE='2017/09/18 18:12', GIT_BRANCH = 'HEAD', GIT_COMMIT = 'dd3695cdd7debedfd17e0cf36bd71407da27e292'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.72";
+	var version = "1.0.0-beta.73";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -29,9 +29,9 @@
 	var license = "MIT";
 	var author = {"name":"archilogic","email":"dev.rocks@archilogic.com","url":"https://archilogic.com"};
 	var main = "index.js";
-	var scripts = {"start":"gulp dev-browser","dev-browser":"gulp dev-browser","dev-node":"gulp dev-node","test":"ava","build":"gulp build","release":"ava && gulp release"};
+	var scripts = {"start":"gulp dev-browser","dev-browser":"gulp dev-browser","dev-node":"gulp dev-node","test":"gulp test","build":"gulp build","release":"gulp release"};
 	var dependencies = {"bluebird":"^3.5.0","form-data":"^2.1.4","js-logger":"^1.3.0","lodash":"^4.17.4","node-fetch":"2.0.0-alpha.8","pako":"^1.0.5","performance-now":"^2.1.0","rxjs":"^5.4.2","three":"^0.85.2","whatwg-fetch":"^2.0.3"};
-	var devDependencies = {"ava":"^0.22.0","babel-runtime":"^6.25.0","chalk":"^2.0.1","confirm-cli":"^0.4.0","del":"^3.0.0","gulp":"github:gulpjs/gulp#4.0","gulp-git":"^2.4.1","gulp-gzip":"^1.4.0","gulp-less":"^3.3.2","gulp-s3":"^0.11.0","gulp-watch":"^4.3.11","lite-server":"^2.3.0","moment":"^2.18.1","rollup":"^0.41.6","rollup-plugin-commonjs":"^8.0.2","rollup-plugin-json":"^2.1.1","rollup-plugin-less":"^0.1.3","rollup-plugin-node-resolve":"^3.0.0","through2":"^2.0.3","uglify-js":"^3.0.10","vinyl":"^2.1.0"};
+	var devDependencies = {"ava":"^0.22.0","babel-runtime":"^6.25.0","chalk":"^2.0.1","confirm-cli":"^0.4.0","del":"^3.0.0","gulp":"github:gulpjs/gulp#4.0","gulp-ava":"^0.18.0","gulp-git":"^2.4.1","gulp-gzip":"^1.4.0","gulp-less":"^3.3.2","gulp-s3":"^0.11.0","gulp-watch":"^4.3.11","lite-server":"^2.3.0","moment":"^2.18.1","rollup":"^0.41.6","rollup-plugin-commonjs":"^8.0.2","rollup-plugin-json":"^2.1.1","rollup-plugin-less":"^0.1.3","rollup-plugin-node-resolve":"^3.0.0","through2":"^2.0.3","uglify-js":"^3.0.10","vinyl":"^2.1.0"};
 	var packageJson = {
 		name: name,
 		version: version,
@@ -17954,23 +17954,23 @@
 
 	// CONFIGS
 
-	var DEFAULT_LIGHT_MAP_INTENSITY$1 = 1.2;
-	var DEFAULT_LIGHT_MAP_EXPOSURE$1 = 0.6;
-	var DEFAULT_LIGHT_MAP_FALLOFF$1 = 0;
-	var DEFAULT_NORMAL_MAP_FACTOR = new THREE.Vector2( 0.8, 0.8 );
-
 	var Io3dMaterial = checkDependencies ({
 	  three: true,
 	  aframe: false
 	}, function makeIo3dMaterial () {
 
+	  var DEFAULT_LIGHT_MAP_INTENSITY = 1.2;
+	  var DEFAULT_LIGHT_MAP_EXPOSURE = 0.6;
+	  var DEFAULT_LIGHT_MAP_FALLOFF = 0;
+	  var DEFAULT_NORMAL_MAP_FACTOR = new THREE.Vector2(0.8, 0.8);
+
 	  function Io3dMaterial( params ) {
 	    THREE.ShaderMaterial.call( this, params );
-	    
+
 	    var params = params || {};
-	    this.lightMapExposure = params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1;
-	    this.lightMapFalloff = params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1;
-	    
+	    this.lightMapExposure = params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE;
+	    this.lightMapFalloff = params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF;
+
 	    this.uniforms = THREE.UniformsUtils.merge( [
 	      THREE.UniformsLib[ "lights" ],
 	      THREE.UniformsLib[ "shadowmap" ],
@@ -17979,9 +17979,9 @@
 	        specularMap: { value: params.specularMap || null },
 	        alphaMap: { value: params.alphaMap || null },
 	        lightMap: { value: params.lightMap || null },
-	        lightMapIntensity: { value: params.lightMapIntensity || DEFAULT_LIGHT_MAP_INTENSITY$1 },
-	        lightMapFalloff: { value: params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1 },
-	        lightMapExposure: { value: params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1 },
+	        lightMapIntensity: { value: params.lightMapIntensity || DEFAULT_LIGHT_MAP_INTENSITY },
+	        lightMapFalloff: { value: params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF },
+	        lightMapExposure: { value: params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE },
 	        normalMap: { value: params.normalMap || null },
 	        normalScale: { value: params.normalScale || DEFAULT_NORMAL_MAP_FACTOR },
 	        shininess: { value: params.shininess || 1.0 },
@@ -22844,9 +22844,9 @@
 	  // get user id
 	  return auth.getSession().then(function(session){
 	    if (isTemplateKey) {
-	      if (session.isAuthenticated) {
+	      if (session.isAuthenticated || configs.secretApiKey) {
 	        // replace user id in template key
-	        return key.replace( '{{userId}}', session.user.id )
+	        return key.replace('{{userId}}', session.user.id || configs.secretApiKey )
 	      } else {
 	        console.error('Using key parameter with template syntax requires authentication.');
 	        // reject with user friendly error message
