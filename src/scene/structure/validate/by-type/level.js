@@ -1,4 +1,4 @@
 export default  {
   params: {},
-  possibleChildrenTypes: ['wall', 'railing', 'floor', 'polyfloor', 'floorplan', 'group', 'box']
+  possibleChildrenTypes: ['interior', 'wall', 'railing', 'floor', 'polyfloor', 'floorplan', 'group', 'box']
 }
