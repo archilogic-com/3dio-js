@@ -8,6 +8,7 @@ const through2 = require('through2')
 const Vinyl = require('vinyl')
 const UglifyJS = require('uglify-js')
 const build = require('./build')
+const test = require('./test.js')
 const packageInfo = require('../package.json')
 const preamble = require('./preamble.js')
 const execSync = require('child_process').execSync
@@ -43,6 +44,7 @@ const release = gulp.series(
   checkWorkingDirectoryClean,
   checkBranchName,
   npmCheckVersion,
+  test,
   build,
   cleanDestDir,
   uglify,

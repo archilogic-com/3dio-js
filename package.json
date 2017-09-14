@@ -38,9 +38,9 @@
     "start": "gulp dev-browser",
     "dev-browser": "gulp dev-browser",
     "dev-node": "gulp dev-node",
-    "test": "ava",
+    "test": "gulp test",
     "build": "gulp build",
-    "release": "ava && gulp release"
+    "release": "gulp release"
   },
   "dependencies": {
     "bluebird": "^3.5.0",
@@ -61,6 +61,7 @@
     "confirm-cli": "^0.4.0",
     "del": "^3.0.0",
     "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-ava": "^0.18.0",
     "gulp-git": "^2.4.1",
     "gulp-gzip": "^1.4.0",
     "gulp-less": "^3.3.2",
