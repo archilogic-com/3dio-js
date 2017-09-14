@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.71
- * @date 2017/09/14 01:34
+ * @date 2017/09/14 11:12
  * @branch master
- * @commit fb8f67619f5d513858da8f4b91f096a8a9032def
+ * @commit bd8458467cffc20cc5a2b239596f147278065cb5
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/14 01:34', GIT_BRANCH = 'master', GIT_COMMIT = 'fb8f67619f5d513858da8f4b91f096a8a9032def'
+	var BUILD_DATE='2017/09/14 11:12', GIT_BRANCH = 'master', GIT_COMMIT = 'bd8458467cffc20cc5a2b239596f147278065cb5'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.71";
@@ -13718,74 +13718,79 @@
 
 	window.loadingQueueAlgorithm     = 'overstep-one-fenced';
 	window.loadingQueuePipelineDepth = maxConcurrentQueuedRequests;
-	//window.loadingQueueGraph         = false;
-	//if (window.loadingQueueGraph)
-	//  window.loadingPerformanceHistory = new PerformanceGraph.PerformanceHistory(64);
-	//
-	//window.loadingQueueShowInfo = function() {
-	//  function padRight(text, fieldLength) {
-	//    return text + Array(fieldLength - text.length + 1).join(' ');
-	//  }
-	//  function padLeft(text, fieldLength) {
-	//    return Array(fieldLength - text.length + 1).join(' ') + text;
-	//  }
-	//  var text = '';
-	//  var keys = Object.keys(window.queueInfo);
-	//  var baseTime;
-	//  if (keys.length > 0) {
-	//    var baseKey   = keys[0];
-	//    var baseValue = window.queueInfo[baseKey];
-	//    baseTime = baseValue.timeFirst;
-	//    text += '(' + baseTime.toFixed(1) + ')\n'
-	//  }
-	//  for (var i = 0; i < keys.length; i++) {
-	//    var key   = keys[i];
-	//    var value = window.queueInfo[key];
-	//    text += padRight(keys[i], 28) + ': ';
-	//    if (value.requestCount > 0) {
-	//      var t1 = value.timeFirst - baseTime;
-	//      var t2 = value.timeLast - baseTime;
-	//      var t1Str = t1.toFixed(1);
-	//      var t2Str = t2.toFixed(1);
-	//      var t3, d, t3Str, dStr;
-	//      if (value.timeLastFinished) {
-	//        t3 = value.timeLastFinished - baseTime;
-	//        d  = t3 - t1;
-	//        t3Str = t3.toFixed(1);
-	//        dStr  = d.toFixed(1);
-	//      } else {
-	//        t3Str = '-';
-	//        dStr  = '-';
-	//      }
-	//      text += padLeft(t1Str, 5) + ' - ' + padLeft(t2Str, 5) + ' / ' + padLeft(t3Str, 5) + ' (' + padLeft(dStr, 5) + ') [' + padLeft(value.requestCount.toString(), 4) + ']\n';
-	//    } else
-	//      text += '<inactive>\n'
-	//  }
-	//  console.log(text);
-	//}
-	//
-	//window.loadingQueueProcessData = function() {
-	//  var loadingQueueDataLines = window.loadingQueueData.split('\n');
-	//  var i = 0;
-	//  while (i < loadingQueueDataLines.length) {
-	//    var line = loadingQueueDataLines[i];
-	//    var count = 0;
-	//    for (var j = i; i < loadingQueueDataLines.length; j++) {
-	//      var nextLine = loadingQueueDataLines[j];
-	//      if (line === nextLine)
-	//        count++;
-	//      else
-	//        break;
-	//    }
-	//    if (count > 8) {
-	//      loadingQueueDataLines.splice(i + 4, count - 8, ' ');
-	//      loadingQueueDataLines.
-	//        i += 4
-	//    } else
-	//      i += 1;
-	//  }
-	//  window.loadingQueueDataShort = loadingQueueDataLines.join('\n');
-	//}
+
+	/*
+
+	(2017/09/13) Performance monitoring code
+
+	window.loadingQueueGraph         = false;
+	if (window.loadingQueueGraph)
+	  window.loadingPerformanceHistory = new PerformanceGraph.PerformanceHistory(64);
+
+	window.loadingQueueShowInfo = function() {
+	  function padRight(text, fieldLength) {
+	    return text + Array(fieldLength - text.length + 1).join(' ');
+	  }
+	  function padLeft(text, fieldLength) {
+	    return Array(fieldLength - text.length + 1).join(' ') + text;
+	 }
+	 var text = '';
+	 var keys = Object.keys(window.queueInfo);
+	 var baseTime;
+	 if (keys.length > 0) {
+	   var baseKey   = keys[0];
+	   var baseValue = window.queueInfo[baseKey];
+	   baseTime = baseValue.timeFirst;
+	   text += '(' + baseTime.toFixed(1) + ')\n'
+	 }
+	 for (var i = 0; i < keys.length; i++) {
+	   var key   = keys[i];
+	   var value = window.queueInfo[key];
+	   text += padRight(keys[i], 28) + ': ';
+	   if (value.requestCount > 0) {
+	     var t1 = value.timeFirst - baseTime;
+	     var t2 = value.timeLast - baseTime;
+	     var t1Str = t1.toFixed(1);
+	     var t2Str = t2.toFixed(1);
+	     var t3, d, t3Str, dStr;
+	     if (value.timeLastFinished) {
+	       t3 = value.timeLastFinished - baseTime;
+	       d  = t3 - t1;
+	       t3Str = t3.toFixed(1);
+	       dStr  = d.toFixed(1);
+	     } else {
+	       t3Str = '-';
+	       dStr  = '-';
+	     }
+	     text += padLeft(t1Str, 5) + ' - ' + padLeft(t2Str, 5) + ' / ' + padLeft(t3Str, 5) + ' (' + padLeft(dStr, 5) + ') [' + padLeft(value.requestCount.toString(), 4) + ']\n';
+	   } else
+	     text += '<inactive>\n'
+	 }
+	 console.log(text);
+	}
+
+	window.loadingQueueProcessData = function() {
+	 var loadingQueueDataLines = window.loadingQueueData.split('\n');
+	 var i = 0;
+	 while (i < loadingQueueDataLines.length) {
+	   var line = loadingQueueDataLines[i];
+	   var count = 0;
+	   for (var j = i; i < loadingQueueDataLines.length; j++) {
+	     var nextLine = loadingQueueDataLines[j];
+	     if (line === nextLine)
+	       count++;
+	     else
+	       break;
+	   }
+	   if (count > 8) {
+	     loadingQueueDataLines.splice(i + 4, count - 8, ' ');
+	     loadingQueueDataLines.
+	       i += 4
+	   } else
+	     i += 1;
+	 }
+	 window.loadingQueueDataShort = loadingQueueDataLines.join('\n');
+	}
 
 	function _addPerformanceEntry() {
 	  var performanceEntry = window.loadingPerformanceHistory.newEntry(PerformanceGraph.PerformanceEntry);
@@ -13808,6 +13813,8 @@
 	  }
 	  window.loadingQueueData += entry;
 	}
+
+	*/
 
 	function _startRequest(queueName) {
 	  // Update queue tracking information
@@ -13916,16 +13923,18 @@
 	    _doProcessQueueOverstepOneFenced();
 	  else
 	    throw 'Http._processQueue: Unknown loading queue processing algorithm.'
+	  /* (2017/09/13) Performance monitoring code
 	  if (_queuesChanged) {
 	    if (window.loadingQueueGraph)
 	      _addPerformanceEntry();
 	    _appendLoadingQueueData();
 	    _queuesChanged = false;
 	  }
+	  */
 	}
 
 	function _enqueue(queueName, url){
-	  
+
 	  //// fallback to last queue
 	  //if (!_queues[queueName]) queueName = queuesByPriority[_queuesLength-1]
 
@@ -17893,6 +17902,15 @@
 	  //      material3d.alphaTest = alphaTest
 	  //    }
 
+	  // normal map factor
+
+	  if (_attributes.mapNormalFactor !== undefined) {
+	    material3d.normalScale = new THREE.Vector2( _attributes.mapNormalFactor, _attributes.mapNormalFactor );
+	  } else {
+	    material3d.normalScale = new THREE.Vector2( 0.8, 0.8 );
+	  }
+	  material3d.uniforms.normalScale.value = material3d.normalScale;
+
 	  // specular coefficient
 
 	  material3d.shininess = (_attributes.specularCoef !== undefined) ? (_attributes.specularCoef ) : 0.1;
@@ -18102,6 +18120,7 @@
 	var DEFAULT_LIGHT_MAP_INTENSITY$1 = 1.2;
 	var DEFAULT_LIGHT_MAP_EXPOSURE$1 = 0.6;
 	var DEFAULT_LIGHT_MAP_FALLOFF$1 = 0;
+	var DEFAULT_NORMAL_MAP_FACTOR = new THREE.Vector2( 0.8, 0.8 );
 
 	var Io3dMaterial = checkDependencies ({
 	  three: true,
@@ -18110,11 +18129,11 @@
 
 	  function Io3dMaterial( params ) {
 	    THREE.ShaderMaterial.call( this, params );
-
+	    
 	    var params = params || {};
 	    this.lightMapExposure = params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1;
 	    this.lightMapFalloff = params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1;
-
+	    
 	    this.uniforms = THREE.UniformsUtils.merge( [
 	      THREE.UniformsLib[ "lights" ],
 	      THREE.UniformsLib[ "shadowmap" ],
@@ -18127,6 +18146,7 @@
 	        lightMapFalloff: { value: params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF$1 },
 	        lightMapExposure: { value: params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE$1 },
 	        normalMap: { value: params.normalMap || null },
+	        normalScale: { value: params.normalScale || DEFAULT_NORMAL_MAP_FACTOR },
 	        shininess: { value: params.shininess || 1.0 },
 	        specular: { value: params.specular || new THREE.Color(0.25, 0.25, 0.25) },
 	        emissive: { value: params.emissive || new THREE.Color(0.0, 0.0, 0.0) },
@@ -22299,7 +22319,8 @@
 	      logger.debug('API: User "' + session.user.email + '" logged in successfully.');
 	      return session
 	    } else {
-	      return bluebird_1.reject('Log in error: Session could not been established.')
+	      if(runtime.isNode) return bluebird_1.reject('io3d.auth.logIn cannot be used in node.js. Please use secret key authentication instead. See https://3d.io/docs/api/1/get-started-node-server.html#using-secret-api-key for further info.')
+	      else return bluebird_1.reject('Log in error: Session could not been established.')
 	    }
 
 	  }).catch(function onError (error) {
