@@ -1,6 +1,6 @@
 # Contributing
 
-[bug](#found-a-bug) | [question](#missing-something) | [pull request](#pull-request) | [documentation](#documentation)
+[Bug](#found-a-bug) | [Pull Request](#pull-request) | [Documentation](#documentation)
 
 ## Question or Problem?
 
