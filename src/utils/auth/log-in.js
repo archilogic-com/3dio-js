@@ -3,6 +3,7 @@ import log from 'js-logger'
 import callServices from '../services/call.js'
 import uuid from '../uuid.js'
 import getSession from './get-session.js'
+import runtime from '../../core/runtime.js'
 /**
  * Login in user using credentials
  * @function io3d.auth.logIn
@@ -42,9 +43,8 @@ export default function logIn(args) {
         )
         return session
       } else {
-        return Promise.reject(
-          'Log in error: Session could not been established.'
-        )
+        if(runtime.isNode) return Promise.reject('io3d.auth.logIn cannot be used in node.js. Please use secret key authentication instead. See https://3d.io/docs/api/1/get-started-node-server.html#using-secret-api-key for further info.')
+        else return Promise.reject('Log in error: Session could not been established.')
       }
     })
     .catch(function onError(error) {

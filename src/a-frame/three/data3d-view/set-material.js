@@ -7,7 +7,7 @@
 
 */
 
-import loadTextures from './set-material/load-textures.js'
+import loadTextureSet from './set-material/load-texture-set.js'
 import runtime from '../../../core/runtime.js'
 
 // static method, @memberof View
@@ -198,7 +198,7 @@ export default function setMaterial (args) {
 
   var
     loadingTexturesPromise,
-    loadingQueue,
+    loadingQueueName,
     isLoadingLoResTextures,
     hasLoResTextures = _attributes.mapDiffusePreview || _attributes.mapSpecularPreview || _attributes.mapNormalPreview || _attributes.mapAlphaPreview || _attributes.mapLightPreview,
     // hasHiResTextures = _attributes.mapDiffuse || _attributes.mapSpecular || _attributes.mapNormal || _attributes.mapAlpha || _attributes.mapLight,
@@ -208,15 +208,15 @@ export default function setMaterial (args) {
 
   if (!hiResTexturesEnabled || (hasLoResTextures && !material3d.firstTextureLoaded)) {
     if (loadingQueuePrefix) {
-      loadingQueue = loadingQueuePrefix + 'TexturesLoRes'
+      loadingQueueName = loadingQueuePrefix + 'TexturesLoRes'
     }
-    loadingTexturesPromise = loadTextures(loadingQueue, LO_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false)
+    loadingTexturesPromise = loadTextureSet(loadingQueueName, LO_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false)
     isLoadingLoResTextures = true
   } else {
     if (loadingQueuePrefix) {
-      loadingQueue = loadingQueuePrefix + 'TexturesHiRes'
+      loadingQueueName = loadingQueuePrefix + 'TexturesHiRes'
     }
-    loadingTexturesPromise = loadTextures(loadingQueue, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false)
+    loadingTexturesPromise = loadTextureSet(loadingQueueName, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false)
     isLoadingLoResTextures = false
   }
 
@@ -250,9 +250,9 @@ export default function setMaterial (args) {
   if (isLoadingLoResTextures && hiResTexturesEnabled) {
     loadingTexturesPromise.then(function(){
       if (loadingQueuePrefix) {
-        loadingQueue = loadingQueuePrefix + 'TexturesHiRes'
+        loadingQueueName = loadingQueuePrefix + 'TexturesHiRes'
       }
-      loadTextures(loadingQueue, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false)
+      loadTextureSet(loadingQueueName, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false)
     })
   }
 

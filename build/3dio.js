@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.71
- * @date 2017/09/13 17:59
+ * @date 2017/09/14 01:34
  * @branch master
- * @commit 0deb041607d2fa32db56c08624ea61e3b310181a
+ * @commit fb8f67619f5d513858da8f4b91f096a8a9032def
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/13 17:59', GIT_BRANCH = 'master', GIT_COMMIT = '0deb041607d2fa32db56c08624ea61e3b310181a'
+	var BUILD_DATE='2017/09/14 01:34', GIT_BRANCH = 'master', GIT_COMMIT = 'fb8f67619f5d513858da8f4b91f096a8a9032def'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.71";
@@ -8639,9 +8639,9 @@
 	};
 
 	var thenables = function(Promise, INTERNAL) {
-	var util$$1 = util;
-	var errorObj = util$$1.errorObj;
-	var isObject = util$$1.isObject;
+	var util$$2 = util;
+	var errorObj = util$$2.errorObj;
+	var isObject = util$$2.isObject;
 
 	function tryConvertToPromise(obj, context) {
 	    if (isObject(obj)) {
@@ -8699,7 +8699,7 @@
 	    promise._captureStackTrace();
 	    if (context) context._popContext();
 	    var synchronous = true;
-	    var result = util$$1.tryCatch(then).call(x, resolve, reject);
+	    var result = util$$2.tryCatch(then).call(x, resolve, reject);
 	    synchronous = false;
 
 	    if (promise && result === errorObj) {
@@ -8726,8 +8726,8 @@
 
 	var promise_array = function(Promise, INTERNAL, tryConvertToPromise,
 	    apiRejection, Proxyable) {
-	var util$$1 = util;
-	var isArray = util$$1.isArray;
+	var util$$2 = util;
+	var isArray = util$$2.isArray;
 
 	function toResolutionValue(val) {
 	    switch(val) {
@@ -8748,7 +8748,7 @@
 	    this._totalResolved = 0;
 	    this._init(undefined, -2);
 	}
-	util$$1.inherits(PromiseArray, Proxyable);
+	util$$2.inherits(PromiseArray, Proxyable);
 
 	PromiseArray.prototype.length = function () {
 	    return this._length;
@@ -8783,10 +8783,10 @@
 	            return this._cancel();
 	        }
 	    }
-	    values = util$$1.asArray(values);
+	    values = util$$2.asArray(values);
 	    if (values === null) {
 	        var err = apiRejection(
-	            "expecting an array or an iterable object but got " + util$$1.classString(values)).reason();
+	            "expecting an array or an iterable object but got " + util$$2.classString(values)).reason();
 	        this._promise._rejectCallback(err, false);
 	        return;
 	    }
@@ -8982,8 +8982,8 @@
 	var getDomain = Promise._getDomain;
 	var async = Promise._async;
 	var Warning = errors.Warning;
-	var util$$1 = util;
-	var canAttachTrace = util$$1.canAttachTrace;
+	var util$$2 = util;
+	var canAttachTrace = util$$2.canAttachTrace;
 	var unhandledRejectionHandled;
 	var possiblyUnhandledRejection;
 	var bluebirdFramePattern =
@@ -8994,19 +8994,19 @@
 	var formatStack = null;
 	var indentStackFrames = false;
 	var printWarning;
-	var debugging = !!(util$$1.env("BLUEBIRD_DEBUG") != 0 &&
+	var debugging = !!(util$$2.env("BLUEBIRD_DEBUG") != 0 &&
 	                        (false ||
-	                         util$$1.env("BLUEBIRD_DEBUG") ||
-	                         util$$1.env("NODE_ENV") === "development"));
+	                         util$$2.env("BLUEBIRD_DEBUG") ||
+	                         util$$2.env("NODE_ENV") === "development"));
 
-	var warnings = !!(util$$1.env("BLUEBIRD_WARNINGS") != 0 &&
-	    (debugging || util$$1.env("BLUEBIRD_WARNINGS")));
+	var warnings = !!(util$$2.env("BLUEBIRD_WARNINGS") != 0 &&
+	    (debugging || util$$2.env("BLUEBIRD_WARNINGS")));
 
-	var longStackTraces = !!(util$$1.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
-	    (debugging || util$$1.env("BLUEBIRD_LONG_STACK_TRACES")));
+	var longStackTraces = !!(util$$2.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
+	    (debugging || util$$2.env("BLUEBIRD_LONG_STACK_TRACES")));
 
-	var wForgottenReturn = util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
-	    (warnings || !!util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
+	var wForgottenReturn = util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
+	    (warnings || !!util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
 
 	Promise.prototype.suppressUnhandledRejections = function() {
 	    var target = this._target();
@@ -9078,7 +9078,7 @@
 	    var domain = getDomain();
 	    possiblyUnhandledRejection =
 	        typeof fn === "function" ? (domain === null ?
-	                                            fn : util$$1.domainBind(domain, fn))
+	                                            fn : util$$2.domainBind(domain, fn))
 	                                 : undefined;
 	};
 
@@ -9086,7 +9086,7 @@
 	    var domain = getDomain();
 	    unhandledRejectionHandled =
 	        typeof fn === "function" ? (domain === null ?
-	                                            fn : util$$1.domainBind(domain, fn))
+	                                            fn : util$$2.domainBind(domain, fn))
 	                                 : undefined;
 	};
 
@@ -9124,33 +9124,33 @@
 	    try {
 	        if (typeof CustomEvent === "function") {
 	            var event = new CustomEvent("CustomEvent");
-	            util$$1.global.dispatchEvent(event);
+	            util$$2.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = new CustomEvent(name.toLowerCase(), {
 	                    detail: event,
 	                    cancelable: true
 	                });
-	                return !util$$1.global.dispatchEvent(domEvent);
+	                return !util$$2.global.dispatchEvent(domEvent);
 	            };
 	        } else if (typeof Event === "function") {
 	            var event = new Event("CustomEvent");
-	            util$$1.global.dispatchEvent(event);
+	            util$$2.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = new Event(name.toLowerCase(), {
 	                    cancelable: true
 	                });
 	                domEvent.detail = event;
-	                return !util$$1.global.dispatchEvent(domEvent);
+	                return !util$$2.global.dispatchEvent(domEvent);
 	            };
 	        } else {
 	            var event = document.createEvent("CustomEvent");
 	            event.initCustomEvent("testingtheevent", false, true, {});
-	            util$$1.global.dispatchEvent(event);
+	            util$$2.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = document.createEvent("CustomEvent");
 	                domEvent.initCustomEvent(name.toLowerCase(), false, true,
 	                    event);
-	                return !util$$1.global.dispatchEvent(domEvent);
+	                return !util$$2.global.dispatchEvent(domEvent);
 	            };
 	        }
 	    } catch (e) {}
@@ -9160,21 +9160,21 @@
 	})();
 
 	var fireGlobalEvent = (function() {
-	    if (util$$1.isNode) {
+	    if (util$$2.isNode) {
 	        return function() {
 	            return process.emit.apply(process, arguments);
 	        };
 	    } else {
-	        if (!util$$1.global) {
+	        if (!util$$2.global) {
 	            return function() {
 	                return false;
 	            };
 	        }
 	        return function(name) {
 	            var methodName = "on" + name.toLowerCase();
-	            var method = util$$1.global[methodName];
+	            var method = util$$2.global[methodName];
 	            if (!method) return false;
-	            method.apply(util$$1.global, [].slice.call(arguments, 1));
+	            method.apply(util$$2.global, [].slice.call(arguments, 1));
 	            return true;
 	        };
 	    }
@@ -9237,7 +9237,7 @@
 	        config.warnings = !!warningsOption;
 	        wForgottenReturn = config.warnings;
 
-	        if (util$$1.isObject(warningsOption)) {
+	        if (util$$2.isObject(warningsOption)) {
 	            if ("wForgottenReturn" in warningsOption) {
 	                wForgottenReturn = !!warningsOption.wForgottenReturn;
 	            }
@@ -9300,7 +9300,7 @@
 	        executor(resolve, reject, function(onCancel) {
 	            if (typeof onCancel !== "function") {
 	                throw new TypeError("onCancel must be a function, got: " +
-	                                    util$$1.toString(onCancel));
+	                                    util$$2.toString(onCancel));
 	            }
 	            promise._attachCancellationCallback(onCancel);
 	        });
@@ -9314,7 +9314,7 @@
 
 	    var previousOnCancel = this._onCancel();
 	    if (previousOnCancel !== undefined) {
-	        if (util$$1.isArray(previousOnCancel)) {
+	        if (util$$2.isArray(previousOnCancel)) {
 	            previousOnCancel.push(onCancel);
 	        } else {
 	            this._setOnCancel([previousOnCancel, onCancel]);
@@ -9386,9 +9386,9 @@
 	            trace.attachExtraTrace(error);
 	        } else if (!error.__stackCleaned__) {
 	            var parsed = parseStackAndMessage(error);
-	            util$$1.notEnumerableProp(error, "stack",
+	            util$$2.notEnumerableProp(error, "stack",
 	                parsed.message + "\n" + parsed.stack.join("\n"));
-	            util$$1.notEnumerableProp(error, "__stackCleaned__", true);
+	            util$$2.notEnumerableProp(error, "__stackCleaned__", true);
 	        }
 	    }
 	}
@@ -9559,7 +9559,7 @@
 	function formatAndLogError(error, title, isSoft) {
 	    if (typeof console !== "undefined") {
 	        var message;
-	        if (util$$1.isObject(error)) {
+	        if (util$$2.isObject(error)) {
 	            var stack = error.stack;
 	            message = title + formatStack(stack, error);
 	        } else {
@@ -9606,7 +9606,7 @@
 	            "]";
 	    } else {
 	        str = obj && typeof obj.toString === "function"
-	            ? obj.toString() : util$$1.toString(obj);
+	            ? obj.toString() : util$$2.toString(obj);
 	        var ruselessToString = /\[object [a-zA-Z0-9$_]+\]/;
 	        if (ruselessToString.test(str)) {
 	            try {
@@ -9697,7 +9697,7 @@
 	    captureStackTrace(this, CapturedTrace);
 	    if (length > 32) this.uncycle();
 	}
-	util$$1.inherits(CapturedTrace, Error);
+	util$$2.inherits(CapturedTrace, Error);
 	Context.CapturedTrace = CapturedTrace;
 
 	CapturedTrace.prototype.uncycle = function() {
@@ -9762,8 +9762,8 @@
 	    }
 	    removeCommonRoots(stacks);
 	    removeDuplicateOrEmptyJumps(stacks);
-	    util$$1.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
-	    util$$1.notEnumerableProp(error, "__stackCleaned__", true);
+	    util$$2.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
+	    util$$2.notEnumerableProp(error, "__stackCleaned__", true);
 	};
 
 	var captureStackTrace = (function stackDetection() {
@@ -9843,12 +9843,12 @@
 	    printWarning = function (message) {
 	        console.warn(message);
 	    };
-	    if (util$$1.isNode && process.stderr.isTTY) {
+	    if (util$$2.isNode && process.stderr.isTTY) {
 	        printWarning = function(message, isSoft) {
 	            var color = isSoft ? "\u001b[33m" : "\u001b[31m";
 	            console.warn(color + message + "\u001b[0m\n");
 	        };
-	    } else if (!util$$1.isNode && typeof (new Error().stack) === "string") {
+	    } else if (!util$$2.isNode && typeof (new Error().stack) === "string") {
 	        printWarning = function(message, isSoft) {
 	            console.warn("%c" + message,
 	                        isSoft ? "color: darkorange" : "color: red");
@@ -9895,10 +9895,10 @@
 	};
 
 	var catch_filter = function(NEXT_FILTER) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var getKeys = es5.keys;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 
 	function catchFilter(instances, cb, promise) {
 	    return function(e) {
@@ -9918,7 +9918,7 @@
 	                } else if (matchesPredicate) {
 	                    return tryCatch(cb).call(boundTo, e);
 	                }
-	            } else if (util$$1.isObject(e)) {
+	            } else if (util$$2.isObject(e)) {
 	                var keys = getKeys(item);
 	                for (var j = 0; j < keys.length; ++j) {
 	                    var key = keys[j];
@@ -9937,9 +9937,9 @@
 	};
 
 	var _finally = function(Promise, tryConvertToPromise, NEXT_FILTER) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var CancellationError = Promise.CancellationError;
-	var errorObj = util$$1.errorObj;
+	var errorObj = util$$2.errorObj;
 	var catchFilter = catch_filter(NEXT_FILTER);
 
 	function PassThroughHandlerContext(promise, type, handler) {
@@ -10060,12 +10060,12 @@
 	            j = 0, i;
 	        for (i = 0; i < len - 1; ++i) {
 	            var item = arguments[i];
-	            if (util$$1.isObject(item)) {
+	            if (util$$2.isObject(item)) {
 	                catchInstances[j++] = item;
 	            } else {
 	                return Promise.reject(new TypeError(
 	                    "tapCatch statement predicate: "
-	                    + "expecting an object but got " + util$$1.classString(item)
+	                    + "expecting an object but got " + util$$2.classString(item)
 	                ));
 	            }
 	        }
@@ -10134,12 +10134,12 @@
 
 	var method =
 	function(Promise, INTERNAL, tryConvertToPromise, apiRejection, debug) {
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
 
 	Promise.method = function (fn) {
 	    if (typeof fn !== "function") {
-	        throw new Promise.TypeError("expecting a function but got " + util$$1.classString(fn));
+	        throw new Promise.TypeError("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    return function () {
 	        var ret = new Promise(INTERNAL);
@@ -10156,7 +10156,7 @@
 
 	Promise.attempt = Promise["try"] = function (fn) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    var ret = new Promise(INTERNAL);
 	    ret._captureStackTrace();
@@ -10166,7 +10166,7 @@
 	        debug.deprecated("calling Promise.try with more than 1 argument");
 	        var arg = arguments[1];
 	        var ctx = arguments[2];
-	        value = util$$1.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
+	        value = util$$2.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
 	                                  : tryCatch(fn).call(ctx, arg);
 	    } else {
 	        value = tryCatch(fn)();
@@ -10179,7 +10179,7 @@
 	};
 
 	Promise.prototype._resolveFromSyncValue = function (value) {
-	    if (value === util$$1.errorObj) {
+	    if (value === util$$2.errorObj) {
 	        this._rejectCallback(value.e, false);
 	    } else {
 	        this._resolveCallback(value, true);
@@ -10255,9 +10255,9 @@
 	};
 
 	var cancel = function(Promise, PromiseArray, apiRejection, debug) {
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 	var async = Promise._async;
 
 	Promise.prototype["break"] = Promise.prototype.cancel = function() {
@@ -10345,7 +10345,7 @@
 	};
 
 	Promise.prototype._doInvokeOnCancel = function(onCancelCallback, internalOnly) {
-	    if (util$$1.isArray(onCancelCallback)) {
+	    if (util$$2.isArray(onCancelCallback)) {
 	        for (var i = 0; i < onCancelCallback.length; ++i) {
 	            this._doInvokeOnCancel(onCancelCallback[i], internalOnly);
 	        }
@@ -10535,10 +10535,10 @@
 	var join =
 	function(Promise, PromiseArray, tryConvertToPromise, INTERNAL, async,
 	         getDomain) {
-	var util$$1 = util;
-	var canEvaluate = util$$1.canEvaluate;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var util$$2 = util;
+	var canEvaluate = util$$2.canEvaluate;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 	var reject;
 
 	{
@@ -10682,7 +10682,7 @@
 	                    if (holder.asyncNeeded) {
 	                        var domain = getDomain();
 	                        if (domain !== null) {
-	                            holder.fn = util$$1.domainBind(domain, holder.fn);
+	                            holder.fn = util$$2.domainBind(domain, holder.fn);
 	                        }
 	                    }
 	                    ret._setAsyncGuaranteed();
@@ -10707,16 +10707,16 @@
 	                          INTERNAL,
 	                          debug) {
 	var getDomain = Promise._getDomain;
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 	var async = Promise._async;
 
 	function MappingPromiseArray(promises, fn, limit, _filter) {
 	    this.constructor$(promises);
 	    this._promise._captureStackTrace();
 	    var domain = getDomain();
-	    this._callback = domain === null ? fn : util$$1.domainBind(domain, fn);
+	    this._callback = domain === null ? fn : util$$2.domainBind(domain, fn);
 	    this._preservedValues = _filter === INTERNAL
 	        ? new Array(this.length())
 	        : null;
@@ -10725,7 +10725,7 @@
 	    this._queue = [];
 	    async.invoke(this._asyncInit, this, undefined);
 	}
-	util$$1.inherits(MappingPromiseArray, PromiseArray);
+	util$$2.inherits(MappingPromiseArray, PromiseArray);
 
 	MappingPromiseArray.prototype._asyncInit = function() {
 	    this._init$(undefined, -2);
@@ -10834,7 +10834,7 @@
 
 	function map(promises, fn, options, _filter) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	    }
 
 	    var limit = 0;
@@ -10843,13 +10843,13 @@
 	            if (typeof options.concurrency !== "number") {
 	                return Promise.reject(
 	                    new TypeError("'concurrency' must be a number but it is " +
-	                                    util$$1.classString(options.concurrency)));
+	                                    util$$2.classString(options.concurrency)));
 	            }
 	            limit = options.concurrency;
 	        } else {
 	            return Promise.reject(new TypeError(
 	                            "options argument must be an object but it is " +
-	                             util$$1.classString(options)));
+	                             util$$2.classString(options)));
 	        }
 	    }
 	    limit = typeof limit === "number" &&
@@ -10876,9 +10876,9 @@
 	}
 
 	var call_get = function(Promise) {
-	var util$$1 = util;
-	var canEvaluate = util$$1.canEvaluate;
-	var isIdentifier = util$$1.isIdentifier;
+	var util$$2 = util;
+	var canEvaluate = util$$2.canEvaluate;
+	var isIdentifier = util$$2.isIdentifier;
 
 	var getMethodCaller;
 	var getGetter;
@@ -10939,8 +10939,8 @@
 	    var fn;
 	    if (obj != null) fn = obj[methodName];
 	    if (typeof fn !== "function") {
-	        var message = "Object " + util$$1.classString(obj) + " has no method '" +
-	            util$$1.toString(methodName) + "'";
+	        var message = "Object " + util$$2.classString(obj) + " has no method '" +
+	            util$$2.toString(methodName) + "'";
 	        throw new Promise.TypeError(message);
 	    }
 	    return fn;
@@ -10993,11 +10993,11 @@
 
 	var using = function (Promise, apiRejection, tryConvertToPromise,
 	    createContext, INTERNAL, debug) {
-	    var util$$1 = util;
+	    var util$$2 = util;
 	    var TypeError = errors.TypeError;
 	    var inherits = util.inherits;
-	    var errorObj = util$$1.errorObj;
-	    var tryCatch = util$$1.tryCatch;
+	    var errorObj = util$$2.errorObj;
+	    var tryCatch = util$$2.tryCatch;
 	    var NULL = {};
 
 	    function thrower(e) {
@@ -11120,7 +11120,7 @@
 	                        "you must pass at least 2 arguments to Promise.using");
 	        var fn = arguments[len - 1];
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	        }
 	        var input;
 	        var spreadArgs = true;
@@ -11218,7 +11218,7 @@
 	};
 
 	var timers$1 = function(Promise, INTERNAL, debug) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var TimeoutError = Promise.TimeoutError;
 
 	function HandleWrapper(handle)  {
@@ -11266,7 +11266,7 @@
 	    } else {
 	        err = new TimeoutError(message);
 	    }
-	    util$$1.markAsOriginatingFromRejection(err);
+	    util$$2.markAsOriginatingFromRejection(err);
 	    promise._attachExtraTrace(err);
 	    promise._reject(err);
 
@@ -11316,11 +11316,11 @@
 	                          tryConvertToPromise,
 	                          Proxyable,
 	                          debug) {
-	var errors$$1 = errors;
-	var TypeError = errors$$1.TypeError;
-	var util$$1 = util;
-	var errorObj = util$$1.errorObj;
-	var tryCatch = util$$1.tryCatch;
+	var errors$$2 = errors;
+	var TypeError = errors$$2.TypeError;
+	var util$$2 = util;
+	var errorObj = util$$2.errorObj;
+	var tryCatch = util$$2.tryCatch;
 	var yieldHandlers = [];
 
 	function promiseFromYieldHandler(value, yieldHandlers, traceParent) {
@@ -11363,7 +11363,7 @@
 	    this._yieldedPromise = null;
 	    this._cancellationPhase = false;
 	}
-	util$$1.inherits(PromiseSpawn, Proxyable);
+	util$$2.inherits(PromiseSpawn, Proxyable);
 
 	PromiseSpawn.prototype._isResolved = function() {
 	    return this._promise === null;
@@ -11516,7 +11516,7 @@
 
 	Promise.coroutine.addYieldHandler = function(fn) {
 	    if (typeof fn !== "function") {
-	        throw new TypeError("expecting a function but got " + util$$1.classString(fn));
+	        throw new TypeError("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    yieldHandlers.push(fn);
 	};
@@ -11534,14 +11534,14 @@
 	};
 
 	var nodeify = function(Promise) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var async = Promise._async;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 
 	function spreadAdapter(val, nodeback) {
 	    var promise = this;
-	    if (!util$$1.isArray(val)) return successAdapter.call(promise, val, nodeback);
+	    if (!util$$2.isArray(val)) return successAdapter.call(promise, val, nodeback);
 	    var ret =
 	        tryCatch(nodeback).apply(promise._boundValue(), [null].concat(val));
 	    if (ret === errorObj) {
@@ -11593,11 +11593,11 @@
 
 	var promisify = function(Promise, INTERNAL) {
 	var THIS = {};
-	var util$$1 = util;
+	var util$$2 = util;
 	var nodebackForPromise = nodeback;
-	var withAppended = util$$1.withAppended;
-	var maybeWrapAsError = util$$1.maybeWrapAsError;
-	var canEvaluate = util$$1.canEvaluate;
+	var withAppended = util$$2.withAppended;
+	var maybeWrapAsError = util$$2.maybeWrapAsError;
+	var canEvaluate = util$$2.canEvaluate;
 	var TypeError = errors.TypeError;
 	var defaultSuffix = "Async";
 	var defaultPromisified = {__isPromisified__: true};
@@ -11613,7 +11613,7 @@
 	var noCopyPropsPattern = new RegExp("^(?:" + noCopyProps.join("|") + ")$");
 
 	var defaultFilter = function(name) {
-	    return util$$1.isIdentifier(name) &&
+	    return util$$2.isIdentifier(name) &&
 	        name.charAt(0) !== "_" &&
 	        name !== "constructor";
 	};
@@ -11632,7 +11632,7 @@
 	}
 
 	function hasPromisified(obj, key, suffix) {
-	    var val = util$$1.getDataPropertyOrDefault(obj, key + suffix,
+	    var val = util$$2.getDataPropertyOrDefault(obj, key + suffix,
 	                                            defaultPromisified);
 	    return val ? isPromisified(val) : false;
 	}
@@ -11652,7 +11652,7 @@
 	}
 
 	function promisifiableMethods(obj, suffix, suffixRegexp, filter) {
-	    var keys = util$$1.inheritedDataKeys(obj);
+	    var keys = util$$2.inheritedDataKeys(obj);
 	    var ret = [];
 	    for (var i = 0; i < keys.length; ++i) {
 	        var key = keys[i];
@@ -11689,11 +11689,11 @@
 	};
 
 	var argumentSequence = function(argumentCount) {
-	    return util$$1.filledRange(argumentCount, "_arg", "");
+	    return util$$2.filledRange(argumentCount, "_arg", "");
 	};
 
 	var parameterDeclaration = function(parameterCount) {
-	    return util$$1.filledRange(
+	    return util$$2.filledRange(
 	        Math.max(parameterCount, 3), "_arg", "");
 	};
 
@@ -11790,9 +11790,9 @@
 	                    withAppended,
 	                    maybeWrapAsError,
 	                    nodebackForPromise,
-	                    util$$1.tryCatch,
-	                    util$$1.errorObj,
-	                    util$$1.notEnumerableProp,
+	                    util$$2.tryCatch,
+	                    util$$2.errorObj,
+	                    util$$2.notEnumerableProp,
 	                    INTERNAL);
 	};
 	}
@@ -11819,7 +11819,7 @@
 	        if (!promise._isFateSealed()) promise._setAsyncGuaranteed();
 	        return promise;
 	    }
-	    util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
+	    util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
 	    return promisified;
 	}
 
@@ -11844,11 +11844,11 @@
 	                return makeNodePromisified(key, THIS, key,
 	                                           fn, suffix, multiArgs);
 	            });
-	            util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
+	            util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
 	            obj[promisifiedKey] = promisified;
 	        }
 	    }
-	    util$$1.toFastProperties(obj);
+	    util$$2.toFastProperties(obj);
 	    return obj;
 	}
 
@@ -11859,7 +11859,7 @@
 
 	Promise.promisify = function (fn, options) {
 	    if (typeof fn !== "function") {
-	        throw new TypeError("expecting a function but got " + util$$1.classString(fn));
+	        throw new TypeError("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    if (isPromisified(fn)) {
 	        return fn;
@@ -11868,7 +11868,7 @@
 	    var receiver = options.context === undefined ? THIS : options.context;
 	    var multiArgs = !!options.multiArgs;
 	    var ret = promisify(fn, receiver, multiArgs);
-	    util$$1.copyDescriptors(fn, ret, propsFilter);
+	    util$$2.copyDescriptors(fn, ret, propsFilter);
 	    return ret;
 	};
 
@@ -11885,15 +11885,15 @@
 	    var promisifier = options.promisifier;
 	    if (typeof promisifier !== "function") promisifier = makeNodePromisified;
 
-	    if (!util$$1.isIdentifier(suffix)) {
+	    if (!util$$2.isIdentifier(suffix)) {
 	        throw new RangeError("suffix must be a valid identifier\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
 	    }
 
-	    var keys = util$$1.inheritedDataKeys(target);
+	    var keys = util$$2.inheritedDataKeys(target);
 	    for (var i = 0; i < keys.length; ++i) {
 	        var value = target[keys[i]];
 	        if (keys[i] !== "constructor" &&
-	            util$$1.isClass(value)) {
+	            util$$2.isClass(value)) {
 	            promisifyAll(value.prototype, suffix, filter, promisifier,
 	                multiArgs);
 	            promisifyAll(value, suffix, filter, promisifier, multiArgs);
@@ -11906,9 +11906,9 @@
 
 	var props = function(
 	    Promise, PromiseArray, tryConvertToPromise, apiRejection) {
-	var util$$1 = util;
-	var isObject = util$$1.isObject;
-	var es5$$1 = es5;
+	var util$$2 = util;
+	var isObject = util$$2.isObject;
+	var es5$$2 = es5;
 	var Es6Map;
 	if (typeof Map === "function") Es6Map = Map;
 
@@ -11949,7 +11949,7 @@
 	        entries = mapToEntries(obj);
 	        isMap = true;
 	    } else {
-	        var keys = es5$$1.keys(obj);
+	        var keys = es5$$2.keys(obj);
 	        var len = keys.length;
 	        entries = new Array(len * 2);
 	        for (var i = 0; i < len; ++i) {
@@ -11962,7 +11962,7 @@
 	    this._isMap = isMap;
 	    this._init$(undefined, isMap ? -6 : -3);
 	}
-	util$$1.inherits(PropertiesPromiseArray, PromiseArray);
+	util$$2.inherits(PropertiesPromiseArray, PromiseArray);
 
 	PropertiesPromiseArray.prototype._init = function () {};
 
@@ -12024,7 +12024,7 @@
 
 	var race = function(
 	    Promise, INTERNAL, tryConvertToPromise, apiRejection) {
-	var util$$1 = util;
+	var util$$2 = util;
 
 	var raceLater = function (promise) {
 	    return promise.then(function(array) {
@@ -12038,9 +12038,9 @@
 	    if (maybePromise instanceof Promise) {
 	        return raceLater(maybePromise);
 	    } else {
-	        promises = util$$1.asArray(promises);
+	        promises = util$$2.asArray(promises);
 	        if (promises === null)
-	            return apiRejection("expecting an array or an iterable object but got " + util$$1.classString(promises));
+	            return apiRejection("expecting an array or an iterable object but got " + util$$2.classString(promises));
 	    }
 
 	    var ret = new Promise(INTERNAL);
@@ -12078,13 +12078,13 @@
 	                          INTERNAL,
 	                          debug) {
 	var getDomain = Promise._getDomain;
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
 
 	function ReductionPromiseArray(promises, fn, initialValue, _each) {
 	    this.constructor$(promises);
 	    var domain = getDomain();
-	    this._fn = domain === null ? fn : util$$1.domainBind(domain, fn);
+	    this._fn = domain === null ? fn : util$$2.domainBind(domain, fn);
 	    if (initialValue !== undefined) {
 	        initialValue = Promise.resolve(initialValue);
 	        initialValue._attachCancellationCallback(this);
@@ -12101,7 +12101,7 @@
 	    this._promise._captureStackTrace();
 	    this._init$(undefined, -5);
 	}
-	util$$1.inherits(ReductionPromiseArray, PromiseArray);
+	util$$2.inherits(ReductionPromiseArray, PromiseArray);
 
 	ReductionPromiseArray.prototype._gotAccum = function(accum) {
 	    if (this._eachValues !== undefined && 
@@ -12199,7 +12199,7 @@
 
 	function reduce(promises, fn, initialValue, _each) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    var array = new ReductionPromiseArray(promises, fn, initialValue, _each);
 	    return array.promise();
@@ -12246,12 +12246,12 @@
 	var settle =
 	    function(Promise, PromiseArray, debug) {
 	var PromiseInspection = Promise.PromiseInspection;
-	var util$$1 = util;
+	var util$$2 = util;
 
 	function SettledPromiseArray(values) {
 	    this.constructor$(values);
 	}
-	util$$1.inherits(SettledPromiseArray, PromiseArray);
+	util$$2.inherits(SettledPromiseArray, PromiseArray);
 
 	SettledPromiseArray.prototype._promiseResolved = function (index, inspection) {
 	    this._values[index] = inspection;
@@ -12288,10 +12288,10 @@
 
 	var some =
 	function(Promise, PromiseArray, apiRejection) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var RangeError = errors.RangeError;
 	var AggregateError = errors.AggregateError;
-	var isArray = util$$1.isArray;
+	var isArray = util$$2.isArray;
 	var CANCELLATION = {};
 
 
@@ -12301,7 +12301,7 @@
 	    this._unwrap = false;
 	    this._initialized = false;
 	}
-	util$$1.inherits(SomePromiseArray, PromiseArray);
+	util$$2.inherits(SomePromiseArray, PromiseArray);
 
 	SomePromiseArray.prototype._init = function () {
 	    if (!this._initialized) {
@@ -13676,6 +13676,305 @@
 
 	  })
 	}
+
+	// configs
+
+	var maxConcurrentQueuedRequests = 15; // not queued requests are not limited in running parallel
+	var queuesByPriority = [
+	  'architectureGeometries',
+	  'architectureTexturesLoRes',
+	  'interiorGeometries',
+	  'interiorTexturesLoRes',
+	  'architectureTexturesHiRes',
+	  'interiorTexturesHiRes'
+	];
+
+	var queueFences = [
+	  false,
+	  false,
+	  true,
+	  false,
+	  false
+	];
+
+	// prepare objects for queueing
+	var _queues = {};
+	var _queueFences = {};
+	var _queuesChanged = false;
+	window.queueInfo = {};
+	var _queuesLength = queuesByPriority.length;
+	var _concurrentRequests = 0;
+	var _concurrentPerQueue = {};
+	window.loadingQueueData = '';
+
+	var queueName;
+	for (var i$1 = 0, l = _queuesLength; i$1 < l; i$1++) {
+	  queueName = queuesByPriority[i$1];
+	  _queues[queueName] = [];
+	  _queueFences[queueName] = queueFences[i$1];
+	  window.queueInfo[queueName] = {requestCount: 0};
+	  _concurrentPerQueue[queueName] = 0;
+	}
+
+	window.loadingQueueAlgorithm     = 'overstep-one-fenced';
+	window.loadingQueuePipelineDepth = maxConcurrentQueuedRequests;
+	//window.loadingQueueGraph         = false;
+	//if (window.loadingQueueGraph)
+	//  window.loadingPerformanceHistory = new PerformanceGraph.PerformanceHistory(64);
+	//
+	//window.loadingQueueShowInfo = function() {
+	//  function padRight(text, fieldLength) {
+	//    return text + Array(fieldLength - text.length + 1).join(' ');
+	//  }
+	//  function padLeft(text, fieldLength) {
+	//    return Array(fieldLength - text.length + 1).join(' ') + text;
+	//  }
+	//  var text = '';
+	//  var keys = Object.keys(window.queueInfo);
+	//  var baseTime;
+	//  if (keys.length > 0) {
+	//    var baseKey   = keys[0];
+	//    var baseValue = window.queueInfo[baseKey];
+	//    baseTime = baseValue.timeFirst;
+	//    text += '(' + baseTime.toFixed(1) + ')\n'
+	//  }
+	//  for (var i = 0; i < keys.length; i++) {
+	//    var key   = keys[i];
+	//    var value = window.queueInfo[key];
+	//    text += padRight(keys[i], 28) + ': ';
+	//    if (value.requestCount > 0) {
+	//      var t1 = value.timeFirst - baseTime;
+	//      var t2 = value.timeLast - baseTime;
+	//      var t1Str = t1.toFixed(1);
+	//      var t2Str = t2.toFixed(1);
+	//      var t3, d, t3Str, dStr;
+	//      if (value.timeLastFinished) {
+	//        t3 = value.timeLastFinished - baseTime;
+	//        d  = t3 - t1;
+	//        t3Str = t3.toFixed(1);
+	//        dStr  = d.toFixed(1);
+	//      } else {
+	//        t3Str = '-';
+	//        dStr  = '-';
+	//      }
+	//      text += padLeft(t1Str, 5) + ' - ' + padLeft(t2Str, 5) + ' / ' + padLeft(t3Str, 5) + ' (' + padLeft(dStr, 5) + ') [' + padLeft(value.requestCount.toString(), 4) + ']\n';
+	//    } else
+	//      text += '<inactive>\n'
+	//  }
+	//  console.log(text);
+	//}
+	//
+	//window.loadingQueueProcessData = function() {
+	//  var loadingQueueDataLines = window.loadingQueueData.split('\n');
+	//  var i = 0;
+	//  while (i < loadingQueueDataLines.length) {
+	//    var line = loadingQueueDataLines[i];
+	//    var count = 0;
+	//    for (var j = i; i < loadingQueueDataLines.length; j++) {
+	//      var nextLine = loadingQueueDataLines[j];
+	//      if (line === nextLine)
+	//        count++;
+	//      else
+	//        break;
+	//    }
+	//    if (count > 8) {
+	//      loadingQueueDataLines.splice(i + 4, count - 8, ' ');
+	//      loadingQueueDataLines.
+	//        i += 4
+	//    } else
+	//      i += 1;
+	//  }
+	//  window.loadingQueueDataShort = loadingQueueDataLines.join('\n');
+	//}
+
+	function _addPerformanceEntry() {
+	  var performanceEntry = window.loadingPerformanceHistory.newEntry(PerformanceGraph.PerformanceEntry);
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    performanceEntry[queueName] = _concurrentPerQueue[queueName];
+	  }
+	  // performanceEntry.none = window.loadingQueuePipelineDepth - _concurrentRequests;
+	}
+
+	function _appendLoadingQueueData() {
+	  var entry = '';
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    entry += _concurrentPerQueue[queueName].toString();
+	    if (i < _queuesLength - 1)
+	      entry += ', ';
+	    else
+	      entry += '\n';
+	  }
+	  window.loadingQueueData += entry;
+	}
+
+	function _startRequest(queueName) {
+	  // Update queue tracking information
+	  var queueInfo = window.queueInfo[queueName];
+	  var time = performance.now() / 1000;
+	  if (typeof queueInfo.timeFirst === 'undefined') {
+	    queueInfo.timeFirst = time;
+	    queueInfo.timeLast  = time;
+	  } else
+	    queueInfo.timeLast  = time;
+	  queueInfo.requestCount++;
+	  // Update concurrent request counts
+	  _concurrentPerQueue[queueName] += 1;
+	  _concurrentRequests++;
+	  //
+	  _queuesChanged = true;
+	  // Start request
+	  // console.log('[' + (' ' + _concurrentRequests).slice(-2) + ']: Starting ' + queueName);
+	  var queue = _queues[queueName];
+	  var request = queue.shift();
+	  request.start();
+	}
+
+	function _doProcessQueueOriginal() {
+	  if (_concurrentRequests >= window.loadingQueuePipelineDepth)
+	    return;
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    if (_queues[queueName].length > 0) {
+	      _startRequest(queueName);
+	      break;
+	    } else if (_concurrentPerQueue[queueName] !== 0)
+	      break;
+	  }
+	}
+
+	function _doProcessQueueOriginalFixed(){
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+	      _startRequest(queueName);
+	    if (_concurrentPerQueue[queueName] !== 0)
+	      break;
+	  }
+	}
+
+	function _doProcessQueueOverstep(){
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+	      _startRequest(queueName);
+	  }
+	}
+
+	function _doProcessQueueOverstepOne(){
+	  var anchorStage = null;
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+	      _startRequest(queueName);
+	    if (anchorStage === null && _concurrentPerQueue[queueName] !== 0)
+	      anchorStage = i;
+	    if (anchorStage !== null && i - anchorStage > 0)
+	      break;
+	  }
+	}
+
+	function _doProcessQueueOverstepFenced(){
+	  var anchorStage = null;
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+	      _startRequest(queueName);
+	    if (anchorStage === null && _concurrentPerQueue[queueName] !== 0)
+	      anchorStage = i;
+	    if (anchorStage !== null && _queueFences[queueName])
+	      break;
+	  }
+	}
+
+	function _doProcessQueueOverstepOneFenced(){
+	  var anchorStage = null;
+	  for (var i = 0; i < _queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (_queues[queueName].length > 0 && _concurrentRequests < window.loadingQueuePipelineDepth)
+	      _startRequest(queueName);
+	    if (anchorStage === null && _concurrentPerQueue[queueName] !== 0)
+	      anchorStage = i;
+	    if (anchorStage !== null && (_queueFences[queueName] || (i - anchorStage > 0)))
+	      break;
+	  }
+	}
+
+	function _processQueue() {
+	  if (window.loadingQueueAlgorithm === 'original')
+	    _doProcessQueueOriginal();
+	  else if (window.loadingQueueAlgorithm === 'original-fixed')
+	    _doProcessQueueOriginalFixed();
+	  else if (window.loadingQueueAlgorithm === 'overstep')
+	    _doProcessQueueOverstep();
+	  else if (window.loadingQueueAlgorithm === 'overstep-one')
+	    _doProcessQueueOverstepOne();
+	  else if (window.loadingQueueAlgorithm === 'overstep-fenced')
+	    _doProcessQueueOverstepFenced();
+	  else if (window.loadingQueueAlgorithm === 'overstep-one-fenced')
+	    _doProcessQueueOverstepOneFenced();
+	  else
+	    throw 'Http._processQueue: Unknown loading queue processing algorithm.'
+	  if (_queuesChanged) {
+	    if (window.loadingQueueGraph)
+	      _addPerformanceEntry();
+	    _appendLoadingQueueData();
+	    _queuesChanged = false;
+	  }
+	}
+
+	function _enqueue(queueName, url){
+	  
+	  //// fallback to last queue
+	  //if (!_queues[queueName]) queueName = queuesByPriority[_queuesLength-1]
+
+	  // fallback to first queue
+	  if (!_queues[queueName]) {
+	    if (queueName) console.error('onknown queue ', queueName);
+	    queueName = queuesByPriority[0];
+	  }
+
+	  // create promise and add to queue
+	  return new Promise(function(resolve, reject){
+	    // has to be asynchronous in order to decouple queue processing from synchronous code
+	    setTimeout(function(){
+	      var queue = _queues[queueName];
+	      queue[ queue.length ] = { url: url, start: resolve };
+	      _processQueue();
+	    },1);
+	  })
+
+	}
+
+	function _dequeue(queueName, url) {
+	  var queueInfo = window.queueInfo[queueName];
+	  if (!queueInfo) {
+	    if (queueName) console.warn('Queue info not found for queue name "'+queueName+'"');
+	    return
+	  }
+	  var time = performance.now() / 1000;
+	  queueInfo.timeLastFinished = time;
+	  var t1 = queueInfo.timeFirst;
+	  var t2 = queueInfo.timeLast;
+	  var t3 = queueInfo.timeLastFinished;
+	  var d  = t3 - t1;
+	  _concurrentPerQueue[queueName] -= 1;
+	  _concurrentRequests -= 1;
+	  _queuesChanged = true;
+	  _processQueue();
+	}
+
+	// expose API
+
+	var queueManager = {
+	  enqueue: _enqueue,
+	  dequeue: _dequeue
+	};
+
+	window.setInterval(function(){
+	  _processQueue();
+	},1000);
 
 	/**
 	 * Appends the elements of `values` to `array`.
@@ -17193,8 +17492,8 @@
 	  '.svg': fetchImageTexture
 	};
 
-	function fetchTexture (url, queue) {
-
+	function fetchTexture (url, queueName) {
+	  
 	  // internals
 	  var cacheKey = url;
 
@@ -17212,7 +17511,21 @@
 	    type = '.jpg';
 	  }
 
-	  var promise = fetchTextureByType[type](url);
+	  var promise = queueManager.enqueue(queueName, url).then(function(){
+
+	    return fetchTextureByType[type](url)
+
+	  }).then(function(texture){
+
+	    queueManager.dequeue(queueName, url);
+	    return texture
+
+	  }).catch(function (error) {
+
+	    queueManager.dequeue(queueName, url);
+	    return bluebird_1.reject(error)
+
+	  });
 
 	  // add to cache
 	  cache.add(cacheKey, promise);
@@ -17296,8 +17609,8 @@
 
 	// class
 
-	function loadTextures ( queue, TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, resetTexturesOnLoadStart) {
-
+	function loadTextureSet ( queueName, TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, resetTexturesOnLoadStart) {
+	  
 	  // new textures
 
 	  var
@@ -17366,7 +17679,7 @@
 
 	      if (needsUpdate) {
 	        // load new texture
-	        texturePromises[ textureCount ] = fetchTexture(textureS3Key, queue).catch(onError);
+	        texturePromises[ textureCount ] = fetchTexture(textureS3Key, queueName).catch(onError);
 	        textureKeys[ textureCount ] = textureType;
 	        texture3dKeys[ textureCount ] = textureType3d;
 	        textureCount++;
@@ -17441,7 +17754,7 @@
 	        // everything ok - load lightmap
 	        textureType = TEXTURE_TYPES.UV2;
 	        textureS3Key = _attributes[ textureType ];
-	        texturePromises[ textureCount ] = fetchTexture(textureS3Key, queue).catch(onError);
+	        texturePromises[ textureCount ] = fetchTexture(textureS3Key, queueName).catch(onError);
 	        textureKeys[ textureCount ] = textureType;
 	        texture3dKeys[ textureCount ] = THREEJS_TEXTURE_TYPES_MAP[ textureType ];
 	        textureCount++;
@@ -17717,7 +18030,7 @@
 
 	  var
 	    loadingTexturesPromise,
-	    loadingQueue,
+	    loadingQueueName,
 	    isLoadingLoResTextures,
 	    hasLoResTextures = _attributes.mapDiffusePreview || _attributes.mapSpecularPreview || _attributes.mapNormalPreview || _attributes.mapAlphaPreview || _attributes.mapLightPreview,
 	    // hasHiResTextures = _attributes.mapDiffuse || _attributes.mapSpecular || _attributes.mapNormal || _attributes.mapAlpha || _attributes.mapLight,
@@ -17727,15 +18040,15 @@
 
 	  if (!hiResTexturesEnabled || (hasLoResTextures && !material3d.firstTextureLoaded)) {
 	    if (loadingQueuePrefix) {
-	      loadingQueue = loadingQueuePrefix + 'TexturesLoRes';
+	      loadingQueueName = loadingQueuePrefix + 'TexturesLoRes';
 	    }
-	    loadingTexturesPromise = loadTextures(loadingQueue, LO_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
+	    loadingTexturesPromise = loadTextureSet(loadingQueueName, LO_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
 	    isLoadingLoResTextures = true;
 	  } else {
 	    if (loadingQueuePrefix) {
-	      loadingQueue = loadingQueuePrefix + 'TexturesHiRes';
+	      loadingQueueName = loadingQueuePrefix + 'TexturesHiRes';
 	    }
-	    loadingTexturesPromise = loadTextures(loadingQueue, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
+	    loadingTexturesPromise = loadTextureSet(loadingQueueName, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
 	    isLoadingLoResTextures = false;
 	  }
 
@@ -17769,9 +18082,9 @@
 	  if (isLoadingLoResTextures && hiResTexturesEnabled) {
 	    loadingTexturesPromise.then(function(){
 	      if (loadingQueuePrefix) {
-	        loadingQueue = loadingQueuePrefix + 'TexturesHiRes';
+	        loadingQueueName = loadingQueuePrefix + 'TexturesHiRes';
 	      }
-	      loadTextures(loadingQueue, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
+	      loadTextureSet(loadingQueueName, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
 	    });
 	  }
 
@@ -17780,9 +18093,9 @@
 	  return loadingTexturesPromise
 	}
 
-	var fragmentShader = "uniform vec3 diffuse;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapExposure;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\n#include <shadowmap_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( diffuse, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #include <normal_flip>\n    #include <normal_fragment>\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}";
+	var fragmentShader = "uniform vec3 diffuse;\r\nuniform vec3 emissive;\r\nuniform vec3 specular;\r\nuniform float shininess;\r\nuniform float opacity;\r\n\r\n#include <common>\r\n#include <packing>\r\n#include <uv_pars_fragment>\r\n#include <uv2_pars_fragment>\r\n#include <map_pars_fragment>\r\n#include <alphamap_pars_fragment>\r\n\r\n// Replaces <lightmap_pars_fragment>;\r\n\r\n#ifdef USE_LIGHTMAP\r\n\tuniform sampler2D lightMap;\r\n\tuniform float lightMapIntensity;\r\n\tuniform float lightMapExposure;\r\n\tuniform float lightMapFalloff;\r\n#endif\r\n\r\n#include <normalmap_pars_fragment>\r\n#include <specularmap_pars_fragment>\r\n\r\n#include <bsdfs>\r\n#include <lights_pars>\r\n#include <lights_phong_pars_fragment>\r\n#include <shadowmap_pars_fragment>\r\n\r\n\r\nvoid main() {\r\n\r\n    vec4 diffuseColor = vec4( diffuse, opacity );\r\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\r\n\r\n    vec3 totalEmissiveRadiance = emissive;\r\n\r\n    #include <map_fragment>\r\n    #include <alphamap_fragment>\r\n    #include <alphatest_fragment>\r\n    #include <specularmap_fragment>\r\n    #include <normal_flip>\r\n    #include <normal_fragment>\r\n\r\n    // accumulation\r\n    #include <lights_phong_fragment>\r\n\r\n    // Start of <light-template> replace block\r\n    GeometricContext geometry;\r\n\r\n    geometry.position = - vViewPosition;\r\n    geometry.normal = normal;\r\n    geometry.viewDir = normalize( vViewPosition );\r\n\r\n    IncidentLight directLight;\r\n\r\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        PointLight pointLight;\r\n\r\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\r\n\r\n            pointLight = pointLights[ i ];\r\n\r\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        SpotLight spotLight;\r\n\r\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\r\n\r\n            spotLight = spotLights[ i ];\r\n\r\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        DirectionalLight directionalLight;\r\n\r\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\r\n\r\n            directionalLight = directionalLights[ i ];\r\n\r\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\r\n\r\n        RectAreaLight rectAreaLight;\r\n\r\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\r\n\r\n            rectAreaLight = rectAreaLights[ i ];\r\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if defined( RE_IndirectDiffuse )\r\n\r\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\r\n\r\n        #ifdef USE_LIGHTMAP\r\n\r\n            // compute the light value\r\n            vec3 unit = vec3(1.0);\r\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\r\n            // compute the light intensity modifier\r\n            vec3 modifier = -lightMapFalloff * light * light + unit;\r\n            // apply light\r\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\r\n\r\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\r\n\r\n                lightMapIrradiance *= PI; // factor of PI should not be present; included here to prevent breakage\r\n\r\n            #endif\r\n\r\n            irradiance += lightMapIrradiance;\r\n\r\n        #endif\r\n\r\n        #if ( NUM_HEMI_LIGHTS > 0 )\r\n\r\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\r\n\r\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\r\n\r\n            }\r\n\r\n        #endif\r\n\r\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\r\n\r\n    #endif\r\n    // End of <light-template> replace block\r\n\r\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\r\n\r\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\r\n\r\n}";
 
-	var vertexShader = "varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}";
+	var vertexShader = "varying vec3 vViewPosition;\r\n\r\n#ifndef FLAT_SHADED\r\n\tvarying vec3 vNormal;\r\n#endif\r\n\r\n#include <uv_pars_vertex>\r\n#include <uv2_pars_vertex>\r\n#include <shadowmap_pars_vertex>\r\n\r\nvoid main()\r\n{\r\n//  vUv = uv;\r\n  #include <uv_vertex>\r\n  #include <uv2_vertex>\r\n\r\n  #include <beginnormal_vertex>\r\n  #include <defaultnormal_vertex>\r\n\r\n  #ifndef FLAT_SHADED\r\n    // Normal computed with derivatives when FLAT_SHADED\r\n  \tvNormal = normalize( transformedNormal );\r\n  #endif\r\n\r\n  #include <begin_vertex>\r\n  #include <project_vertex>\r\n\r\n  vViewPosition = - mvPosition.xyz;\r\n\r\n  #include <worldpos_vertex>\r\n  #include <shadowmap_vertex>\r\n\r\n}";
 
 	// CONFIGS
 
@@ -18087,7 +18400,7 @@
 	        meshKeys = data3d.meshKeys,
 	        materials = data3d.materials || this.materials,
 	        materialKeys = data3d.materialKeys,
-	        loadingQueuePrefix = data3d.loadingQueuePrefix || options.loadingQueuePrefix,
+	        loadingQueuePrefix = data3d.loadingQueuePrefix || options.loadingQueuePrefix || 'architecture',
 	        onFirstTextureSetLoaded = options.onFirstTextureSetLoaded,
 	        lightMapIntensity = options.lightMapIntensity,
 	        lightMapExposure = options.lightMapExposure;
@@ -18131,7 +18444,9 @@
 	            material3d.name = materialId;
 	            if (!materials) {
 	              // there is no material properties. using default properties
-	              setMaterial({ material3d: material3d });
+	              setMaterial({
+	                material3d: material3d
+	              });
 	            }
 	            self._materials3d[ meshId ] = material3d;
 	          }
@@ -18749,12 +19064,22 @@
 	    // create new one
 	    this_.mesh = new THREE.Object3D();
 	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
-	    this.el.data3dView = this.data3dView
+	    this.el.data3dView = this.data3dView;
 	    // load 3d file
-	    ;(key ? io3d.storage.get(key) : io3d.utils.data3d.load(url)).then(function (data3d) {
+	    Promise.resolve().then(function(){
+	      if (key) {
+	        return io3d.storage.get(key, { loadingQueuePrefix: 'architecture' })
+	      } else {
+	        return io3d.utils.data3d.load(url, { loadingQueuePrefix: 'architecture' })
+	      }
+	    }).then(function (data3d) {
 	      this_.el.data3d = data3d;
 	      // update view
-	      this_.data3dView.set(data3d, { lightMapIntensity: lightMapIntensity, lightMapExposure: lightMapExposure });
+	      this_.data3dView.set(data3d, {
+	        lightMapIntensity: lightMapIntensity,
+	        lightMapExposure: lightMapExposure,
+	        loadingQueuePrefix: 'architecture'
+	      });
 	      this_.el.setObject3D('mesh', this_.mesh);
 	      // emit event
 	      this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
@@ -18788,7 +19113,9 @@
 
 	  update: function () {
 	    var this_ = this;
-	    var furnitureId = this_.data.id;
+	    var el = this.el;
+	    var data = this.data;
+	    var furnitureId = data.id;
 
 	    // check params
 	    if (!furnitureId || furnitureId === '') return
@@ -18802,46 +19129,63 @@
 
 	    // get furniture data
 	    io3d.furniture.get(furnitureId).then(function (result) {
+
+	      var info = result.info; // lightweight info like name, manufacturer, description...
+	      var data3d = result.data3d; // geometries and materials
+	      var availableMaterials = {};
+
 	      // Expose properties
-	      this_.info = result.info; // lightweight info like name, manufacturer, description ...
-	      this_.data3d = result.data3d; // geometries and materials
+	      this_.info = info;
+	      this_.data3d = data3d;
+	      this_.availableMaterials = availableMaterials;
 
 	      // check for material presets in the furniture sceneStructure definition
-	      var materialPreset = this_.info.sceneStructure && JSON.parse(this_.info.sceneStructure).materials;
-	      // Parse & expose materials
-	      this_.availableMaterials = {};
-	      Object.keys(result.data3d.meshes).forEach(function eachMesh (meshName) {
-	        this_.availableMaterials[meshName] = result.data3d.alternativeMaterialsByMeshKey ? result.data3d.alternativeMaterialsByMeshKey[meshName] : result.data3d.meshes[meshName].material;
+	      var materialPreset = info.sceneStructure && JSON.parse(info.sceneStructure).materials;
+	      // Parse materials
+	      Object.keys(data3d.meshes).forEach(function eachMesh (meshId) {
+	        availableMaterials[meshId] = data3d.alternativeMaterialsByMeshKey ? data3d.alternativeMaterialsByMeshKey[meshId] : data3d.meshes[meshId].material;
 
-	        //update material based on inspector
-	        var materialPropName = 'material_' + meshName.replace(/\s/g, '_');
-	        if (this_.data[materialPropName] !== undefined) {
-	          result.data3d.meshes[meshName].material = this_.data[materialPropName];
-	          this_.el.emit('material-changed', {mesh: meshName, material: this_.data[materialPropName]});
-	        } else if (materialPreset && materialPreset[meshName]) {
-	          // apply presets from the furniture's sceneStructure definition
-	          result.data3d.meshes[meshName].material = materialPreset[meshName];
-	          this_.el.emit('material-changed', {mesh: meshName, material: materialPreset[meshName]});
+	        // get material name from inspector
+	        var materialPropName = 'material_' + meshId.replace(/\s/g, '_');
+	        // get materialId from a-frame attribute or from furniture API scene structure preset
+	        var newMaterialId =  data[materialPropName] || (materialPreset ? materialPreset[meshId] : null);
+
+	        // set custom material if available
+	        if (newMaterialId) {
+
+	          // update material
+	          data3d.meshes[meshId].material = newMaterialId;
+	          // trigger event
+	          el.emit('material-changed', {mesh: meshId, material: newMaterialId});
+
 	        } else {
+
 	          // register it as part of the schema for the inspector
 	          var prop = {};
 	          prop[materialPropName] = {
 	            type: 'string',
-	            default: result.data3d.meshes[meshName].material,
-	            oneOf: result.data3d.alternativeMaterialsByMeshKey ? result.data3d.alternativeMaterialsByMeshKey[meshName] : result.data3d.meshes[meshName].material
+	            default: data3d.meshes[meshId].material,
+	            oneOf: data3d.alternativeMaterialsByMeshKey ? data3d.alternativeMaterialsByMeshKey[meshId] : data3d.meshes[meshId].material
 	          };
 	          this_.extendSchema(prop);
-	          this_.data[materialPropName] = result.data3d.meshes[meshName].material;
+	          this_.data[materialPropName] = data3d.meshes[meshId].material;
+
 	        }
 	      });
 
 	      // update view
-	      this_.data3dView.set(result.data3d);
-	      this_.el.data3d = result.data3d;
+	      this_.data3dView.set(data3d, {
+	        loadingQueuePrefix: 'interior'
+	      });
+	      this_.el.data3d = data3d;
 	      this_.el.setObject3D('mesh', this_.mesh);
-	      // emit event
-	      if (this_._prevId !== furnitureId) this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
-	      this_._prevId = furnitureId;
+
+	      // emit events
+	      if (this_._previousFurnitureId !== furnitureId) {
+	        this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
+	        this_._previousFurnitureId = furnitureId;
+	      }
+
 	    });
 	  },
 
@@ -20123,12 +20467,12 @@
 
 
 
-	for (var i$1 = 0, len = autoEscapeMap.length; i$1 < len; ++i$1) {
-	  autoEscapeMap[i$1] = "";
+	for (var i$2 = 0, len = autoEscapeMap.length; i$2 < len; ++i$2) {
+	  autoEscapeMap[i$2] = "";
 	}
 
-	for (var i$1 = 0, len = autoEscape.length; i$1 < len; ++i$1) {
-	  var c = autoEscape[i$1];
+	for (var i$2 = 0, len = autoEscape.length; i$2 < len; ++i$2) {
+	  var c = autoEscape[i$2];
 	  var esc = encodeURIComponent(c);
 	  if (esc === c) {
 	    esc = escape(c);
@@ -20216,9 +20560,9 @@
 
 	  // API
 	  options = options || {};
-	  var url = options.url;
+	  var url$$1 = options.url;
 
-	  var parsedUrl = Url.parse(url);
+	  var parsedUrl = Url.parse(url$$1);
 	  var rootDir = path.parse(parsedUrl.path || parsedUrl.pathname || '').dir;
 	  var origin = parsedUrl.protocol + '//' + parsedUrl.host;
 
@@ -20273,7 +20617,7 @@
 	  traverseData3d(structure.data3d, function (data3d) {
 
 	    // map typed arrays to payload area in file buffer
-	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url);
+	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url$$1);
 
 	    //  convert relative material keys into absolute one
 	    if (origin && data3d.materials) convertTextureKeys(data3d, origin, rootDir);
@@ -20342,7 +20686,7 @@
 
 	}
 
-	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url) {
+	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url$$1) {
 
 	  var mesh, i, l, meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
 
@@ -20372,7 +20716,7 @@
 	    }
 
 	    // add cache key
-	    if (url) mesh.cacheKey = url + ':' + meshKeys[i];
+	    if (url$$1) mesh.cacheKey = url$$1 + ':' + meshKeys[i];
 
 	  }
 
@@ -20391,18 +20735,43 @@
 	}
 
 	function loadData3d (url, options) {
-	  
-	  return fetch$1(url, options).then(function(res){
-	    return res.arrayBuffer()
-	  }).then(function(buffer){
-	    return decodeBinary(buffer, { url: url })
+
+	  options = options || {};
+	  var queueName;
+	  if (options.queueName) {
+	    queueName = options.queueName;
+	  } else if (options.loadingQueuePrefix) {
+	    queueName = options.loadingQueuePrefix + 'Geometries';
+	  }
+
+	  // run
+
+	  return queueManager.enqueue(queueName, url).then(function(){
+
+	    return fetch$1(url, options).then(function(res){
+
+	      return res.arrayBuffer()
+
+	    }).then(function(buffer){
+
+	      queueManager.dequeue(queueName, url);
+	      return decodeBinary(buffer, { url: url })
+
+	    })
+
+	  }).catch(function (error) {
+
+	    queueManager.dequeue(queueName, url);
+	    return bluebird_1.reject(error)
+
 	  })
+	  
 	}
 
 	function getFurniture (id) {
 	  // we need to call furniture info first in order to obtain data3d URL
 	  return getFurnitureInfo(id).then(function(info){
-	    return loadData3d(info.data3dUrl).then(function(data3d){
+	    return loadData3d(info.data3dUrl, { loadingQueuePrefix: 'interior' }).then(function(data3d){
 	      return {
 	        // contains lightweight metadata like designer name and description
 	        info: info,
@@ -22409,13 +22778,19 @@
 	  // WIP: for now, assume that this is only being used for data3d
 	  options = options || {};
 	  options.type = options.type || 'data3d'; // TODO: support more types
+	  var queueName = options.queueName;
+	  var loadingQueuePrefix = options.loadingQueuePrefix;
 
 	  switch(options.type) {
 	    case 'json':
+	      // do not use queue for generic JSON requests
 	      return fetch$1(getUrlFromStorageId(storageId, options)).then(function(response) { return response.json() })
 	    break
 	    default:
-	      return loadData3d(getUrlFromStorageId(storageId))
+	      return loadData3d(getUrlFromStorageId(storageId), {
+	        queueName: queueName,
+	        loadingQueuePrefix: loadingQueuePrefix
+	      })
 	    break
 	  }
 
@@ -22663,6 +23038,7 @@
 	// API
 
 	var clone = cloneData3d$1;
+	clone.withPayload = cloneData3dWithPayload;
 	clone.meshes = cloneMeshes;
 	clone.meshe = cloneSingleMesh;
 	clone.materials = cloneMaterials;
@@ -22672,208 +23048,219 @@
 
 	function cloneData3d$1 (_data3d, options) {
 
-	    var clone = {};
+	  var clone = {};
 
-	    clone.meshes = cloneMeshes(_data3d.meshes, options);
-	    clone.materials = cloneMaterials(_data3d.materials);
+	  clone.meshes = cloneMeshes(_data3d.meshes, options);
+	  clone.materials = cloneMaterials(_data3d.materials);
 
-	    if (_data3d.alternativeMaterialsByMeshKey) {
-	      clone.alternativeMaterialsByMeshKey = JSON.parse(JSON.stringify(_data3d.alternativeMaterialsByMeshKey));
-	    }
-	    if (_data3d._params) {
-	      clone._params = _data3d._params;
-	    }
-	    if (_data3d.position) {
-	      clone.position = _data3d.position.slice(0);
-	    }
-	    if (_data3d.rotDeg) {
-	      clone.rotDeg = _data3d.rotDeg.slice(0);
-	    }
-	    if (_data3d.rotRad) {
-	      clone.rotRad = _data3d.rotRad.slice(0);
-	    }
-	    if (_data3d.children) {
-	      clone.children = _data3d.children.map(function(childData3d){
-	        return cloneData3d$1 (childData3d, options)
-	      });
-	    }
-
-	    return clone
+	  if (_data3d.alternativeMaterialsByMeshKey) {
+	    clone.alternativeMaterialsByMeshKey = JSON.parse(JSON.stringify(_data3d.alternativeMaterialsByMeshKey));
 	  }
-	  
-	  function cloneSingleMesh(mesh, options) {
-	    return cloneMeshes({ x:mesh }, options).x
+	  if (_data3d._params) {
+	    clone._params = _data3d._params;
 	  }
-	  
-	  function cloneMeshes (_meshes, options) {
+	  if (_data3d.position) {
+	    clone.position = _data3d.position.slice(0);
+	  }
+	  if (_data3d.rotDeg) {
+	    clone.rotDeg = _data3d.rotDeg.slice(0);
+	  }
+	  if (_data3d.rotRad) {
+	    clone.rotRad = _data3d.rotRad.slice(0);
+	  }
+	  if (_data3d.children) {
+	    clone.children = _data3d.children.map(function (childData3d) {
+	      return cloneData3d$1(childData3d, options)
+	    });
+	  }
 
-	    if (!_meshes) {
-	      return {}
+	  return clone
+	}
+
+	function cloneData3dWithPayload (data3d) {
+	  // payload = heavy arrays containing geometry & uv data
+	  return cloneData3d$1(data3d, {
+	    clonePositions: true,
+	    cloneNormals: true,
+	    cloneUvs: true,
+	    cloneUvsLightmap: true
+	  })
+	}
+
+	function cloneSingleMesh (mesh, options) {
+	  return cloneMeshes({x: mesh}, options).x
+	}
+
+	function cloneMeshes (_meshes, options) {
+
+	  if (!_meshes) {
+	    return {}
+	  }
+
+	  // API
+	  options = options || {};
+	  var clonePositions = !!options.clonePositions;
+	  var cloneNormals = !!options.cloneNormals;
+	  var cloneUvs = !!options.cloneUvs;
+	  var cloneUvsLightmap = !!options.cloneUvsLightmap;
+
+	  // internals
+	  var
+	    meshId, _mesh, mesh,
+	    meshKeys = Object.keys(_meshes),
+	    meshes = {};
+
+	  for (var i = 0, l = meshKeys.length; i < l; i++) {
+
+	    meshId = meshKeys[i];
+	    mesh = {};
+	    _mesh = _meshes[meshId];
+
+	    // vertices
+	    if (_mesh.positions) {
+	      if (clonePositions && (_mesh.positions instanceof Array || _mesh.positions instanceof Float32Array)) {
+	        mesh.positions = _mesh.positions.slice(0);
+	      } else {
+	        mesh.positions = _mesh.positions;
+	      }
 	    }
 
-	    // API
-	    options = options || {};
-	    var clonePositions = !!options.clonePositions;
-	    var cloneNormals = !!options.cloneNormals;
-	    var cloneUvs = !!options.cloneUvs;
-	    var cloneUvsLightmap = !!options.cloneUvsLightmap;
+	    // normals
+	    if (_mesh.normals) {
+	      if (cloneNormals && (_mesh.normals instanceof Array || _mesh.normals instanceof Float32Array)) {
+	        mesh.normals = _mesh.normals.slice(0);
+	      } else {
+	        mesh.normals = _mesh.normals;
+	      }
+	    }
 
-	    // internals
-	    var
-	      meshId, _mesh, mesh,
-	      meshKeys = Object.keys(_meshes),
-	      meshes = {};
+	    // uvs
+	    if (_mesh.uvs) {
+	      if (cloneUvs && (_mesh.uvs instanceof Array || _mesh.uvs instanceof Float32Array)) {
+	        mesh.uvs = _mesh.uvs.slice(0);
+	      } else {
+	        mesh.uvs = _mesh.uvs;
+	      }
+	    }
 
-	    for (var i = 0, l = meshKeys.length; i < l; i++) {
+	    // uvs lightmap
+	    if (_mesh.uvsLightmap) {
+	      if (cloneUvsLightmap && (_mesh.uvsLightmap instanceof Array || _mesh.uvsLightmap instanceof Float32Array)) {
+	        mesh.uvsLightmap = _mesh.uvsLightmap.slice(0);
+	      } else {
+	        mesh.uvsLightmap = _mesh.uvsLightmap;
+	      }
+	    }
 
-	      meshId = meshKeys[ i ];
-	      mesh = {};
-	      _mesh = _meshes[ meshId ];
+	    // other arrays
+	    if (_mesh.matrix) mesh.matrix = _mesh.matrix.slice(0);
+	    if (_mesh.uvMatrix) mesh.uvMatrix = _mesh.uvMatrix.slice(0);
+	    if (_mesh.meshKeys) mesh.meshKeys = _mesh.meshKeys.slice(0);
+	    if (_mesh.position) mesh.position = _mesh.position.slice(0);
+	    if (_mesh.rotDeg) mesh.rotDeg = _mesh.rotDeg.slice(0);
+	    if (_mesh.rotRad) mesh.rotRad = _mesh.rotRad.slice(0);
+	    if (_mesh.scale) mesh.scale = _mesh.scale.slice(0);
 
-	      // vertices
-	      if (_mesh.positions) {
-	        if (clonePositions && (_mesh.positions instanceof Array || _mesh.positions instanceof Float32Array)) {
-	          mesh.positions = _mesh.positions.slice(0);
-	        } else {
-	          mesh.positions = _mesh.positions;
-	        }
+	    // primitives
+	    if (_mesh.v) mesh.v = _mesh.v;
+	    if (_mesh.vertexMode) mesh.vertexMode = _mesh.vertexMode;
+	    if (_mesh.side) mesh.side = _mesh.side;
+	    if (_mesh.material) mesh.material = _mesh.material;
+	    if (_mesh.visibleInPersonView) mesh.visibleInPersonView = _mesh.visibleInPersonView;
+	    if (_mesh.visibleInBirdView) mesh.visibleInBirdView = _mesh.visibleInBirdView;
+	    if (_mesh.visibleInFloorplanView) mesh.visibleInFloorplanView = _mesh.visibleInFloorplanView;
+
+	    meshes[meshId] = mesh;
+	  }
+
+	  // output
+	  return meshes
+	}
+
+	function cloneSingleMaterial (material) {
+	  return cloneMaterials({x: material}).x
+	}
+
+	function cloneMaterials (_materials) {
+
+	  if (!_materials) {
+	    return {}
+	  }
+
+	  var materialId, _material, materials, material, materialKeys, _attributes, _attributeKeys, attributeKey, type,
+	    attributes, isExtended;
+
+	  materialKeys = Object.keys(_materials);
+	  // result
+	  materials = {};
+
+	  if (materialKeys.length === 0) {
+	    return {}
+	  }
+
+	  if (_materials[materialKeys[0]].attributes) {
+	    isExtended = true;
+	    // deep copy source
+	    materials = JSON.parse(JSON.stringify(_materials));
+	  } else {
+	    isExtended = false;
+	  }
+
+	  for (var i = 0, l = materialKeys.length; i < l; i++) {
+
+	    materialId = materialKeys[i];
+	    _attributes = isExtended ? _materials[materialId].attributes : _materials[materialId];
+
+	    if (typeof _attributes === 'string') {
+
+	      if (isExtended) {
+	        materials[materialId].attributes = _attributes;
+	      } else {
+	        materials[materialId] = _attributes;
 	      }
 
-	      // normals
-	      if (_mesh.normals) {
-	        if (cloneNormals && (_mesh.normals instanceof Array || _mesh.normals instanceof Float32Array)) {
-	          mesh.normals = _mesh.normals.slice(0);
-	        } else {
-	          mesh.normals = _mesh.normals;
-	        }
-	      }
+	    } else if (_attributes) {
 
-	      // uvs
-	      if (_mesh.uvs) {
-	        if (cloneUvs && (_mesh.uvs instanceof Array || _mesh.uvs instanceof Float32Array)) {
-	          mesh.uvs = _mesh.uvs.slice(0);
-	        } else {
-	          mesh.uvs = _mesh.uvs;
-	        }
-	      }
+	      attributes = {};
+	      _attributeKeys = Object.keys(_attributes);
 
-	      // uvs lightmap
-	      if (_mesh.uvsLightmap) {
-	        if (cloneUvsLightmap && (_mesh.uvsLightmap instanceof Array || _mesh.uvsLightmap instanceof Float32Array)) {
-	          mesh.uvsLightmap = _mesh.uvsLightmap.slice(0);
-	        } else {
-	          mesh.uvsLightmap = _mesh.uvsLightmap;
-	        }
-	      }
-
-	      // other arrays
-	      if (_mesh.matrix) mesh.matrix = _mesh.matrix.slice(0);
-	      if (_mesh.uvMatrix) mesh.uvMatrix = _mesh.uvMatrix.slice(0);
-	      if (_mesh.meshKeys) mesh.meshKeys = _mesh.meshKeys.slice(0);
-	      if (_mesh.position) mesh.position = _mesh.position.slice(0);
-	      if (_mesh.rotDeg) mesh.rotDeg = _mesh.rotDeg.slice(0);
-	      if (_mesh.rotRad) mesh.rotRad = _mesh.rotRad.slice(0);
-	      if (_mesh.scale) mesh.scale= _mesh.scale.slice(0);
-
-	      // primitives
-	      if (_mesh.v) mesh.v = _mesh.v;
-	      if (_mesh.vertexMode) mesh.vertexMode = _mesh.vertexMode;
-	      if (_mesh.side) mesh.side = _mesh.side;
-	      if (_mesh.material) mesh.material = _mesh.material;
-	      if (_mesh.visibleInPersonView) mesh.visibleInPersonView = _mesh.visibleInPersonView;
-	      if (_mesh.visibleInBirdView) mesh.visibleInBirdView = _mesh.visibleInBirdView;
-	      if (_mesh.visibleInFloorplanView) mesh.visibleInFloorplanView = _mesh.visibleInFloorplanView;
-
-	      meshes[ meshId ] = mesh;
-	    }
-
-	    // output
-	    return meshes
-	  }
-	  
-	  function cloneSingleMaterial(material) {
-	    return cloneMaterials({ x:material }).x
-	  }
-	  
-	  function cloneMaterials(_materials) {
-
-	    if (!_materials) {
-	      return {}
-	    }
-
-	    var materialId, _material, materials, material, materialKeys, _attributes, _attributeKeys, attributeKey, type, attributes, isExtended;
-
-	    materialKeys = Object.keys(_materials);
-	    // result
-	    materials = {};
-
-	    if (materialKeys.length === 0) {
-	      return {}
-	    }
-
-	    if (_materials[ materialKeys[0] ].attributes) {
-	      isExtended = true;
-	      // deep copy source
-	      materials = JSON.parse(JSON.stringify(_materials));
-	    } else {
-	      isExtended = false;
-	    }
-
-	    for (var i = 0, l = materialKeys.length; i < l; i++) {
-
-	      materialId = materialKeys[ i ];
-	      _attributes = isExtended ? _materials[ materialId ].attributes : _materials[ materialId ];
-
-	      if (typeof _attributes === 'string') {
-
-	        if (isExtended) {
-	          materials[ materialId ].attributes = _attributes;
-	        } else {
-	          materials[ materialId ] = _attributes;
-	        }
-
-	      } else if (_attributes) {
-
-	        attributes = {};
-	        _attributeKeys = Object.keys(_attributes);
-
-	        for (var j= 0, k=_attributeKeys.length; j<k; j++) {
-	          attributeKey = _attributeKeys[j];
-	          type = typeof _attributes[ attributeKey ];
-	          if (type === 'string' || type === 'number' || type === 'boolean') {
-	            // primitive
-	            attributes[ attributeKey ] = _attributes[ attributeKey ];
-	          } else if (_attributes[ attributeKey ]) {
-	            if (_attributes[ attributeKey ].length === 3) {
-	              // color array
-	              attributes[ attributeKey ] = [
-	                _attributes[ attributeKey ][0],
-	                _attributes[ attributeKey ][1],
-	                _attributes[ attributeKey ][2]
-	              ];
-	            } else if (_attributes[ attributeKey ].length === 2) {
-	              // size array
-	              attributes[ attributeKey ] = [
-	                _attributes[ attributeKey ][0],
-	                _attributes[ attributeKey ][1]
-	              ];
-	            }
+	      for (var j = 0, k = _attributeKeys.length; j < k; j++) {
+	        attributeKey = _attributeKeys[j];
+	        type = typeof _attributes[attributeKey];
+	        if (type === 'string' || type === 'number' || type === 'boolean') {
+	          // primitive
+	          attributes[attributeKey] = _attributes[attributeKey];
+	        } else if (_attributes[attributeKey]) {
+	          if (_attributes[attributeKey].length === 3) {
+	            // color array
+	            attributes[attributeKey] = [
+	              _attributes[attributeKey][0],
+	              _attributes[attributeKey][1],
+	              _attributes[attributeKey][2]
+	            ];
+	          } else if (_attributes[attributeKey].length === 2) {
+	            // size array
+	            attributes[attributeKey] = [
+	              _attributes[attributeKey][0],
+	              _attributes[attributeKey][1]
+	            ];
 	          }
 	        }
+	      }
 
-	        if (isExtended) {
-	          materials[ materialId ].attributes = attributes;
-	        } else {
-	          materials[ materialId ] = attributes;
-	        }
-
+	      if (isExtended) {
+	        materials[materialId].attributes = attributes;
+	      } else {
+	        materials[materialId] = attributes;
 	      }
 
 	    }
 
-	    return materials
-
 	  }
+
+	  return materials
+
+	}
 
 	// methods
 

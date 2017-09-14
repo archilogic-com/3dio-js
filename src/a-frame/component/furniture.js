@@ -14,7 +14,9 @@ export default {
 
   update: function () {
     var this_ = this
-    var furnitureId = this_.data.id
+    var el = this.el
+    var data = this.data
+    var furnitureId = data.id
 
     // check params
     if (!furnitureId || furnitureId === '') return
@@ -28,46 +30,63 @@ export default {
 
     // get furniture data
     io3d.furniture.get(furnitureId).then(function (result) {
+
+      var info = result.info // lightweight info like name, manufacturer, description...
+      var data3d = result.data3d // geometries and materials
+      var availableMaterials = {}
+
       // Expose properties
-      this_.info = result.info // lightweight info like name, manufacturer, description ...
-      this_.data3d = result.data3d // geometries and materials
+      this_.info = info
+      this_.data3d = data3d
+      this_.availableMaterials = availableMaterials
 
       // check for material presets in the furniture sceneStructure definition
-      var materialPreset = this_.info.sceneStructure && JSON.parse(this_.info.sceneStructure).materials
-      // Parse & expose materials
-      this_.availableMaterials = {}
-      Object.keys(result.data3d.meshes).forEach(function eachMesh (meshName) {
-        this_.availableMaterials[meshName] = result.data3d.alternativeMaterialsByMeshKey ? result.data3d.alternativeMaterialsByMeshKey[meshName] : result.data3d.meshes[meshName].material
+      var materialPreset = info.sceneStructure && JSON.parse(info.sceneStructure).materials
+      // Parse materials
+      Object.keys(data3d.meshes).forEach(function eachMesh (meshId) {
+        availableMaterials[meshId] = data3d.alternativeMaterialsByMeshKey ? data3d.alternativeMaterialsByMeshKey[meshId] : data3d.meshes[meshId].material
 
-        //update material based on inspector
-        var materialPropName = 'material_' + meshName.replace(/\s/g, '_')
-        if (this_.data[materialPropName] !== undefined) {
-          result.data3d.meshes[meshName].material = this_.data[materialPropName]
-          this_.el.emit('material-changed', {mesh: meshName, material: this_.data[materialPropName]})
-        } else if (materialPreset && materialPreset[meshName]) {
-          // apply presets from the furniture's sceneStructure definition
-          result.data3d.meshes[meshName].material = materialPreset[meshName]
-          this_.el.emit('material-changed', {mesh: meshName, material: materialPreset[meshName]})
+        // get material name from inspector
+        var materialPropName = 'material_' + meshId.replace(/\s/g, '_')
+        // get materialId from a-frame attribute or from furniture API scene structure preset
+        var newMaterialId =  data[materialPropName] || (materialPreset ? materialPreset[meshId] : null)
+
+        // set custom material if available
+        if (newMaterialId) {
+
+          // update material
+          data3d.meshes[meshId].material = newMaterialId
+          // trigger event
+          el.emit('material-changed', {mesh: meshId, material: newMaterialId})
+
         } else {
+
           // register it as part of the schema for the inspector
           var prop = {}
           prop[materialPropName] = {
             type: 'string',
-            default: result.data3d.meshes[meshName].material,
-            oneOf: result.data3d.alternativeMaterialsByMeshKey ? result.data3d.alternativeMaterialsByMeshKey[meshName] : result.data3d.meshes[meshName].material
+            default: data3d.meshes[meshId].material,
+            oneOf: data3d.alternativeMaterialsByMeshKey ? data3d.alternativeMaterialsByMeshKey[meshId] : data3d.meshes[meshId].material
           }
           this_.extendSchema(prop)
-          this_.data[materialPropName] = result.data3d.meshes[meshName].material
+          this_.data[materialPropName] = data3d.meshes[meshId].material
+
         }
       })
 
       // update view
-      this_.data3dView.set(result.data3d)
-      this_.el.data3d = result.data3d
+      this_.data3dView.set(data3d, {
+        loadingQueuePrefix: 'interior'
+      })
+      this_.el.data3d = data3d
       this_.el.setObject3D('mesh', this_.mesh)
-      // emit event
-      if (this_._prevId !== furnitureId) this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
-      this_._prevId = furnitureId
+
+      // emit events
+      if (this_._previousFurnitureId !== furnitureId) {
+        this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh})
+        this_._previousFurnitureId = furnitureId
+      }
+
     })
   },
 
