@@ -50,7 +50,7 @@ export default function logIn(args) {
     .catch(function onError(error) {
       // login failed
       log.debug(
-        'API: Could not log in user "' + credentials.email + '".',
+        'API: Could not log in user "' + credentials.username + '".',
         error
       )
       return Promise.reject(error)
