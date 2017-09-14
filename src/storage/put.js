@@ -6,6 +6,7 @@ import auth from '../utils/auth.js'
 import Promise from 'bluebird'
 import fetch from '../utils/io/fetch.js'
 import getMimeTypeFromFileName from '../utils/file/get-mime-type-from-filename.js'
+import configs from '../core/configs'
 
 // configs
 
@@ -80,9 +81,9 @@ function resolveKey (key, dir, fileName) {
   // get user id
   return auth.getSession().then(function(session){
     if (isTemplateKey) {
-      if (session.isAuthenticated) {
+      if (session.isAuthenticated || configs.secretApiKey) {
         // replace user id in template key
-        return key.replace( '{{userId}}', session.user.id )
+        return key.replace('{{userId}}', session.user.id || configs.secretApiKey )
       } else {
         console.error('Using key parameter with template syntax requires authentication.')
         // reject with user friendly error message
