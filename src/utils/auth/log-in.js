@@ -42,7 +42,7 @@ export default function logIn (args) {
       log.debug('API: User "' + session.user.email + '" logged in successfully.')
       return session
     } else {
-      if(runtime.isNode) return Promise.reject('io3d.auth.logIn cannot be used in node.js. Please use secret key authentication instead. See 3d.io/docs/api/1/get-started-node-server.html#using-publishable-api-keys for further info.')
+      if(runtime.isNode) return Promise.reject('io3d.auth.logIn cannot be used in node.js. Please use secret key authentication instead. See https://3d.io/docs/api/1/get-started-node-server.html#using-secret-api-key for further info.')
       else return Promise.reject('Log in error: Session could not been established.')
     }
 
