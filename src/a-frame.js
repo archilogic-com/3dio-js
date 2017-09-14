@@ -4,6 +4,7 @@ import Data3dView from './a-frame/three/data3d-view.js'
 import data3dComponent from './a-frame/component/data3d.js'
 import furnitureComponent from './a-frame/component/furniture.js'
 import tourComponent from './a-frame/component/tour.js'
+import lightingComponent from './a-frame/component/lighting.js'
 
 // initialize aframe components
 
@@ -18,6 +19,7 @@ checkDependencies({
   AFRAME.registerComponent('io3d-data3d', data3dComponent)
   AFRAME.registerComponent('io3d-furniture', furnitureComponent)
   AFRAME.registerComponent('tour', tourComponent)
+  AFRAME.registerComponent('lighting', lightingComponent)
 })
 
 // export
