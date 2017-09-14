@@ -45,7 +45,8 @@ export default {
         'node_modules/js-logger/**',
         'node_modules/bluebird/**',
         'node_modules/rxjs/**',
-        'node_modules/lodash/**'
+        'node_modules/lodash/**',
+        'node_modules/performance-now/**'
       ]
     }),
     resolve()

@@ -73,3 +73,31 @@ if (Object.assign === undefined) {
     }
   })()
 }
+
+// performance.now()
+if (runtime.isBrowser) {
+
+  // browser polyfill
+  // inspired by:
+  // https://gist.github.com/paulirish/5438650
+  // note: if we need performance.mark and other methods we might want to replace this with:
+  // https://www.npmjs.com/package/performance-polyfill
+  if (!window.performance) {
+    window.performance = {}
+  }
+  if (!window.performance.now){
+    var navigationStart = performance.timing ? performance.timing.navigationStart : null
+    var nowOffset = navigationStart || Date.now()
+    window.performance.now = function now(){
+      return Date.now() - nowOffset
+    }
+  }
+
+} else {
+
+  // node: use module
+  global.performance = {
+    now: require('performance-now')
+  }
+
+}
