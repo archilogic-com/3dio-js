@@ -1,3 +1,5 @@
+import cloneData3d from '../../utils/data3d/clone.js'
+
 export default {
 
   schema: {
@@ -44,6 +46,8 @@ export default {
       Object.keys(data3d.meshes).forEach(function eachMesh (meshId) {
         availableMaterials[meshId] = data3d.alternativeMaterialsByMeshKey ? data3d.alternativeMaterialsByMeshKey[meshId] : data3d.meshes[meshId].material
 
+        // clone data3d to avoid reference mix up
+        data3d = this_.data3d = cloneData3d(data3d)
         // get material name from inspector
         var materialPropName = 'material_' + meshId.replace(/\s/g, '_')
         // get materialId from a-frame attribute or from furniture API scene structure preset

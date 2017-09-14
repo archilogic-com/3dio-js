@@ -1,38 +1,30 @@
-import Promise from 'bluebird'
 import fetch from '../io/fetch.js'
 import decodeBinary from './decode-binary.js'
-import queueManager from '../io/common/queue-manager.js'
+import PromiseCache from '../promise-cache.js'
+
+// private shared
+
+var cache = new PromiseCache()
+
+// main
 
 export default function loadData3d (url, options) {
 
-  options = options || {}
-  var queueName
-  if (options.queueName) {
-    queueName = options.queueName
-  } else if (options.loadingQueuePrefix) {
-    queueName = options.loadingQueuePrefix + 'Geometries'
-  }
+  // try cache
+  var cacheKey = url
+  var promiseFromCache = cache.get(cacheKey)
+  if (promiseFromCache) return promiseFromCache
 
-  // run
-
-  return queueManager.enqueue(queueName, url).then(function(){
-
-    return fetch(url, options).then(function(res){
-
-      return res.arrayBuffer()
-
-    }).then(function(buffer){
-
-      queueManager.dequeue(queueName, url)
-      return decodeBinary(buffer, { url: url })
-
-    })
-
-  }).catch(function (error) {
-
-    queueManager.dequeue(queueName, url)
-    return Promise.reject(error)
-
+  // fetch
+  var promise = fetch(url, options).then(function(res){
+    return res.arrayBuffer()
+  }).then(function(buffer){
+    return decodeBinary(buffer, { url: url })
   })
-  
+
+  // add to cache
+  cache.add(cacheKey, promise)
+
+  return promise
+
 }
