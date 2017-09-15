@@ -292,7 +292,7 @@ function translateMaterial (data3d, data3dMesh, threeObject3D, threeMaterial, ge
   translateMaterialNumericValues([
     // three attribs -> data3d attribs
     ['opacity', 'opacity'],
-    ['specularCoef', 'shininess']
+    ['shininess', 'specularCoef']
   ], threeMaterial, data3dMaterial)
 
   translateMaterialNormalScale(threeMaterial, data3dMaterial)
