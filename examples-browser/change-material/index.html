@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href = "style.css" rel = "stylesheet" type = "text/css"/>
+
+  <!-- boilerplate libs -->
+  <script src="https://aframe.io/releases/0.6.0/aframe.min.js"></script>
+  <script src="https://cdn.rawgit.com/tizzle/aframe-orbit-controls-component/v0.1.12/dist/aframe-orbit-controls-component.min.js"></script>
+  <!-- 3dio lib -->
+  <script src="../../../build/3dio.js"></script>
+</head>
+<body>
+
+<!-- 3D -->
+<a-scene antialias="true">
+
+  <a-entity id="original-model" position="0 0 0.7" io3d-data3d="url:https://storage.3d.io/archilogic/sample-models/cube-with-texture/data3d/cube-with-texture.gz.data3d.buffer"></a-entity>
+  <a-entity id="changed-model" position="0 0 -0.7" io3d-data3d="url:https://storage.3d.io/archilogic/sample-models/cube-with-texture/data3d/cube-with-texture.gz.data3d.buffer"></a-entity>
+
+  <a-sky color="#ececec"></a-sky>
+  <a-entity id="cam-target"></a-entity>
+  <a-entity camera position="2 2 0" orbit-controls="target:#cam-target; autoRotate: true"></a-entity>
+</a-scene>
+
+<script>
+  var el = document.querySelector('#changed-model')
+
+  el.addEventListener('model-loaded', function(){
+
+    var materialIds = Object.keys(el.data3d.materials)
+
+    var newMaterials = {}
+    materialIds.forEach(function(id){
+      // documentation on data3d material attributes:
+      // https://3d.io/docs/api/1/data3d-specs.html
+      return newMaterials[id] = {
+        colorDiffuse: [0,0.5,1],
+        opacity: 0.5,
+        wireframeThickness: 1,
+        wireframeColor: [1,1,1],
+        wireframeThresholdAngle: 10
+        // keep original diffuse texture set
+        mapDiffuse: el.data3d.materials[id].mapDiffuse,
+        mapDiffusePreview: el.data3d.materials[id].mapDiffusePreview,
+        mapDiffuseSource: el.data3d.materials[id].mapDiffuseSource
+      }
+    })
+
+    el.data3dView.setMaterials(newMaterials)
+
+  })
+</script>
+
+</body>
+</html>
+
