@@ -48,10 +48,7 @@ export default function setMaterial (args) {
   material3d.userData = material3d.userData || {}
   material3d.userData.data3dMaterial = args.attributes
 
-  // transparency
-
-  //     material3d.transparent = true
-  //     material3d.opacity = 0.55
+  // opacity
 
   // depth buffer
   //    if (material3d.opacity < 1) {
@@ -60,6 +57,20 @@ export default function setMaterial (args) {
   //      if (alphaTest < 0) alphaTest = 0
   //      material3d.alphaTest = alphaTest
   //    }
+
+  if (_attributes.opacity !== undefined && _attributes.opacity < 1) {
+    // 0 = fully transparent, 1 = non-transparent
+    material3d.transparent = true
+    material3d.opacity = _attributes.opacity
+  } else if (_attributes.mapAlpha) {
+    // has alpha map
+    material3d.transparent = true
+    material3d.opacity = 1
+  } else {
+    material3d.transparent = false
+    material3d.opacity = 1
+  }
+  material3d.uniforms.opacity = { value: material3d.opacity }
 
   // normal map factor
 
@@ -229,23 +240,8 @@ export default function setMaterial (args) {
     isLoadingLoResTextures = false
   }
 
-
   // set opacity after textures have loaded
   loadingTexturesPromise.then(function(){
-
-    if (_attributes.opacity !== undefined && _attributes.opacity < 1) {
-      // 0 = fully transparent, 1 = non-transparent
-      material3d.transparent = true
-      material3d.opacity = _attributes.opacity
-    } else if (_attributes.mapAlpha) {
-      // has alpha map
-      material3d.transparent = true
-      material3d.opacity = 1
-    } else {
-      material3d.transparent = false
-      material3d.opacity = 1
-    }
-    material3d.uniforms.opacity = { value: material3d.opacity }
 
     // trigger callback
     if (onFirstTextureSetLoaded) onFirstTextureSetLoaded()
