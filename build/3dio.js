@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.73
+ * @version 1.0.0-beta.74
  * @date 2017/09/18 18:12
  * @branch HEAD
- * @commit 8fb9042fe4cbd3f42c5b3d37f6fcac89fda81d6b
+ * @commit 1fea0214727c5120ab3c56f9fa02e8b822d3a588
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/18 18:12', GIT_BRANCH = 'HEAD', GIT_COMMIT = '8fb9042fe4cbd3f42c5b3d37f6fcac89fda81d6b'
+	var BUILD_DATE='2017/09/18 18:12', GIT_BRANCH = 'HEAD', GIT_COMMIT = '1fea0214727c5120ab3c56f9fa02e8b822d3a588'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.73";
+	var version = "1.0.0-beta.74";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -17726,10 +17726,7 @@
 	  material3d.userData = material3d.userData || {};
 	  material3d.userData.data3dMaterial = args.attributes;
 
-	  // transparency
-
-	  //     material3d.transparent = true
-	  //     material3d.opacity = 0.55
+	  // opacity
 
 	  // depth buffer
 	  //    if (material3d.opacity < 1) {
@@ -17738,6 +17735,20 @@
 	  //      if (alphaTest < 0) alphaTest = 0
 	  //      material3d.alphaTest = alphaTest
 	  //    }
+
+	  if (_attributes.opacity !== undefined && _attributes.opacity < 1) {
+	    // 0 = fully transparent, 1 = non-transparent
+	    material3d.transparent = true;
+	    material3d.opacity = _attributes.opacity;
+	  } else if (_attributes.mapAlpha) {
+	    // has alpha map
+	    material3d.transparent = true;
+	    material3d.opacity = 1;
+	  } else {
+	    material3d.transparent = false;
+	    material3d.opacity = 1;
+	  }
+	  material3d.uniforms.opacity = { value: material3d.opacity };
 
 	  // normal map factor
 
@@ -17907,23 +17918,7 @@
 	    isLoadingLoResTextures = false;
 	  }
 
-
-	  // set opacity after textures have loaded
 	  loadingTexturesPromise.then(function(){
-
-	    if (_attributes.opacity !== undefined && _attributes.opacity < 1) {
-	      // 0 = fully transparent, 1 = non-transparent
-	      material3d.transparent = true;
-	      material3d.opacity = _attributes.opacity;
-	    } else if (_attributes.mapAlpha) {
-	      // has alpha map
-	      material3d.transparent = true;
-	      material3d.opacity = 1;
-	    } else {
-	      material3d.transparent = false;
-	      material3d.opacity = 1;
-	    }
-	    material3d.uniforms.opacity = { value: material3d.opacity };
 
 	    // trigger callback
 	    if (onFirstTextureSetLoaded) onFirstTextureSetLoaded();
@@ -24670,7 +24665,7 @@
 	  translateMaterialNumericValues([
 	    // three attribs -> data3d attribs
 	    ['opacity', 'opacity'],
-	    ['specularCoef', 'shininess']
+	    ['shininess', 'specularCoef']
 	  ], threeMaterial, data3dMaterial);
 
 	  translateMaterialNormalScale(threeMaterial, data3dMaterial);
@@ -26461,7 +26456,7 @@
 	    var activationTabEl = el('<div>').hide().appendTo(centerEl);
 
 	    el('<p>',{
-	      html: 'Check your email for<br>support@archilogic.com<br>and set your password.<br><br>Then simply return here ;)'
+	      html: 'Check your email for<br>support@3d.io<br>and set your password.<br><br>Then simply return here ;)'
 	    }).appendTo(activationTabEl);
 
 	    // methods
