@@ -69,19 +69,19 @@
 
 	function bakeLightMaps(selector) {
 
-	  io3d.utils.data3d.fromThree(
-      document.querySelector(selector).object3D
-    ).then(function(data3d){
-      console.log(data3d)
-      var parent = new THREE.Object3D()
-      parent.position.set(0,0,3)
-      var view = new io3d.aFrame.three.Data3dView({
-        parent: parent
-      }).set(data3d)
-      document.querySelector(selector).object3D.add(parent)
-    })
-
-	  return
+//	  io3d.utils.data3d.fromThree(
+//      document.querySelector(selector).object3D
+//    ).then(function(data3d){
+//      console.log(data3d)
+//      var parent = new THREE.Object3D()
+//      parent.position.set(0,0,3)
+//      var view = new io3d.aFrame.three.Data3dView({
+//        parent: parent
+//      }).set(data3d)
+//      document.querySelector(selector).object3D.add(parent)
+//    })
+//
+//	  return
 
 	  var message
 
