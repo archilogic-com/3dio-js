@@ -114,7 +114,7 @@ export default function createSignUpUi (credentials, options) {
     var activationTabEl = el('<div>').hide().appendTo(centerEl)
 
     el('<p>',{
-      html: 'Check your email for<br>support@archilogic.com<br>and set your password.<br><br>Then simply return here ;)'
+      html: 'Check your email for<br>support@3d.io<br>and set your password.<br><br>Then simply return here ;)'
     }).appendTo(activationTabEl)
 
     // methods
