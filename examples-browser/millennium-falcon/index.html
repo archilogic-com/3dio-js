@@ -4,11 +4,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- boilerplate libs -->
+  <!--
   <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+  -->
+  <script src="../_libs/aframe.0.6.1.min.js"></script>
 
+  <!--
   <script src="https://cdn.rawgit.com/tizzle/aframe-orbit-controls-component/v0.1.12/dist/aframe-orbit-controls-component.min.js"></script>
+  -->
+  <script src="../_libs/aframe-orbit-controls-component.min.js"></script>
+
   <!-- 3dio lib -->
   <script src="../../../build/3dio.js"></script>
+
+  <style>
+    #top {
+      text-align: center;
+      z-index: 100000;
+      position: absolute;
+      top: 5px;
+      width: 100%;
+      color: white;
+      font-size: 16;
+      font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;
+    }
+    #top a {
+      color: white;
+    }
+  </style>
 
 </head>
 <body>
@@ -16,12 +39,31 @@
 <!-- 3D -->
 <a-scene>
 
+  <!--
   <a-entity io3d-data3d="url:https://storage.3d.io/535e624259ee6b0200000484/170903-1554-hl8t6r/archilogic_2017-09-03_15-47-13_dkhZ1I.gz.data3d.buffer"></a-entity>
+  -->
+  <a-entity id="millennium-falcon" io3d-data3d="url:../_models/millennium-falcon/data3d/millennium-falcon.data3d.buffer" position=""></a-entity>
 
-  <a-entity id="cam-target" position="-9 -10 -6"></a-entity>
-  <a-entity camera position="10 16 0" orbit-controls="target:#cam-target;"></a-entity>
+  <a-videosphere src="../_videos/space-odyssey-vr-360.mp4" rotation="0 90 0"></a-videosphere>
+
+  <a-entity id="cam-target" position="-9 -5 -6"></a-entity>
+  <a-entity
+    id="cam-outside"
+    position="10 16 0"
+    orbit-controls="target:#cam-target;"
+    camera="user-height:1.55;"
+  ></a-entity>
+  <!--  -->
+
 
 </a-scene>
+
+<!-- 2D / UI -->
+
+<div id="top">
+  Millennium Falcon by <a target="_blank" href="https://3d.io">3d.io</a> for <a target="_blank" href="https://aframe.io/">A-Frame</a> modeled by <a target="_blank" href="">David Tran</a>
+  <br><a id="change-camera" href="#">Change Camera</a> or <a id="open-visual-inspector" href="#">Open visual inspector</a>
+</div>
 
 </body>
 </html>
