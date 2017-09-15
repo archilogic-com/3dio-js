@@ -27,6 +27,7 @@ export default {
     // create new one
     this_.mesh = new THREE.Object3D()
     this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh})
+    this_.el.data3dView = this_.data3dView
 
     // get furniture data
     io3d.furniture.get(furnitureId).then(function (result) {
@@ -96,6 +97,7 @@ export default {
     if (this.data3dView) {
       this.data3dView.destroy()
       this.data3dView = null
+      this.el.data3dView = null
     }
     if (this.mesh) {
       this.el.removeObject3D('mesh')
