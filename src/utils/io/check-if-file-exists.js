@@ -8,8 +8,10 @@ export default function checkIfFileExists (url) {
       method: 'HEAD',
       cache: 'reload'
     }
-  ).then(function onSuccess(){
-    return true
+  ).then(function onSuccess(response){
+    // response.ok provides boolean type information on request status
+    // https://developer.mozilla.org/en-US/docs/Web/API/Response/ok
+    return response.ok
   }, function onReject(){
     return false
   })
