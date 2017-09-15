@@ -240,7 +240,6 @@ export default function setMaterial (args) {
     isLoadingLoResTextures = false
   }
 
-  // set opacity after textures have loaded
   loadingTexturesPromise.then(function(){
 
     // trigger callback
