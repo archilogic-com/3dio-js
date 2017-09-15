@@ -4,19 +4,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="style.css" rel="stylesheet" type="text/css"/>
 
-  <!-- boilerplate libs
+  <!-- boilerplate libs -->
   <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
-  -->
-  <script src="../_libs/aframe.0.6.1.min.js"></script>
+  <script src="https://cdn.rawgit.com/tizzle/aframe-orbit-controls-component/v0.1.12/dist/aframe-orbit-controls-component.min.js"></script>
+  <script src="https://rawgit.com/archilogic-com/aframe-gblock/master/dist/gblock.js"></script>
 
-  bEWe7XrrOjG
-
-  <script src="../_libs/aframe-orbit-controls-component.min.js"></script>
   <!-- 3dio lib -->
   <script src="../../../build/3dio.js"></script>
-
-  <script src="../_libs/gblock.js"></script>
-
 
 </head>
 <body>
@@ -27,17 +21,26 @@
   <a-entity id="bake-this">
 
     <!--
+    some models for testing:
+
     <a-entity gltf-model="url(https://storage.3d.io/archilogic/sample-models/cube-with-texture/gltf/cube-with-texture.gltf)"></a-entity>
+
+    <a-entity gblock="https://vr.google.com/objects/dVG0XJrpRJC" position="-2.418 -33.238 -18.742" scale="20 20 20" rotation="0 -90 0"></a-entity>
+    <a-entity gblock="https://vr.google.com/objects/d_k2teZePG6" position="-19.646 72.878 1.225" scale="20 20 20" rotation="0 90 0"></a-entity>
+    <a-entity gblock="https://vr.google.com/objects/8N52xltVzib" position="-19.646 72.878 1.225" scale="20 20 20" rotation="0 90 0"></a-entity>
+    <a-entity gblock="https://vr.google.com/objects/9kOXKJvTgKS" position="-19.646 72.878 1.225" scale="20 20 20" rotation="0 90 0"></a-entity>
+    <a-entity gblock="https://vr.google.com/objects/fi8pX6r6GBI" position="-19.646 72.878 1.225" scale="20 20 20" rotation="0 90 0"></a-entity>
+    <a-entity gblock="https://vr.google.com/objects/bEWe7XrrOjG" position="-19.646 72.878 1.225" scale="20 20 20" rotation="0 90 0"></a-entity>
+
     <a-entity io3d-data3d="url:https://storage.3d.io/535e624259ee6b0200000484/170905-0023-mybkkm/archilogic_2017-09-05_00-22-58_hpEh2j.gz.data3d.buffer"></a-entity>
     <a-entity io3d-data3d="url:https://storage.3d.io/535e624259ee6b0200000484/170903-0313-gnpts9/archilogic_2017-09-03_03-13-15_fWERdX.gz.data3d.buffer"></a-entity>
-    <a-entity gblock="https://vr.google.com/objects/dVG0XJrpRJC" position="-2.418 -33.238 -18.742" scale="20 20 20" rotation="0 -90 0"></a-entity>
-    https://vr.google.com/objects/d_k2teZePG6
-    https://vr.google.com/objects/8N52xltVzib
-    https://vr.google.com/objects/9kOXKJvTgKS
-    https://vr.google.com/objects/fi8pX6r6GBI
+    <a-entity io3d-data3d="url:https://storage.3d.io/archilogic/sample-models/cube-with-texture/data3d/cube-with-texture.gz.data3d.buffer"></a-entity>
+
+    <a-entity id="my-model" io3d-furniture="id:943357e8-911f-4bb5-8b89-8281385ef08f" position="0 0 -3"></a-entity>
     -->
 
-    <a-entity gblock="../_models/bEWe7XrrOjG/model.gltf" position="-19.646 72.878 1.225" scale="20 20 20" rotation="0 90 0"></a-entity>
+    <a-entity id="my-model" io3d-furniture="id:943357e8-911f-4bb5-8b89-8281385ef08f" position="0 0 -3"></a-entity>
+
 
   </a-entity>
 
@@ -69,8 +72,9 @@
 	  io3d.utils.data3d.fromThree(
       document.querySelector(selector).object3D
     ).then(function(data3d){
+      console.log(data3d)
       var parent = new THREE.Object3D()
-      parent.position.set(0,0,60)
+      parent.position.set(0,0,3)
       var view = new io3d.aFrame.three.Data3dView({
         parent: parent
       }).set(data3d)
