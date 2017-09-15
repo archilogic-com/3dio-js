@@ -4,7 +4,7 @@
  * @version 1.0.0-beta.73
  * @date 2017/09/18 18:12
  * @branch HEAD
- * @commit 6268c942a842f7b138a0eaadcf9e9b8836e68c45
+ * @commit 8fb9042fe4cbd3f42c5b3d37f6fcac89fda81d6b
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/18 18:12', GIT_BRANCH = 'HEAD', GIT_COMMIT = '6268c942a842f7b138a0eaadcf9e9b8836e68c45'
+	var BUILD_DATE='2017/09/18 18:12', GIT_BRANCH = 'HEAD', GIT_COMMIT = '8fb9042fe4cbd3f42c5b3d37f6fcac89fda81d6b'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.73";
@@ -18923,7 +18923,8 @@
 	    // create new one
 	    this_.mesh = new THREE.Object3D();
 	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
-	    this.el.data3dView = this.data3dView;
+	    this_.el.data3dView = this_.data3dView;
+
 	    // load 3d file
 	    Promise.resolve().then(function(){
 	      if (key) {
@@ -18949,6 +18950,7 @@
 	    if (this.data3dView) {
 	      this.data3dView.destroy();
 	      this.data3dView = null;
+	      this.el.data3dView = null;
 	    }
 	    if (this.mesh) {
 	      this.el.removeObject3D('mesh');
@@ -19212,6 +19214,7 @@
 	    // create new one
 	    this_.mesh = new THREE.Object3D();
 	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
+	    this_.el.data3dView = this_.data3dView;
 
 	    // get furniture data
 	    io3d.furniture.get(furnitureId).then(function (result) {
@@ -19281,6 +19284,7 @@
 	    if (this.data3dView) {
 	      this.data3dView.destroy();
 	      this.data3dView = null;
+	      this.el.data3dView = null;
 	    }
 	    if (this.mesh) {
 	      this.el.removeObject3D('mesh');
@@ -24393,7 +24397,26 @@
 	    var texturePromises = [];
 
 	    // internals
-	    var data3d = { meshes: {}, materials: {} };(function traverseThreeSceneGraph (threeObject3D) {
+
+	    var data3d = { meshes: {}, materials: {} };
+	    var meshCounter = 0;
+	    var materialCounter = 0;
+
+	    // private methods
+
+	    function getMeshId () {
+	      meshCounter++;
+	      return 'mesh_' + meshCounter
+	    }
+
+	    function getMaterialId () {
+	      materialCounter++;
+	      return 'material_' + materialCounter
+	    }
+
+	    // traverse scene graph
+
+	    (function traverseThreeSceneGraph (threeObject3D) {
 
 	      threeObject3D.updateMatrixWorld();
 
@@ -24406,14 +24429,19 @@
 	          threeGeometry = new THREE.BufferGeometry().fromGeometry(threeGeometry);
 	        }
 
-	        if (threeGeometry.index) {
-	          if (threeGeometry.attributes.color) {
-	            translateIndexedBufferGeometryWithColor(data3d, threeObject3D);
+	        // translate only geometries with faces
+	        if (threeGeometry.attributes.position.array.length) {
+
+	          if (threeGeometry.index) {
+	            if (threeGeometry.attributes.color) {
+	              translateIndexedBufferGeometryWithColor(data3d, threeObject3D, getMeshId, getMaterialId);
+	            } else {
+	              translateIndexedBufferGeometry(data3d, threeObject3D, getMeshId, getMaterialId, texturePromises);
+	            }
 	          } else {
-	            translateIndexedBufferGeometry(data3d, threeObject3D, texturePromises);
+	            translateNonIndexedBufferGeometry(data3d, threeObject3D, getMeshId, getMaterialId, texturePromises);
 	          }
-	        } else {
-	          translateNonIndexedBufferGeometry(data3d, threeObject3D, texturePromises);
+
 	        }
 
 	      }
@@ -24448,12 +24476,12 @@
 	}
 
 
-	function translateNonIndexedBufferGeometry (data3d, threeObject3D, texturePromises) {
+	function translateNonIndexedBufferGeometry (data3d, threeObject3D, getMeshId, getMaterialId, texturePromises) {
 
 	  // mesh
 	  var threeGeometry = threeObject3D.geometry;
 	  // create data3d mesh
-	  var data3dMesh = data3d.meshes[threeObject3D.uuid] = {};
+	  var data3dMesh = data3d.meshes[getMeshId()] = {};
 	  // positions
 	  data3dMesh.positions = threeGeometry.attributes.position.array;
 	  // normals
@@ -24462,18 +24490,18 @@
 	  if (threeGeometry.attributes.uv) data3dMesh.uvs = threeGeometry.attributes.uv.array;
 
 	  // material
-	  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, texturePromises);
+	  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, getMaterialId, texturePromises);
 
 	  // scene graph
 	  translateSceneGraph(data3dMesh, threeObject3D);
 
 	}
 
-	function translateIndexedBufferGeometry (data3d, threeObject3D, texturePromises) {
+	function translateIndexedBufferGeometry (data3d, threeObject3D, getMeshId, getMaterialId, texturePromises) {
 
 	  var threeGeometry = threeObject3D.geometry;
 	  // create data3d mesh
-	  var data3dMesh = data3d.meshes[threeObject3D.uuid] = {};
+	  var data3dMesh = data3d.meshes[getMeshId()] = {};
 
 	  var index = threeGeometry.index.array;
 	  var i = 0, l = threeGeometry.index.array.length;
@@ -24512,15 +24540,14 @@
 	  }
 
 	  // material
-	  var threeMaterial = threeObject3D.material;
-	  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, texturePromises);
+	  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, getMaterialId, texturePromises);
 
 	  // scene graph
 	  translateSceneGraph(data3dMesh, threeObject3D);
 
 	}
 
-	function translateIndexedBufferGeometryWithColor (data3d, threeObject3D) {
+	function translateIndexedBufferGeometryWithColor (data3d, threeObject3D, getMeshId, getMaterialId) {
 
 	  var colorMap = {};
 
@@ -24544,7 +24571,7 @@
 	    if (colorMap[colorKey]) {
 	      colorMap[colorKey].faceCount++;
 	    } else {
-	      materialId = getShortId();
+	      materialId = getMaterialId();
 	      colorMap[colorKey] = {
 	        faceCount: 1,
 	        materialId: materialId
@@ -24567,7 +24594,7 @@
 	      colorMap[key].normalIndex = 0;
 	    }
 	    // create data3d mesh
-	    var meshId = getShortId();
+	    var meshId = getMeshId();
 	    var data3dMesh = data3d.meshes[meshId] = {
 	      positions: colorMap[key].positions,
 	      normals: colorMap[key].normals,
@@ -24630,20 +24657,23 @@
 
 	}
 
-	function translateMaterial (data3d, data3dMesh, threeObject3D, threeMaterial, texturePromises) {
+	function translateMaterial (data3d, data3dMesh, threeObject3D, threeMaterial, getMaterialId, texturePromises) {
 
+	  var materialId = getMaterialId();
 	  // create data3d material
-	  var data3dMaterial = data3d.materials[threeMaterial.uuid] = {};
+	  var data3dMaterial = data3d.materials[materialId] = {};
 	  // link data3d mesh with material
-	  data3dMesh.material = threeMaterial.uuid;
+	  data3dMesh.material = materialId;
 
 	  // material attributes
 
 	  translateMaterialNumericValues([
 	    // three attribs -> data3d attribs
 	    ['opacity', 'opacity'],
-	    ['specularCoef', 'shininess'],
+	    ['specularCoef', 'shininess']
 	  ], threeMaterial, data3dMaterial);
+
+	  translateMaterialNormalScale(threeMaterial, data3dMaterial);
 
 	  translateMaterialColors([
 	    // three attribs -> data3d attribs
@@ -24669,6 +24699,12 @@
 	    // translate material numeric values from three.js to data3d
 	    if (threeMaterial[threeName] !== undefined) data3dMaterial[data3dName] = threeMaterial[threeName];
 	  });
+
+	}
+
+	function translateMaterialNormalScale(threeMaterial, data3dMaterial) {
+
+	  if (threeMaterial.normalScale) data3dMaterial.mapNormalFactor = threeMaterial.normalScale.x;
 
 	}
 
