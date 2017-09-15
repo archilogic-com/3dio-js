@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.74
- * @date 2017/09/15 13:30
+ * @version 1.0.0-beta.75
+ * @date 2017/09/15 18:37
  * @branch master
- * @commit 989478f38df3e7c67cd0838a04fc6499ff66af17
+ * @commit 45655fb547b845d3522d7a878eefc244321bc0ce
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/15 13:30', GIT_BRANCH = 'master', GIT_COMMIT = '989478f38df3e7c67cd0838a04fc6499ff66af17'
+	var BUILD_DATE='2017/09/15 18:37', GIT_BRANCH = 'master', GIT_COMMIT = '45655fb547b845d3522d7a878eefc244321bc0ce'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.74";
+	var version = "1.0.0-beta.75";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -24926,15 +24926,17 @@
 	}
 
 	function checkIfFileExists (url) {
-	  return fetch$1(
-	    addCacheBustToQuery(url),
-	    {
-	      method: 'HEAD',
-	      cache: 'reload'
-	    }
-	  ).then(function onSuccess(){
-	    return true
-	  }, function onReject(){
+
+	  if (!url) return Promise.reject('Please provide file URL string as param.')
+
+	  return fetch$1( addCacheBustToQuery(url), {
+	    method: 'HEAD',
+	    cache: 'reload'
+	  }).then(function onSuccess (response) {
+	    // response.ok provides boolean type information on request status
+	    // https://developer.mozilla.org/en-US/docs/Web/API/Response/ok
+	    return response.ok
+	  }, function onReject () {
 	    return false
 	  })
 	}
