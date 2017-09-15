@@ -1,7 +1,6 @@
 import Promise from 'bluebird'
 import normalizeData3d from './normalize.js'
 import generateTextureSet from './generate-texture-set.js'
-import shortId from '../short-id.js'
 import checkDependencies from '../../a-frame/check-dependencies.js'
 import runtime from '../../core/runtime.js'
 
@@ -20,9 +19,25 @@ export default checkDependencies({
     var texturePromises = []
 
     // internals
+
     var data3d = { meshes: {}, materials: {} }
+    var meshCounter = 0
+    var materialCounter = 0
+
+    // private methods
+
+    function getMeshId () {
+      meshCounter++
+      return 'mesh_' + meshCounter
+    }
+
+    function getMaterialId () {
+      materialCounter++
+      return 'material_' + materialCounter
+    }
 
     // traverse scene graph
+
     ;(function traverseThreeSceneGraph (threeObject3D) {
 
       threeObject3D.updateMatrixWorld()
@@ -36,14 +51,19 @@ export default checkDependencies({
           threeGeometry = new THREE.BufferGeometry().fromGeometry(threeGeometry)
         }
 
-        if (threeGeometry.index) {
-          if (threeGeometry.attributes.color) {
-            translateIndexedBufferGeometryWithColor(data3d, threeObject3D)
+        // translate only geometries with faces
+        if (threeGeometry.attributes.position.array.length) {
+
+          if (threeGeometry.index) {
+            if (threeGeometry.attributes.color) {
+              translateIndexedBufferGeometryWithColor(data3d, threeObject3D, getMeshId, getMaterialId)
+            } else {
+              translateIndexedBufferGeometry(data3d, threeObject3D, getMeshId, getMaterialId, texturePromises)
+            }
           } else {
-            translateIndexedBufferGeometry(data3d, threeObject3D, texturePromises)
+            translateNonIndexedBufferGeometry(data3d, threeObject3D, getMeshId, getMaterialId, texturePromises)
           }
-        } else {
-          translateNonIndexedBufferGeometry(data3d, threeObject3D, texturePromises)
+
         }
 
       }
@@ -78,12 +98,12 @@ function translateSceneGraph (data3dMesh, threeObject3D) {
 }
 
 
-function translateNonIndexedBufferGeometry (data3d, threeObject3D, texturePromises) {
+function translateNonIndexedBufferGeometry (data3d, threeObject3D, getMeshId, getMaterialId, texturePromises) {
 
   // mesh
   var threeGeometry = threeObject3D.geometry
   // create data3d mesh
-  var data3dMesh = data3d.meshes[threeObject3D.uuid] = {}
+  var data3dMesh = data3d.meshes[getMeshId()] = {}
   // positions
   data3dMesh.positions = threeGeometry.attributes.position.array
   // normals
@@ -92,18 +112,18 @@ function translateNonIndexedBufferGeometry (data3d, threeObject3D, texturePromis
   if (threeGeometry.attributes.uv) data3dMesh.uvs = threeGeometry.attributes.uv.array
 
   // material
-  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, texturePromises)
+  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, getMaterialId, texturePromises)
 
   // scene graph
   translateSceneGraph(data3dMesh, threeObject3D)
 
 }
 
-function translateIndexedBufferGeometry (data3d, threeObject3D, texturePromises) {
+function translateIndexedBufferGeometry (data3d, threeObject3D, getMeshId, getMaterialId, texturePromises) {
 
   var threeGeometry = threeObject3D.geometry
   // create data3d mesh
-  var data3dMesh = data3d.meshes[threeObject3D.uuid] = {}
+  var data3dMesh = data3d.meshes[getMeshId()] = {}
 
   var index = threeGeometry.index.array
   var i = 0, l = threeGeometry.index.array.length
@@ -142,15 +162,14 @@ function translateIndexedBufferGeometry (data3d, threeObject3D, texturePromises)
   }
 
   // material
-  var threeMaterial = threeObject3D.material
-  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, texturePromises)
+  translateMaterial(data3d, data3dMesh, threeObject3D, threeObject3D.material, getMaterialId, texturePromises)
 
   // scene graph
   translateSceneGraph(data3dMesh, threeObject3D)
 
 }
 
-function translateIndexedBufferGeometryWithColor (data3d, threeObject3D) {
+function translateIndexedBufferGeometryWithColor (data3d, threeObject3D, getMeshId, getMaterialId) {
 
   var colorMap = {}
 
@@ -174,7 +193,7 @@ function translateIndexedBufferGeometryWithColor (data3d, threeObject3D) {
     if (colorMap[colorKey]) {
       colorMap[colorKey].faceCount++
     } else {
-      materialId = shortId()
+      materialId = getMaterialId()
       colorMap[colorKey] = {
         faceCount: 1,
         materialId: materialId
@@ -197,7 +216,7 @@ function translateIndexedBufferGeometryWithColor (data3d, threeObject3D) {
       colorMap[key].normalIndex = 0
     }
     // create data3d mesh
-    var meshId = shortId()
+    var meshId = getMeshId()
     var data3dMesh = data3d.meshes[meshId] = {
       positions: colorMap[key].positions,
       normals: colorMap[key].normals,
@@ -260,20 +279,23 @@ function translateIndexedBufferGeometryWithColor (data3d, threeObject3D) {
 
 }
 
-function translateMaterial (data3d, data3dMesh, threeObject3D, threeMaterial, texturePromises) {
+function translateMaterial (data3d, data3dMesh, threeObject3D, threeMaterial, getMaterialId, texturePromises) {
 
+  var materialId = getMaterialId()
   // create data3d material
-  var data3dMaterial = data3d.materials[threeMaterial.uuid] = {}
+  var data3dMaterial = data3d.materials[materialId] = {}
   // link data3d mesh with material
-  data3dMesh.material = threeMaterial.uuid
+  data3dMesh.material = materialId
 
   // material attributes
 
   translateMaterialNumericValues([
     // three attribs -> data3d attribs
     ['opacity', 'opacity'],
-    ['specularCoef', 'shininess'],
+    ['specularCoef', 'shininess']
   ], threeMaterial, data3dMaterial)
+
+  translateMaterialNormalScale(threeMaterial, data3dMaterial)
 
   translateMaterialColors([
     // three attribs -> data3d attribs
@@ -299,6 +321,12 @@ function translateMaterialNumericValues(attribMap, threeMaterial, data3dMaterial
     // translate material numeric values from three.js to data3d
     if (threeMaterial[threeName] !== undefined) data3dMaterial[data3dName] = threeMaterial[threeName]
   })
+
+}
+
+function translateMaterialNormalScale(threeMaterial, data3dMaterial) {
+
+  if (threeMaterial.normalScale) data3dMaterial.mapNormalFactor = threeMaterial.normalScale.x
 
 }
 
