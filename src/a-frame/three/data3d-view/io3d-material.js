@@ -26,7 +26,7 @@ export default checkDependencies ({
     this.uniforms = THREE.UniformsUtils.merge( [
       THREE.UniformsLib[ "lights" ],
       THREE.UniformsLib[ "shadowmap" ],
-      { diffuse: { value: params.diffuse || new THREE.Color(1.0, 1.0, 1.0) },
+      { color: { value: params.color || new THREE.Color(1.0, 1.0, 1.0) },
         map: { value: params.map || null },
         specularMap: { value: params.specularMap || null },
         alphaMap: { value: params.alphaMap || null },
