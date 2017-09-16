@@ -31,7 +31,7 @@ var utils = {
     load: loadData3d,
     encodeBinary: encodeBinary,
     decodeBinary: decodeBinary,
-    fromThree: getData3dFromThreeJs,
+    fromThreeJs: getData3dFromThreeJs,
     clone: cloneData3d,
     traverse: traverseData3d
   },
