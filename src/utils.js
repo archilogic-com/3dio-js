@@ -4,6 +4,7 @@ import loadData3d                   from './utils/data3d/load.js'
 import traverseData3d               from './utils/data3d/traverse.js'
 import cloneData3d                  from './utils/data3d/clone.js'
 import getData3dFromThreeJs         from './utils/data3d/from-three.js'
+import getData3dInspectorUrl        from './utils/data3d/get-inspector-url.js'
 import ui                           from './utils/ui.js'
 import auth                         from './utils/auth.js'
 import fetch                        from './utils/io/fetch.js'
@@ -33,7 +34,8 @@ var utils = {
     decodeBinary: decodeBinary,
     fromThreeJs: getData3dFromThreeJs,
     clone: cloneData3d,
-    traverse: traverseData3d
+    traverse: traverseData3d,
+    getInspectorUrl: getData3dInspectorUrl
   },
   ui: ui,
   auth: auth,
