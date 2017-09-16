@@ -11,7 +11,7 @@ export default checkDependencies({
   aframe: false
 }, function () {
 
-  return function getData3d(object3d) {
+  return function getData3dFromThreeJs(object3d) {
     
     // returns data3d when a minimal texture is ready:
     // - source textures for server side processing
