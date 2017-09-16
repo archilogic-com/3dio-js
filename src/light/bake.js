@@ -15,8 +15,6 @@ function bake (storageId, options) {
   // TODO: reimplement caching mechanism on server side
   var cacheKey = null
 
-  console.log('Baking file: https://spaces.archilogic.com/3d/?mode=sdk&file='+storageId)
-
   return callServices('Processing.task.enqueue', {
     method: 'bakePreview',
     params: {
