@@ -6,7 +6,7 @@ import getTextureKeys from './get-texture-keys.js'
 import getUrlFromStorageId from '../../storage/get-url-from-id.js'
 
 /*
-input: data3d or storageId to a data3d file
+input: data3d (object or binary) or storageId (referencing data3d)
 returns promise
  */
 
@@ -37,7 +37,8 @@ function normalizeInput(input) {
   var inputType = typeof input
   if (inputType === 'string') {
     // load data3d from URL
-    return loadData3d(input)
+    var url = getUrlFromStorageId(input)
+    return loadData3d(url)
   } else if (input instanceof Blob) {
     // decode binary data3d
     return decodeBinaryData3d(input)
@@ -51,10 +52,9 @@ function normalizeInput(input) {
 
 // poll for DDS storageIds
 
-function pollTexture(val) {
+function pollTexture(storageId) {
 
-  // normalize input to URL
-  var url = getUrlFromStorageId(val)
+  var url = getUrlFromStorageId(storageId)
 
   return poll(function (resolve, reject, next) {
 
