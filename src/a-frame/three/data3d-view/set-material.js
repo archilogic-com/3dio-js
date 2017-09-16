@@ -105,8 +105,8 @@ export default function setMaterial (args) {
       diffuse.b = 0.85
     }
   }
-  material3d.diffuse = diffuse
-  material3d.uniforms.diffuse.value = new THREE.Color(diffuse.r, diffuse.g, diffuse.b)
+  material3d.color = diffuse
+  material3d.uniforms.color.value = new THREE.Color(diffuse.r, diffuse.g, diffuse.b)
 
   // We are not using color ambient
   /*if (_attributes.colorAmbient) {
