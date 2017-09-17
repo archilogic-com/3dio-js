@@ -6,8 +6,8 @@
 
   <!-- boilerplate libs -->
   <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
-  <script src="https://cdn.rawgit.com/tizzle/aframe-orbit-controls-component/v0.1.12/dist/aframe-orbit-controls-component.min.js"></script>
   <script src="https://rawgit.com/archilogic-com/aframe-gblock/master/dist/gblock.js"></script>
+  <script src="https://rawgit.com/archilogic-com/aframe-space-navigator-controls/master/dist/aframe-space-navigator-controls.js"></script>
 
   <!-- 3dio lib -->
   <script src="../../../build/3dio.js"></script>
@@ -23,6 +23,11 @@
     <!--
     some models for testing:
 
+    <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
+    <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
+    <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+    <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+
     <a-entity gltf-model="url(https://storage.3d.io/archilogic/sample-models/cube-with-texture/gltf/cube-with-texture.gltf)"></a-entity>
 
     <a-entity gblock="https://vr.google.com/objects/dVG0XJrpRJC" position="-2.418 -33.238 -18.742" scale="20 20 20" rotation="0 -90 0"></a-entity>
@@ -32,93 +37,38 @@
     <a-entity gblock="https://vr.google.com/objects/fi8pX6r6GBI" position="-19.646 72.878 1.225" scale="20 20 20" rotation="0 90 0"></a-entity>
     <a-entity gblock="https://vr.google.com/objects/bEWe7XrrOjG" position="-19.646 72.878 1.225" scale="20 20 20" rotation="0 90 0"></a-entity>
 
+    <a-entity io3d-furniture="id:f5ff52e8-3693-4aaa-97b7-9fd8af305687" position="2 0 0"></a-entity>
+    <a-entity io3d-furniture="id:943357e8-911f-4bb5-8b89-8281385ef08f" position="0 0 -3"></a-entity>
+
     <a-entity io3d-data3d="url:https://storage.3d.io/535e624259ee6b0200000484/170905-0023-mybkkm/archilogic_2017-09-05_00-22-58_hpEh2j.gz.data3d.buffer"></a-entity>
     <a-entity io3d-data3d="url:https://storage.3d.io/535e624259ee6b0200000484/170903-0313-gnpts9/archilogic_2017-09-03_03-13-15_fWERdX.gz.data3d.buffer"></a-entity>
     <a-entity io3d-data3d="url:https://storage.3d.io/archilogic/sample-models/cube-with-texture/data3d/cube-with-texture.gz.data3d.buffer"></a-entity>
-
-    <a-entity id="my-model" io3d-furniture="id:943357e8-911f-4bb5-8b89-8281385ef08f" position="0 0 -3"></a-entity>
     -->
 
-    <a-entity id="my-model" io3d-furniture="id:943357e8-911f-4bb5-8b89-8281385ef08f" position="0 0 -3"></a-entity>
+    <a-entity gblock="https://vr.google.com/objects/bEWe7XrrOjG" position="-19.646 72.878 1.225" scale="20 20 20" rotation="0 90 0"></a-entity>
 
+    <a-sky color="#555"></a-sky>
 
   </a-entity>
 
-  <a-sky color="#ECECEC"></a-sky>
-
-  <a-entity camera position="20 26 0" orbit-controls="target:#bake-this;"></a-entity>
+  <!-- <a-entity camera position="10 16 0"></a-entity> -->
 
 </a-scene>
 
 <!-- 2D / UI -->
-<div id="buttons">
+<div id="menu-top">
+  <div id="headline">
+    <span>Light Baking API 🔥</span><span>docs</span><span>github</span><span>3d.io</span>
+  </div>
   <a id="bake-button">BAKE</a>
-  <a id="visual-inspector-button">visual inspector</a>
-  <a href="https://appcreator.3d.io/50DMpR?m=e">view source</a>
 </div>
 
-<script>
+<!-- inspector extension -->
+<script src="./app.js"></script>
 
-	document.querySelector('#bake-button').addEventListener('click', function(){
-		bakeLightMaps('#bake-this')
-	})
+<!-- inspector -->
+<script src="https://rawgit.com/aframevr/aframe-inspector/master/dist/aframe-inspector.min.js"></script>
 
-	document.querySelector('#visual-inspector-button').addEventListener('click', function(){
-		window.postMessage('INJECT_AFRAME_INSPECTOR','*')
-	})
-
-	function bakeLightMaps(selector) {
-
-//	  io3d.utils.data3d.fromThree(
-//      document.querySelector(selector).object3D
-//    ).then(function(data3d){
-//      console.log(data3d)
-//      var parent = new THREE.Object3D()
-//      parent.position.set(0,0,3)
-//      var view = new io3d.aFrame.three.Data3dView({
-//        parent: parent
-//      }).set(data3d)
-//      document.querySelector(selector).object3D.add(parent)
-//    })
-//
-//	  return
-
-	  var message
-
-    io3d.publish(selector)
-      .then(function (storageId) {
-
-        io3d.publish.whenHiResTexturesReady(storageId).then(function () {
-          console.log('HI RES READY')
-        })
-
-        return storageId
-
-      })
-      .then(io3d.light.bake)
-      .then(function (processingId) {
-        
-        message = io3d.utils.ui.message('Light map baking in progress...', 0)
-
-        return io3d.light.bake.whenDone(processingId)
-
-      })
-      .then(function (storageId) {
-
-        message.close()
-        io3d.utils.ui.message.success('Baking Successful')
-
-        // add baked element to aframe scene
-        var bakedEl = document.createElement('a-entity')
-        bakedEl.setAttribute('position', '10 0 0')
-        bakedEl.setAttribute('io3d-data3d', 'key:' + storageId + ';lightMapExposure:1.1;lightMapIntensity:0.85;')
-        document.querySelector('a-scene').append(bakedEl)
-
-      }, io3d.utils.ui.message.error)
-
-	}
-
-</script>
 
 </body>
 </html>
