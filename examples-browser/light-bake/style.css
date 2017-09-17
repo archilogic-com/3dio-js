@@ -1,26 +1,59 @@
 body {
-    font-family: Verdana, Geneva, sans-serif;
-    background-color: rgb(31, 37, 50);
 }
 
-#buttons {
+#menu-top {
+    font-family: Roboto, BlinkMacSystemFont, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
     z-index: 100000;
     position: absolute;
-    bottom: 27px;
-    width: 320px;
-    left: 50%;
-    margin-left: -220px;
-    white-space: nowrap;
-    font-weight: 300;
+    top: 0px;
+    left: 246px;
 }
-#buttons a {
-    display: inline;
-    vertical-align: middle;
-    margin-left: 10px;
-    padding: 8px 10px 8px 10px;
-    background-color: rgba(0,0,0,0.65);
+
+#menu-top #headline span {
+    display: inline-block;
+    height: 33px;
+    line-height: 33px;
+    padding: 0 12px 0 12px;
+    margin: 0 0 0 0;
+    border-left: 1px solid rgba(255,255,255,0.5);
+    white-space: nowrap;
+    font-weight: 400;
+    letter-spacing: 1px;
+    font-size: 12px;
     color: white;
+    background-color: rgba(0,0,0,0.8);
+}
+
+#menu-top #bake-button {
+    display: inline-block;
     cursor: pointer;
     text-decoration: none;
-    text-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0px;
+    height: 38px;
+    line-height: 40px;
+    padding: 0 13px 0 13px;
+    /*background-color: #ff9d1b;*/
+    background-color: #1faaf2;
+    border-radius: 2px;
+    margin: 16px 0 0 0;
+    position: relative;
+    left: 2px;
+    top: -2px;
+    /*box-shadow: -2px 2px 0px 0px #de3a00;*/
+    box-shadow: -2px 2px 0px 0px #105576;
+}
+
+#menu-top #bake-button:hover {
+    background-color: #44c3f2;
+}
+
+#menu-top #bake-button:active {
+    left: -1px;
+    top: 1px;
+    /*background-color: #ff9d1b;*/
+    background-color: #105576;
+    box-shadow: -2px 2px 0px 0px rgba(0, 0, 0, 0);
 }
