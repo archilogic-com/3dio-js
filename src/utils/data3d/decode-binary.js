@@ -3,6 +3,9 @@ import pathUtil from '../path.js'
 import urlUtil from '../url.js'
 import Promise from 'bluebird'
 
+// constants
+var IS_URL = new RegExp('^http:\\/\\/.*$|^https:\\/\\/.*$')
+
 // configs
 
 var HEADER_BYTE_LENGTH = 16
@@ -146,7 +149,10 @@ function convertTextureKeys (data3d, origin, rootDir) {
       texturePathKey = TEXTURE_PATH_KEYS[i2]
 
       if (m[texturePathKey]) {
-        if (m[texturePathKey].substring(0,5) === '/http') {
+        if (IS_URL.test(m[texturePathKey])) {
+          // is full URL already
+          m[texturePathKey] = m[texturePathKey]
+        } else if (m[texturePathKey].substring(0,5) === '/http') {
           // FIXME: prevent leading slashes being added to absolute paths
           m[texturePathKey] = m[texturePathKey].substring(1)
         } else if (m[texturePathKey][0] === '/') {
