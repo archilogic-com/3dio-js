@@ -20,6 +20,7 @@ export default function normalizeFurnitureInfo (rawInfo) {
     // geometry
     boundingBox: rawInfo.boundingBox,
     boundingPoints: rawInfo.boundingPoints,
+    data3dStorageId: rawInfo.fileKey,
     data3dUrl: convertKeyToUrl(rawInfo.fileKey),
     // scene Structure definition
     sceneStructure: rawInfo.modelStructure,
