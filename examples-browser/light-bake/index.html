@@ -2,7 +2,6 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="style.css" rel="stylesheet" type="text/css"/>
 
   <!-- boilerplate libs -->
   <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
@@ -11,6 +10,9 @@
 
   <!-- 3dio lib -->
   <script src="../../../build/3dio.js"></script>
+
+  <!-- inspector extension -->
+  <script src="./app.js"></script>
 
 </head>
 <body>
@@ -45,30 +47,20 @@
     <a-entity io3d-data3d="url:https://storage.3d.io/archilogic/sample-models/cube-with-texture/data3d/cube-with-texture.gz.data3d.buffer"></a-entity>
     -->
 
+    <a-entity gltf-model="url(https://storage.3d.io/archilogic/sample-models/cube-with-texture/gltf/cube-with-texture.gltf)" position="2 2 0"></a-entity>
+
     <a-entity gblock="https://vr.google.com/objects/bEWe7XrrOjG" position="-19.646 72.878 1.225" scale="20 20 20" rotation="0 90 0"></a-entity>
+
+    <a-entity io3d-data3d="key:/535e624259ee6b0200000484/bake/2017-06-27_15-46-26_xiLcav/regular/lighting.gz.data3d.buffer" rotation="0 180 0"></a-entity>
 
     <a-sky color="#555"></a-sky>
 
   </a-entity>
 
-  <!-- <a-entity camera position="10 16 0"></a-entity> -->
-
 </a-scene>
 
-<!-- 2D / UI -->
-<div id="menu-top">
-  <div id="headline">
-    <span>Light Baking API 🔥</span><span>docs</span><span>github</span><span>3d.io</span>
-  </div>
-  <a id="bake-button">BAKE</a>
-</div>
-
-<!-- inspector extension -->
-<script src="./app.js"></script>
-
-<!-- inspector -->
+<!-- start inspector immediatelly -->
 <script src="https://rawgit.com/aframevr/aframe-inspector/master/dist/aframe-inspector.min.js"></script>
-
 
 </body>
 </html>
