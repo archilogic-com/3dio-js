@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.75
- * @date 2017/09/18 18:15
- * @branch HEAD
- * @commit 15c9951e4ffeafb682339e9f25846df9a098a57e
+ * @date 2017/09/19 15:58
+ * @branch scene-api
+ * @commit 8c953f6939cad8e11a0f69057fe6b13d14d1d645
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/18 18:15', GIT_BRANCH = 'HEAD', GIT_COMMIT = '15c9951e4ffeafb682339e9f25846df9a098a57e'
+	var BUILD_DATE='2017/09/19 15:58', GIT_BRANCH = 'scene-api', GIT_COMMIT = '8c953f6939cad8e11a0f69057fe6b13d14d1d645'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.75";
@@ -22025,7 +22025,6 @@
 
 	}
 
-	// TODO: extend this for bakedModel
 	var validTypes = [
 	  'interior',
 	  'group',
@@ -22081,15 +22080,16 @@
 
 	  switch (element3d.type) {
 	    case 'level':
-	      attributes['io3d-data3d'] = { key: element3d.bakedModelUrl };
-	    break
+	      attributes['io3d-data3d'] = 'key: ' + element3d.bakedModelUrl;
+	      attributes['shadow'] = 'cast: false, receive: true';
+	      break
 	    case 'interior':
-	      attributes['io3d-furniture'] = { id: element3d.src.substring(1) };
-	      attributes['shadow'] = { cast: true, receive: false };
+	      attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1);
+	      attributes['shadow'] = 'cast: true, receive: false';
 	    break
 	    case 'object':
-	      attributes['io3d-data3d'] = { key: element3d.object };
-	      attributes['shadow'] = { cast: true, receive: true };
+	      attributes['io3d-data3d'] = 'key: ' + element3d.object;
+	      attributes['shadow'] = 'cast: true, receive: true';
 	    break
 	  }
 
@@ -22115,7 +22115,7 @@
 	function updateOnBake(htmlElement, statusFileKey) {
 	  pollStatusFile(statusFileKey)
 	    .then(function (bakedModelKey) {
-	      htmlElement.setAttribute('io3d-data3d', { key: bakedModelKey });
+	      htmlElement.setAttribute('io3d-data3d', 'key: ' + bakedModelKey);
 	    });
 	}
 

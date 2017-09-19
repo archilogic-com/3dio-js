@@ -2,7 +2,6 @@ import runtime from '../../core/runtime.js'
 import poll from '../../utils/poll.js'
 import getFromStorage from '../../storage/get.js'
 
-// TODO: extend this for bakedModel
 var validTypes = [
   'interior',
   'group',
@@ -58,15 +57,16 @@ function getAttributes(element3d) {
 
   switch (element3d.type) {
     case 'level':
-      attributes['io3d-data3d'] = { key: element3d.bakedModelUrl }
-    break
+      attributes['io3d-data3d'] = 'key: ' + element3d.bakedModelUrl
+      attributes['shadow'] = 'cast: false, receive: true'
+      break
     case 'interior':
-      attributes['io3d-furniture'] = { id: element3d.src.substring(1) }
-      attributes['shadow'] = { cast: true, receive: false }
+      attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1)
+      attributes['shadow'] = 'cast: true, receive: false'
     break
     case 'object':
-      attributes['io3d-data3d'] = { key: element3d.object }
-      attributes['shadow'] = { cast: true, receive: true }
+      attributes['io3d-data3d'] = 'key: ' + element3d.object
+      attributes['shadow'] = 'cast: true, receive: true'
     break
   }
 
@@ -92,7 +92,7 @@ function addEntity(args) {
 function updateOnBake(htmlElement, statusFileKey) {
   pollStatusFile(statusFileKey)
     .then(function (bakedModelKey) {
-      htmlElement.setAttribute('io3d-data3d', { key: bakedModelKey })
+      htmlElement.setAttribute('io3d-data3d', 'key: ' + bakedModelKey)
     })
 }
 
