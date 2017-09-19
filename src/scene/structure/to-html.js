@@ -38,7 +38,7 @@ function getHtmlFromSceneStructure(sceneStructure, parent) {
         parent: parent
       })
       if (element3d.type === 'level' && (element3d.bakeRegularStatusFileKey || element3d.bakePreviewStatusFileKey)) {
-        updateOnBake(el, element3d.bakeRegularStatusFileKey || element3d.bakePreviewStatusFileKey)
+        updateOnBake(el, element3d)
       }
       if (element3d.children && element3d.children.length) getHtmlFromSceneStructure(element3d.children, el)
       if (collection) collection.push(el)
@@ -57,7 +57,14 @@ function getAttributes(element3d) {
 
   switch (element3d.type) {
     case 'level':
+      if (!element3d.bakedModelUrl) {
+        console.warn('Level without bakedModelUrl: ', element3d)
+        return
+      }
       attributes['io3d-data3d'] = 'key: ' + element3d.bakedModelUrl
+      if (element3d.lightMapIntensity) {
+        attributes['io3d-data3d'] += '; lightMapIntensity: ' + element3d.lightMapIntensity + '; lightMapExposure: ' + element3d.lightMapCenter
+      }
       attributes['shadow'] = 'cast: false, receive: true'
       break
     case 'interior':
@@ -89,10 +96,17 @@ function addEntity(args) {
   else return el
 }
 
-function updateOnBake(htmlElement, statusFileKey) {
+function updateOnBake(htmlElement, element3d) {
+  var statusFileKey = element3d.bakeRegularStatusFileKey || element3d.bakePreviewStatusFileKey
+
   pollStatusFile(statusFileKey)
     .then(function (bakedModelKey) {
-      htmlElement.setAttribute('io3d-data3d', 'key: ' + bakedModelKey)
+      var attribValue = 'key: ' + bakedModelKey
+      if (element3d.lightMapIntensity) {
+        attribValue += '; lightMapIntensity: ' + element3d.lightMapIntensity + '; lightMapExposure: ' + element3d.lightMapCenter
+      }
+
+      htmlElement.setAttribute('io3d-data3d', attribValue)
     })
 }
 

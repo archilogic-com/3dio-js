@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.75
- * @date 2017/09/19 15:58
+ * @date 2017/09/19 16:27
  * @branch scene-api
- * @commit 8c953f6939cad8e11a0f69057fe6b13d14d1d645
+ * @commit 3a27af3ba0f31456bf4f3e6d9fe63d2e9ab01752
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/19 15:58', GIT_BRANCH = 'scene-api', GIT_COMMIT = '8c953f6939cad8e11a0f69057fe6b13d14d1d645'
+	var BUILD_DATE='2017/09/19 16:27', GIT_BRANCH = 'scene-api', GIT_COMMIT = '3a27af3ba0f31456bf4f3e6d9fe63d2e9ab01752'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.75";
@@ -22061,7 +22061,7 @@
 	        parent: parent
 	      });
 	      if (element3d.type === 'level' && (element3d.bakeRegularStatusFileKey || element3d.bakePreviewStatusFileKey)) {
-	        updateOnBake(el, element3d.bakeRegularStatusFileKey || element3d.bakePreviewStatusFileKey);
+	        updateOnBake(el, element3d);
 	      }
 	      if (element3d.children && element3d.children.length) getHtmlFromSceneStructure(element3d.children, el);
 	      if (collection) collection.push(el);
@@ -22080,7 +22080,14 @@
 
 	  switch (element3d.type) {
 	    case 'level':
+	      if (!element3d.bakedModelUrl) {
+	        console.warn('Level without bakedModelUrl: ', element3d);
+	        return
+	      }
 	      attributes['io3d-data3d'] = 'key: ' + element3d.bakedModelUrl;
+	      if (element3d.lightMapIntensity) {
+	        attributes['io3d-data3d'] += '; lightMapIntensity: ' + element3d.lightMapIntensity + '; lightMapExposure: ' + element3d.lightMapCenter;
+	      }
 	      attributes['shadow'] = 'cast: false, receive: true';
 	      break
 	    case 'interior':
@@ -22112,10 +22119,17 @@
 	  else return el
 	}
 
-	function updateOnBake(htmlElement, statusFileKey) {
+	function updateOnBake(htmlElement, element3d) {
+	  var statusFileKey = element3d.bakeRegularStatusFileKey || element3d.bakePreviewStatusFileKey;
+
 	  pollStatusFile(statusFileKey)
 	    .then(function (bakedModelKey) {
-	      htmlElement.setAttribute('io3d-data3d', 'key: ' + bakedModelKey);
+	      var attribValue = 'key: ' + bakedModelKey;
+	      if (element3d.lightMapIntensity) {
+	        attribValue += '; lightMapIntensity: ' + element3d.lightMapIntensity + '; lightMapExposure: ' + element3d.lightMapCenter;
+	      }
+
+	      htmlElement.setAttribute('io3d-data3d', attribValue);
 	    });
 	}
 
