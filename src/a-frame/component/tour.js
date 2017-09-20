@@ -1,4 +1,4 @@
-import checkDependencies from '../check-dependencies.js'
+import clone from 'lodash/clone'
 
 export default {
   schema: {
@@ -80,10 +80,28 @@ export default {
     this.animate(target)
   },
 
+  setCameraMode: function (mode) {
+    if (['person', 'bird'].indexOf(mode) < -1) {
+      console.error('not supported camera mode: ' + mode)
+      return
+    }
+    this._isPlaying = false
+    var pos = clone(this.el.getAttribute('position'))
+    var rot = clone(this.el.getAttribute('rotation'))
+    pos.y = mode === 'person' ? 1.4 : 7
+    rot.x = mode === 'person' ? 0 : -60
+    var target = {
+      position: AFRAME.utils.coordinates.stringify(pos),
+      rotation: AFRAME.utils.coordinates.stringify(rot)
+    }
+    this.animate(target)
+  },
+
   animate: function (bookmark) {
+    var isDomElement = isElement(bookmark)
     var entity = this.el
-    var newPosition = bookmark.getAttribute('position')
-    var newRotation = bookmark.getAttribute('rotation')
+    var newPosition = isDomElement ? bookmark.getAttribute('position') : bookmark.position
+    var newRotation = isDomElement ? bookmark.getAttribute('rotation') : bookmark.rotation
     var currentPosition = entity.getAttribute('position')
     var currentRotation = entity.getAttribute('rotation')
     var startPosition = AFRAME.utils.coordinates.stringify(currentPosition)
@@ -133,4 +151,13 @@ function dist(p, q) {
   var b = parseFloat(q.y) - parseFloat(p.y)
   var c = parseFloat(q.z) - parseFloat(p.z)
   return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2) + Math.pow(c, 2))
+}
+
+// Returns true if it is a DOM element
+// https://stackoverflow.com/a/384380/2835973
+function isElement(o){
+  return (
+    typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
+      o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
+  );
 }
