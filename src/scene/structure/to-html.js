@@ -69,6 +69,12 @@ function getAttributes(element3d) {
       break
     case 'interior':
       attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1)
+      // apply custom material settings for furniture items
+      if (element3d.materials) {
+        element3d.materials.forEach(function(mat) {
+          if (mat.mesh && mat.material) attributes['io3d-furniture'] += '; material_' + mat.mesh.replace(/\s/g, '_') + ':' + mat.material
+        })
+      }
       attributes['shadow'] = 'cast: true, receive: false'
     break
     case 'object':
