@@ -47,11 +47,11 @@
     </div>
     <div class="btn bird"
          id="btn-bird"
-         onclick="document.querySelector('[camera]').components['tour'].setCameraMode('bird'), document.querySelector('#btn-person').classList.remove('active'), this.classList.add('active')">
+         onclick="document.querySelector('[camera]').components['tour'].setViewPoint('bird'), document.querySelector('#btn-person').classList.remove('active'), this.classList.add('active')">
     </div>
     <div class="btn person active"
          id="btn-person"
-         onclick="document.querySelector('[camera]').components['tour'].setCameraMode('person'), document.querySelector('#btn-bird').classList.remove('active'), this.classList.add('active')">
+         onclick="document.querySelector('[camera]').components['tour'].setViewPoint('person'), document.querySelector('#btn-bird').classList.remove('active'), this.classList.add('active')">
     </div>
   </div>
 </div>

@@ -80,7 +80,7 @@ export default {
     this.animate(target)
   },
 
-  setCameraMode: function (mode) {
+  setViewPoint: function (mode) {
     var HEIGHT_PERSON = 1.4
     var HEIGHT_BIRDS_EYE = 7
     var ANGLE_PERSON = 0
