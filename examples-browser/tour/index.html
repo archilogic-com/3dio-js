@@ -9,47 +9,8 @@
   <script src="https://unpkg.com/aframe-animation-component/dist/aframe-animation-component.min.js"></script>
   <!-- 3dio lib -->
   <script src="../../../build/3dio.js"></script>
+  <link href="style.css" rel="stylesheet">
 </head>
-<style>
-  nav {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    z-index: 100;
-  }
-  nav > button {
-    background: rgba(255,255,255,0.9);
-    box-sizing: border-box;
-    display: block;
-    border-radius: 3px;
-    font-size: 14px;
-    color: #333;
-    height: 30px;
-    box-shadow: 1px 1px 2px rgba(0,0,0,.1);
-    transition: all ease 0.3s;
-    cursor: pointer;
-    margin: 0 5px 5px 0;
-    padding: 0 10px;
-    text-decoration: none;
-    border: none;
-    outline: none;
-  }
-  nav > button:hover {
-    background: rgba(255,255,255,1);
-  }
-
-  .btn-toggle-play.playing .play{
-    display: none;
-  }
-
-  .btn-toggle-play.playing .pause{
-    display: inline;
-  }
-
-  .btn-toggle-play .pause{
-    display: none;
-  }
-</style>
 <body>
 
 <!-- 3D -->
@@ -70,29 +31,30 @@
 <div id="buttons">
   <button onclick="window.postMessage('INJECT_AFRAME_INSPECTOR','*');">visual inspector</button>
 </div>
-<nav>
-  <button onclick="document.querySelector('[camera]').components['tour'].goTo('Overview')">Overview</button>
-  <button onclick="document.querySelector('[camera]').components['tour'].goTo('Red')">Red box</button>
-  <button onclick="document.querySelector('[camera]').components['tour'].goTo('Green')">Green box</button>
-  <button onclick="document.querySelector('[camera]').components['tour'].goTo('Blue')">Blue box</button>
-  <button class="btn-toggle-play playing">
-    <span class="play" >&#9658;</span>
-    <span class="pause">&#10074;&#10074;</span>
-  </button>
-<nav>
-
-<script>
-var button = document.querySelector('.btn-toggle-play')
-var tour = document.querySelector('[camera]').components['tour']
-button.addEventListener('click', function () {
-  if (button.classList.toggle('playing')) {
-    tour.playTour()
-  } else {
-    tour.pauseTour()
-  }
-});
-</script>
-
+<div class="camera-controls">
+  <div class="waypoints">
+    <button onclick="document.querySelector('[camera]').components['tour'].goTo('Overview')">Overview</button>
+    <button onclick="document.querySelector('[camera]').components['tour'].goTo('Red')">Red box</button>
+    <button onclick="document.querySelector('[camera]').components['tour'].goTo('Green')">Green box</button>
+    <button onclick="document.querySelector('[camera]').components['tour'].goTo('Blue')">Blue box</button>
+    <button class="btn-toggle-play playing"
+            onclick="this.classList.contains('playing') ? document.querySelector('[camera]').components['tour'].pauseTour() : document.querySelector('[camera]').components['tour'].playTour(), this.classList.toggle('playing')">
+    </button>
+  </div>
+  <div class="camera-mode">
+    <div class="btn camera active"
+         onclick="document.querySelector('.waypoints').classList.toggle('hide'), this.classList.toggle('active')">
+    </div>
+    <div class="btn bird"
+         id="btn-bird"
+         onclick="document.querySelector('[camera]').components['tour'].setCameraMode('bird'), document.querySelector('#btn-person').classList.remove('active'), this.classList.add('active')">
+    </div>
+    <div class="btn person active"
+         id="btn-person"
+         onclick="document.querySelector('[camera]').components['tour'].setCameraMode('person'), document.querySelector('#btn-bird').classList.remove('active'), this.classList.add('active')">
+    </div>
+  </div>
+</div>
 </body>
 </html>
 
