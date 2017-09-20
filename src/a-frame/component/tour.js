@@ -81,6 +81,10 @@ export default {
   },
 
   setCameraMode: function (mode) {
+    var HEIGHT_PERSON = 1.4
+    var HEIGHT_BIRDS_EYE = 7
+    var ANGLE_PERSON = 0
+    var ANGLE_BIRDS_EYE = -60
     if (['person', 'bird'].indexOf(mode) < -1) {
       console.error('not supported camera mode: ' + mode)
       return
@@ -88,8 +92,8 @@ export default {
     this._isPlaying = false
     var pos = clone(this.el.getAttribute('position'))
     var rot = clone(this.el.getAttribute('rotation'))
-    pos.y = mode === 'person' ? 1.4 : 7
-    rot.x = mode === 'person' ? 0 : -60
+    pos.y = mode === 'person' ? HEIGHT_PERSON : HEIGHT_BIRDS_EYE
+    rot.x = mode === 'person' ? ANGLE_PERSON : ANGLE_BIRDS_EYE
     var target = {
       position: AFRAME.utils.coordinates.stringify(pos),
       rotation: AFRAME.utils.coordinates.stringify(rot)
@@ -156,8 +160,9 @@ function dist(p, q) {
 // Returns true if it is a DOM element
 // https://stackoverflow.com/a/384380/2835973
 function isElement(o){
+  var DOM_ELEMENT = 1
   return (
     typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
-      o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
+      o && typeof o === "object" && o !== null && o.nodeType === DOM_ELEMENT && typeof o.nodeName==="string"
   );
 }
