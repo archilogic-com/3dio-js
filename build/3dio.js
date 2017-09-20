@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.75
- * @date 2017/09/19 16:27
+ * @date 2017/09/20 23:11
  * @branch scene-api
- * @commit 3a27af3ba0f31456bf4f3e6d9fe63d2e9ab01752
+ * @commit 9005183317389c9b1aae7b9cd67c5b59864d9540
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/19 16:27', GIT_BRANCH = 'scene-api', GIT_COMMIT = '3a27af3ba0f31456bf4f3e6d9fe63d2e9ab01752'
+	var BUILD_DATE='2017/09/20 23:11', GIT_BRANCH = 'scene-api', GIT_COMMIT = '9005183317389c9b1aae7b9cd67c5b59864d9540'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.75";
@@ -822,7 +822,7 @@
 	});
 
 	/**
-	 * A representation of any set of values over any amount of time. This the most basic building block
+	 * A representation of any set of values over any amount of time. This is the most basic building block
 	 * of RxJS.
 	 *
 	 * @class Observable<T>
@@ -830,7 +830,7 @@
 	var Observable = (function () {
 	    /**
 	     * @constructor
-	     * @param {Function} subscribe the function that is  called when the Observable is
+	     * @param {Function} subscribe the function that is called when the Observable is
 	     * initially subscribed to. This function is given a Subscriber, to which new values
 	     * can be `next`ed, or an `error` method can be called to raise an error, or
 	     * `complete` can be called to notify of a successful completion.
@@ -859,7 +859,7 @@
 	     *
 	     * <span class="informal">Use it when you have all these Observables, but still nothing is happening.</span>
 	     *
-	     * `subscribe` is not a regular operator, but a method that calls Observables internal `subscribe` function. It
+	     * `subscribe` is not a regular operator, but a method that calls Observable's internal `subscribe` function. It
 	     * might be for example a function that you passed to a {@link create} static factory, but most of the time it is
 	     * a library implementation, which defines what and when will be emitted by an Observable. This means that calling
 	     * `subscribe` is actually the moment when Observable starts its work, not when it is created, as it is often
@@ -901,7 +901,7 @@
 	     *     console.log('Adding: ' + value);
 	     *     this.sum = this.sum + value;
 	     *   },
-	     *   error() { // We actually could just remote this method,
+	     *   error() { // We actually could just remove this method,
 	     *   },        // since we do not really care about errors right now.
 	     *   complete() {
 	     *     console.log('Sum equals: ' + this.sum);
@@ -956,7 +956,7 @@
 	     * // Logs:
 	     * // 0 after 1s
 	     * // 1 after 2s
-	     * // "unsubscribed!" after 2,5s
+	     * // "unsubscribed!" after 2.5s
 	     *
 	     *
 	     * @param {Observer|Function} observerOrNext (optional) Either an observer with methods to be called,
@@ -7397,7 +7397,7 @@
 		var Logger = { };
 
 		// For those that are at home that are keeping score.
-		Logger.VERSION = "1.3.0";
+		Logger.VERSION = "1.4.1";
 
 		// Function which handles all incoming log messages.
 		var logHandler;
@@ -7453,6 +7453,11 @@
 				if (newLevel && "value" in newLevel) {
 					this.context.filterLevel = newLevel;
 				}
+			},
+			
+			// Gets the current logging level for the logging instance
+			getLevel: function () {
+				return this.context.filterLevel;
 			},
 
 			// Is the logger configured to output messages at the supplied level?
@@ -7538,6 +7543,11 @@
 			}
 		};
 
+		// Gets the global logging filter level
+		Logger.getLevel = function() {
+			return globalLogger.getLevel();
+		};
+
 		// Retrieve a ContextualLogger instance.  Note that named loggers automatically inherit the global logger's level,
 		// default context and log handler.
 		Logger.get = function (name) {
@@ -7609,6 +7619,8 @@
 						hdlr = console.error;
 					} else if (context.level === Logger.INFO && console.info) {
 						hdlr = console.info;
+					} else if (context.level === Logger.DEBUG && console.debug) {
+						hdlr = console.debug;
 					}
 
 					options.formatter(messages, context);
@@ -19289,6 +19301,842 @@
 
 	};
 
+	/**
+	 * A specialized version of `_.forEach` for arrays without support for
+	 * iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Array} [array] The array to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array} Returns `array`.
+	 */
+	function arrayEach(array, iteratee) {
+	  var index = -1,
+	      length = array == null ? 0 : array.length;
+
+	  while (++index < length) {
+	    if (iteratee(array[index], index, array) === false) {
+	      break;
+	    }
+	  }
+	  return array;
+	}
+
+	var _arrayEach = arrayEach;
+
+	/**
+	 * The base implementation of `assignValue` and `assignMergeValue` without
+	 * value checks.
+	 *
+	 * @private
+	 * @param {Object} object The object to modify.
+	 * @param {string} key The key of the property to assign.
+	 * @param {*} value The value to assign.
+	 */
+	function baseAssignValue(object, key, value) {
+	  if (key == '__proto__' && _defineProperty) {
+	    _defineProperty(object, key, {
+	      'configurable': true,
+	      'enumerable': true,
+	      'value': value,
+	      'writable': true
+	    });
+	  } else {
+	    object[key] = value;
+	  }
+	}
+
+	var _baseAssignValue = baseAssignValue;
+
+	/** Used for built-in method references. */
+	var objectProto$12 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$9 = objectProto$12.hasOwnProperty;
+
+	/**
+	 * Assigns `value` to `key` of `object` if the existing value is not equivalent
+	 * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+	 * for equality comparisons.
+	 *
+	 * @private
+	 * @param {Object} object The object to modify.
+	 * @param {string} key The key of the property to assign.
+	 * @param {*} value The value to assign.
+	 */
+	function assignValue(object, key, value) {
+	  var objValue = object[key];
+	  if (!(hasOwnProperty$9.call(object, key) && eq_1(objValue, value)) ||
+	      (value === undefined && !(key in object))) {
+	    _baseAssignValue(object, key, value);
+	  }
+	}
+
+	var _assignValue = assignValue;
+
+	/**
+	 * Copies properties of `source` to `object`.
+	 *
+	 * @private
+	 * @param {Object} source The object to copy properties from.
+	 * @param {Array} props The property identifiers to copy.
+	 * @param {Object} [object={}] The object to copy properties to.
+	 * @param {Function} [customizer] The function to customize copied values.
+	 * @returns {Object} Returns `object`.
+	 */
+	function copyObject(source, props, object, customizer) {
+	  var isNew = !object;
+	  object || (object = {});
+
+	  var index = -1,
+	      length = props.length;
+
+	  while (++index < length) {
+	    var key = props[index];
+
+	    var newValue = customizer
+	      ? customizer(object[key], source[key], key, object, source)
+	      : undefined;
+
+	    if (newValue === undefined) {
+	      newValue = source[key];
+	    }
+	    if (isNew) {
+	      _baseAssignValue(object, key, newValue);
+	    } else {
+	      _assignValue(object, key, newValue);
+	    }
+	  }
+	  return object;
+	}
+
+	var _copyObject = copyObject;
+
+	/**
+	 * The base implementation of `_.assign` without support for multiple sources
+	 * or `customizer` functions.
+	 *
+	 * @private
+	 * @param {Object} object The destination object.
+	 * @param {Object} source The source object.
+	 * @returns {Object} Returns `object`.
+	 */
+	function baseAssign(object, source) {
+	  return object && _copyObject(source, keys_1(source), object);
+	}
+
+	var _baseAssign = baseAssign;
+
+	/**
+	 * This function is like
+	 * [`Object.keys`](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+	 * except that it includes inherited enumerable properties.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 */
+	function nativeKeysIn(object) {
+	  var result = [];
+	  if (object != null) {
+	    for (var key in Object(object)) {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+
+	var _nativeKeysIn = nativeKeysIn;
+
+	/** Used for built-in method references. */
+	var objectProto$13 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$10 = objectProto$13.hasOwnProperty;
+
+	/**
+	 * The base implementation of `_.keysIn` which doesn't treat sparse arrays as dense.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 */
+	function baseKeysIn(object) {
+	  if (!isObject_1$3(object)) {
+	    return _nativeKeysIn(object);
+	  }
+	  var isProto = _isPrototype(object),
+	      result = [];
+
+	  for (var key in object) {
+	    if (!(key == 'constructor' && (isProto || !hasOwnProperty$10.call(object, key)))) {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+
+	var _baseKeysIn = baseKeysIn;
+
+	/**
+	 * Creates an array of the own and inherited enumerable property names of `object`.
+	 *
+	 * **Note:** Non-object values are coerced to objects.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 3.0.0
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 * @example
+	 *
+	 * function Foo() {
+	 *   this.a = 1;
+	 *   this.b = 2;
+	 * }
+	 *
+	 * Foo.prototype.c = 3;
+	 *
+	 * _.keysIn(new Foo);
+	 * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
+	 */
+	function keysIn$1(object) {
+	  return isArrayLike_1(object) ? _arrayLikeKeys(object, true) : _baseKeysIn(object);
+	}
+
+	var keysIn_1 = keysIn$1;
+
+	/**
+	 * The base implementation of `_.assignIn` without support for multiple sources
+	 * or `customizer` functions.
+	 *
+	 * @private
+	 * @param {Object} object The destination object.
+	 * @param {Object} source The source object.
+	 * @returns {Object} Returns `object`.
+	 */
+	function baseAssignIn(object, source) {
+	  return object && _copyObject(source, keysIn_1(source), object);
+	}
+
+	var _baseAssignIn = baseAssignIn;
+
+	var _cloneBuffer = createCommonjsModule(function (module, exports) {
+	/** Detect free variable `exports`. */
+	var freeExports = 'object' == 'object' && exports && !exports.nodeType && exports;
+
+	/** Detect free variable `module`. */
+	var freeModule = freeExports && 'object' == 'object' && module && !module.nodeType && module;
+
+	/** Detect the popular CommonJS extension `module.exports`. */
+	var moduleExports = freeModule && freeModule.exports === freeExports;
+
+	/** Built-in value references. */
+	var Buffer = moduleExports ? _root$1.Buffer : undefined,
+	    allocUnsafe = Buffer ? Buffer.allocUnsafe : undefined;
+
+	/**
+	 * Creates a clone of  `buffer`.
+	 *
+	 * @private
+	 * @param {Buffer} buffer The buffer to clone.
+	 * @param {boolean} [isDeep] Specify a deep clone.
+	 * @returns {Buffer} Returns the cloned buffer.
+	 */
+	function cloneBuffer(buffer, isDeep) {
+	  if (isDeep) {
+	    return buffer.slice();
+	  }
+	  var length = buffer.length,
+	      result = allocUnsafe ? allocUnsafe(length) : new buffer.constructor(length);
+
+	  buffer.copy(result);
+	  return result;
+	}
+
+	module.exports = cloneBuffer;
+	});
+
+	/**
+	 * Copies the values of `source` to `array`.
+	 *
+	 * @private
+	 * @param {Array} source The array to copy values from.
+	 * @param {Array} [array=[]] The array to copy values to.
+	 * @returns {Array} Returns `array`.
+	 */
+	function copyArray(source, array) {
+	  var index = -1,
+	      length = source.length;
+
+	  array || (array = Array(length));
+	  while (++index < length) {
+	    array[index] = source[index];
+	  }
+	  return array;
+	}
+
+	var _copyArray = copyArray;
+
+	/**
+	 * Copies own symbols of `source` to `object`.
+	 *
+	 * @private
+	 * @param {Object} source The object to copy symbols from.
+	 * @param {Object} [object={}] The object to copy symbols to.
+	 * @returns {Object} Returns `object`.
+	 */
+	function copySymbols(source, object) {
+	  return _copyObject(source, _getSymbols(source), object);
+	}
+
+	var _copySymbols = copySymbols;
+
+	/** Built-in value references. */
+	var getPrototype = _overArg(Object.getPrototypeOf, Object);
+
+	var _getPrototype = getPrototype;
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeGetSymbols$1 = Object.getOwnPropertySymbols;
+
+	/**
+	 * Creates an array of the own and inherited enumerable symbols of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of symbols.
+	 */
+	var getSymbolsIn = !nativeGetSymbols$1 ? stubArray_1 : function(object) {
+	  var result = [];
+	  while (object) {
+	    _arrayPush(result, _getSymbols(object));
+	    object = _getPrototype(object);
+	  }
+	  return result;
+	};
+
+	var _getSymbolsIn = getSymbolsIn;
+
+	/**
+	 * Copies own and inherited symbols of `source` to `object`.
+	 *
+	 * @private
+	 * @param {Object} source The object to copy symbols from.
+	 * @param {Object} [object={}] The object to copy symbols to.
+	 * @returns {Object} Returns `object`.
+	 */
+	function copySymbolsIn(source, object) {
+	  return _copyObject(source, _getSymbolsIn(source), object);
+	}
+
+	var _copySymbolsIn = copySymbolsIn;
+
+	/**
+	 * Creates an array of own and inherited enumerable property names and
+	 * symbols of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names and symbols.
+	 */
+	function getAllKeysIn(object) {
+	  return _baseGetAllKeys(object, keysIn_1, _getSymbolsIn);
+	}
+
+	var _getAllKeysIn = getAllKeysIn;
+
+	/** Used for built-in method references. */
+	var objectProto$14 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$11 = objectProto$14.hasOwnProperty;
+
+	/**
+	 * Initializes an array clone.
+	 *
+	 * @private
+	 * @param {Array} array The array to clone.
+	 * @returns {Array} Returns the initialized clone.
+	 */
+	function initCloneArray(array) {
+	  var length = array.length,
+	      result = array.constructor(length);
+
+	  // Add properties assigned by `RegExp#exec`.
+	  if (length && typeof array[0] == 'string' && hasOwnProperty$11.call(array, 'index')) {
+	    result.index = array.index;
+	    result.input = array.input;
+	  }
+	  return result;
+	}
+
+	var _initCloneArray = initCloneArray;
+
+	/**
+	 * Creates a clone of `arrayBuffer`.
+	 *
+	 * @private
+	 * @param {ArrayBuffer} arrayBuffer The array buffer to clone.
+	 * @returns {ArrayBuffer} Returns the cloned array buffer.
+	 */
+	function cloneArrayBuffer(arrayBuffer) {
+	  var result = new arrayBuffer.constructor(arrayBuffer.byteLength);
+	  new _Uint8Array(result).set(new _Uint8Array(arrayBuffer));
+	  return result;
+	}
+
+	var _cloneArrayBuffer = cloneArrayBuffer;
+
+	/**
+	 * Creates a clone of `dataView`.
+	 *
+	 * @private
+	 * @param {Object} dataView The data view to clone.
+	 * @param {boolean} [isDeep] Specify a deep clone.
+	 * @returns {Object} Returns the cloned data view.
+	 */
+	function cloneDataView(dataView, isDeep) {
+	  var buffer = isDeep ? _cloneArrayBuffer(dataView.buffer) : dataView.buffer;
+	  return new dataView.constructor(buffer, dataView.byteOffset, dataView.byteLength);
+	}
+
+	var _cloneDataView = cloneDataView;
+
+	/**
+	 * Adds the key-value `pair` to `map`.
+	 *
+	 * @private
+	 * @param {Object} map The map to modify.
+	 * @param {Array} pair The key-value pair to add.
+	 * @returns {Object} Returns `map`.
+	 */
+	function addMapEntry(map, pair) {
+	  // Don't return `map.set` because it's not chainable in IE 11.
+	  map.set(pair[0], pair[1]);
+	  return map;
+	}
+
+	var _addMapEntry = addMapEntry;
+
+	/**
+	 * A specialized version of `_.reduce` for arrays without support for
+	 * iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Array} [array] The array to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @param {*} [accumulator] The initial value.
+	 * @param {boolean} [initAccum] Specify using the first element of `array` as
+	 *  the initial value.
+	 * @returns {*} Returns the accumulated value.
+	 */
+	function arrayReduce(array, iteratee, accumulator, initAccum) {
+	  var index = -1,
+	      length = array == null ? 0 : array.length;
+
+	  if (initAccum && length) {
+	    accumulator = array[++index];
+	  }
+	  while (++index < length) {
+	    accumulator = iteratee(accumulator, array[index], index, array);
+	  }
+	  return accumulator;
+	}
+
+	var _arrayReduce = arrayReduce;
+
+	/** Used to compose bitmasks for cloning. */
+	var CLONE_DEEP_FLAG$1 = 1;
+
+	/**
+	 * Creates a clone of `map`.
+	 *
+	 * @private
+	 * @param {Object} map The map to clone.
+	 * @param {Function} cloneFunc The function to clone values.
+	 * @param {boolean} [isDeep] Specify a deep clone.
+	 * @returns {Object} Returns the cloned map.
+	 */
+	function cloneMap(map, isDeep, cloneFunc) {
+	  var array = isDeep ? cloneFunc(_mapToArray(map), CLONE_DEEP_FLAG$1) : _mapToArray(map);
+	  return _arrayReduce(array, _addMapEntry, new map.constructor);
+	}
+
+	var _cloneMap = cloneMap;
+
+	/** Used to match `RegExp` flags from their coerced string values. */
+	var reFlags = /\w*$/;
+
+	/**
+	 * Creates a clone of `regexp`.
+	 *
+	 * @private
+	 * @param {Object} regexp The regexp to clone.
+	 * @returns {Object} Returns the cloned regexp.
+	 */
+	function cloneRegExp(regexp) {
+	  var result = new regexp.constructor(regexp.source, reFlags.exec(regexp));
+	  result.lastIndex = regexp.lastIndex;
+	  return result;
+	}
+
+	var _cloneRegExp = cloneRegExp;
+
+	/**
+	 * Adds `value` to `set`.
+	 *
+	 * @private
+	 * @param {Object} set The set to modify.
+	 * @param {*} value The value to add.
+	 * @returns {Object} Returns `set`.
+	 */
+	function addSetEntry(set, value) {
+	  // Don't return `set.add` because it's not chainable in IE 11.
+	  set.add(value);
+	  return set;
+	}
+
+	var _addSetEntry = addSetEntry;
+
+	/** Used to compose bitmasks for cloning. */
+	var CLONE_DEEP_FLAG$2 = 1;
+
+	/**
+	 * Creates a clone of `set`.
+	 *
+	 * @private
+	 * @param {Object} set The set to clone.
+	 * @param {Function} cloneFunc The function to clone values.
+	 * @param {boolean} [isDeep] Specify a deep clone.
+	 * @returns {Object} Returns the cloned set.
+	 */
+	function cloneSet(set, isDeep, cloneFunc) {
+	  var array = isDeep ? cloneFunc(_setToArray(set), CLONE_DEEP_FLAG$2) : _setToArray(set);
+	  return _arrayReduce(array, _addSetEntry, new set.constructor);
+	}
+
+	var _cloneSet = cloneSet;
+
+	/** Used to convert symbols to primitives and strings. */
+	var symbolProto$2 = _Symbol ? _Symbol.prototype : undefined;
+	var symbolValueOf$1 = symbolProto$2 ? symbolProto$2.valueOf : undefined;
+
+	/**
+	 * Creates a clone of the `symbol` object.
+	 *
+	 * @private
+	 * @param {Object} symbol The symbol object to clone.
+	 * @returns {Object} Returns the cloned symbol object.
+	 */
+	function cloneSymbol(symbol) {
+	  return symbolValueOf$1 ? Object(symbolValueOf$1.call(symbol)) : {};
+	}
+
+	var _cloneSymbol = cloneSymbol;
+
+	/**
+	 * Creates a clone of `typedArray`.
+	 *
+	 * @private
+	 * @param {Object} typedArray The typed array to clone.
+	 * @param {boolean} [isDeep] Specify a deep clone.
+	 * @returns {Object} Returns the cloned typed array.
+	 */
+	function cloneTypedArray(typedArray, isDeep) {
+	  var buffer = isDeep ? _cloneArrayBuffer(typedArray.buffer) : typedArray.buffer;
+	  return new typedArray.constructor(buffer, typedArray.byteOffset, typedArray.length);
+	}
+
+	var _cloneTypedArray = cloneTypedArray;
+
+	/** `Object#toString` result references. */
+	var boolTag$3 = '[object Boolean]';
+	var dateTag$3 = '[object Date]';
+	var mapTag$4 = '[object Map]';
+	var numberTag$3 = '[object Number]';
+	var regexpTag$3 = '[object RegExp]';
+	var setTag$4 = '[object Set]';
+	var stringTag$3 = '[object String]';
+	var symbolTag$3 = '[object Symbol]';
+
+	var arrayBufferTag$3 = '[object ArrayBuffer]';
+	var dataViewTag$4 = '[object DataView]';
+	var float32Tag$2 = '[object Float32Array]';
+	var float64Tag$2 = '[object Float64Array]';
+	var int8Tag$2 = '[object Int8Array]';
+	var int16Tag$2 = '[object Int16Array]';
+	var int32Tag$2 = '[object Int32Array]';
+	var uint8Tag$2 = '[object Uint8Array]';
+	var uint8ClampedTag$2 = '[object Uint8ClampedArray]';
+	var uint16Tag$2 = '[object Uint16Array]';
+	var uint32Tag$2 = '[object Uint32Array]';
+
+	/**
+	 * Initializes an object clone based on its `toStringTag`.
+	 *
+	 * **Note:** This function only supports cloning values with tags of
+	 * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
+	 *
+	 * @private
+	 * @param {Object} object The object to clone.
+	 * @param {string} tag The `toStringTag` of the object to clone.
+	 * @param {Function} cloneFunc The function to clone values.
+	 * @param {boolean} [isDeep] Specify a deep clone.
+	 * @returns {Object} Returns the initialized clone.
+	 */
+	function initCloneByTag(object, tag, cloneFunc, isDeep) {
+	  var Ctor = object.constructor;
+	  switch (tag) {
+	    case arrayBufferTag$3:
+	      return _cloneArrayBuffer(object);
+
+	    case boolTag$3:
+	    case dateTag$3:
+	      return new Ctor(+object);
+
+	    case dataViewTag$4:
+	      return _cloneDataView(object, isDeep);
+
+	    case float32Tag$2: case float64Tag$2:
+	    case int8Tag$2: case int16Tag$2: case int32Tag$2:
+	    case uint8Tag$2: case uint8ClampedTag$2: case uint16Tag$2: case uint32Tag$2:
+	      return _cloneTypedArray(object, isDeep);
+
+	    case mapTag$4:
+	      return _cloneMap(object, isDeep, cloneFunc);
+
+	    case numberTag$3:
+	    case stringTag$3:
+	      return new Ctor(object);
+
+	    case regexpTag$3:
+	      return _cloneRegExp(object);
+
+	    case setTag$4:
+	      return _cloneSet(object, isDeep, cloneFunc);
+
+	    case symbolTag$3:
+	      return _cloneSymbol(object);
+	  }
+	}
+
+	var _initCloneByTag = initCloneByTag;
+
+	/** Built-in value references. */
+	var objectCreate = Object.create;
+
+	/**
+	 * The base implementation of `_.create` without support for assigning
+	 * properties to the created object.
+	 *
+	 * @private
+	 * @param {Object} proto The object to inherit from.
+	 * @returns {Object} Returns the new object.
+	 */
+	var baseCreate = (function() {
+	  function object() {}
+	  return function(proto) {
+	    if (!isObject_1$3(proto)) {
+	      return {};
+	    }
+	    if (objectCreate) {
+	      return objectCreate(proto);
+	    }
+	    object.prototype = proto;
+	    var result = new object;
+	    object.prototype = undefined;
+	    return result;
+	  };
+	}());
+
+	var _baseCreate = baseCreate;
+
+	/**
+	 * Initializes an object clone.
+	 *
+	 * @private
+	 * @param {Object} object The object to clone.
+	 * @returns {Object} Returns the initialized clone.
+	 */
+	function initCloneObject(object) {
+	  return (typeof object.constructor == 'function' && !_isPrototype(object))
+	    ? _baseCreate(_getPrototype(object))
+	    : {};
+	}
+
+	var _initCloneObject = initCloneObject;
+
+	/** Used to compose bitmasks for cloning. */
+	var CLONE_DEEP_FLAG = 1;
+	var CLONE_FLAT_FLAG = 2;
+	var CLONE_SYMBOLS_FLAG$1 = 4;
+
+	/** `Object#toString` result references. */
+	var argsTag$3 = '[object Arguments]';
+	var arrayTag$2 = '[object Array]';
+	var boolTag$2 = '[object Boolean]';
+	var dateTag$2 = '[object Date]';
+	var errorTag$2 = '[object Error]';
+	var funcTag$2 = '[object Function]';
+	var genTag$1 = '[object GeneratorFunction]';
+	var mapTag$3 = '[object Map]';
+	var numberTag$2 = '[object Number]';
+	var objectTag$3 = '[object Object]';
+	var regexpTag$2 = '[object RegExp]';
+	var setTag$3 = '[object Set]';
+	var stringTag$2 = '[object String]';
+	var symbolTag$2 = '[object Symbol]';
+	var weakMapTag$2 = '[object WeakMap]';
+
+	var arrayBufferTag$2 = '[object ArrayBuffer]';
+	var dataViewTag$3 = '[object DataView]';
+	var float32Tag$1 = '[object Float32Array]';
+	var float64Tag$1 = '[object Float64Array]';
+	var int8Tag$1 = '[object Int8Array]';
+	var int16Tag$1 = '[object Int16Array]';
+	var int32Tag$1 = '[object Int32Array]';
+	var uint8Tag$1 = '[object Uint8Array]';
+	var uint8ClampedTag$1 = '[object Uint8ClampedArray]';
+	var uint16Tag$1 = '[object Uint16Array]';
+	var uint32Tag$1 = '[object Uint32Array]';
+
+	/** Used to identify `toStringTag` values supported by `_.clone`. */
+	var cloneableTags = {};
+	cloneableTags[argsTag$3] = cloneableTags[arrayTag$2] =
+	cloneableTags[arrayBufferTag$2] = cloneableTags[dataViewTag$3] =
+	cloneableTags[boolTag$2] = cloneableTags[dateTag$2] =
+	cloneableTags[float32Tag$1] = cloneableTags[float64Tag$1] =
+	cloneableTags[int8Tag$1] = cloneableTags[int16Tag$1] =
+	cloneableTags[int32Tag$1] = cloneableTags[mapTag$3] =
+	cloneableTags[numberTag$2] = cloneableTags[objectTag$3] =
+	cloneableTags[regexpTag$2] = cloneableTags[setTag$3] =
+	cloneableTags[stringTag$2] = cloneableTags[symbolTag$2] =
+	cloneableTags[uint8Tag$1] = cloneableTags[uint8ClampedTag$1] =
+	cloneableTags[uint16Tag$1] = cloneableTags[uint32Tag$1] = true;
+	cloneableTags[errorTag$2] = cloneableTags[funcTag$2] =
+	cloneableTags[weakMapTag$2] = false;
+
+	/**
+	 * The base implementation of `_.clone` and `_.cloneDeep` which tracks
+	 * traversed objects.
+	 *
+	 * @private
+	 * @param {*} value The value to clone.
+	 * @param {boolean} bitmask The bitmask flags.
+	 *  1 - Deep clone
+	 *  2 - Flatten inherited properties
+	 *  4 - Clone symbols
+	 * @param {Function} [customizer] The function to customize cloning.
+	 * @param {string} [key] The key of `value`.
+	 * @param {Object} [object] The parent object of `value`.
+	 * @param {Object} [stack] Tracks traversed objects and their clone counterparts.
+	 * @returns {*} Returns the cloned value.
+	 */
+	function baseClone(value, bitmask, customizer, key, object, stack) {
+	  var result,
+	      isDeep = bitmask & CLONE_DEEP_FLAG,
+	      isFlat = bitmask & CLONE_FLAT_FLAG,
+	      isFull = bitmask & CLONE_SYMBOLS_FLAG$1;
+
+	  if (customizer) {
+	    result = object ? customizer(value, key, object, stack) : customizer(value);
+	  }
+	  if (result !== undefined) {
+	    return result;
+	  }
+	  if (!isObject_1$3(value)) {
+	    return value;
+	  }
+	  var isArr = isArray_1$2(value);
+	  if (isArr) {
+	    result = _initCloneArray(value);
+	    if (!isDeep) {
+	      return _copyArray(value, result);
+	    }
+	  } else {
+	    var tag = _getTag(value),
+	        isFunc = tag == funcTag$2 || tag == genTag$1;
+
+	    if (isBuffer_1(value)) {
+	      return _cloneBuffer(value, isDeep);
+	    }
+	    if (tag == objectTag$3 || tag == argsTag$3 || (isFunc && !object)) {
+	      result = (isFlat || isFunc) ? {} : _initCloneObject(value);
+	      if (!isDeep) {
+	        return isFlat
+	          ? _copySymbolsIn(value, _baseAssignIn(result, value))
+	          : _copySymbols(value, _baseAssign(result, value));
+	      }
+	    } else {
+	      if (!cloneableTags[tag]) {
+	        return object ? value : {};
+	      }
+	      result = _initCloneByTag(value, tag, baseClone, isDeep);
+	    }
+	  }
+	  // Check for circular references and return its corresponding clone.
+	  stack || (stack = new _Stack);
+	  var stacked = stack.get(value);
+	  if (stacked) {
+	    return stacked;
+	  }
+	  stack.set(value, result);
+
+	  var keysFunc = isFull
+	    ? (isFlat ? _getAllKeysIn : _getAllKeys)
+	    : (isFlat ? keysIn : keys_1);
+
+	  var props = isArr ? undefined : keysFunc(value);
+	  _arrayEach(props || value, function(subValue, key) {
+	    if (props) {
+	      key = subValue;
+	      subValue = value[key];
+	    }
+	    // Recursively populate clone (susceptible to call stack limits).
+	    _assignValue(result, key, baseClone(subValue, bitmask, customizer, key, value, stack));
+	  });
+	  return result;
+	}
+
+	var _baseClone = baseClone;
+
+	/** Used to compose bitmasks for cloning. */
+	var CLONE_SYMBOLS_FLAG = 4;
+
+	/**
+	 * Creates a shallow clone of `value`.
+	 *
+	 * **Note:** This method is loosely based on the
+	 * [structured clone algorithm](https://mdn.io/Structured_clone_algorithm)
+	 * and supports cloning arrays, array buffers, booleans, date objects, maps,
+	 * numbers, `Object` objects, regexes, sets, strings, symbols, and typed
+	 * arrays. The own enumerable properties of `arguments` objects are cloned
+	 * as plain objects. An empty object is returned for uncloneable values such
+	 * as error objects, functions, DOM nodes, and WeakMaps.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to clone.
+	 * @returns {*} Returns the cloned value.
+	 * @see _.cloneDeep
+	 * @example
+	 *
+	 * var objects = [{ 'a': 1 }, { 'b': 2 }];
+	 *
+	 * var shallow = _.clone(objects);
+	 * console.log(shallow[0] === objects[0]);
+	 * // => true
+	 */
+	function clone$1(value) {
+	  return _baseClone(value, CLONE_SYMBOLS_FLAG);
+	}
+
+	var clone_1 = clone$1;
+
 	var tourComponent = {
 	  schema: {
 	    autoStart: {
@@ -19369,10 +20217,32 @@
 	    this.animate(target);
 	  },
 
+	  setViewPoint: function (mode) {
+	    var HEIGHT_PERSON = 1.4;
+	    var HEIGHT_BIRDS_EYE = 7;
+	    var ANGLE_PERSON = 0;
+	    var ANGLE_BIRDS_EYE = -60;
+	    if (['person', 'bird'].indexOf(mode) < -1) {
+	      console.error('not supported camera mode: ' + mode);
+	      return
+	    }
+	    this._isPlaying = false;
+	    var pos = clone_1(this.el.getAttribute('position'));
+	    var rot = clone_1(this.el.getAttribute('rotation'));
+	    pos.y = mode === 'person' ? HEIGHT_PERSON : HEIGHT_BIRDS_EYE;
+	    rot.x = mode === 'person' ? ANGLE_PERSON : ANGLE_BIRDS_EYE;
+	    var target = {
+	      position: AFRAME.utils.coordinates.stringify(pos),
+	      rotation: AFRAME.utils.coordinates.stringify(rot)
+	    };
+	    this.animate(target);
+	  },
+
 	  animate: function (bookmark) {
+	    var isDomElement = isElement(bookmark);
 	    var entity = this.el;
-	    var newPosition = bookmark.getAttribute('position');
-	    var newRotation = bookmark.getAttribute('rotation');
+	    var newPosition = isDomElement ? bookmark.getAttribute('position') : bookmark.position;
+	    var newRotation = isDomElement ? bookmark.getAttribute('rotation') : bookmark.rotation;
 	    var currentPosition = entity.getAttribute('position');
 	    var currentRotation = entity.getAttribute('rotation');
 	    var startPosition = AFRAME.utils.coordinates.stringify(currentPosition);
@@ -19422,6 +20292,16 @@
 	  var b = parseFloat(q.y) - parseFloat(p.y);
 	  var c = parseFloat(q.z) - parseFloat(p.z);
 	  return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2) + Math.pow(c, 2))
+	}
+
+	// Returns true if it is a DOM element
+	// https://stackoverflow.com/a/384380/2835973
+	function isElement(o){
+	  var DOM_ELEMENT = 1;
+	  return (
+	    typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
+	      o && typeof o === "object" && o !== null && o.nodeType === DOM_ELEMENT && typeof o.nodeName==="string"
+	  );
 	}
 
 	// initialize aframe components
@@ -21231,94 +22111,6 @@
 	};
 
 	/**
-	 * The base implementation of `assignValue` and `assignMergeValue` without
-	 * value checks.
-	 *
-	 * @private
-	 * @param {Object} object The object to modify.
-	 * @param {string} key The key of the property to assign.
-	 * @param {*} value The value to assign.
-	 */
-	function baseAssignValue(object, key, value) {
-	  if (key == '__proto__' && _defineProperty) {
-	    _defineProperty(object, key, {
-	      'configurable': true,
-	      'enumerable': true,
-	      'value': value,
-	      'writable': true
-	    });
-	  } else {
-	    object[key] = value;
-	  }
-	}
-
-	var _baseAssignValue = baseAssignValue;
-
-	/** Used for built-in method references. */
-	var objectProto$12 = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$9 = objectProto$12.hasOwnProperty;
-
-	/**
-	 * Assigns `value` to `key` of `object` if the existing value is not equivalent
-	 * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
-	 * for equality comparisons.
-	 *
-	 * @private
-	 * @param {Object} object The object to modify.
-	 * @param {string} key The key of the property to assign.
-	 * @param {*} value The value to assign.
-	 */
-	function assignValue(object, key, value) {
-	  var objValue = object[key];
-	  if (!(hasOwnProperty$9.call(object, key) && eq_1(objValue, value)) ||
-	      (value === undefined && !(key in object))) {
-	    _baseAssignValue(object, key, value);
-	  }
-	}
-
-	var _assignValue = assignValue;
-
-	/**
-	 * Copies properties of `source` to `object`.
-	 *
-	 * @private
-	 * @param {Object} source The object to copy properties from.
-	 * @param {Array} props The property identifiers to copy.
-	 * @param {Object} [object={}] The object to copy properties to.
-	 * @param {Function} [customizer] The function to customize copied values.
-	 * @returns {Object} Returns `object`.
-	 */
-	function copyObject(source, props, object, customizer) {
-	  var isNew = !object;
-	  object || (object = {});
-
-	  var index = -1,
-	      length = props.length;
-
-	  while (++index < length) {
-	    var key = props[index];
-
-	    var newValue = customizer
-	      ? customizer(object[key], source[key], key, object, source)
-	      : undefined;
-
-	    if (newValue === undefined) {
-	      newValue = source[key];
-	    }
-	    if (isNew) {
-	      _baseAssignValue(object, key, newValue);
-	    } else {
-	      _assignValue(object, key, newValue);
-	    }
-	  }
-	  return object;
-	}
-
-	var _copyObject = copyObject;
-
-	/**
 	 * Creates a function like `_.assign`.
 	 *
 	 * @private
@@ -21352,86 +22144,6 @@
 	}
 
 	var _createAssigner = createAssigner;
-
-	/**
-	 * This function is like
-	 * [`Object.keys`](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
-	 * except that it includes inherited enumerable properties.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names.
-	 */
-	function nativeKeysIn(object) {
-	  var result = [];
-	  if (object != null) {
-	    for (var key in Object(object)) {
-	      result.push(key);
-	    }
-	  }
-	  return result;
-	}
-
-	var _nativeKeysIn = nativeKeysIn;
-
-	/** Used for built-in method references. */
-	var objectProto$13 = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$10 = objectProto$13.hasOwnProperty;
-
-	/**
-	 * The base implementation of `_.keysIn` which doesn't treat sparse arrays as dense.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names.
-	 */
-	function baseKeysIn(object) {
-	  if (!isObject_1$3(object)) {
-	    return _nativeKeysIn(object);
-	  }
-	  var isProto = _isPrototype(object),
-	      result = [];
-
-	  for (var key in object) {
-	    if (!(key == 'constructor' && (isProto || !hasOwnProperty$10.call(object, key)))) {
-	      result.push(key);
-	    }
-	  }
-	  return result;
-	}
-
-	var _baseKeysIn = baseKeysIn;
-
-	/**
-	 * Creates an array of the own and inherited enumerable property names of `object`.
-	 *
-	 * **Note:** Non-object values are coerced to objects.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 3.0.0
-	 * @category Object
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names.
-	 * @example
-	 *
-	 * function Foo() {
-	 *   this.a = 1;
-	 *   this.b = 2;
-	 * }
-	 *
-	 * Foo.prototype.c = 3;
-	 *
-	 * _.keysIn(new Foo);
-	 * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
-	 */
-	function keysIn(object) {
-	  return isArrayLike_1(object) ? _arrayLikeKeys(object, true) : _baseKeysIn(object);
-	}
-
-	var keysIn_1 = keysIn;
 
 	/**
 	 * This method is like `_.assignIn` except that it accepts `customizer`
@@ -21469,10 +22181,10 @@
 	var assignInWith_1 = assignInWith;
 
 	/** Used for built-in method references. */
-	var objectProto$14 = Object.prototype;
+	var objectProto$15 = Object.prototype;
 
 	/** Used to check objects for own properties. */
-	var hasOwnProperty$11 = objectProto$14.hasOwnProperty;
+	var hasOwnProperty$12 = objectProto$15.hasOwnProperty;
 
 	/**
 	 * Used by `_.defaults` to customize its `_.assignIn` use to assign properties
@@ -21488,7 +22200,7 @@
 	 */
 	function customDefaultsAssignIn(objValue, srcValue, key, object) {
 	  if (objValue === undefined ||
-	      (eq_1(objValue, objectProto$14[key]) && !hasOwnProperty$11.call(object, key))) {
+	      (eq_1(objValue, objectProto$15[key]) && !hasOwnProperty$12.call(object, key))) {
 	    return srcValue;
 	  }
 	  return objValue;
@@ -22092,6 +22804,12 @@
 	      break
 	    case 'interior':
 	      attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1);
+	      // apply custom material settings for furniture items
+	      if (element3d.materials && Array.isArray(element3d.materials) ) {
+	        element3d.materials.forEach(function(mat) {
+	          if (mat.mesh && mat.material) attributes['io3d-furniture'] += '; material_' + mat.mesh.replace(/\s/g, '_') + ':' + mat.material;
+	        });
+	      }
 	      attributes['shadow'] = 'cast: true, receive: false';
 	    break
 	    case 'object':
@@ -22173,7 +22891,7 @@
 	  var furnitureIds;
 
 	  // check for DOM element
-	  var isDomElement = isElement(input);
+	  var isDomElement = isElement$1(input);
 	  if (isDomElement) {
 	    // convert to sceneStructure
 	    input = getSceneStructureFromHtml(input);
@@ -22228,7 +22946,7 @@
 
 	// Returns true if it is a DOM element
 	// https://stackoverflow.com/a/384380/2835973
-	function isElement(o){
+	function isElement$1(o){
 	  return (
 	    typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
 	      o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
@@ -25435,7 +26153,7 @@
 	      } else {
 	        throw 'Only basic tags like "<div>" without attributes are currently supported. (No queries and no HTML strings)'
 	      }
-	    } else if (isElement$1(x)) {
+	    } else if (isElement$2(x)) {
 	      // only add convenience methods
 	      extendWithConvenienceMethods(x);
 	    } else {
@@ -25445,7 +26163,7 @@
 	};
 
 	// utils
-	el.isElement = isElement$1;
+	el.isElement = isElement$2;
 
 	// helpers
 
@@ -25483,7 +26201,7 @@
 	    return el
 	  };
 	  el.append = function append (o) {
-	    if (o) isElement$1(o) ? el.appendChild(o) : el.innerHTML = o;
+	    if (o) isElement$2(o) ? el.appendChild(o) : el.innerHTML = o;
 	    return el
 	  };
 	  el.appendTo = function appendToElement (parentEl) {
@@ -25522,7 +26240,7 @@
 
 	// Returns true if it is a DOM element
 	// https://stackoverflow.com/a/384380/2835973
-	function isElement$1(o){
+	function isElement$2(o){
 	  return (
 	    typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
 	      o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
