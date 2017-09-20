@@ -70,7 +70,7 @@ function getAttributes(element3d) {
     case 'interior':
       attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1)
       // apply custom material settings for furniture items
-      if (element3d.materials) {
+      if (element3d.materials && Array.isArray(element3d.materials) ) {
         element3d.materials.forEach(function(mat) {
           if (mat.mesh && mat.material) attributes['io3d-furniture'] += '; material_' + mat.mesh.replace(/\s/g, '_') + ':' + mat.material
         })
