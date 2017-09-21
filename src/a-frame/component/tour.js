@@ -36,6 +36,10 @@ export default {
   },
 
   playTour: function () {
+    if (!this._waypoints || !this._waypoints.length) {
+      console.warn('camera tour has no waypoints')
+      return
+    }
     if (this._isPlaying) {
       if(this._isChangingAnimation) {
         clearTimeout(this._nextAnimationTimeout)
