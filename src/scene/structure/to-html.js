@@ -49,11 +49,7 @@ function getHtmlFromSceneStructure(sceneStructure, parent) {
 
 // get html attributes from element3d params
 function getAttributes(element3d) {
-  var attributes = {
-    'io3d-uuid': element3d.id,
-    position: element3d.x + ' ' + element3d.y + ' ' + element3d.z,
-    rotation: '0 ' + element3d.ry + ' 0'
-  }
+  var attributes = {}
 
   switch (element3d.type) {
     case 'level':
@@ -82,6 +78,10 @@ function getAttributes(element3d) {
       attributes['shadow'] = 'cast: true, receive: true'
     break
   }
+
+  attributes.position = element3d.x + ' ' + element3d.y + ' ' + element3d.z
+  attributes.rotation = (element3d.rx || 0) + ' ' + element3d.ry + ' 0'
+  attributes['io3d-uuid'] = element3d.id
 
   return attributes
 }
