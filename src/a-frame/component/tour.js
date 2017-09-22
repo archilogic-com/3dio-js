@@ -1,4 +1,5 @@
 import clone from 'lodash/clone'
+import defaults from 'lodash/defaults'
 
 export default {
   schema: {
@@ -84,20 +85,23 @@ export default {
     this.animate(target)
   },
 
-  setViewPoint: function (mode) {
-    var HEIGHT_PERSON = 1.4
-    var HEIGHT_BIRDS_EYE = 7
-    var ANGLE_PERSON = 0
-    var ANGLE_BIRDS_EYE = -60
-    if (['person', 'bird'].indexOf(mode) < -1) {
-      console.error('not supported camera mode: ' + mode)
+  // set camera position and rotation by providing changes for certain axes
+  // to reset camera to walking mode do:
+  // setViewPoint({position: {y:1.6}, rotation: {x:0})
+  setViewPoint: function (args) {
+    args = args || {}
+    if (typeof args !== 'object') {
+      console.error('not supported camera view point: ' + args)
       return
     }
+    var posChange = args.position || {}
+    var rotChange = args.rotation || {}
+
     this._isPlaying = false
-    var pos = clone(this.el.getAttribute('position'))
-    var rot = clone(this.el.getAttribute('rotation'))
-    pos.y = mode === 'person' ? HEIGHT_PERSON : HEIGHT_BIRDS_EYE
-    rot.x = mode === 'person' ? ANGLE_PERSON : ANGLE_BIRDS_EYE
+    // apply changes to current camera position
+    var pos = defaults({}, posChange, clone(this.el.getAttribute('position')))
+    var rot = defaults({}, rotChange, clone(this.el.getAttribute('rotation')))
+
     var target = {
       position: AFRAME.utils.coordinates.stringify(pos),
       rotation: AFRAME.utils.coordinates.stringify(rot)
