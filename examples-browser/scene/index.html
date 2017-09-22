@@ -62,7 +62,7 @@
         const waypoints = document.querySelectorAll('[tour-waypoint]')
         console.log('current waypoints', waypoints.length)
 
-        io3d.scene.getHtml(id)
+        io3d.scene.getAframeElements(id)
           .then(result => {
             console.log(result)
             result.forEach((elem) => {

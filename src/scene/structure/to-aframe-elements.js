@@ -11,7 +11,7 @@ var validTypes = [
   'camera-bookmark'
 ]
 
-export default function toHtml(sceneStructure, options) {
+export default function toAframeElements(sceneStructure, options) {
   if (!sceneStructure) {
     console.error('nothing to convert')
     return
@@ -22,17 +22,23 @@ export default function toHtml(sceneStructure, options) {
   // api
   options = options || {}
   var isArray = Array.isArray(sceneStructure)
+  console.log('isArray', isArray)
   sceneStructure = isArray ? sceneStructure : [sceneStructure]
 
   // start parsing
-  var html = getHtmlFromSceneStructure(sceneStructure)
+  var html = getAframeElementsFromSceneStructure(sceneStructure)
   var camHtml = parseCameraBookmarks(sceneStructure, isArray ? html : html[0])
-  console.log('ready')
-  return (isArray ? [html] : html).concat(camHtml)
+  var result
+  if (!camHtml) {
+    result = isArray ? html : html[0]
+  } else {
+    result = (Array.isArray(html) ? html : [html]).concat(camHtml)
+  }
+  return result
 }
 
 // recursive parsing through sceneStructre
-function getHtmlFromSceneStructure(sceneStructure, parent) {
+function getAframeElementsFromSceneStructure(sceneStructure, parent) {
   var collection = parent ? null : [] // use collection or parent
   sceneStructure.forEach(function(element3d) {
     if (validTypes.indexOf(element3d.type) > -1) {
@@ -46,7 +52,7 @@ function getHtmlFromSceneStructure(sceneStructure, parent) {
         // ?
       }
 
-      if (element3d.children && element3d.children.length) getHtmlFromSceneStructure(element3d.children, el)
+      if (element3d.children && element3d.children.length) getAframeElementsFromSceneStructure(element3d.children, el)
       if (collection) collection.push(el)
     }
   })
@@ -57,8 +63,6 @@ function getHtmlFromSceneStructure(sceneStructure, parent) {
 // get html attributes from element3d params
 function getAttributes(element3d) {
   var attributes = {}
-
-  console.log(element3d.type, element3d.id, element3d.ry)
 
   switch (element3d.type) {
     case 'level':

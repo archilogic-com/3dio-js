@@ -1,6 +1,6 @@
 import GetFurnitureAlternatives from './get-furniture-alternatives.js'
-import getSceneStructureFromHtml from '../scene/structure/from-html.js'
-import getHtmlFromSceneStructure from '../scene/structure/to-html.js'
+import getSceneStructureFromAframeElements from '../scene/structure/from-aframe-elements.js'
+import getAframeElementsFromSceneStructure from '../scene/structure/to-aframe-elements.js'
 import normalizeSceneStructure from '../scene/structure/normalize.js'
 import defaults from 'lodash/defaults'
 import Promise from 'bluebird'
@@ -20,7 +20,7 @@ export default function replaceFurniture (input, options) {
   var isDomElement = isElement(input)
   if (isDomElement) {
     // convert to sceneStructure
-    input = getSceneStructureFromHtml(input)
+    input = getSceneStructureFromAframeElements(input)
   }
 
   return normalizeSceneStructure(input)
@@ -45,7 +45,7 @@ export default function replaceFurniture (input, options) {
       // replace params in furniture elements
       var sceneStructure = updateSceneStructureWithResult(input, alternatives, random)
       if (isDomElement) {
-        return getHtmlFromSceneStructure(sceneStructure)
+        return getAframeElementsFromSceneStructure(sceneStructure)
       } else return sceneStructure
     })
     .catch(function(error) {
