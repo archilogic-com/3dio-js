@@ -3,6 +3,7 @@
   <head>
     <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
     <script src="../../../build/3dio.js"></script>
+    <script src="https://unpkg.com/aframe-animation-component/dist/aframe-animation-component.min.js"></script>
     <link href="style.css" rel="stylesheet">
   </head>
   <body>
@@ -12,7 +13,13 @@
     <a-scene antialias="true" shadow="type: pcfsoft">
     </a-scene>
     <script>
-      const id = '6350c07d-9c8d-44d1-881c-9218ff1b3682'
+
+      io3d.config({
+        servicesUrl: 'http://localhost:5000/api/v2',
+        storageDomainNoCdn: 'archilogic-content-dev.s3-website-eu-west-1.amazonaws.com'
+      })
+
+      const id = '19db0769-ab04-4d41-aceb-2b28c7debe30'
       const idInput = document.querySelector('input#inpt-id')
       const sceneEl = document.querySelector('a-scene')
 
@@ -30,9 +37,10 @@
       function loadScene(id) {
         io3d.scene.getHtml(id)
           .then(result => {
-            if (addedElement) sceneEl.removeChild(addedElement)
-            addedElement = result
-            sceneEl.appendChild(result)
+//            if (addedElement) sceneEl.removeChild(addedElement)
+//            addedElement = result
+            console.log(result)
+            result.forEach((elem) => sceneEl.appendChild(elem))
           })
           .catch(error => {
               console.log(error)
