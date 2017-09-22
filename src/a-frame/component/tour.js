@@ -88,7 +88,7 @@ export default {
   // set camera position and rotation by providing changes for certain axes
   // to reset camera to walking mode do:
   // setViewPoint({position: {y:1.6}, rotation: {x:0})
-  setViewPoint: function (args) {
+  updateViewPoint: function (args) {
     args = args || {}
     if (typeof args !== 'object') {
       console.error('not supported camera view point: ' + args)
