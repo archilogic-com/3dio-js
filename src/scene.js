@@ -7,11 +7,23 @@ import getAframeElementsFromSceneStructure from './scene/structure/to-aframe-ele
 
 var scene = {
   getStructure: getStructure,
+  getHtml: getHtml,
   getAframeElements: getAframeElements,
   getViewerUrl: getViewerUrl,
   validateSceneStructure: validateSceneStructure,
   normalizeSceneStructure: normalizeSceneStructure,
+  getHtmlFromSceneStructure: getHtmlFromSceneStructure,
   getAframeElementsFromSceneStructure: getAframeElementsFromSceneStructure
+}
+
+function getHtml() {
+  console.warn('io3d.scene.getHtml will be removed soon please use io3d.scene.getAframeElements')
+  return getAframeElements.apply( getAframeElements, arguments )
+}
+
+function getHtmlFromSceneStructure() {
+  console.warn('io3d.scene.getHtmlFromSceneStructure will be removed soon please use io3d.scene.getAframeElementsFromSceneStructure')
+  return getAframeElementsFromSceneStructure.apply( getAframeElementsFromSceneStructure, arguments )
 }
 
 export default scene
