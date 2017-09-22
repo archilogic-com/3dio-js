@@ -56,11 +56,7 @@ function getHtmlFromSceneStructure(sceneStructure, parent) {
 
 // get html attributes from element3d params
 function getAttributes(element3d) {
-  var attributes = {
-    'io3d-uuid': element3d.id,
-    position: element3d.x + ' ' + element3d.y + ' ' + element3d.z,
-    rotation: (element3d.rx || 0) + ' ' + element3d.ry + ' 0'
-  }
+  var attributes = {}
 
   console.log(element3d.type, element3d.id, element3d.ry)
 
