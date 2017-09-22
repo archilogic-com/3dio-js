@@ -5,41 +5,104 @@
     <script src="../../../build/3dio.js"></script>
     <script src="https://unpkg.com/aframe-animation-component/dist/aframe-animation-component.min.js"></script>
     <link href="style.css" rel="stylesheet">
+    <link href="default-controls.css" rel="stylesheet">
   </head>
   <body>
-    <div class="controls">
+    <div class="custom-controls">
       <input id="inpt-id" placeholder="enter scene id" style="width: 400px;"/>
     </div>
-    <a-scene antialias="true" shadow="type: pcfsoft">
+    <!-- ui -->
+    <div class="camera-controls">
+      <div class="waypoints">
+        <button class="btn-waypoint" onclick="document.querySelector('[camera]').components['tour'].goTo('Overview')">Overview</button>
+        <button class="btn-toggle-play playing"
+                onclick="this.classList.contains('playing') ? document.querySelector('[camera]').components['tour'].pauseTour() : document.querySelector('[camera]').components['tour'].playTour(), this.classList.toggle('playing')">
+        </button>
+      </div>
+      <div class="camera-mode">
+        <div class="btn camera active"
+             onclick="document.querySelector('.waypoints').classList.toggle('hide'), this.classList.toggle('active')">
+        </div>
+        <div class="btn bird"
+             id="btn-bird"
+             onclick="document.querySelector('[camera]').components['tour'].setViewPoint('bird'), document.querySelector('#btn-person').classList.remove('active'), this.classList.add('active')">
+        </div>
+        <div class="btn person active"
+             id="btn-person"
+             onclick="document.querySelector('[camera]').components['tour'].setViewPoint('person'), document.querySelector('#btn-bird').classList.remove('active'), this.classList.add('active')">
+        </div>
+      </div>
+    </div>
+    <!-- 3d scene -->
+    <a-scene vr-mode-ui="enabled: false">
     </a-scene>
     <script>
 
-      const id = '5dc58829-ecd3-4b33-bdaf-f798b7edecd4'
+      const id = '5dc58829-ecd3-4b33-bdaf-f798b7edecd4' //'6350c07d-9c8d-44d1-881c-9218ff1b3682'
       const idInput = document.querySelector('input#inpt-id')
       const sceneEl = document.querySelector('a-scene')
 
-      let addedElement
-
+      let addedElements = []
       idInput.value = id
       loadScene(id)
 
       idInput.addEventListener('input', function() {
         var sceneId = idInput.value
         if (io3d.utils.uuid.validate(sceneId)) loadScene(sceneId)
-        else io3d.ui.message('no valid id', 4000, 'warning')
+        else io3d.ui.message('no valid id', 1000, 'warning')
       })
 
       function loadScene(id) {
+        // clean 3d scene
+        addedElements.forEach(el => {
+          console.log('remove', el)
+          if (el && el.parentNode) el.parentNode.removeChild(el)
+        })
+        addedElements = []
+        const waypoints = document.querySelectorAll('[tour-waypoint]')
+        console.log('current waypoints', waypoints.length)
+
         io3d.scene.getHtml(id)
           .then(result => {
-//            if (addedElement) sceneEl.removeChild(addedElement)
-//            addedElement = result
             console.log(result)
-            result.forEach((elem) => sceneEl.appendChild(elem))
+            result.forEach((elem) => {
+              addedElements.push(elem)
+              sceneEl.appendChild(elem)
+            })
+            updateWaypoints ()
           })
           .catch(error => {
-              console.log(error)
+            console.log(error)
           })
+      }
+
+      function moveToFirstWaypoint() {
+        const waypoint = document.querySelector('[tour-waypoint]')
+        const name = waypoint.getAttribute('tour-waypoint')
+        console.log('moving to:', name)
+        document.querySelector('[camera]').components['tour'].goTo(name)
+      }
+
+      function updateWaypoints () {
+        const waypoints = document.querySelectorAll('[tour-waypoint]')
+        const waypointParent = document.querySelector('.waypoints')
+        const existingWaypoints = document.querySelectorAll('.btn-waypoint')
+
+        // remove existing waypoints
+        existingWaypoints.forEach(el => {
+          el.parentNode.removeChild(el)
+        })
+        // add the new ones
+        waypoints.forEach(el => {
+          let name = el.getAttribute('tour-waypoint')
+          var newWaypoint = document.createElement('div')
+          newWaypoint.innerHTML = '<button class="btn-waypoint" onclick="document.querySelector(\'[camera]\').components[\'tour\'].goTo(\'' + name + '\')">' + name + '</button>'
+          waypointParent.appendChild(newWaypoint.querySelector('button'))
+        })
+        setTimeout(() => {
+          console.log('start moving')
+          moveToFirstWaypoint()
+        }, 500)
       }
     </script>
   </body>

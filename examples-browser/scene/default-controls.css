@@ -1,0 +1,103 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  border: 0;
+}
+#custom-logo {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 80px;
+  padding: 10px;
+  z-index: 1000;
+}
+
+#custom-logo img {
+  width: 100%
+}
+
+.camera-controls {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  z-index: 100;
+}
+.btn-waypoint, .btn-toggle-play {
+  background-color: rgba(255,255,255,0.9);
+  box-sizing: border-box;
+  display: block;
+  border-radius: 3px;
+  font-size: 14px;
+  color: #333;
+  height: 30px;
+  box-shadow: 1px 1px 2px rgba(0,0,0,.1);
+  transition: all ease 0.3s;
+  cursor: pointer;
+  margin: 0 5px 5px 0;
+  padding: 0 10px;
+  text-decoration: none;
+  border: none;
+  outline: none;
+}
+.btn-waypoint:hover, .btn-toggle-play:hover {
+  background-color: rgba(255,255,255,1);
+  box-shadow: 1px 1px 5px rgba(0,0,0,.2);
+}
+
+.btn-toggle-play {
+  display: none;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 20px 20px;
+  width: 35px;
+  height: 35px;
+  background-image: url('https://spaces-static.archilogic.com/build/170920-121718-65fe40d/e3d/ui/ui-play-black.svg');
+}
+
+/* display play button only if there are waypoints */
+.btn-waypoint + .btn-toggle-play {
+  display: block;
+}
+
+.btn-toggle-play.playing {
+  background-image: url('https://spaces-static.archilogic.com/build/170920-121718-65fe40d/e3d/ui/ui-pause-black.svg');
+}
+
+.camera-mode > .btn {
+  width: 40px;
+  height: 40px;
+  background: white;
+  border-radius: 50%;
+  display: inline-block;
+  cursor: pointer;
+  margin: 5px 5px 0 0;
+  box-shadow: 1px 1px 2px rgba(0,0,0,.1);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 30px 30px;
+  transition: all ease 0.3s;
+}
+.camera-mode > .btn.camera {
+  background-image: url('https://spaces-static.archilogic.com/build/170920-121718-65fe40d/e3d/ui/icon-camera-black.svg');
+}
+.camera-mode > .btn.bird {
+  background-image: url('https://spaces-static.archilogic.com/build/170711-151653-c61293f/e3d/ui/icon-birdview-black.svg');
+}
+.camera-mode > .btn.person {
+  background-image: url('https://spaces-static.archilogic.com/build/170711-151653-c61293f/e3d/ui/icon-person-black.svg');
+}
+.camera-mode > .btn.camera.active {
+  background-image: url('https://spaces-static.archilogic.com/build/170920-121718-65fe40d/e3d/ui/icon-camera-blue.svg');
+}
+.camera-mode > .btn.bird.active {
+  background-image: url('https://spaces-static.archilogic.com/build/170711-151653-c61293f/e3d/ui/icon-birdview-blue.svg');
+}
+.camera-mode > .btn.person.active {
+  background-image: url('https://spaces-static.archilogic.com/build/170711-151653-c61293f/e3d/ui/icon-person-blue.svg');
+}
+.camera-mode > .btn:hover {
+  box-shadow: 1px 1px 5px rgba(0,0,0,.2);
+}
+.hide {
+  display: none;
+}
