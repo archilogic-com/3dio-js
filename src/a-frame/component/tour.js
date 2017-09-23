@@ -127,8 +127,7 @@ export default {
     // compute animation time
     // add 1 to the this.data.move parameter to allow users to specify 0 without the animation cancelling out
     var t = Math.round((this.data.move === undefined ? 3000 : this.data.move + 1) / 6 * (d + angle / 30))
-    if (t > Math.max(10000, this.data.move)) t = Math.max(10000, this.data.move)
-
+    if (t > Math.max(5000, this.data.move)) t = Math.max(5000, this.data.move)
     // prevent zero length animation
     if (!t) return this._nextWaypoint()
 
