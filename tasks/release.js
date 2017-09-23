@@ -16,7 +16,6 @@ const git = require('gulp-git')
 
 const version = packageInfo.version
 const branchName = preamble.gitBranchName
-const latestNpmVersion = execSync(`npm view ${packageInfo.name} version`).toString('utf8').replace('\n', '')
 
 // configs
 
@@ -146,6 +145,7 @@ function gitPush () {
 }
 
 function npmCheckVersion () {
+  const latestNpmVersion = execSync(`npm view ${packageInfo.name} version`).toString('utf8').replace('\n', '')
   if (latestNpmVersion === version ) {
     throw new Error('Version '+version+' has been published to NPM already. Did you forget to bump version number?')
   }
@@ -153,7 +153,7 @@ function npmCheckVersion () {
 }
 
 function npmPublish () {
-  console.log('Publishing version '+version+' to NPM (latest: '+latestNpmVersion+')')
+  console.log('Publishing version '+version+' to NPM')
   execSync(`npm publish`).toString('utf8').replace('\n', '')
   return Promise.resolve()
 }
