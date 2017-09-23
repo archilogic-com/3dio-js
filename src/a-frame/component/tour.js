@@ -114,15 +114,16 @@ export default {
     var entity = this.el
     var newPosition = isDomElement ? bookmark.getAttribute('position') : bookmark.position
     var newRotation = isDomElement ? bookmark.getAttribute('rotation') : bookmark.rotation
-    var currentPosition = entity.getAttribute('position')
-    var currentRotation = entity.getAttribute('rotation')
-    var startPosition = AFRAME.utils.coordinates.stringify(currentPosition)
-    var startRotation = AFRAME.utils.coordinates.stringify(currentRotation)
+    var startPosition = entity.getAttribute('position')
+    var startRotation = entity.getAttribute('rotation')
+
+    // compute shortest rotation
+    newRotation = normalizeRotation(startRotation, newRotation)
 
     // compute distance to adapt speed
-    var d = dist(currentPosition, AFRAME.utils.coordinates.parse(newPosition))
+    var d = dist(startPosition, newPosition)
     // compute angle difference to adapt speed
-    var angle = Math.abs(currentRotation.y - AFRAME.utils.coordinates.parse(newRotation).y)
+    var angle = Math.abs(startRotation.y - newRotation.y)
     // compute animation time
     // add 1 to the this.data.move parameter to allow users to specify 0 without the animation cancelling out
     var t = Math.round((this.data.move === undefined ? 3000 : this.data.move + 1) / 6 * (d + angle / 30))
@@ -156,6 +157,21 @@ export default {
     var next = this._waypoints[++this._currentWayPoint]
     this._nextAnimationTimeout = setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying) }.bind(this), this.data.wait === undefined ? 0 : this.data.wait)
   }
+}
+
+// we want to prevent excessive spinning in rotations
+function normalizeRotation(start, end) {
+  // prevent angles larger than 360
+  var normRot = {
+    x: end.x % 360,
+    y: end.y % 360,
+    z: end.z % 360,
+  }
+  // if delta is bigger than 180 degrees we spin to the other direction
+  Object.keys(normRot).forEach(function(axis) {
+    if (normRot[axis] - start[axis] > 180) normRot[axis] -= 360
+  })
+  return normRot
 }
 
 function dist(p, q) {
