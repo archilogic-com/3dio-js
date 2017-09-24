@@ -84,8 +84,8 @@ function checkBranchName () {
 
 function cleanDestDir () {
   return del([destDir]).then(function () {
-    fs.mkdirSync(process.cwd() + `/${destDir}`, 0744)
-    fs.mkdirSync(process.cwd() + `/${destDir}/${version}`, 0744)
+    fs.mkdirSync(process.cwd() + `/${destDir}`, 0o744)
+    fs.mkdirSync(process.cwd() + `/${destDir}/${version}`, 0o744)
   })
 }
 
