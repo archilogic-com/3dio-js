@@ -14,6 +14,7 @@ export default function fetchModule (url) {
   } else {
   // load code and use module wrapper
     return fetch(url).then(function(response){
+      if (!response.ok) throw 'Could not load script from URL: '+url
       return response.text()
     }).then(function(code){
 
