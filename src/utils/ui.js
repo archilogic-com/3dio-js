@@ -17,7 +17,6 @@ import createPromptUi from './ui/create-prompt-ui.js'
 if (runtime.isBrowser) {
   var style = document.createElement('style')
   style.setAttribute('media', 'screen')
-  //style.innerHTML = css
   style.appendChild(document.createTextNode(css))
   document.head.appendChild(style)
 }
