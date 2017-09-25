@@ -2,8 +2,6 @@
 import fragmentShader from './gblock/fragment-placeholder.glsl'
 import vertexShader from './gblock/vertex-placeholder.glsl'
 
-// requires dependency check (for node.js compatibility)
-
 var GBlockLoader
 // THREE.GLTFLoader is required but not included in node.js version
 if (THREE.GLTFLoader) {
