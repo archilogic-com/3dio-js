@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.76
- * @date 2017/09/25 16:10
+ * @version 1.0.0-beta.77
+ * @date 2017/09/25 16:47
  * @branch master
- * @commit b32b1118b5ccb848bd99fade80453ee4f10c8da3
+ * @commit ef9c380fdeabf98ac948c854bbcfa24f5d44ae00
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/25 16:10', GIT_BRANCH = 'master', GIT_COMMIT = 'b32b1118b5ccb848bd99fade80453ee4f10c8da3'
+	var BUILD_DATE='2017/09/25 16:47', GIT_BRANCH = 'master', GIT_COMMIT = 'ef9c380fdeabf98ac948c854bbcfa24f5d44ae00'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.76";
+	var version = "1.0.0-beta.77";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -16701,8 +16701,6 @@
 	var vertexShader = {"text":"varying vec3 v_normal;\nvarying vec3 v_position;\nvarying vec3 v_binormal;\nvarying vec3 v_tangent;\n","base64":"data:text/plain;base64,dmFyeWluZyB2ZWMzIHZfbm9ybWFsOwp2YXJ5aW5nIHZlYzMgdl9wb3NpdGlvbjsKdmFyeWluZyB2ZWMzIHZfYmlub3JtYWw7CnZhcnlpbmcgdmVjMyB2X3RhbmdlbnQ7Cg=="};
 
 	// TODO: Replace placeholder shaders by original ones (requires fixing projection matrix)
-	// requires dependency check (for node.js compatibility)
-
 	var GBlockLoader;
 	// THREE.GLTFLoader is required but not included in node.js version
 	if (THREE.GLTFLoader) {
@@ -20493,7 +20491,14 @@
 	  AFRAME.registerComponent('io3d-data3d', data3dComponent);
 	  AFRAME.registerComponent('io3d-furniture', furnitureComponent);
 	  AFRAME.registerComponent('tour', tourComponent);
-	  AFRAME.registerComponent('gblock', gBlockComponent);
+	  // check if gblock component has already been registered
+	  if (AFRAME.components.gblock) {
+	    // legacy warning in case gblock has been registered using https://github.com/archilogic-com/aframe-gblock/
+	    console.error('3dio.js error: Please remove any other "<script>" tags registering the "gblock" A-Frame component. This component is included in 3dio.js');
+	  } else {
+	    AFRAME.registerComponent('gblock', gBlockComponent);
+	  }
+
 
 	  // init plugin launcher
 
