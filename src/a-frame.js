@@ -1,5 +1,5 @@
 import runtime from './core/runtime.js'
-import checkDependencies from './a-frame/check-dependencies'
+import checkDependencies from './a-frame/check-dependencies.js'
 // components
 import data3dComponent from './a-frame/component/data3d.js'
 import furnitureComponent from './a-frame/component/furniture.js'
