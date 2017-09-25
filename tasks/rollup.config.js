@@ -7,15 +7,19 @@ const preamble = require('./preamble.js')
 // from https://github.com/mrdoob/three.js/blob/86424d9b318f617254eb857b31be07502ea27ce9/rollup.config.js
 function glsl () {
   return {
-    transform(code, id) {
+    transform(glsl, id) {
       if (/\.glsl$/.test(id) === false) return
 			// remove comments and fix new line chars
-      code = code
+      var shaderAsText = glsl
         .replace(/[ \t]*\/\/.*\n/g, '') // remove //
         .replace(/[ \t]*\/\*[\s\S]*?\*\//g, '') // remove /* */
         .replace(/\n{2,}/g, '\n') // # \n+ to \n
-			// add module wrapper
-			code = 'export default ' + JSON.stringify(code) + ';'
+      //
+      var shaderAsBase64 = 'data:text/plain;base64,' + new Buffer(shaderAsText).toString('base64')
+			//
+      var moduleApi = { text: shaderAsText, base64: shaderAsBase64 }
+      // add module wrapper
+			var code = 'export default ' + JSON.stringify(moduleApi) + ';'
       return {
         code: code,
         map: {mappings: ''}
