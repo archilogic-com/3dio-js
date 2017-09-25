@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.77
- * @date 2017/09/25 16:47
+ * @version 1.0.0-beta.78
+ * @date 2017/09/25 23:56
  * @branch master
- * @commit ef9c380fdeabf98ac948c854bbcfa24f5d44ae00
+ * @commit 8aed73983b65a237ce550bae9ed64f2925ff4172
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/25 16:47', GIT_BRANCH = 'master', GIT_COMMIT = 'ef9c380fdeabf98ac948c854bbcfa24f5d44ae00'
+	var BUILD_DATE='2017/09/25 23:56', GIT_BRANCH = 'master', GIT_COMMIT = '8aed73983b65a237ce550bae9ed64f2925ff4172'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.77";
+	var version = "1.0.0-beta.78";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -16703,7 +16703,7 @@
 	// TODO: Replace placeholder shaders by original ones (requires fixing projection matrix)
 	var GBlockLoader;
 	// THREE.GLTFLoader is required but not included in node.js version
-	if (THREE.GLTFLoader) {
+	if (typeof THREE !== 'undefined' && THREE.GLTFLoader) {
 
 	  GBlockLoader = function GBlockLoader () {
 
@@ -26305,6 +26305,10 @@
 	function extendWithConvenienceMethods (el) {
 	  el.remove = function removeElement (child) {
 	    child ? el.removeChild(child) : el.parentNode.removeChild(el);
+	    return el
+	  };
+	  el.empty = function emptyElement () {
+	    while (el.lastChild) el.removeChild(el.lastChild);
 	    return el
 	  };
 	  el.append = function append (o) {
