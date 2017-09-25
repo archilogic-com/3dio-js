@@ -25,7 +25,14 @@ checkDependencies({
   AFRAME.registerComponent('io3d-data3d', data3dComponent)
   AFRAME.registerComponent('io3d-furniture', furnitureComponent)
   AFRAME.registerComponent('tour', tourComponent)
-  AFRAME.registerComponent('gblock', gBlockComponent)
+  // check if gblock component has already been registered
+  if (AFRAME.components.gblock) {
+    // legacy warning in case gblock has been registered using https://github.com/archilogic-com/aframe-gblock/
+    console.error('3dio.js error: Please remove any other "<script>" tags registering the "gblock" A-Frame component. This component is included in 3dio.js')
+  } else {
+    AFRAME.registerComponent('gblock', gBlockComponent)
+  }
+
 
   // init plugin launcher
 
