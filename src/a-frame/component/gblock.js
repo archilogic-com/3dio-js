@@ -4,7 +4,7 @@ import vertexShader from './gblock/vertex-placeholder.glsl'
 
 var GBlockLoader
 // THREE.GLTFLoader is required but not included in node.js version
-if (THREE.GLTFLoader) {
+if (typeof THREE !== 'undefined' && THREE.GLTFLoader) {
 
   GBlockLoader = function GBlockLoader () {
 
