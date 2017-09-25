@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.75
- * @date 2017/09/24 12:43
+ * @version 1.0.0-beta.76
+ * @date 2017/09/25 16:10
  * @branch master
- * @commit 4959efaced1982fe003a0077e19ed8405a51b80e
+ * @commit b32b1118b5ccb848bd99fade80453ee4f10c8da3
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/24 12:43', GIT_BRANCH = 'master', GIT_COMMIT = '4959efaced1982fe003a0077e19ed8405a51b80e'
+	var BUILD_DATE='2017/09/25 16:10', GIT_BRANCH = 'master', GIT_COMMIT = 'b32b1118b5ccb848bd99fade80453ee4f10c8da3'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.75";
+	var version = "1.0.0-beta.76";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -16696,6 +16696,117 @@
 	  );
 	}
 
+	var fragmentShader = {"text":"uniform vec3 u_color;\nuniform float u_metallic;\nuniform float u_roughness;\nuniform vec3 u_light0Pos;\nuniform vec3 u_light0Color;\nuniform vec3 u_light1Pos;\nuniform vec3 u_light1Color;\nuniform mat4 u_modelMatrix;\nuniform sampler2D u_reflectionCube;\nuniform sampler2D u_reflectionCubeBlur;","base64":"data:text/plain;base64,dW5pZm9ybSB2ZWMzIHVfY29sb3I7CnVuaWZvcm0gZmxvYXQgdV9tZXRhbGxpYzsKdW5pZm9ybSBmbG9hdCB1X3JvdWdobmVzczsKdW5pZm9ybSB2ZWMzIHVfbGlnaHQwUG9zOwp1bmlmb3JtIHZlYzMgdV9saWdodDBDb2xvcjsKdW5pZm9ybSB2ZWMzIHVfbGlnaHQxUG9zOwp1bmlmb3JtIHZlYzMgdV9saWdodDFDb2xvcjsKdW5pZm9ybSBtYXQ0IHVfbW9kZWxNYXRyaXg7CnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmU7CnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmVCbHVyOw=="};
+
+	var vertexShader = {"text":"varying vec3 v_normal;\nvarying vec3 v_position;\nvarying vec3 v_binormal;\nvarying vec3 v_tangent;\n","base64":"data:text/plain;base64,dmFyeWluZyB2ZWMzIHZfbm9ybWFsOwp2YXJ5aW5nIHZlYzMgdl9wb3NpdGlvbjsKdmFyeWluZyB2ZWMzIHZfYmlub3JtYWw7CnZhcnlpbmcgdmVjMyB2X3RhbmdlbnQ7Cg=="};
+
+	// TODO: Replace placeholder shaders by original ones (requires fixing projection matrix)
+	// requires dependency check (for node.js compatibility)
+
+	var GBlockLoader;
+	// THREE.GLTFLoader is required but not included in node.js version
+	if (THREE.GLTFLoader) {
+
+	  GBlockLoader = function GBlockLoader () {
+
+	    THREE.GLTFLoader.call(this);
+
+	    var self = this;
+
+	    this._parse = this.parse;
+	    this.parse = function (data, path, onLoad, onError) {
+	      // convert uint8 to json
+	      var json = JSON.parse(convertUint8ArrayToString(data));
+	      // use base64 shaders
+	      Object.keys(json.shaders).forEach(function (key, i) {
+	        // Replacing original shaders with placeholders
+	        if (key.indexOf('fragment') > -1) json.shaders[key].uri = fragmentShader.base64;
+	        else if (key.indexOf('vertex') > -1) json.shaders[key].uri = vertexShader.base64;
+	      });
+	      // convert json to uint8
+	      var uint8array = new TextEncoder('utf-8').encode(JSON.stringify(json));
+	      // parse data
+	      self._parse.call(self, uint8array, path, onLoad, onError);
+	    };
+
+	  };
+	  GBlockLoader.prototype = THREE.GLTFLoader.prototype;
+
+	}
+
+	// aframe module
+
+	var gBlockComponent = {
+
+	  schema: {type: 'asset'},
+
+	  init: function () {
+	    if (!GBlockLoader) throw 'gBlock component requires THREE.GLTFLoader'
+	    this.model = null;
+	    this.loader = new GBlockLoader();
+	  },
+
+	  update: function () {
+	    var self = this;
+	    var el = this.el;
+	    var src = this.data;
+
+	    if (!src) { return; }
+
+	    this.remove();
+
+	    // FIXME: Replace this with an official API URL once available
+	    // This API call is only needed to obtain the official glTF URL of a google block model.
+	    // The glTF itself is not being proxied and gets fetched from https://vr.google.com/downloads/* directly.
+	    // https://github.com/archilogic-com/aframe-gblock/issues/1
+	    // API server code: server/index.js
+	    fetch('https://us-central1-gblock-api.cloudfunctions.net/get-gltf-url/?url=' + src).then(function (response) {
+
+	      return response.json().then(function (message) {
+	        if (!response.ok) throw new Error('ERROR: ' + response.status + ' "' + message.message + '"')
+
+	        // load glTF model from original URL
+	        var gltfUrl = message.gltfUrl;
+
+	        self.loader.load( gltfUrl, function gltfLoaded (gltfModel) {
+	          self.model = gltfModel.scene || gltfModel.scenes[0];
+	          // FIXME: adapt projection matrix in original shaders
+	          self.model.traverse(function (child) {
+	            if (child.material) child.material = new THREE.MeshPhongMaterial({ vertexColors: THREE.VertexColors });
+	          });
+	          self.model.animations = gltfModel.animations;
+	          el.setObject3D('mesh', self.model);
+	          el.emit('model-loaded', {format: 'gltf', model: self.model});
+	        });
+
+	      })
+	    });
+
+	  },
+
+	  remove: function () {
+	    if (!this.model) { return; }
+	    this.el.removeObject3D('mesh');
+	  }
+
+	};
+
+	// helpers
+
+	// from https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/GLTFLoader.js
+	function convertUint8ArrayToString (array) {
+	  if (window.TextDecoder !== undefined) {
+	    return new TextDecoder().decode(array)
+	  }
+	  // Avoid the String.fromCharCode.apply(null, array) shortcut, which
+	  // throws a "maximum call stack size exceeded" error for large arrays.
+	  var s = '';
+	  for (var i = 0, il = array.length; i < il; i++) {
+	    s += String.fromCharCode(array[i]);
+	  }
+	  return s;
+	}
+
 	function fetchModule (url) {
 	  runtime.assertBrowser('Please use "require()" to fetch modules in server environment.');
 
@@ -19711,9 +19822,9 @@
 	  return loadingTexturesPromise
 	}
 
-	var fragmentShader = "uniform vec3 color;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapExposure;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\n#include <shadowmap_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( color, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #ifdef FLAT_SHADED\n      vec3 fdx = vec3( dFdx( vViewPosition.x ), dFdx( vViewPosition.y ), dFdx( vViewPosition.z ) );\n      vec3 fdy = vec3( dFdy( vViewPosition.x ), dFdy( vViewPosition.y ), dFdy( vViewPosition.z ) );\n      vec3 normal = normalize( cross( fdx, fdy ) );\n    #else\n      vec3 normal = normalize( vNormal );\n      #ifdef DOUBLE_SIDED\n        normal = normal * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n      #endif\n    #endif\n    #ifdef USE_NORMALMAP\n      normal = perturbNormal2Arb( -vViewPosition, normal );\n    #elif defined( USE_BUMPMAP )\n      normal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );\n    #endif\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}";
+	var fragmentShader$1 = {"text":"uniform vec3 color;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapExposure;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\n#include <shadowmap_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( color, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #ifdef FLAT_SHADED\n      vec3 fdx = vec3( dFdx( vViewPosition.x ), dFdx( vViewPosition.y ), dFdx( vViewPosition.z ) );\n      vec3 fdy = vec3( dFdy( vViewPosition.x ), dFdy( vViewPosition.y ), dFdy( vViewPosition.z ) );\n      vec3 normal = normalize( cross( fdx, fdy ) );\n    #else\n      vec3 normal = normalize( vNormal );\n      #ifdef DOUBLE_SIDED\n        normal = normal * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n      #endif\n    #endif\n    #ifdef USE_NORMALMAP\n      normal = perturbNormal2Arb( -vViewPosition, normal );\n    #elif defined( USE_BUMPMAP )\n      normal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );\n    #endif\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}","base64":"data:text/plain;base64,dW5pZm9ybSB2ZWMzIGNvbG9yOwp1bmlmb3JtIHZlYzMgZW1pc3NpdmU7CnVuaWZvcm0gdmVjMyBzcGVjdWxhcjsKdW5pZm9ybSBmbG9hdCBzaGluaW5lc3M7CnVuaWZvcm0gZmxvYXQgb3BhY2l0eTsKI2luY2x1ZGUgPGNvbW1vbj4KI2luY2x1ZGUgPHBhY2tpbmc+CiNpbmNsdWRlIDx1dl9wYXJzX2ZyYWdtZW50PgojaW5jbHVkZSA8dXYyX3BhcnNfZnJhZ21lbnQ+CiNpbmNsdWRlIDxtYXBfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPGFscGhhbWFwX3BhcnNfZnJhZ21lbnQ+CiNpZmRlZiBVU0VfTElHSFRNQVAKCXVuaWZvcm0gc2FtcGxlcjJEIGxpZ2h0TWFwOwoJdW5pZm9ybSBmbG9hdCBsaWdodE1hcEludGVuc2l0eTsKCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBFeHBvc3VyZTsKCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBGYWxsb2ZmOwojZW5kaWYKI2luY2x1ZGUgPG5vcm1hbG1hcF9wYXJzX2ZyYWdtZW50PgojaW5jbHVkZSA8c3BlY3VsYXJtYXBfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPGJzZGZzPgojaW5jbHVkZSA8bGlnaHRzX3BhcnM+CiNpbmNsdWRlIDxsaWdodHNfcGhvbmdfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPHNoYWRvd21hcF9wYXJzX2ZyYWdtZW50Pgp2b2lkIG1haW4oKSB7CiAgICB2ZWM0IGRpZmZ1c2VDb2xvciA9IHZlYzQoIGNvbG9yLCBvcGFjaXR5ICk7CiAgICBSZWZsZWN0ZWRMaWdodCByZWZsZWN0ZWRMaWdodCA9IFJlZmxlY3RlZExpZ2h0KCB2ZWMzKCAwLjAgKSwgdmVjMyggMC4wICksIHZlYzMoIDAuMCApLCB2ZWMzKCAwLjAgKSApOwogICAgdmVjMyB0b3RhbEVtaXNzaXZlUmFkaWFuY2UgPSBlbWlzc2l2ZTsKICAgICNpbmNsdWRlIDxtYXBfZnJhZ21lbnQ+CiAgICAjaW5jbHVkZSA8YWxwaGFtYXBfZnJhZ21lbnQ+CiAgICAjaW5jbHVkZSA8YWxwaGF0ZXN0X2ZyYWdtZW50PgogICAgI2luY2x1ZGUgPHNwZWN1bGFybWFwX2ZyYWdtZW50PgogICAgI2lmZGVmIEZMQVRfU0hBREVECiAgICAgIHZlYzMgZmR4ID0gdmVjMyggZEZkeCggdlZpZXdQb3NpdGlvbi54ICksIGRGZHgoIHZWaWV3UG9zaXRpb24ueSApLCBkRmR4KCB2Vmlld1Bvc2l0aW9uLnogKSApOwogICAgICB2ZWMzIGZkeSA9IHZlYzMoIGRGZHkoIHZWaWV3UG9zaXRpb24ueCApLCBkRmR5KCB2Vmlld1Bvc2l0aW9uLnkgKSwgZEZkeSggdlZpZXdQb3NpdGlvbi56ICkgKTsKICAgICAgdmVjMyBub3JtYWwgPSBub3JtYWxpemUoIGNyb3NzKCBmZHgsIGZkeSApICk7CiAgICAjZWxzZQogICAgICB2ZWMzIG5vcm1hbCA9IG5vcm1hbGl6ZSggdk5vcm1hbCApOwogICAgICAjaWZkZWYgRE9VQkxFX1NJREVECiAgICAgICAgbm9ybWFsID0gbm9ybWFsICogKCBmbG9hdCggZ2xfRnJvbnRGYWNpbmcgKSAqIDIuMCAtIDEuMCApOwogICAgICAjZW5kaWYKICAgICNlbmRpZgogICAgI2lmZGVmIFVTRV9OT1JNQUxNQVAKICAgICAgbm9ybWFsID0gcGVydHVyYk5vcm1hbDJBcmIoIC12Vmlld1Bvc2l0aW9uLCBub3JtYWwgKTsKICAgICNlbGlmIGRlZmluZWQoIFVTRV9CVU1QTUFQICkKICAgICAgbm9ybWFsID0gcGVydHVyYk5vcm1hbEFyYiggLXZWaWV3UG9zaXRpb24sIG5vcm1hbCwgZEhkeHlfZndkKCkgKTsKICAgICNlbmRpZgogICAgI2luY2x1ZGUgPGxpZ2h0c19waG9uZ19mcmFnbWVudD4KICAgIEdlb21ldHJpY0NvbnRleHQgZ2VvbWV0cnk7CiAgICBnZW9tZXRyeS5wb3NpdGlvbiA9IC0gdlZpZXdQb3NpdGlvbjsKICAgIGdlb21ldHJ5Lm5vcm1hbCA9IG5vcm1hbDsKICAgIGdlb21ldHJ5LnZpZXdEaXIgPSBub3JtYWxpemUoIHZWaWV3UG9zaXRpb24gKTsKICAgIEluY2lkZW50TGlnaHQgZGlyZWN0TGlnaHQ7CiAgICAjaWYgKCBOVU1fUE9JTlRfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdCApCiAgICAgICAgUG9pbnRMaWdodCBwb2ludExpZ2h0OwogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9QT0lOVF9MSUdIVFM7IGkgKysgKSB7CiAgICAgICAgICAgIHBvaW50TGlnaHQgPSBwb2ludExpZ2h0c1sgaSBdOwogICAgICAgICAgICBnZXRQb2ludERpcmVjdExpZ2h0SXJyYWRpYW5jZSggcG9pbnRMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7CiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQCiAgICAgICAgICAgIGRpcmVjdExpZ2h0LmNvbG9yICo9IGFsbCggYnZlYzIoIHBvaW50TGlnaHQuc2hhZG93LCBkaXJlY3RMaWdodC52aXNpYmxlICkgKSA/IGdldFBvaW50U2hhZG93KCBwb2ludFNoYWRvd01hcFsgaSBdLCBwb2ludExpZ2h0LnNoYWRvd01hcFNpemUsIHBvaW50TGlnaHQuc2hhZG93QmlhcywgcG9pbnRMaWdodC5zaGFkb3dSYWRpdXMsIHZQb2ludFNoYWRvd0Nvb3JkWyBpIF0gKSA6IDEuMDsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIFJFX0RpcmVjdCggZGlyZWN0TGlnaHQsIGdlb21ldHJ5LCBtYXRlcmlhbCwgcmVmbGVjdGVkTGlnaHQgKTsKICAgICAgICB9CiAgICAjZW5kaWYKICAgICNpZiAoIE5VTV9TUE9UX0xJR0hUUyA+IDAgKSAmJiBkZWZpbmVkKCBSRV9EaXJlY3QgKQogICAgICAgIFNwb3RMaWdodCBzcG90TGlnaHQ7CiAgICAgICAgZm9yICggaW50IGkgPSAwOyBpIDwgTlVNX1NQT1RfTElHSFRTOyBpICsrICkgewogICAgICAgICAgICBzcG90TGlnaHQgPSBzcG90TGlnaHRzWyBpIF07CiAgICAgICAgICAgIGdldFNwb3REaXJlY3RMaWdodElycmFkaWFuY2UoIHNwb3RMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7CiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQCiAgICAgICAgICAgIGRpcmVjdExpZ2h0LmNvbG9yICo9IGFsbCggYnZlYzIoIHNwb3RMaWdodC5zaGFkb3csIGRpcmVjdExpZ2h0LnZpc2libGUgKSApID8gZ2V0U2hhZG93KCBzcG90U2hhZG93TWFwWyBpIF0sIHNwb3RMaWdodC5zaGFkb3dNYXBTaXplLCBzcG90TGlnaHQuc2hhZG93Qmlhcywgc3BvdExpZ2h0LnNoYWRvd1JhZGl1cywgdlNwb3RTaGFkb3dDb29yZFsgaSBdICkgOiAxLjA7CiAgICAgICAgICAgICNlbmRpZgogICAgICAgICAgICBSRV9EaXJlY3QoIGRpcmVjdExpZ2h0LCBnZW9tZXRyeSwgbWF0ZXJpYWwsIHJlZmxlY3RlZExpZ2h0ICk7CiAgICAgICAgfQogICAgI2VuZGlmCiAgICAjaWYgKCBOVU1fRElSX0xJR0hUUyA+IDAgKSAmJiBkZWZpbmVkKCBSRV9EaXJlY3QgKQogICAgICAgIERpcmVjdGlvbmFsTGlnaHQgZGlyZWN0aW9uYWxMaWdodDsKICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fRElSX0xJR0hUUzsgaSArKyApIHsKICAgICAgICAgICAgZGlyZWN0aW9uYWxMaWdodCA9IGRpcmVjdGlvbmFsTGlnaHRzWyBpIF07CiAgICAgICAgICAgIGdldERpcmVjdGlvbmFsRGlyZWN0TGlnaHRJcnJhZGlhbmNlKCBkaXJlY3Rpb25hbExpZ2h0LCBnZW9tZXRyeSwgZGlyZWN0TGlnaHQgKTsKICAgICAgICAgICAgI2lmZGVmIFVTRV9TSEFET1dNQVAKICAgICAgICAgICAgZGlyZWN0TGlnaHQuY29sb3IgKj0gYWxsKCBidmVjMiggZGlyZWN0aW9uYWxMaWdodC5zaGFkb3csIGRpcmVjdExpZ2h0LnZpc2libGUgKSApID8gZ2V0U2hhZG93KCBkaXJlY3Rpb25hbFNoYWRvd01hcFsgaSBdLCBkaXJlY3Rpb25hbExpZ2h0LnNoYWRvd01hcFNpemUsIGRpcmVjdGlvbmFsTGlnaHQuc2hhZG93QmlhcywgZGlyZWN0aW9uYWxMaWdodC5zaGFkb3dSYWRpdXMsIHZEaXJlY3Rpb25hbFNoYWRvd0Nvb3JkWyBpIF0gKSA6IDEuMDsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIFJFX0RpcmVjdCggZGlyZWN0TGlnaHQsIGdlb21ldHJ5LCBtYXRlcmlhbCwgcmVmbGVjdGVkTGlnaHQgKTsKICAgICAgICB9CiAgICAjZW5kaWYKICAgICNpZiAoIE5VTV9SRUNUX0FSRUFfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdF9SZWN0QXJlYSApCiAgICAgICAgUmVjdEFyZWFMaWdodCByZWN0QXJlYUxpZ2h0OwogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9SRUNUX0FSRUFfTElHSFRTOyBpICsrICkgewogICAgICAgICAgICByZWN0QXJlYUxpZ2h0ID0gcmVjdEFyZWFMaWdodHNbIGkgXTsKICAgICAgICAgICAgUkVfRGlyZWN0X1JlY3RBcmVhKCByZWN0QXJlYUxpZ2h0LCBnZW9tZXRyeSwgbWF0ZXJpYWwsIHJlZmxlY3RlZExpZ2h0ICk7CiAgICAgICAgfQogICAgI2VuZGlmCiAgICAjaWYgZGVmaW5lZCggUkVfSW5kaXJlY3REaWZmdXNlICkKICAgICAgICB2ZWMzIGlycmFkaWFuY2UgPSBnZXRBbWJpZW50TGlnaHRJcnJhZGlhbmNlKCBhbWJpZW50TGlnaHRDb2xvciApOwogICAgICAgICNpZmRlZiBVU0VfTElHSFRNQVAKICAgICAgICAgICAgdmVjMyB1bml0ID0gdmVjMygxLjApOwogICAgICAgICAgICB2ZWMzIGxpZ2h0ID0gMi4wICogKHRleHR1cmUyRCggbGlnaHRNYXAsIHZVdjIgKS54eXogLSBsaWdodE1hcEV4cG9zdXJlICogdW5pdCk7CiAgICAgICAgICAgIHZlYzMgbW9kaWZpZXIgPSAtbGlnaHRNYXBGYWxsb2ZmICogbGlnaHQgKiBsaWdodCArIHVuaXQ7CiAgICAgICAgICAgIHZlYzMgbGlnaHRNYXBJcnJhZGlhbmNlID0gbGlnaHQgKiBtb2RpZmllciAqIGxpZ2h0TWFwSW50ZW5zaXR5OwogICAgICAgICAgICAjaWZuZGVmIFBIWVNJQ0FMTFlfQ09SUkVDVF9MSUdIVFMKICAgICAgICAgICAgICAgIGxpZ2h0TWFwSXJyYWRpYW5jZSAqPSBQSTsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIGlycmFkaWFuY2UgKz0gbGlnaHRNYXBJcnJhZGlhbmNlOwogICAgICAgICNlbmRpZgogICAgICAgICNpZiAoIE5VTV9IRU1JX0xJR0hUUyA+IDAgKQogICAgICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fSEVNSV9MSUdIVFM7IGkgKysgKSB7CiAgICAgICAgICAgICAgICBpcnJhZGlhbmNlICs9IGdldEhlbWlzcGhlcmVMaWdodElycmFkaWFuY2UoIGhlbWlzcGhlcmVMaWdodHNbIGkgXSwgZ2VvbWV0cnkgKTsKICAgICAgICAgICAgfQogICAgICAgICNlbmRpZgogICAgICAgIFJFX0luZGlyZWN0RGlmZnVzZSggaXJyYWRpYW5jZSwgZ2VvbWV0cnksIG1hdGVyaWFsLCByZWZsZWN0ZWRMaWdodCApOwogICAgI2VuZGlmCiAgICB2ZWMzIG91dGdvaW5nTGlnaHQgPSByZWZsZWN0ZWRMaWdodC5kaXJlY3REaWZmdXNlICsgcmVmbGVjdGVkTGlnaHQuaW5kaXJlY3REaWZmdXNlICsgcmVmbGVjdGVkTGlnaHQuZGlyZWN0U3BlY3VsYXIgKyByZWZsZWN0ZWRMaWdodC5pbmRpcmVjdFNwZWN1bGFyICsgdG90YWxFbWlzc2l2ZVJhZGlhbmNlOwogICAgZ2xfRnJhZ0NvbG9yID0gdmVjNCggb3V0Z29pbmdMaWdodCwgZGlmZnVzZUNvbG9yLmEgKTsKfQ=="};
 
-	var vertexShader = "varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}";
+	var vertexShader$1 = {"text":"varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}","base64":"data:text/plain;base64,dmFyeWluZyB2ZWMzIHZWaWV3UG9zaXRpb247CiNpZm5kZWYgRkxBVF9TSEFERUQKCXZhcnlpbmcgdmVjMyB2Tm9ybWFsOwojZW5kaWYKI2luY2x1ZGUgPHV2X3BhcnNfdmVydGV4PgojaW5jbHVkZSA8dXYyX3BhcnNfdmVydGV4PgojaW5jbHVkZSA8c2hhZG93bWFwX3BhcnNfdmVydGV4Pgp2b2lkIG1haW4oKQp7CiAgI2luY2x1ZGUgPHV2X3ZlcnRleD4KICAjaW5jbHVkZSA8dXYyX3ZlcnRleD4KICAjaW5jbHVkZSA8YmVnaW5ub3JtYWxfdmVydGV4PgogICNpbmNsdWRlIDxkZWZhdWx0bm9ybWFsX3ZlcnRleD4KICAjaWZuZGVmIEZMQVRfU0hBREVECiAgCXZOb3JtYWwgPSBub3JtYWxpemUoIHRyYW5zZm9ybWVkTm9ybWFsICk7CiAgI2VuZGlmCiAgI2luY2x1ZGUgPGJlZ2luX3ZlcnRleD4KICAjaW5jbHVkZSA8cHJvamVjdF92ZXJ0ZXg+CiAgdlZpZXdQb3NpdGlvbiA9IC0gbXZQb3NpdGlvbi54eXo7CiAgI2luY2x1ZGUgPHdvcmxkcG9zX3ZlcnRleD4KICAjaW5jbHVkZSA8c2hhZG93bWFwX3ZlcnRleD4KfQ=="};
 
 	var Io3dMaterial = checkDependencies ({
 	  three: true,
@@ -19757,8 +19868,8 @@
 	      }
 	    ]);
 
-	    this.vertexShader = vertexShader;
-	    this.fragmentShader = fragmentShader;
+	    this.vertexShader = vertexShader$1.text;
+	    this.fragmentShader = fragmentShader$1.text;
 	    this.lights = true;
 	  }
 
@@ -20382,6 +20493,7 @@
 	  AFRAME.registerComponent('io3d-data3d', data3dComponent);
 	  AFRAME.registerComponent('io3d-furniture', furnitureComponent);
 	  AFRAME.registerComponent('tour', tourComponent);
+	  AFRAME.registerComponent('gblock', gBlockComponent);
 
 	  // init plugin launcher
 
