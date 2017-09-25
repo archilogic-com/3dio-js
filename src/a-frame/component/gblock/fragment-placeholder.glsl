@@ -1,0 +1,10 @@
+uniform vec3 u_color;
+uniform float u_metallic;
+uniform float u_roughness;
+uniform vec3 u_light0Pos;
+uniform vec3 u_light0Color;
+uniform vec3 u_light1Pos;
+uniform vec3 u_light1Color;
+uniform mat4 u_modelMatrix;
+uniform sampler2D u_reflectionCube;
+uniform sampler2D u_reflectionCubeBlur;

@@ -1,35 +1,39 @@
-// customize original loader to replace incompatible shaders
+// TODO: Replace placeholder shaders by original ones (requires fixing projection matrix)
+import fragmentShader from './gblock/fragment-placeholder.glsl'
+import vertexShader from './gblock/vertex-placeholder.glsl'
 
-function GBlockLoader () {
+// requires dependency check (for node.js compatibility)
 
-  THREE.GLTFLoader.call(this)
+var GBlockLoader
+// THREE.GLTFLoader is required but not included in node.js version
+if (THREE.GLTFLoader) {
 
-  var self = this
+  GBlockLoader = function GBlockLoader () {
 
-  this._parse = this.parse
-  this.parse = function (data, path, onLoad, onError) {
-    // convert uint8 to json
-    var json = JSON.parse(convertUint8ArrayToString(data))
-    // use base64 shaders
-    Object.keys(json.shaders).forEach(function (key, i) {
-      // Replacing original shaders with placeholders
-      if (key.indexOf('fragment') > -1) json.shaders[key].uri = 'data:text/plain;base64,'
-      else if (key.indexOf('vertex') > -1) json.shaders[key].uri = 'data:text/plain;base64,'
-      // TODO: Use original shaders:
-      // 1. Update projection matrix in original shaders
-      // 2. Convert shaders server side in rollup plugin to base64 with: 'data:text/plain;base64,' + new Buffer(code).toString('base64')
-      // 3. Import them as modules:
-      //import fsBase64 from './fragment.glsl'
-      //import vsBase64 from './vertex.glsl'
-    })
-    // convert json to uint8
-    var uint8array = new TextEncoder('utf-8').encode(JSON.stringify(json))
-    // parse data
-    self._parse.call(self, uint8array, path, onLoad, onError)
+    THREE.GLTFLoader.call(this)
+
+    var self = this
+
+    this._parse = this.parse
+    this.parse = function (data, path, onLoad, onError) {
+      // convert uint8 to json
+      var json = JSON.parse(convertUint8ArrayToString(data))
+      // use base64 shaders
+      Object.keys(json.shaders).forEach(function (key, i) {
+        // Replacing original shaders with placeholders
+        if (key.indexOf('fragment') > -1) json.shaders[key].uri = fragmentShader.base64
+        else if (key.indexOf('vertex') > -1) json.shaders[key].uri = vertexShader.base64
+      })
+      // convert json to uint8
+      var uint8array = new TextEncoder('utf-8').encode(JSON.stringify(json))
+      // parse data
+      self._parse.call(self, uint8array, path, onLoad, onError)
+    }
+
   }
+  GBlockLoader.prototype = THREE.GLTFLoader.prototype
 
 }
-GBlockLoader.prototype = THREE.GLTFLoader.prototype
 
 // aframe module
 
@@ -38,6 +42,7 @@ export default {
   schema: {type: 'asset'},
 
   init: function () {
+    if (!GBlockLoader) throw 'gBlock component requires THREE.GLTFLoader'
     this.model = null
     this.loader = new GBlockLoader()
   },
