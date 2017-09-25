@@ -4,6 +4,7 @@ import checkDependencies from './a-frame/check-dependencies'
 import data3dComponent from './a-frame/component/data3d.js'
 import furnitureComponent from './a-frame/component/furniture.js'
 import tourComponent from './a-frame/component/tour.js'
+import gBlockComponent from './a-frame/component/gblock.js'
 // other
 import inspectorPluginsLauncher from './a-frame/inspector-plugins-launcher.js'
 import Data3dView from './a-frame/three/data3d-view.js'
@@ -24,6 +25,7 @@ checkDependencies({
   AFRAME.registerComponent('io3d-data3d', data3dComponent)
   AFRAME.registerComponent('io3d-furniture', furnitureComponent)
   AFRAME.registerComponent('tour', tourComponent)
+  AFRAME.registerComponent('gblock', gBlockComponent)
 
   // init plugin launcher
 
