@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.75
- * @date 2017/09/20 23:11
+ * @date 2017/09/26 15:01
  * @branch scene-api
- * @commit 9005183317389c9b1aae7b9cd67c5b59864d9540
+ * @commit c51556080f37686e5629869c7938a4d7e259d323
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/20 23:11', GIT_BRANCH = 'scene-api', GIT_COMMIT = '9005183317389c9b1aae7b9cd67c5b59864d9540'
+	var BUILD_DATE='2017/09/26 15:01', GIT_BRANCH = 'scene-api', GIT_COMMIT = 'c51556080f37686e5629869c7938a4d7e259d323'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.75";
@@ -20137,6 +20137,132 @@
 
 	var clone_1 = clone$1;
 
+	/**
+	 * Creates a function like `_.assign`.
+	 *
+	 * @private
+	 * @param {Function} assigner The function to assign values.
+	 * @returns {Function} Returns the new assigner function.
+	 */
+	function createAssigner(assigner) {
+	  return _baseRest(function(object, sources) {
+	    var index = -1,
+	        length = sources.length,
+	        customizer = length > 1 ? sources[length - 1] : undefined,
+	        guard = length > 2 ? sources[2] : undefined;
+
+	    customizer = (assigner.length > 3 && typeof customizer == 'function')
+	      ? (length--, customizer)
+	      : undefined;
+
+	    if (guard && _isIterateeCall(sources[0], sources[1], guard)) {
+	      customizer = length < 3 ? undefined : customizer;
+	      length = 1;
+	    }
+	    object = Object(object);
+	    while (++index < length) {
+	      var source = sources[index];
+	      if (source) {
+	        assigner(object, source, index, customizer);
+	      }
+	    }
+	    return object;
+	  });
+	}
+
+	var _createAssigner = createAssigner;
+
+	/**
+	 * This method is like `_.assignIn` except that it accepts `customizer`
+	 * which is invoked to produce the assigned values. If `customizer` returns
+	 * `undefined`, assignment is handled by the method instead. The `customizer`
+	 * is invoked with five arguments: (objValue, srcValue, key, object, source).
+	 *
+	 * **Note:** This method mutates `object`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @alias extendWith
+	 * @category Object
+	 * @param {Object} object The destination object.
+	 * @param {...Object} sources The source objects.
+	 * @param {Function} [customizer] The function to customize assigned values.
+	 * @returns {Object} Returns `object`.
+	 * @see _.assignWith
+	 * @example
+	 *
+	 * function customizer(objValue, srcValue) {
+	 *   return _.isUndefined(objValue) ? srcValue : objValue;
+	 * }
+	 *
+	 * var defaults = _.partialRight(_.assignInWith, customizer);
+	 *
+	 * defaults({ 'a': 1 }, { 'b': 2 }, { 'a': 3 });
+	 * // => { 'a': 1, 'b': 2 }
+	 */
+	var assignInWith = _createAssigner(function(object, source, srcIndex, customizer) {
+	  _copyObject(source, keysIn_1(source), object, customizer);
+	});
+
+	var assignInWith_1 = assignInWith;
+
+	/** Used for built-in method references. */
+	var objectProto$15 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$12 = objectProto$15.hasOwnProperty;
+
+	/**
+	 * Used by `_.defaults` to customize its `_.assignIn` use to assign properties
+	 * of source objects to the destination object for all destination properties
+	 * that resolve to `undefined`.
+	 *
+	 * @private
+	 * @param {*} objValue The destination value.
+	 * @param {*} srcValue The source value.
+	 * @param {string} key The key of the property to assign.
+	 * @param {Object} object The parent object of `objValue`.
+	 * @returns {*} Returns the value to assign.
+	 */
+	function customDefaultsAssignIn(objValue, srcValue, key, object) {
+	  if (objValue === undefined ||
+	      (eq_1(objValue, objectProto$15[key]) && !hasOwnProperty$12.call(object, key))) {
+	    return srcValue;
+	  }
+	  return objValue;
+	}
+
+	var _customDefaultsAssignIn = customDefaultsAssignIn;
+
+	/**
+	 * Assigns own and inherited enumerable string keyed properties of source
+	 * objects to the destination object for all destination properties that
+	 * resolve to `undefined`. Source objects are applied from left to right.
+	 * Once a property is set, additional values of the same property are ignored.
+	 *
+	 * **Note:** This method mutates `object`.
+	 *
+	 * @static
+	 * @since 0.1.0
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The destination object.
+	 * @param {...Object} [sources] The source objects.
+	 * @returns {Object} Returns `object`.
+	 * @see _.defaultsDeep
+	 * @example
+	 *
+	 * _.defaults({ 'a': 1 }, { 'b': 2 }, { 'a': 3 });
+	 * // => { 'a': 1, 'b': 2 }
+	 */
+	var defaults$1 = _baseRest(function(args) {
+	  args.push(undefined, _customDefaultsAssignIn);
+	  return _apply(assignInWith_1, undefined, args);
+	});
+
+	var defaults_1 = defaults$1;
+
 	var tourComponent = {
 	  schema: {
 	    autoStart: {
@@ -20173,6 +20299,10 @@
 	  },
 
 	  playTour: function () {
+	    if (!this._waypoints || !this._waypoints.length) {
+	      console.warn('camera tour has no waypoints');
+	      return
+	    }
 	    if (this._isPlaying) {
 	      if(this._isChangingAnimation) {
 	        clearTimeout(this._nextAnimationTimeout);
@@ -20217,20 +20347,23 @@
 	    this.animate(target);
 	  },
 
-	  setViewPoint: function (mode) {
-	    var HEIGHT_PERSON = 1.4;
-	    var HEIGHT_BIRDS_EYE = 7;
-	    var ANGLE_PERSON = 0;
-	    var ANGLE_BIRDS_EYE = -60;
-	    if (['person', 'bird'].indexOf(mode) < -1) {
-	      console.error('not supported camera mode: ' + mode);
+	  // set camera position and rotation by providing changes for certain axes
+	  // to reset camera to walking mode do:
+	  // setViewPoint({position: {y:1.6}, rotation: {x:0})
+	  updateViewPoint: function (args) {
+	    args = args || {};
+	    if (typeof args !== 'object') {
+	      console.error('not supported camera view point: ' + args);
 	      return
 	    }
+	    var posChange = args.position || {};
+	    var rotChange = args.rotation || {};
+
 	    this._isPlaying = false;
-	    var pos = clone_1(this.el.getAttribute('position'));
-	    var rot = clone_1(this.el.getAttribute('rotation'));
-	    pos.y = mode === 'person' ? HEIGHT_PERSON : HEIGHT_BIRDS_EYE;
-	    rot.x = mode === 'person' ? ANGLE_PERSON : ANGLE_BIRDS_EYE;
+	    // apply changes to current camera position
+	    var pos = defaults_1({}, posChange, clone_1(this.el.getAttribute('position')));
+	    var rot = defaults_1({}, rotChange, clone_1(this.el.getAttribute('rotation')));
+
 	    var target = {
 	      position: AFRAME.utils.coordinates.stringify(pos),
 	      rotation: AFRAME.utils.coordinates.stringify(rot)
@@ -20243,20 +20376,20 @@
 	    var entity = this.el;
 	    var newPosition = isDomElement ? bookmark.getAttribute('position') : bookmark.position;
 	    var newRotation = isDomElement ? bookmark.getAttribute('rotation') : bookmark.rotation;
-	    var currentPosition = entity.getAttribute('position');
-	    var currentRotation = entity.getAttribute('rotation');
-	    var startPosition = AFRAME.utils.coordinates.stringify(currentPosition);
-	    var startRotation = AFRAME.utils.coordinates.stringify(currentRotation);
+	    var startPosition = entity.getAttribute('position');
+	    var startRotation = entity.getAttribute('rotation');
+
+	    // compute shortest rotation
+	    newRotation = normalizeRotation(startRotation, newRotation);
 
 	    // compute distance to adapt speed
-	    var d = dist(currentPosition, AFRAME.utils.coordinates.parse(newPosition));
+	    var d = dist(startPosition, newPosition);
 	    // compute angle difference to adapt speed
-	    var angle = Math.abs(currentRotation.y - AFRAME.utils.coordinates.parse(newRotation).y);
+	    var angle = Math.abs(startRotation.y - newRotation.y);
 	    // compute animation time
 	    // add 1 to the this.data.move parameter to allow users to specify 0 without the animation cancelling out
 	    var t = Math.round((this.data.move === undefined ? 3000 : this.data.move + 1) / 6 * (d + angle / 30));
-	    if (t > Math.max(10000, this.data.move)) t = Math.max(10000, this.data.move);
-
+	    if (t > Math.max(5000, this.data.move)) t = Math.max(5000, this.data.move);
 	    // prevent zero length animation
 	    if (!t) return this._nextWaypoint()
 
@@ -20286,6 +20419,21 @@
 	    this._nextAnimationTimeout = setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying); }.bind(this), this.data.wait === undefined ? 0 : this.data.wait);
 	  }
 	};
+
+	// we want to prevent excessive spinning in rotations
+	function normalizeRotation(start, end) {
+	  // prevent angles larger than 360
+	  var normRot = {
+	    x: end.x % 360,
+	    y: end.y % 360,
+	    z: end.z % 360,
+	  };
+	  // if delta is bigger than 180 degrees we spin to the other direction
+	  Object.keys(normRot).forEach(function(axis) {
+	    if (normRot[axis] - start[axis] > 180) normRot[axis] -= 360;
+	  });
+	  return normRot
+	}
 
 	function dist(p, q) {
 	  var a = parseFloat(q.x) - parseFloat(p.x);
@@ -21529,9 +21677,11 @@
 	  options = options || {};
 	  var url = options.url;
 
-	  var parsedUrl = Url.parse(url);
-	  var rootDir = path.parse(parsedUrl.path || parsedUrl.pathname || '').dir;
-	  var origin = parsedUrl.protocol + '//' + parsedUrl.host;
+	  if (url) {
+	    var parsedUrl = Url.parse(url);
+	    var rootDir = path.parse(parsedUrl.path || parsedUrl.pathname || '').dir;
+	    var origin = parsedUrl.protocol + '//' + parsedUrl.host;
+	  }
 
 	  // check buffer type
 	  if (!buffer) {
@@ -21577,7 +21727,7 @@
 	    return bluebird_1.reject(e)
 	  }
 
-	  
+
 	  // add geometry arrays to data3d
 
 	  var payloadByteOffset = HEADER_BYTE_LENGTH + structureByteLength;
@@ -22110,132 +22260,6 @@
 	  possibleChildrenTypes: []
 	};
 
-	/**
-	 * Creates a function like `_.assign`.
-	 *
-	 * @private
-	 * @param {Function} assigner The function to assign values.
-	 * @returns {Function} Returns the new assigner function.
-	 */
-	function createAssigner(assigner) {
-	  return _baseRest(function(object, sources) {
-	    var index = -1,
-	        length = sources.length,
-	        customizer = length > 1 ? sources[length - 1] : undefined,
-	        guard = length > 2 ? sources[2] : undefined;
-
-	    customizer = (assigner.length > 3 && typeof customizer == 'function')
-	      ? (length--, customizer)
-	      : undefined;
-
-	    if (guard && _isIterateeCall(sources[0], sources[1], guard)) {
-	      customizer = length < 3 ? undefined : customizer;
-	      length = 1;
-	    }
-	    object = Object(object);
-	    while (++index < length) {
-	      var source = sources[index];
-	      if (source) {
-	        assigner(object, source, index, customizer);
-	      }
-	    }
-	    return object;
-	  });
-	}
-
-	var _createAssigner = createAssigner;
-
-	/**
-	 * This method is like `_.assignIn` except that it accepts `customizer`
-	 * which is invoked to produce the assigned values. If `customizer` returns
-	 * `undefined`, assignment is handled by the method instead. The `customizer`
-	 * is invoked with five arguments: (objValue, srcValue, key, object, source).
-	 *
-	 * **Note:** This method mutates `object`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @alias extendWith
-	 * @category Object
-	 * @param {Object} object The destination object.
-	 * @param {...Object} sources The source objects.
-	 * @param {Function} [customizer] The function to customize assigned values.
-	 * @returns {Object} Returns `object`.
-	 * @see _.assignWith
-	 * @example
-	 *
-	 * function customizer(objValue, srcValue) {
-	 *   return _.isUndefined(objValue) ? srcValue : objValue;
-	 * }
-	 *
-	 * var defaults = _.partialRight(_.assignInWith, customizer);
-	 *
-	 * defaults({ 'a': 1 }, { 'b': 2 }, { 'a': 3 });
-	 * // => { 'a': 1, 'b': 2 }
-	 */
-	var assignInWith = _createAssigner(function(object, source, srcIndex, customizer) {
-	  _copyObject(source, keysIn_1(source), object, customizer);
-	});
-
-	var assignInWith_1 = assignInWith;
-
-	/** Used for built-in method references. */
-	var objectProto$15 = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$12 = objectProto$15.hasOwnProperty;
-
-	/**
-	 * Used by `_.defaults` to customize its `_.assignIn` use to assign properties
-	 * of source objects to the destination object for all destination properties
-	 * that resolve to `undefined`.
-	 *
-	 * @private
-	 * @param {*} objValue The destination value.
-	 * @param {*} srcValue The source value.
-	 * @param {string} key The key of the property to assign.
-	 * @param {Object} object The parent object of `objValue`.
-	 * @returns {*} Returns the value to assign.
-	 */
-	function customDefaultsAssignIn(objValue, srcValue, key, object) {
-	  if (objValue === undefined ||
-	      (eq_1(objValue, objectProto$15[key]) && !hasOwnProperty$12.call(object, key))) {
-	    return srcValue;
-	  }
-	  return objValue;
-	}
-
-	var _customDefaultsAssignIn = customDefaultsAssignIn;
-
-	/**
-	 * Assigns own and inherited enumerable string keyed properties of source
-	 * objects to the destination object for all destination properties that
-	 * resolve to `undefined`. Source objects are applied from left to right.
-	 * Once a property is set, additional values of the same property are ignored.
-	 *
-	 * **Note:** This method mutates `object`.
-	 *
-	 * @static
-	 * @since 0.1.0
-	 * @memberOf _
-	 * @category Object
-	 * @param {Object} object The destination object.
-	 * @param {...Object} [sources] The source objects.
-	 * @returns {Object} Returns `object`.
-	 * @see _.defaultsDeep
-	 * @example
-	 *
-	 * _.defaults({ 'a': 1 }, { 'b': 2 }, { 'a': 3 });
-	 * // => { 'a': 1, 'b': 2 }
-	 */
-	var defaults$1 = _baseRest(function(args) {
-	  args.push(undefined, _customDefaultsAssignIn);
-	  return _apply(assignInWith_1, undefined, args);
-	});
-
-	var defaults_1 = defaults$1;
-
 	// import sceneStructure types
 	function getDefaultsByType() {
 	  var types = {
@@ -22589,7 +22613,7 @@
 	  return offset
 	}
 
-	function getSceneStructureFromHtml(el) {
+	function getSceneStructureFromAframeElements(el) {
 	  if (!isValidElement(el)) {
 	    console.error('element is not an "a-entity" DOM element');
 	  }
@@ -22742,10 +22766,11 @@
 	  'group',
 	  'level',
 	  'plan',
-	  'object'
+	  'object',
+	  'camera-bookmark'
 	];
 
-	function toHtml(sceneStructure, options) {
+	function toAframeElements(sceneStructure, options) {
 	  if (!sceneStructure) {
 	    console.error('nothing to convert');
 	    return
@@ -22756,15 +22781,23 @@
 	  // api
 	  options = options || {};
 	  var isArray = Array.isArray(sceneStructure);
+	  console.log('isArray', isArray);
 	  sceneStructure = isArray ? sceneStructure : [sceneStructure];
 
 	  // start parsing
-	  var html = getHtmlFromSceneStructure(sceneStructure);
-	  return isArray ? html : html[0]
+	  var html = getAframeElementsFromSceneStructure(sceneStructure);
+	  var camHtml = parseCameraBookmarks(sceneStructure, isArray ? html : html[0]);
+	  var result;
+	  if (!camHtml) {
+	    result = isArray ? html : html[0];
+	  } else {
+	    result = (Array.isArray(html) ? html : [html]).concat(camHtml);
+	  }
+	  return result
 	}
 
 	// recursive parsing through sceneStructre
-	function getHtmlFromSceneStructure(sceneStructure, parent) {
+	function getAframeElementsFromSceneStructure(sceneStructure, parent) {
 	  var collection = parent ? null : []; // use collection or parent
 	  sceneStructure.forEach(function(element3d) {
 	    if (validTypes.indexOf(element3d.type) > -1) {
@@ -22774,21 +22807,21 @@
 	      });
 	      if (element3d.type === 'level' && (element3d.bakeRegularStatusFileKey || element3d.bakePreviewStatusFileKey)) {
 	        updateOnBake(el, element3d);
+	      } else if(element3d.type === 'camera-bookmark' && element3d.name === 'lastSavePosition') {
+	        // ?
 	      }
-	      if (element3d.children && element3d.children.length) getHtmlFromSceneStructure(element3d.children, el);
+
+	      if (element3d.children && element3d.children.length) getAframeElementsFromSceneStructure(element3d.children, el);
 	      if (collection) collection.push(el);
 	    }
 	  });
+
 	  return collection
 	}
 
 	// get html attributes from element3d params
 	function getAttributes(element3d) {
-	  var attributes = {
-	    'io3d-uuid': element3d.id,
-	    position: element3d.x + ' ' + element3d.y + ' ' + element3d.z,
-	    rotation: '0 ' + element3d.ry + ' 0'
-	  };
+	  var attributes = {};
 
 	  switch (element3d.type) {
 	    case 'level':
@@ -22818,8 +22851,97 @@
 	    break
 	  }
 
+	  attributes.position = element3d.x + ' ' + element3d.y + ' ' + element3d.z;
+	  attributes.rotation = (element3d.rx || 0) + ' ' + element3d.ry + ' 0';
+	  attributes['io3d-uuid'] = element3d.id;
+
 	  return attributes
 	}
+
+	// creates a camera and tour-waypoints from scene structure
+	function parseCameraBookmarks(sceneStructure, planRoot) {
+	  var bookmarks = flattenSceneStructure(sceneStructure[0]).filter(function (element) { return element.type === 'camera-bookmark' });
+	  console.log('bookmarks', bookmarks);
+	  if (bookmarks.length === 0) return
+
+	  var lastSavePosition = bookmarks.find(function (element) { return element.name === 'lastSavePosition' });
+	  var camPosition = { x: 0, y: 1.6, z: 0 };
+	  var camRotation = { x: 0, y: 0, z: 0 };
+
+	  if (lastSavePosition) {
+	    if (lastSavePosition.mode === 'bird') {
+	      lastSavePosition.y += lastSavePosition.distance;
+	    }
+	    //camPosition = { x: lastSavePosition.x, y: lastSavePosition.y, z: lastSavePosition.z }
+	    //camRotation = { x: lastSavePosition.rx, y: lastSavePosition.ry, z: 0 }
+	  }
+
+	  console.log('parent', planRoot, planRoot.getAttribute('position'), planRoot.getAttribute('rotation'));
+
+	  var camera = addEntity({
+	    attributes: {
+	      camera: '',
+	      tour: { autoStart: false },
+	      'wasd-controls': '',
+	      'look-controls': '',
+	      position: camPosition,
+	      rotation: camRotation
+	    }
+	  });
+
+	  // (2017/09/23) See comment below
+	  var bookmarkId = 1;
+
+	  bookmarks
+	    .filter(function (element) { return element.name !== 'lastSavePosition' })
+	    .forEach(function (element) {
+
+	      // Rotate look-at point on the XZ plane around parent's center
+	      var angleY = -element.parent.ry * Math.PI / 180;
+
+	      var rotatedX = element.x * Math.cos(angleY) - element.z * Math.sin(angleY);
+	      var rotatedZ = element.z * Math.cos(angleY) + element.x * Math.sin(angleY);
+
+	      // Get world space coordinates for our look-at point
+	      var position = {};
+	      position.x = element.parent.x + rotatedX;
+	      position.y = element.parent.y + element.y;
+	      position.z = element.parent.z + rotatedZ;
+
+	      // Get camera position by rotating around the look-at point at a distance of element.distance.
+	      // This will make very little difference for 'person'-type bookmarks, but it should be done for
+	      // the sake of correctness.
+	      var rx = element.rx * Math.PI / 180;
+	      var ry = element.ry * Math.PI / 180;
+
+	      position.x -= element.distance * Math.sin(ry) * Math.cos(rx);
+	      position.y -= element.distance * Math.sin(rx);
+	      position.z -= element.distance * Math.cos(ry) * Math.cos(rx);
+
+	      // Finally, get camera rotation. Note that it's necessary to add 180 degrees to the rotation angle
+	      // because of A-Frame's different convention. Also note that when animating the camera, the rotation
+	      // angle should be interpolated through the shortest arc in order to avoid swirling motion.
+	      var rotation = {};
+	      rotation.x = element.rx;
+	      rotation.y = 180 + element.parent.ry + element.ry;
+
+	      if (element.mode === 'bird' || element.mode === 'floorplan') position.y = Math.max(element.distance - 5, 8);
+	      addEntity({
+	        parent: camera,
+	        attributes: {
+	          // (2017/09/23) Temporarily add a unique ID in order to differentiate bookmarks with identical names.
+	          // There is a bug somewhere in the source code that has problems with duplicate names (stored as keys
+	          // in an object?). Please remove once the bug is fixed.
+	          'tour-waypoint': element.name + ' ' + bookmarkId++,
+	          position: position,
+	          rotation: rotation
+	        }
+	      });
+	    });
+
+	  return camera
+	}
+
 
 	function addEntity(args) {
 	  var
@@ -22879,6 +23001,18 @@
 	  })
 	}
 
+	function flattenSceneStructure(sceneStructure, parent) {
+	  var result = [];
+	  sceneStructure.parent = parent;
+	  result.push(sceneStructure);
+	  if(sceneStructure.children) {
+	    sceneStructure.children.forEach(function (child) {
+	      result = result.concat(flattenSceneStructure(child, sceneStructure));
+	    });
+	  }
+	  return result
+	}
+
 	// consumes sceneStructure or DOM elements
 	// replaces furniture Ids and adjusts positioning
 	// outputs input type
@@ -22894,7 +23028,7 @@
 	  var isDomElement = isElement$1(input);
 	  if (isDomElement) {
 	    // convert to sceneStructure
-	    input = getSceneStructureFromHtml(input);
+	    input = getSceneStructureFromAframeElements(input);
 	  }
 
 	  return normalizeSceneStructure(input)
@@ -22919,7 +23053,7 @@
 	      // replace params in furniture elements
 	      var sceneStructure = updateSceneStructureWithResult(input, alternatives, random);
 	      if (isDomElement) {
-	        return toHtml(sceneStructure)
+	        return toAframeElements(sceneStructure)
 	      } else return sceneStructure
 	    })
 	    .catch(function(error) {
@@ -23723,9 +23857,9 @@
 	    })
 	}
 
-	function getHtml(id) {
+	function getAframeElements(id) {
 	  return getSceneStructure(id)
-	    .then(toHtml)
+	    .then(toAframeElements)
 	}
 
 	function getViewerUrl (args) {
@@ -23904,11 +24038,23 @@
 	var scene = {
 	  getStructure: getSceneStructure,
 	  getHtml: getHtml,
+	  getAframeElements: getAframeElements,
 	  getViewerUrl: getViewerUrl,
 	  validateSceneStructure: validateSceneStructure,
 	  normalizeSceneStructure: normalizeSceneStructure,
-	  getHtmlFromSceneStructure: toHtml
+	  getHtmlFromSceneStructure: getHtmlFromSceneStructure,
+	  getAframeElementsFromSceneStructure: toAframeElements
 	};
+
+	function getHtml() {
+	  console.warn('io3d.scene.getHtml will be removed soon please use io3d.scene.getAframeElements');
+	  return getAframeElements.apply( getAframeElements, arguments )
+	}
+
+	function getHtmlFromSceneStructure() {
+	  console.warn('io3d.scene.getHtmlFromSceneStructure will be removed soon please use io3d.scene.getAframeElementsFromSceneStructure');
+	  return toAframeElements.apply( toAframeElements, arguments )
+	}
 
 	function traverseData3d$1(data3d, callback) {
 
@@ -26587,6 +26733,10 @@
 
 	  // get reference to main DOM element
 	  var mainEl = document.getElementById(elementId);
+	  if (!mainEl) {
+	    console.error('file drop ui could not be created, element not found:', elementId);
+	    return
+	  }
 	  // input allows selecting files on click
 	  var fileInputEl = document.createElement('input');
 	  fileInputEl.setAttribute('type', 'file');
