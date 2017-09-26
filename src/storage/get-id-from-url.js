@@ -2,8 +2,8 @@ import configs from '../core/configs.js'
 
 // constants
 var URL_TO_ID_CACHE = {}
-var IS_HTTPS_URL = new RegExp('^https:\\/\\/storage\\.3d\\.io.*$')
-var IS_HTTP_URL = new RegExp('^http:\\/\\/storage\\.3d\\.io.*$')
+var IS_URL = new RegExp('^(http(s?))\\:\\/\\/(' + configs.storageDomain +'|' + configs.storageDomainNoCdn + ')')
+
 
 // main
 export default function getStorageIdFromUrl (url) {
@@ -11,16 +11,13 @@ export default function getStorageIdFromUrl (url) {
   // check cache
   if (URL_TO_ID_CACHE[url]) return URL_TO_ID_CACHE[url]
 
-  var storageId = url
-
-  if (IS_HTTPS_URL.test(url)) {
-    storageId = url.substring(21)
-  } else if (IS_HTTP_URL.test(url)) {
-    storageId = url.substring(20)
+  // check if url is valid url
+  if (IS_URL.test(url)) {
+    var storageId = url.replace(IS_URL, '')
+    // add to cache
+    URL_TO_ID_CACHE[ url ] = storageId
+    return storageId
+  } else {
+    throw new Error('Provided URL is not a valid URL:', url)
   }
-
-  // add to cache
-  URL_TO_ID_CACHE[ url ] = storageId
-  
-  return storageId
 }
