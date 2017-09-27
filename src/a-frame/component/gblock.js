@@ -62,7 +62,12 @@ export default {
     fetch('https://us-central1-gblock-api.cloudfunctions.net/get-gltf-url/?url=' + src).then(function (response) {
 
       return response.json().then(function (message) {
-        if (!response.ok) throw new Error('ERROR: ' + response.status + ' "' + message.message + '"')
+
+        if (!response.ok) {
+          el.emit('model-error', { message: message.message })
+          console.error('ERROR: ' + response.status + ' "' + message.message + '"')
+          return
+        }
 
         // load glTF model from original URL
         var gltfUrl = message.gltfUrl
