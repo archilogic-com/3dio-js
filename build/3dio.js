@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.78
- * @date 2017/09/25 23:56
+ * @version 1.0.0-beta.79
+ * @date 2017/09/27 10:11
  * @branch master
- * @commit 8aed73983b65a237ce550bae9ed64f2925ff4172
+ * @commit bd13de8d558f25c348871e55b467c2b140e647af
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/25 23:56', GIT_BRANCH = 'master', GIT_COMMIT = '8aed73983b65a237ce550bae9ed64f2925ff4172'
+	var BUILD_DATE='2017/09/27 10:11', GIT_BRANCH = 'master', GIT_COMMIT = 'bd13de8d558f25c348871e55b467c2b140e647af'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.78";
+	var version = "1.0.0-beta.79";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -16761,7 +16761,12 @@
 	    fetch('https://us-central1-gblock-api.cloudfunctions.net/get-gltf-url/?url=' + src).then(function (response) {
 
 	      return response.json().then(function (message) {
-	        if (!response.ok) throw new Error('ERROR: ' + response.status + ' "' + message.message + '"')
+
+	        if (!response.ok) {
+	          el.emit('model-error', { message: message.message });
+	          console.error('ERROR: ' + response.status + ' "' + message.message + '"');
+	          return
+	        }
 
 	        // load glTF model from original URL
 	        var gltfUrl = message.gltfUrl;
@@ -23793,8 +23798,8 @@
 
 	// constants
 	var URL_TO_ID_CACHE = {};
-	var IS_HTTPS_URL = new RegExp('^https:\\/\\/storage\\.3d\\.io.*$');
-	var IS_HTTP_URL = new RegExp('^http:\\/\\/storage\\.3d\\.io.*$');
+	var IS_URL$2 = new RegExp('^(http(s?))\\:\\/\\/(' + configs.storageDomain +'|' + configs.storageDomainNoCdn + ')');
+
 
 	// main
 	function getStorageIdFromUrl (url) {
@@ -23802,18 +23807,15 @@
 	  // check cache
 	  if (URL_TO_ID_CACHE[url]) return URL_TO_ID_CACHE[url]
 
-	  var storageId = url;
-
-	  if (IS_HTTPS_URL.test(url)) {
-	    storageId = url.substring(21);
-	  } else if (IS_HTTP_URL.test(url)) {
-	    storageId = url.substring(20);
+	  // check if url is valid url
+	  if (IS_URL$2.test(url)) {
+	    var storageId = url.replace(IS_URL$2, '');
+	    // add to cache
+	    URL_TO_ID_CACHE[ url ] = storageId;
+	    return storageId
+	  } else {
+	    throw new Error('Provided URL is not a valid URL:', url)
 	  }
-
-	  // add to cache
-	  URL_TO_ID_CACHE[ url ] = storageId;
-	  
-	  return storageId
 	}
 
 	var storage = {
