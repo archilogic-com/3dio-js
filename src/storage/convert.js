@@ -24,9 +24,7 @@ function getConverter(format) {
   }
 }
 
-var convert = {
+export default {
   exportDae: getConverter('dae'),
   exportObj: getConverter('obj')
 }
-
-export default convert

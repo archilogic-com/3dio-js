@@ -7,9 +7,6 @@ export default function getConvertableTextures(storageId) {
   var url = getUrlFromStorageId(storageId)
   return loadData3d(url)
     .then(function(data3d) {
-      return data3d
-    })
-    .then(function(data3d) {
       return getTextureKeys(data3d)
     })
     .then(function(textures) {
