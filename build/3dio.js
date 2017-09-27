@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.80
- * @date 2017/09/27 17:41
+ * @version 1.0.0-beta.81
+ * @date 2017/09/27 18:27
  * @branch master
- * @commit ba42d7745cb251e80e9c8b2109091f026c3d69e5
+ * @commit 9cf3c97e72b9ada92d33f117fbce89e18816aa39
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/27 17:41', GIT_BRANCH = 'master', GIT_COMMIT = 'ba42d7745cb251e80e9c8b2109091f026c3d69e5'
+	var BUILD_DATE='2017/09/27 18:27', GIT_BRANCH = 'master', GIT_COMMIT = '9cf3c97e72b9ada92d33f117fbce89e18816aa39'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.80";
+	var version = "1.0.0-beta.81";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -18589,10 +18589,13 @@
 	  schema: {type: 'asset'},
 
 	  init: function () {
+
 	    this.model = null;
+
 	  },
 
 	  update: function () {
+
 	    var self = this;
 	    var el = this.el;
 	    var src = this.data;
@@ -18601,131 +18604,151 @@
 
 	    this.remove();
 
-	    // FIXME: Replace this with an official API URL once available
-	    // This API call is only needed to obtain the official glTF URL of a google block model.
-	    // The glTF itself is not being proxied and gets fetched from https://vr.google.com/downloads/* directly.
-	    // https://github.com/archilogic-com/aframe-gblock/issues/1
-	    // API server code: server/index.js
-	    // try promise cache (could be in loading state)
-	    var promiseFromCache = promiseCache.get(src);
-	    var getGltfUrlPromise = promiseFromCache ? promiseFromCache : getGltfUrl(src);
-	    if (!promiseFromCache) promiseCache.add(src, getGltfUrlPromise);
+	    bluebird_1.all([
+	      getGltfUrl(src),
+	      fetchGblockLoader()
+	    ]).then(function (results) {
 
-	    getGltfUrlPromise.then(function (gltfUrl) {
+	      var gltfUrl = results[0];
+	      var GblockLoader = results[1];
 
 	      // load glTF model from original URL
+	      new GblockLoader().load( gltfUrl, function onLoaded (gltfModel) {
 
-	      createModifiedGltfLoader().then(function(gltfLoader){
-
-	        gltfLoader.load( gltfUrl, function onLoaded (gltfModel) {
-
-	          self.model = gltfModel.scene || gltfModel.scenes[0];
-	          // FIXME: adapt projection matrix in original shaders and do not replace materials
-	          self.model.traverse(function (child) {
-	            if (child.material) child.material = new THREE.MeshPhongMaterial({ vertexColors: THREE.VertexColors });
-	          });
-	          self.model.animations = gltfModel.animations;
-
-	          el.setObject3D('mesh', self.model);
-	          el.emit('model-loaded', {format: 'gltf', model: self.model});
-
-	        }, function onProgress() {
-	          // do nothing
-	        }, function onError(error) {
-
-	          console.error('ERROR loading gblock gltf "'+ src +'" : ' + error);
-	          el.emit('model-error', { message: error });
-
+	        self.model = gltfModel.scene || gltfModel.scenes[0];
+	        // FIXME: adapt projection matrix in original shaders and do not replace materials
+	        self.model.traverse(function (child) {
+	          if (child.material) child.material = new THREE.MeshPhongMaterial({ vertexColors: THREE.VertexColors });
 	        });
+	        self.model.animations = gltfModel.animations;
+
+	        el.setObject3D('mesh', self.model);
+	        el.emit('model-loaded', {format: 'gltf', model: self.model});
+
+	      }, function onProgress() {
+	        // do nothing
+
+	      }, function onError(error) {
+
+	        console.error('ERROR loading gblock model "'+ src +'" : ' + error);
+	        el.emit('model-error', { message: error });
 
 	      });
 
 	    }).catch(function(errorMessage){
-	      console.error(errorMessage);
+	      console.error('ERROR loading gblock model from "' + src +'" : ' + errorMessage);
 	      el.emit('model-error', { message: errorMessage });
 	    });
 
 	  },
 
 	  remove: function () {
+
 	    if (!this.model) { return; }
 	    this.el.removeObject3D('mesh');
+
 	  }
 
 	};
 
 	// private shared methods
 
+	// FIXME: Replace this with an official API URL once available
+	// This API call is only needed to obtain the official glTF URL of a google block model.
+	// The glTF itself is not being proxied and gets fetched from https://vr.google.com/downloads/* directly.
+	// https://github.com/archilogic-com/aframe-gblock/issues/1
+	// API server code: server/index.js
+	// try promise cache (could be in loading state)
 	function getGltfUrl (src) {
 
-	  return fetch(GBLOCK_API_GET_OFFICIAL_GLTF_URL + src).then(function (response) {
+	  // try cache
+	  var getUrlPromise = promiseCache.get(src);
 
-	    // parse response
-	    return response.json().then(function (message) {
-	      if (response.ok) {
-	        // return glTF URL
-	        return message.gltfUrl
-	      } else {
-	        // handle error response
-	        var status = response.status;
-	        var errorMessage = message.message;
-	        console.error('ERROR loading gblock model "'+ src +'" : ' + status + ' "' + errorMessage + '"');
+	  if (!getUrlPromise) {
+
+	    getUrlPromise = fetch(GBLOCK_API_GET_OFFICIAL_GLTF_URL + src).then(function (response) {
+
+	      // parse response
+	      return response.json().then(function (message) {
+	        if (response.ok) {
+	          // return glTF URL
+	          return message.gltfUrl
+	        } else {
+	          // handle error response
+	          var status = response.status;
+	          var errorMessage = message.message;
+	          console.error('ERROR loading gblock model "'+ src +'" : ' + status + ' "' + errorMessage + '"');
+	          return bluebird_1.reject(errorMessage)
+	        }
+	      }).catch(function(error){
+	        // handle server error
+	        var errorMessage = '3dio.js: Error parsing gblock API server JSON response: ' + error;
+	        console.error(errorMessage);
 	        return bluebird_1.reject(errorMessage)
-	      }
-	    }).catch(function(error){
-	      // handle server error
-	      var errorMessage = '3dio.js: Error parsing gblock API server JSON response: ' + error;
-	      console.error(errorMessage);
-	      return bluebird_1.reject(errorMessage)
-	    })
+	      })
 
-	  })
+	    });
+
+	    // add to cache
+	    promiseCache.add(src, getUrlPromise);
+
+	  }
+
+	  return getUrlPromise
 
 	}
 
-	function createModifiedGltfLoader() {
+	// loader has to be created asynchronously because we have to fetch legacy glTF loader script
+	var GblockLoaderPromise;
+	function fetchGblockLoader() {
 
-	  // legacy loader will overwrite THREE.GLTFLoader so we need to keep reference to it
-	  THREE.___OriginalGLTFLoader = THREE.GLTFLoader;
+	  if (!GblockLoaderPromise) {
 
-	  return fetchScript(LEGACY_GLFT_LOADER_URL).then(function(){
+	    // legacy loader will overwrite THREE.GLTFLoader so we need to keep reference to it
+	    THREE.___OriginalGLTFLoader = THREE.GLTFLoader;
 
-	    // keep reference to fetched legacy loader
-	    var LegacyGLTFLoader = THREE.GLTFLoader;
+	    GblockLoaderPromise = fetchScript(LEGACY_GLFT_LOADER_URL).then(function(){
 
-	    // restore current GLTFLoader
-	    THREE.GLTFLoader = THREE.___OriginalGLTFLoader;
+	      // keep reference to fetched legacy loader
+	      var LegacyGLTFLoader = THREE.GLTFLoader;
 
-	    // create modified GLTF loader for google blocks
-	    function GBlockLoader () {
+	      // restore current GLTFLoader
+	      THREE.GLTFLoader = THREE.___OriginalGLTFLoader;
 
-	      LegacyGLTFLoader.call(this);
+	      // create modified GLTF loader for google blocks
+	      function GBlockLoader () {
 
-	      var self = this;
+	        LegacyGLTFLoader.call(this);
 
-	      this._parse = this.parse;
-	      this.parse = function (data, path, onLoad, onError) {
-	        // convert uint8 to json
-	        var json = JSON.parse(convertUint8ArrayToString(data));
-	        // use base64 shaders
-	        Object.keys(json.shaders).forEach(function (key, i) {
-	          // Replacing original shaders with placeholders
-	          if (key.indexOf('fragment') > -1) json.shaders[key].uri = fragmentShader.base64;
-	          else if (key.indexOf('vertex') > -1) json.shaders[key].uri = vertexShader.base64;
-	        });
-	        // convert json to uint8
-	        var uint8array = new TextEncoder('utf-8').encode(JSON.stringify(json));
-	        // parse data
-	        self._parse.call(self, uint8array, path, onLoad, onError);
-	      };
+	        var self = this;
 
-	    }
-	    GBlockLoader.prototype = LegacyGLTFLoader.prototype;
+	        this._parse = this.parse;
+	        this.parse = function (data, path, onLoad, onError) {
+	          // convert uint8 to json
+	          var json = JSON.parse(convertUint8ArrayToString(data));
+	          // use base64 shaders
+	          Object.keys(json.shaders).forEach(function (key, i) {
+	            // Replacing original shaders with placeholders
+	            if (key.indexOf('fragment') > -1) json.shaders[key].uri = fragmentShader.base64;
+	            else if (key.indexOf('vertex') > -1) json.shaders[key].uri = vertexShader.base64;
+	          });
+	          // convert json to uint8
+	          var uint8array = new TextEncoder('utf-8').encode(JSON.stringify(json));
+	          // parse data
+	          self._parse.call(self, uint8array, path, onLoad, onError);
+	        };
 
-	    // expose loader
-	    return new GBlockLoader
+	      }
+	      GBlockLoader.prototype = LegacyGLTFLoader.prototype;
 
-	  })
+	      // expose loader
+	      return GBlockLoader
+
+	    });
+
+	  }
+
+	  return GblockLoaderPromise
 
 	}
 
