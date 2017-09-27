@@ -8,7 +8,7 @@ import getData3dInspectorUrl        from './utils/data3d/get-inspector-url.js'
 import ui                           from './utils/ui.js'
 import auth                         from './utils/auth.js'
 import fetch                        from './utils/io/fetch.js'
-import fetchModule                  from './utils/io/fetch-module.js'
+import fetchScript                  from './utils/io/fetch-script.js'
 import checkIfFileExists            from './utils/io/check-if-file-exists.js'
 import getBlobFromCanvas            from './utils/image/get-blob-from-canvas.js'
 import getImageFromFile             from './utils/image/get-image-from-file.js'
@@ -41,7 +41,7 @@ var utils = {
   auth: auth,
   io: {
     fetch: fetch,
-    fetchModule: fetchModule,
+    fetchScript: fetchScript,
     checkIfFileExists: checkIfFileExists
   },
   image: {

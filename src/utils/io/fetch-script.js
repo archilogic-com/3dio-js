@@ -4,7 +4,7 @@ import fetch from './fetch.js'
 
 var promiseCache = new PromiseCache()
 
-export default function fetchModule (url) {
+export default function fetchScript (url) {
   runtime.assertBrowser('Please use "require()" to fetch modules in server environment.')
 
   // module wrapper
@@ -18,7 +18,6 @@ export default function fetchModule (url) {
 
     // try promise cache (could be in loading state)
     var promiseFromCache = promiseCache.get(url)
-
     if (promiseFromCache) return promiseFromCache
 
     // load code and use module wrapper

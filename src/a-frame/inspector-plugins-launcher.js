@@ -1,4 +1,4 @@
-import fetchModule from '../utils/io/fetch-module.js'
+import fetchScript from '../utils/io/fetch-script.js'
 
 // internals
 
@@ -18,7 +18,7 @@ function init() {
 
   function loadPlugins () {
     if (window.io3d.aFrame.pluginsLoaded) return
-    fetchModule(INSPECTOR_PLUGINS_URL).catch(function(error){
+    fetchScript(INSPECTOR_PLUGINS_URL).catch(function(error){
       console.error('Could not load inspector plugins: '+error)
     })
   }
