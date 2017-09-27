@@ -62,12 +62,17 @@ export default {
     fetch('https://us-central1-gblock-api.cloudfunctions.net/get-gltf-url/?url=' + src).then(function (response) {
 
       return response.json().then(function (message) {
-        if (!response.ok) throw new Error('ERROR: ' + response.status + ' "' + message.message + '"')
+
+        if (!response.ok) {
+          el.emit('model-error', { message: message.message })
+          console.error('ERROR loading gblock model "'+ src +'" : ' + response.status + ' "' + message.message + '"')
+          return
+        }
 
         // load glTF model from original URL
         var gltfUrl = message.gltfUrl
 
-        self.loader.load( gltfUrl, function gltfLoaded (gltfModel) {
+        self.loader.load( gltfUrl, function onLoaded (gltfModel) {
           self.model = gltfModel.scene || gltfModel.scenes[0]
           // FIXME: adapt projection matrix in original shaders
           self.model.traverse(function (child) {
@@ -76,6 +81,11 @@ export default {
           self.model.animations = gltfModel.animations
           el.setObject3D('mesh', self.model)
           el.emit('model-loaded', {format: 'gltf', model: self.model})
+        }, function onProgress() {
+          // do nothing
+        }, function onError(error) {
+          el.emit('model-error', { message: error })
+          console.error('ERROR loading gblock gltf "'+ src +'" : ' + error)
         })
 
       })

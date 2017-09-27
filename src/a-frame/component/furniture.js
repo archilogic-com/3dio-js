@@ -54,27 +54,29 @@ export default {
         // get materialId from a-frame attribute or from furniture API scene structure preset
         var newMaterialId =  data[materialPropName] || (materialPreset ? materialPreset[meshId] : null)
 
-        // set custom material if available
+        // update view with custom material (if available)
         if (newMaterialId) {
-
           // update material
           data3d.meshes[meshId].material = newMaterialId
           // trigger event
           el.emit('material-changed', {mesh: meshId, material: newMaterialId})
+        }
 
-        } else {
-
-          // register it as part of the schema for the inspector
+        // register changeable materials schema
+        // (not all furniture have changeable materials)
+        if (data3d.alternativeMaterialsByMeshKey && data3d.alternativeMaterialsByMeshKey[meshId]) {
+          // extend schema with changeable material
           var prop = {}
           prop[materialPropName] = {
             type: 'string',
             default: data3d.meshes[meshId].material,
-            oneOf: data3d.alternativeMaterialsByMeshKey ? data3d.alternativeMaterialsByMeshKey[meshId] : data3d.meshes[meshId].material
+            oneOf: data3d.alternativeMaterialsByMeshKey[meshId]
           }
           this_.extendSchema(prop)
+          // update current params
           this_.data[materialPropName] = data3d.meshes[meshId].material
-
         }
+
       })
 
       // update view
