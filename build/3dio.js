@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.79
- * @date 2017/09/27 10:11
+ * @version 1.0.0-beta.80
+ * @date 2017/09/27 17:41
  * @branch master
- * @commit bd13de8d558f25c348871e55b467c2b140e647af
+ * @commit ba42d7745cb251e80e9c8b2109091f026c3d69e5
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/27 10:11', GIT_BRANCH = 'master', GIT_COMMIT = 'bd13de8d558f25c348871e55b467c2b140e647af'
+	var BUILD_DATE='2017/09/27 17:41', GIT_BRANCH = 'master', GIT_COMMIT = 'ba42d7745cb251e80e9c8b2109091f026c3d69e5'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.79";
+	var version = "1.0.0-beta.80";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -13952,27 +13952,29 @@
 	        // get materialId from a-frame attribute or from furniture API scene structure preset
 	        var newMaterialId =  data[materialPropName] || (materialPreset ? materialPreset[meshId] : null);
 
-	        // set custom material if available
+	        // update view with custom material (if available)
 	        if (newMaterialId) {
-
 	          // update material
 	          data3d.meshes[meshId].material = newMaterialId;
 	          // trigger event
 	          el.emit('material-changed', {mesh: meshId, material: newMaterialId});
+	        }
 
-	        } else {
-
-	          // register it as part of the schema for the inspector
+	        // register changeable materials schema
+	        // (not all furniture have changeable materials)
+	        if (data3d.alternativeMaterialsByMeshKey && data3d.alternativeMaterialsByMeshKey[meshId]) {
+	          // extend schema with changeable material
 	          var prop = {};
 	          prop[materialPropName] = {
 	            type: 'string',
 	            default: data3d.meshes[meshId].material,
-	            oneOf: data3d.alternativeMaterialsByMeshKey ? data3d.alternativeMaterialsByMeshKey[meshId] : data3d.meshes[meshId].material
+	            oneOf: data3d.alternativeMaterialsByMeshKey[meshId]
 	          };
 	          this_.extendSchema(prop);
+	          // update current params
 	          this_.data[materialPropName] = data3d.meshes[meshId].material;
-
 	        }
+
 	      });
 
 	      // update view
@@ -16696,702 +16698,6 @@
 	  );
 	}
 
-	var fragmentShader = {"text":"uniform vec3 u_color;\nuniform float u_metallic;\nuniform float u_roughness;\nuniform vec3 u_light0Pos;\nuniform vec3 u_light0Color;\nuniform vec3 u_light1Pos;\nuniform vec3 u_light1Color;\nuniform mat4 u_modelMatrix;\nuniform sampler2D u_reflectionCube;\nuniform sampler2D u_reflectionCubeBlur;","base64":"data:text/plain;base64,dW5pZm9ybSB2ZWMzIHVfY29sb3I7CnVuaWZvcm0gZmxvYXQgdV9tZXRhbGxpYzsKdW5pZm9ybSBmbG9hdCB1X3JvdWdobmVzczsKdW5pZm9ybSB2ZWMzIHVfbGlnaHQwUG9zOwp1bmlmb3JtIHZlYzMgdV9saWdodDBDb2xvcjsKdW5pZm9ybSB2ZWMzIHVfbGlnaHQxUG9zOwp1bmlmb3JtIHZlYzMgdV9saWdodDFDb2xvcjsKdW5pZm9ybSBtYXQ0IHVfbW9kZWxNYXRyaXg7CnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmU7CnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmVCbHVyOw=="};
-
-	var vertexShader = {"text":"varying vec3 v_normal;\nvarying vec3 v_position;\nvarying vec3 v_binormal;\nvarying vec3 v_tangent;\n","base64":"data:text/plain;base64,dmFyeWluZyB2ZWMzIHZfbm9ybWFsOwp2YXJ5aW5nIHZlYzMgdl9wb3NpdGlvbjsKdmFyeWluZyB2ZWMzIHZfYmlub3JtYWw7CnZhcnlpbmcgdmVjMyB2X3RhbmdlbnQ7Cg=="};
-
-	// TODO: Replace placeholder shaders by original ones (requires fixing projection matrix)
-	var GBlockLoader;
-	// THREE.GLTFLoader is required but not included in node.js version
-	if (typeof THREE !== 'undefined' && THREE.GLTFLoader) {
-
-	  GBlockLoader = function GBlockLoader () {
-
-	    THREE.GLTFLoader.call(this);
-
-	    var self = this;
-
-	    this._parse = this.parse;
-	    this.parse = function (data, path, onLoad, onError) {
-	      // convert uint8 to json
-	      var json = JSON.parse(convertUint8ArrayToString(data));
-	      // use base64 shaders
-	      Object.keys(json.shaders).forEach(function (key, i) {
-	        // Replacing original shaders with placeholders
-	        if (key.indexOf('fragment') > -1) json.shaders[key].uri = fragmentShader.base64;
-	        else if (key.indexOf('vertex') > -1) json.shaders[key].uri = vertexShader.base64;
-	      });
-	      // convert json to uint8
-	      var uint8array = new TextEncoder('utf-8').encode(JSON.stringify(json));
-	      // parse data
-	      self._parse.call(self, uint8array, path, onLoad, onError);
-	    };
-
-	  };
-	  GBlockLoader.prototype = THREE.GLTFLoader.prototype;
-
-	}
-
-	// aframe module
-
-	var gBlockComponent = {
-
-	  schema: {type: 'asset'},
-
-	  init: function () {
-	    if (!GBlockLoader) throw 'gBlock component requires THREE.GLTFLoader'
-	    this.model = null;
-	    this.loader = new GBlockLoader();
-	  },
-
-	  update: function () {
-	    var self = this;
-	    var el = this.el;
-	    var src = this.data;
-
-	    if (!src) { return; }
-
-	    this.remove();
-
-	    // FIXME: Replace this with an official API URL once available
-	    // This API call is only needed to obtain the official glTF URL of a google block model.
-	    // The glTF itself is not being proxied and gets fetched from https://vr.google.com/downloads/* directly.
-	    // https://github.com/archilogic-com/aframe-gblock/issues/1
-	    // API server code: server/index.js
-	    fetch('https://us-central1-gblock-api.cloudfunctions.net/get-gltf-url/?url=' + src).then(function (response) {
-
-	      return response.json().then(function (message) {
-
-	        if (!response.ok) {
-	          el.emit('model-error', { message: message.message });
-	          console.error('ERROR: ' + response.status + ' "' + message.message + '"');
-	          return
-	        }
-
-	        // load glTF model from original URL
-	        var gltfUrl = message.gltfUrl;
-
-	        self.loader.load( gltfUrl, function gltfLoaded (gltfModel) {
-	          self.model = gltfModel.scene || gltfModel.scenes[0];
-	          // FIXME: adapt projection matrix in original shaders
-	          self.model.traverse(function (child) {
-	            if (child.material) child.material = new THREE.MeshPhongMaterial({ vertexColors: THREE.VertexColors });
-	          });
-	          self.model.animations = gltfModel.animations;
-	          el.setObject3D('mesh', self.model);
-	          el.emit('model-loaded', {format: 'gltf', model: self.model});
-	        });
-
-	      })
-	    });
-
-	  },
-
-	  remove: function () {
-	    if (!this.model) { return; }
-	    this.el.removeObject3D('mesh');
-	  }
-
-	};
-
-	// helpers
-
-	// from https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/GLTFLoader.js
-	function convertUint8ArrayToString (array) {
-	  if (window.TextDecoder !== undefined) {
-	    return new TextDecoder().decode(array)
-	  }
-	  // Avoid the String.fromCharCode.apply(null, array) shortcut, which
-	  // throws a "maximum call stack size exceeded" error for large arrays.
-	  var s = '';
-	  for (var i = 0, il = array.length; i < il; i++) {
-	    s += String.fromCharCode(array[i]);
-	  }
-	  return s;
-	}
-
-	function fetchModule (url) {
-	  runtime.assertBrowser('Please use "require()" to fetch modules in server environment.');
-
-	  // module wrapper
-	  window.___modules = window.___modules || {};
-
-	  // return module if it has been loaded already
-	  if (window.___modules[url]) {
-	    return Promise.resolve(window.___modules[url])
-
-	  } else {
-	  // load code and use module wrapper
-	    return fetch$1(url).then(function(response){
-	      if (!response.ok) throw 'Could not load script from URL: '+url
-	      return response.text()
-	    }).then(function(code){
-
-	      // check module type
-	      var moduleWrapper;
-	      if (code.indexOf('define(function()') > -1) {
-	        // AMD
-	        moduleWrapper = code+'\nfunction define(cb){ window.___modules["'+url+'"] = cb(); };';
-	      } else {
-	        // CommonJS
-	        moduleWrapper = 'window.___modules["'+url+'"] = (function(){ var exports = {}, module = {exports:exports};'+code+'\nreturn module.exports\n})()';
-	      }
-
-	      var script = document.createElement('script');
-	      try {
-	        script.appendChild(document.createTextNode(moduleWrapper));
-	        document.body.appendChild(script);
-	      } catch (e) {
-	        script.text = moduleWrapper;
-	        document.body.appendChild(script);
-	      }
-	      return window.___modules[url]
-	    })
-
-	  }
-
-	}
-
-	// internals
-
-	var INSPECTOR_PLUGINS_URL = 'https://dist.3d.io/3dio-inspector-plugins/0.x.x/3dio-inspector-plugins.js';
-
-	function init() {
-
-	  if (window.AFRAME && window.AFRAME.INSPECTOR && window.AFRAME.INSPECTOR.opened) {
-	    // inspector opened: load immediately
-	    loadPlugins();
-	  } else {
-	    // initialize on inspector ready event
-	    window.addEventListener('inspector-loaded', loadPlugins);
-	  }
-
-	// methods
-
-	  function loadPlugins () {
-	    if (window.io3d.aFrame.pluginsLoaded) return
-	    fetchModule(INSPECTOR_PLUGINS_URL).catch(function(error){
-	      console.error('Could not load inspector plugins: '+error);
-	    });
-	  }
-
-	}
-
-	// expose API
-
-	var inspectorPluginsLauncher = {
-	  init: init
-	};
-
-	var DDS_MAGIC = 0x20534444;
-
-	var DDSD_MIPMAPCOUNT = 0x20000;
-
-	var DDSCAPS2_CUBEMAP = 0x200;
-
-	var DDPF_FOURCC = 0x4;
-
-	// internals
-
-	var FOURCC_DXT1 = fourCCToInt32("DXT1");
-	var FOURCC_DXT3 = fourCCToInt32("DXT3");
-	var FOURCC_DXT5 = fourCCToInt32("DXT5");
-
-	// functions
-
-	function fourCCToInt32 (value) {
-
-	  return value.charCodeAt(0) +
-	    (value.charCodeAt(1) << 8) +
-	    (value.charCodeAt(2) << 16) +
-	    (value.charCodeAt(3) << 24);
-
-	}
-
-	function int32ToFourCC (value) {
-
-	  return String.fromCharCode(
-	    value & 0xff,
-	    (value >> 8) & 0xff,
-	    (value >> 16) & 0xff,
-	    (value >> 24) & 0xff
-	  );
-	}
-
-	function loadARGBMip (buffer, dataOffset, width, height) {
-	  var dataLength = width * height * 4;
-	  var srcBuffer = new Uint8Array(buffer, dataOffset, dataLength);
-	  var byteArray = new Uint8Array(dataLength);
-	  var dst = 0;
-	  var src = 0;
-	  for (var y = 0; y < height; y++) {
-	    for (var x = 0; x < width; x++) {
-	      var b = srcBuffer[ src ];
-	      src++;
-	      var g = srcBuffer[ src ];
-	      src++;
-	      var r = srcBuffer[ src ];
-	      src++;
-	      var a = srcBuffer[ src ];
-	      src++;
-	      byteArray[ dst ] = r;
-	      dst++;  //r
-	      byteArray[ dst ] = g;
-	      dst++;  //g
-	      byteArray[ dst ] = b;
-	      dst++;  //b
-	      byteArray[ dst ] = a;
-	      dst++;  //a
-	    }
-	  }
-	  return byteArray;
-	}
-
-	function parse (buffer, loadMipmaps) {
-
-	  var dds = { mipmaps: [], width: 0, height: 0, format: null, mipmapCount: 1 };
-
-	  var headerLengthInt = 31; // The header length in 32 bit ints
-
-	  // Offsets into the header array
-
-	  var off_magic = 0;
-
-	  var off_size = 1;
-	  var off_flags = 2;
-	  var off_height = 3;
-	  var off_width = 4;
-
-	  var off_mipmapCount = 7;
-
-	  var off_pfFlags = 20;
-	  var off_pfFourCC = 21;
-	  var off_RGBBitCount = 22;
-	  var off_RBitMask = 23;
-	  var off_GBitMask = 24;
-	  var off_BBitMask = 25;
-	  var off_ABitMask = 26;
-
-	  var off_caps = 27;
-	  var off_caps2 = 28;
-	  var off_caps3 = 29;
-	  var off_caps4 = 30;
-
-	  // Parse header
-
-	  var header = new Int32Array(buffer, 0, headerLengthInt);
-
-	  if (header[ off_magic ] !== DDS_MAGIC) {
-
-	    console.error('THREE.DDSLoader.parse: Invalid magic number in DDS header.');
-	    return dds;
-
-	  }
-
-	  if (!header[ off_pfFlags ] & DDPF_FOURCC) {
-
-	    console.error('THREE.DDSLoader.parse: Unsupported format, must contain a FourCC code.');
-	    return dds;
-
-	  }
-
-	  var blockBytes;
-
-	  var fourCC = header[ off_pfFourCC ];
-
-	  var isRGBAUncompressed = false;
-
-	  switch (fourCC) {
-
-	    case FOURCC_DXT1:
-
-	      blockBytes = 8;
-	      dds.format = THREE.RGB_S3TC_DXT1_Format;
-	      break;
-
-	    case FOURCC_DXT3:
-
-	      blockBytes = 16;
-	      dds.format = THREE.RGBA_S3TC_DXT3_Format;
-	      break;
-
-	    case FOURCC_DXT5:
-
-	      blockBytes = 16;
-	      dds.format = THREE.RGBA_S3TC_DXT5_Format;
-	      break;
-
-	    default:
-
-	      if (header[ off_RGBBitCount ] == 32
-	        && header[ off_RBitMask ] & 0xff0000
-	        && header[ off_GBitMask ] & 0xff00
-	        && header[ off_BBitMask ] & 0xff
-	        && header[ off_ABitMask ] & 0xff000000) {
-	        isRGBAUncompressed = true;
-	        blockBytes = 64;
-	        dds.format = THREE.RGBAFormat;
-	      } else {
-	        console.error('THREE.DDSLoader.parse: Unsupported FourCC code ', int32ToFourCC(fourCC));
-	        return dds;
-	      }
-	  }
-
-	  dds.mipmapCount = 1;
-
-	  if (header[ off_flags ] & DDSD_MIPMAPCOUNT && loadMipmaps !== false) {
-
-	    dds.mipmapCount = Math.max(1, header[ off_mipmapCount ]);
-
-	  }
-
-	  //TODO: Verify that all faces of the cubemap are present with DDSCAPS2_CUBEMAP_POSITIVEX, etc.
-
-	  dds.isCubemap = header[ off_caps2 ] & DDSCAPS2_CUBEMAP ? true : false;
-
-	  dds.width = header[ off_width ];
-	  dds.height = header[ off_height ];
-
-	  var dataOffset = header[ off_size ] + 4;
-
-	  // Extract mipmaps buffers
-
-	  var width = dds.width;
-	  var height = dds.height;
-
-	  var faces = dds.isCubemap ? 6 : 1;
-
-	  for (var face = 0; face < faces; face++) {
-
-	    for (var i = 0; i < dds.mipmapCount; i++) {
-
-	      var byteArray, dataLength;
-	      if (isRGBAUncompressed) {
-	        byteArray = loadARGBMip(buffer, dataOffset, width, height);
-	        dataLength = byteArray.length;
-	      } else {
-	        dataLength = Math.max(4, width) / 4 * Math.max(4, height) / 4 * blockBytes;
-	        byteArray = new Uint8Array(buffer, dataOffset, dataLength);
-	      }
-
-	      var mipmap = { "data": byteArray, "width": width, "height": height };
-	      dds.mipmaps.push(mipmap);
-
-	      dataOffset += dataLength;
-
-	      width = Math.max(width * 0.5, 1);
-	      height = Math.max(height * 0.5, 1);
-
-	    }
-
-	    width = dds.width;
-	    height = dds.height;
-
-	  }
-
-	  return dds;
-
-	}
-
-	function log2 (x) {
-	  return Math.log(x) / Math.LN2
-	}
-
-	// load function
-
-	function fetchDdsTexture (url) {
-	  return new bluebird_1(function (resolve, reject) {
-
-	    var xhr = new XMLHttpRequest();
-
-	    xhr.onload = function (event) {
-
-	      if (xhr.status >= 200 && xhr.status < 300) {
-
-	        var buffer = xhr.response,
-	          dds;
-
-	        // parse data
-	        try {
-	          dds = parse(buffer, true);
-	        } catch (e) {
-	          var message = 'Error Loading DDS Texture\n' + url + '\n' + e.name + ': ' + e.message;
-	          console.error(message);
-	          reject(message);
-	          return
-	        }
-
-	        // See OpenGL ES 2.0.25 p. 81 paragraph 1 for the number of required mipmaps.
-	        var mipmapCount = log2(Math.max(dds.width, dds.height)) + 1;
-	        if (dds.mipmapCount != mipmapCount) {
-	          console.error('Reading DDS texture failed: ' + url + '\nmipmaps counted: ' + dds.mipmapCount + ', should be: ' + mipmapCount +
-	            '\nPlease make sure you have mipmap generation enabled when creating DDS textures from images.');
-	          reject('Error parsing DDS. Wrong mipmaps count. ' + url);
-	          return
-	        }
-
-	        // create compressed texture
-	        var texture = new THREE.CompressedTexture();
-
-	        texture.format = dds.format;
-	        texture.mipmaps = dds.mipmaps;
-	        texture.image.width = dds.width;
-	        texture.image.height = dds.height;
-	        texture.image.src = url;
-	        texture.sourceFile = url;
-	        texture.url = url;
-	        texture.bufferByteLength = buffer.byteLength;
-
-	        // gl.generateMipmap fails for compressed textures
-	        // mipmaps must be embedded in the DDS file
-	        // or texture filters must not use mipmapping
-	        texture.generateMipmaps = false;
-
-	        resolve(texture);
-
-	      } else {
-	        reject({
-	          message: 'Http Request error',
-	          url: url,
-	          status: xhr.status,
-	          headers: xhr.getAllResponseHeaders(),
-	          event: event
-	        });
-	      }
-
-	    };
-	    xhr.onerror = function (event) {
-	      reject({
-	        message: 'Http Request error',
-	        url: url,
-	        status: xhr.status,
-	        headers: xhr.getAllResponseHeaders(),
-	        event: event
-	      });
-	    };
-
-	    xhr.open('GET', url, true);
-	    xhr.crossOrigin = "Anonymous";
-	    xhr.responseType = 'arraybuffer';
-	    xhr.send(null);
-
-	  })
-	}
-
-	// internals
-
-	// graphic card max supported texture size
-	var MAX_TEXTURE_SIZE = runtime.has.webGl ? runtime.webGl.maxTextureSize || 2048 : 2048;
-
-	// helpers
-
-	function checkPowerOfTwo (value) {
-	  return ( value & ( value - 1 ) ) === 0 && value !== 0
-	}
-
-	function nearestPowerOfTwoOrMaxTextureSize (n) {
-	  // max texture size supported by vga
-	  if (n > MAX_TEXTURE_SIZE) {
-	    return MAX_TEXTURE_SIZE
-	  }
-	  // next best power of two
-	  var l = Math.log(n) / Math.LN2;
-	  return Math.pow(2, Math.round(l))
-	}
-
-	function resizeImage (image, url) {
-
-	  var width = nearestPowerOfTwoOrMaxTextureSize(image.width);
-	  var height = nearestPowerOfTwoOrMaxTextureSize(image.height);
-
-	  var canvas = document.createElement('canvas');
-	  canvas.width = width;
-	  canvas.height = height;
-	  canvas.getContext('2d').drawImage(image, 0, 0, width, height);
-
-	  console.log('Image size not compatible. Image has been resized from ' + image.width + 'x' + image.height + 'px to ' + canvas.width + 'x' + canvas.height +
-	    'px.\n' + url);
-
-	  return canvas
-	}
-
-	// function
-
-	function fetchImageTexture (url) {
-	  return new bluebird_1(function (resolve, reject) {
-
-	    var image = document.createElement('img');
-	    image.crossOrigin = 'Anonymous';
-
-	    image.onload = function () {
-
-	      var texture = new THREE.Texture();
-
-	      texture.sourceFile = url;
-	      texture.url = url;
-
-	      // image size compatibility check
-
-	      var isPowerOfTwo = (checkPowerOfTwo(image.width) && checkPowerOfTwo(image.height));
-	      var isNotTooBig = (image.width <= MAX_TEXTURE_SIZE && image.height <= MAX_TEXTURE_SIZE);
-
-	      if (isPowerOfTwo && isNotTooBig) {
-
-	        // use image as it is
-	        texture.image = image;
-
-	      } else {
-
-	        // resize image to make it compatible
-	        texture.image = resizeImage(image, url);
-	        // add url reference
-	        texture.image.src = url;
-
-	      }
-
-	      resolve(texture);
-
-	    };
-
-	    var triedWithCacheBust = false;
-	    image.onerror = function () {
-	      if(triedWithCacheBust) {
-	        reject('Error loading texture ' + url);
-	      } else {
-	        // try again with cache busting to avoid things like #1510
-	        triedWithCacheBust = true;
-	        if (url.indexOf('?') === -1) {
-	          url += '?cacheBust=' + new Date().getTime();
-	        } else {
-	          url += '&cacheBust=' + new Date().getTime();
-	        }
-	        image.src = url;
-	      }
-	    };
-
-	    // initiate image loading
-	    image.src = url;
-
-	  })
-	}
-
-	// configs
-
-	var maxConcurrentQueuedRequests = 15; // not queued requests are not limited in running parallel
-	var queuesByPriority = [
-	  'architectureGeometries',
-	  'architectureTexturesLoRes',
-	  'interiorGeometries',
-	  'interiorTexturesLoRes',
-	  'architectureTexturesHiRes',
-	  'interiorTexturesHiRes'
-	];
-
-	var queueFences = [
-	  false,
-	  false,
-	  true,
-	  false,
-	  false
-	];
-
-	// internals
-
-	var queues = {};
-	var queueFences = {};
-	var queuesChanged = false;
-	var queueInfo = {};
-	var queuesLength = queuesByPriority.length;
-	var concurrentRequests = 0;
-	var concurrentPerQueue = {};
-	var queueName;
-	for (var i$1 = 0, l = queuesLength; i$1 < l; i$1++) {
-	  queueName = queuesByPriority[i$1];
-	  queues[queueName] = [];
-	  queueFences[queueName] = queueFences[i$1];
-	  queueInfo[queueName] = {requestCount: 0};
-	  concurrentPerQueue[queueName] = 0;
-	}
-
-	// private methods
-
-	function startRequest(queueName) {
-	  // Update queue tracking information
-	  var info = queueInfo[queueName];
-	  var time = performance.now() / 1000;
-	  if (info.timeFirst) {
-	    info.timeFirst = time;
-	    info.timeLast  = time;
-	  } else
-	    info.timeLast  = time;
-	  info.requestCount++;
-	  // Update concurrent request counts
-	  concurrentPerQueue[queueName] += 1;
-	  concurrentRequests++;
-	  // set flag
-	  queuesChanged = true;
-	  // Start request
-	  var queue = queues[queueName];
-	  var request = queue.shift();
-	  request.start();
-	}
-
-	function processQueue() {
-	  var anchorStage = null;
-	  for (var i = 0; i < queuesLength; i++) {
-	    var queueName = queuesByPriority[i];
-	    while (queues[queueName].length > 0 && concurrentRequests < maxConcurrentQueuedRequests)
-	      startRequest(queueName);
-	    if (anchorStage === null && concurrentPerQueue[queueName] !== 0)
-	      anchorStage = i;
-	    if (anchorStage !== null && (queueFences[queueName] || (i - anchorStage > 0)))
-	      break;
-	  }
-	}
-
-	// public methods
-
-	function enqueue(queueName, url){
-
-	  // fallback to first queue
-	  if (!queues[queueName]) {
-	    if (queueName) console.error('onknown queue ', queueName);
-	    queueName = queuesByPriority[0];
-	  }
-
-	  // create promise and add to queue
-	  return new Promise(function(resolve, reject){
-	    // has to be asynchronous in order to decouple queue processing from synchronous code
-	    setTimeout(function(){
-	      var queue = queues[queueName];
-	      queue[ queue.length ] = { url: url, start: resolve };
-	      processQueue();
-	    },1);
-	  })
-
-	}
-
-	function dequeue(queueName, url) {
-	  var info = queueInfo[queueName];
-	  if (!info) {
-	    if (queueName) console.warn('Queue info not found for queue name "'+queueName+'"');
-	    return
-	  }
-	  info.timeLastFinished = performance.now() / 1000;
-	  concurrentPerQueue[queueName] -= 1;
-	  concurrentRequests -= 1;
-	  queuesChanged = true;
-	  processQueue();
-	}
-
-	// expose API
-
-	var queueManager = {
-	  enqueue: enqueue,
-	  dequeue: dequeue,
-	  info: queueInfo
-	};
-
 	/** Built-in value references. */
 	var spreadableSymbol = _Symbol ? _Symbol.isConcatSpreadable : undefined;
 
@@ -19206,6 +18512,775 @@
 
 	  }
 
+	};
+
+	var promiseCache$1 = new PromiseCache();
+
+	function fetchScript (url) {
+	  runtime.assertBrowser('Please use "require()" to fetch modules in server environment.');
+
+	  // module wrapper
+	  window.___modules = window.___modules || {};
+
+	  // return module if it has been loaded already
+	  if (window.___modules[url]) {
+	    return Promise.resolve(window.___modules[url])
+
+	  } else {
+
+	    // try promise cache (could be in loading state)
+	    var promiseFromCache = promiseCache$1.get(url);
+	    if (promiseFromCache) return promiseFromCache
+
+	    // load code and use module wrapper
+	    var fetchPromise = fetch$1(url).then(function(response){
+	      if (!response.ok) throw 'Could not load script from URL: '+url
+	      return response.text()
+	    }).then(function(code){
+
+	      // check module type
+	      var moduleWrapper;
+	      if (code.indexOf('define(function()') > -1) {
+	        // AMD
+	        moduleWrapper = code+'\nfunction define(cb){ window.___modules["'+url+'"] = cb(); };';
+	      } else {
+	        // CommonJS
+	        moduleWrapper = 'window.___modules["'+url+'"] = (function(){ var exports = {}, module = {exports:exports};'+code+'\nreturn module.exports\n})()';
+	      }
+
+	      var script = document.createElement('script');
+	      try {
+	        script.appendChild(document.createTextNode(moduleWrapper));
+	        document.body.appendChild(script);
+	      } catch (e) {
+	        script.text = moduleWrapper;
+	        document.body.appendChild(script);
+	      }
+	      return window.___modules[url]
+	    });
+
+	    // add to cache
+	    promiseCache$1.add(url, fetchPromise);
+
+	    return fetchPromise
+
+	  }
+
+	}
+
+	var fragmentShader = {"text":"uniform vec3 u_color;\nuniform float u_metallic;\nuniform float u_roughness;\nuniform vec3 u_light0Pos;\nuniform vec3 u_light0Color;\nuniform vec3 u_light1Pos;\nuniform vec3 u_light1Color;\nuniform mat4 u_modelMatrix;\nuniform sampler2D u_reflectionCube;\nuniform sampler2D u_reflectionCubeBlur;","base64":"data:text/plain;base64,dW5pZm9ybSB2ZWMzIHVfY29sb3I7CnVuaWZvcm0gZmxvYXQgdV9tZXRhbGxpYzsKdW5pZm9ybSBmbG9hdCB1X3JvdWdobmVzczsKdW5pZm9ybSB2ZWMzIHVfbGlnaHQwUG9zOwp1bmlmb3JtIHZlYzMgdV9saWdodDBDb2xvcjsKdW5pZm9ybSB2ZWMzIHVfbGlnaHQxUG9zOwp1bmlmb3JtIHZlYzMgdV9saWdodDFDb2xvcjsKdW5pZm9ybSBtYXQ0IHVfbW9kZWxNYXRyaXg7CnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmU7CnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmVCbHVyOw=="};
+
+	var vertexShader = {"text":"varying vec3 v_normal;\nvarying vec3 v_position;\nvarying vec3 v_binormal;\nvarying vec3 v_tangent;\n","base64":"data:text/plain;base64,dmFyeWluZyB2ZWMzIHZfbm9ybWFsOwp2YXJ5aW5nIHZlYzMgdl9wb3NpdGlvbjsKdmFyeWluZyB2ZWMzIHZfYmlub3JtYWw7CnZhcnlpbmcgdmVjMyB2X3RhbmdlbnQ7Cg=="};
+
+	// TODO: Replace placeholder shaders by original ones (requires fixing projection matrix)
+	// configs
+
+	var LEGACY_GLFT_LOADER_URL = 'https://cdn.rawgit.com/mrdoob/three.js/r86/examples/js/loaders/GLTFLoader.js';
+	var GBLOCK_API_GET_OFFICIAL_GLTF_URL = 'https://us-central1-gblock-api.cloudfunctions.net/get-gltf-url/?url=';
+
+	// internals
+
+	var promiseCache = new PromiseCache();
+
+	// aframe module
+
+	var gBlockComponent = {
+
+	  schema: {type: 'asset'},
+
+	  init: function () {
+	    this.model = null;
+	  },
+
+	  update: function () {
+	    var self = this;
+	    var el = this.el;
+	    var src = this.data;
+
+	    if (!src) { return; }
+
+	    this.remove();
+
+	    // FIXME: Replace this with an official API URL once available
+	    // This API call is only needed to obtain the official glTF URL of a google block model.
+	    // The glTF itself is not being proxied and gets fetched from https://vr.google.com/downloads/* directly.
+	    // https://github.com/archilogic-com/aframe-gblock/issues/1
+	    // API server code: server/index.js
+	    // try promise cache (could be in loading state)
+	    var promiseFromCache = promiseCache.get(src);
+	    var getGltfUrlPromise = promiseFromCache ? promiseFromCache : getGltfUrl(src);
+	    if (!promiseFromCache) promiseCache.add(src, getGltfUrlPromise);
+
+	    getGltfUrlPromise.then(function (gltfUrl) {
+
+	      // load glTF model from original URL
+
+	      createModifiedGltfLoader().then(function(gltfLoader){
+
+	        gltfLoader.load( gltfUrl, function onLoaded (gltfModel) {
+
+	          self.model = gltfModel.scene || gltfModel.scenes[0];
+	          // FIXME: adapt projection matrix in original shaders and do not replace materials
+	          self.model.traverse(function (child) {
+	            if (child.material) child.material = new THREE.MeshPhongMaterial({ vertexColors: THREE.VertexColors });
+	          });
+	          self.model.animations = gltfModel.animations;
+
+	          el.setObject3D('mesh', self.model);
+	          el.emit('model-loaded', {format: 'gltf', model: self.model});
+
+	        }, function onProgress() {
+	          // do nothing
+	        }, function onError(error) {
+
+	          console.error('ERROR loading gblock gltf "'+ src +'" : ' + error);
+	          el.emit('model-error', { message: error });
+
+	        });
+
+	      });
+
+	    }).catch(function(errorMessage){
+	      console.error(errorMessage);
+	      el.emit('model-error', { message: errorMessage });
+	    });
+
+	  },
+
+	  remove: function () {
+	    if (!this.model) { return; }
+	    this.el.removeObject3D('mesh');
+	  }
+
+	};
+
+	// private shared methods
+
+	function getGltfUrl (src) {
+
+	  return fetch(GBLOCK_API_GET_OFFICIAL_GLTF_URL + src).then(function (response) {
+
+	    // parse response
+	    return response.json().then(function (message) {
+	      if (response.ok) {
+	        // return glTF URL
+	        return message.gltfUrl
+	      } else {
+	        // handle error response
+	        var status = response.status;
+	        var errorMessage = message.message;
+	        console.error('ERROR loading gblock model "'+ src +'" : ' + status + ' "' + errorMessage + '"');
+	        return bluebird_1.reject(errorMessage)
+	      }
+	    }).catch(function(error){
+	      // handle server error
+	      var errorMessage = '3dio.js: Error parsing gblock API server JSON response: ' + error;
+	      console.error(errorMessage);
+	      return bluebird_1.reject(errorMessage)
+	    })
+
+	  })
+
+	}
+
+	function createModifiedGltfLoader() {
+
+	  // legacy loader will overwrite THREE.GLTFLoader so we need to keep reference to it
+	  THREE.___OriginalGLTFLoader = THREE.GLTFLoader;
+
+	  return fetchScript(LEGACY_GLFT_LOADER_URL).then(function(){
+
+	    // keep reference to fetched legacy loader
+	    var LegacyGLTFLoader = THREE.GLTFLoader;
+
+	    // restore current GLTFLoader
+	    THREE.GLTFLoader = THREE.___OriginalGLTFLoader;
+
+	    // create modified GLTF loader for google blocks
+	    function GBlockLoader () {
+
+	      LegacyGLTFLoader.call(this);
+
+	      var self = this;
+
+	      this._parse = this.parse;
+	      this.parse = function (data, path, onLoad, onError) {
+	        // convert uint8 to json
+	        var json = JSON.parse(convertUint8ArrayToString(data));
+	        // use base64 shaders
+	        Object.keys(json.shaders).forEach(function (key, i) {
+	          // Replacing original shaders with placeholders
+	          if (key.indexOf('fragment') > -1) json.shaders[key].uri = fragmentShader.base64;
+	          else if (key.indexOf('vertex') > -1) json.shaders[key].uri = vertexShader.base64;
+	        });
+	        // convert json to uint8
+	        var uint8array = new TextEncoder('utf-8').encode(JSON.stringify(json));
+	        // parse data
+	        self._parse.call(self, uint8array, path, onLoad, onError);
+	      };
+
+	    }
+	    GBlockLoader.prototype = LegacyGLTFLoader.prototype;
+
+	    // expose loader
+	    return new GBlockLoader
+
+	  })
+
+	}
+
+	// from https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/GLTFLoader.js
+	function convertUint8ArrayToString (array) {
+	  if (window.TextDecoder !== undefined) {
+	    return new TextDecoder().decode(array)
+	  }
+	  // Avoid the String.fromCharCode.apply(null, array) shortcut, which
+	  // throws a "maximum call stack size exceeded" error for large arrays.
+	  var s = '';
+	  for (var i = 0, il = array.length; i < il; i++) {
+	    s += String.fromCharCode(array[i]);
+	  }
+	  return s;
+	}
+
+	// internals
+
+	var INSPECTOR_PLUGINS_URL = 'https://dist.3d.io/3dio-inspector-plugins/0.x.x/3dio-inspector-plugins.js';
+
+	function init() {
+
+	  if (window.AFRAME && window.AFRAME.INSPECTOR && window.AFRAME.INSPECTOR.opened) {
+	    // inspector opened: load immediately
+	    loadPlugins();
+	  } else {
+	    // initialize on inspector ready event
+	    window.addEventListener('inspector-loaded', loadPlugins);
+	  }
+
+	// methods
+
+	  function loadPlugins () {
+	    if (window.io3d.aFrame.pluginsLoaded) return
+	    fetchScript(INSPECTOR_PLUGINS_URL).catch(function(error){
+	      console.error('Could not load inspector plugins: '+error);
+	    });
+	  }
+
+	}
+
+	// expose API
+
+	var inspectorPluginsLauncher = {
+	  init: init
+	};
+
+	var DDS_MAGIC = 0x20534444;
+
+	var DDSD_MIPMAPCOUNT = 0x20000;
+
+	var DDSCAPS2_CUBEMAP = 0x200;
+
+	var DDPF_FOURCC = 0x4;
+
+	// internals
+
+	var FOURCC_DXT1 = fourCCToInt32("DXT1");
+	var FOURCC_DXT3 = fourCCToInt32("DXT3");
+	var FOURCC_DXT5 = fourCCToInt32("DXT5");
+
+	// functions
+
+	function fourCCToInt32 (value) {
+
+	  return value.charCodeAt(0) +
+	    (value.charCodeAt(1) << 8) +
+	    (value.charCodeAt(2) << 16) +
+	    (value.charCodeAt(3) << 24);
+
+	}
+
+	function int32ToFourCC (value) {
+
+	  return String.fromCharCode(
+	    value & 0xff,
+	    (value >> 8) & 0xff,
+	    (value >> 16) & 0xff,
+	    (value >> 24) & 0xff
+	  );
+	}
+
+	function loadARGBMip (buffer, dataOffset, width, height) {
+	  var dataLength = width * height * 4;
+	  var srcBuffer = new Uint8Array(buffer, dataOffset, dataLength);
+	  var byteArray = new Uint8Array(dataLength);
+	  var dst = 0;
+	  var src = 0;
+	  for (var y = 0; y < height; y++) {
+	    for (var x = 0; x < width; x++) {
+	      var b = srcBuffer[ src ];
+	      src++;
+	      var g = srcBuffer[ src ];
+	      src++;
+	      var r = srcBuffer[ src ];
+	      src++;
+	      var a = srcBuffer[ src ];
+	      src++;
+	      byteArray[ dst ] = r;
+	      dst++;  //r
+	      byteArray[ dst ] = g;
+	      dst++;  //g
+	      byteArray[ dst ] = b;
+	      dst++;  //b
+	      byteArray[ dst ] = a;
+	      dst++;  //a
+	    }
+	  }
+	  return byteArray;
+	}
+
+	function parse (buffer, loadMipmaps) {
+
+	  var dds = { mipmaps: [], width: 0, height: 0, format: null, mipmapCount: 1 };
+
+	  var headerLengthInt = 31; // The header length in 32 bit ints
+
+	  // Offsets into the header array
+
+	  var off_magic = 0;
+
+	  var off_size = 1;
+	  var off_flags = 2;
+	  var off_height = 3;
+	  var off_width = 4;
+
+	  var off_mipmapCount = 7;
+
+	  var off_pfFlags = 20;
+	  var off_pfFourCC = 21;
+	  var off_RGBBitCount = 22;
+	  var off_RBitMask = 23;
+	  var off_GBitMask = 24;
+	  var off_BBitMask = 25;
+	  var off_ABitMask = 26;
+
+	  var off_caps = 27;
+	  var off_caps2 = 28;
+	  var off_caps3 = 29;
+	  var off_caps4 = 30;
+
+	  // Parse header
+
+	  var header = new Int32Array(buffer, 0, headerLengthInt);
+
+	  if (header[ off_magic ] !== DDS_MAGIC) {
+
+	    console.error('THREE.DDSLoader.parse: Invalid magic number in DDS header.');
+	    return dds;
+
+	  }
+
+	  if (!header[ off_pfFlags ] & DDPF_FOURCC) {
+
+	    console.error('THREE.DDSLoader.parse: Unsupported format, must contain a FourCC code.');
+	    return dds;
+
+	  }
+
+	  var blockBytes;
+
+	  var fourCC = header[ off_pfFourCC ];
+
+	  var isRGBAUncompressed = false;
+
+	  switch (fourCC) {
+
+	    case FOURCC_DXT1:
+
+	      blockBytes = 8;
+	      dds.format = THREE.RGB_S3TC_DXT1_Format;
+	      break;
+
+	    case FOURCC_DXT3:
+
+	      blockBytes = 16;
+	      dds.format = THREE.RGBA_S3TC_DXT3_Format;
+	      break;
+
+	    case FOURCC_DXT5:
+
+	      blockBytes = 16;
+	      dds.format = THREE.RGBA_S3TC_DXT5_Format;
+	      break;
+
+	    default:
+
+	      if (header[ off_RGBBitCount ] == 32
+	        && header[ off_RBitMask ] & 0xff0000
+	        && header[ off_GBitMask ] & 0xff00
+	        && header[ off_BBitMask ] & 0xff
+	        && header[ off_ABitMask ] & 0xff000000) {
+	        isRGBAUncompressed = true;
+	        blockBytes = 64;
+	        dds.format = THREE.RGBAFormat;
+	      } else {
+	        console.error('THREE.DDSLoader.parse: Unsupported FourCC code ', int32ToFourCC(fourCC));
+	        return dds;
+	      }
+	  }
+
+	  dds.mipmapCount = 1;
+
+	  if (header[ off_flags ] & DDSD_MIPMAPCOUNT && loadMipmaps !== false) {
+
+	    dds.mipmapCount = Math.max(1, header[ off_mipmapCount ]);
+
+	  }
+
+	  //TODO: Verify that all faces of the cubemap are present with DDSCAPS2_CUBEMAP_POSITIVEX, etc.
+
+	  dds.isCubemap = header[ off_caps2 ] & DDSCAPS2_CUBEMAP ? true : false;
+
+	  dds.width = header[ off_width ];
+	  dds.height = header[ off_height ];
+
+	  var dataOffset = header[ off_size ] + 4;
+
+	  // Extract mipmaps buffers
+
+	  var width = dds.width;
+	  var height = dds.height;
+
+	  var faces = dds.isCubemap ? 6 : 1;
+
+	  for (var face = 0; face < faces; face++) {
+
+	    for (var i = 0; i < dds.mipmapCount; i++) {
+
+	      var byteArray, dataLength;
+	      if (isRGBAUncompressed) {
+	        byteArray = loadARGBMip(buffer, dataOffset, width, height);
+	        dataLength = byteArray.length;
+	      } else {
+	        dataLength = Math.max(4, width) / 4 * Math.max(4, height) / 4 * blockBytes;
+	        byteArray = new Uint8Array(buffer, dataOffset, dataLength);
+	      }
+
+	      var mipmap = { "data": byteArray, "width": width, "height": height };
+	      dds.mipmaps.push(mipmap);
+
+	      dataOffset += dataLength;
+
+	      width = Math.max(width * 0.5, 1);
+	      height = Math.max(height * 0.5, 1);
+
+	    }
+
+	    width = dds.width;
+	    height = dds.height;
+
+	  }
+
+	  return dds;
+
+	}
+
+	function log2 (x) {
+	  return Math.log(x) / Math.LN2
+	}
+
+	// load function
+
+	function fetchDdsTexture (url) {
+	  return new bluebird_1(function (resolve, reject) {
+
+	    var xhr = new XMLHttpRequest();
+
+	    xhr.onload = function (event) {
+
+	      if (xhr.status >= 200 && xhr.status < 300) {
+
+	        var buffer = xhr.response,
+	          dds;
+
+	        // parse data
+	        try {
+	          dds = parse(buffer, true);
+	        } catch (e) {
+	          var message = 'Error Loading DDS Texture\n' + url + '\n' + e.name + ': ' + e.message;
+	          console.error(message);
+	          reject(message);
+	          return
+	        }
+
+	        // See OpenGL ES 2.0.25 p. 81 paragraph 1 for the number of required mipmaps.
+	        var mipmapCount = log2(Math.max(dds.width, dds.height)) + 1;
+	        if (dds.mipmapCount != mipmapCount) {
+	          console.error('Reading DDS texture failed: ' + url + '\nmipmaps counted: ' + dds.mipmapCount + ', should be: ' + mipmapCount +
+	            '\nPlease make sure you have mipmap generation enabled when creating DDS textures from images.');
+	          reject('Error parsing DDS. Wrong mipmaps count. ' + url);
+	          return
+	        }
+
+	        // create compressed texture
+	        var texture = new THREE.CompressedTexture();
+
+	        texture.format = dds.format;
+	        texture.mipmaps = dds.mipmaps;
+	        texture.image.width = dds.width;
+	        texture.image.height = dds.height;
+	        texture.image.src = url;
+	        texture.sourceFile = url;
+	        texture.url = url;
+	        texture.bufferByteLength = buffer.byteLength;
+
+	        // gl.generateMipmap fails for compressed textures
+	        // mipmaps must be embedded in the DDS file
+	        // or texture filters must not use mipmapping
+	        texture.generateMipmaps = false;
+
+	        resolve(texture);
+
+	      } else {
+	        reject({
+	          message: 'Http Request error',
+	          url: url,
+	          status: xhr.status,
+	          headers: xhr.getAllResponseHeaders(),
+	          event: event
+	        });
+	      }
+
+	    };
+	    xhr.onerror = function (event) {
+	      reject({
+	        message: 'Http Request error',
+	        url: url,
+	        status: xhr.status,
+	        headers: xhr.getAllResponseHeaders(),
+	        event: event
+	      });
+	    };
+
+	    xhr.open('GET', url, true);
+	    xhr.crossOrigin = "Anonymous";
+	    xhr.responseType = 'arraybuffer';
+	    xhr.send(null);
+
+	  })
+	}
+
+	// internals
+
+	// graphic card max supported texture size
+	var MAX_TEXTURE_SIZE = runtime.has.webGl ? runtime.webGl.maxTextureSize || 2048 : 2048;
+
+	// helpers
+
+	function checkPowerOfTwo (value) {
+	  return ( value & ( value - 1 ) ) === 0 && value !== 0
+	}
+
+	function nearestPowerOfTwoOrMaxTextureSize (n) {
+	  // max texture size supported by vga
+	  if (n > MAX_TEXTURE_SIZE) {
+	    return MAX_TEXTURE_SIZE
+	  }
+	  // next best power of two
+	  var l = Math.log(n) / Math.LN2;
+	  return Math.pow(2, Math.round(l))
+	}
+
+	function resizeImage (image, url) {
+
+	  var width = nearestPowerOfTwoOrMaxTextureSize(image.width);
+	  var height = nearestPowerOfTwoOrMaxTextureSize(image.height);
+
+	  var canvas = document.createElement('canvas');
+	  canvas.width = width;
+	  canvas.height = height;
+	  canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+
+	  console.log('Image size not compatible. Image has been resized from ' + image.width + 'x' + image.height + 'px to ' + canvas.width + 'x' + canvas.height +
+	    'px.\n' + url);
+
+	  return canvas
+	}
+
+	// function
+
+	function fetchImageTexture (url) {
+	  return new bluebird_1(function (resolve, reject) {
+
+	    var image = document.createElement('img');
+	    image.crossOrigin = 'Anonymous';
+
+	    image.onload = function () {
+
+	      var texture = new THREE.Texture();
+
+	      texture.sourceFile = url;
+	      texture.url = url;
+
+	      // image size compatibility check
+
+	      var isPowerOfTwo = (checkPowerOfTwo(image.width) && checkPowerOfTwo(image.height));
+	      var isNotTooBig = (image.width <= MAX_TEXTURE_SIZE && image.height <= MAX_TEXTURE_SIZE);
+
+	      if (isPowerOfTwo && isNotTooBig) {
+
+	        // use image as it is
+	        texture.image = image;
+
+	      } else {
+
+	        // resize image to make it compatible
+	        texture.image = resizeImage(image, url);
+	        // add url reference
+	        texture.image.src = url;
+
+	      }
+
+	      resolve(texture);
+
+	    };
+
+	    var triedWithCacheBust = false;
+	    image.onerror = function () {
+	      if(triedWithCacheBust) {
+	        reject('Error loading texture ' + url);
+	      } else {
+	        // try again with cache busting to avoid things like #1510
+	        triedWithCacheBust = true;
+	        if (url.indexOf('?') === -1) {
+	          url += '?cacheBust=' + new Date().getTime();
+	        } else {
+	          url += '&cacheBust=' + new Date().getTime();
+	        }
+	        image.src = url;
+	      }
+	    };
+
+	    // initiate image loading
+	    image.src = url;
+
+	  })
+	}
+
+	// configs
+
+	var maxConcurrentQueuedRequests = 15; // not queued requests are not limited in running parallel
+	var queuesByPriority = [
+	  'architectureGeometries',
+	  'architectureTexturesLoRes',
+	  'interiorGeometries',
+	  'interiorTexturesLoRes',
+	  'architectureTexturesHiRes',
+	  'interiorTexturesHiRes'
+	];
+
+	var queueFences = [
+	  false,
+	  false,
+	  true,
+	  false,
+	  false
+	];
+
+	// internals
+
+	var queues = {};
+	var queueFences = {};
+	var queuesChanged = false;
+	var queueInfo = {};
+	var queuesLength = queuesByPriority.length;
+	var concurrentRequests = 0;
+	var concurrentPerQueue = {};
+	var queueName;
+	for (var i$1 = 0, l = queuesLength; i$1 < l; i$1++) {
+	  queueName = queuesByPriority[i$1];
+	  queues[queueName] = [];
+	  queueFences[queueName] = queueFences[i$1];
+	  queueInfo[queueName] = {requestCount: 0};
+	  concurrentPerQueue[queueName] = 0;
+	}
+
+	// private methods
+
+	function startRequest(queueName) {
+	  // Update queue tracking information
+	  var info = queueInfo[queueName];
+	  var time = performance.now() / 1000;
+	  if (info.timeFirst) {
+	    info.timeFirst = time;
+	    info.timeLast  = time;
+	  } else
+	    info.timeLast  = time;
+	  info.requestCount++;
+	  // Update concurrent request counts
+	  concurrentPerQueue[queueName] += 1;
+	  concurrentRequests++;
+	  // set flag
+	  queuesChanged = true;
+	  // Start request
+	  var queue = queues[queueName];
+	  var request = queue.shift();
+	  request.start();
+	}
+
+	function processQueue() {
+	  var anchorStage = null;
+	  for (var i = 0; i < queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (queues[queueName].length > 0 && concurrentRequests < maxConcurrentQueuedRequests)
+	      startRequest(queueName);
+	    if (anchorStage === null && concurrentPerQueue[queueName] !== 0)
+	      anchorStage = i;
+	    if (anchorStage !== null && (queueFences[queueName] || (i - anchorStage > 0)))
+	      break;
+	  }
+	}
+
+	// public methods
+
+	function enqueue(queueName, url){
+
+	  // fallback to first queue
+	  if (!queues[queueName]) {
+	    if (queueName) console.error('onknown queue ', queueName);
+	    queueName = queuesByPriority[0];
+	  }
+
+	  // create promise and add to queue
+	  return new Promise(function(resolve, reject){
+	    // has to be asynchronous in order to decouple queue processing from synchronous code
+	    setTimeout(function(){
+	      var queue = queues[queueName];
+	      queue[ queue.length ] = { url: url, start: resolve };
+	      processQueue();
+	    },1);
+	  })
+
+	}
+
+	function dequeue(queueName, url) {
+	  var info = queueInfo[queueName];
+	  if (!info) {
+	    if (queueName) console.warn('Queue info not found for queue name "'+queueName+'"');
+	    return
+	  }
+	  info.timeLastFinished = performance.now() / 1000;
+	  concurrentPerQueue[queueName] -= 1;
+	  concurrentRequests -= 1;
+	  queuesChanged = true;
+	  processQueue();
+	}
+
+	// expose API
+
+	var queueManager = {
+	  enqueue: enqueue,
+	  dequeue: dequeue,
+	  info: queueInfo
 	};
 
 	var cache = new PromiseCache();
@@ -25046,7 +25121,7 @@
 	}
 
 	function getImageFromTga (file) {
-	  return fetchModule(TARGA_PARSER_LIB).then(function(Targa){
+	  return fetchScript(TARGA_PARSER_LIB).then(function(Targa){
 	    return readFile(file, 'arrayBuffer').then(function(buffer){
 	      return new bluebird_1(function(resolve, reject){
 
@@ -25620,11 +25695,11 @@
 	// helpers
 
 	function loadDeflateLib () {
-	  return runtime.isBrowser ? fetchModule(PAKO_LIB.deflate.url) : Promise.resolve(require(PAKO_LIB.deflate.module))
+	  return runtime.isBrowser ? fetchScript(PAKO_LIB.deflate.url) : Promise.resolve(require(PAKO_LIB.deflate.module))
 	}
 
 	function loadInflateLib () {
-	  return runtime.isBrowser ? fetchModule(PAKO_LIB.inflate.url) : Promise.resolve(require(PAKO_LIB.inflate.module))
+	  return runtime.isBrowser ? fetchScript(PAKO_LIB.inflate.url) : Promise.resolve(require(PAKO_LIB.inflate.module))
 	}
 
 	// config
@@ -28452,7 +28527,7 @@
 	  auth: auth,
 	  io: {
 	    fetch: fetch$1,
-	    fetchModule: fetchModule,
+	    fetchScript: fetchScript,
 	    checkIfFileExists: checkIfFileExists
 	  },
 	  image: {
