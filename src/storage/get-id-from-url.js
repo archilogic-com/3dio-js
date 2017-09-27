@@ -18,6 +18,8 @@ export default function getStorageIdFromUrl (url) {
     URL_TO_ID_CACHE[ url ] = storageId
     return storageId
   } else {
-    throw new Error('Provided URL is not a valid URL:', url)
+    // handle errors softly
+    console.error('Error extracting storageId from URL: Provided URL is not a valid: ' + url)
+    return undefined
   }
 }
