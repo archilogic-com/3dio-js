@@ -6,8 +6,7 @@ var IS_HTTPS_URL = new RegExp('^https:\\/\\/storage\\.3d\\.io.*$')
 var IS_HTTP_URL = new RegExp('^http:\\/\\/storage\\.3d\\.io.*$')
 
 // main
-export default function getStorageIdFromUrl (url) {
-
+export default function getStorageIdFromUrl(url) {
   // check cache
   if (URL_TO_ID_CACHE[url]) return URL_TO_ID_CACHE[url]
 
@@ -20,7 +19,7 @@ export default function getStorageIdFromUrl (url) {
   }
 
   // add to cache
-  URL_TO_ID_CACHE[ url ] = storageId
-  
+  URL_TO_ID_CACHE[url] = storageId
+
   return storageId
 }
