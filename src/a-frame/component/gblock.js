@@ -65,7 +65,7 @@ export default {
           // do nothing
         }, function onError(error) {
 
-          console.error('ERROR loading gblock gltf "'+ src +'" : ' + error)
+          console.error('ERROR loading gblock model "'+ src +'" : ' + error)
           el.emit('model-error', { message: error })
 
         })
@@ -73,7 +73,7 @@ export default {
       })
 
     }).catch(function(errorMessage){
-      console.error(errorMessage)
+      console.error('ERROR loading gblock model from "' + src +'" : ' + errorMessage)
       el.emit('model-error', { message: errorMessage })
     })
 
