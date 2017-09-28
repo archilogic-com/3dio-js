@@ -1,7 +1,10 @@
 import runtime from '../../core/runtime.js'
+import PromiseCache from '../promise-cache.js'
 import fetch from './fetch.js'
 
-export default function fetchModule (url) {
+var promiseCache = new PromiseCache()
+
+export default function fetchScript (url) {
   runtime.assertBrowser('Please use "require()" to fetch modules in server environment.')
 
   // module wrapper
@@ -12,8 +15,14 @@ export default function fetchModule (url) {
     return Promise.resolve(window.___modules[url])
 
   } else {
-  // load code and use module wrapper
-    return fetch(url).then(function(response){
+
+    // try promise cache (could be in loading state)
+    var promiseFromCache = promiseCache.get(url)
+    if (promiseFromCache) return promiseFromCache
+
+    // load code and use module wrapper
+    var fetchPromise = fetch(url).then(function(response){
+      if (!response.ok) throw 'Could not load script from URL: '+url
       return response.text()
     }).then(function(code){
 
@@ -37,6 +46,11 @@ export default function fetchModule (url) {
       }
       return window.___modules[url]
     })
+
+    // add to cache
+    promiseCache.add(url, fetchPromise)
+
+    return fetchPromise
 
   }
 

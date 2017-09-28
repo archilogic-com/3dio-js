@@ -4,6 +4,7 @@ import loadData3d from './load.js'
 import decodeBinaryData3d from './decode-binary.js'
 import getTextureKeys from './get-texture-keys.js'
 import getUrlFromStorageId from '../../storage/get-url-from-id.js'
+import getNoCdnUrlFromStorageId from '../../storage/get-no-cdn-url-from-id.js'
 
 /*
 input: data3d (object or binary) or storageId (referencing data3d)
@@ -54,7 +55,7 @@ function normalizeInput(input) {
 
 function pollTexture(storageId) {
 
-  var url = getUrlFromStorageId(storageId)
+  var url = getNoCdnUrlFromStorageId(storageId)
 
   return poll(function (resolve, reject, next) {
 

@@ -68,6 +68,10 @@ function extendWithConvenienceMethods (el) {
     child ? el.removeChild(child) : el.parentNode.removeChild(el)
     return el
   }
+  el.empty = function emptyElement () {
+    while (el.lastChild) el.removeChild(el.lastChild)
+    return el
+  }
   el.append = function append (o) {
     if (o) isElement(o) ? el.appendChild(o) : el.innerHTML = o
     return el

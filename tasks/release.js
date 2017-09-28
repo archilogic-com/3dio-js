@@ -1,11 +1,9 @@
 const fs = require('fs')
-const path = require('path')
 const gulp = require('gulp')
 const del = require('del')
 const gzip = require('gulp-gzip')
 const s3 = require('gulp-s3')
 const through2 = require('through2')
-const Vinyl = require('vinyl')
 const UglifyJS = require('uglify-js')
 const build = require('./build.js')
 const test = require('./test.js')
@@ -18,7 +16,6 @@ const git = require('gulp-git')
 
 const version = packageInfo.version
 const branchName = preamble.gitBranchName
-const latestNpmVersion = execSync(`npm view ${packageInfo.name} version`).toString('utf8').replace('\n', '')
 
 // configs
 
@@ -47,6 +44,7 @@ const release = gulp.series(
   test,
   build,
   cleanDestDir,
+  copyBuildToDist,
   uglify,
   gitTag,
   gitCommit,
@@ -87,9 +85,15 @@ function checkBranchName () {
 
 function cleanDestDir () {
   return del([destDir]).then(function () {
-    fs.mkdirSync(process.cwd() + `/${destDir}`, 0744)
-    fs.mkdirSync(process.cwd() + `/${destDir}/${version}`, 0744)
+    fs.mkdirSync(process.cwd() + `/${destDir}`, 0o744)
+    fs.mkdirSync(process.cwd() + `/${destDir}/${version}`, 0o744)
   })
+}
+
+function copyBuildToDist () {
+  return gulp
+    .src(`${srcDir}/**`)
+    .pipe(gulp.dest(`${destDir}/${version}`))
 }
 
 function uglify () {
@@ -148,6 +152,7 @@ function gitPush () {
 }
 
 function npmCheckVersion () {
+  const latestNpmVersion = execSync(`npm view ${packageInfo.name} version`).toString('utf8').replace('\n', '')
   if (latestNpmVersion === version ) {
     throw new Error('Version '+version+' has been published to NPM already. Did you forget to bump version number?')
   }
@@ -155,7 +160,7 @@ function npmCheckVersion () {
 }
 
 function npmPublish () {
-  console.log('Publishing version '+version+' to NPM (latest: '+latestNpmVersion+')')
+  console.log('Publishing version '+version+' to NPM')
   execSync(`npm publish`).toString('utf8').replace('\n', '')
   return Promise.resolve()
 }

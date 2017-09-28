@@ -2,6 +2,7 @@ import Promise from 'bluebird'
 import normalizeData3d from './normalize.js'
 import generateTextureSet from './generate-texture-set.js'
 import checkDependencies from '../../a-frame/check-dependencies.js'
+import getStorageIdFromUrl from '../../storage/get-id-from-url.js'
 import runtime from '../../core/runtime.js'
 
 // main
@@ -75,12 +76,8 @@ export default checkDependencies({
 
     })(object3d);
 
-    return Promise.all([
-      normalizeData3d(data3d),
-      Promise.all(texturePromises)
-    ]).then(function(results){
-      // return data3d
-      return results[0]
+    return Promise.all(texturePromises).then(function(){
+      return normalizeData3d(data3d)
     })
 
   }
@@ -349,29 +346,46 @@ function translateMaterialTextures(attribMap, threeMaterial, data3dMaterial, tex
     var threeAttribName = attribs[0]
     var data3dAttribName = attribs[1]
 
-    // if not compressed get textures from threejs material:
-    var isNonCompressedImage = threeMaterial[threeAttribName] && threeMaterial[threeAttribName].image && !threeMaterial[threeAttribName].isCompressedTexture
-    if (isNonCompressedImage) {
+    var image = threeMaterial[threeAttribName] ? threeMaterial[threeAttribName].image : null
 
-      var image = threeMaterial[threeName].image
+    if (!(image && image.src)) return
+
+    var isCompressedTexture = threeMaterial[threeAttribName].isCompressedTexture
+    var originalData3dMaterial = threeMaterial.userData && threeMaterial.userData.data3dMaterial ? threeMaterial.userData.data3dMaterial : null
+
+    if (isCompressedTexture) {
+
+      // try original data3dMaterial...
+      if (
+        // material has original data3dMaterial properties
+        originalData3dMaterial
+        // source texture is available
+        && originalData3dMaterial[data3dAttribName+'Source']
+        // current compressed texture is the same as the one in original texture set
+        && originalData3dMaterial[data3dAttribName].indexOf(image.src) > -1
+      ) {
+        // use texture set from original material
+        data3dMaterial[data3dAttribName+'Source'] = getStorageIdFromUrl( originalData3dMaterial[data3dAttribName+'Source'] )
+        data3dMaterial[data3dAttribName+'Preview'] = getStorageIdFromUrl( originalData3dMaterial[data3dAttribName+'Preview'] )
+        data3dMaterial[data3dAttribName] = getStorageIdFromUrl( originalData3dMaterial[data3dAttribName] )
+
+      } else {
+        // log warning
+        console.warn('Texture "'+ image.src +'" could not be converted into data3d texture set.')
+      }
+
+    } else {
+
+      // use texture from threejs material
       texturePromises.push(
         generateTextureSet(image).then(function (result) {
           // add texture keys to data3d
-          data3dMaterial[data3dName + 'Preview'] = result.loRes
-          data3dMaterial[data3dName + 'Source'] = result.source
-          data3dMaterial[data3dName] = result.dds
+          data3dMaterial[data3dAttribName + 'Preview'] = result.loRes
+          data3dMaterial[data3dAttribName + 'Source'] = result.source
+          data3dMaterial[data3dAttribName] = result.dds
         })
       )
 
-    } else {
-      // fallback to data from data3dMaterial (if available)
-      var hasOriginalData3dMaterial = threeMaterial.userData && threeMaterial.userData.data3dMaterial && threeMaterial.userData.data3dMaterial[data3dAttribName]
-      if (hasOriginalData3dMaterial) {
-        var originalData3dMaterial = threeMaterial.userData.data3dMaterial
-        data3dMaterial[data3dAttribName+'Preview'] = originalData3dMaterial[data3dAttribName+'Preview']
-        data3dMaterial[data3dAttribName+'Source'] = originalData3dMaterial[data3dAttribName+'Source']
-        data3dMaterial[data3dAttribName] = originalData3dMaterial[data3dAttribName]
-      }
     }
 
   })

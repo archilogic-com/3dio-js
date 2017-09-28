@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>gBlock Component - A-Frame</title>
+  <meta name="description" content="gBlock Component - A-Frame"/>
+
+  <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+
+  <script src="https://rawgit.com/feiss/aframe-environment-component/master/dist/aframe-environment-component.min.js"></script>
+  <script src="https://rawgit.com/protyze/aframe-curve-component/master/dist/aframe-curve-component.min.js"></script>
+  <script src="https://rawgit.com/archilogic-com/aframe-alongpath-component/master/dist/aframe-alongpath-component.min.js"></script>
+  <script src="https://unpkg.com/aframe-animation-component/dist/aframe-animation-component.min.js"></script>
+
+  <script src="../../build/3dio.js"></script>
+
+  <style>
+    #top {
+      text-align: center;
+      z-index: 100000;
+      position: absolute;
+      top: 5px;
+      width: 100%;
+      color: white;
+      font-size: 16px;
+      font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;
+    }
+    #top a {
+      color: white;
+    }
+    #visual-inspector-button {
+      z-index: 100000;
+      position: absolute;
+      width: 4vw;
+      height: 4vw;
+      min-width: 30px;
+      min-height: 30px;
+      left: 20px;
+      bottom: 20px;
+      cursor: pointer;
+      background-color: rgba(0,0,0,0.3);
+    }
+    #visual-inspector-button:hover {
+      background-color: #555;
+    }
+  </style>
+</head>
+<body>
+
+<!-- 3D -->
+
+<a-scene>
+
+  <a-entity environment="preset:arches; fog:0.85; skyType:gradient; horizonColor:1 1 1; skyColor:55 100 100;"></a-entity>
+
+  <!-- desert -->
+
+  <a-entity gblock="https://vr.google.com/objects/eW2LgmMV94J" scale="11 11 11" position="25.806 14.071 -6.306" rotation="0 -38.73194695084365 0"></a-entity>
+
+  <!-- space ships -->
+
+  <a-curve id="track1" curve="type:CubicBezier; closed:true">
+    <a-curve-point curve-point="" position="42.242 10.194 1.845"></a-curve-point>
+    <a-curve-point curve-point="" position="-2.717 9.711 -2.144"></a-curve-point>
+    <a-curve-point curve-point="" position="1.229 20.493 -56.955"></a-curve-point>
+    <a-curve-point curve-point="" position="21.573 22.743 -37.156"></a-curve-point>
+    <a-curve-point curve-point="" position="-6.85 3.777 -22.66"></a-curve-point>
+    <a-curve-point curve-point="" position="-4.71 15.831 26.042"></a-curve-point>
+    <a-curve-point curve-point="" position="-0.015 18.593 10.463"></a-curve-point>
+    <a-curve-point curve-point="" position="-5.316 6.369 -28.036"></a-curve-point>
+    <a-curve-point curve-point="" position="42.519 12.49 -19.692"></a-curve-point>
+  </a-curve>
+  <!-- draw curve
+  <a-draw-curve curveref="#track1" material="shader: line; color: blue;"></a-draw-curve>
+  -->
+
+  <a-entity alongpath="curve:#track1; dur:18000; delay:0; loop:true; rotate:true;">
+    <a-entity rotation="0 0 -80" animation="property: rotation; dir: alternate; dur: 3000; easing: linear; loop: true; to:0 0 80;">
+      <a-entity gblock="https://vr.google.com/objects/100p3RNw-5Q" scale="2.3 2.3 2.3" position="2.614 6.374 -0.863" rotation="-4.469070802020421 -89.61059915846076 -2.5783100780887045"></a-entity>
+    </a-entity>
+  </a-entity>
+
+  <a-entity alongpath="curve:#track1; dur:18000; delay:1500; loop:true; rotate:true;">
+    <a-entity rotation="0 0 -80" animation="property: rotation; dir: alternate; dur: 3000; easing: linear; loop: true; to:0 0 80;">
+      <a-entity gblock="https://vr.google.com/objects/aba7TBlKyJE" scale="1 1 1" position="0.96 -0.61 -1.101" rotation="19.251381916395662 -15.126085791453734 45.89391938997894"></a-entity>
+    </a-entity>
+  </a-entity>
+
+  <!-- more spaceships -->
+
+  <a-curve id="track2" curve="type:CubicBezier; closed:true">
+    <a-curve-point curve-point="" position="-10.608 10.194 20.891"></a-curve-point>
+    <a-curve-point curve-point="" position="-22.877 17.745 -7.401"></a-curve-point>
+    <a-curve-point curve-point="" position="4.43 14.749 -34.323"></a-curve-point>
+    <a-curve-point curve-point="" position="15.399 17.288 3.185"></a-curve-point>
+    <a-curve-point curve-point="" position="39.407 26.817 -6.044"></a-curve-point>
+    <a-curve-point curve-point="" position="43.673 10.565 -46.611"></a-curve-point>
+    <a-curve-point curve-point="" position="3.792 17.908 -31.778"></a-curve-point>
+    <a-curve-point curve-point="" position="11.563 13.554 -10.522"></a-curve-point>
+    <a-curve-point curve-point="" position="49.97 12.49 -8.85"></a-curve-point>
+    <a-curve-point curve-point="" position="46.65 23.822 10.978"></a-curve-point>
+    <a-curve-point curve-point="" position="23.371 8.908 22.296"></a-curve-point>
+  </a-curve>
+  <!-- draw curve
+  <a-draw-curve curveref="#track2" material="shader: line; color: red;"></a-draw-curve>
+  -->
+
+  <a-entity alongpath="curve:#track2; dur:20000; delay:0; loop:true; rotate:true;">
+    <a-entity rotation="0 0 -80" animation="property: rotation; dir: alternate; dur: 3000; easing: linear; loop: true; to:0 0 80;">
+      <a-entity gblock="https://vr.google.com/objects/aba7TBlKyJE" scale="1 1 1" position="0.96 -0.61 -1.101" rotation="19.251381916395662 -15.126085791453734 45.89391938997894"></a-entity>
+    </a-entity>
+  </a-entity>
+
+  <a-entity alongpath="curve:#track2; dur:20000; delay:10000; loop:true; rotate:true;">
+    <a-entity rotation="0 0 -80" animation="property: rotation; dir: alternate; dur: 3000; easing: linear; loop: true; to:0 0 80;">
+      <a-entity gblock="https://vr.google.com/objects/aba7TBlKyJE" scale="1 1 1" position="0.96 -0.61 -1.101" rotation="19.251381916395662 -15.126085791453734 45.89391938997894"></a-entity>
+    </a-entity>
+  </a-entity>
+
+
+  <a-curve id="track3" curve="type:CubicBezier; closed:true">
+    <a-curve-point curve-point="" position="7.024 10.194 44.027"></a-curve-point>
+    <a-curve-point curve-point="" position="-1.586 17.745 12.372"></a-curve-point>
+    <a-curve-point curve-point="" position="25.87 10.414 19.621"></a-curve-point>
+    <a-curve-point curve-point="" position="31.294 10.955 3.185"></a-curve-point>
+    <a-curve-point curve-point="" position="20.269 26.817 -6.044"></a-curve-point>
+    <a-curve-point curve-point="" position="11.883 10.565 -21.02"></a-curve-point>
+    <a-curve-point curve-point="" position="-9.873 17.908 -33.15"></a-curve-point>
+    <a-curve-point curve-point="" position="-2.419 9.27 -10.522"></a-curve-point>
+    <a-curve-point curve-point="" position="40.336 12.49 -21.638"></a-curve-point>
+    <a-curve-point curve-point="" position="43.24 8.908 -3.476"></a-curve-point>
+    <a-curve-point curve-point="" position="23.371 8.908 22.296"></a-curve-point>
+  </a-curve>
+  <!-- draw curve
+  <a-draw-curve curveref="#track3" material="shader: line; color: green;"></a-draw-curve>
+   -->
+
+  <a-entity alongpath="curve:#track3; dur:24000; delay:0; loop:true; rotate:true;">
+    <a-entity rotation="0 0 -80" animation="property: rotation; dir: alternate; dur: 3000; easing: linear; loop: true; to:0 0 80;">
+      <a-entity gblock="https://vr.google.com/objects/aba7TBlKyJE" scale="1 1 1" position="0.96 -0.61 -1.101" rotation="19.251381916395662 -15.126085791453734 45.89391938997894"></a-entity>
+    </a-entity>
+  </a-entity>
+
+  <a-entity alongpath="curve:#track3; dur:24000; delay:10000; loop:true; rotate:true;">
+    <a-entity rotation="0 0 -80" animation="property: rotation; dir: alternate; dur: 3000; easing: linear; loop: true; to:0 0 80;">
+      <a-entity gblock="https://vr.google.com/objects/aba7TBlKyJE" scale="1 1 1" position="0.96 -0.61 -1.101" rotation="19.251381916395662 -15.126085791453734 45.89391938997894"></a-entity>
+    </a-entity>
+  </a-entity>
+
+  <!-- this one will not work because model is not remixable. play fair and respect the authors decision
+  <a-entity gblock="https://vr.google.com/objects/evwJECBy7fi"></a-entity>
+   -->
+
+  <a-entity position="13.413 1.6 19.432" camera="userHeight:1.6" wasd-controls="" rotation="32.2 336.441 0" look-controls=""></a-entity>
+
+</a-scene>
+
+<!-- 2D / UI -->
+
+<div id="top">
+  <a target="_blank" href="https://github.com/archilogic-com/aframe-gblock">gblock</a> component by <a target="_blank" href="https://3d.io">3d.io</a> for <a target="_blank" href="https://aframe.io/">A-Frame</a> loading remixable models from <a target="_blank" href="https://vr.google.com/objects/user/4kqx77GYPhP">Ti Kawamoto</a> and <a target="_blank" href="https://vr.google.com/objects/user/dQ0PNcdXYuo">Alberto Calvo</a>
+</div>
+<div id="visual-inspector-button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><path d="M31.4,20.2l-.6-4.4,2.6-1.7-2.5-3.7-2.6,1.7L24.7,9.4l.6-3-4.4-.9-.6,3-4.4.6L14.2,6.5,10.5,9l1.7,2.6L9.5,15.2l-3-.6L5.6,19l3,.6L9.2,24,6.6,25.7l2.5,3.7,2.6-1.7,3.6,2.7-.6,3,4.4.9.6-3,4.4-.6,1.7,2.6,3.7-2.5-1.7-2.6s2.6-3.5,2.7-3.6l3,.6.9-4.4ZM20,25.5A5.5,5.5,0,1,1,25.5,20,5.5,5.5,0,0,1,20,25.5Z" style="fill:#fff"/></svg>
+</div>
+<script>
+  document.querySelector('#visual-inspector-button').addEventListener('click', function(){
+    window.postMessage('INJECT_AFRAME_INSPECTOR','*')
+    document.querySelector('#visual-inspector-button').style.display = 'none'
+  })
+</script>
+
+</body>
+</html>

@@ -1,5 +1,5 @@
 import runtime from '../../core/runtime.js'
-import fetchModule from '../io/fetch-module.js'
+import fetchScript from '../io/fetch-script.js'
 import readFile from './read.js'
 import getMimeTypeFromFileName from './get-mime-type-from-filename.js'
 
@@ -74,9 +74,9 @@ function deflateFile (file) {
 // helpers
 
 function loadDeflateLib () {
-  return runtime.isBrowser ? fetchModule(PAKO_LIB.deflate.url) : Promise.resolve(require(PAKO_LIB.deflate.module))
+  return runtime.isBrowser ? fetchScript(PAKO_LIB.deflate.url) : Promise.resolve(require(PAKO_LIB.deflate.module))
 }
 
 function loadInflateLib () {
-  return runtime.isBrowser ? fetchModule(PAKO_LIB.inflate.url) : Promise.resolve(require(PAKO_LIB.inflate.module))
+  return runtime.isBrowser ? fetchScript(PAKO_LIB.inflate.url) : Promise.resolve(require(PAKO_LIB.inflate.module))
 }

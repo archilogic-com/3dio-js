@@ -3,7 +3,13 @@
 module.exports = {
   port: 8080,
   startPath: '/examples-browser/',
-  files: ['examples-browser','build'],
+  files: [{
+    match: ['examples-browser/**'],
+    watchEvents: ['change']
+  }, {
+    match: ['build/**'],
+    watchEvents: ['add']
+  }],
   serveStatic: ['./'], // uses index.html in directories
   server: {
     directory: true,

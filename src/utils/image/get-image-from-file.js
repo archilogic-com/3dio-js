@@ -1,7 +1,6 @@
 import Promise from 'bluebird'
-import runtime from '../../core/runtime.js'
 import readFile from '../file/read.js'
-import fetchModule from '../io/fetch-module.js'
+import fetchScript from '../io/fetch-script.js'
 
 // dependencies
 
@@ -62,7 +61,7 @@ function getImageFromJpgOrPngFile (file) {
 }
 
 function getImageFromTga (file) {
-  return fetchModule(TARGA_PARSER_LIB).then(function(Targa){
+  return fetchScript(TARGA_PARSER_LIB).then(function(Targa){
     return readFile(file, 'arrayBuffer').then(function(buffer){
       return new Promise(function(resolve, reject){
 

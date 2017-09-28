@@ -4,15 +4,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- boilerplate libs -->
-  <!--
   <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
-  -->
-  <script src="../_libs/aframe.0.6.1.min.js"></script>
 
-  <!--
   <script src="https://cdn.rawgit.com/tizzle/aframe-orbit-controls-component/v0.1.12/dist/aframe-orbit-controls-component.min.js"></script>
-  -->
-  <script src="../_libs/aframe-orbit-controls-component.min.js"></script>
 
   <!-- 3dio lib -->
   <script src="../../../build/3dio.js"></script>
@@ -39,10 +33,7 @@
 <!-- 3D -->
 <a-scene>
 
-  <!--
   <a-entity io3d-data3d="url:https://storage.3d.io/535e624259ee6b0200000484/170903-1554-hl8t6r/archilogic_2017-09-03_15-47-13_dkhZ1I.gz.data3d.buffer"></a-entity>
-  -->
-  <a-entity id="millennium-falcon" io3d-data3d="url:../_models/millennium-falcon/data3d/millennium-falcon.data3d.buffer" position=""></a-entity>
 
   <a-videosphere src="../_videos/space-odyssey-vr-360.mp4" rotation="0 90 0"></a-videosphere>
 
@@ -51,7 +42,7 @@
     id="cam-outside"
     position="10 16 0"
     orbit-controls="target:#cam-target;"
-    camera="user-height:1.55;"
+    camera
   ></a-entity>
   <!--  -->
 

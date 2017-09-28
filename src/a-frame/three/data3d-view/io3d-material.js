@@ -44,8 +44,8 @@ export default checkDependencies ({
       }
     ])
 
-    this.vertexShader = vertexShader
-    this.fragmentShader = fragmentShader
+    this.vertexShader = vertexShader.text
+    this.fragmentShader = fragmentShader.text
     this.lights = true
   }
 

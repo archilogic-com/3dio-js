@@ -4,10 +4,10 @@ import runtime from './runtime.js'
 // default configs values
 
 var defaults = Object.freeze({
-  logLevel:      'warn',
+  logLevel: 'warn',
   publishableApiKey: getPublishableApiKeyFromUrl(),
   secretApiKey: null,
-  servicesUrl:   'https://spaces.archilogic.com/api/v2',
+  servicesUrl: 'https://spaces.archilogic.com/api/v2',
   storageDomain: 'storage.3d.io',
   storageDomainNoCdn: 'storage-nocdn.3d.io'
 })
@@ -16,8 +16,8 @@ var defaults = Object.freeze({
 
 var LOG_STRING_TO_ENUM = {
   error: log.ERROR,
-  warn:  log.WARN,
-  info:  log.INFO,
+  warn: log.WARN,
+  info: log.INFO,
   debug: log.DEBUG
 }
 
@@ -40,7 +40,6 @@ var configs = function configs (args) {
   if (runtime.isBrowser && args.secretApiKey) {
     log.error('The secret API key is not supposed to be used in browser environments!\nPlease see https://3d.io/docs/api/1/get-started-browser.html#secret-api-key for more information.')
   }
-
 
   // simply copy over the other configs
   var key, keys = Object.keys(args)
@@ -93,7 +92,7 @@ function getPublishableApiKeyFromUrl () {
     var scripts = document.getElementsByTagName('script')
     var libNameRegex = new RegExp('(\/3dio\.js|\/3dio\.min\.js)')
     // iterating backwarts as the last script is most likely the current one
-    for (var i=scripts.length-1; i>-1; i--) {
+    for (var i = scripts.length - 1; i > -1; i--) {
       src = scripts[i].getAttribute('src')
       if (libNameRegex.exec(src)) {
         libUrl = src

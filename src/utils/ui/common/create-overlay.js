@@ -42,10 +42,9 @@ export default function createOverlay () {
     centerEl.style['animation'] = '600ms content-slide-in cubic-bezier(0.2, 0.80, 0.5, 1)'
     centerEl.style['-webkit-animation-fill-mode'] = 'forwards'
     centerEl.style['animation-fill-mode'] = 'forwards'
-    
-    if (callback && typeof callback === 'function') setTimeout(function(){
-      callback()
-    }, 500)
+
+    // trigger callback function
+    if (callback && typeof callback === 'function') setTimeout(function(){ callback();}, 500)
 
     return result
   }
@@ -68,10 +67,9 @@ export default function createOverlay () {
     setTimeout(function(){
       mainEl.remove()
     }, 600)
+
     // trigger callback function
-    setTimeout(function(){
-      if (callback && typeof callback === 'function') callback()
-    }, 300)
+    if (callback && typeof callback === 'function') setTimeout(function(){ callback(); }, 300)
 
     return result
   }
