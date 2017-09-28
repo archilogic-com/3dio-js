@@ -124,7 +124,6 @@ function createBakedElement(parentElem, element3d) {
 // creates a camera and tour-waypoints from scene structure
 function parseCameraBookmarks(sceneStructure, planRoot) {
   var bookmarks = flattenSceneStructure(sceneStructure[0]).filter(function (element) { return element.type === 'camera-bookmark' })
-  console.log('bookmarks', bookmarks)
   if (bookmarks.length === 0) return
 
   var lastSavePosition = bookmarks.find(function (element) { return element.name === 'lastSavePosition' })
@@ -139,8 +138,6 @@ function parseCameraBookmarks(sceneStructure, planRoot) {
     //camRotation = { x: lastSavePosition.rx, y: lastSavePosition.ry, z: 0 }
   }
 
-  console.log('parent', planRoot, planRoot.getAttribute('position'), planRoot.getAttribute('rotation'))
-
   var camera = addEntity({
     attributes: {
       camera: '',
@@ -151,9 +148,6 @@ function parseCameraBookmarks(sceneStructure, planRoot) {
       rotation: camRotation
     }
   })
-
-  // (2017/09/23) See comment below
-  var bookmarkId = 1
 
   bookmarks
     .filter(function (element) { return element.name !== 'lastSavePosition' })
@@ -192,10 +186,8 @@ function parseCameraBookmarks(sceneStructure, planRoot) {
       addEntity({
         parent: camera,
         attributes: {
-          // (2017/09/23) Temporarily add a unique ID in order to differentiate bookmarks with identical names.
-          // There is a bug somewhere in the source code that has problems with duplicate names (stored as keys
-          // in an object?). Please remove once the bug is fixed.
-          'tour-waypoint': element.name + ' ' + bookmarkId++,
+          'tour-waypoint': element.name,
+          'io3d-uuid': element.id,
           position: position,
           rotation: rotation
         }

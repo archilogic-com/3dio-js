@@ -44,7 +44,7 @@ export default {
     if (this._isPlaying) {
       if(this._isChangingAnimation) {
         clearTimeout(this._nextAnimationTimeout)
-        this.goTo(this._waypoints[this._currentWayPoint].getAttribute('tour-waypoint'), this._isPlaying)
+        this.goTo(this._waypoints[this._currentWayPoint].getAttribute('io3d-uuid'), this._isPlaying)
       } else {
         this.el.dispatchEvent(new CustomEvent('resumeTour'))
       }
@@ -54,10 +54,10 @@ export default {
       this._isPaused = false
       this.el.addEventListener('animation__move-complete', this._nextWaypointHandler)
       var next = this._waypoints[++this._currentWayPoint]
-      if (next) this.goTo(next.getAttribute('tour-waypoint'), true)
+      if (next) this.goTo(next.getAttribute('io3d-uuid'), true)
       else if (this.data.loop) {
         this._currentWayPoint = 0
-        this.goTo(this._waypoints[0].getAttribute('tour-waypoint'), true)
+        this.goTo(this._waypoints[0].getAttribute('io3d-uuid'), true)
       }
     }
   },
@@ -74,11 +74,11 @@ export default {
     this._isPaused = false
   },
 
-  goTo: function (label, keepPlaying) {
+  goTo: function (uuid, keepPlaying) {
     this._isPlaying = !!keepPlaying
-    var target = this._waypoints.find(function (item) { return item.getAttribute('tour-waypoint') === label })
+    var target = this._waypoints.find(function (item) { return item.getAttribute('io3d-uuid') === uuid })
     if (!target) {
-      console.error('The given waypoint '+ label + ' does not exist. Available waypoints:', this._waypoints.map(function (elem) { elem.getAttribute('tour-waypoint') }))
+      console.error('The given waypoint ' + uuid + ' does not exist. Available waypoints:', this._waypoints.map(function (elem) { return elem.getAttribute('io3d-uuid') }))
       return
     }
 
@@ -154,7 +154,7 @@ export default {
     }
     this._isChangingAnimation = true
     var next = this._waypoints[++this._currentWayPoint]
-    this._nextAnimationTimeout = setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying) }.bind(this), this.data.wait === undefined ? 0 : this.data.wait)
+    this._nextAnimationTimeout = setTimeout(function () { this.goTo(next.getAttribute('io3d-uuid'), this._isPlaying) }.bind(this), this.data.wait === undefined ? 0 : this.data.wait)
   }
 }
 
