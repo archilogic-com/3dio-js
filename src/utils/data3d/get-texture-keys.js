@@ -26,7 +26,7 @@ export default function getTextureKeys(data3d, options) {
       if (value) cache[value] = true
     }
   })
-  console.log(Object.keys(cache))
+
   return Object.keys(cache)
 }
 
