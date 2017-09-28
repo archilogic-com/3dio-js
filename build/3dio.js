@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.75
- * @date 2017/09/28 11:26
+ * @version 1.0.0-beta.81
+ * @date 2017/09/28 17:49
  * @branch scene-api
- * @commit 29a056e62943ff0e956a69022e0aee234850abe8
+ * @commit 7c516f9a607d175402f57845c73e5db18d434a7c
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/28 11:26', GIT_BRANCH = 'scene-api', GIT_COMMIT = '29a056e62943ff0e956a69022e0aee234850abe8'
+	var BUILD_DATE='2017/09/28 17:49', GIT_BRANCH = 'scene-api', GIT_COMMIT = '7c516f9a607d175402f57845c73e5db18d434a7c'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.75";
+	var version = "1.0.0-beta.81";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -31,7 +31,7 @@
 	var main = "index.js";
 	var scripts = {"start":"gulp dev-browser","dev-browser":"gulp dev-browser","dev-node":"gulp dev-node","test":"gulp test","build":"gulp build","release":"gulp release"};
 	var dependencies = {"bluebird":"^3.5.0","form-data":"^2.1.4","js-logger":"^1.3.0","lodash":"^4.17.4","node-fetch":"2.0.0-alpha.8","pako":"^1.0.5","performance-now":"^2.1.0","rxjs":"^5.4.2","three":"^0.85.2","whatwg-fetch":"^2.0.3"};
-	var devDependencies = {"ava":"^0.22.0","babel-runtime":"^6.25.0","chalk":"^2.0.1","confirm-cli":"^0.4.0","del":"^3.0.0","gulp":"github:gulpjs/gulp#4.0","gulp-ava":"^0.18.0","gulp-git":"^2.4.1","gulp-gzip":"^1.4.0","gulp-less":"^3.3.2","gulp-s3":"^0.11.0","gulp-watch":"^4.3.11","lite-server":"^2.3.0","moment":"^2.18.1","rollup":"^0.41.6","rollup-plugin-commonjs":"^8.0.2","rollup-plugin-json":"^2.1.1","rollup-plugin-less":"^0.1.3","rollup-plugin-node-resolve":"^3.0.0","through2":"^2.0.3","uglify-js":"^3.0.10","vinyl":"^2.1.0"};
+	var devDependencies = {"ava":"^0.22.0","babel-runtime":"^6.25.0","chalk":"^2.0.1","confirm-cli":"^0.4.0","del":"^3.0.0","gulp":"github:gulpjs/gulp#4.0","gulp-ava":"^0.18.0","gulp-git":"^2.4.1","gulp-gzip":"^1.4.0","gulp-less":"^3.3.2","gulp-s3":"^0.11.0","gulp-watch":"^4.3.11","lite-server":"^2.3.0","moment":"^2.18.1","rollup":"^0.41.6","rollup-plugin-commonjs":"^8.0.2","rollup-plugin-json":"^2.1.1","rollup-plugin-less":"^0.1.3","rollup-plugin-node-resolve":"^3.0.0","through2":"^2.0.3","uglify-js":"^3.0.10"};
 	var packageJson = {
 		name: name,
 		version: version,
@@ -822,7 +822,7 @@
 	});
 
 	/**
-	 * A representation of any set of values over any amount of time. This the most basic building block
+	 * A representation of any set of values over any amount of time. This is the most basic building block
 	 * of RxJS.
 	 *
 	 * @class Observable<T>
@@ -830,7 +830,7 @@
 	var Observable = (function () {
 	    /**
 	     * @constructor
-	     * @param {Function} subscribe the function that is  called when the Observable is
+	     * @param {Function} subscribe the function that is called when the Observable is
 	     * initially subscribed to. This function is given a Subscriber, to which new values
 	     * can be `next`ed, or an `error` method can be called to raise an error, or
 	     * `complete` can be called to notify of a successful completion.
@@ -859,7 +859,7 @@
 	     *
 	     * <span class="informal">Use it when you have all these Observables, but still nothing is happening.</span>
 	     *
-	     * `subscribe` is not a regular operator, but a method that calls Observables internal `subscribe` function. It
+	     * `subscribe` is not a regular operator, but a method that calls Observable's internal `subscribe` function. It
 	     * might be for example a function that you passed to a {@link create} static factory, but most of the time it is
 	     * a library implementation, which defines what and when will be emitted by an Observable. This means that calling
 	     * `subscribe` is actually the moment when Observable starts its work, not when it is created, as it is often
@@ -901,7 +901,7 @@
 	     *     console.log('Adding: ' + value);
 	     *     this.sum = this.sum + value;
 	     *   },
-	     *   error() { // We actually could just remote this method,
+	     *   error() { // We actually could just remove this method,
 	     *   },        // since we do not really care about errors right now.
 	     *   complete() {
 	     *     console.log('Sum equals: ' + this.sum);
@@ -956,7 +956,7 @@
 	     * // Logs:
 	     * // 0 after 1s
 	     * // 1 after 2s
-	     * // "unsubscribed!" after 2,5s
+	     * // "unsubscribed!" after 2.5s
 	     *
 	     *
 	     * @param {Observer|Function} observerOrNext (optional) Either an observer with methods to be called,
@@ -7397,7 +7397,7 @@
 		var Logger = { };
 
 		// For those that are at home that are keeping score.
-		Logger.VERSION = "1.3.0";
+		Logger.VERSION = "1.4.1";
 
 		// Function which handles all incoming log messages.
 		var logHandler;
@@ -7453,6 +7453,11 @@
 				if (newLevel && "value" in newLevel) {
 					this.context.filterLevel = newLevel;
 				}
+			},
+			
+			// Gets the current logging level for the logging instance
+			getLevel: function () {
+				return this.context.filterLevel;
 			},
 
 			// Is the logger configured to output messages at the supplied level?
@@ -7538,6 +7543,11 @@
 			}
 		};
 
+		// Gets the global logging filter level
+		Logger.getLevel = function() {
+			return globalLogger.getLevel();
+		};
+
 		// Retrieve a ContextualLogger instance.  Note that named loggers automatically inherit the global logger's level,
 		// default context and log handler.
 		Logger.get = function (name) {
@@ -7609,6 +7619,8 @@
 						hdlr = console.error;
 					} else if (context.level === Logger.INFO && console.info) {
 						hdlr = console.info;
+					} else if (context.level === Logger.DEBUG && console.debug) {
+						hdlr = console.debug;
 					}
 
 					options.formatter(messages, context);
@@ -7660,10 +7672,10 @@
 	// default configs values
 
 	var defaults = Object.freeze({
-	  logLevel:      'warn',
+	  logLevel: 'warn',
 	  publishableApiKey: getPublishableApiKeyFromUrl(),
 	  secretApiKey: null,
-	  servicesUrl:   'https://spaces.archilogic.com/api/v2',
+	  servicesUrl: 'https://spaces.archilogic.com/api/v2',
 	  storageDomain: 'storage.3d.io',
 	  storageDomainNoCdn: 'storage-nocdn.3d.io'
 	});
@@ -7672,8 +7684,8 @@
 
 	var LOG_STRING_TO_ENUM = {
 	  error: logger.ERROR,
-	  warn:  logger.WARN,
-	  info:  logger.INFO,
+	  warn: logger.WARN,
+	  info: logger.INFO,
 	  debug: logger.DEBUG
 	};
 
@@ -7696,7 +7708,6 @@
 	  if (runtime.isBrowser && args.secretApiKey) {
 	    logger.error('The secret API key is not supposed to be used in browser environments!\nPlease see https://3d.io/docs/api/1/get-started-browser.html#secret-api-key for more information.');
 	  }
-
 
 	  // simply copy over the other configs
 	  var key, keys = Object.keys(args);
@@ -7749,7 +7760,7 @@
 	    var scripts = document.getElementsByTagName('script');
 	    var libNameRegex = new RegExp('(\/3dio\.js|\/3dio\.min\.js)');
 	    // iterating backwarts as the last script is most likely the current one
-	    for (var i=scripts.length-1; i>-1; i--) {
+	    for (var i = scripts.length - 1; i > -1; i--) {
 	      src = scripts[i].getAttribute('src');
 	      if (libNameRegex.exec(src)) {
 	        libUrl = src;
@@ -7792,6 +7803,21 @@
 	    return false
 	  }
 	}
+
+	var fetch$1 = (function(){
+
+	  if (runtime.isNode) {
+	    return require('node-fetch')
+	  } else if (typeof fetch !== 'undefined') {
+	    return fetch
+	  } else {
+	    console.warn('Missing global fetch API.');
+	    return function() {
+	      throw new Error('Missing global fetch API.')
+	    }
+	  }
+
+	})();
 
 	var es5 = createCommonjsModule(function (module) {
 	var isES5 = (function(){
@@ -13313,5304 +13339,6 @@
 	bluebird$2.noConflict = noConflict;
 	var bluebird_1 = bluebird$2;
 
-	var DDS_MAGIC = 0x20534444;
-
-	var DDSD_MIPMAPCOUNT = 0x20000;
-
-	var DDSCAPS2_CUBEMAP = 0x200;
-
-	var DDPF_FOURCC = 0x4;
-
-	// internals
-
-	var FOURCC_DXT1 = fourCCToInt32("DXT1");
-	var FOURCC_DXT3 = fourCCToInt32("DXT3");
-	var FOURCC_DXT5 = fourCCToInt32("DXT5");
-
-	// functions
-
-	function fourCCToInt32 (value) {
-
-	  return value.charCodeAt(0) +
-	    (value.charCodeAt(1) << 8) +
-	    (value.charCodeAt(2) << 16) +
-	    (value.charCodeAt(3) << 24);
-
-	}
-
-	function int32ToFourCC (value) {
-
-	  return String.fromCharCode(
-	    value & 0xff,
-	    (value >> 8) & 0xff,
-	    (value >> 16) & 0xff,
-	    (value >> 24) & 0xff
-	  );
-	}
-
-	function loadARGBMip (buffer, dataOffset, width, height) {
-	  var dataLength = width * height * 4;
-	  var srcBuffer = new Uint8Array(buffer, dataOffset, dataLength);
-	  var byteArray = new Uint8Array(dataLength);
-	  var dst = 0;
-	  var src = 0;
-	  for (var y = 0; y < height; y++) {
-	    for (var x = 0; x < width; x++) {
-	      var b = srcBuffer[ src ];
-	      src++;
-	      var g = srcBuffer[ src ];
-	      src++;
-	      var r = srcBuffer[ src ];
-	      src++;
-	      var a = srcBuffer[ src ];
-	      src++;
-	      byteArray[ dst ] = r;
-	      dst++;  //r
-	      byteArray[ dst ] = g;
-	      dst++;  //g
-	      byteArray[ dst ] = b;
-	      dst++;  //b
-	      byteArray[ dst ] = a;
-	      dst++;  //a
-	    }
-	  }
-	  return byteArray;
-	}
-
-	function parse (buffer, loadMipmaps) {
-
-	  var dds = { mipmaps: [], width: 0, height: 0, format: null, mipmapCount: 1 };
-
-	  var headerLengthInt = 31; // The header length in 32 bit ints
-
-	  // Offsets into the header array
-
-	  var off_magic = 0;
-
-	  var off_size = 1;
-	  var off_flags = 2;
-	  var off_height = 3;
-	  var off_width = 4;
-
-	  var off_mipmapCount = 7;
-
-	  var off_pfFlags = 20;
-	  var off_pfFourCC = 21;
-	  var off_RGBBitCount = 22;
-	  var off_RBitMask = 23;
-	  var off_GBitMask = 24;
-	  var off_BBitMask = 25;
-	  var off_ABitMask = 26;
-
-	  var off_caps = 27;
-	  var off_caps2 = 28;
-	  var off_caps3 = 29;
-	  var off_caps4 = 30;
-
-	  // Parse header
-
-	  var header = new Int32Array(buffer, 0, headerLengthInt);
-
-	  if (header[ off_magic ] !== DDS_MAGIC) {
-
-	    console.error('THREE.DDSLoader.parse: Invalid magic number in DDS header.');
-	    return dds;
-
-	  }
-
-	  if (!header[ off_pfFlags ] & DDPF_FOURCC) {
-
-	    console.error('THREE.DDSLoader.parse: Unsupported format, must contain a FourCC code.');
-	    return dds;
-
-	  }
-
-	  var blockBytes;
-
-	  var fourCC = header[ off_pfFourCC ];
-
-	  var isRGBAUncompressed = false;
-
-	  switch (fourCC) {
-
-	    case FOURCC_DXT1:
-
-	      blockBytes = 8;
-	      dds.format = THREE.RGB_S3TC_DXT1_Format;
-	      break;
-
-	    case FOURCC_DXT3:
-
-	      blockBytes = 16;
-	      dds.format = THREE.RGBA_S3TC_DXT3_Format;
-	      break;
-
-	    case FOURCC_DXT5:
-
-	      blockBytes = 16;
-	      dds.format = THREE.RGBA_S3TC_DXT5_Format;
-	      break;
-
-	    default:
-
-	      if (header[ off_RGBBitCount ] == 32
-	        && header[ off_RBitMask ] & 0xff0000
-	        && header[ off_GBitMask ] & 0xff00
-	        && header[ off_BBitMask ] & 0xff
-	        && header[ off_ABitMask ] & 0xff000000) {
-	        isRGBAUncompressed = true;
-	        blockBytes = 64;
-	        dds.format = THREE.RGBAFormat;
-	      } else {
-	        console.error('THREE.DDSLoader.parse: Unsupported FourCC code ', int32ToFourCC(fourCC));
-	        return dds;
-	      }
-	  }
-
-	  dds.mipmapCount = 1;
-
-	  if (header[ off_flags ] & DDSD_MIPMAPCOUNT && loadMipmaps !== false) {
-
-	    dds.mipmapCount = Math.max(1, header[ off_mipmapCount ]);
-
-	  }
-
-	  //TODO: Verify that all faces of the cubemap are present with DDSCAPS2_CUBEMAP_POSITIVEX, etc.
-
-	  dds.isCubemap = header[ off_caps2 ] & DDSCAPS2_CUBEMAP ? true : false;
-
-	  dds.width = header[ off_width ];
-	  dds.height = header[ off_height ];
-
-	  var dataOffset = header[ off_size ] + 4;
-
-	  // Extract mipmaps buffers
-
-	  var width = dds.width;
-	  var height = dds.height;
-
-	  var faces = dds.isCubemap ? 6 : 1;
-
-	  for (var face = 0; face < faces; face++) {
-
-	    for (var i = 0; i < dds.mipmapCount; i++) {
-
-	      var byteArray, dataLength;
-	      if (isRGBAUncompressed) {
-	        byteArray = loadARGBMip(buffer, dataOffset, width, height);
-	        dataLength = byteArray.length;
-	      } else {
-	        dataLength = Math.max(4, width) / 4 * Math.max(4, height) / 4 * blockBytes;
-	        byteArray = new Uint8Array(buffer, dataOffset, dataLength);
-	      }
-
-	      var mipmap = { "data": byteArray, "width": width, "height": height };
-	      dds.mipmaps.push(mipmap);
-
-	      dataOffset += dataLength;
-
-	      width = Math.max(width * 0.5, 1);
-	      height = Math.max(height * 0.5, 1);
-
-	    }
-
-	    width = dds.width;
-	    height = dds.height;
-
-	  }
-
-	  return dds;
-
-	}
-
-	function log2 (x) {
-	  return Math.log(x) / Math.LN2
-	}
-
-	// load function
-
-	function fetchDdsTexture (url) {
-	  return new bluebird_1(function (resolve, reject) {
-
-	    var xhr = new XMLHttpRequest();
-
-	    xhr.onload = function (event) {
-
-	      if (xhr.status >= 200 && xhr.status < 300) {
-
-	        var buffer = xhr.response,
-	          dds;
-
-	        // parse data
-	        try {
-	          dds = parse(buffer, true);
-	        } catch (e) {
-	          var message = 'Error Loading DDS Texture\n' + url + '\n' + e.name + ': ' + e.message;
-	          console.error(message);
-	          reject(message);
-	          return
-	        }
-
-	        // See OpenGL ES 2.0.25 p. 81 paragraph 1 for the number of required mipmaps.
-	        var mipmapCount = log2(Math.max(dds.width, dds.height)) + 1;
-	        if (dds.mipmapCount != mipmapCount) {
-	          console.error('Reading DDS texture failed: ' + url + '\nmipmaps counted: ' + dds.mipmapCount + ', should be: ' + mipmapCount +
-	            '\nPlease make sure you have mipmap generation enabled when creating DDS textures from images.');
-	          reject('Error parsing DDS. Wrong mipmaps count. ' + url);
-	          return
-	        }
-
-	        // create compressed texture
-	        var texture = new THREE.CompressedTexture();
-
-	        texture.format = dds.format;
-	        texture.mipmaps = dds.mipmaps;
-	        texture.image.width = dds.width;
-	        texture.image.height = dds.height;
-	        texture.image.src = url;
-	        texture.sourceFile = url;
-	        texture.url = url;
-	        texture.bufferByteLength = buffer.byteLength;
-
-	        // gl.generateMipmap fails for compressed textures
-	        // mipmaps must be embedded in the DDS file
-	        // or texture filters must not use mipmapping
-	        texture.generateMipmaps = false;
-
-	        resolve(texture);
-
-	      } else {
-	        reject({
-	          message: 'Http Request error',
-	          url: url,
-	          status: xhr.status,
-	          headers: xhr.getAllResponseHeaders(),
-	          event: event
-	        });
-	      }
-
-	    };
-	    xhr.onerror = function (event) {
-	      reject({
-	        message: 'Http Request error',
-	        url: url,
-	        status: xhr.status,
-	        headers: xhr.getAllResponseHeaders(),
-	        event: event
-	      });
-	    };
-
-	    xhr.open('GET', url, true);
-	    xhr.crossOrigin = "Anonymous";
-	    xhr.responseType = 'arraybuffer';
-	    xhr.send(null);
-
-	  })
-	}
-
-	// internals
-
-	// graphic card max supported texture size
-	var MAX_TEXTURE_SIZE = runtime.has.webGl ? runtime.webGl.maxTextureSize || 2048 : 2048;
-
-	// helpers
-
-	function checkPowerOfTwo (value) {
-	  return ( value & ( value - 1 ) ) === 0 && value !== 0
-	}
-
-	function nearestPowerOfTwoOrMaxTextureSize (n) {
-	  // max texture size supported by vga
-	  if (n > MAX_TEXTURE_SIZE) {
-	    return MAX_TEXTURE_SIZE
-	  }
-	  // next best power of two
-	  var l = Math.log(n) / Math.LN2;
-	  return Math.pow(2, Math.round(l))
-	}
-
-	function resizeImage (image, url) {
-
-	  var width = nearestPowerOfTwoOrMaxTextureSize(image.width);
-	  var height = nearestPowerOfTwoOrMaxTextureSize(image.height);
-
-	  var canvas = document.createElement('canvas');
-	  canvas.width = width;
-	  canvas.height = height;
-	  canvas.getContext('2d').drawImage(image, 0, 0, width, height);
-
-	  console.log('Image size not compatible. Image has been resized from ' + image.width + 'x' + image.height + 'px to ' + canvas.width + 'x' + canvas.height +
-	    'px.\n' + url);
-
-	  return canvas
-	}
-
-	// function
-
-	function fetchImageTexture (url) {
-	  return new bluebird_1(function (resolve, reject) {
-
-	    var image = document.createElement('img');
-	    image.crossOrigin = 'Anonymous';
-
-	    image.onload = function () {
-
-	      var texture = new THREE.Texture();
-
-	      texture.sourceFile = url;
-	      texture.url = url;
-
-	      // image size compatibility check
-
-	      var isPowerOfTwo = (checkPowerOfTwo(image.width) && checkPowerOfTwo(image.height));
-	      var isNotTooBig = (image.width <= MAX_TEXTURE_SIZE && image.height <= MAX_TEXTURE_SIZE);
-
-	      if (isPowerOfTwo && isNotTooBig) {
-
-	        // use image as it is
-	        texture.image = image;
-
-	      } else {
-
-	        // resize image to make it compatible
-	        texture.image = resizeImage(image, url);
-	        // add url reference
-	        texture.image.src = url;
-
-	      }
-
-	      resolve(texture);
-
-	    };
-
-	    var triedWithCacheBust = false;
-	    image.onerror = function () {
-	      if(triedWithCacheBust) {
-	        reject('Error loading texture ' + url);
-	      } else {
-	        // try again with cache busting to avoid things like #1510
-	        triedWithCacheBust = true;
-	        if (url.indexOf('?') === -1) {
-	          url += '?cacheBust=' + new Date().getTime();
-	        } else {
-	          url += '&cacheBust=' + new Date().getTime();
-	        }
-	        image.src = url;
-	      }
-	    };
-
-	    // initiate image loading
-	    image.src = url;
-
-	  })
-	}
-
-	// configs
-
-	var maxConcurrentQueuedRequests = 15; // not queued requests are not limited in running parallel
-	var queuesByPriority = [
-	  'architectureGeometries',
-	  'architectureTexturesLoRes',
-	  'interiorGeometries',
-	  'interiorTexturesLoRes',
-	  'architectureTexturesHiRes',
-	  'interiorTexturesHiRes'
-	];
-
-	var queueFences = [
-	  false,
-	  false,
-	  true,
-	  false,
-	  false
-	];
-
-	// internals
-
-	var queues = {};
-	var queueFences = {};
-	var queuesChanged = false;
-	var queueInfo = {};
-	var queuesLength = queuesByPriority.length;
-	var concurrentRequests = 0;
-	var concurrentPerQueue = {};
-	var queueName;
-	for (var i$1 = 0, l = queuesLength; i$1 < l; i$1++) {
-	  queueName = queuesByPriority[i$1];
-	  queues[queueName] = [];
-	  queueFences[queueName] = queueFences[i$1];
-	  queueInfo[queueName] = {requestCount: 0};
-	  concurrentPerQueue[queueName] = 0;
-	}
-
-	// private methods
-
-	function startRequest(queueName) {
-	  // Update queue tracking information
-	  var info = queueInfo[queueName];
-	  var time = performance.now() / 1000;
-	  if (info.timeFirst) {
-	    info.timeFirst = time;
-	    info.timeLast  = time;
-	  } else
-	    info.timeLast  = time;
-	  info.requestCount++;
-	  // Update concurrent request counts
-	  concurrentPerQueue[queueName] += 1;
-	  concurrentRequests++;
-	  // set flag
-	  queuesChanged = true;
-	  // Start request
-	  var queue = queues[queueName];
-	  var request = queue.shift();
-	  request.start();
-	}
-
-	function processQueue() {
-	  var anchorStage = null;
-	  for (var i = 0; i < queuesLength; i++) {
-	    var queueName = queuesByPriority[i];
-	    while (queues[queueName].length > 0 && concurrentRequests < maxConcurrentQueuedRequests)
-	      startRequest(queueName);
-	    if (anchorStage === null && concurrentPerQueue[queueName] !== 0)
-	      anchorStage = i;
-	    if (anchorStage !== null && (queueFences[queueName] || (i - anchorStage > 0)))
-	      break;
-	  }
-	}
-
-	// public methods
-
-	function enqueue(queueName, url){
-
-	  // fallback to first queue
-	  if (!queues[queueName]) {
-	    if (queueName) console.error('onknown queue ', queueName);
-	    queueName = queuesByPriority[0];
-	  }
-
-	  // create promise and add to queue
-	  return new Promise(function(resolve, reject){
-	    // has to be asynchronous in order to decouple queue processing from synchronous code
-	    setTimeout(function(){
-	      var queue = queues[queueName];
-	      queue[ queue.length ] = { url: url, start: resolve };
-	      processQueue();
-	    },1);
-	  })
-
-	}
-
-	function dequeue(queueName, url) {
-	  var info = queueInfo[queueName];
-	  if (!info) {
-	    if (queueName) console.warn('Queue info not found for queue name "'+queueName+'"');
-	    return
-	  }
-	  info.timeLastFinished = performance.now() / 1000;
-	  concurrentPerQueue[queueName] -= 1;
-	  concurrentRequests -= 1;
-	  queuesChanged = true;
-	  processQueue();
-	}
-
-	// expose API
-
-	var queueManager = {
-	  enqueue: enqueue,
-	  dequeue: dequeue,
-	  info: queueInfo
-	};
-
-	/**
-	 * Appends the elements of `values` to `array`.
-	 *
-	 * @private
-	 * @param {Array} array The array to modify.
-	 * @param {Array} values The values to append.
-	 * @returns {Array} Returns `array`.
-	 */
-	function arrayPush(array, values) {
-	  var index = -1,
-	      length = values.length,
-	      offset = array.length;
-
-	  while (++index < length) {
-	    array[offset + index] = values[index];
-	  }
-	  return array;
-	}
-
-	var _arrayPush = arrayPush;
-
-	/** Detect free variable `global` from Node.js. */
-	var freeGlobal = typeof commonjsGlobal == 'object' && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
-
-	var _freeGlobal = freeGlobal;
-
-	/** Detect free variable `self`. */
-	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
-
-	/** Used as a reference to the global object. */
-	var root$2 = _freeGlobal || freeSelf || Function('return this')();
-
-	var _root$1 = root$2;
-
-	/** Built-in value references. */
-	var Symbol$1 = _root$1.Symbol;
-
-	var _Symbol = Symbol$1;
-
-	/** Used for built-in method references. */
-	var objectProto$1 = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$1 = objectProto$1.hasOwnProperty;
-
-	/**
-	 * Used to resolve the
-	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
-	 * of values.
-	 */
-	var nativeObjectToString = objectProto$1.toString;
-
-	/** Built-in value references. */
-	var symToStringTag$1 = _Symbol ? _Symbol.toStringTag : undefined;
-
-	/**
-	 * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
-	 *
-	 * @private
-	 * @param {*} value The value to query.
-	 * @returns {string} Returns the raw `toStringTag`.
-	 */
-	function getRawTag(value) {
-	  var isOwn = hasOwnProperty$1.call(value, symToStringTag$1),
-	      tag = value[symToStringTag$1];
-
-	  try {
-	    value[symToStringTag$1] = undefined;
-	    var unmasked = true;
-	  } catch (e) {}
-
-	  var result = nativeObjectToString.call(value);
-	  if (unmasked) {
-	    if (isOwn) {
-	      value[symToStringTag$1] = tag;
-	    } else {
-	      delete value[symToStringTag$1];
-	    }
-	  }
-	  return result;
-	}
-
-	var _getRawTag = getRawTag;
-
-	/** Used for built-in method references. */
-	var objectProto$2 = Object.prototype;
-
-	/**
-	 * Used to resolve the
-	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
-	 * of values.
-	 */
-	var nativeObjectToString$1 = objectProto$2.toString;
-
-	/**
-	 * Converts `value` to a string using `Object.prototype.toString`.
-	 *
-	 * @private
-	 * @param {*} value The value to convert.
-	 * @returns {string} Returns the converted string.
-	 */
-	function objectToString(value) {
-	  return nativeObjectToString$1.call(value);
-	}
-
-	var _objectToString = objectToString;
-
-	/** `Object#toString` result references. */
-	var nullTag = '[object Null]';
-	var undefinedTag = '[object Undefined]';
-
-	/** Built-in value references. */
-	var symToStringTag = _Symbol ? _Symbol.toStringTag : undefined;
-
-	/**
-	 * The base implementation of `getTag` without fallbacks for buggy environments.
-	 *
-	 * @private
-	 * @param {*} value The value to query.
-	 * @returns {string} Returns the `toStringTag`.
-	 */
-	function baseGetTag(value) {
-	  if (value == null) {
-	    return value === undefined ? undefinedTag : nullTag;
-	  }
-	  return (symToStringTag && symToStringTag in Object(value))
-	    ? _getRawTag(value)
-	    : _objectToString(value);
-	}
-
-	var _baseGetTag = baseGetTag;
-
-	/**
-	 * Checks if `value` is object-like. A value is object-like if it's not `null`
-	 * and has a `typeof` result of "object".
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
-	 * @example
-	 *
-	 * _.isObjectLike({});
-	 * // => true
-	 *
-	 * _.isObjectLike([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isObjectLike(_.noop);
-	 * // => false
-	 *
-	 * _.isObjectLike(null);
-	 * // => false
-	 */
-	function isObjectLike(value) {
-	  return value != null && typeof value == 'object';
-	}
-
-	var isObjectLike_1 = isObjectLike;
-
-	/** `Object#toString` result references. */
-	var argsTag = '[object Arguments]';
-
-	/**
-	 * The base implementation of `_.isArguments`.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an `arguments` object,
-	 */
-	function baseIsArguments(value) {
-	  return isObjectLike_1(value) && _baseGetTag(value) == argsTag;
-	}
-
-	var _baseIsArguments = baseIsArguments;
-
-	/** Used for built-in method references. */
-	var objectProto = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty = objectProto.hasOwnProperty;
-
-	/** Built-in value references. */
-	var propertyIsEnumerable = objectProto.propertyIsEnumerable;
-
-	/**
-	 * Checks if `value` is likely an `arguments` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an `arguments` object,
-	 *  else `false`.
-	 * @example
-	 *
-	 * _.isArguments(function() { return arguments; }());
-	 * // => true
-	 *
-	 * _.isArguments([1, 2, 3]);
-	 * // => false
-	 */
-	var isArguments = _baseIsArguments(function() { return arguments; }()) ? _baseIsArguments : function(value) {
-	  return isObjectLike_1(value) && hasOwnProperty.call(value, 'callee') &&
-	    !propertyIsEnumerable.call(value, 'callee');
-	};
-
-	var isArguments_1 = isArguments;
-
-	/**
-	 * Checks if `value` is classified as an `Array` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an array, else `false`.
-	 * @example
-	 *
-	 * _.isArray([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isArray(document.body.children);
-	 * // => false
-	 *
-	 * _.isArray('abc');
-	 * // => false
-	 *
-	 * _.isArray(_.noop);
-	 * // => false
-	 */
-	var isArray$2 = Array.isArray;
-
-	var isArray_1$2 = isArray$2;
-
-	/** Built-in value references. */
-	var spreadableSymbol = _Symbol ? _Symbol.isConcatSpreadable : undefined;
-
-	/**
-	 * Checks if `value` is a flattenable `arguments` object or array.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is flattenable, else `false`.
-	 */
-	function isFlattenable(value) {
-	  return isArray_1$2(value) || isArguments_1(value) ||
-	    !!(spreadableSymbol && value && value[spreadableSymbol]);
-	}
-
-	var _isFlattenable = isFlattenable;
-
-	/**
-	 * The base implementation of `_.flatten` with support for restricting flattening.
-	 *
-	 * @private
-	 * @param {Array} array The array to flatten.
-	 * @param {number} depth The maximum recursion depth.
-	 * @param {boolean} [predicate=isFlattenable] The function invoked per iteration.
-	 * @param {boolean} [isStrict] Restrict to values that pass `predicate` checks.
-	 * @param {Array} [result=[]] The initial result value.
-	 * @returns {Array} Returns the new flattened array.
-	 */
-	function baseFlatten(array, depth, predicate, isStrict, result) {
-	  var index = -1,
-	      length = array.length;
-
-	  predicate || (predicate = _isFlattenable);
-	  result || (result = []);
-
-	  while (++index < length) {
-	    var value = array[index];
-	    if (depth > 0 && predicate(value)) {
-	      if (depth > 1) {
-	        // Recursively flatten arrays (susceptible to call stack limits).
-	        baseFlatten(value, depth - 1, predicate, isStrict, result);
-	      } else {
-	        _arrayPush(result, value);
-	      }
-	    } else if (!isStrict) {
-	      result[result.length] = value;
-	    }
-	  }
-	  return result;
-	}
-
-	var _baseFlatten = baseFlatten;
-
-	/**
-	 * A specialized version of `_.map` for arrays without support for iteratee
-	 * shorthands.
-	 *
-	 * @private
-	 * @param {Array} [array] The array to iterate over.
-	 * @param {Function} iteratee The function invoked per iteration.
-	 * @returns {Array} Returns the new mapped array.
-	 */
-	function arrayMap(array, iteratee) {
-	  var index = -1,
-	      length = array == null ? 0 : array.length,
-	      result = Array(length);
-
-	  while (++index < length) {
-	    result[index] = iteratee(array[index], index, array);
-	  }
-	  return result;
-	}
-
-	var _arrayMap = arrayMap;
-
-	/**
-	 * Removes all key-value entries from the list cache.
-	 *
-	 * @private
-	 * @name clear
-	 * @memberOf ListCache
-	 */
-	function listCacheClear() {
-	  this.__data__ = [];
-	  this.size = 0;
-	}
-
-	var _listCacheClear = listCacheClear;
-
-	/**
-	 * Performs a
-	 * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
-	 * comparison between two values to determine if they are equivalent.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to compare.
-	 * @param {*} other The other value to compare.
-	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
-	 * @example
-	 *
-	 * var object = { 'a': 1 };
-	 * var other = { 'a': 1 };
-	 *
-	 * _.eq(object, object);
-	 * // => true
-	 *
-	 * _.eq(object, other);
-	 * // => false
-	 *
-	 * _.eq('a', 'a');
-	 * // => true
-	 *
-	 * _.eq('a', Object('a'));
-	 * // => false
-	 *
-	 * _.eq(NaN, NaN);
-	 * // => true
-	 */
-	function eq(value, other) {
-	  return value === other || (value !== value && other !== other);
-	}
-
-	var eq_1 = eq;
-
-	/**
-	 * Gets the index at which the `key` is found in `array` of key-value pairs.
-	 *
-	 * @private
-	 * @param {Array} array The array to inspect.
-	 * @param {*} key The key to search for.
-	 * @returns {number} Returns the index of the matched value, else `-1`.
-	 */
-	function assocIndexOf(array, key) {
-	  var length = array.length;
-	  while (length--) {
-	    if (eq_1(array[length][0], key)) {
-	      return length;
-	    }
-	  }
-	  return -1;
-	}
-
-	var _assocIndexOf = assocIndexOf;
-
-	/** Used for built-in method references. */
-	var arrayProto = Array.prototype;
-
-	/** Built-in value references. */
-	var splice = arrayProto.splice;
-
-	/**
-	 * Removes `key` and its value from the list cache.
-	 *
-	 * @private
-	 * @name delete
-	 * @memberOf ListCache
-	 * @param {string} key The key of the value to remove.
-	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
-	 */
-	function listCacheDelete(key) {
-	  var data = this.__data__,
-	      index = _assocIndexOf(data, key);
-
-	  if (index < 0) {
-	    return false;
-	  }
-	  var lastIndex = data.length - 1;
-	  if (index == lastIndex) {
-	    data.pop();
-	  } else {
-	    splice.call(data, index, 1);
-	  }
-	  --this.size;
-	  return true;
-	}
-
-	var _listCacheDelete = listCacheDelete;
-
-	/**
-	 * Gets the list cache value for `key`.
-	 *
-	 * @private
-	 * @name get
-	 * @memberOf ListCache
-	 * @param {string} key The key of the value to get.
-	 * @returns {*} Returns the entry value.
-	 */
-	function listCacheGet(key) {
-	  var data = this.__data__,
-	      index = _assocIndexOf(data, key);
-
-	  return index < 0 ? undefined : data[index][1];
-	}
-
-	var _listCacheGet = listCacheGet;
-
-	/**
-	 * Checks if a list cache value for `key` exists.
-	 *
-	 * @private
-	 * @name has
-	 * @memberOf ListCache
-	 * @param {string} key The key of the entry to check.
-	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
-	 */
-	function listCacheHas(key) {
-	  return _assocIndexOf(this.__data__, key) > -1;
-	}
-
-	var _listCacheHas = listCacheHas;
-
-	/**
-	 * Sets the list cache `key` to `value`.
-	 *
-	 * @private
-	 * @name set
-	 * @memberOf ListCache
-	 * @param {string} key The key of the value to set.
-	 * @param {*} value The value to set.
-	 * @returns {Object} Returns the list cache instance.
-	 */
-	function listCacheSet(key, value) {
-	  var data = this.__data__,
-	      index = _assocIndexOf(data, key);
-
-	  if (index < 0) {
-	    ++this.size;
-	    data.push([key, value]);
-	  } else {
-	    data[index][1] = value;
-	  }
-	  return this;
-	}
-
-	var _listCacheSet = listCacheSet;
-
-	/**
-	 * Creates an list cache object.
-	 *
-	 * @private
-	 * @constructor
-	 * @param {Array} [entries] The key-value pairs to cache.
-	 */
-	function ListCache(entries) {
-	  var index = -1,
-	      length = entries == null ? 0 : entries.length;
-
-	  this.clear();
-	  while (++index < length) {
-	    var entry = entries[index];
-	    this.set(entry[0], entry[1]);
-	  }
-	}
-
-	// Add methods to `ListCache`.
-	ListCache.prototype.clear = _listCacheClear;
-	ListCache.prototype['delete'] = _listCacheDelete;
-	ListCache.prototype.get = _listCacheGet;
-	ListCache.prototype.has = _listCacheHas;
-	ListCache.prototype.set = _listCacheSet;
-
-	var _ListCache = ListCache;
-
-	/**
-	 * Removes all key-value entries from the stack.
-	 *
-	 * @private
-	 * @name clear
-	 * @memberOf Stack
-	 */
-	function stackClear() {
-	  this.__data__ = new _ListCache;
-	  this.size = 0;
-	}
-
-	var _stackClear = stackClear;
-
-	/**
-	 * Removes `key` and its value from the stack.
-	 *
-	 * @private
-	 * @name delete
-	 * @memberOf Stack
-	 * @param {string} key The key of the value to remove.
-	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
-	 */
-	function stackDelete(key) {
-	  var data = this.__data__,
-	      result = data['delete'](key);
-
-	  this.size = data.size;
-	  return result;
-	}
-
-	var _stackDelete = stackDelete;
-
-	/**
-	 * Gets the stack value for `key`.
-	 *
-	 * @private
-	 * @name get
-	 * @memberOf Stack
-	 * @param {string} key The key of the value to get.
-	 * @returns {*} Returns the entry value.
-	 */
-	function stackGet(key) {
-	  return this.__data__.get(key);
-	}
-
-	var _stackGet = stackGet;
-
-	/**
-	 * Checks if a stack value for `key` exists.
-	 *
-	 * @private
-	 * @name has
-	 * @memberOf Stack
-	 * @param {string} key The key of the entry to check.
-	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
-	 */
-	function stackHas(key) {
-	  return this.__data__.has(key);
-	}
-
-	var _stackHas = stackHas;
-
-	/**
-	 * Checks if `value` is the
-	 * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
-	 * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
-	 * @example
-	 *
-	 * _.isObject({});
-	 * // => true
-	 *
-	 * _.isObject([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isObject(_.noop);
-	 * // => true
-	 *
-	 * _.isObject(null);
-	 * // => false
-	 */
-	function isObject$2(value) {
-	  var type = typeof value;
-	  return value != null && (type == 'object' || type == 'function');
-	}
-
-	var isObject_1$3 = isObject$2;
-
-	/** `Object#toString` result references. */
-	var asyncTag = '[object AsyncFunction]';
-	var funcTag = '[object Function]';
-	var genTag = '[object GeneratorFunction]';
-	var proxyTag = '[object Proxy]';
-
-	/**
-	 * Checks if `value` is classified as a `Function` object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a function, else `false`.
-	 * @example
-	 *
-	 * _.isFunction(_);
-	 * // => true
-	 *
-	 * _.isFunction(/abc/);
-	 * // => false
-	 */
-	function isFunction$1(value) {
-	  if (!isObject_1$3(value)) {
-	    return false;
-	  }
-	  // The use of `Object#toString` avoids issues with the `typeof` operator
-	  // in Safari 9 which returns 'object' for typed arrays and other constructors.
-	  var tag = _baseGetTag(value);
-	  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
-	}
-
-	var isFunction_1$3 = isFunction$1;
-
-	/** Used to detect overreaching core-js shims. */
-	var coreJsData = _root$1['__core-js_shared__'];
-
-	var _coreJsData = coreJsData;
-
-	/** Used to detect methods masquerading as native. */
-	var maskSrcKey = (function() {
-	  var uid = /[^.]+$/.exec(_coreJsData && _coreJsData.keys && _coreJsData.keys.IE_PROTO || '');
-	  return uid ? ('Symbol(src)_1.' + uid) : '';
-	}());
-
-	/**
-	 * Checks if `func` has its source masked.
-	 *
-	 * @private
-	 * @param {Function} func The function to check.
-	 * @returns {boolean} Returns `true` if `func` is masked, else `false`.
-	 */
-	function isMasked(func) {
-	  return !!maskSrcKey && (maskSrcKey in func);
-	}
-
-	var _isMasked = isMasked;
-
-	/** Used for built-in method references. */
-	var funcProto$1 = Function.prototype;
-
-	/** Used to resolve the decompiled source of functions. */
-	var funcToString$1 = funcProto$1.toString;
-
-	/**
-	 * Converts `func` to its source code.
-	 *
-	 * @private
-	 * @param {Function} func The function to convert.
-	 * @returns {string} Returns the source code.
-	 */
-	function toSource(func) {
-	  if (func != null) {
-	    try {
-	      return funcToString$1.call(func);
-	    } catch (e) {}
-	    try {
-	      return (func + '');
-	    } catch (e) {}
-	  }
-	  return '';
-	}
-
-	var _toSource = toSource;
-
-	/**
-	 * Used to match `RegExp`
-	 * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
-	 */
-	var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
-
-	/** Used to detect host constructors (Safari). */
-	var reIsHostCtor = /^\[object .+?Constructor\]$/;
-
-	/** Used for built-in method references. */
-	var funcProto = Function.prototype;
-	var objectProto$3 = Object.prototype;
-
-	/** Used to resolve the decompiled source of functions. */
-	var funcToString = funcProto.toString;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$2 = objectProto$3.hasOwnProperty;
-
-	/** Used to detect if a method is native. */
-	var reIsNative = RegExp('^' +
-	  funcToString.call(hasOwnProperty$2).replace(reRegExpChar, '\\$&')
-	  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
-	);
-
-	/**
-	 * The base implementation of `_.isNative` without bad shim checks.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a native function,
-	 *  else `false`.
-	 */
-	function baseIsNative(value) {
-	  if (!isObject_1$3(value) || _isMasked(value)) {
-	    return false;
-	  }
-	  var pattern = isFunction_1$3(value) ? reIsNative : reIsHostCtor;
-	  return pattern.test(_toSource(value));
-	}
-
-	var _baseIsNative = baseIsNative;
-
-	/**
-	 * Gets the value at `key` of `object`.
-	 *
-	 * @private
-	 * @param {Object} [object] The object to query.
-	 * @param {string} key The key of the property to get.
-	 * @returns {*} Returns the property value.
-	 */
-	function getValue(object, key) {
-	  return object == null ? undefined : object[key];
-	}
-
-	var _getValue = getValue;
-
-	/**
-	 * Gets the native function at `key` of `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @param {string} key The key of the method to get.
-	 * @returns {*} Returns the function if it's native, else `undefined`.
-	 */
-	function getNative(object, key) {
-	  var value = _getValue(object, key);
-	  return _baseIsNative(value) ? value : undefined;
-	}
-
-	var _getNative = getNative;
-
-	/* Built-in method references that are verified to be native. */
-	var Map$1 = _getNative(_root$1, 'Map');
-
-	var _Map = Map$1;
-
-	/* Built-in method references that are verified to be native. */
-	var nativeCreate = _getNative(Object, 'create');
-
-	var _nativeCreate = nativeCreate;
-
-	/**
-	 * Removes all key-value entries from the hash.
-	 *
-	 * @private
-	 * @name clear
-	 * @memberOf Hash
-	 */
-	function hashClear() {
-	  this.__data__ = _nativeCreate ? _nativeCreate(null) : {};
-	  this.size = 0;
-	}
-
-	var _hashClear = hashClear;
-
-	/**
-	 * Removes `key` and its value from the hash.
-	 *
-	 * @private
-	 * @name delete
-	 * @memberOf Hash
-	 * @param {Object} hash The hash to modify.
-	 * @param {string} key The key of the value to remove.
-	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
-	 */
-	function hashDelete(key) {
-	  var result = this.has(key) && delete this.__data__[key];
-	  this.size -= result ? 1 : 0;
-	  return result;
-	}
-
-	var _hashDelete = hashDelete;
-
-	/** Used to stand-in for `undefined` hash values. */
-	var HASH_UNDEFINED = '__lodash_hash_undefined__';
-
-	/** Used for built-in method references. */
-	var objectProto$4 = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$3 = objectProto$4.hasOwnProperty;
-
-	/**
-	 * Gets the hash value for `key`.
-	 *
-	 * @private
-	 * @name get
-	 * @memberOf Hash
-	 * @param {string} key The key of the value to get.
-	 * @returns {*} Returns the entry value.
-	 */
-	function hashGet(key) {
-	  var data = this.__data__;
-	  if (_nativeCreate) {
-	    var result = data[key];
-	    return result === HASH_UNDEFINED ? undefined : result;
-	  }
-	  return hasOwnProperty$3.call(data, key) ? data[key] : undefined;
-	}
-
-	var _hashGet = hashGet;
-
-	/** Used for built-in method references. */
-	var objectProto$5 = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$4 = objectProto$5.hasOwnProperty;
-
-	/**
-	 * Checks if a hash value for `key` exists.
-	 *
-	 * @private
-	 * @name has
-	 * @memberOf Hash
-	 * @param {string} key The key of the entry to check.
-	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
-	 */
-	function hashHas(key) {
-	  var data = this.__data__;
-	  return _nativeCreate ? (data[key] !== undefined) : hasOwnProperty$4.call(data, key);
-	}
-
-	var _hashHas = hashHas;
-
-	/** Used to stand-in for `undefined` hash values. */
-	var HASH_UNDEFINED$1 = '__lodash_hash_undefined__';
-
-	/**
-	 * Sets the hash `key` to `value`.
-	 *
-	 * @private
-	 * @name set
-	 * @memberOf Hash
-	 * @param {string} key The key of the value to set.
-	 * @param {*} value The value to set.
-	 * @returns {Object} Returns the hash instance.
-	 */
-	function hashSet(key, value) {
-	  var data = this.__data__;
-	  this.size += this.has(key) ? 0 : 1;
-	  data[key] = (_nativeCreate && value === undefined) ? HASH_UNDEFINED$1 : value;
-	  return this;
-	}
-
-	var _hashSet = hashSet;
-
-	/**
-	 * Creates a hash object.
-	 *
-	 * @private
-	 * @constructor
-	 * @param {Array} [entries] The key-value pairs to cache.
-	 */
-	function Hash(entries) {
-	  var index = -1,
-	      length = entries == null ? 0 : entries.length;
-
-	  this.clear();
-	  while (++index < length) {
-	    var entry = entries[index];
-	    this.set(entry[0], entry[1]);
-	  }
-	}
-
-	// Add methods to `Hash`.
-	Hash.prototype.clear = _hashClear;
-	Hash.prototype['delete'] = _hashDelete;
-	Hash.prototype.get = _hashGet;
-	Hash.prototype.has = _hashHas;
-	Hash.prototype.set = _hashSet;
-
-	var _Hash = Hash;
-
-	/**
-	 * Removes all key-value entries from the map.
-	 *
-	 * @private
-	 * @name clear
-	 * @memberOf MapCache
-	 */
-	function mapCacheClear() {
-	  this.size = 0;
-	  this.__data__ = {
-	    'hash': new _Hash,
-	    'map': new (_Map || _ListCache),
-	    'string': new _Hash
-	  };
-	}
-
-	var _mapCacheClear = mapCacheClear;
-
-	/**
-	 * Checks if `value` is suitable for use as unique object key.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
-	 */
-	function isKeyable(value) {
-	  var type = typeof value;
-	  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
-	    ? (value !== '__proto__')
-	    : (value === null);
-	}
-
-	var _isKeyable = isKeyable;
-
-	/**
-	 * Gets the data for `map`.
-	 *
-	 * @private
-	 * @param {Object} map The map to query.
-	 * @param {string} key The reference key.
-	 * @returns {*} Returns the map data.
-	 */
-	function getMapData(map, key) {
-	  var data = map.__data__;
-	  return _isKeyable(key)
-	    ? data[typeof key == 'string' ? 'string' : 'hash']
-	    : data.map;
-	}
-
-	var _getMapData = getMapData;
-
-	/**
-	 * Removes `key` and its value from the map.
-	 *
-	 * @private
-	 * @name delete
-	 * @memberOf MapCache
-	 * @param {string} key The key of the value to remove.
-	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
-	 */
-	function mapCacheDelete(key) {
-	  var result = _getMapData(this, key)['delete'](key);
-	  this.size -= result ? 1 : 0;
-	  return result;
-	}
-
-	var _mapCacheDelete = mapCacheDelete;
-
-	/**
-	 * Gets the map value for `key`.
-	 *
-	 * @private
-	 * @name get
-	 * @memberOf MapCache
-	 * @param {string} key The key of the value to get.
-	 * @returns {*} Returns the entry value.
-	 */
-	function mapCacheGet(key) {
-	  return _getMapData(this, key).get(key);
-	}
-
-	var _mapCacheGet = mapCacheGet;
-
-	/**
-	 * Checks if a map value for `key` exists.
-	 *
-	 * @private
-	 * @name has
-	 * @memberOf MapCache
-	 * @param {string} key The key of the entry to check.
-	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
-	 */
-	function mapCacheHas(key) {
-	  return _getMapData(this, key).has(key);
-	}
-
-	var _mapCacheHas = mapCacheHas;
-
-	/**
-	 * Sets the map `key` to `value`.
-	 *
-	 * @private
-	 * @name set
-	 * @memberOf MapCache
-	 * @param {string} key The key of the value to set.
-	 * @param {*} value The value to set.
-	 * @returns {Object} Returns the map cache instance.
-	 */
-	function mapCacheSet(key, value) {
-	  var data = _getMapData(this, key),
-	      size = data.size;
-
-	  data.set(key, value);
-	  this.size += data.size == size ? 0 : 1;
-	  return this;
-	}
-
-	var _mapCacheSet = mapCacheSet;
-
-	/**
-	 * Creates a map cache object to store key-value pairs.
-	 *
-	 * @private
-	 * @constructor
-	 * @param {Array} [entries] The key-value pairs to cache.
-	 */
-	function MapCache(entries) {
-	  var index = -1,
-	      length = entries == null ? 0 : entries.length;
-
-	  this.clear();
-	  while (++index < length) {
-	    var entry = entries[index];
-	    this.set(entry[0], entry[1]);
-	  }
-	}
-
-	// Add methods to `MapCache`.
-	MapCache.prototype.clear = _mapCacheClear;
-	MapCache.prototype['delete'] = _mapCacheDelete;
-	MapCache.prototype.get = _mapCacheGet;
-	MapCache.prototype.has = _mapCacheHas;
-	MapCache.prototype.set = _mapCacheSet;
-
-	var _MapCache = MapCache;
-
-	/** Used as the size to enable large array optimizations. */
-	var LARGE_ARRAY_SIZE = 200;
-
-	/**
-	 * Sets the stack `key` to `value`.
-	 *
-	 * @private
-	 * @name set
-	 * @memberOf Stack
-	 * @param {string} key The key of the value to set.
-	 * @param {*} value The value to set.
-	 * @returns {Object} Returns the stack cache instance.
-	 */
-	function stackSet(key, value) {
-	  var data = this.__data__;
-	  if (data instanceof _ListCache) {
-	    var pairs = data.__data__;
-	    if (!_Map || (pairs.length < LARGE_ARRAY_SIZE - 1)) {
-	      pairs.push([key, value]);
-	      this.size = ++data.size;
-	      return this;
-	    }
-	    data = this.__data__ = new _MapCache(pairs);
-	  }
-	  data.set(key, value);
-	  this.size = data.size;
-	  return this;
-	}
-
-	var _stackSet = stackSet;
-
-	/**
-	 * Creates a stack cache object to store key-value pairs.
-	 *
-	 * @private
-	 * @constructor
-	 * @param {Array} [entries] The key-value pairs to cache.
-	 */
-	function Stack(entries) {
-	  var data = this.__data__ = new _ListCache(entries);
-	  this.size = data.size;
-	}
-
-	// Add methods to `Stack`.
-	Stack.prototype.clear = _stackClear;
-	Stack.prototype['delete'] = _stackDelete;
-	Stack.prototype.get = _stackGet;
-	Stack.prototype.has = _stackHas;
-	Stack.prototype.set = _stackSet;
-
-	var _Stack = Stack;
-
-	/** Used to stand-in for `undefined` hash values. */
-	var HASH_UNDEFINED$2 = '__lodash_hash_undefined__';
-
-	/**
-	 * Adds `value` to the array cache.
-	 *
-	 * @private
-	 * @name add
-	 * @memberOf SetCache
-	 * @alias push
-	 * @param {*} value The value to cache.
-	 * @returns {Object} Returns the cache instance.
-	 */
-	function setCacheAdd(value) {
-	  this.__data__.set(value, HASH_UNDEFINED$2);
-	  return this;
-	}
-
-	var _setCacheAdd = setCacheAdd;
-
-	/**
-	 * Checks if `value` is in the array cache.
-	 *
-	 * @private
-	 * @name has
-	 * @memberOf SetCache
-	 * @param {*} value The value to search for.
-	 * @returns {number} Returns `true` if `value` is found, else `false`.
-	 */
-	function setCacheHas(value) {
-	  return this.__data__.has(value);
-	}
-
-	var _setCacheHas = setCacheHas;
-
-	/**
-	 *
-	 * Creates an array cache object to store unique values.
-	 *
-	 * @private
-	 * @constructor
-	 * @param {Array} [values] The values to cache.
-	 */
-	function SetCache(values) {
-	  var index = -1,
-	      length = values == null ? 0 : values.length;
-
-	  this.__data__ = new _MapCache;
-	  while (++index < length) {
-	    this.add(values[index]);
-	  }
-	}
-
-	// Add methods to `SetCache`.
-	SetCache.prototype.add = SetCache.prototype.push = _setCacheAdd;
-	SetCache.prototype.has = _setCacheHas;
-
-	var _SetCache = SetCache;
-
-	/**
-	 * A specialized version of `_.some` for arrays without support for iteratee
-	 * shorthands.
-	 *
-	 * @private
-	 * @param {Array} [array] The array to iterate over.
-	 * @param {Function} predicate The function invoked per iteration.
-	 * @returns {boolean} Returns `true` if any element passes the predicate check,
-	 *  else `false`.
-	 */
-	function arraySome(array, predicate) {
-	  var index = -1,
-	      length = array == null ? 0 : array.length;
-
-	  while (++index < length) {
-	    if (predicate(array[index], index, array)) {
-	      return true;
-	    }
-	  }
-	  return false;
-	}
-
-	var _arraySome = arraySome;
-
-	/**
-	 * Checks if a `cache` value for `key` exists.
-	 *
-	 * @private
-	 * @param {Object} cache The cache to query.
-	 * @param {string} key The key of the entry to check.
-	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
-	 */
-	function cacheHas(cache, key) {
-	  return cache.has(key);
-	}
-
-	var _cacheHas = cacheHas;
-
-	/** Used to compose bitmasks for value comparisons. */
-	var COMPARE_PARTIAL_FLAG$2 = 1;
-	var COMPARE_UNORDERED_FLAG$1 = 2;
-
-	/**
-	 * A specialized version of `baseIsEqualDeep` for arrays with support for
-	 * partial deep comparisons.
-	 *
-	 * @private
-	 * @param {Array} array The array to compare.
-	 * @param {Array} other The other array to compare.
-	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
-	 * @param {Function} customizer The function to customize comparisons.
-	 * @param {Function} equalFunc The function to determine equivalents of values.
-	 * @param {Object} stack Tracks traversed `array` and `other` objects.
-	 * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
-	 */
-	function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
-	  var isPartial = bitmask & COMPARE_PARTIAL_FLAG$2,
-	      arrLength = array.length,
-	      othLength = other.length;
-
-	  if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
-	    return false;
-	  }
-	  // Assume cyclic values are equal.
-	  var stacked = stack.get(array);
-	  if (stacked && stack.get(other)) {
-	    return stacked == other;
-	  }
-	  var index = -1,
-	      result = true,
-	      seen = (bitmask & COMPARE_UNORDERED_FLAG$1) ? new _SetCache : undefined;
-
-	  stack.set(array, other);
-	  stack.set(other, array);
-
-	  // Ignore non-index properties.
-	  while (++index < arrLength) {
-	    var arrValue = array[index],
-	        othValue = other[index];
-
-	    if (customizer) {
-	      var compared = isPartial
-	        ? customizer(othValue, arrValue, index, other, array, stack)
-	        : customizer(arrValue, othValue, index, array, other, stack);
-	    }
-	    if (compared !== undefined) {
-	      if (compared) {
-	        continue;
-	      }
-	      result = false;
-	      break;
-	    }
-	    // Recursively compare arrays (susceptible to call stack limits).
-	    if (seen) {
-	      if (!_arraySome(other, function(othValue, othIndex) {
-	            if (!_cacheHas(seen, othIndex) &&
-	                (arrValue === othValue || equalFunc(arrValue, othValue, bitmask, customizer, stack))) {
-	              return seen.push(othIndex);
-	            }
-	          })) {
-	        result = false;
-	        break;
-	      }
-	    } else if (!(
-	          arrValue === othValue ||
-	            equalFunc(arrValue, othValue, bitmask, customizer, stack)
-	        )) {
-	      result = false;
-	      break;
-	    }
-	  }
-	  stack['delete'](array);
-	  stack['delete'](other);
-	  return result;
-	}
-
-	var _equalArrays = equalArrays;
-
-	/** Built-in value references. */
-	var Uint8Array$1 = _root$1.Uint8Array;
-
-	var _Uint8Array = Uint8Array$1;
-
-	/**
-	 * Converts `map` to its key-value pairs.
-	 *
-	 * @private
-	 * @param {Object} map The map to convert.
-	 * @returns {Array} Returns the key-value pairs.
-	 */
-	function mapToArray(map) {
-	  var index = -1,
-	      result = Array(map.size);
-
-	  map.forEach(function(value, key) {
-	    result[++index] = [key, value];
-	  });
-	  return result;
-	}
-
-	var _mapToArray = mapToArray;
-
-	/**
-	 * Converts `set` to an array of its values.
-	 *
-	 * @private
-	 * @param {Object} set The set to convert.
-	 * @returns {Array} Returns the values.
-	 */
-	function setToArray(set) {
-	  var index = -1,
-	      result = Array(set.size);
-
-	  set.forEach(function(value) {
-	    result[++index] = value;
-	  });
-	  return result;
-	}
-
-	var _setToArray = setToArray;
-
-	/** Used to compose bitmasks for value comparisons. */
-	var COMPARE_PARTIAL_FLAG$3 = 1;
-	var COMPARE_UNORDERED_FLAG$2 = 2;
-
-	/** `Object#toString` result references. */
-	var boolTag = '[object Boolean]';
-	var dateTag = '[object Date]';
-	var errorTag = '[object Error]';
-	var mapTag = '[object Map]';
-	var numberTag = '[object Number]';
-	var regexpTag = '[object RegExp]';
-	var setTag = '[object Set]';
-	var stringTag = '[object String]';
-	var symbolTag = '[object Symbol]';
-
-	var arrayBufferTag = '[object ArrayBuffer]';
-	var dataViewTag = '[object DataView]';
-
-	/** Used to convert symbols to primitives and strings. */
-	var symbolProto = _Symbol ? _Symbol.prototype : undefined;
-	var symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
-
-	/**
-	 * A specialized version of `baseIsEqualDeep` for comparing objects of
-	 * the same `toStringTag`.
-	 *
-	 * **Note:** This function only supports comparing values with tags of
-	 * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
-	 *
-	 * @private
-	 * @param {Object} object The object to compare.
-	 * @param {Object} other The other object to compare.
-	 * @param {string} tag The `toStringTag` of the objects to compare.
-	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
-	 * @param {Function} customizer The function to customize comparisons.
-	 * @param {Function} equalFunc The function to determine equivalents of values.
-	 * @param {Object} stack Tracks traversed `object` and `other` objects.
-	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
-	 */
-	function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
-	  switch (tag) {
-	    case dataViewTag:
-	      if ((object.byteLength != other.byteLength) ||
-	          (object.byteOffset != other.byteOffset)) {
-	        return false;
-	      }
-	      object = object.buffer;
-	      other = other.buffer;
-
-	    case arrayBufferTag:
-	      if ((object.byteLength != other.byteLength) ||
-	          !equalFunc(new _Uint8Array(object), new _Uint8Array(other))) {
-	        return false;
-	      }
-	      return true;
-
-	    case boolTag:
-	    case dateTag:
-	    case numberTag:
-	      // Coerce booleans to `1` or `0` and dates to milliseconds.
-	      // Invalid dates are coerced to `NaN`.
-	      return eq_1(+object, +other);
-
-	    case errorTag:
-	      return object.name == other.name && object.message == other.message;
-
-	    case regexpTag:
-	    case stringTag:
-	      // Coerce regexes to strings and treat strings, primitives and objects,
-	      // as equal. See http://www.ecma-international.org/ecma-262/7.0/#sec-regexp.prototype.tostring
-	      // for more details.
-	      return object == (other + '');
-
-	    case mapTag:
-	      var convert = _mapToArray;
-
-	    case setTag:
-	      var isPartial = bitmask & COMPARE_PARTIAL_FLAG$3;
-	      convert || (convert = _setToArray);
-
-	      if (object.size != other.size && !isPartial) {
-	        return false;
-	      }
-	      // Assume cyclic values are equal.
-	      var stacked = stack.get(object);
-	      if (stacked) {
-	        return stacked == other;
-	      }
-	      bitmask |= COMPARE_UNORDERED_FLAG$2;
-
-	      // Recursively compare objects (susceptible to call stack limits).
-	      stack.set(object, other);
-	      var result = _equalArrays(convert(object), convert(other), bitmask, customizer, equalFunc, stack);
-	      stack['delete'](object);
-	      return result;
-
-	    case symbolTag:
-	      if (symbolValueOf) {
-	        return symbolValueOf.call(object) == symbolValueOf.call(other);
-	      }
-	  }
-	  return false;
-	}
-
-	var _equalByTag = equalByTag;
-
-	/**
-	 * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
-	 * `keysFunc` and `symbolsFunc` to get the enumerable property names and
-	 * symbols of `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @param {Function} keysFunc The function to get the keys of `object`.
-	 * @param {Function} symbolsFunc The function to get the symbols of `object`.
-	 * @returns {Array} Returns the array of property names and symbols.
-	 */
-	function baseGetAllKeys(object, keysFunc, symbolsFunc) {
-	  var result = keysFunc(object);
-	  return isArray_1$2(object) ? result : _arrayPush(result, symbolsFunc(object));
-	}
-
-	var _baseGetAllKeys = baseGetAllKeys;
-
-	/**
-	 * A specialized version of `_.filter` for arrays without support for
-	 * iteratee shorthands.
-	 *
-	 * @private
-	 * @param {Array} [array] The array to iterate over.
-	 * @param {Function} predicate The function invoked per iteration.
-	 * @returns {Array} Returns the new filtered array.
-	 */
-	function arrayFilter(array, predicate) {
-	  var index = -1,
-	      length = array == null ? 0 : array.length,
-	      resIndex = 0,
-	      result = [];
-
-	  while (++index < length) {
-	    var value = array[index];
-	    if (predicate(value, index, array)) {
-	      result[resIndex++] = value;
-	    }
-	  }
-	  return result;
-	}
-
-	var _arrayFilter = arrayFilter;
-
-	/**
-	 * This method returns a new empty array.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.13.0
-	 * @category Util
-	 * @returns {Array} Returns the new empty array.
-	 * @example
-	 *
-	 * var arrays = _.times(2, _.stubArray);
-	 *
-	 * console.log(arrays);
-	 * // => [[], []]
-	 *
-	 * console.log(arrays[0] === arrays[1]);
-	 * // => false
-	 */
-	function stubArray() {
-	  return [];
-	}
-
-	var stubArray_1 = stubArray;
-
-	/** Used for built-in method references. */
-	var objectProto$8 = Object.prototype;
-
-	/** Built-in value references. */
-	var propertyIsEnumerable$1 = objectProto$8.propertyIsEnumerable;
-
-	/* Built-in method references for those with the same name as other `lodash` methods. */
-	var nativeGetSymbols = Object.getOwnPropertySymbols;
-
-	/**
-	 * Creates an array of the own enumerable symbols of `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of symbols.
-	 */
-	var getSymbols = !nativeGetSymbols ? stubArray_1 : function(object) {
-	  if (object == null) {
-	    return [];
-	  }
-	  object = Object(object);
-	  return _arrayFilter(nativeGetSymbols(object), function(symbol) {
-	    return propertyIsEnumerable$1.call(object, symbol);
-	  });
-	};
-
-	var _getSymbols = getSymbols;
-
-	/**
-	 * The base implementation of `_.times` without support for iteratee shorthands
-	 * or max array length checks.
-	 *
-	 * @private
-	 * @param {number} n The number of times to invoke `iteratee`.
-	 * @param {Function} iteratee The function invoked per iteration.
-	 * @returns {Array} Returns the array of results.
-	 */
-	function baseTimes(n, iteratee) {
-	  var index = -1,
-	      result = Array(n);
-
-	  while (++index < n) {
-	    result[index] = iteratee(index);
-	  }
-	  return result;
-	}
-
-	var _baseTimes = baseTimes;
-
-	/**
-	 * This method returns `false`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.13.0
-	 * @category Util
-	 * @returns {boolean} Returns `false`.
-	 * @example
-	 *
-	 * _.times(2, _.stubFalse);
-	 * // => [false, false]
-	 */
-	function stubFalse() {
-	  return false;
-	}
-
-	var stubFalse_1 = stubFalse;
-
-	var isBuffer_1 = createCommonjsModule(function (module, exports) {
-	/** Detect free variable `exports`. */
-	var freeExports = 'object' == 'object' && exports && !exports.nodeType && exports;
-
-	/** Detect free variable `module`. */
-	var freeModule = freeExports && 'object' == 'object' && module && !module.nodeType && module;
-
-	/** Detect the popular CommonJS extension `module.exports`. */
-	var moduleExports = freeModule && freeModule.exports === freeExports;
-
-	/** Built-in value references. */
-	var Buffer = moduleExports ? _root$1.Buffer : undefined;
-
-	/* Built-in method references for those with the same name as other `lodash` methods. */
-	var nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined;
-
-	/**
-	 * Checks if `value` is a buffer.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.3.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
-	 * @example
-	 *
-	 * _.isBuffer(new Buffer(2));
-	 * // => true
-	 *
-	 * _.isBuffer(new Uint8Array(2));
-	 * // => false
-	 */
-	var isBuffer = nativeIsBuffer || stubFalse_1;
-
-	module.exports = isBuffer;
-	});
-
-	/** Used as references for various `Number` constants. */
-	var MAX_SAFE_INTEGER = 9007199254740991;
-
-	/** Used to detect unsigned integer values. */
-	var reIsUint = /^(?:0|[1-9]\d*)$/;
-
-	/**
-	 * Checks if `value` is a valid array-like index.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
-	 * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
-	 */
-	function isIndex(value, length) {
-	  length = length == null ? MAX_SAFE_INTEGER : length;
-	  return !!length &&
-	    (typeof value == 'number' || reIsUint.test(value)) &&
-	    (value > -1 && value % 1 == 0 && value < length);
-	}
-
-	var _isIndex = isIndex;
-
-	/** Used as references for various `Number` constants. */
-	var MAX_SAFE_INTEGER$1 = 9007199254740991;
-
-	/**
-	 * Checks if `value` is a valid array-like length.
-	 *
-	 * **Note:** This method is loosely based on
-	 * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
-	 * @example
-	 *
-	 * _.isLength(3);
-	 * // => true
-	 *
-	 * _.isLength(Number.MIN_VALUE);
-	 * // => false
-	 *
-	 * _.isLength(Infinity);
-	 * // => false
-	 *
-	 * _.isLength('3');
-	 * // => false
-	 */
-	function isLength(value) {
-	  return typeof value == 'number' &&
-	    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER$1;
-	}
-
-	var isLength_1 = isLength;
-
-	/** `Object#toString` result references. */
-	var argsTag$2 = '[object Arguments]';
-	var arrayTag$1 = '[object Array]';
-	var boolTag$1 = '[object Boolean]';
-	var dateTag$1 = '[object Date]';
-	var errorTag$1 = '[object Error]';
-	var funcTag$1 = '[object Function]';
-	var mapTag$1 = '[object Map]';
-	var numberTag$1 = '[object Number]';
-	var objectTag$1 = '[object Object]';
-	var regexpTag$1 = '[object RegExp]';
-	var setTag$1 = '[object Set]';
-	var stringTag$1 = '[object String]';
-	var weakMapTag = '[object WeakMap]';
-
-	var arrayBufferTag$1 = '[object ArrayBuffer]';
-	var dataViewTag$1 = '[object DataView]';
-	var float32Tag = '[object Float32Array]';
-	var float64Tag = '[object Float64Array]';
-	var int8Tag = '[object Int8Array]';
-	var int16Tag = '[object Int16Array]';
-	var int32Tag = '[object Int32Array]';
-	var uint8Tag = '[object Uint8Array]';
-	var uint8ClampedTag = '[object Uint8ClampedArray]';
-	var uint16Tag = '[object Uint16Array]';
-	var uint32Tag = '[object Uint32Array]';
-
-	/** Used to identify `toStringTag` values of typed arrays. */
-	var typedArrayTags = {};
-	typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
-	typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
-	typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
-	typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
-	typedArrayTags[uint32Tag] = true;
-	typedArrayTags[argsTag$2] = typedArrayTags[arrayTag$1] =
-	typedArrayTags[arrayBufferTag$1] = typedArrayTags[boolTag$1] =
-	typedArrayTags[dataViewTag$1] = typedArrayTags[dateTag$1] =
-	typedArrayTags[errorTag$1] = typedArrayTags[funcTag$1] =
-	typedArrayTags[mapTag$1] = typedArrayTags[numberTag$1] =
-	typedArrayTags[objectTag$1] = typedArrayTags[regexpTag$1] =
-	typedArrayTags[setTag$1] = typedArrayTags[stringTag$1] =
-	typedArrayTags[weakMapTag] = false;
-
-	/**
-	 * The base implementation of `_.isTypedArray` without Node.js optimizations.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
-	 */
-	function baseIsTypedArray(value) {
-	  return isObjectLike_1(value) &&
-	    isLength_1(value.length) && !!typedArrayTags[_baseGetTag(value)];
-	}
-
-	var _baseIsTypedArray = baseIsTypedArray;
-
-	/**
-	 * The base implementation of `_.unary` without support for storing metadata.
-	 *
-	 * @private
-	 * @param {Function} func The function to cap arguments for.
-	 * @returns {Function} Returns the new capped function.
-	 */
-	function baseUnary(func) {
-	  return function(value) {
-	    return func(value);
-	  };
-	}
-
-	var _baseUnary = baseUnary;
-
-	var _nodeUtil = createCommonjsModule(function (module, exports) {
-	/** Detect free variable `exports`. */
-	var freeExports = 'object' == 'object' && exports && !exports.nodeType && exports;
-
-	/** Detect free variable `module`. */
-	var freeModule = freeExports && 'object' == 'object' && module && !module.nodeType && module;
-
-	/** Detect the popular CommonJS extension `module.exports`. */
-	var moduleExports = freeModule && freeModule.exports === freeExports;
-
-	/** Detect free variable `process` from Node.js. */
-	var freeProcess = moduleExports && _freeGlobal.process;
-
-	/** Used to access faster Node.js helpers. */
-	var nodeUtil = (function() {
-	  try {
-	    return freeProcess && freeProcess.binding && freeProcess.binding('util');
-	  } catch (e) {}
-	}());
-
-	module.exports = nodeUtil;
-	});
-
-	/* Node.js helper references. */
-	var nodeIsTypedArray = _nodeUtil && _nodeUtil.isTypedArray;
-
-	/**
-	 * Checks if `value` is classified as a typed array.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 3.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
-	 * @example
-	 *
-	 * _.isTypedArray(new Uint8Array);
-	 * // => true
-	 *
-	 * _.isTypedArray([]);
-	 * // => false
-	 */
-	var isTypedArray = nodeIsTypedArray ? _baseUnary(nodeIsTypedArray) : _baseIsTypedArray;
-
-	var isTypedArray_1 = isTypedArray;
-
-	/** Used for built-in method references. */
-	var objectProto$9 = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$7 = objectProto$9.hasOwnProperty;
-
-	/**
-	 * Creates an array of the enumerable property names of the array-like `value`.
-	 *
-	 * @private
-	 * @param {*} value The value to query.
-	 * @param {boolean} inherited Specify returning inherited property names.
-	 * @returns {Array} Returns the array of property names.
-	 */
-	function arrayLikeKeys(value, inherited) {
-	  var isArr = isArray_1$2(value),
-	      isArg = !isArr && isArguments_1(value),
-	      isBuff = !isArr && !isArg && isBuffer_1(value),
-	      isType = !isArr && !isArg && !isBuff && isTypedArray_1(value),
-	      skipIndexes = isArr || isArg || isBuff || isType,
-	      result = skipIndexes ? _baseTimes(value.length, String) : [],
-	      length = result.length;
-
-	  for (var key in value) {
-	    if ((inherited || hasOwnProperty$7.call(value, key)) &&
-	        !(skipIndexes && (
-	           // Safari 9 has enumerable `arguments.length` in strict mode.
-	           key == 'length' ||
-	           // Node.js 0.10 has enumerable non-index properties on buffers.
-	           (isBuff && (key == 'offset' || key == 'parent')) ||
-	           // PhantomJS 2 has enumerable non-index properties on typed arrays.
-	           (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
-	           // Skip index properties.
-	           _isIndex(key, length)
-	        ))) {
-	      result.push(key);
-	    }
-	  }
-	  return result;
-	}
-
-	var _arrayLikeKeys = arrayLikeKeys;
-
-	/** Used for built-in method references. */
-	var objectProto$11 = Object.prototype;
-
-	/**
-	 * Checks if `value` is likely a prototype object.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
-	 */
-	function isPrototype(value) {
-	  var Ctor = value && value.constructor,
-	      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto$11;
-
-	  return value === proto;
-	}
-
-	var _isPrototype = isPrototype;
-
-	/**
-	 * Creates a unary function that invokes `func` with its argument transformed.
-	 *
-	 * @private
-	 * @param {Function} func The function to wrap.
-	 * @param {Function} transform The argument transform.
-	 * @returns {Function} Returns the new function.
-	 */
-	function overArg(func, transform) {
-	  return function(arg) {
-	    return func(transform(arg));
-	  };
-	}
-
-	var _overArg = overArg;
-
-	/* Built-in method references for those with the same name as other `lodash` methods. */
-	var nativeKeys = _overArg(Object.keys, Object);
-
-	var _nativeKeys = nativeKeys;
-
-	/** Used for built-in method references. */
-	var objectProto$10 = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$8 = objectProto$10.hasOwnProperty;
-
-	/**
-	 * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names.
-	 */
-	function baseKeys(object) {
-	  if (!_isPrototype(object)) {
-	    return _nativeKeys(object);
-	  }
-	  var result = [];
-	  for (var key in Object(object)) {
-	    if (hasOwnProperty$8.call(object, key) && key != 'constructor') {
-	      result.push(key);
-	    }
-	  }
-	  return result;
-	}
-
-	var _baseKeys = baseKeys;
-
-	/**
-	 * Checks if `value` is array-like. A value is considered array-like if it's
-	 * not a function and has a `value.length` that's an integer greater than or
-	 * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
-	 * @example
-	 *
-	 * _.isArrayLike([1, 2, 3]);
-	 * // => true
-	 *
-	 * _.isArrayLike(document.body.children);
-	 * // => true
-	 *
-	 * _.isArrayLike('abc');
-	 * // => true
-	 *
-	 * _.isArrayLike(_.noop);
-	 * // => false
-	 */
-	function isArrayLike(value) {
-	  return value != null && isLength_1(value.length) && !isFunction_1$3(value);
-	}
-
-	var isArrayLike_1 = isArrayLike;
-
-	/**
-	 * Creates an array of the own enumerable property names of `object`.
-	 *
-	 * **Note:** Non-object values are coerced to objects. See the
-	 * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
-	 * for more details.
-	 *
-	 * @static
-	 * @since 0.1.0
-	 * @memberOf _
-	 * @category Object
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names.
-	 * @example
-	 *
-	 * function Foo() {
-	 *   this.a = 1;
-	 *   this.b = 2;
-	 * }
-	 *
-	 * Foo.prototype.c = 3;
-	 *
-	 * _.keys(new Foo);
-	 * // => ['a', 'b'] (iteration order is not guaranteed)
-	 *
-	 * _.keys('hi');
-	 * // => ['0', '1']
-	 */
-	function keys(object) {
-	  return isArrayLike_1(object) ? _arrayLikeKeys(object) : _baseKeys(object);
-	}
-
-	var keys_1 = keys;
-
-	/**
-	 * Creates an array of own enumerable property names and symbols of `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the array of property names and symbols.
-	 */
-	function getAllKeys(object) {
-	  return _baseGetAllKeys(object, keys_1, _getSymbols);
-	}
-
-	var _getAllKeys = getAllKeys;
-
-	/** Used to compose bitmasks for value comparisons. */
-	var COMPARE_PARTIAL_FLAG$4 = 1;
-
-	/** Used for built-in method references. */
-	var objectProto$7 = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$6 = objectProto$7.hasOwnProperty;
-
-	/**
-	 * A specialized version of `baseIsEqualDeep` for objects with support for
-	 * partial deep comparisons.
-	 *
-	 * @private
-	 * @param {Object} object The object to compare.
-	 * @param {Object} other The other object to compare.
-	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
-	 * @param {Function} customizer The function to customize comparisons.
-	 * @param {Function} equalFunc The function to determine equivalents of values.
-	 * @param {Object} stack Tracks traversed `object` and `other` objects.
-	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
-	 */
-	function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
-	  var isPartial = bitmask & COMPARE_PARTIAL_FLAG$4,
-	      objProps = _getAllKeys(object),
-	      objLength = objProps.length,
-	      othProps = _getAllKeys(other),
-	      othLength = othProps.length;
-
-	  if (objLength != othLength && !isPartial) {
-	    return false;
-	  }
-	  var index = objLength;
-	  while (index--) {
-	    var key = objProps[index];
-	    if (!(isPartial ? key in other : hasOwnProperty$6.call(other, key))) {
-	      return false;
-	    }
-	  }
-	  // Assume cyclic values are equal.
-	  var stacked = stack.get(object);
-	  if (stacked && stack.get(other)) {
-	    return stacked == other;
-	  }
-	  var result = true;
-	  stack.set(object, other);
-	  stack.set(other, object);
-
-	  var skipCtor = isPartial;
-	  while (++index < objLength) {
-	    key = objProps[index];
-	    var objValue = object[key],
-	        othValue = other[key];
-
-	    if (customizer) {
-	      var compared = isPartial
-	        ? customizer(othValue, objValue, key, other, object, stack)
-	        : customizer(objValue, othValue, key, object, other, stack);
-	    }
-	    // Recursively compare objects (susceptible to call stack limits).
-	    if (!(compared === undefined
-	          ? (objValue === othValue || equalFunc(objValue, othValue, bitmask, customizer, stack))
-	          : compared
-	        )) {
-	      result = false;
-	      break;
-	    }
-	    skipCtor || (skipCtor = key == 'constructor');
-	  }
-	  if (result && !skipCtor) {
-	    var objCtor = object.constructor,
-	        othCtor = other.constructor;
-
-	    // Non `Object` object instances with different constructors are not equal.
-	    if (objCtor != othCtor &&
-	        ('constructor' in object && 'constructor' in other) &&
-	        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
-	          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
-	      result = false;
-	    }
-	  }
-	  stack['delete'](object);
-	  stack['delete'](other);
-	  return result;
-	}
-
-	var _equalObjects = equalObjects;
-
-	/* Built-in method references that are verified to be native. */
-	var DataView$1 = _getNative(_root$1, 'DataView');
-
-	var _DataView = DataView$1;
-
-	/* Built-in method references that are verified to be native. */
-	var Promise$2 = _getNative(_root$1, 'Promise');
-
-	var _Promise = Promise$2;
-
-	/* Built-in method references that are verified to be native. */
-	var Set = _getNative(_root$1, 'Set');
-
-	var _Set = Set;
-
-	/* Built-in method references that are verified to be native. */
-	var WeakMap = _getNative(_root$1, 'WeakMap');
-
-	var _WeakMap = WeakMap;
-
-	/** `Object#toString` result references. */
-	var mapTag$2 = '[object Map]';
-	var objectTag$2 = '[object Object]';
-	var promiseTag = '[object Promise]';
-	var setTag$2 = '[object Set]';
-	var weakMapTag$1 = '[object WeakMap]';
-
-	var dataViewTag$2 = '[object DataView]';
-
-	/** Used to detect maps, sets, and weakmaps. */
-	var dataViewCtorString = _toSource(_DataView);
-	var mapCtorString = _toSource(_Map);
-	var promiseCtorString = _toSource(_Promise);
-	var setCtorString = _toSource(_Set);
-	var weakMapCtorString = _toSource(_WeakMap);
-
-	/**
-	 * Gets the `toStringTag` of `value`.
-	 *
-	 * @private
-	 * @param {*} value The value to query.
-	 * @returns {string} Returns the `toStringTag`.
-	 */
-	var getTag = _baseGetTag;
-
-	// Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
-	if ((_DataView && getTag(new _DataView(new ArrayBuffer(1))) != dataViewTag$2) ||
-	    (_Map && getTag(new _Map) != mapTag$2) ||
-	    (_Promise && getTag(_Promise.resolve()) != promiseTag) ||
-	    (_Set && getTag(new _Set) != setTag$2) ||
-	    (_WeakMap && getTag(new _WeakMap) != weakMapTag$1)) {
-	  getTag = function(value) {
-	    var result = _baseGetTag(value),
-	        Ctor = result == objectTag$2 ? value.constructor : undefined,
-	        ctorString = Ctor ? _toSource(Ctor) : '';
-
-	    if (ctorString) {
-	      switch (ctorString) {
-	        case dataViewCtorString: return dataViewTag$2;
-	        case mapCtorString: return mapTag$2;
-	        case promiseCtorString: return promiseTag;
-	        case setCtorString: return setTag$2;
-	        case weakMapCtorString: return weakMapTag$1;
-	      }
-	    }
-	    return result;
-	  };
-	}
-
-	var _getTag = getTag;
-
-	/** Used to compose bitmasks for value comparisons. */
-	var COMPARE_PARTIAL_FLAG$1 = 1;
-
-	/** `Object#toString` result references. */
-	var argsTag$1 = '[object Arguments]';
-	var arrayTag = '[object Array]';
-	var objectTag = '[object Object]';
-
-	/** Used for built-in method references. */
-	var objectProto$6 = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$5 = objectProto$6.hasOwnProperty;
-
-	/**
-	 * A specialized version of `baseIsEqual` for arrays and objects which performs
-	 * deep comparisons and tracks traversed objects enabling objects with circular
-	 * references to be compared.
-	 *
-	 * @private
-	 * @param {Object} object The object to compare.
-	 * @param {Object} other The other object to compare.
-	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
-	 * @param {Function} customizer The function to customize comparisons.
-	 * @param {Function} equalFunc The function to determine equivalents of values.
-	 * @param {Object} [stack] Tracks traversed `object` and `other` objects.
-	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
-	 */
-	function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
-	  var objIsArr = isArray_1$2(object),
-	      othIsArr = isArray_1$2(other),
-	      objTag = objIsArr ? arrayTag : _getTag(object),
-	      othTag = othIsArr ? arrayTag : _getTag(other);
-
-	  objTag = objTag == argsTag$1 ? objectTag : objTag;
-	  othTag = othTag == argsTag$1 ? objectTag : othTag;
-
-	  var objIsObj = objTag == objectTag,
-	      othIsObj = othTag == objectTag,
-	      isSameTag = objTag == othTag;
-
-	  if (isSameTag && isBuffer_1(object)) {
-	    if (!isBuffer_1(other)) {
-	      return false;
-	    }
-	    objIsArr = true;
-	    objIsObj = false;
-	  }
-	  if (isSameTag && !objIsObj) {
-	    stack || (stack = new _Stack);
-	    return (objIsArr || isTypedArray_1(object))
-	      ? _equalArrays(object, other, bitmask, customizer, equalFunc, stack)
-	      : _equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
-	  }
-	  if (!(bitmask & COMPARE_PARTIAL_FLAG$1)) {
-	    var objIsWrapped = objIsObj && hasOwnProperty$5.call(object, '__wrapped__'),
-	        othIsWrapped = othIsObj && hasOwnProperty$5.call(other, '__wrapped__');
-
-	    if (objIsWrapped || othIsWrapped) {
-	      var objUnwrapped = objIsWrapped ? object.value() : object,
-	          othUnwrapped = othIsWrapped ? other.value() : other;
-
-	      stack || (stack = new _Stack);
-	      return equalFunc(objUnwrapped, othUnwrapped, bitmask, customizer, stack);
-	    }
-	  }
-	  if (!isSameTag) {
-	    return false;
-	  }
-	  stack || (stack = new _Stack);
-	  return _equalObjects(object, other, bitmask, customizer, equalFunc, stack);
-	}
-
-	var _baseIsEqualDeep = baseIsEqualDeep;
-
-	/**
-	 * The base implementation of `_.isEqual` which supports partial comparisons
-	 * and tracks traversed objects.
-	 *
-	 * @private
-	 * @param {*} value The value to compare.
-	 * @param {*} other The other value to compare.
-	 * @param {boolean} bitmask The bitmask flags.
-	 *  1 - Unordered comparison
-	 *  2 - Partial comparison
-	 * @param {Function} [customizer] The function to customize comparisons.
-	 * @param {Object} [stack] Tracks traversed `value` and `other` objects.
-	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
-	 */
-	function baseIsEqual(value, other, bitmask, customizer, stack) {
-	  if (value === other) {
-	    return true;
-	  }
-	  if (value == null || other == null || (!isObjectLike_1(value) && !isObjectLike_1(other))) {
-	    return value !== value && other !== other;
-	  }
-	  return _baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
-	}
-
-	var _baseIsEqual = baseIsEqual;
-
-	/** Used to compose bitmasks for value comparisons. */
-	var COMPARE_PARTIAL_FLAG = 1;
-	var COMPARE_UNORDERED_FLAG = 2;
-
-	/**
-	 * The base implementation of `_.isMatch` without support for iteratee shorthands.
-	 *
-	 * @private
-	 * @param {Object} object The object to inspect.
-	 * @param {Object} source The object of property values to match.
-	 * @param {Array} matchData The property names, values, and compare flags to match.
-	 * @param {Function} [customizer] The function to customize comparisons.
-	 * @returns {boolean} Returns `true` if `object` is a match, else `false`.
-	 */
-	function baseIsMatch(object, source, matchData, customizer) {
-	  var index = matchData.length,
-	      length = index,
-	      noCustomizer = !customizer;
-
-	  if (object == null) {
-	    return !length;
-	  }
-	  object = Object(object);
-	  while (index--) {
-	    var data = matchData[index];
-	    if ((noCustomizer && data[2])
-	          ? data[1] !== object[data[0]]
-	          : !(data[0] in object)
-	        ) {
-	      return false;
-	    }
-	  }
-	  while (++index < length) {
-	    data = matchData[index];
-	    var key = data[0],
-	        objValue = object[key],
-	        srcValue = data[1];
-
-	    if (noCustomizer && data[2]) {
-	      if (objValue === undefined && !(key in object)) {
-	        return false;
-	      }
-	    } else {
-	      var stack = new _Stack;
-	      if (customizer) {
-	        var result = customizer(objValue, srcValue, key, object, source, stack);
-	      }
-	      if (!(result === undefined
-	            ? _baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG | COMPARE_UNORDERED_FLAG, customizer, stack)
-	            : result
-	          )) {
-	        return false;
-	      }
-	    }
-	  }
-	  return true;
-	}
-
-	var _baseIsMatch = baseIsMatch;
-
-	/**
-	 * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` if suitable for strict
-	 *  equality comparisons, else `false`.
-	 */
-	function isStrictComparable(value) {
-	  return value === value && !isObject_1$3(value);
-	}
-
-	var _isStrictComparable = isStrictComparable;
-
-	/**
-	 * Gets the property names, values, and compare flags of `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @returns {Array} Returns the match data of `object`.
-	 */
-	function getMatchData(object) {
-	  var result = keys_1(object),
-	      length = result.length;
-
-	  while (length--) {
-	    var key = result[length],
-	        value = object[key];
-
-	    result[length] = [key, value, _isStrictComparable(value)];
-	  }
-	  return result;
-	}
-
-	var _getMatchData = getMatchData;
-
-	/**
-	 * A specialized version of `matchesProperty` for source values suitable
-	 * for strict equality comparisons, i.e. `===`.
-	 *
-	 * @private
-	 * @param {string} key The key of the property to get.
-	 * @param {*} srcValue The value to match.
-	 * @returns {Function} Returns the new spec function.
-	 */
-	function matchesStrictComparable(key, srcValue) {
-	  return function(object) {
-	    if (object == null) {
-	      return false;
-	    }
-	    return object[key] === srcValue &&
-	      (srcValue !== undefined || (key in Object(object)));
-	  };
-	}
-
-	var _matchesStrictComparable = matchesStrictComparable;
-
-	/**
-	 * The base implementation of `_.matches` which doesn't clone `source`.
-	 *
-	 * @private
-	 * @param {Object} source The object of property values to match.
-	 * @returns {Function} Returns the new spec function.
-	 */
-	function baseMatches(source) {
-	  var matchData = _getMatchData(source);
-	  if (matchData.length == 1 && matchData[0][2]) {
-	    return _matchesStrictComparable(matchData[0][0], matchData[0][1]);
-	  }
-	  return function(object) {
-	    return object === source || _baseIsMatch(object, source, matchData);
-	  };
-	}
-
-	var _baseMatches = baseMatches;
-
-	/** `Object#toString` result references. */
-	var symbolTag$1 = '[object Symbol]';
-
-	/**
-	 * Checks if `value` is classified as a `Symbol` primitive or object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
-	 * @example
-	 *
-	 * _.isSymbol(Symbol.iterator);
-	 * // => true
-	 *
-	 * _.isSymbol('abc');
-	 * // => false
-	 */
-	function isSymbol(value) {
-	  return typeof value == 'symbol' ||
-	    (isObjectLike_1(value) && _baseGetTag(value) == symbolTag$1);
-	}
-
-	var isSymbol_1 = isSymbol;
-
-	/** Used to match property names within property paths. */
-	var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/;
-	var reIsPlainProp = /^\w*$/;
-
-	/**
-	 * Checks if `value` is a property name and not a property path.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @param {Object} [object] The object to query keys on.
-	 * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
-	 */
-	function isKey(value, object) {
-	  if (isArray_1$2(value)) {
-	    return false;
-	  }
-	  var type = typeof value;
-	  if (type == 'number' || type == 'symbol' || type == 'boolean' ||
-	      value == null || isSymbol_1(value)) {
-	    return true;
-	  }
-	  return reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
-	    (object != null && value in Object(object));
-	}
-
-	var _isKey = isKey;
-
-	/** Error message constants. */
-	var FUNC_ERROR_TEXT = 'Expected a function';
-
-	/**
-	 * Creates a function that memoizes the result of `func`. If `resolver` is
-	 * provided, it determines the cache key for storing the result based on the
-	 * arguments provided to the memoized function. By default, the first argument
-	 * provided to the memoized function is used as the map cache key. The `func`
-	 * is invoked with the `this` binding of the memoized function.
-	 *
-	 * **Note:** The cache is exposed as the `cache` property on the memoized
-	 * function. Its creation may be customized by replacing the `_.memoize.Cache`
-	 * constructor with one whose instances implement the
-	 * [`Map`](http://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-map-prototype-object)
-	 * method interface of `clear`, `delete`, `get`, `has`, and `set`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Function
-	 * @param {Function} func The function to have its output memoized.
-	 * @param {Function} [resolver] The function to resolve the cache key.
-	 * @returns {Function} Returns the new memoized function.
-	 * @example
-	 *
-	 * var object = { 'a': 1, 'b': 2 };
-	 * var other = { 'c': 3, 'd': 4 };
-	 *
-	 * var values = _.memoize(_.values);
-	 * values(object);
-	 * // => [1, 2]
-	 *
-	 * values(other);
-	 * // => [3, 4]
-	 *
-	 * object.a = 2;
-	 * values(object);
-	 * // => [1, 2]
-	 *
-	 * // Modify the result cache.
-	 * values.cache.set(object, ['a', 'b']);
-	 * values(object);
-	 * // => ['a', 'b']
-	 *
-	 * // Replace `_.memoize.Cache`.
-	 * _.memoize.Cache = WeakMap;
-	 */
-	function memoize(func, resolver) {
-	  if (typeof func != 'function' || (resolver != null && typeof resolver != 'function')) {
-	    throw new TypeError(FUNC_ERROR_TEXT);
-	  }
-	  var memoized = function() {
-	    var args = arguments,
-	        key = resolver ? resolver.apply(this, args) : args[0],
-	        cache = memoized.cache;
-
-	    if (cache.has(key)) {
-	      return cache.get(key);
-	    }
-	    var result = func.apply(this, args);
-	    memoized.cache = cache.set(key, result) || cache;
-	    return result;
-	  };
-	  memoized.cache = new (memoize.Cache || _MapCache);
-	  return memoized;
-	}
-
-	// Expose `MapCache`.
-	memoize.Cache = _MapCache;
-
-	var memoize_1 = memoize;
-
-	/** Used as the maximum memoize cache size. */
-	var MAX_MEMOIZE_SIZE = 500;
-
-	/**
-	 * A specialized version of `_.memoize` which clears the memoized function's
-	 * cache when it exceeds `MAX_MEMOIZE_SIZE`.
-	 *
-	 * @private
-	 * @param {Function} func The function to have its output memoized.
-	 * @returns {Function} Returns the new memoized function.
-	 */
-	function memoizeCapped(func) {
-	  var result = memoize_1(func, function(key) {
-	    if (cache.size === MAX_MEMOIZE_SIZE) {
-	      cache.clear();
-	    }
-	    return key;
-	  });
-
-	  var cache = result.cache;
-	  return result;
-	}
-
-	var _memoizeCapped = memoizeCapped;
-
-	/** Used to match property names within property paths. */
-	var reLeadingDot = /^\./;
-	var rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
-
-	/** Used to match backslashes in property paths. */
-	var reEscapeChar = /\\(\\)?/g;
-
-	/**
-	 * Converts `string` to a property path array.
-	 *
-	 * @private
-	 * @param {string} string The string to convert.
-	 * @returns {Array} Returns the property path array.
-	 */
-	var stringToPath = _memoizeCapped(function(string) {
-	  var result = [];
-	  if (reLeadingDot.test(string)) {
-	    result.push('');
-	  }
-	  string.replace(rePropName, function(match, number, quote, string) {
-	    result.push(quote ? string.replace(reEscapeChar, '$1') : (number || match));
-	  });
-	  return result;
-	});
-
-	var _stringToPath = stringToPath;
-
-	/** Used as references for various `Number` constants. */
-	var INFINITY = 1 / 0;
-
-	/** Used to convert symbols to primitives and strings. */
-	var symbolProto$1 = _Symbol ? _Symbol.prototype : undefined;
-	var symbolToString = symbolProto$1 ? symbolProto$1.toString : undefined;
-
-	/**
-	 * The base implementation of `_.toString` which doesn't convert nullish
-	 * values to empty strings.
-	 *
-	 * @private
-	 * @param {*} value The value to process.
-	 * @returns {string} Returns the string.
-	 */
-	function baseToString(value) {
-	  // Exit early for strings to avoid a performance hit in some environments.
-	  if (typeof value == 'string') {
-	    return value;
-	  }
-	  if (isArray_1$2(value)) {
-	    // Recursively convert values (susceptible to call stack limits).
-	    return _arrayMap(value, baseToString) + '';
-	  }
-	  if (isSymbol_1(value)) {
-	    return symbolToString ? symbolToString.call(value) : '';
-	  }
-	  var result = (value + '');
-	  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
-	}
-
-	var _baseToString = baseToString;
-
-	/**
-	 * Converts `value` to a string. An empty string is returned for `null`
-	 * and `undefined` values. The sign of `-0` is preserved.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Lang
-	 * @param {*} value The value to convert.
-	 * @returns {string} Returns the converted string.
-	 * @example
-	 *
-	 * _.toString(null);
-	 * // => ''
-	 *
-	 * _.toString(-0);
-	 * // => '-0'
-	 *
-	 * _.toString([1, 2, 3]);
-	 * // => '1,2,3'
-	 */
-	function toString(value) {
-	  return value == null ? '' : _baseToString(value);
-	}
-
-	var toString_1 = toString;
-
-	/**
-	 * Casts `value` to a path array if it's not one.
-	 *
-	 * @private
-	 * @param {*} value The value to inspect.
-	 * @param {Object} [object] The object to query keys on.
-	 * @returns {Array} Returns the cast property path array.
-	 */
-	function castPath(value, object) {
-	  if (isArray_1$2(value)) {
-	    return value;
-	  }
-	  return _isKey(value, object) ? [value] : _stringToPath(toString_1(value));
-	}
-
-	var _castPath = castPath;
-
-	/** Used as references for various `Number` constants. */
-	var INFINITY$1 = 1 / 0;
-
-	/**
-	 * Converts `value` to a string key if it's not a string or symbol.
-	 *
-	 * @private
-	 * @param {*} value The value to inspect.
-	 * @returns {string|symbol} Returns the key.
-	 */
-	function toKey(value) {
-	  if (typeof value == 'string' || isSymbol_1(value)) {
-	    return value;
-	  }
-	  var result = (value + '');
-	  return (result == '0' && (1 / value) == -INFINITY$1) ? '-0' : result;
-	}
-
-	var _toKey = toKey;
-
-	/**
-	 * The base implementation of `_.get` without support for default values.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @param {Array|string} path The path of the property to get.
-	 * @returns {*} Returns the resolved value.
-	 */
-	function baseGet(object, path) {
-	  path = _castPath(path, object);
-
-	  var index = 0,
-	      length = path.length;
-
-	  while (object != null && index < length) {
-	    object = object[_toKey(path[index++])];
-	  }
-	  return (index && index == length) ? object : undefined;
-	}
-
-	var _baseGet = baseGet;
-
-	/**
-	 * Gets the value at `path` of `object`. If the resolved value is
-	 * `undefined`, the `defaultValue` is returned in its place.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 3.7.0
-	 * @category Object
-	 * @param {Object} object The object to query.
-	 * @param {Array|string} path The path of the property to get.
-	 * @param {*} [defaultValue] The value returned for `undefined` resolved values.
-	 * @returns {*} Returns the resolved value.
-	 * @example
-	 *
-	 * var object = { 'a': [{ 'b': { 'c': 3 } }] };
-	 *
-	 * _.get(object, 'a[0].b.c');
-	 * // => 3
-	 *
-	 * _.get(object, ['a', '0', 'b', 'c']);
-	 * // => 3
-	 *
-	 * _.get(object, 'a.b.c', 'default');
-	 * // => 'default'
-	 */
-	function get(object, path, defaultValue) {
-	  var result = object == null ? undefined : _baseGet(object, path);
-	  return result === undefined ? defaultValue : result;
-	}
-
-	var get_1 = get;
-
-	/**
-	 * The base implementation of `_.hasIn` without support for deep paths.
-	 *
-	 * @private
-	 * @param {Object} [object] The object to query.
-	 * @param {Array|string} key The key to check.
-	 * @returns {boolean} Returns `true` if `key` exists, else `false`.
-	 */
-	function baseHasIn(object, key) {
-	  return object != null && key in Object(object);
-	}
-
-	var _baseHasIn = baseHasIn;
-
-	/**
-	 * Checks if `path` exists on `object`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @param {Array|string} path The path to check.
-	 * @param {Function} hasFunc The function to check properties.
-	 * @returns {boolean} Returns `true` if `path` exists, else `false`.
-	 */
-	function hasPath(object, path, hasFunc) {
-	  path = _castPath(path, object);
-
-	  var index = -1,
-	      length = path.length,
-	      result = false;
-
-	  while (++index < length) {
-	    var key = _toKey(path[index]);
-	    if (!(result = object != null && hasFunc(object, key))) {
-	      break;
-	    }
-	    object = object[key];
-	  }
-	  if (result || ++index != length) {
-	    return result;
-	  }
-	  length = object == null ? 0 : object.length;
-	  return !!length && isLength_1(length) && _isIndex(key, length) &&
-	    (isArray_1$2(object) || isArguments_1(object));
-	}
-
-	var _hasPath = hasPath;
-
-	/**
-	 * Checks if `path` is a direct or inherited property of `object`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @category Object
-	 * @param {Object} object The object to query.
-	 * @param {Array|string} path The path to check.
-	 * @returns {boolean} Returns `true` if `path` exists, else `false`.
-	 * @example
-	 *
-	 * var object = _.create({ 'a': _.create({ 'b': 2 }) });
-	 *
-	 * _.hasIn(object, 'a');
-	 * // => true
-	 *
-	 * _.hasIn(object, 'a.b');
-	 * // => true
-	 *
-	 * _.hasIn(object, ['a', 'b']);
-	 * // => true
-	 *
-	 * _.hasIn(object, 'b');
-	 * // => false
-	 */
-	function hasIn(object, path) {
-	  return object != null && _hasPath(object, path, _baseHasIn);
-	}
-
-	var hasIn_1 = hasIn;
-
-	/** Used to compose bitmasks for value comparisons. */
-	var COMPARE_PARTIAL_FLAG$5 = 1;
-	var COMPARE_UNORDERED_FLAG$3 = 2;
-
-	/**
-	 * The base implementation of `_.matchesProperty` which doesn't clone `srcValue`.
-	 *
-	 * @private
-	 * @param {string} path The path of the property to get.
-	 * @param {*} srcValue The value to match.
-	 * @returns {Function} Returns the new spec function.
-	 */
-	function baseMatchesProperty(path, srcValue) {
-	  if (_isKey(path) && _isStrictComparable(srcValue)) {
-	    return _matchesStrictComparable(_toKey(path), srcValue);
-	  }
-	  return function(object) {
-	    var objValue = get_1(object, path);
-	    return (objValue === undefined && objValue === srcValue)
-	      ? hasIn_1(object, path)
-	      : _baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG$5 | COMPARE_UNORDERED_FLAG$3);
-	  };
-	}
-
-	var _baseMatchesProperty = baseMatchesProperty;
-
-	/**
-	 * This method returns the first argument it receives.
-	 *
-	 * @static
-	 * @since 0.1.0
-	 * @memberOf _
-	 * @category Util
-	 * @param {*} value Any value.
-	 * @returns {*} Returns `value`.
-	 * @example
-	 *
-	 * var object = { 'a': 1 };
-	 *
-	 * console.log(_.identity(object) === object);
-	 * // => true
-	 */
-	function identity(value) {
-	  return value;
-	}
-
-	var identity_1 = identity;
-
-	/**
-	 * The base implementation of `_.property` without support for deep paths.
-	 *
-	 * @private
-	 * @param {string} key The key of the property to get.
-	 * @returns {Function} Returns the new accessor function.
-	 */
-	function baseProperty(key) {
-	  return function(object) {
-	    return object == null ? undefined : object[key];
-	  };
-	}
-
-	var _baseProperty = baseProperty;
-
-	/**
-	 * A specialized version of `baseProperty` which supports deep paths.
-	 *
-	 * @private
-	 * @param {Array|string} path The path of the property to get.
-	 * @returns {Function} Returns the new accessor function.
-	 */
-	function basePropertyDeep(path) {
-	  return function(object) {
-	    return _baseGet(object, path);
-	  };
-	}
-
-	var _basePropertyDeep = basePropertyDeep;
-
-	/**
-	 * Creates a function that returns the value at `path` of a given object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 2.4.0
-	 * @category Util
-	 * @param {Array|string} path The path of the property to get.
-	 * @returns {Function} Returns the new accessor function.
-	 * @example
-	 *
-	 * var objects = [
-	 *   { 'a': { 'b': 2 } },
-	 *   { 'a': { 'b': 1 } }
-	 * ];
-	 *
-	 * _.map(objects, _.property('a.b'));
-	 * // => [2, 1]
-	 *
-	 * _.map(_.sortBy(objects, _.property(['a', 'b'])), 'a.b');
-	 * // => [1, 2]
-	 */
-	function property(path) {
-	  return _isKey(path) ? _baseProperty(_toKey(path)) : _basePropertyDeep(path);
-	}
-
-	var property_1 = property;
-
-	/**
-	 * The base implementation of `_.iteratee`.
-	 *
-	 * @private
-	 * @param {*} [value=_.identity] The value to convert to an iteratee.
-	 * @returns {Function} Returns the iteratee.
-	 */
-	function baseIteratee(value) {
-	  // Don't store the `typeof` result in a variable to avoid a JIT bug in Safari 9.
-	  // See https://bugs.webkit.org/show_bug.cgi?id=156034 for more details.
-	  if (typeof value == 'function') {
-	    return value;
-	  }
-	  if (value == null) {
-	    return identity_1;
-	  }
-	  if (typeof value == 'object') {
-	    return isArray_1$2(value)
-	      ? _baseMatchesProperty(value[0], value[1])
-	      : _baseMatches(value);
-	  }
-	  return property_1(value);
-	}
-
-	var _baseIteratee = baseIteratee;
-
-	/**
-	 * Creates a base function for methods like `_.forIn` and `_.forOwn`.
-	 *
-	 * @private
-	 * @param {boolean} [fromRight] Specify iterating from right to left.
-	 * @returns {Function} Returns the new base function.
-	 */
-	function createBaseFor(fromRight) {
-	  return function(object, iteratee, keysFunc) {
-	    var index = -1,
-	        iterable = Object(object),
-	        props = keysFunc(object),
-	        length = props.length;
-
-	    while (length--) {
-	      var key = props[fromRight ? length : ++index];
-	      if (iteratee(iterable[key], key, iterable) === false) {
-	        break;
-	      }
-	    }
-	    return object;
-	  };
-	}
-
-	var _createBaseFor = createBaseFor;
-
-	/**
-	 * The base implementation of `baseForOwn` which iterates over `object`
-	 * properties returned by `keysFunc` and invokes `iteratee` for each property.
-	 * Iteratee functions may exit iteration early by explicitly returning `false`.
-	 *
-	 * @private
-	 * @param {Object} object The object to iterate over.
-	 * @param {Function} iteratee The function invoked per iteration.
-	 * @param {Function} keysFunc The function to get the keys of `object`.
-	 * @returns {Object} Returns `object`.
-	 */
-	var baseFor = _createBaseFor();
-
-	var _baseFor = baseFor;
-
-	/**
-	 * The base implementation of `_.forOwn` without support for iteratee shorthands.
-	 *
-	 * @private
-	 * @param {Object} object The object to iterate over.
-	 * @param {Function} iteratee The function invoked per iteration.
-	 * @returns {Object} Returns `object`.
-	 */
-	function baseForOwn(object, iteratee) {
-	  return object && _baseFor(object, iteratee, keys_1);
-	}
-
-	var _baseForOwn = baseForOwn;
-
-	/**
-	 * Creates a `baseEach` or `baseEachRight` function.
-	 *
-	 * @private
-	 * @param {Function} eachFunc The function to iterate over a collection.
-	 * @param {boolean} [fromRight] Specify iterating from right to left.
-	 * @returns {Function} Returns the new base function.
-	 */
-	function createBaseEach(eachFunc, fromRight) {
-	  return function(collection, iteratee) {
-	    if (collection == null) {
-	      return collection;
-	    }
-	    if (!isArrayLike_1(collection)) {
-	      return eachFunc(collection, iteratee);
-	    }
-	    var length = collection.length,
-	        index = fromRight ? length : -1,
-	        iterable = Object(collection);
-
-	    while ((fromRight ? index-- : ++index < length)) {
-	      if (iteratee(iterable[index], index, iterable) === false) {
-	        break;
-	      }
-	    }
-	    return collection;
-	  };
-	}
-
-	var _createBaseEach = createBaseEach;
-
-	/**
-	 * The base implementation of `_.forEach` without support for iteratee shorthands.
-	 *
-	 * @private
-	 * @param {Array|Object} collection The collection to iterate over.
-	 * @param {Function} iteratee The function invoked per iteration.
-	 * @returns {Array|Object} Returns `collection`.
-	 */
-	var baseEach = _createBaseEach(_baseForOwn);
-
-	var _baseEach = baseEach;
-
-	/**
-	 * The base implementation of `_.map` without support for iteratee shorthands.
-	 *
-	 * @private
-	 * @param {Array|Object} collection The collection to iterate over.
-	 * @param {Function} iteratee The function invoked per iteration.
-	 * @returns {Array} Returns the new mapped array.
-	 */
-	function baseMap(collection, iteratee) {
-	  var index = -1,
-	      result = isArrayLike_1(collection) ? Array(collection.length) : [];
-
-	  _baseEach(collection, function(value, key, collection) {
-	    result[++index] = iteratee(value, key, collection);
-	  });
-	  return result;
-	}
-
-	var _baseMap = baseMap;
-
-	/**
-	 * The base implementation of `_.sortBy` which uses `comparer` to define the
-	 * sort order of `array` and replaces criteria objects with their corresponding
-	 * values.
-	 *
-	 * @private
-	 * @param {Array} array The array to sort.
-	 * @param {Function} comparer The function to define sort order.
-	 * @returns {Array} Returns `array`.
-	 */
-	function baseSortBy(array, comparer) {
-	  var length = array.length;
-
-	  array.sort(comparer);
-	  while (length--) {
-	    array[length] = array[length].value;
-	  }
-	  return array;
-	}
-
-	var _baseSortBy = baseSortBy;
-
-	/**
-	 * Compares values to sort them in ascending order.
-	 *
-	 * @private
-	 * @param {*} value The value to compare.
-	 * @param {*} other The other value to compare.
-	 * @returns {number} Returns the sort order indicator for `value`.
-	 */
-	function compareAscending(value, other) {
-	  if (value !== other) {
-	    var valIsDefined = value !== undefined,
-	        valIsNull = value === null,
-	        valIsReflexive = value === value,
-	        valIsSymbol = isSymbol_1(value);
-
-	    var othIsDefined = other !== undefined,
-	        othIsNull = other === null,
-	        othIsReflexive = other === other,
-	        othIsSymbol = isSymbol_1(other);
-
-	    if ((!othIsNull && !othIsSymbol && !valIsSymbol && value > other) ||
-	        (valIsSymbol && othIsDefined && othIsReflexive && !othIsNull && !othIsSymbol) ||
-	        (valIsNull && othIsDefined && othIsReflexive) ||
-	        (!valIsDefined && othIsReflexive) ||
-	        !valIsReflexive) {
-	      return 1;
-	    }
-	    if ((!valIsNull && !valIsSymbol && !othIsSymbol && value < other) ||
-	        (othIsSymbol && valIsDefined && valIsReflexive && !valIsNull && !valIsSymbol) ||
-	        (othIsNull && valIsDefined && valIsReflexive) ||
-	        (!othIsDefined && valIsReflexive) ||
-	        !othIsReflexive) {
-	      return -1;
-	    }
-	  }
-	  return 0;
-	}
-
-	var _compareAscending = compareAscending;
-
-	/**
-	 * Used by `_.orderBy` to compare multiple properties of a value to another
-	 * and stable sort them.
-	 *
-	 * If `orders` is unspecified, all values are sorted in ascending order. Otherwise,
-	 * specify an order of "desc" for descending or "asc" for ascending sort order
-	 * of corresponding values.
-	 *
-	 * @private
-	 * @param {Object} object The object to compare.
-	 * @param {Object} other The other object to compare.
-	 * @param {boolean[]|string[]} orders The order to sort by for each property.
-	 * @returns {number} Returns the sort order indicator for `object`.
-	 */
-	function compareMultiple(object, other, orders) {
-	  var index = -1,
-	      objCriteria = object.criteria,
-	      othCriteria = other.criteria,
-	      length = objCriteria.length,
-	      ordersLength = orders.length;
-
-	  while (++index < length) {
-	    var result = _compareAscending(objCriteria[index], othCriteria[index]);
-	    if (result) {
-	      if (index >= ordersLength) {
-	        return result;
-	      }
-	      var order = orders[index];
-	      return result * (order == 'desc' ? -1 : 1);
-	    }
-	  }
-	  // Fixes an `Array#sort` bug in the JS engine embedded in Adobe applications
-	  // that causes it, under certain circumstances, to provide the same value for
-	  // `object` and `other`. See https://github.com/jashkenas/underscore/pull/1247
-	  // for more details.
-	  //
-	  // This also ensures a stable sort in V8 and other engines.
-	  // See https://bugs.chromium.org/p/v8/issues/detail?id=90 for more details.
-	  return object.index - other.index;
-	}
-
-	var _compareMultiple = compareMultiple;
-
-	/**
-	 * The base implementation of `_.orderBy` without param guards.
-	 *
-	 * @private
-	 * @param {Array|Object} collection The collection to iterate over.
-	 * @param {Function[]|Object[]|string[]} iteratees The iteratees to sort by.
-	 * @param {string[]} orders The sort orders of `iteratees`.
-	 * @returns {Array} Returns the new sorted array.
-	 */
-	function baseOrderBy(collection, iteratees, orders) {
-	  var index = -1;
-	  iteratees = _arrayMap(iteratees.length ? iteratees : [identity_1], _baseUnary(_baseIteratee));
-
-	  var result = _baseMap(collection, function(value, key, collection) {
-	    var criteria = _arrayMap(iteratees, function(iteratee) {
-	      return iteratee(value);
-	    });
-	    return { 'criteria': criteria, 'index': ++index, 'value': value };
-	  });
-
-	  return _baseSortBy(result, function(object, other) {
-	    return _compareMultiple(object, other, orders);
-	  });
-	}
-
-	var _baseOrderBy = baseOrderBy;
-
-	/**
-	 * A faster alternative to `Function#apply`, this function invokes `func`
-	 * with the `this` binding of `thisArg` and the arguments of `args`.
-	 *
-	 * @private
-	 * @param {Function} func The function to invoke.
-	 * @param {*} thisArg The `this` binding of `func`.
-	 * @param {Array} args The arguments to invoke `func` with.
-	 * @returns {*} Returns the result of `func`.
-	 */
-	function apply(func, thisArg, args) {
-	  switch (args.length) {
-	    case 0: return func.call(thisArg);
-	    case 1: return func.call(thisArg, args[0]);
-	    case 2: return func.call(thisArg, args[0], args[1]);
-	    case 3: return func.call(thisArg, args[0], args[1], args[2]);
-	  }
-	  return func.apply(thisArg, args);
-	}
-
-	var _apply = apply;
-
-	/* Built-in method references for those with the same name as other `lodash` methods. */
-	var nativeMax = Math.max;
-
-	/**
-	 * A specialized version of `baseRest` which transforms the rest array.
-	 *
-	 * @private
-	 * @param {Function} func The function to apply a rest parameter to.
-	 * @param {number} [start=func.length-1] The start position of the rest parameter.
-	 * @param {Function} transform The rest array transform.
-	 * @returns {Function} Returns the new function.
-	 */
-	function overRest(func, start, transform) {
-	  start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
-	  return function() {
-	    var args = arguments,
-	        index = -1,
-	        length = nativeMax(args.length - start, 0),
-	        array = Array(length);
-
-	    while (++index < length) {
-	      array[index] = args[start + index];
-	    }
-	    index = -1;
-	    var otherArgs = Array(start + 1);
-	    while (++index < start) {
-	      otherArgs[index] = args[index];
-	    }
-	    otherArgs[start] = transform(array);
-	    return _apply(func, this, otherArgs);
-	  };
-	}
-
-	var _overRest = overRest;
-
-	/**
-	 * Creates a function that returns `value`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 2.4.0
-	 * @category Util
-	 * @param {*} value The value to return from the new function.
-	 * @returns {Function} Returns the new constant function.
-	 * @example
-	 *
-	 * var objects = _.times(2, _.constant({ 'a': 1 }));
-	 *
-	 * console.log(objects);
-	 * // => [{ 'a': 1 }, { 'a': 1 }]
-	 *
-	 * console.log(objects[0] === objects[1]);
-	 * // => true
-	 */
-	function constant(value) {
-	  return function() {
-	    return value;
-	  };
-	}
-
-	var constant_1 = constant;
-
-	var defineProperty = (function() {
-	  try {
-	    var func = _getNative(Object, 'defineProperty');
-	    func({}, '', {});
-	    return func;
-	  } catch (e) {}
-	}());
-
-	var _defineProperty = defineProperty;
-
-	/**
-	 * The base implementation of `setToString` without support for hot loop shorting.
-	 *
-	 * @private
-	 * @param {Function} func The function to modify.
-	 * @param {Function} string The `toString` result.
-	 * @returns {Function} Returns `func`.
-	 */
-	var baseSetToString = !_defineProperty ? identity_1 : function(func, string) {
-	  return _defineProperty(func, 'toString', {
-	    'configurable': true,
-	    'enumerable': false,
-	    'value': constant_1(string),
-	    'writable': true
-	  });
-	};
-
-	var _baseSetToString = baseSetToString;
-
-	/** Used to detect hot functions by number of calls within a span of milliseconds. */
-	var HOT_COUNT = 800;
-	var HOT_SPAN = 16;
-
-	/* Built-in method references for those with the same name as other `lodash` methods. */
-	var nativeNow = Date.now;
-
-	/**
-	 * Creates a function that'll short out and invoke `identity` instead
-	 * of `func` when it's called `HOT_COUNT` or more times in `HOT_SPAN`
-	 * milliseconds.
-	 *
-	 * @private
-	 * @param {Function} func The function to restrict.
-	 * @returns {Function} Returns the new shortable function.
-	 */
-	function shortOut(func) {
-	  var count = 0,
-	      lastCalled = 0;
-
-	  return function() {
-	    var stamp = nativeNow(),
-	        remaining = HOT_SPAN - (stamp - lastCalled);
-
-	    lastCalled = stamp;
-	    if (remaining > 0) {
-	      if (++count >= HOT_COUNT) {
-	        return arguments[0];
-	      }
-	    } else {
-	      count = 0;
-	    }
-	    return func.apply(undefined, arguments);
-	  };
-	}
-
-	var _shortOut = shortOut;
-
-	/**
-	 * Sets the `toString` method of `func` to return `string`.
-	 *
-	 * @private
-	 * @param {Function} func The function to modify.
-	 * @param {Function} string The `toString` result.
-	 * @returns {Function} Returns `func`.
-	 */
-	var setToString = _shortOut(_baseSetToString);
-
-	var _setToString = setToString;
-
-	/**
-	 * The base implementation of `_.rest` which doesn't validate or coerce arguments.
-	 *
-	 * @private
-	 * @param {Function} func The function to apply a rest parameter to.
-	 * @param {number} [start=func.length-1] The start position of the rest parameter.
-	 * @returns {Function} Returns the new function.
-	 */
-	function baseRest(func, start) {
-	  return _setToString(_overRest(func, start, identity_1), func + '');
-	}
-
-	var _baseRest = baseRest;
-
-	/**
-	 * Checks if the given arguments are from an iteratee call.
-	 *
-	 * @private
-	 * @param {*} value The potential iteratee value argument.
-	 * @param {*} index The potential iteratee index or key argument.
-	 * @param {*} object The potential iteratee object argument.
-	 * @returns {boolean} Returns `true` if the arguments are from an iteratee call,
-	 *  else `false`.
-	 */
-	function isIterateeCall(value, index, object) {
-	  if (!isObject_1$3(object)) {
-	    return false;
-	  }
-	  var type = typeof index;
-	  if (type == 'number'
-	        ? (isArrayLike_1(object) && _isIndex(index, object.length))
-	        : (type == 'string' && index in object)
-	      ) {
-	    return eq_1(object[index], value);
-	  }
-	  return false;
-	}
-
-	var _isIterateeCall = isIterateeCall;
-
-	/**
-	 * Creates an array of elements, sorted in ascending order by the results of
-	 * running each element in a collection thru each iteratee. This method
-	 * performs a stable sort, that is, it preserves the original sort order of
-	 * equal elements. The iteratees are invoked with one argument: (value).
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Collection
-	 * @param {Array|Object} collection The collection to iterate over.
-	 * @param {...(Function|Function[])} [iteratees=[_.identity]]
-	 *  The iteratees to sort by.
-	 * @returns {Array} Returns the new sorted array.
-	 * @example
-	 *
-	 * var users = [
-	 *   { 'user': 'fred',   'age': 48 },
-	 *   { 'user': 'barney', 'age': 36 },
-	 *   { 'user': 'fred',   'age': 40 },
-	 *   { 'user': 'barney', 'age': 34 }
-	 * ];
-	 *
-	 * _.sortBy(users, [function(o) { return o.user; }]);
-	 * // => objects for [['barney', 36], ['barney', 34], ['fred', 48], ['fred', 40]]
-	 *
-	 * _.sortBy(users, ['user', 'age']);
-	 * // => objects for [['barney', 34], ['barney', 36], ['fred', 40], ['fred', 48]]
-	 */
-	var sortBy = _baseRest(function(collection, iteratees) {
-	  if (collection == null) {
-	    return [];
-	  }
-	  var length = iteratees.length;
-	  if (length > 1 && _isIterateeCall(collection, iteratees[0], iteratees[1])) {
-	    iteratees = [];
-	  } else if (length > 2 && _isIterateeCall(iteratees[0], iteratees[1], iteratees[2])) {
-	    iteratees = [iteratees[0]];
-	  }
-	  return _baseOrderBy(collection, _baseFlatten(iteratees, 1), []);
-	});
-
-	var sortBy_1 = sortBy;
-
-	// main
-
-	function PromiseCache (args) {
-
-	  var args = args || {};
-
-	  this.maxResolvedCache = args.maxResolvedCache || 1000;
-
-	  this._pendingPromises = {};
-	  this._resolvedPromises = {};
-
-	}
-
-	PromiseCache.prototype = {
-
-	  add: function (key, promise) {
-
-	    var self = this;
-
-	    // check if it already exists
-	    if (this._pendingPromises[ key ]) {
-	      return this._pendingPromises[ key ]
-	    }
-	    if (this._resolvedPromises[ key ]) {
-	      return this._resolvedPromises[ key ]
-	    }
-
-	    // create cache object
-	    var cacheObject = {
-	      key: key,
-	      timestamp: Date.now(),
-	      promise: promise
-	    };
-
-	    // add to store
-	    this._pendingPromises[ key ] = cacheObject;
-
-	    // move to resolved store and update state when resolved
-	    promise.then(function (data) {
-
-	      var cacheObject = self._pendingPromises[ key ];
-	      delete self._pendingPromises[ key ];
-
-	      cacheObject.data = data;
-
-	      self._resolvedPromises[ key ] = cacheObject;
-
-	    }, function () {
-
-	      delete self._pendingPromises[ key ];
-
-	    });
-
-	    // collect garbage
-	    this._collectGarbage();
-
-	    // return cache object
-	    return cacheObject
-
-	  },
-
-	  get: function (key) {
-
-	    // check store
-	    var cacheObject = this._pendingPromises[ key ] || this._resolvedPromises[ key ];
-	    if (!cacheObject) {
-	      return false
-	    }
-
-	    // update timestamp
-	    cacheObject.timestamp = Date.now();
-
-	    // return promise
-	    return cacheObject.promise
-
-	  },
-
-	  purge: function () {
-
-	    for (var key in this._resolvedPromises) {
-	      delete this._resolvedPromises[ key ];
-	    }
-
-	  },
-
-	  _collectGarbage: function () {
-
-	    // sort archive by timestamp
-	    var sortedPromises = sortBy_1(this._resolvedPromises, function (obj) {
-	      return obj.timestamp
-	    });
-
-	    // the amount of cache objects that have to be removed
-	    var removeCount = (sortedPromises.length - this.maxResolvedCache);
-	    if (removeCount <= 0) {
-	      return
-	    }
-
-	    for (var i = 0; i < removeCount; i++) {
-	      delete this._resolvedPromises[ sortedPromises[ i ].key ];
-	    }
-
-	  }
-
-	};
-
-	var cache = new PromiseCache();
-
-	var fetchTextureByType = {
-	  '.dds': fetchDdsTexture,
-	  '.jpg': fetchImageTexture,
-	  '.jpeg': fetchImageTexture,
-	  '.jpe': fetchImageTexture,
-	  '.png': fetchImageTexture,
-	  '.gif': fetchImageTexture,
-	  '.svg': fetchImageTexture
-	};
-
-	function fetchTexture (url, queueName) {
-	  
-	  // internals
-	  var cacheKey = url;
-
-	  // try cache
-	  var promiseFromCache = cache.get(cacheKey);
-	  if (promiseFromCache) return promiseFromCache
-
-	  // get file extension
-	  var extSearch = url.match(/\.[A-Za-z]+(?=\?|$)/i);
-	  var type = extSearch ? extSearch[0].toLowerCase() : '.jpg';
-
-	  if (!fetchTextureByType[type]) {
-	    // unknown texture type. fallback to JPG
-	    console.warn('Unknown texture type ' + type + '. Trying to load as JPG.');
-	    type = '.jpg';
-	  }
-
-	  var promise = queueManager.enqueue(queueName, url).then(function(){
-
-	    return fetchTextureByType[type](url)
-
-	  }).then(function(texture){
-
-	    queueManager.dequeue(queueName, url);
-	    return texture
-
-	  }).catch(function (error) {
-
-	    queueManager.dequeue(queueName, url);
-	    return bluebird_1.reject(error)
-
-	  });
-
-	  // add to cache
-	  cache.add(cacheKey, promise);
-
-	  return promise
-
-	}
-
-	/*
-
-	 PERFORMANCE CRITICAL CODE
-
-	 readability may suffer from performance optimization
-	 ask tomas-polach if you have questions
-
-	*/
-
-	// static method, @memberof View
-
-	// constants
-
-	var THREEJS_TEXTURE_TYPES_MAP = {
-	  // hi-res textures
-	  'mapDiffuse': 'map',
-	  'mapSpecular': 'specularMap',
-	  'mapNormal':'normalMap',
-	  'mapAlpha':'alphaMap',
-	  'mapLight':'lightMap',
-	  // lo-res textures
-	  'mapDiffusePreview': 'map',
-	  'mapSpecularPreview': 'specularMap',
-	  'mapNormalPreview':'normalMap',
-	  'mapAlphaPreview':'alphaMap',
-	  'mapLightPreview':'lightMap'
-	};
-	var WEBGL_WRAP_TYPES = {
-	  repeat: 1000,
-	  mirror: 1002,
-	  clamp: 1001
-	};
-	// RepeatWrapping: 1000 / ClampToEdgeWrapping: 1001 / MirroredRepeatWrapping: 1002
-
-	// helpers
-
-	function onError (e) {
-	  console.error('Texture could not been loaded: ', e);
-	}
-
-	var textureRefCount = {};
-
-	function countTextureReference ( key ) {
-	  if ( key !== undefined ) {
-	    if (textureRefCount[ key ]) {
-	      textureRefCount[ key ]++;
-	    } else {
-	      textureRefCount[ key ] = 1;
-	    }
-	  }
-	}
-
-	function disposeIfPossible () {
-	  var texture3d = this;
-	  var key = this.url;
-	  if (key) {
-	    if (textureRefCount[ key ]) {
-	      textureRefCount[ key ]--;
-	      if (textureRefCount[ key ] === 0) {
-	//          console.log('dispose texture', texture3d.url)
-	        texture3d.dispose();
-	//          texture3d.needsUpdate = true
-	      }
-	    } else {
-	//        console.warn('texture not in cache ' + key)
-	      texture3d.dispose();
-	    }
-	  } else {
-	    texture3d.dispose();
-	//      texture3d.needsUpdate = true
-	  }
-	}
-
-	// class
-
-	function loadTextureSet ( queueName, TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, resetTexturesOnLoadStart) {
-	  
-	  // new textures
-
-	  var
-	    texture3dKeys = [],
-	    textureKeys = [],
-	    texturePromises = [],
-	    textureCount = 0,
-	    textureS3Key,
-	    texture3d,
-	    textureType3d,
-	    textureType,
-	    needsUpdate,
-	    hasUv1Textures = false,
-	    geometry3d = mesh3d ? mesh3d.geometry : null,
-	    attributes3d = geometry3d ? geometry3d.attributes : null,
-	    hasUvVertices = attributes3d && attributes3d.uv && attributes3d.uv.count > 0,
-	    hasUv2Vertices = attributes3d && attributes3d.uv2 && attributes3d.uv2.count > 0,
-	    i,
-	    l;
-
-	  // UV1 textures
-
-	  for (i = 0, l = TEXTURE_TYPES.UV1.length; i < l; i++) {
-	    textureType = TEXTURE_TYPES.UV1[ i ];
-	    textureS3Key = _attributes[ textureType ];
-	    textureType3d = THREEJS_TEXTURE_TYPES_MAP[ textureType ];
-	    texture3d = material3d[ textureType3d ];
-
-	    if (textureS3Key) {
-	      if (hasUvVertices) {
-	        hasUv1Textures = true;
-	      } else {
-	        console.error('Texture ' + textureS3Key + ' could not be assigned because geometry has no UV vertices.');
-	        continue
-	      }
-	    }
-
-	    if (textureS3Key) {
-
-	      needsUpdate = true;
-
-	      // update wrap
-	      wrap = WEBGL_WRAP_TYPES[ _attributes.wrap ] || WEBGL_WRAP_TYPES[ 'repeat' ];
-	      if (texture3d && wrap !== texture3d.wrapS) {
-	        texture3d.wrapS = wrap;
-	        texture3d.wrapT = wrap;
-	        texture3d.needsUpdate = true;
-	      }
-
-	      // don't reload texture if files are of same origin
-	      if (
-	        texture3d
-	        && texture3d.url
-	        && textureS3Key === texture3d.url
-	      ) {
-	        needsUpdate = false;
-	      }
-
-	      if (needsUpdate && texture3d && resetTexturesOnLoadStart) {
-	        // dispose old texture
-	        if (material3d[ textureType3d ] && material3d[ textureType3d ].disposeIfPossible) {
-	          material3d[ textureType3d ].disposeIfPossible();
-	        }
-	        material3d[ textureType3d ] = null;
-	      }
-
-	      if (needsUpdate) {
-	        // load new texture
-	        texturePromises[ textureCount ] = fetchTexture(textureS3Key, queueName).catch(onError);
-	        textureKeys[ textureCount ] = textureType;
-	        texture3dKeys[ textureCount ] = textureType3d;
-	        textureCount++;
-	        material3d.needsUpdate = true;
-	      }
-
-	    } else if (material3d[ textureType3d ]) {
-
-	      // no new texture: just dispose old texture
-	      if (material3d[ textureType3d ] && material3d[ textureType3d ].disposeIfPossible) {
-	        material3d[ textureType3d ].disposeIfPossible();
-	      }
-	      material3d[ textureType3d ] = null;
-	      material3d.needsUpdate = true;
-
-	    }
-
-	  }
-
-	  // UV1 vectors
-
-	  if (attributes3d) {
-
-	    // UV channel 1
-
-	    if (hasUv1Textures) {
-
-	      // resize UV array
-
-	      if (_attributes.size) {
-
-	        var
-	          targetScaleU = _attributes.size[ 0 ],
-	          targetScaleV = _attributes.size[ 1 ],
-	          currentScaleU = attributes3d.uv._scaleU || 1,
-	          currentScaleV = attributes3d.uv._scaleV || 1;
-	        // check if uv recalculation is needed
-	        if (targetScaleU !== currentScaleU || targetScaleV !== currentScaleV) {
-	          // remember original uv array
-	          if (!attributes3d.uv._source) {
-	            attributes3d.uv._source = attributes3d.uv.array;
-	          }
-	          // internals
-	          var
-	            sourceUVs = attributes3d.uv._source,
-	            resizedUVs = new Float32Array(sourceUVs.length);
-	          // resize array
-	          for (var i = 0, l = resizedUVs.length; i < l; i += 2) {
-	            resizedUVs[ i ] = sourceUVs[ i ] / targetScaleU;
-	            resizedUVs[ i + 1 ] = sourceUVs[ i + 1 ] / targetScaleV;
-	          }
-	          // set resized array
-	          attributes3d.uv.array = resizedUVs;
-	          // remember size
-	          attributes3d.uv._scaleU = targetScaleU;
-	          attributes3d.uv._scaleV = targetScaleV;
-	          // set update flag
-	          attributes3d.uv.needsUpdate = true;
-	        }
-
-	      }
-
-	    }
-
-	    // UV channel 2
-
-	    if (_attributes[ TEXTURE_TYPES.UV2 ]) {
-
-	      // check uv count
-	      if (hasUv2Vertices) {
-
-	        // everything ok - load lightmap
-	        textureType = TEXTURE_TYPES.UV2;
-	        textureS3Key = _attributes[ textureType ];
-	        texturePromises[ textureCount ] = fetchTexture(textureS3Key, queueName).catch(onError);
-	        textureKeys[ textureCount ] = textureType;
-	        texture3dKeys[ textureCount ] = THREEJS_TEXTURE_TYPES_MAP[ textureType ];
-	        textureCount++;
-
-	      } else {
-
-	        console.error('Lightmap ' + _attributes[ TEXTURE_TYPES.UV2 ] + ' could not be assigned because geometry has no lightmap UV (UV2) vertices.');
-
-	      }
-
-	    }
-
-	  }
-
-	  // load textures
-
-	  var promise, wrap, isTexture, isTextureToBeLoadedNext;
-	  if (textureCount) {
-
-	    promise = bluebird_1.all(texturePromises).then(function (textures) {
-
-	      // assign textures
-	      wrap = WEBGL_WRAP_TYPES[ _attributes.wrap ] || WEBGL_WRAP_TYPES[ 'repeat' ];
-	      for (i = 0; i < textureCount; i++) {
-
-	        // filter texture loading errors
-	        isTexture = textures[i] instanceof THREE.CompressedTexture || textures[i] instanceof THREE.Texture;
-	        // avoid racing conditions
-	        isTextureToBeLoadedNext = textures[i] && textures[i].url === material3d._texturesToBeLoaded[textureKeys[i]];
-
-	        if (!isTexture || !isTextureToBeLoadedNext) continue
-
-	        // cache
-	        countTextureReference(textures[ i ].url);
-	        textures[ i ].disposeIfPossible = disposeIfPossible;
-
-	        // set texture settings
-	        textures[ i ].wrapS = wrap;
-	        textures[ i ].wrapT = wrap;
-	        textures[ i ].anisotropy = 2;
-	        // dispose previous texture
-	        if (material3d[ texture3dKeys[ i ] ] && material3d[ texture3dKeys[ i ] ].disposeIfPossible) {
-	          material3d[ texture3dKeys[ i ] ].disposeIfPossible();
-	        }
-	        // add new texture
-	        material3d[ texture3dKeys[ i ] ] = textures[ i ];
-	        material3d.uniforms[ texture3dKeys[ i ] ].value = textures[ i ];
-	        material3d[ texture3dKeys[ i ] ].needsUpdate = true;
-
-	      }
-	      // update material
-	      material3d.needsUpdate = true;
-
-	      // to prevent warnings: "GL ERROR :GL_INVALID_OPERATION : glDrawElements: attempt to access out of range vertices in attribute 1 "
-	      // this happens when switching from a material without texture to a material with texture or vice versa
-	      if ( mesh3d && mesh3d.geometry ) {
-	        mesh3d.geometry.buffersNeedUpdate = true;
-	        mesh3d.geometry.uvsNeedUpdate = true;
-	      }
-
-	      // render
-	      if (vm) vm.viewport.render();
-
-	    });
-
-	  } else {
-
-	    promise = bluebird_1.resolve();
-
-	    // render
-	    if (vm) vm.viewport.render();
-
-	  }
-
-	  return promise
-
-	}
-
-	/*
-
-	 PERFORMANCE CRITICAL CODE
-
-	 readability may suffer from performance optimization
-	 ask tomas-polach if you have questions
-
-	*/
-
-	// static method, @memberof View
-
-	// constants
-
-	var HI_RES_TEXTURE_TYPES = {
-	  UV1: [ 'mapDiffuse', 'mapSpecular', 'mapNormal', 'mapAlpha' ],
-	  UV2: 'mapLight'
-	};
-	var LO_RES_TEXTURE_TYPES = {
-	  UV1: [ 'mapDiffusePreview', 'mapSpecularPreview', 'mapNormalPreview', 'mapAlphaPreview' ],
-	  UV2: 'mapLightPreview'
-	};
-
-	var DEFAULT_LIGHT_MAP_INTENSITY = 1.2;
-	var DEFAULT_LIGHT_MAP_EXPOSURE = 0.6;
-	var DEFAULT_LIGHT_MAP_FALLOFF = 0;
-
-	// RepeatWrapping: 1000 / ClampToEdgeWrapping: 1001 / MirroredRepeatWrapping: 1002
-
-	// function
-
-	function setMaterial (args) {
-
-	  // Args
-	  var vm = args.vm;
-	  var material3d = args.material3d;
-	  var mesh3d = args.mesh3d;
-	  var _attributes = args.attributes || {};
-	  var reset = args.reset !== undefined ? args.reset : true;
-	  var loadingQueuePrefix = args.loadingQueuePrefix;
-	  var onFirstTextureSetLoaded = args.onFirstTextureSetLoaded;
-	  var lightMapIntensity = args.lightMapIntensity;
-	  var lightMapExposure = args.lightMapExposure;
-
-
-	  material3d.userData = material3d.userData || {};
-	  material3d.userData.data3dMaterial = args.attributes;
-
-	  // opacity
-
-	  // depth buffer
-	  //    if (material3d.opacity < 1) {
-	  //      material3d.depthWrite = false
-	  //      var alphaTest = material3d.opacity - 0.001
-	  //      if (alphaTest < 0) alphaTest = 0
-	  //      material3d.alphaTest = alphaTest
-	  //    }
-
-	  if (_attributes.opacity !== undefined && _attributes.opacity < 1) {
-	    // 0 = fully transparent, 1 = non-transparent
-	    material3d.transparent = true;
-	    material3d.opacity = _attributes.opacity;
-	  } else if (_attributes.mapAlpha) {
-	    // has alpha map
-	    material3d.transparent = true;
-	    material3d.opacity = 1;
-	  } else {
-	    material3d.transparent = false;
-	    material3d.opacity = 1;
-	  }
-	  material3d.uniforms.opacity = { value: material3d.opacity };
-
-	  // normal map factor
-
-	  if (_attributes.mapNormalFactor !== undefined) {
-	    material3d.normalScale = new THREE.Vector2( _attributes.mapNormalFactor, _attributes.mapNormalFactor );
-	  } else {
-	    material3d.normalScale = new THREE.Vector2( 0.8, 0.8 );
-	  }
-	  material3d.uniforms.normalScale.value = material3d.normalScale;
-
-	  // specular coefficient
-
-	  material3d.shininess = (_attributes.specularCoef !== undefined) ? (_attributes.specularCoef ) : 0.1;
-	  material3d.uniforms.shininess.value = material3d.shininess;
-
-	  // colors
-	  var diffuse = {};
-	  if (_attributes.colorDiffuse) {
-	    diffuse.r = _attributes.colorDiffuse[ 0 ];
-	    diffuse.g = _attributes.colorDiffuse[ 1 ];
-	    diffuse.b = _attributes.colorDiffuse[ 2 ];
-	  } else if (reset) {
-	    if (_attributes.mapDiffuse ) {
-	      // has diffuse texture
-	      diffuse.r = 1;
-	      diffuse.g = 1;
-	      diffuse.b = 1;
-	    } else {
-	      // has NO diffuse texture
-	      diffuse.r = 0.85;
-	      diffuse.g = 0.85;
-	      diffuse.b = 0.85;
-	    }
-	  }
-	  material3d.color = diffuse;
-	  material3d.uniforms.color.value = new THREE.Color(diffuse.r, diffuse.g, diffuse.b);
-
-	  // We are not using color ambient
-	  /*if (_attributes.colorAmbient) {
-	    // material3d.ambient.r = _attributes.colorAmbient[ 0 ]
-	    // material3d.ambient.g = _attributes.colorAmbient[ 1 ]
-	    // material3d.ambient.b = _attributes.colorAmbient[ 2 ]
-	  } else if (reset) {
-	    // if (!material3d.ambient) {
-	    //   material3d.ambient = new THREE.Color()
-	    // }
-	    // material3d.ambient.r = material3d.color.r
-	    // material3d.ambient.g = material3d.color.g
-	    // material3d.ambient.b = material3d.color.b
-	  }*/
-
-	  var specular = {};
-	  if (_attributes.colorSpecular) {
-	    specular.r = _attributes.colorSpecular[ 0 ];
-	    specular.g = _attributes.colorSpecular[ 1 ];
-	    specular.b = _attributes.colorSpecular[ 2 ];
-	  } else if (reset) {
-	    specular.r = 0.25;
-	    specular.g = 0.25;
-	    specular.b = 0.25;
-	  }
-	  material3d.specular = specular;
-	  material3d.uniforms.specular.value = new THREE.Color(specular.r, specular.g, specular.b);
-
-	  var emissive = {};
-	  if (_attributes.colorEmissive) {
-	    emissive.r = _attributes.colorEmissive[ 0 ];
-	    emissive.g = _attributes.colorEmissive[ 1 ];
-	    emissive.b = _attributes.colorEmissive[ 2 ];
-	  } else if (_attributes.lightEmissionCoef) {
-	    var emissiveIntensity = _attributes.lightEmissionCoef / 10;
-	    if (_attributes.colorDiffuse) {
-	      emissive.r = _attributes.colorDiffuse[ 0 ];
-	      emissive.g = _attributes.colorDiffuse[ 1 ];
-	      emissive.b = _attributes.colorDiffuse[ 2 ];
-	    } else {
-	      emissive.r = 1.0;
-	      emissive.g = 1.0;
-	      emissive.b = 1.0;
-	    }
-	    emissive.r *= emissiveIntensity;
-	    emissive.g *= emissiveIntensity;
-	    emissive.b *= emissiveIntensity;
-
-	  } else if (reset) {
-	    emissive.r = 0;
-	    emissive.g = 0;
-	    emissive.b = 0;
-	  }
-	  material3d.emissive = emissive;
-	  material3d.uniforms.emissive.value = new THREE.Color(emissive.r, emissive.g, emissive.b);
-
-	  // lightmap settings
-	  if (_attributes.mapLight || _attributes.mapLightPreview) {
-	    // Fallback lightmap intensity and exposure values
-	    var lmi = DEFAULT_LIGHT_MAP_INTENSITY;
-	    var lme = DEFAULT_LIGHT_MAP_EXPOSURE;
-
-	    if (lightMapIntensity !== undefined && lightMapIntensity != null && lightMapIntensity !== -100) {
-	      lmi = lightMapIntensity;
-	    } else if (_attributes.mapLightIntensity !== undefined) {
-	      lmi = _attributes.mapLightIntensity;
-	    }
-
-	    if (lightMapExposure !== undefined && lightMapExposure != null && lightMapExposure !== -100) {
-	      lme = lightMapExposure;
-	    } else if (_attributes.mapLightCenter !== undefined) {
-	      // in data3d lightMapExposure is mapLightCenter
-	      lme = _attributes.mapLightCenter;
-	    }
-
-	    material3d.lightMapIntensity = (lmi >= 0.0) ? lmi : 0.0;
-	    material3d.lightMapExposure = lme;
-	    material3d.lightMapFalloff = (_attributes.mapLightFalloff !== undefined) ? _attributes.mapLightFalloff : DEFAULT_LIGHT_MAP_FALLOFF;
-	    material3d.uniforms.lightMapIntensity.value = material3d.lightMapIntensity;
-	    material3d.uniforms.lightMapExposure.value = material3d.lightMapExposure;
-	    material3d.uniforms.lightMapFalloff.value = material3d.lightMapFalloff;
-	  }
-
-	  // shadows
-
-	  if (mesh3d) {
-	    mesh3d.castShadow    = _attributes.castRealTimeShadows;
-	    mesh3d.receiveShadow = _attributes.receiveRealTimeShadows;
-	    mesh3d.material.needsUpdate = true; // without this, receiveShadow does not become effective
-	  }
-
-	  // load textures
-
-	  // remember current textures (avoiding racing conditions between texture loading and material updates)
-	  material3d._texturesToBeLoaded = {
-	    // hires textures
-	    mapDiffuse: _attributes.mapDiffuse,
-	    mapSpecular: _attributes.mapSpecular,
-	    mapNormal: _attributes.mapNormal,
-	    mapAlpha: _attributes.mapAlpha,
-	    mapLight: _attributes.mapLight,
-	    // lores textures
-	    mapDiffusePreview: _attributes.mapDiffusePreview,
-	    mapSpecularPreview: _attributes.mapSpecularPreview,
-	    mapNormalPreview: _attributes.mapNormalPreview,
-	    mapAlphaPreview: _attributes.mapAlphaPreview,
-	    mapLightPreview: _attributes.mapLightPreview
-	  };
-
-	  var
-	    loadingTexturesPromise,
-	    loadingQueueName,
-	    isLoadingLoResTextures,
-	    hasLoResTextures = _attributes.mapDiffusePreview || _attributes.mapSpecularPreview || _attributes.mapNormalPreview || _attributes.mapAlphaPreview || _attributes.mapLightPreview,
-	    // hasHiResTextures = _attributes.mapDiffuse || _attributes.mapSpecular || _attributes.mapNormal || _attributes.mapAlpha || _attributes.mapLight,
-	    // TODO: readd hiResTextures configs
-	    // hiResTexturesEnabled = !configs.isMobile && vm.viewport.a.hiResTextures && configs.compatibility.webglCompressedTextures
-	    hiResTexturesEnabled = !runtime.isMobile && runtime.webGl.supportsDds;
-
-	  if (!hiResTexturesEnabled || (hasLoResTextures && !material3d.firstTextureLoaded)) {
-	    if (loadingQueuePrefix) {
-	      loadingQueueName = loadingQueuePrefix + 'TexturesLoRes';
-	    }
-	    loadingTexturesPromise = loadTextureSet(loadingQueueName, LO_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
-	    isLoadingLoResTextures = true;
-	  } else {
-	    if (loadingQueuePrefix) {
-	      loadingQueueName = loadingQueuePrefix + 'TexturesHiRes';
-	    }
-	    loadingTexturesPromise = loadTextureSet(loadingQueueName, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
-	    isLoadingLoResTextures = false;
-	  }
-
-	  loadingTexturesPromise.then(function(){
-
-	    // trigger callback
-	    if (onFirstTextureSetLoaded) onFirstTextureSetLoaded();
-
-	    // set onFirstTextureLoaded
-	    if (hasLoResTextures) material3d.firstTextureLoaded = true;
-
-	  });
-
-	  // 2. load hi-res textures (if: material has preview texture set, not on mobile, hi-res enabled and supported)
-	  if (isLoadingLoResTextures && hiResTexturesEnabled) {
-	    loadingTexturesPromise.then(function(){
-	      if (loadingQueuePrefix) {
-	        loadingQueueName = loadingQueuePrefix + 'TexturesHiRes';
-	      }
-	      loadTextureSet(loadingQueueName, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
-	    });
-	  }
-
-	  // return texture loading promise
-
-	  return loadingTexturesPromise
-	}
-
-	var fragmentShader = "uniform vec3 color;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapExposure;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\n#include <shadowmap_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( color, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #ifdef FLAT_SHADED\n      vec3 fdx = vec3( dFdx( vViewPosition.x ), dFdx( vViewPosition.y ), dFdx( vViewPosition.z ) );\n      vec3 fdy = vec3( dFdy( vViewPosition.x ), dFdy( vViewPosition.y ), dFdy( vViewPosition.z ) );\n      vec3 normal = normalize( cross( fdx, fdy ) );\n    #else\n      vec3 normal = normalize( vNormal );\n      #ifdef DOUBLE_SIDED\n        normal = normal * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n      #endif\n    #endif\n    #ifdef USE_NORMALMAP\n      normal = perturbNormal2Arb( -vViewPosition, normal );\n    #elif defined( USE_BUMPMAP )\n      normal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );\n    #endif\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}";
-
-	var vertexShader = "varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}";
-
-	var Io3dMaterial = checkDependencies ({
-	  three: true,
-	  aframe: false
-	}, function makeIo3dMaterial () {
-
-	  // CONFIGS
-
-	  var DEFAULT_LIGHT_MAP_INTENSITY = 1.2;
-	  var DEFAULT_LIGHT_MAP_EXPOSURE = 0.6;
-	  var DEFAULT_LIGHT_MAP_FALLOFF = 0;
-	  var DEFAULT_NORMAL_MAP_FACTOR = new THREE.Vector2(0.8, 0.8);
-
-	  // main
-
-	  function Io3dMaterial( params ) {
-	    THREE.ShaderMaterial.call( this, params );
-
-	    var params = params || {};
-	    this.lightMapExposure = params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE;
-	    this.lightMapFalloff = params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF;
-
-	    this.uniforms = THREE.UniformsUtils.merge( [
-	      THREE.UniformsLib[ "lights" ],
-	      THREE.UniformsLib[ "shadowmap" ],
-	      { color: { value: params.color || new THREE.Color(1.0, 1.0, 1.0) },
-	        map: { value: params.map || null },
-	        specularMap: { value: params.specularMap || null },
-	        alphaMap: { value: params.alphaMap || null },
-	        lightMap: { value: params.lightMap || null },
-	        lightMapIntensity: { value: params.lightMapIntensity || DEFAULT_LIGHT_MAP_INTENSITY },
-	        lightMapFalloff: { value: params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF },
-	        lightMapExposure: { value: params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE },
-	        normalMap: { value: params.normalMap || null },
-	        normalScale: { value: params.normalScale || DEFAULT_NORMAL_MAP_FACTOR },
-	        shininess: { value: params.shininess || 1.0 },
-	        specular: { value: params.specular || new THREE.Color(0.25, 0.25, 0.25) },
-	        emissive: { value: params.emissive || new THREE.Color(0.0, 0.0, 0.0) },
-	        opacity: { value: params.opacity || 1 },
-	        offsetRepeat: { value: params.offsetRepeat || new THREE.Vector4( 0, 0, 1, 1) }
-	      }
-	    ]);
-
-	    this.vertexShader = vertexShader;
-	    this.fragmentShader = fragmentShader;
-	    this.lights = true;
-	  }
-
-	  Io3dMaterial.prototype = Object.create(THREE.ShaderMaterial.prototype);
-	  Io3dMaterial.prototype.constructor = Io3dMaterial;
-
-	  return Io3dMaterial
-
-	});
-
-	// TODO: increase performance
-	// TODO: decouple from THREEjs
-	// TODO: make use of edge case threshold=0 (no need to compare face normals)
-
-	function generateWireframeBuffer( positions, thresholdAngle ) {
-		
-	//    console.time('calc')
-
-		// internals
-		var thresholdDot = Math.cos( thresholdAngle * Math.PI / 180 );
-		var edge = [ 0, 0 ];
-		var hash = {};
-		var keys = [ 'a', 'b', 'c' ];
-
-		var tempGeometry = new THREE.Geometry();
-		for (var i = 0, j = 0; i < positions.length / 3; i += 3, j += 9) {
-			tempGeometry.vertices[ tempGeometry.vertices.length ] = new THREE.Vector3( positions[ j ], positions[ j + 1 ], positions[ j + 2 ] );
-			tempGeometry.vertices[ tempGeometry.vertices.length ] = new THREE.Vector3( positions[ j + 3 ], positions[ j + 4 ], positions[ j + 5 ] );
-			tempGeometry.vertices[ tempGeometry.vertices.length ] = new THREE.Vector3( positions[ j + 6 ], positions[ j + 7 ], positions[ j + 8 ] );
-			tempGeometry.faces[ tempGeometry.faces.length ] = new THREE.Face3( i, i + 1, i + 2, [], [] );
-		}
-		tempGeometry.mergeVertices();
-		tempGeometry.computeFaceNormals();
-
-		var vertices = tempGeometry.vertices;
-		var faces = tempGeometry.faces;
-		var numEdges = 0;
-
-		for ( var i = 0, l = faces.length; i < l; i ++ ) {
-			var face = faces[ i ];
-			for ( var j = 0; j < 3; j ++ ) {
-
-				edge[ 0 ] = face[ keys[ j ] ];
-				edge[ 1 ] = face[ keys[ ( j + 1 ) % 3 ] ];
-				edge.sort( sortFunction );
-
-				var key = edge.toString();
-
-				if ( hash[ key ] === undefined ) {
-					hash[ key ] = { vert1: edge[ 0 ], vert2: edge[ 1 ], face1: i, face2: undefined };
-					numEdges ++;
-				} else {
-					hash[ key ].face2 = i;
-				}
-			}
-		}
-
-		var coords = new Float32Array( numEdges * 2 * 3 );
-		var index = 0;
-
-		for ( var key in hash ) {
-			var h = hash[ key ];
-			if ( h.face2 === undefined || faces[ h.face1 ].normal.dot( faces[ h.face2 ].normal ) <= thresholdDot ) {
-
-				var vertex = vertices[ h.vert1 ];
-				coords[ index ++ ] = vertex.x;
-				coords[ index ++ ] = vertex.y;
-				coords[ index ++ ] = vertex.z;
-
-				vertex = vertices[ h.vert2 ];
-				coords[ index ++ ] = vertex.x;
-				coords[ index ++ ] = vertex.y;
-				coords[ index ++ ] = vertex.z;
-
-			}
-		}
-
-	//    console.timeEnd('calc')
-
-		return coords
-
-	}
-
-	// helpers
-
-	function sortFunction ( a, b ) { return a - b }
-
-	function compareArrays(a, b, precision) {
-
-		if (a === b) {
-			return true
-		} else if (a.length !== b.length) {
-			return false
-		} else {
-			precision = precision === undefined ? 1 : precision;
-			var step = ~~(a.length / (a.length * precision));
-			for (var i = 0, l = a.length; i<l; i+=step) if (a[i] !== b[i]) return false
-			return true
-		}
-
-	}
-
-	var Wireframe = checkDependencies({
-	  three: true,
-	  aframe: false
-	}, function makeData3dView () {
-
-	  function Wireframe () {
-
-	    // internals
-	    this._wireframeGeometry = new THREE.BufferGeometry();
-	    this._wireframeGeometry.addAttribute( 'position', new THREE.BufferAttribute( new Float32Array(0), 3 ) );
-	    this._wireframeMaterial = new THREE.LineBasicMaterial();
-
-	    this._positions = null;
-	    this._buffer = null;
-	    this._thresholdAngle = 10;
-	    this._thickness = 1;
-	    this._color = [0,0,0];
-	    this._opacity = 1;
-
-	    // init
-	    this.isLineSegments = true;
-	    THREE.Line.call( this, this._wireframeGeometry, this._wireframeMaterial );
-
-	  }
-
-	// inherit from THREE Line prototype
-
-	  Wireframe.prototype = Object.create( THREE.Line.prototype );
-	  Wireframe.prototype.constructor = Wireframe;
-
-	// extend with own methods
-
-	  Wireframe.prototype.update = function (options) {
-	    
-	    // API
-	    var positions = options.positions;
-	    //var normals = options.normals
-	    var thresholdAngle = options.thresholdAngle === undefined ? this._thresholdAngle : options.thresholdAngle;
-	    var thickness = options.thickness === undefined ? this._thickness : options.thickness;
-	    var color = options.color === undefined ? this._color : options.color;
-	    var opacity = options.opacity === undefined ? this._opacity : options.opacity;
-
-
-	    if (thickness === 0) {
-
-	      this.visible = false;
-
-	    } else {
-
-	      // take care of line buffer
-	      var regenerateBuffer = (!this._buffer || thresholdAngle !== this._thresholdAngle || !compareArrays(this._positions, positions));
-	      if (regenerateBuffer) {
-
-	        // generate new buffer from positions
-	        var newBuffer = generateWireframeBuffer( positions, thresholdAngle );
-	        if (newBuffer.length) {
-						this._wireframeGeometry.attributes.position.setArray( newBuffer );
-	          this.visible = true;
-	        } else {
-	          this.visible = false;
-	        }
-	        // remember settings
-	        this._buffer = newBuffer;
-	        this._positions = positions;
-	        this._thresholdAngle = thresholdAngle;
-
-	      } else if (this._thickness === 0) {
-
-	        // was hidden
-	        this.visible = true;
-
-	      }
-
-	      // update material
-	      this._wireframeMaterial.color.r = color[ 0 ];
-	      this._wireframeMaterial.color.g = color[ 1 ];
-	      this._wireframeMaterial.color.b = color[ 2 ];
-	      this._wireframeMaterial.opacity = opacity;
-	      this._wireframeMaterial.linewidth = thickness;
-	      // remember settings
-	      this._color = color;
-	      this._opacity = opacity;
-
-	    }
-
-	    this._thickness = thickness;
-
-	  };
-
-	  Wireframe.prototype.destroy = function () {
-
-	    this._wireframeGeometry = null;
-	    this._wireframeMaterial = null;
-
-	    this._positions = null;
-	    this._buffer = null;
-	    this._thresholdAngle = null;
-	    this._thickness = null;
-	    this._color = null;
-	    this._opacity = null;
-
-	  };
-
-	  return Wireframe
-
-	});
-
-	// constants
-
-	var Data3dView = checkDependencies({
-	  three: true,
-	  aframe: false
-	}, function makeData3dView () {
-	  
-	  var WEBGL_SIDE = {
-	    front: 0,
-	    back: 1,
-	    both: 2
-	  };
-
-	  var DEG_TO_RAD = Math.PI / 180;
-	  var RAD_TO_DEG = 180 / Math.PI;
-
-	// shared variables
-
-	  var geometry3dCache = {};
-
-	  /**
-	   * @name three.Data3dView
-	   * @memberof three
-	   * @param options
-	   * @constructor
-	   */
-
-	  function Data3dView (options) {
-
-	    // API
-	    this.threeParent = options.parent;
-
-	    // internals
-	    this.meshKeys = [];
-	    this.meshes = {};
-	    this.materialKeys = [];
-	    this.materials = {};
-	    this._meshes3d = {}; // three meshes indexed by meshId
-	    this._wireframes3d = {}; // wireframe  three meshes indexed by meshId
-	    this._materials3d = {}; // three materials indexed by meshId
-
-	  }
-
-	  Data3dView.prototype = {
-
-	    set: function (data3d, options) {
-
-	      // API
-	      options = options || {};
-	      var
-	        meshes = data3d.meshes || this.meshes,
-	        meshKeys = data3d.meshKeys,
-	        materials = data3d.materials || this.materials,
-	        materialKeys = data3d.materialKeys,
-	        loadingQueuePrefix = data3d.loadingQueuePrefix || options.loadingQueuePrefix || 'architecture',
-	        onFirstTextureSetLoaded = options.onFirstTextureSetLoaded,
-	        lightMapIntensity = options.lightMapIntensity,
-	        lightMapExposure = options.lightMapExposure;
-
-	      // internals
-	      var self = this, meshId, mesh, materialId, wireframe3d, positions, uvs, uvs2, scale,
-	        normals, mesh3d, geometry3d, material3d, position, rotRad, rotDeg, i, l;
-
-	      // output
-	      var promise;
-
-	      ///////////////// meshes
-
-	      if (meshes) {
-
-	        // generate IDs if not provided
-	        if (!meshKeys) {
-	          meshKeys = Object.keys(meshes);
-	        }
-
-	        for (i = 0, l = meshKeys.length; i < l; i++) {
-
-	          meshId = meshKeys[ i ];
-	          mesh = meshes[ meshId ];
-
-	          // internals
-	          materialId = mesh.material;
-	          positions = mesh.positions;
-	          uvs = mesh.uvs;
-	          uvs2 = mesh.uvsLightmap;
-	          normals = mesh.normals;
-	          position = mesh.position;
-	          rotRad = mesh.rotRad;
-	          rotDeg = mesh.rotDeg;
-	          scale = mesh.scale;
-
-	          // three.js materials
-	          if (!self._materials3d[ meshId ]) {
-	            // (one material pro mesh, because some of our mesh properties are material properties and it does not matter performance wise)
-	            material3d = new Io3dMaterial();
-	            material3d.name = materialId;
-	            if (!materials) {
-	              // there is no material properties. using default properties
-	              setMaterial({
-	                material3d: material3d
-	              });
-	            }
-	            self._materials3d[ meshId ] = material3d;
-	          }
-
-	          // set face side (a mesh property in our data structure, but a material property in three.js data structure)
-	          self._materials3d[ meshId ].side = WEBGL_SIDE[ meshes[ meshId ].side ] || WEBGL_SIDE['front'];
-
-	          // create three.js meshes
-
-	          if (!self._meshes3d[ meshId ]) {
-
-	            // create geometry
-	            geometry3d = createOrReuseGeometry3d( mesh.cacheKey );
-	            // create mesh
-	            mesh3d = new THREE.Mesh(geometry3d, material3d);
-	            // add to parent
-	            self.threeParent.add(mesh3d);
-	            // remembers
-	            self._meshes3d[ meshId ] = mesh3d;
-
-	            // create a separate geometry object for wireframes
-	            wireframe3d = new Wireframe();
-	            // add to parent
-	            self._meshes3d[ meshId ].add(wireframe3d);
-	            // remember
-	            self._wireframes3d[ meshId ] = wireframe3d;
-
-	          } else {
-
-	            mesh3d = self._meshes3d[ meshId ];
-	            geometry3d = mesh3d.geometry;
-
-	          }
-
-	          // apply scale
-	          if (scale) {
-	            mesh3d.scale.set( scale[0] , scale[1], scale[2] );
-	          }
-
-	          // apply position
-	          if (position) {
-	            mesh3d.position.set( position[0] , position[1], position[2] );
-	          }
-
-	          // apply rotation
-	          if (rotRad) {
-	            mesh3d.rotation.set( rotRad[0] , rotRad[1], rotRad[2] );
-	          } else if (rotDeg) {
-	            mesh3d.rotation.set( rotDeg[0] * DEG_TO_RAD, rotDeg[1] * DEG_TO_RAD, rotDeg[2] * DEG_TO_RAD );
-	          }
-
-	          // apply buffers if they are different than current buffers
-	          if (geometry3d.attributes.position === undefined) {
-	            geometry3d.addAttribute( 'position', new THREE.BufferAttribute(positions, 3) );
-	            // The bounding box of the scene may need to be updated
-	            // self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true
-	          } else if (geometry3d.attributes.position.array !== positions ) {
-	            geometry3d.attributes.position.array = positions;
-	            geometry3d.attributes.position.needsUpdate = true;
-	            // Three.js needs this to update
-	            geometry3d.computeBoundingSphere();
-	            // The bounding box of the scene may need to be updated
-	            // self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true
-	          }
-	          if (geometry3d.attributes.normal === undefined) {
-	            geometry3d.addAttribute( 'normal', new THREE.BufferAttribute(normals, 3) );
-	          } else if (geometry3d.attributes.normal.array !== normals ) {
-	            geometry3d.attributes.normal.array = normals;
-	            geometry3d.attributes.normal.needsUpdate = true;
-	          }
-	          // geometry3d.attributesKeys = ['position', 'normal']
-	          // set uvs channel 1 (material)
-	          if (uvs) {
-	            if (geometry3d.attributes.uv === undefined) {
-	              geometry3d.attributes.uv = new THREE.BufferAttribute(uvs, 2);
-	            } else if (geometry3d.attributes.uv.array !== uvs ) {
-	              geometry3d.attributes.uv.array = uvs;
-	              geometry3d.attributes.uv.needsUpdate = true;
-	              // remove previous scale settings
-	              delete geometry3d.attributes.uv._scaleU;
-	              delete geometry3d.attributes.uv._scaleV;
-	              delete geometry3d.attributes.uv._source;
-	            }
-	            // geometry3d.attributesKeys[ 2 ] = 'uv'
-	          } else if (geometry3d.attributes.uv) {
-	            delete geometry3d.attributes.uv;
-	          }
-	          if (uvs2) {
-	            if (geometry3d.attributes.uv2 === undefined) {
-	              geometry3d.attributes.uv2 = new THREE.BufferAttribute(uvs2, 2);
-	            } else if (geometry3d.attributes.uv2.array !== uvs2 ) {
-	              geometry3d.attributes.uv2.array = uvs2;
-	              geometry3d.attributes.uv2.needsUpdate = true;
-	            }
-	            // geometry3d.attributesKeys[ geometry3d.attributesKeys.length++ ] = 'uv2'
-	          } else if (geometry3d.attributes.uv2) {
-	            delete geometry3d.attributes.uv2;
-	          }
-
-	          // (2017/01/09) The WebGL buffer of the pickingColor attribute is erroneously deleted
-	          // by ThreeJS (r69) in deallocateGeometry(). ThreeJS doesn't seem to account for the fact
-	          // that the attribute is shared by multiple geometries. It then does not get recreated, because
-	          // this function was attempting to manually set BufferGeometry.attributesKeys, missing any
-	          // extra attributes such as pickingColor.
-	          geometry3d.attributesKeys = Object.keys(geometry3d.attributes);
-
-	          // update wireframe
-
-	          if (materials[ materialId ]) {
-	            self._wireframes3d[ meshId ].update({
-	              positions: positions,
-	              thickness: materials[ materialId ].wireframeThickness === undefined ? 0 : materials[ materialId ].wireframeThickness,
-	              thresholdAngle: materials[ materialId ].wireframeThresholdAngle,
-	              color: materials[ materialId ].wireframeColor,
-	              opacity: materials[ materialId ].wireframeOpacity
-	            });
-	          }
-
-	        }
-
-	        // remove obsolete three.js meshes
-	        var mesh, meshIds = Object.keys(self._meshes3d);
-	        meshIds.forEach(function(meshId, i){
-	          mesh = self._meshes3d[meshId];
-	          if (!meshes[ meshId ]) {
-	            // destroy wireframe geometry
-	           var wireframe3d = self._wireframes3d[ meshId ];
-	           if (wireframe3d.parent) {
-	             wireframe3d.parent.remove( wireframe3d );
-	             wireframe3d.geometry.dispose();
-	           }
-	            // destroy geometry
-	            var geometry3d = self._meshes3d[ meshId ].geometry;
-	            disposeGeometry3dIfNotUsedElsewhere(self.meshes[ meshId ].cacheKey, geometry3d);
-	            // destroy threejs mesh
-	            var mesh3d = self._meshes3d[ meshId ];
-	            if (mesh3d.parent) {
-	              mesh3d.parent.remove( mesh3d );
-	            }
-	            // destroy material
-	            var material3d = self._materials3d[ meshId ];
-	            if (material3d.map) material3d.map.disposeIfPossible();
-	            if (material3d.specularMap) material3d.specularMap.disposeIfPossible();
-	            if (material3d.normalMap) material3d.normalMap.disposeIfPossible();
-	            if (material3d.alphaMap) material3d.alphaMap.disposeIfPossible();
-	            if (material3d.lightMap) material3d.lightMap.disposeIfPossible();
-	            material3d.dispose();
-	            // remove reference to destroyed 3d objects
-	            delete self._meshes3d[ meshId ];
-	            delete self._wireframes3d[ meshId ];
-	            delete self._materials3d[ meshId ];
-	          }
-	        });
-
-	        // update properties
-	        self.meshKeys = meshKeys;
-	        self.meshes = meshes;
-
-	      }
-
-	      ///////////////// materials
-
-	      if (materials) {
-
-	        var materialPromises = [], material;
-	        for (i = 0, l = self.meshKeys.length; i < l; i++) {
-	          meshId = self.meshKeys[ i ];
-	          materialId = self.meshes[ meshId ].material;
-
-	          // material attributes
-	          material = materials[ materialId ];
-	          if (material && Object.keys(material).length) {
-	            // set material
-	            materialPromises[ i ] = setMaterial({
-	              vm: self.vm,
-	              loadingQueuePrefix: loadingQueuePrefix,
-	              mesh3d: self._meshes3d[ meshId ],
-	              material3d: self._materials3d[ meshId ],
-	              attributes: materials[ materialId ],
-	              onFirstTextureSetLoaded: onFirstTextureSetLoaded,
-	              lightMapIntensity: lightMapIntensity,
-	              lightMapExposure: lightMapExposure
-	            });
-	          }
-
-	        }
-
-	        // output
-	        promise = bluebird_1.all(materialPromises);
-
-	        // update properties
-	        self.materialKeys = materialKeys;
-	        self.materials = materials;
-
-	      }
-
-	      ///////////////// return
-
-	      return promise ? promise : bluebird_1.resolve()
-
-	    },
-
-	    hasMeshes: function hasMeshes() {
-	      return Object.keys(this._meshes3d).length > 0
-	    },
-
-	    setMeshes: function(meshes){
-	      this.set({
-	        meshes: meshes
-	      });
-	    },
-
-	    setMaterials: function(materials, options){
-	      this.set({
-	        materials: materials
-	      }, options);
-	    },
-
-	    reset: function(){
-
-	      this.set({
-	        meshes: {},
-	        materials: {}
-	      });
-
-	    },
-
-	    destroy: function(){
-
-	      this.isDestroyed = true;
-
-	      this.reset();
-
-	      this.threeParent = null;
-
-	      // internals
-	      this.meshKeys = null;
-	      this.meshes = null;
-	      this.materialKeys = null;
-	      this.materials = null;
-	      this._meshes3d = null;
-	      this._materials3d = null;
-
-	    }
-
-	  };
-
-	// helpers
-
-	  function createOrReuseGeometry3d( key ) {
-	    if (key) {
-	      // use cache
-	      if (geometry3dCache[ key ]) {
-	        geometry3dCache[ key ].refCount++;
-	      } else {
-	        geometry3dCache[ key ] = {
-	          geometry3d: new THREE.BufferGeometry(),
-	          refCount: 1
-	        };
-	      }
-	      return geometry3dCache[ key ].geometry3d
-	    } else {
-	      // no key no cache
-	      return new THREE.BufferGeometry()
-	    }
-	  }
-
-	  function disposeGeometry3dIfNotUsedElsewhere( key, geometry3d ) {
-	    if (key) {
-	      // involve cache
-	      if (geometry3dCache[ key ]) {
-	        geometry3dCache[ key ].refCount--;
-	        if (geometry3dCache[ key ].refCount < 1) {
-	          geometry3dCache[ key ].geometry3d.dispose();
-	          delete geometry3dCache[ key ];
-	        }
-	      } else {
-	        // (2017/01/09) See comment in ThreeView.set()
-	        // if (geometry3d.attributes.pickingColor)
-	        //  delete geometry3d.attributes['pickingColor'];
-	        geometry3d.dispose();
-	      }
-	    } else {
-	      // no key bo cache
-	      // (2017/01/09) See comment in ThreeView.set()
-	      // if (geometry3d.attributes.pickingColor)
-	      //   delete geometry3d.attributes['pickingColor'];
-	      geometry3d.dispose();
-	    }
-	  }
-
-	  return Data3dView
-
-	});
-
-	var fetch$1 = (function(){
-
-	  if (runtime.isNode) {
-	    return require('node-fetch')
-	  } else if (typeof fetch !== 'undefined') {
-	    return fetch
-	  } else {
-	    console.warn('Missing global fetch API.');
-	    return function() {
-	      throw new Error('Missing global fetch API.')
-	    }
-	  }
-
-	})();
-
 	var PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 	/**
@@ -19236,27 +13964,29 @@
 	        // get materialId from a-frame attribute or from furniture API scene structure preset
 	        var newMaterialId =  data[materialPropName] || (materialPreset ? materialPreset[meshId] : null);
 
-	        // set custom material if available
+	        // update view with custom material (if available)
 	        if (newMaterialId) {
-
 	          // update material
 	          data3d.meshes[meshId].material = newMaterialId;
 	          // trigger event
 	          el.emit('material-changed', {mesh: meshId, material: newMaterialId});
+	        }
 
-	        } else {
-
-	          // register it as part of the schema for the inspector
+	        // register changeable materials schema
+	        // (not all furniture have changeable materials)
+	        if (data3d.alternativeMaterialsByMeshKey && data3d.alternativeMaterialsByMeshKey[meshId]) {
+	          // extend schema with changeable material
 	          var prop = {};
 	          prop[materialPropName] = {
 	            type: 'string',
 	            default: data3d.meshes[meshId].material,
-	            oneOf: data3d.alternativeMaterialsByMeshKey ? data3d.alternativeMaterialsByMeshKey[meshId] : data3d.meshes[meshId].material
+	            oneOf: data3d.alternativeMaterialsByMeshKey[meshId]
 	          };
 	          this_.extendSchema(prop);
+	          // update current params
 	          this_.data[materialPropName] = data3d.meshes[meshId].material;
-
 	        }
+
 	      });
 
 	      // update view
@@ -19290,6 +14020,901 @@
 	};
 
 	/**
+	 * Removes all key-value entries from the list cache.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf ListCache
+	 */
+	function listCacheClear() {
+	  this.__data__ = [];
+	  this.size = 0;
+	}
+
+	var _listCacheClear = listCacheClear;
+
+	/**
+	 * Performs a
+	 * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+	 * comparison between two values to determine if they are equivalent.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to compare.
+	 * @param {*} other The other value to compare.
+	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+	 * @example
+	 *
+	 * var object = { 'a': 1 };
+	 * var other = { 'a': 1 };
+	 *
+	 * _.eq(object, object);
+	 * // => true
+	 *
+	 * _.eq(object, other);
+	 * // => false
+	 *
+	 * _.eq('a', 'a');
+	 * // => true
+	 *
+	 * _.eq('a', Object('a'));
+	 * // => false
+	 *
+	 * _.eq(NaN, NaN);
+	 * // => true
+	 */
+	function eq(value, other) {
+	  return value === other || (value !== value && other !== other);
+	}
+
+	var eq_1 = eq;
+
+	/**
+	 * Gets the index at which the `key` is found in `array` of key-value pairs.
+	 *
+	 * @private
+	 * @param {Array} array The array to inspect.
+	 * @param {*} key The key to search for.
+	 * @returns {number} Returns the index of the matched value, else `-1`.
+	 */
+	function assocIndexOf(array, key) {
+	  var length = array.length;
+	  while (length--) {
+	    if (eq_1(array[length][0], key)) {
+	      return length;
+	    }
+	  }
+	  return -1;
+	}
+
+	var _assocIndexOf = assocIndexOf;
+
+	/** Used for built-in method references. */
+	var arrayProto = Array.prototype;
+
+	/** Built-in value references. */
+	var splice = arrayProto.splice;
+
+	/**
+	 * Removes `key` and its value from the list cache.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf ListCache
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function listCacheDelete(key) {
+	  var data = this.__data__,
+	      index = _assocIndexOf(data, key);
+
+	  if (index < 0) {
+	    return false;
+	  }
+	  var lastIndex = data.length - 1;
+	  if (index == lastIndex) {
+	    data.pop();
+	  } else {
+	    splice.call(data, index, 1);
+	  }
+	  --this.size;
+	  return true;
+	}
+
+	var _listCacheDelete = listCacheDelete;
+
+	/**
+	 * Gets the list cache value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf ListCache
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function listCacheGet(key) {
+	  var data = this.__data__,
+	      index = _assocIndexOf(data, key);
+
+	  return index < 0 ? undefined : data[index][1];
+	}
+
+	var _listCacheGet = listCacheGet;
+
+	/**
+	 * Checks if a list cache value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf ListCache
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function listCacheHas(key) {
+	  return _assocIndexOf(this.__data__, key) > -1;
+	}
+
+	var _listCacheHas = listCacheHas;
+
+	/**
+	 * Sets the list cache `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf ListCache
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the list cache instance.
+	 */
+	function listCacheSet(key, value) {
+	  var data = this.__data__,
+	      index = _assocIndexOf(data, key);
+
+	  if (index < 0) {
+	    ++this.size;
+	    data.push([key, value]);
+	  } else {
+	    data[index][1] = value;
+	  }
+	  return this;
+	}
+
+	var _listCacheSet = listCacheSet;
+
+	/**
+	 * Creates an list cache object.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [entries] The key-value pairs to cache.
+	 */
+	function ListCache(entries) {
+	  var index = -1,
+	      length = entries == null ? 0 : entries.length;
+
+	  this.clear();
+	  while (++index < length) {
+	    var entry = entries[index];
+	    this.set(entry[0], entry[1]);
+	  }
+	}
+
+	// Add methods to `ListCache`.
+	ListCache.prototype.clear = _listCacheClear;
+	ListCache.prototype['delete'] = _listCacheDelete;
+	ListCache.prototype.get = _listCacheGet;
+	ListCache.prototype.has = _listCacheHas;
+	ListCache.prototype.set = _listCacheSet;
+
+	var _ListCache = ListCache;
+
+	/**
+	 * Removes all key-value entries from the stack.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf Stack
+	 */
+	function stackClear() {
+	  this.__data__ = new _ListCache;
+	  this.size = 0;
+	}
+
+	var _stackClear = stackClear;
+
+	/**
+	 * Removes `key` and its value from the stack.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf Stack
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function stackDelete(key) {
+	  var data = this.__data__,
+	      result = data['delete'](key);
+
+	  this.size = data.size;
+	  return result;
+	}
+
+	var _stackDelete = stackDelete;
+
+	/**
+	 * Gets the stack value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf Stack
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function stackGet(key) {
+	  return this.__data__.get(key);
+	}
+
+	var _stackGet = stackGet;
+
+	/**
+	 * Checks if a stack value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf Stack
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function stackHas(key) {
+	  return this.__data__.has(key);
+	}
+
+	var _stackHas = stackHas;
+
+	/** Detect free variable `global` from Node.js. */
+	var freeGlobal = typeof commonjsGlobal == 'object' && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
+
+	var _freeGlobal = freeGlobal;
+
+	/** Detect free variable `self`. */
+	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+	/** Used as a reference to the global object. */
+	var root$2 = _freeGlobal || freeSelf || Function('return this')();
+
+	var _root$1 = root$2;
+
+	/** Built-in value references. */
+	var Symbol$1 = _root$1.Symbol;
+
+	var _Symbol = Symbol$1;
+
+	/** Used for built-in method references. */
+	var objectProto$1 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$1 = objectProto$1.hasOwnProperty;
+
+	/**
+	 * Used to resolve the
+	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var nativeObjectToString = objectProto$1.toString;
+
+	/** Built-in value references. */
+	var symToStringTag$1 = _Symbol ? _Symbol.toStringTag : undefined;
+
+	/**
+	 * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {string} Returns the raw `toStringTag`.
+	 */
+	function getRawTag(value) {
+	  var isOwn = hasOwnProperty$1.call(value, symToStringTag$1),
+	      tag = value[symToStringTag$1];
+
+	  try {
+	    value[symToStringTag$1] = undefined;
+	    var unmasked = true;
+	  } catch (e) {}
+
+	  var result = nativeObjectToString.call(value);
+	  if (unmasked) {
+	    if (isOwn) {
+	      value[symToStringTag$1] = tag;
+	    } else {
+	      delete value[symToStringTag$1];
+	    }
+	  }
+	  return result;
+	}
+
+	var _getRawTag = getRawTag;
+
+	/** Used for built-in method references. */
+	var objectProto$2 = Object.prototype;
+
+	/**
+	 * Used to resolve the
+	 * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+	 * of values.
+	 */
+	var nativeObjectToString$1 = objectProto$2.toString;
+
+	/**
+	 * Converts `value` to a string using `Object.prototype.toString`.
+	 *
+	 * @private
+	 * @param {*} value The value to convert.
+	 * @returns {string} Returns the converted string.
+	 */
+	function objectToString(value) {
+	  return nativeObjectToString$1.call(value);
+	}
+
+	var _objectToString = objectToString;
+
+	/** `Object#toString` result references. */
+	var nullTag = '[object Null]';
+	var undefinedTag = '[object Undefined]';
+
+	/** Built-in value references. */
+	var symToStringTag = _Symbol ? _Symbol.toStringTag : undefined;
+
+	/**
+	 * The base implementation of `getTag` without fallbacks for buggy environments.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {string} Returns the `toStringTag`.
+	 */
+	function baseGetTag(value) {
+	  if (value == null) {
+	    return value === undefined ? undefinedTag : nullTag;
+	  }
+	  return (symToStringTag && symToStringTag in Object(value))
+	    ? _getRawTag(value)
+	    : _objectToString(value);
+	}
+
+	var _baseGetTag = baseGetTag;
+
+	/**
+	 * Checks if `value` is the
+	 * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+	 * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+	 * @example
+	 *
+	 * _.isObject({});
+	 * // => true
+	 *
+	 * _.isObject([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObject(_.noop);
+	 * // => true
+	 *
+	 * _.isObject(null);
+	 * // => false
+	 */
+	function isObject$2(value) {
+	  var type = typeof value;
+	  return value != null && (type == 'object' || type == 'function');
+	}
+
+	var isObject_1$3 = isObject$2;
+
+	/** `Object#toString` result references. */
+	var asyncTag = '[object AsyncFunction]';
+	var funcTag$1 = '[object Function]';
+	var genTag$1 = '[object GeneratorFunction]';
+	var proxyTag = '[object Proxy]';
+
+	/**
+	 * Checks if `value` is classified as a `Function` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+	 * @example
+	 *
+	 * _.isFunction(_);
+	 * // => true
+	 *
+	 * _.isFunction(/abc/);
+	 * // => false
+	 */
+	function isFunction$1(value) {
+	  if (!isObject_1$3(value)) {
+	    return false;
+	  }
+	  // The use of `Object#toString` avoids issues with the `typeof` operator
+	  // in Safari 9 which returns 'object' for typed arrays and other constructors.
+	  var tag = _baseGetTag(value);
+	  return tag == funcTag$1 || tag == genTag$1 || tag == asyncTag || tag == proxyTag;
+	}
+
+	var isFunction_1$3 = isFunction$1;
+
+	/** Used to detect overreaching core-js shims. */
+	var coreJsData = _root$1['__core-js_shared__'];
+
+	var _coreJsData = coreJsData;
+
+	/** Used to detect methods masquerading as native. */
+	var maskSrcKey = (function() {
+	  var uid = /[^.]+$/.exec(_coreJsData && _coreJsData.keys && _coreJsData.keys.IE_PROTO || '');
+	  return uid ? ('Symbol(src)_1.' + uid) : '';
+	}());
+
+	/**
+	 * Checks if `func` has its source masked.
+	 *
+	 * @private
+	 * @param {Function} func The function to check.
+	 * @returns {boolean} Returns `true` if `func` is masked, else `false`.
+	 */
+	function isMasked(func) {
+	  return !!maskSrcKey && (maskSrcKey in func);
+	}
+
+	var _isMasked = isMasked;
+
+	/** Used for built-in method references. */
+	var funcProto$1 = Function.prototype;
+
+	/** Used to resolve the decompiled source of functions. */
+	var funcToString$1 = funcProto$1.toString;
+
+	/**
+	 * Converts `func` to its source code.
+	 *
+	 * @private
+	 * @param {Function} func The function to convert.
+	 * @returns {string} Returns the source code.
+	 */
+	function toSource(func) {
+	  if (func != null) {
+	    try {
+	      return funcToString$1.call(func);
+	    } catch (e) {}
+	    try {
+	      return (func + '');
+	    } catch (e) {}
+	  }
+	  return '';
+	}
+
+	var _toSource = toSource;
+
+	/**
+	 * Used to match `RegExp`
+	 * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
+	 */
+	var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+
+	/** Used to detect host constructors (Safari). */
+	var reIsHostCtor = /^\[object .+?Constructor\]$/;
+
+	/** Used for built-in method references. */
+	var funcProto = Function.prototype;
+	var objectProto = Object.prototype;
+
+	/** Used to resolve the decompiled source of functions. */
+	var funcToString = funcProto.toString;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+
+	/** Used to detect if a method is native. */
+	var reIsNative = RegExp('^' +
+	  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
+	  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+	);
+
+	/**
+	 * The base implementation of `_.isNative` without bad shim checks.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a native function,
+	 *  else `false`.
+	 */
+	function baseIsNative(value) {
+	  if (!isObject_1$3(value) || _isMasked(value)) {
+	    return false;
+	  }
+	  var pattern = isFunction_1$3(value) ? reIsNative : reIsHostCtor;
+	  return pattern.test(_toSource(value));
+	}
+
+	var _baseIsNative = baseIsNative;
+
+	/**
+	 * Gets the value at `key` of `object`.
+	 *
+	 * @private
+	 * @param {Object} [object] The object to query.
+	 * @param {string} key The key of the property to get.
+	 * @returns {*} Returns the property value.
+	 */
+	function getValue(object, key) {
+	  return object == null ? undefined : object[key];
+	}
+
+	var _getValue = getValue;
+
+	/**
+	 * Gets the native function at `key` of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {string} key The key of the method to get.
+	 * @returns {*} Returns the function if it's native, else `undefined`.
+	 */
+	function getNative(object, key) {
+	  var value = _getValue(object, key);
+	  return _baseIsNative(value) ? value : undefined;
+	}
+
+	var _getNative = getNative;
+
+	/* Built-in method references that are verified to be native. */
+	var Map$1 = _getNative(_root$1, 'Map');
+
+	var _Map = Map$1;
+
+	/* Built-in method references that are verified to be native. */
+	var nativeCreate = _getNative(Object, 'create');
+
+	var _nativeCreate = nativeCreate;
+
+	/**
+	 * Removes all key-value entries from the hash.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf Hash
+	 */
+	function hashClear() {
+	  this.__data__ = _nativeCreate ? _nativeCreate(null) : {};
+	  this.size = 0;
+	}
+
+	var _hashClear = hashClear;
+
+	/**
+	 * Removes `key` and its value from the hash.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf Hash
+	 * @param {Object} hash The hash to modify.
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function hashDelete(key) {
+	  var result = this.has(key) && delete this.__data__[key];
+	  this.size -= result ? 1 : 0;
+	  return result;
+	}
+
+	var _hashDelete = hashDelete;
+
+	/** Used to stand-in for `undefined` hash values. */
+	var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+	/** Used for built-in method references. */
+	var objectProto$3 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$2 = objectProto$3.hasOwnProperty;
+
+	/**
+	 * Gets the hash value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf Hash
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function hashGet(key) {
+	  var data = this.__data__;
+	  if (_nativeCreate) {
+	    var result = data[key];
+	    return result === HASH_UNDEFINED ? undefined : result;
+	  }
+	  return hasOwnProperty$2.call(data, key) ? data[key] : undefined;
+	}
+
+	var _hashGet = hashGet;
+
+	/** Used for built-in method references. */
+	var objectProto$4 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$3 = objectProto$4.hasOwnProperty;
+
+	/**
+	 * Checks if a hash value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf Hash
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function hashHas(key) {
+	  var data = this.__data__;
+	  return _nativeCreate ? (data[key] !== undefined) : hasOwnProperty$3.call(data, key);
+	}
+
+	var _hashHas = hashHas;
+
+	/** Used to stand-in for `undefined` hash values. */
+	var HASH_UNDEFINED$1 = '__lodash_hash_undefined__';
+
+	/**
+	 * Sets the hash `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf Hash
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the hash instance.
+	 */
+	function hashSet(key, value) {
+	  var data = this.__data__;
+	  this.size += this.has(key) ? 0 : 1;
+	  data[key] = (_nativeCreate && value === undefined) ? HASH_UNDEFINED$1 : value;
+	  return this;
+	}
+
+	var _hashSet = hashSet;
+
+	/**
+	 * Creates a hash object.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [entries] The key-value pairs to cache.
+	 */
+	function Hash(entries) {
+	  var index = -1,
+	      length = entries == null ? 0 : entries.length;
+
+	  this.clear();
+	  while (++index < length) {
+	    var entry = entries[index];
+	    this.set(entry[0], entry[1]);
+	  }
+	}
+
+	// Add methods to `Hash`.
+	Hash.prototype.clear = _hashClear;
+	Hash.prototype['delete'] = _hashDelete;
+	Hash.prototype.get = _hashGet;
+	Hash.prototype.has = _hashHas;
+	Hash.prototype.set = _hashSet;
+
+	var _Hash = Hash;
+
+	/**
+	 * Removes all key-value entries from the map.
+	 *
+	 * @private
+	 * @name clear
+	 * @memberOf MapCache
+	 */
+	function mapCacheClear() {
+	  this.size = 0;
+	  this.__data__ = {
+	    'hash': new _Hash,
+	    'map': new (_Map || _ListCache),
+	    'string': new _Hash
+	  };
+	}
+
+	var _mapCacheClear = mapCacheClear;
+
+	/**
+	 * Checks if `value` is suitable for use as unique object key.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
+	 */
+	function isKeyable(value) {
+	  var type = typeof value;
+	  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
+	    ? (value !== '__proto__')
+	    : (value === null);
+	}
+
+	var _isKeyable = isKeyable;
+
+	/**
+	 * Gets the data for `map`.
+	 *
+	 * @private
+	 * @param {Object} map The map to query.
+	 * @param {string} key The reference key.
+	 * @returns {*} Returns the map data.
+	 */
+	function getMapData(map, key) {
+	  var data = map.__data__;
+	  return _isKeyable(key)
+	    ? data[typeof key == 'string' ? 'string' : 'hash']
+	    : data.map;
+	}
+
+	var _getMapData = getMapData;
+
+	/**
+	 * Removes `key` and its value from the map.
+	 *
+	 * @private
+	 * @name delete
+	 * @memberOf MapCache
+	 * @param {string} key The key of the value to remove.
+	 * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+	 */
+	function mapCacheDelete(key) {
+	  var result = _getMapData(this, key)['delete'](key);
+	  this.size -= result ? 1 : 0;
+	  return result;
+	}
+
+	var _mapCacheDelete = mapCacheDelete;
+
+	/**
+	 * Gets the map value for `key`.
+	 *
+	 * @private
+	 * @name get
+	 * @memberOf MapCache
+	 * @param {string} key The key of the value to get.
+	 * @returns {*} Returns the entry value.
+	 */
+	function mapCacheGet(key) {
+	  return _getMapData(this, key).get(key);
+	}
+
+	var _mapCacheGet = mapCacheGet;
+
+	/**
+	 * Checks if a map value for `key` exists.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf MapCache
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function mapCacheHas(key) {
+	  return _getMapData(this, key).has(key);
+	}
+
+	var _mapCacheHas = mapCacheHas;
+
+	/**
+	 * Sets the map `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf MapCache
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the map cache instance.
+	 */
+	function mapCacheSet(key, value) {
+	  var data = _getMapData(this, key),
+	      size = data.size;
+
+	  data.set(key, value);
+	  this.size += data.size == size ? 0 : 1;
+	  return this;
+	}
+
+	var _mapCacheSet = mapCacheSet;
+
+	/**
+	 * Creates a map cache object to store key-value pairs.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [entries] The key-value pairs to cache.
+	 */
+	function MapCache(entries) {
+	  var index = -1,
+	      length = entries == null ? 0 : entries.length;
+
+	  this.clear();
+	  while (++index < length) {
+	    var entry = entries[index];
+	    this.set(entry[0], entry[1]);
+	  }
+	}
+
+	// Add methods to `MapCache`.
+	MapCache.prototype.clear = _mapCacheClear;
+	MapCache.prototype['delete'] = _mapCacheDelete;
+	MapCache.prototype.get = _mapCacheGet;
+	MapCache.prototype.has = _mapCacheHas;
+	MapCache.prototype.set = _mapCacheSet;
+
+	var _MapCache = MapCache;
+
+	/** Used as the size to enable large array optimizations. */
+	var LARGE_ARRAY_SIZE = 200;
+
+	/**
+	 * Sets the stack `key` to `value`.
+	 *
+	 * @private
+	 * @name set
+	 * @memberOf Stack
+	 * @param {string} key The key of the value to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns the stack cache instance.
+	 */
+	function stackSet(key, value) {
+	  var data = this.__data__;
+	  if (data instanceof _ListCache) {
+	    var pairs = data.__data__;
+	    if (!_Map || (pairs.length < LARGE_ARRAY_SIZE - 1)) {
+	      pairs.push([key, value]);
+	      this.size = ++data.size;
+	      return this;
+	    }
+	    data = this.__data__ = new _MapCache(pairs);
+	  }
+	  data.set(key, value);
+	  this.size = data.size;
+	  return this;
+	}
+
+	var _stackSet = stackSet;
+
+	/**
+	 * Creates a stack cache object to store key-value pairs.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [entries] The key-value pairs to cache.
+	 */
+	function Stack(entries) {
+	  var data = this.__data__ = new _ListCache(entries);
+	  this.size = data.size;
+	}
+
+	// Add methods to `Stack`.
+	Stack.prototype.clear = _stackClear;
+	Stack.prototype['delete'] = _stackDelete;
+	Stack.prototype.get = _stackGet;
+	Stack.prototype.has = _stackHas;
+	Stack.prototype.set = _stackSet;
+
+	var _Stack = Stack;
+
+	/**
 	 * A specialized version of `_.forEach` for arrays without support for
 	 * iteratee shorthands.
 	 *
@@ -19311,6 +14936,16 @@
 	}
 
 	var _arrayEach = arrayEach;
+
+	var defineProperty = (function() {
+	  try {
+	    var func = _getNative(Object, 'defineProperty');
+	    func({}, '', {});
+	    return func;
+	  } catch (e) {}
+	}());
+
+	var _defineProperty = defineProperty;
 
 	/**
 	 * The base implementation of `assignValue` and `assignMergeValue` without
@@ -19337,10 +14972,10 @@
 	var _baseAssignValue = baseAssignValue;
 
 	/** Used for built-in method references. */
-	var objectProto$12 = Object.prototype;
+	var objectProto$5 = Object.prototype;
 
 	/** Used to check objects for own properties. */
-	var hasOwnProperty$9 = objectProto$12.hasOwnProperty;
+	var hasOwnProperty$4 = objectProto$5.hasOwnProperty;
 
 	/**
 	 * Assigns `value` to `key` of `object` if the existing value is not equivalent
@@ -19354,7 +14989,7 @@
 	 */
 	function assignValue(object, key, value) {
 	  var objValue = object[key];
-	  if (!(hasOwnProperty$9.call(object, key) && eq_1(objValue, value)) ||
+	  if (!(hasOwnProperty$4.call(object, key) && eq_1(objValue, value)) ||
 	      (value === undefined && !(key in object))) {
 	    _baseAssignValue(object, key, value);
 	  }
@@ -19401,6 +15036,545 @@
 	var _copyObject = copyObject;
 
 	/**
+	 * The base implementation of `_.times` without support for iteratee shorthands
+	 * or max array length checks.
+	 *
+	 * @private
+	 * @param {number} n The number of times to invoke `iteratee`.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array} Returns the array of results.
+	 */
+	function baseTimes(n, iteratee) {
+	  var index = -1,
+	      result = Array(n);
+
+	  while (++index < n) {
+	    result[index] = iteratee(index);
+	  }
+	  return result;
+	}
+
+	var _baseTimes = baseTimes;
+
+	/**
+	 * Checks if `value` is object-like. A value is object-like if it's not `null`
+	 * and has a `typeof` result of "object".
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+	 * @example
+	 *
+	 * _.isObjectLike({});
+	 * // => true
+	 *
+	 * _.isObjectLike([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isObjectLike(_.noop);
+	 * // => false
+	 *
+	 * _.isObjectLike(null);
+	 * // => false
+	 */
+	function isObjectLike(value) {
+	  return value != null && typeof value == 'object';
+	}
+
+	var isObjectLike_1 = isObjectLike;
+
+	/** `Object#toString` result references. */
+	var argsTag$1 = '[object Arguments]';
+
+	/**
+	 * The base implementation of `_.isArguments`.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+	 */
+	function baseIsArguments(value) {
+	  return isObjectLike_1(value) && _baseGetTag(value) == argsTag$1;
+	}
+
+	var _baseIsArguments = baseIsArguments;
+
+	/** Used for built-in method references. */
+	var objectProto$7 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$6 = objectProto$7.hasOwnProperty;
+
+	/** Built-in value references. */
+	var propertyIsEnumerable = objectProto$7.propertyIsEnumerable;
+
+	/**
+	 * Checks if `value` is likely an `arguments` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+	 *  else `false`.
+	 * @example
+	 *
+	 * _.isArguments(function() { return arguments; }());
+	 * // => true
+	 *
+	 * _.isArguments([1, 2, 3]);
+	 * // => false
+	 */
+	var isArguments = _baseIsArguments(function() { return arguments; }()) ? _baseIsArguments : function(value) {
+	  return isObjectLike_1(value) && hasOwnProperty$6.call(value, 'callee') &&
+	    !propertyIsEnumerable.call(value, 'callee');
+	};
+
+	var isArguments_1 = isArguments;
+
+	/**
+	 * Checks if `value` is classified as an `Array` object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+	 * @example
+	 *
+	 * _.isArray([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArray(document.body.children);
+	 * // => false
+	 *
+	 * _.isArray('abc');
+	 * // => false
+	 *
+	 * _.isArray(_.noop);
+	 * // => false
+	 */
+	var isArray$2 = Array.isArray;
+
+	var isArray_1$2 = isArray$2;
+
+	/**
+	 * This method returns `false`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.13.0
+	 * @category Util
+	 * @returns {boolean} Returns `false`.
+	 * @example
+	 *
+	 * _.times(2, _.stubFalse);
+	 * // => [false, false]
+	 */
+	function stubFalse() {
+	  return false;
+	}
+
+	var stubFalse_1 = stubFalse;
+
+	var isBuffer_1 = createCommonjsModule(function (module, exports) {
+	/** Detect free variable `exports`. */
+	var freeExports = 'object' == 'object' && exports && !exports.nodeType && exports;
+
+	/** Detect free variable `module`. */
+	var freeModule = freeExports && 'object' == 'object' && module && !module.nodeType && module;
+
+	/** Detect the popular CommonJS extension `module.exports`. */
+	var moduleExports = freeModule && freeModule.exports === freeExports;
+
+	/** Built-in value references. */
+	var Buffer = moduleExports ? _root$1.Buffer : undefined;
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined;
+
+	/**
+	 * Checks if `value` is a buffer.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.3.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
+	 * @example
+	 *
+	 * _.isBuffer(new Buffer(2));
+	 * // => true
+	 *
+	 * _.isBuffer(new Uint8Array(2));
+	 * // => false
+	 */
+	var isBuffer = nativeIsBuffer || stubFalse_1;
+
+	module.exports = isBuffer;
+	});
+
+	/** Used as references for various `Number` constants. */
+	var MAX_SAFE_INTEGER = 9007199254740991;
+
+	/** Used to detect unsigned integer values. */
+	var reIsUint = /^(?:0|[1-9]\d*)$/;
+
+	/**
+	 * Checks if `value` is a valid array-like index.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+	 * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+	 */
+	function isIndex(value, length) {
+	  length = length == null ? MAX_SAFE_INTEGER : length;
+	  return !!length &&
+	    (typeof value == 'number' || reIsUint.test(value)) &&
+	    (value > -1 && value % 1 == 0 && value < length);
+	}
+
+	var _isIndex = isIndex;
+
+	/** Used as references for various `Number` constants. */
+	var MAX_SAFE_INTEGER$1 = 9007199254740991;
+
+	/**
+	 * Checks if `value` is a valid array-like length.
+	 *
+	 * **Note:** This method is loosely based on
+	 * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+	 * @example
+	 *
+	 * _.isLength(3);
+	 * // => true
+	 *
+	 * _.isLength(Number.MIN_VALUE);
+	 * // => false
+	 *
+	 * _.isLength(Infinity);
+	 * // => false
+	 *
+	 * _.isLength('3');
+	 * // => false
+	 */
+	function isLength(value) {
+	  return typeof value == 'number' &&
+	    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER$1;
+	}
+
+	var isLength_1 = isLength;
+
+	/** `Object#toString` result references. */
+	var argsTag$2 = '[object Arguments]';
+	var arrayTag$1 = '[object Array]';
+	var boolTag$1 = '[object Boolean]';
+	var dateTag$1 = '[object Date]';
+	var errorTag$1 = '[object Error]';
+	var funcTag$2 = '[object Function]';
+	var mapTag$1 = '[object Map]';
+	var numberTag$1 = '[object Number]';
+	var objectTag$1 = '[object Object]';
+	var regexpTag$1 = '[object RegExp]';
+	var setTag$1 = '[object Set]';
+	var stringTag$1 = '[object String]';
+	var weakMapTag$1 = '[object WeakMap]';
+
+	var arrayBufferTag$1 = '[object ArrayBuffer]';
+	var dataViewTag$1 = '[object DataView]';
+	var float32Tag$1 = '[object Float32Array]';
+	var float64Tag$1 = '[object Float64Array]';
+	var int8Tag$1 = '[object Int8Array]';
+	var int16Tag$1 = '[object Int16Array]';
+	var int32Tag$1 = '[object Int32Array]';
+	var uint8Tag$1 = '[object Uint8Array]';
+	var uint8ClampedTag$1 = '[object Uint8ClampedArray]';
+	var uint16Tag$1 = '[object Uint16Array]';
+	var uint32Tag$1 = '[object Uint32Array]';
+
+	/** Used to identify `toStringTag` values of typed arrays. */
+	var typedArrayTags = {};
+	typedArrayTags[float32Tag$1] = typedArrayTags[float64Tag$1] =
+	typedArrayTags[int8Tag$1] = typedArrayTags[int16Tag$1] =
+	typedArrayTags[int32Tag$1] = typedArrayTags[uint8Tag$1] =
+	typedArrayTags[uint8ClampedTag$1] = typedArrayTags[uint16Tag$1] =
+	typedArrayTags[uint32Tag$1] = true;
+	typedArrayTags[argsTag$2] = typedArrayTags[arrayTag$1] =
+	typedArrayTags[arrayBufferTag$1] = typedArrayTags[boolTag$1] =
+	typedArrayTags[dataViewTag$1] = typedArrayTags[dateTag$1] =
+	typedArrayTags[errorTag$1] = typedArrayTags[funcTag$2] =
+	typedArrayTags[mapTag$1] = typedArrayTags[numberTag$1] =
+	typedArrayTags[objectTag$1] = typedArrayTags[regexpTag$1] =
+	typedArrayTags[setTag$1] = typedArrayTags[stringTag$1] =
+	typedArrayTags[weakMapTag$1] = false;
+
+	/**
+	 * The base implementation of `_.isTypedArray` without Node.js optimizations.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+	 */
+	function baseIsTypedArray(value) {
+	  return isObjectLike_1(value) &&
+	    isLength_1(value.length) && !!typedArrayTags[_baseGetTag(value)];
+	}
+
+	var _baseIsTypedArray = baseIsTypedArray;
+
+	/**
+	 * The base implementation of `_.unary` without support for storing metadata.
+	 *
+	 * @private
+	 * @param {Function} func The function to cap arguments for.
+	 * @returns {Function} Returns the new capped function.
+	 */
+	function baseUnary(func) {
+	  return function(value) {
+	    return func(value);
+	  };
+	}
+
+	var _baseUnary = baseUnary;
+
+	var _nodeUtil = createCommonjsModule(function (module, exports) {
+	/** Detect free variable `exports`. */
+	var freeExports = 'object' == 'object' && exports && !exports.nodeType && exports;
+
+	/** Detect free variable `module`. */
+	var freeModule = freeExports && 'object' == 'object' && module && !module.nodeType && module;
+
+	/** Detect the popular CommonJS extension `module.exports`. */
+	var moduleExports = freeModule && freeModule.exports === freeExports;
+
+	/** Detect free variable `process` from Node.js. */
+	var freeProcess = moduleExports && _freeGlobal.process;
+
+	/** Used to access faster Node.js helpers. */
+	var nodeUtil = (function() {
+	  try {
+	    return freeProcess && freeProcess.binding && freeProcess.binding('util');
+	  } catch (e) {}
+	}());
+
+	module.exports = nodeUtil;
+	});
+
+	/* Node.js helper references. */
+	var nodeIsTypedArray = _nodeUtil && _nodeUtil.isTypedArray;
+
+	/**
+	 * Checks if `value` is classified as a typed array.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 3.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+	 * @example
+	 *
+	 * _.isTypedArray(new Uint8Array);
+	 * // => true
+	 *
+	 * _.isTypedArray([]);
+	 * // => false
+	 */
+	var isTypedArray = nodeIsTypedArray ? _baseUnary(nodeIsTypedArray) : _baseIsTypedArray;
+
+	var isTypedArray_1 = isTypedArray;
+
+	/** Used for built-in method references. */
+	var objectProto$6 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$5 = objectProto$6.hasOwnProperty;
+
+	/**
+	 * Creates an array of the enumerable property names of the array-like `value`.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @param {boolean} inherited Specify returning inherited property names.
+	 * @returns {Array} Returns the array of property names.
+	 */
+	function arrayLikeKeys(value, inherited) {
+	  var isArr = isArray_1$2(value),
+	      isArg = !isArr && isArguments_1(value),
+	      isBuff = !isArr && !isArg && isBuffer_1(value),
+	      isType = !isArr && !isArg && !isBuff && isTypedArray_1(value),
+	      skipIndexes = isArr || isArg || isBuff || isType,
+	      result = skipIndexes ? _baseTimes(value.length, String) : [],
+	      length = result.length;
+
+	  for (var key in value) {
+	    if ((inherited || hasOwnProperty$5.call(value, key)) &&
+	        !(skipIndexes && (
+	           // Safari 9 has enumerable `arguments.length` in strict mode.
+	           key == 'length' ||
+	           // Node.js 0.10 has enumerable non-index properties on buffers.
+	           (isBuff && (key == 'offset' || key == 'parent')) ||
+	           // PhantomJS 2 has enumerable non-index properties on typed arrays.
+	           (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
+	           // Skip index properties.
+	           _isIndex(key, length)
+	        ))) {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+
+	var _arrayLikeKeys = arrayLikeKeys;
+
+	/** Used for built-in method references. */
+	var objectProto$9 = Object.prototype;
+
+	/**
+	 * Checks if `value` is likely a prototype object.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+	 */
+	function isPrototype(value) {
+	  var Ctor = value && value.constructor,
+	      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto$9;
+
+	  return value === proto;
+	}
+
+	var _isPrototype = isPrototype;
+
+	/**
+	 * Creates a unary function that invokes `func` with its argument transformed.
+	 *
+	 * @private
+	 * @param {Function} func The function to wrap.
+	 * @param {Function} transform The argument transform.
+	 * @returns {Function} Returns the new function.
+	 */
+	function overArg(func, transform) {
+	  return function(arg) {
+	    return func(transform(arg));
+	  };
+	}
+
+	var _overArg = overArg;
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeKeys = _overArg(Object.keys, Object);
+
+	var _nativeKeys = nativeKeys;
+
+	/** Used for built-in method references. */
+	var objectProto$8 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$7 = objectProto$8.hasOwnProperty;
+
+	/**
+	 * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 */
+	function baseKeys(object) {
+	  if (!_isPrototype(object)) {
+	    return _nativeKeys(object);
+	  }
+	  var result = [];
+	  for (var key in Object(object)) {
+	    if (hasOwnProperty$7.call(object, key) && key != 'constructor') {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+
+	var _baseKeys = baseKeys;
+
+	/**
+	 * Checks if `value` is array-like. A value is considered array-like if it's
+	 * not a function and has a `value.length` that's an integer greater than or
+	 * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+	 * @example
+	 *
+	 * _.isArrayLike([1, 2, 3]);
+	 * // => true
+	 *
+	 * _.isArrayLike(document.body.children);
+	 * // => true
+	 *
+	 * _.isArrayLike('abc');
+	 * // => true
+	 *
+	 * _.isArrayLike(_.noop);
+	 * // => false
+	 */
+	function isArrayLike(value) {
+	  return value != null && isLength_1(value.length) && !isFunction_1$3(value);
+	}
+
+	var isArrayLike_1 = isArrayLike;
+
+	/**
+	 * Creates an array of the own enumerable property names of `object`.
+	 *
+	 * **Note:** Non-object values are coerced to objects. See the
+	 * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+	 * for more details.
+	 *
+	 * @static
+	 * @since 0.1.0
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names.
+	 * @example
+	 *
+	 * function Foo() {
+	 *   this.a = 1;
+	 *   this.b = 2;
+	 * }
+	 *
+	 * Foo.prototype.c = 3;
+	 *
+	 * _.keys(new Foo);
+	 * // => ['a', 'b'] (iteration order is not guaranteed)
+	 *
+	 * _.keys('hi');
+	 * // => ['0', '1']
+	 */
+	function keys(object) {
+	  return isArrayLike_1(object) ? _arrayLikeKeys(object) : _baseKeys(object);
+	}
+
+	var keys_1 = keys;
+
+	/**
 	 * The base implementation of `_.assign` without support for multiple sources
 	 * or `customizer` functions.
 	 *
@@ -19437,10 +15611,10 @@
 	var _nativeKeysIn = nativeKeysIn;
 
 	/** Used for built-in method references. */
-	var objectProto$13 = Object.prototype;
+	var objectProto$10 = Object.prototype;
 
 	/** Used to check objects for own properties. */
-	var hasOwnProperty$10 = objectProto$13.hasOwnProperty;
+	var hasOwnProperty$8 = objectProto$10.hasOwnProperty;
 
 	/**
 	 * The base implementation of `_.keysIn` which doesn't treat sparse arrays as dense.
@@ -19457,7 +15631,7 @@
 	      result = [];
 
 	  for (var key in object) {
-	    if (!(key == 'constructor' && (isProto || !hasOwnProperty$10.call(object, key)))) {
+	    if (!(key == 'constructor' && (isProto || !hasOwnProperty$8.call(object, key)))) {
 	      result.push(key);
 	    }
 	  }
@@ -19568,6 +15742,84 @@
 	var _copyArray = copyArray;
 
 	/**
+	 * A specialized version of `_.filter` for arrays without support for
+	 * iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Array} [array] The array to iterate over.
+	 * @param {Function} predicate The function invoked per iteration.
+	 * @returns {Array} Returns the new filtered array.
+	 */
+	function arrayFilter(array, predicate) {
+	  var index = -1,
+	      length = array == null ? 0 : array.length,
+	      resIndex = 0,
+	      result = [];
+
+	  while (++index < length) {
+	    var value = array[index];
+	    if (predicate(value, index, array)) {
+	      result[resIndex++] = value;
+	    }
+	  }
+	  return result;
+	}
+
+	var _arrayFilter = arrayFilter;
+
+	/**
+	 * This method returns a new empty array.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.13.0
+	 * @category Util
+	 * @returns {Array} Returns the new empty array.
+	 * @example
+	 *
+	 * var arrays = _.times(2, _.stubArray);
+	 *
+	 * console.log(arrays);
+	 * // => [[], []]
+	 *
+	 * console.log(arrays[0] === arrays[1]);
+	 * // => false
+	 */
+	function stubArray() {
+	  return [];
+	}
+
+	var stubArray_1 = stubArray;
+
+	/** Used for built-in method references. */
+	var objectProto$11 = Object.prototype;
+
+	/** Built-in value references. */
+	var propertyIsEnumerable$1 = objectProto$11.propertyIsEnumerable;
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeGetSymbols = Object.getOwnPropertySymbols;
+
+	/**
+	 * Creates an array of the own enumerable symbols of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of symbols.
+	 */
+	var getSymbols = !nativeGetSymbols ? stubArray_1 : function(object) {
+	  if (object == null) {
+	    return [];
+	  }
+	  object = Object(object);
+	  return _arrayFilter(nativeGetSymbols(object), function(symbol) {
+	    return propertyIsEnumerable$1.call(object, symbol);
+	  });
+	};
+
+	var _getSymbols = getSymbols;
+
+	/**
 	 * Copies own symbols of `source` to `object`.
 	 *
 	 * @private
@@ -19580,6 +15832,27 @@
 	}
 
 	var _copySymbols = copySymbols;
+
+	/**
+	 * Appends the elements of `values` to `array`.
+	 *
+	 * @private
+	 * @param {Array} array The array to modify.
+	 * @param {Array} values The values to append.
+	 * @returns {Array} Returns `array`.
+	 */
+	function arrayPush(array, values) {
+	  var index = -1,
+	      length = values.length,
+	      offset = array.length;
+
+	  while (++index < length) {
+	    array[offset + index] = values[index];
+	  }
+	  return array;
+	}
+
+	var _arrayPush = arrayPush;
 
 	/** Built-in value references. */
 	var getPrototype = _overArg(Object.getPrototypeOf, Object);
@@ -19622,6 +15895,37 @@
 	var _copySymbolsIn = copySymbolsIn;
 
 	/**
+	 * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
+	 * `keysFunc` and `symbolsFunc` to get the enumerable property names and
+	 * symbols of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Function} keysFunc The function to get the keys of `object`.
+	 * @param {Function} symbolsFunc The function to get the symbols of `object`.
+	 * @returns {Array} Returns the array of property names and symbols.
+	 */
+	function baseGetAllKeys(object, keysFunc, symbolsFunc) {
+	  var result = keysFunc(object);
+	  return isArray_1$2(object) ? result : _arrayPush(result, symbolsFunc(object));
+	}
+
+	var _baseGetAllKeys = baseGetAllKeys;
+
+	/**
+	 * Creates an array of own enumerable property names and symbols of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the array of property names and symbols.
+	 */
+	function getAllKeys(object) {
+	  return _baseGetAllKeys(object, keys_1, _getSymbols);
+	}
+
+	var _getAllKeys = getAllKeys;
+
+	/**
 	 * Creates an array of own and inherited enumerable property names and
 	 * symbols of `object`.
 	 *
@@ -19635,11 +15939,82 @@
 
 	var _getAllKeysIn = getAllKeysIn;
 
+	/* Built-in method references that are verified to be native. */
+	var DataView$1 = _getNative(_root$1, 'DataView');
+
+	var _DataView = DataView$1;
+
+	/* Built-in method references that are verified to be native. */
+	var Promise$2 = _getNative(_root$1, 'Promise');
+
+	var _Promise = Promise$2;
+
+	/* Built-in method references that are verified to be native. */
+	var Set = _getNative(_root$1, 'Set');
+
+	var _Set = Set;
+
+	/* Built-in method references that are verified to be native. */
+	var WeakMap = _getNative(_root$1, 'WeakMap');
+
+	var _WeakMap = WeakMap;
+
+	/** `Object#toString` result references. */
+	var mapTag$2 = '[object Map]';
+	var objectTag$2 = '[object Object]';
+	var promiseTag = '[object Promise]';
+	var setTag$2 = '[object Set]';
+	var weakMapTag$2 = '[object WeakMap]';
+
+	var dataViewTag$2 = '[object DataView]';
+
+	/** Used to detect maps, sets, and weakmaps. */
+	var dataViewCtorString = _toSource(_DataView);
+	var mapCtorString = _toSource(_Map);
+	var promiseCtorString = _toSource(_Promise);
+	var setCtorString = _toSource(_Set);
+	var weakMapCtorString = _toSource(_WeakMap);
+
+	/**
+	 * Gets the `toStringTag` of `value`.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {string} Returns the `toStringTag`.
+	 */
+	var getTag = _baseGetTag;
+
+	// Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
+	if ((_DataView && getTag(new _DataView(new ArrayBuffer(1))) != dataViewTag$2) ||
+	    (_Map && getTag(new _Map) != mapTag$2) ||
+	    (_Promise && getTag(_Promise.resolve()) != promiseTag) ||
+	    (_Set && getTag(new _Set) != setTag$2) ||
+	    (_WeakMap && getTag(new _WeakMap) != weakMapTag$2)) {
+	  getTag = function(value) {
+	    var result = _baseGetTag(value),
+	        Ctor = result == objectTag$2 ? value.constructor : undefined,
+	        ctorString = Ctor ? _toSource(Ctor) : '';
+
+	    if (ctorString) {
+	      switch (ctorString) {
+	        case dataViewCtorString: return dataViewTag$2;
+	        case mapCtorString: return mapTag$2;
+	        case promiseCtorString: return promiseTag;
+	        case setCtorString: return setTag$2;
+	        case weakMapCtorString: return weakMapTag$2;
+	      }
+	    }
+	    return result;
+	  };
+	}
+
+	var _getTag = getTag;
+
 	/** Used for built-in method references. */
-	var objectProto$14 = Object.prototype;
+	var objectProto$12 = Object.prototype;
 
 	/** Used to check objects for own properties. */
-	var hasOwnProperty$11 = objectProto$14.hasOwnProperty;
+	var hasOwnProperty$9 = objectProto$12.hasOwnProperty;
 
 	/**
 	 * Initializes an array clone.
@@ -19653,7 +16028,7 @@
 	      result = array.constructor(length);
 
 	  // Add properties assigned by `RegExp#exec`.
-	  if (length && typeof array[0] == 'string' && hasOwnProperty$11.call(array, 'index')) {
+	  if (length && typeof array[0] == 'string' && hasOwnProperty$9.call(array, 'index')) {
 	    result.index = array.index;
 	    result.input = array.input;
 	  }
@@ -19661,6 +16036,11 @@
 	}
 
 	var _initCloneArray = initCloneArray;
+
+	/** Built-in value references. */
+	var Uint8Array$1 = _root$1.Uint8Array;
+
+	var _Uint8Array = Uint8Array$1;
 
 	/**
 	 * Creates a clone of `arrayBuffer`.
@@ -19735,6 +16115,25 @@
 
 	var _arrayReduce = arrayReduce;
 
+	/**
+	 * Converts `map` to its key-value pairs.
+	 *
+	 * @private
+	 * @param {Object} map The map to convert.
+	 * @returns {Array} Returns the key-value pairs.
+	 */
+	function mapToArray(map) {
+	  var index = -1,
+	      result = Array(map.size);
+
+	  map.forEach(function(value, key) {
+	    result[++index] = [key, value];
+	  });
+	  return result;
+	}
+
+	var _mapToArray = mapToArray;
+
 	/** Used to compose bitmasks for cloning. */
 	var CLONE_DEEP_FLAG$1 = 1;
 
@@ -19788,6 +16187,25 @@
 
 	var _addSetEntry = addSetEntry;
 
+	/**
+	 * Converts `set` to an array of its values.
+	 *
+	 * @private
+	 * @param {Object} set The set to convert.
+	 * @returns {Array} Returns the values.
+	 */
+	function setToArray(set) {
+	  var index = -1,
+	      result = Array(set.size);
+
+	  set.forEach(function(value) {
+	    result[++index] = value;
+	  });
+	  return result;
+	}
+
+	var _setToArray = setToArray;
+
 	/** Used to compose bitmasks for cloning. */
 	var CLONE_DEEP_FLAG$2 = 1;
 
@@ -19808,8 +16226,8 @@
 	var _cloneSet = cloneSet;
 
 	/** Used to convert symbols to primitives and strings. */
-	var symbolProto$2 = _Symbol ? _Symbol.prototype : undefined;
-	var symbolValueOf$1 = symbolProto$2 ? symbolProto$2.valueOf : undefined;
+	var symbolProto = _Symbol ? _Symbol.prototype : undefined;
+	var symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
 
 	/**
 	 * Creates a clone of the `symbol` object.
@@ -19819,7 +16237,7 @@
 	 * @returns {Object} Returns the cloned symbol object.
 	 */
 	function cloneSymbol(symbol) {
-	  return symbolValueOf$1 ? Object(symbolValueOf$1.call(symbol)) : {};
+	  return symbolValueOf ? Object(symbolValueOf.call(symbol)) : {};
 	}
 
 	var _cloneSymbol = cloneSymbol;
@@ -19840,17 +16258,17 @@
 	var _cloneTypedArray = cloneTypedArray;
 
 	/** `Object#toString` result references. */
-	var boolTag$3 = '[object Boolean]';
-	var dateTag$3 = '[object Date]';
-	var mapTag$4 = '[object Map]';
-	var numberTag$3 = '[object Number]';
-	var regexpTag$3 = '[object RegExp]';
-	var setTag$4 = '[object Set]';
-	var stringTag$3 = '[object String]';
-	var symbolTag$3 = '[object Symbol]';
+	var boolTag$2 = '[object Boolean]';
+	var dateTag$2 = '[object Date]';
+	var mapTag$3 = '[object Map]';
+	var numberTag$2 = '[object Number]';
+	var regexpTag$2 = '[object RegExp]';
+	var setTag$3 = '[object Set]';
+	var stringTag$2 = '[object String]';
+	var symbolTag$1 = '[object Symbol]';
 
-	var arrayBufferTag$3 = '[object ArrayBuffer]';
-	var dataViewTag$4 = '[object DataView]';
+	var arrayBufferTag$2 = '[object ArrayBuffer]';
+	var dataViewTag$3 = '[object DataView]';
 	var float32Tag$2 = '[object Float32Array]';
 	var float64Tag$2 = '[object Float64Array]';
 	var int8Tag$2 = '[object Int8Array]';
@@ -19877,14 +16295,14 @@
 	function initCloneByTag(object, tag, cloneFunc, isDeep) {
 	  var Ctor = object.constructor;
 	  switch (tag) {
-	    case arrayBufferTag$3:
+	    case arrayBufferTag$2:
 	      return _cloneArrayBuffer(object);
 
-	    case boolTag$3:
-	    case dateTag$3:
+	    case boolTag$2:
+	    case dateTag$2:
 	      return new Ctor(+object);
 
-	    case dataViewTag$4:
+	    case dataViewTag$3:
 	      return _cloneDataView(object, isDeep);
 
 	    case float32Tag$2: case float64Tag$2:
@@ -19892,20 +16310,20 @@
 	    case uint8Tag$2: case uint8ClampedTag$2: case uint16Tag$2: case uint32Tag$2:
 	      return _cloneTypedArray(object, isDeep);
 
-	    case mapTag$4:
+	    case mapTag$3:
 	      return _cloneMap(object, isDeep, cloneFunc);
 
-	    case numberTag$3:
-	    case stringTag$3:
+	    case numberTag$2:
+	    case stringTag$2:
 	      return new Ctor(object);
 
-	    case regexpTag$3:
+	    case regexpTag$2:
 	      return _cloneRegExp(object);
 
-	    case setTag$4:
+	    case setTag$3:
 	      return _cloneSet(object, isDeep, cloneFunc);
 
-	    case symbolTag$3:
+	    case symbolTag$1:
 	      return _cloneSymbol(object);
 	  }
 	}
@@ -19962,49 +16380,49 @@
 	var CLONE_SYMBOLS_FLAG$1 = 4;
 
 	/** `Object#toString` result references. */
-	var argsTag$3 = '[object Arguments]';
-	var arrayTag$2 = '[object Array]';
-	var boolTag$2 = '[object Boolean]';
-	var dateTag$2 = '[object Date]';
-	var errorTag$2 = '[object Error]';
-	var funcTag$2 = '[object Function]';
-	var genTag$1 = '[object GeneratorFunction]';
-	var mapTag$3 = '[object Map]';
-	var numberTag$2 = '[object Number]';
-	var objectTag$3 = '[object Object]';
-	var regexpTag$2 = '[object RegExp]';
-	var setTag$3 = '[object Set]';
-	var stringTag$2 = '[object String]';
-	var symbolTag$2 = '[object Symbol]';
-	var weakMapTag$2 = '[object WeakMap]';
+	var argsTag = '[object Arguments]';
+	var arrayTag = '[object Array]';
+	var boolTag = '[object Boolean]';
+	var dateTag = '[object Date]';
+	var errorTag = '[object Error]';
+	var funcTag = '[object Function]';
+	var genTag = '[object GeneratorFunction]';
+	var mapTag = '[object Map]';
+	var numberTag = '[object Number]';
+	var objectTag = '[object Object]';
+	var regexpTag = '[object RegExp]';
+	var setTag = '[object Set]';
+	var stringTag = '[object String]';
+	var symbolTag = '[object Symbol]';
+	var weakMapTag = '[object WeakMap]';
 
-	var arrayBufferTag$2 = '[object ArrayBuffer]';
-	var dataViewTag$3 = '[object DataView]';
-	var float32Tag$1 = '[object Float32Array]';
-	var float64Tag$1 = '[object Float64Array]';
-	var int8Tag$1 = '[object Int8Array]';
-	var int16Tag$1 = '[object Int16Array]';
-	var int32Tag$1 = '[object Int32Array]';
-	var uint8Tag$1 = '[object Uint8Array]';
-	var uint8ClampedTag$1 = '[object Uint8ClampedArray]';
-	var uint16Tag$1 = '[object Uint16Array]';
-	var uint32Tag$1 = '[object Uint32Array]';
+	var arrayBufferTag = '[object ArrayBuffer]';
+	var dataViewTag = '[object DataView]';
+	var float32Tag = '[object Float32Array]';
+	var float64Tag = '[object Float64Array]';
+	var int8Tag = '[object Int8Array]';
+	var int16Tag = '[object Int16Array]';
+	var int32Tag = '[object Int32Array]';
+	var uint8Tag = '[object Uint8Array]';
+	var uint8ClampedTag = '[object Uint8ClampedArray]';
+	var uint16Tag = '[object Uint16Array]';
+	var uint32Tag = '[object Uint32Array]';
 
 	/** Used to identify `toStringTag` values supported by `_.clone`. */
 	var cloneableTags = {};
-	cloneableTags[argsTag$3] = cloneableTags[arrayTag$2] =
-	cloneableTags[arrayBufferTag$2] = cloneableTags[dataViewTag$3] =
-	cloneableTags[boolTag$2] = cloneableTags[dateTag$2] =
-	cloneableTags[float32Tag$1] = cloneableTags[float64Tag$1] =
-	cloneableTags[int8Tag$1] = cloneableTags[int16Tag$1] =
-	cloneableTags[int32Tag$1] = cloneableTags[mapTag$3] =
-	cloneableTags[numberTag$2] = cloneableTags[objectTag$3] =
-	cloneableTags[regexpTag$2] = cloneableTags[setTag$3] =
-	cloneableTags[stringTag$2] = cloneableTags[symbolTag$2] =
-	cloneableTags[uint8Tag$1] = cloneableTags[uint8ClampedTag$1] =
-	cloneableTags[uint16Tag$1] = cloneableTags[uint32Tag$1] = true;
-	cloneableTags[errorTag$2] = cloneableTags[funcTag$2] =
-	cloneableTags[weakMapTag$2] = false;
+	cloneableTags[argsTag] = cloneableTags[arrayTag] =
+	cloneableTags[arrayBufferTag] = cloneableTags[dataViewTag] =
+	cloneableTags[boolTag] = cloneableTags[dateTag] =
+	cloneableTags[float32Tag] = cloneableTags[float64Tag] =
+	cloneableTags[int8Tag] = cloneableTags[int16Tag] =
+	cloneableTags[int32Tag] = cloneableTags[mapTag] =
+	cloneableTags[numberTag] = cloneableTags[objectTag] =
+	cloneableTags[regexpTag] = cloneableTags[setTag] =
+	cloneableTags[stringTag] = cloneableTags[symbolTag] =
+	cloneableTags[uint8Tag] = cloneableTags[uint8ClampedTag] =
+	cloneableTags[uint16Tag] = cloneableTags[uint32Tag] = true;
+	cloneableTags[errorTag] = cloneableTags[funcTag] =
+	cloneableTags[weakMapTag] = false;
 
 	/**
 	 * The base implementation of `_.clone` and `_.cloneDeep` which tracks
@@ -20045,12 +16463,12 @@
 	    }
 	  } else {
 	    var tag = _getTag(value),
-	        isFunc = tag == funcTag$2 || tag == genTag$1;
+	        isFunc = tag == funcTag || tag == genTag;
 
 	    if (isBuffer_1(value)) {
 	      return _cloneBuffer(value, isDeep);
 	    }
-	    if (tag == objectTag$3 || tag == argsTag$3 || (isFunc && !object)) {
+	    if (tag == objectTag || tag == argsTag || (isFunc && !object)) {
 	      result = (isFlat || isFunc) ? {} : _initCloneObject(value);
 	      if (!isDeep) {
 	        return isFlat
@@ -20126,6 +16544,221 @@
 	var clone_1 = clone$1;
 
 	/**
+	 * A faster alternative to `Function#apply`, this function invokes `func`
+	 * with the `this` binding of `thisArg` and the arguments of `args`.
+	 *
+	 * @private
+	 * @param {Function} func The function to invoke.
+	 * @param {*} thisArg The `this` binding of `func`.
+	 * @param {Array} args The arguments to invoke `func` with.
+	 * @returns {*} Returns the result of `func`.
+	 */
+	function apply(func, thisArg, args) {
+	  switch (args.length) {
+	    case 0: return func.call(thisArg);
+	    case 1: return func.call(thisArg, args[0]);
+	    case 2: return func.call(thisArg, args[0], args[1]);
+	    case 3: return func.call(thisArg, args[0], args[1], args[2]);
+	  }
+	  return func.apply(thisArg, args);
+	}
+
+	var _apply = apply;
+
+	/**
+	 * This method returns the first argument it receives.
+	 *
+	 * @static
+	 * @since 0.1.0
+	 * @memberOf _
+	 * @category Util
+	 * @param {*} value Any value.
+	 * @returns {*} Returns `value`.
+	 * @example
+	 *
+	 * var object = { 'a': 1 };
+	 *
+	 * console.log(_.identity(object) === object);
+	 * // => true
+	 */
+	function identity(value) {
+	  return value;
+	}
+
+	var identity_1 = identity;
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeMax = Math.max;
+
+	/**
+	 * A specialized version of `baseRest` which transforms the rest array.
+	 *
+	 * @private
+	 * @param {Function} func The function to apply a rest parameter to.
+	 * @param {number} [start=func.length-1] The start position of the rest parameter.
+	 * @param {Function} transform The rest array transform.
+	 * @returns {Function} Returns the new function.
+	 */
+	function overRest(func, start, transform) {
+	  start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
+	  return function() {
+	    var args = arguments,
+	        index = -1,
+	        length = nativeMax(args.length - start, 0),
+	        array = Array(length);
+
+	    while (++index < length) {
+	      array[index] = args[start + index];
+	    }
+	    index = -1;
+	    var otherArgs = Array(start + 1);
+	    while (++index < start) {
+	      otherArgs[index] = args[index];
+	    }
+	    otherArgs[start] = transform(array);
+	    return _apply(func, this, otherArgs);
+	  };
+	}
+
+	var _overRest = overRest;
+
+	/**
+	 * Creates a function that returns `value`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 2.4.0
+	 * @category Util
+	 * @param {*} value The value to return from the new function.
+	 * @returns {Function} Returns the new constant function.
+	 * @example
+	 *
+	 * var objects = _.times(2, _.constant({ 'a': 1 }));
+	 *
+	 * console.log(objects);
+	 * // => [{ 'a': 1 }, { 'a': 1 }]
+	 *
+	 * console.log(objects[0] === objects[1]);
+	 * // => true
+	 */
+	function constant(value) {
+	  return function() {
+	    return value;
+	  };
+	}
+
+	var constant_1 = constant;
+
+	/**
+	 * The base implementation of `setToString` without support for hot loop shorting.
+	 *
+	 * @private
+	 * @param {Function} func The function to modify.
+	 * @param {Function} string The `toString` result.
+	 * @returns {Function} Returns `func`.
+	 */
+	var baseSetToString = !_defineProperty ? identity_1 : function(func, string) {
+	  return _defineProperty(func, 'toString', {
+	    'configurable': true,
+	    'enumerable': false,
+	    'value': constant_1(string),
+	    'writable': true
+	  });
+	};
+
+	var _baseSetToString = baseSetToString;
+
+	/** Used to detect hot functions by number of calls within a span of milliseconds. */
+	var HOT_COUNT = 800;
+	var HOT_SPAN = 16;
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeNow = Date.now;
+
+	/**
+	 * Creates a function that'll short out and invoke `identity` instead
+	 * of `func` when it's called `HOT_COUNT` or more times in `HOT_SPAN`
+	 * milliseconds.
+	 *
+	 * @private
+	 * @param {Function} func The function to restrict.
+	 * @returns {Function} Returns the new shortable function.
+	 */
+	function shortOut(func) {
+	  var count = 0,
+	      lastCalled = 0;
+
+	  return function() {
+	    var stamp = nativeNow(),
+	        remaining = HOT_SPAN - (stamp - lastCalled);
+
+	    lastCalled = stamp;
+	    if (remaining > 0) {
+	      if (++count >= HOT_COUNT) {
+	        return arguments[0];
+	      }
+	    } else {
+	      count = 0;
+	    }
+	    return func.apply(undefined, arguments);
+	  };
+	}
+
+	var _shortOut = shortOut;
+
+	/**
+	 * Sets the `toString` method of `func` to return `string`.
+	 *
+	 * @private
+	 * @param {Function} func The function to modify.
+	 * @param {Function} string The `toString` result.
+	 * @returns {Function} Returns `func`.
+	 */
+	var setToString = _shortOut(_baseSetToString);
+
+	var _setToString = setToString;
+
+	/**
+	 * The base implementation of `_.rest` which doesn't validate or coerce arguments.
+	 *
+	 * @private
+	 * @param {Function} func The function to apply a rest parameter to.
+	 * @param {number} [start=func.length-1] The start position of the rest parameter.
+	 * @returns {Function} Returns the new function.
+	 */
+	function baseRest(func, start) {
+	  return _setToString(_overRest(func, start, identity_1), func + '');
+	}
+
+	var _baseRest = baseRest;
+
+	/**
+	 * Checks if the given arguments are from an iteratee call.
+	 *
+	 * @private
+	 * @param {*} value The potential iteratee value argument.
+	 * @param {*} index The potential iteratee index or key argument.
+	 * @param {*} object The potential iteratee object argument.
+	 * @returns {boolean} Returns `true` if the arguments are from an iteratee call,
+	 *  else `false`.
+	 */
+	function isIterateeCall(value, index, object) {
+	  if (!isObject_1$3(object)) {
+	    return false;
+	  }
+	  var type = typeof index;
+	  if (type == 'number'
+	        ? (isArrayLike_1(object) && _isIndex(index, object.length))
+	        : (type == 'string' && index in object)
+	      ) {
+	    return eq_1(object[index], value);
+	  }
+	  return false;
+	}
+
+	var _isIterateeCall = isIterateeCall;
+
+	/**
 	 * Creates a function like `_.assign`.
 	 *
 	 * @private
@@ -20196,10 +16829,10 @@
 	var assignInWith_1 = assignInWith;
 
 	/** Used for built-in method references. */
-	var objectProto$15 = Object.prototype;
+	var objectProto$13 = Object.prototype;
 
 	/** Used to check objects for own properties. */
-	var hasOwnProperty$12 = objectProto$15.hasOwnProperty;
+	var hasOwnProperty$10 = objectProto$13.hasOwnProperty;
 
 	/**
 	 * Used by `_.defaults` to customize its `_.assignIn` use to assign properties
@@ -20215,7 +16848,7 @@
 	 */
 	function customDefaultsAssignIn(objValue, srcValue, key, object) {
 	  if (objValue === undefined ||
-	      (eq_1(objValue, objectProto$15[key]) && !hasOwnProperty$12.call(object, key))) {
+	      (eq_1(objValue, objectProto$13[key]) && !hasOwnProperty$10.call(object, key))) {
 	    return srcValue;
 	  }
 	  return objValue;
@@ -20337,7 +16970,7 @@
 
 	  // set camera position and rotation by providing changes for certain axes
 	  // to reset camera to walking mode do:
-	  // setViewPoint({position: {y:1.6}, rotation: {x:0})
+	  // updateViewPoint({position: {y:1.6}, rotation: {x:0})
 	  updateViewPoint: function (args) {
 	    args = args || {};
 	    if (typeof args !== 'object') {
@@ -20353,8 +16986,8 @@
 	    var rot = defaults_1({}, rotChange, clone_1(this.el.getAttribute('rotation')));
 
 	    var target = {
-	      position: AFRAME.utils.coordinates.stringify(pos),
-	      rotation: AFRAME.utils.coordinates.stringify(rot)
+	      position: pos,
+	      rotation: rot
 	    };
 	    this.animate(target);
 	  },
@@ -20440,7 +17073,3672 @@
 	  );
 	}
 
-	// initialize aframe components
+	/** Built-in value references. */
+	var spreadableSymbol = _Symbol ? _Symbol.isConcatSpreadable : undefined;
+
+	/**
+	 * Checks if `value` is a flattenable `arguments` object or array.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is flattenable, else `false`.
+	 */
+	function isFlattenable(value) {
+	  return isArray_1$2(value) || isArguments_1(value) ||
+	    !!(spreadableSymbol && value && value[spreadableSymbol]);
+	}
+
+	var _isFlattenable = isFlattenable;
+
+	/**
+	 * The base implementation of `_.flatten` with support for restricting flattening.
+	 *
+	 * @private
+	 * @param {Array} array The array to flatten.
+	 * @param {number} depth The maximum recursion depth.
+	 * @param {boolean} [predicate=isFlattenable] The function invoked per iteration.
+	 * @param {boolean} [isStrict] Restrict to values that pass `predicate` checks.
+	 * @param {Array} [result=[]] The initial result value.
+	 * @returns {Array} Returns the new flattened array.
+	 */
+	function baseFlatten(array, depth, predicate, isStrict, result) {
+	  var index = -1,
+	      length = array.length;
+
+	  predicate || (predicate = _isFlattenable);
+	  result || (result = []);
+
+	  while (++index < length) {
+	    var value = array[index];
+	    if (depth > 0 && predicate(value)) {
+	      if (depth > 1) {
+	        // Recursively flatten arrays (susceptible to call stack limits).
+	        baseFlatten(value, depth - 1, predicate, isStrict, result);
+	      } else {
+	        _arrayPush(result, value);
+	      }
+	    } else if (!isStrict) {
+	      result[result.length] = value;
+	    }
+	  }
+	  return result;
+	}
+
+	var _baseFlatten = baseFlatten;
+
+	/**
+	 * A specialized version of `_.map` for arrays without support for iteratee
+	 * shorthands.
+	 *
+	 * @private
+	 * @param {Array} [array] The array to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array} Returns the new mapped array.
+	 */
+	function arrayMap(array, iteratee) {
+	  var index = -1,
+	      length = array == null ? 0 : array.length,
+	      result = Array(length);
+
+	  while (++index < length) {
+	    result[index] = iteratee(array[index], index, array);
+	  }
+	  return result;
+	}
+
+	var _arrayMap = arrayMap;
+
+	/** Used to stand-in for `undefined` hash values. */
+	var HASH_UNDEFINED$2 = '__lodash_hash_undefined__';
+
+	/**
+	 * Adds `value` to the array cache.
+	 *
+	 * @private
+	 * @name add
+	 * @memberOf SetCache
+	 * @alias push
+	 * @param {*} value The value to cache.
+	 * @returns {Object} Returns the cache instance.
+	 */
+	function setCacheAdd(value) {
+	  this.__data__.set(value, HASH_UNDEFINED$2);
+	  return this;
+	}
+
+	var _setCacheAdd = setCacheAdd;
+
+	/**
+	 * Checks if `value` is in the array cache.
+	 *
+	 * @private
+	 * @name has
+	 * @memberOf SetCache
+	 * @param {*} value The value to search for.
+	 * @returns {number} Returns `true` if `value` is found, else `false`.
+	 */
+	function setCacheHas(value) {
+	  return this.__data__.has(value);
+	}
+
+	var _setCacheHas = setCacheHas;
+
+	/**
+	 *
+	 * Creates an array cache object to store unique values.
+	 *
+	 * @private
+	 * @constructor
+	 * @param {Array} [values] The values to cache.
+	 */
+	function SetCache(values) {
+	  var index = -1,
+	      length = values == null ? 0 : values.length;
+
+	  this.__data__ = new _MapCache;
+	  while (++index < length) {
+	    this.add(values[index]);
+	  }
+	}
+
+	// Add methods to `SetCache`.
+	SetCache.prototype.add = SetCache.prototype.push = _setCacheAdd;
+	SetCache.prototype.has = _setCacheHas;
+
+	var _SetCache = SetCache;
+
+	/**
+	 * A specialized version of `_.some` for arrays without support for iteratee
+	 * shorthands.
+	 *
+	 * @private
+	 * @param {Array} [array] The array to iterate over.
+	 * @param {Function} predicate The function invoked per iteration.
+	 * @returns {boolean} Returns `true` if any element passes the predicate check,
+	 *  else `false`.
+	 */
+	function arraySome(array, predicate) {
+	  var index = -1,
+	      length = array == null ? 0 : array.length;
+
+	  while (++index < length) {
+	    if (predicate(array[index], index, array)) {
+	      return true;
+	    }
+	  }
+	  return false;
+	}
+
+	var _arraySome = arraySome;
+
+	/**
+	 * Checks if a `cache` value for `key` exists.
+	 *
+	 * @private
+	 * @param {Object} cache The cache to query.
+	 * @param {string} key The key of the entry to check.
+	 * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+	 */
+	function cacheHas(cache, key) {
+	  return cache.has(key);
+	}
+
+	var _cacheHas = cacheHas;
+
+	/** Used to compose bitmasks for value comparisons. */
+	var COMPARE_PARTIAL_FLAG$2 = 1;
+	var COMPARE_UNORDERED_FLAG$1 = 2;
+
+	/**
+	 * A specialized version of `baseIsEqualDeep` for arrays with support for
+	 * partial deep comparisons.
+	 *
+	 * @private
+	 * @param {Array} array The array to compare.
+	 * @param {Array} other The other array to compare.
+	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+	 * @param {Function} customizer The function to customize comparisons.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Object} stack Tracks traversed `array` and `other` objects.
+	 * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
+	 */
+	function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
+	  var isPartial = bitmask & COMPARE_PARTIAL_FLAG$2,
+	      arrLength = array.length,
+	      othLength = other.length;
+
+	  if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
+	    return false;
+	  }
+	  // Assume cyclic values are equal.
+	  var stacked = stack.get(array);
+	  if (stacked && stack.get(other)) {
+	    return stacked == other;
+	  }
+	  var index = -1,
+	      result = true,
+	      seen = (bitmask & COMPARE_UNORDERED_FLAG$1) ? new _SetCache : undefined;
+
+	  stack.set(array, other);
+	  stack.set(other, array);
+
+	  // Ignore non-index properties.
+	  while (++index < arrLength) {
+	    var arrValue = array[index],
+	        othValue = other[index];
+
+	    if (customizer) {
+	      var compared = isPartial
+	        ? customizer(othValue, arrValue, index, other, array, stack)
+	        : customizer(arrValue, othValue, index, array, other, stack);
+	    }
+	    if (compared !== undefined) {
+	      if (compared) {
+	        continue;
+	      }
+	      result = false;
+	      break;
+	    }
+	    // Recursively compare arrays (susceptible to call stack limits).
+	    if (seen) {
+	      if (!_arraySome(other, function(othValue, othIndex) {
+	            if (!_cacheHas(seen, othIndex) &&
+	                (arrValue === othValue || equalFunc(arrValue, othValue, bitmask, customizer, stack))) {
+	              return seen.push(othIndex);
+	            }
+	          })) {
+	        result = false;
+	        break;
+	      }
+	    } else if (!(
+	          arrValue === othValue ||
+	            equalFunc(arrValue, othValue, bitmask, customizer, stack)
+	        )) {
+	      result = false;
+	      break;
+	    }
+	  }
+	  stack['delete'](array);
+	  stack['delete'](other);
+	  return result;
+	}
+
+	var _equalArrays = equalArrays;
+
+	/** Used to compose bitmasks for value comparisons. */
+	var COMPARE_PARTIAL_FLAG$3 = 1;
+	var COMPARE_UNORDERED_FLAG$2 = 2;
+
+	/** `Object#toString` result references. */
+	var boolTag$3 = '[object Boolean]';
+	var dateTag$3 = '[object Date]';
+	var errorTag$2 = '[object Error]';
+	var mapTag$4 = '[object Map]';
+	var numberTag$3 = '[object Number]';
+	var regexpTag$3 = '[object RegExp]';
+	var setTag$4 = '[object Set]';
+	var stringTag$3 = '[object String]';
+	var symbolTag$2 = '[object Symbol]';
+
+	var arrayBufferTag$3 = '[object ArrayBuffer]';
+	var dataViewTag$4 = '[object DataView]';
+
+	/** Used to convert symbols to primitives and strings. */
+	var symbolProto$1 = _Symbol ? _Symbol.prototype : undefined;
+	var symbolValueOf$1 = symbolProto$1 ? symbolProto$1.valueOf : undefined;
+
+	/**
+	 * A specialized version of `baseIsEqualDeep` for comparing objects of
+	 * the same `toStringTag`.
+	 *
+	 * **Note:** This function only supports comparing values with tags of
+	 * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {string} tag The `toStringTag` of the objects to compare.
+	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+	 * @param {Function} customizer The function to customize comparisons.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Object} stack Tracks traversed `object` and `other` objects.
+	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+	 */
+	function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
+	  switch (tag) {
+	    case dataViewTag$4:
+	      if ((object.byteLength != other.byteLength) ||
+	          (object.byteOffset != other.byteOffset)) {
+	        return false;
+	      }
+	      object = object.buffer;
+	      other = other.buffer;
+
+	    case arrayBufferTag$3:
+	      if ((object.byteLength != other.byteLength) ||
+	          !equalFunc(new _Uint8Array(object), new _Uint8Array(other))) {
+	        return false;
+	      }
+	      return true;
+
+	    case boolTag$3:
+	    case dateTag$3:
+	    case numberTag$3:
+	      // Coerce booleans to `1` or `0` and dates to milliseconds.
+	      // Invalid dates are coerced to `NaN`.
+	      return eq_1(+object, +other);
+
+	    case errorTag$2:
+	      return object.name == other.name && object.message == other.message;
+
+	    case regexpTag$3:
+	    case stringTag$3:
+	      // Coerce regexes to strings and treat strings, primitives and objects,
+	      // as equal. See http://www.ecma-international.org/ecma-262/7.0/#sec-regexp.prototype.tostring
+	      // for more details.
+	      return object == (other + '');
+
+	    case mapTag$4:
+	      var convert = _mapToArray;
+
+	    case setTag$4:
+	      var isPartial = bitmask & COMPARE_PARTIAL_FLAG$3;
+	      convert || (convert = _setToArray);
+
+	      if (object.size != other.size && !isPartial) {
+	        return false;
+	      }
+	      // Assume cyclic values are equal.
+	      var stacked = stack.get(object);
+	      if (stacked) {
+	        return stacked == other;
+	      }
+	      bitmask |= COMPARE_UNORDERED_FLAG$2;
+
+	      // Recursively compare objects (susceptible to call stack limits).
+	      stack.set(object, other);
+	      var result = _equalArrays(convert(object), convert(other), bitmask, customizer, equalFunc, stack);
+	      stack['delete'](object);
+	      return result;
+
+	    case symbolTag$2:
+	      if (symbolValueOf$1) {
+	        return symbolValueOf$1.call(object) == symbolValueOf$1.call(other);
+	      }
+	  }
+	  return false;
+	}
+
+	var _equalByTag = equalByTag;
+
+	/** Used to compose bitmasks for value comparisons. */
+	var COMPARE_PARTIAL_FLAG$4 = 1;
+
+	/** Used for built-in method references. */
+	var objectProto$15 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$12 = objectProto$15.hasOwnProperty;
+
+	/**
+	 * A specialized version of `baseIsEqualDeep` for objects with support for
+	 * partial deep comparisons.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+	 * @param {Function} customizer The function to customize comparisons.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Object} stack Tracks traversed `object` and `other` objects.
+	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+	 */
+	function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
+	  var isPartial = bitmask & COMPARE_PARTIAL_FLAG$4,
+	      objProps = _getAllKeys(object),
+	      objLength = objProps.length,
+	      othProps = _getAllKeys(other),
+	      othLength = othProps.length;
+
+	  if (objLength != othLength && !isPartial) {
+	    return false;
+	  }
+	  var index = objLength;
+	  while (index--) {
+	    var key = objProps[index];
+	    if (!(isPartial ? key in other : hasOwnProperty$12.call(other, key))) {
+	      return false;
+	    }
+	  }
+	  // Assume cyclic values are equal.
+	  var stacked = stack.get(object);
+	  if (stacked && stack.get(other)) {
+	    return stacked == other;
+	  }
+	  var result = true;
+	  stack.set(object, other);
+	  stack.set(other, object);
+
+	  var skipCtor = isPartial;
+	  while (++index < objLength) {
+	    key = objProps[index];
+	    var objValue = object[key],
+	        othValue = other[key];
+
+	    if (customizer) {
+	      var compared = isPartial
+	        ? customizer(othValue, objValue, key, other, object, stack)
+	        : customizer(objValue, othValue, key, object, other, stack);
+	    }
+	    // Recursively compare objects (susceptible to call stack limits).
+	    if (!(compared === undefined
+	          ? (objValue === othValue || equalFunc(objValue, othValue, bitmask, customizer, stack))
+	          : compared
+	        )) {
+	      result = false;
+	      break;
+	    }
+	    skipCtor || (skipCtor = key == 'constructor');
+	  }
+	  if (result && !skipCtor) {
+	    var objCtor = object.constructor,
+	        othCtor = other.constructor;
+
+	    // Non `Object` object instances with different constructors are not equal.
+	    if (objCtor != othCtor &&
+	        ('constructor' in object && 'constructor' in other) &&
+	        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
+	          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
+	      result = false;
+	    }
+	  }
+	  stack['delete'](object);
+	  stack['delete'](other);
+	  return result;
+	}
+
+	var _equalObjects = equalObjects;
+
+	/** Used to compose bitmasks for value comparisons. */
+	var COMPARE_PARTIAL_FLAG$1 = 1;
+
+	/** `Object#toString` result references. */
+	var argsTag$3 = '[object Arguments]';
+	var arrayTag$2 = '[object Array]';
+	var objectTag$3 = '[object Object]';
+
+	/** Used for built-in method references. */
+	var objectProto$14 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$11 = objectProto$14.hasOwnProperty;
+
+	/**
+	 * A specialized version of `baseIsEqual` for arrays and objects which performs
+	 * deep comparisons and tracks traversed objects enabling objects with circular
+	 * references to be compared.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+	 * @param {Function} customizer The function to customize comparisons.
+	 * @param {Function} equalFunc The function to determine equivalents of values.
+	 * @param {Object} [stack] Tracks traversed `object` and `other` objects.
+	 * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+	 */
+	function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
+	  var objIsArr = isArray_1$2(object),
+	      othIsArr = isArray_1$2(other),
+	      objTag = objIsArr ? arrayTag$2 : _getTag(object),
+	      othTag = othIsArr ? arrayTag$2 : _getTag(other);
+
+	  objTag = objTag == argsTag$3 ? objectTag$3 : objTag;
+	  othTag = othTag == argsTag$3 ? objectTag$3 : othTag;
+
+	  var objIsObj = objTag == objectTag$3,
+	      othIsObj = othTag == objectTag$3,
+	      isSameTag = objTag == othTag;
+
+	  if (isSameTag && isBuffer_1(object)) {
+	    if (!isBuffer_1(other)) {
+	      return false;
+	    }
+	    objIsArr = true;
+	    objIsObj = false;
+	  }
+	  if (isSameTag && !objIsObj) {
+	    stack || (stack = new _Stack);
+	    return (objIsArr || isTypedArray_1(object))
+	      ? _equalArrays(object, other, bitmask, customizer, equalFunc, stack)
+	      : _equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
+	  }
+	  if (!(bitmask & COMPARE_PARTIAL_FLAG$1)) {
+	    var objIsWrapped = objIsObj && hasOwnProperty$11.call(object, '__wrapped__'),
+	        othIsWrapped = othIsObj && hasOwnProperty$11.call(other, '__wrapped__');
+
+	    if (objIsWrapped || othIsWrapped) {
+	      var objUnwrapped = objIsWrapped ? object.value() : object,
+	          othUnwrapped = othIsWrapped ? other.value() : other;
+
+	      stack || (stack = new _Stack);
+	      return equalFunc(objUnwrapped, othUnwrapped, bitmask, customizer, stack);
+	    }
+	  }
+	  if (!isSameTag) {
+	    return false;
+	  }
+	  stack || (stack = new _Stack);
+	  return _equalObjects(object, other, bitmask, customizer, equalFunc, stack);
+	}
+
+	var _baseIsEqualDeep = baseIsEqualDeep;
+
+	/**
+	 * The base implementation of `_.isEqual` which supports partial comparisons
+	 * and tracks traversed objects.
+	 *
+	 * @private
+	 * @param {*} value The value to compare.
+	 * @param {*} other The other value to compare.
+	 * @param {boolean} bitmask The bitmask flags.
+	 *  1 - Unordered comparison
+	 *  2 - Partial comparison
+	 * @param {Function} [customizer] The function to customize comparisons.
+	 * @param {Object} [stack] Tracks traversed `value` and `other` objects.
+	 * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+	 */
+	function baseIsEqual(value, other, bitmask, customizer, stack) {
+	  if (value === other) {
+	    return true;
+	  }
+	  if (value == null || other == null || (!isObjectLike_1(value) && !isObjectLike_1(other))) {
+	    return value !== value && other !== other;
+	  }
+	  return _baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
+	}
+
+	var _baseIsEqual = baseIsEqual;
+
+	/** Used to compose bitmasks for value comparisons. */
+	var COMPARE_PARTIAL_FLAG = 1;
+	var COMPARE_UNORDERED_FLAG = 2;
+
+	/**
+	 * The base implementation of `_.isMatch` without support for iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Object} object The object to inspect.
+	 * @param {Object} source The object of property values to match.
+	 * @param {Array} matchData The property names, values, and compare flags to match.
+	 * @param {Function} [customizer] The function to customize comparisons.
+	 * @returns {boolean} Returns `true` if `object` is a match, else `false`.
+	 */
+	function baseIsMatch(object, source, matchData, customizer) {
+	  var index = matchData.length,
+	      length = index,
+	      noCustomizer = !customizer;
+
+	  if (object == null) {
+	    return !length;
+	  }
+	  object = Object(object);
+	  while (index--) {
+	    var data = matchData[index];
+	    if ((noCustomizer && data[2])
+	          ? data[1] !== object[data[0]]
+	          : !(data[0] in object)
+	        ) {
+	      return false;
+	    }
+	  }
+	  while (++index < length) {
+	    data = matchData[index];
+	    var key = data[0],
+	        objValue = object[key],
+	        srcValue = data[1];
+
+	    if (noCustomizer && data[2]) {
+	      if (objValue === undefined && !(key in object)) {
+	        return false;
+	      }
+	    } else {
+	      var stack = new _Stack;
+	      if (customizer) {
+	        var result = customizer(objValue, srcValue, key, object, source, stack);
+	      }
+	      if (!(result === undefined
+	            ? _baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG | COMPARE_UNORDERED_FLAG, customizer, stack)
+	            : result
+	          )) {
+	        return false;
+	      }
+	    }
+	  }
+	  return true;
+	}
+
+	var _baseIsMatch = baseIsMatch;
+
+	/**
+	 * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` if suitable for strict
+	 *  equality comparisons, else `false`.
+	 */
+	function isStrictComparable(value) {
+	  return value === value && !isObject_1$3(value);
+	}
+
+	var _isStrictComparable = isStrictComparable;
+
+	/**
+	 * Gets the property names, values, and compare flags of `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @returns {Array} Returns the match data of `object`.
+	 */
+	function getMatchData(object) {
+	  var result = keys_1(object),
+	      length = result.length;
+
+	  while (length--) {
+	    var key = result[length],
+	        value = object[key];
+
+	    result[length] = [key, value, _isStrictComparable(value)];
+	  }
+	  return result;
+	}
+
+	var _getMatchData = getMatchData;
+
+	/**
+	 * A specialized version of `matchesProperty` for source values suitable
+	 * for strict equality comparisons, i.e. `===`.
+	 *
+	 * @private
+	 * @param {string} key The key of the property to get.
+	 * @param {*} srcValue The value to match.
+	 * @returns {Function} Returns the new spec function.
+	 */
+	function matchesStrictComparable(key, srcValue) {
+	  return function(object) {
+	    if (object == null) {
+	      return false;
+	    }
+	    return object[key] === srcValue &&
+	      (srcValue !== undefined || (key in Object(object)));
+	  };
+	}
+
+	var _matchesStrictComparable = matchesStrictComparable;
+
+	/**
+	 * The base implementation of `_.matches` which doesn't clone `source`.
+	 *
+	 * @private
+	 * @param {Object} source The object of property values to match.
+	 * @returns {Function} Returns the new spec function.
+	 */
+	function baseMatches(source) {
+	  var matchData = _getMatchData(source);
+	  if (matchData.length == 1 && matchData[0][2]) {
+	    return _matchesStrictComparable(matchData[0][0], matchData[0][1]);
+	  }
+	  return function(object) {
+	    return object === source || _baseIsMatch(object, source, matchData);
+	  };
+	}
+
+	var _baseMatches = baseMatches;
+
+	/** `Object#toString` result references. */
+	var symbolTag$3 = '[object Symbol]';
+
+	/**
+	 * Checks if `value` is classified as a `Symbol` primitive or object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
+	 * @example
+	 *
+	 * _.isSymbol(Symbol.iterator);
+	 * // => true
+	 *
+	 * _.isSymbol('abc');
+	 * // => false
+	 */
+	function isSymbol(value) {
+	  return typeof value == 'symbol' ||
+	    (isObjectLike_1(value) && _baseGetTag(value) == symbolTag$3);
+	}
+
+	var isSymbol_1 = isSymbol;
+
+	/** Used to match property names within property paths. */
+	var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/;
+	var reIsPlainProp = /^\w*$/;
+
+	/**
+	 * Checks if `value` is a property name and not a property path.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @param {Object} [object] The object to query keys on.
+	 * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
+	 */
+	function isKey(value, object) {
+	  if (isArray_1$2(value)) {
+	    return false;
+	  }
+	  var type = typeof value;
+	  if (type == 'number' || type == 'symbol' || type == 'boolean' ||
+	      value == null || isSymbol_1(value)) {
+	    return true;
+	  }
+	  return reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
+	    (object != null && value in Object(object));
+	}
+
+	var _isKey = isKey;
+
+	/** Error message constants. */
+	var FUNC_ERROR_TEXT = 'Expected a function';
+
+	/**
+	 * Creates a function that memoizes the result of `func`. If `resolver` is
+	 * provided, it determines the cache key for storing the result based on the
+	 * arguments provided to the memoized function. By default, the first argument
+	 * provided to the memoized function is used as the map cache key. The `func`
+	 * is invoked with the `this` binding of the memoized function.
+	 *
+	 * **Note:** The cache is exposed as the `cache` property on the memoized
+	 * function. Its creation may be customized by replacing the `_.memoize.Cache`
+	 * constructor with one whose instances implement the
+	 * [`Map`](http://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-map-prototype-object)
+	 * method interface of `clear`, `delete`, `get`, `has`, and `set`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Function
+	 * @param {Function} func The function to have its output memoized.
+	 * @param {Function} [resolver] The function to resolve the cache key.
+	 * @returns {Function} Returns the new memoized function.
+	 * @example
+	 *
+	 * var object = { 'a': 1, 'b': 2 };
+	 * var other = { 'c': 3, 'd': 4 };
+	 *
+	 * var values = _.memoize(_.values);
+	 * values(object);
+	 * // => [1, 2]
+	 *
+	 * values(other);
+	 * // => [3, 4]
+	 *
+	 * object.a = 2;
+	 * values(object);
+	 * // => [1, 2]
+	 *
+	 * // Modify the result cache.
+	 * values.cache.set(object, ['a', 'b']);
+	 * values(object);
+	 * // => ['a', 'b']
+	 *
+	 * // Replace `_.memoize.Cache`.
+	 * _.memoize.Cache = WeakMap;
+	 */
+	function memoize(func, resolver) {
+	  if (typeof func != 'function' || (resolver != null && typeof resolver != 'function')) {
+	    throw new TypeError(FUNC_ERROR_TEXT);
+	  }
+	  var memoized = function() {
+	    var args = arguments,
+	        key = resolver ? resolver.apply(this, args) : args[0],
+	        cache = memoized.cache;
+
+	    if (cache.has(key)) {
+	      return cache.get(key);
+	    }
+	    var result = func.apply(this, args);
+	    memoized.cache = cache.set(key, result) || cache;
+	    return result;
+	  };
+	  memoized.cache = new (memoize.Cache || _MapCache);
+	  return memoized;
+	}
+
+	// Expose `MapCache`.
+	memoize.Cache = _MapCache;
+
+	var memoize_1 = memoize;
+
+	/** Used as the maximum memoize cache size. */
+	var MAX_MEMOIZE_SIZE = 500;
+
+	/**
+	 * A specialized version of `_.memoize` which clears the memoized function's
+	 * cache when it exceeds `MAX_MEMOIZE_SIZE`.
+	 *
+	 * @private
+	 * @param {Function} func The function to have its output memoized.
+	 * @returns {Function} Returns the new memoized function.
+	 */
+	function memoizeCapped(func) {
+	  var result = memoize_1(func, function(key) {
+	    if (cache.size === MAX_MEMOIZE_SIZE) {
+	      cache.clear();
+	    }
+	    return key;
+	  });
+
+	  var cache = result.cache;
+	  return result;
+	}
+
+	var _memoizeCapped = memoizeCapped;
+
+	/** Used to match property names within property paths. */
+	var reLeadingDot = /^\./;
+	var rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
+
+	/** Used to match backslashes in property paths. */
+	var reEscapeChar = /\\(\\)?/g;
+
+	/**
+	 * Converts `string` to a property path array.
+	 *
+	 * @private
+	 * @param {string} string The string to convert.
+	 * @returns {Array} Returns the property path array.
+	 */
+	var stringToPath = _memoizeCapped(function(string) {
+	  var result = [];
+	  if (reLeadingDot.test(string)) {
+	    result.push('');
+	  }
+	  string.replace(rePropName, function(match, number, quote, string) {
+	    result.push(quote ? string.replace(reEscapeChar, '$1') : (number || match));
+	  });
+	  return result;
+	});
+
+	var _stringToPath = stringToPath;
+
+	/** Used as references for various `Number` constants. */
+	var INFINITY = 1 / 0;
+
+	/** Used to convert symbols to primitives and strings. */
+	var symbolProto$2 = _Symbol ? _Symbol.prototype : undefined;
+	var symbolToString = symbolProto$2 ? symbolProto$2.toString : undefined;
+
+	/**
+	 * The base implementation of `_.toString` which doesn't convert nullish
+	 * values to empty strings.
+	 *
+	 * @private
+	 * @param {*} value The value to process.
+	 * @returns {string} Returns the string.
+	 */
+	function baseToString(value) {
+	  // Exit early for strings to avoid a performance hit in some environments.
+	  if (typeof value == 'string') {
+	    return value;
+	  }
+	  if (isArray_1$2(value)) {
+	    // Recursively convert values (susceptible to call stack limits).
+	    return _arrayMap(value, baseToString) + '';
+	  }
+	  if (isSymbol_1(value)) {
+	    return symbolToString ? symbolToString.call(value) : '';
+	  }
+	  var result = (value + '');
+	  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+	}
+
+	var _baseToString = baseToString;
+
+	/**
+	 * Converts `value` to a string. An empty string is returned for `null`
+	 * and `undefined` values. The sign of `-0` is preserved.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Lang
+	 * @param {*} value The value to convert.
+	 * @returns {string} Returns the converted string.
+	 * @example
+	 *
+	 * _.toString(null);
+	 * // => ''
+	 *
+	 * _.toString(-0);
+	 * // => '-0'
+	 *
+	 * _.toString([1, 2, 3]);
+	 * // => '1,2,3'
+	 */
+	function toString(value) {
+	  return value == null ? '' : _baseToString(value);
+	}
+
+	var toString_1 = toString;
+
+	/**
+	 * Casts `value` to a path array if it's not one.
+	 *
+	 * @private
+	 * @param {*} value The value to inspect.
+	 * @param {Object} [object] The object to query keys on.
+	 * @returns {Array} Returns the cast property path array.
+	 */
+	function castPath(value, object) {
+	  if (isArray_1$2(value)) {
+	    return value;
+	  }
+	  return _isKey(value, object) ? [value] : _stringToPath(toString_1(value));
+	}
+
+	var _castPath = castPath;
+
+	/** Used as references for various `Number` constants. */
+	var INFINITY$1 = 1 / 0;
+
+	/**
+	 * Converts `value` to a string key if it's not a string or symbol.
+	 *
+	 * @private
+	 * @param {*} value The value to inspect.
+	 * @returns {string|symbol} Returns the key.
+	 */
+	function toKey(value) {
+	  if (typeof value == 'string' || isSymbol_1(value)) {
+	    return value;
+	  }
+	  var result = (value + '');
+	  return (result == '0' && (1 / value) == -INFINITY$1) ? '-0' : result;
+	}
+
+	var _toKey = toKey;
+
+	/**
+	 * The base implementation of `_.get` without support for default values.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} path The path of the property to get.
+	 * @returns {*} Returns the resolved value.
+	 */
+	function baseGet(object, path) {
+	  path = _castPath(path, object);
+
+	  var index = 0,
+	      length = path.length;
+
+	  while (object != null && index < length) {
+	    object = object[_toKey(path[index++])];
+	  }
+	  return (index && index == length) ? object : undefined;
+	}
+
+	var _baseGet = baseGet;
+
+	/**
+	 * Gets the value at `path` of `object`. If the resolved value is
+	 * `undefined`, the `defaultValue` is returned in its place.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 3.7.0
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} path The path of the property to get.
+	 * @param {*} [defaultValue] The value returned for `undefined` resolved values.
+	 * @returns {*} Returns the resolved value.
+	 * @example
+	 *
+	 * var object = { 'a': [{ 'b': { 'c': 3 } }] };
+	 *
+	 * _.get(object, 'a[0].b.c');
+	 * // => 3
+	 *
+	 * _.get(object, ['a', '0', 'b', 'c']);
+	 * // => 3
+	 *
+	 * _.get(object, 'a.b.c', 'default');
+	 * // => 'default'
+	 */
+	function get(object, path, defaultValue) {
+	  var result = object == null ? undefined : _baseGet(object, path);
+	  return result === undefined ? defaultValue : result;
+	}
+
+	var get_1 = get;
+
+	/**
+	 * The base implementation of `_.hasIn` without support for deep paths.
+	 *
+	 * @private
+	 * @param {Object} [object] The object to query.
+	 * @param {Array|string} key The key to check.
+	 * @returns {boolean} Returns `true` if `key` exists, else `false`.
+	 */
+	function baseHasIn(object, key) {
+	  return object != null && key in Object(object);
+	}
+
+	var _baseHasIn = baseHasIn;
+
+	/**
+	 * Checks if `path` exists on `object`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} path The path to check.
+	 * @param {Function} hasFunc The function to check properties.
+	 * @returns {boolean} Returns `true` if `path` exists, else `false`.
+	 */
+	function hasPath(object, path, hasFunc) {
+	  path = _castPath(path, object);
+
+	  var index = -1,
+	      length = path.length,
+	      result = false;
+
+	  while (++index < length) {
+	    var key = _toKey(path[index]);
+	    if (!(result = object != null && hasFunc(object, key))) {
+	      break;
+	    }
+	    object = object[key];
+	  }
+	  if (result || ++index != length) {
+	    return result;
+	  }
+	  length = object == null ? 0 : object.length;
+	  return !!length && isLength_1(length) && _isIndex(key, length) &&
+	    (isArray_1$2(object) || isArguments_1(object));
+	}
+
+	var _hasPath = hasPath;
+
+	/**
+	 * Checks if `path` is a direct or inherited property of `object`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} path The path to check.
+	 * @returns {boolean} Returns `true` if `path` exists, else `false`.
+	 * @example
+	 *
+	 * var object = _.create({ 'a': _.create({ 'b': 2 }) });
+	 *
+	 * _.hasIn(object, 'a');
+	 * // => true
+	 *
+	 * _.hasIn(object, 'a.b');
+	 * // => true
+	 *
+	 * _.hasIn(object, ['a', 'b']);
+	 * // => true
+	 *
+	 * _.hasIn(object, 'b');
+	 * // => false
+	 */
+	function hasIn(object, path) {
+	  return object != null && _hasPath(object, path, _baseHasIn);
+	}
+
+	var hasIn_1 = hasIn;
+
+	/** Used to compose bitmasks for value comparisons. */
+	var COMPARE_PARTIAL_FLAG$5 = 1;
+	var COMPARE_UNORDERED_FLAG$3 = 2;
+
+	/**
+	 * The base implementation of `_.matchesProperty` which doesn't clone `srcValue`.
+	 *
+	 * @private
+	 * @param {string} path The path of the property to get.
+	 * @param {*} srcValue The value to match.
+	 * @returns {Function} Returns the new spec function.
+	 */
+	function baseMatchesProperty(path, srcValue) {
+	  if (_isKey(path) && _isStrictComparable(srcValue)) {
+	    return _matchesStrictComparable(_toKey(path), srcValue);
+	  }
+	  return function(object) {
+	    var objValue = get_1(object, path);
+	    return (objValue === undefined && objValue === srcValue)
+	      ? hasIn_1(object, path)
+	      : _baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG$5 | COMPARE_UNORDERED_FLAG$3);
+	  };
+	}
+
+	var _baseMatchesProperty = baseMatchesProperty;
+
+	/**
+	 * The base implementation of `_.property` without support for deep paths.
+	 *
+	 * @private
+	 * @param {string} key The key of the property to get.
+	 * @returns {Function} Returns the new accessor function.
+	 */
+	function baseProperty(key) {
+	  return function(object) {
+	    return object == null ? undefined : object[key];
+	  };
+	}
+
+	var _baseProperty = baseProperty;
+
+	/**
+	 * A specialized version of `baseProperty` which supports deep paths.
+	 *
+	 * @private
+	 * @param {Array|string} path The path of the property to get.
+	 * @returns {Function} Returns the new accessor function.
+	 */
+	function basePropertyDeep(path) {
+	  return function(object) {
+	    return _baseGet(object, path);
+	  };
+	}
+
+	var _basePropertyDeep = basePropertyDeep;
+
+	/**
+	 * Creates a function that returns the value at `path` of a given object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 2.4.0
+	 * @category Util
+	 * @param {Array|string} path The path of the property to get.
+	 * @returns {Function} Returns the new accessor function.
+	 * @example
+	 *
+	 * var objects = [
+	 *   { 'a': { 'b': 2 } },
+	 *   { 'a': { 'b': 1 } }
+	 * ];
+	 *
+	 * _.map(objects, _.property('a.b'));
+	 * // => [2, 1]
+	 *
+	 * _.map(_.sortBy(objects, _.property(['a', 'b'])), 'a.b');
+	 * // => [1, 2]
+	 */
+	function property(path) {
+	  return _isKey(path) ? _baseProperty(_toKey(path)) : _basePropertyDeep(path);
+	}
+
+	var property_1 = property;
+
+	/**
+	 * The base implementation of `_.iteratee`.
+	 *
+	 * @private
+	 * @param {*} [value=_.identity] The value to convert to an iteratee.
+	 * @returns {Function} Returns the iteratee.
+	 */
+	function baseIteratee(value) {
+	  // Don't store the `typeof` result in a variable to avoid a JIT bug in Safari 9.
+	  // See https://bugs.webkit.org/show_bug.cgi?id=156034 for more details.
+	  if (typeof value == 'function') {
+	    return value;
+	  }
+	  if (value == null) {
+	    return identity_1;
+	  }
+	  if (typeof value == 'object') {
+	    return isArray_1$2(value)
+	      ? _baseMatchesProperty(value[0], value[1])
+	      : _baseMatches(value);
+	  }
+	  return property_1(value);
+	}
+
+	var _baseIteratee = baseIteratee;
+
+	/**
+	 * Creates a base function for methods like `_.forIn` and `_.forOwn`.
+	 *
+	 * @private
+	 * @param {boolean} [fromRight] Specify iterating from right to left.
+	 * @returns {Function} Returns the new base function.
+	 */
+	function createBaseFor(fromRight) {
+	  return function(object, iteratee, keysFunc) {
+	    var index = -1,
+	        iterable = Object(object),
+	        props = keysFunc(object),
+	        length = props.length;
+
+	    while (length--) {
+	      var key = props[fromRight ? length : ++index];
+	      if (iteratee(iterable[key], key, iterable) === false) {
+	        break;
+	      }
+	    }
+	    return object;
+	  };
+	}
+
+	var _createBaseFor = createBaseFor;
+
+	/**
+	 * The base implementation of `baseForOwn` which iterates over `object`
+	 * properties returned by `keysFunc` and invokes `iteratee` for each property.
+	 * Iteratee functions may exit iteration early by explicitly returning `false`.
+	 *
+	 * @private
+	 * @param {Object} object The object to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @param {Function} keysFunc The function to get the keys of `object`.
+	 * @returns {Object} Returns `object`.
+	 */
+	var baseFor = _createBaseFor();
+
+	var _baseFor = baseFor;
+
+	/**
+	 * The base implementation of `_.forOwn` without support for iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Object} object The object to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Object} Returns `object`.
+	 */
+	function baseForOwn(object, iteratee) {
+	  return object && _baseFor(object, iteratee, keys_1);
+	}
+
+	var _baseForOwn = baseForOwn;
+
+	/**
+	 * Creates a `baseEach` or `baseEachRight` function.
+	 *
+	 * @private
+	 * @param {Function} eachFunc The function to iterate over a collection.
+	 * @param {boolean} [fromRight] Specify iterating from right to left.
+	 * @returns {Function} Returns the new base function.
+	 */
+	function createBaseEach(eachFunc, fromRight) {
+	  return function(collection, iteratee) {
+	    if (collection == null) {
+	      return collection;
+	    }
+	    if (!isArrayLike_1(collection)) {
+	      return eachFunc(collection, iteratee);
+	    }
+	    var length = collection.length,
+	        index = fromRight ? length : -1,
+	        iterable = Object(collection);
+
+	    while ((fromRight ? index-- : ++index < length)) {
+	      if (iteratee(iterable[index], index, iterable) === false) {
+	        break;
+	      }
+	    }
+	    return collection;
+	  };
+	}
+
+	var _createBaseEach = createBaseEach;
+
+	/**
+	 * The base implementation of `_.forEach` without support for iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Array|Object} collection The collection to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array|Object} Returns `collection`.
+	 */
+	var baseEach = _createBaseEach(_baseForOwn);
+
+	var _baseEach = baseEach;
+
+	/**
+	 * The base implementation of `_.map` without support for iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Array|Object} collection The collection to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array} Returns the new mapped array.
+	 */
+	function baseMap(collection, iteratee) {
+	  var index = -1,
+	      result = isArrayLike_1(collection) ? Array(collection.length) : [];
+
+	  _baseEach(collection, function(value, key, collection) {
+	    result[++index] = iteratee(value, key, collection);
+	  });
+	  return result;
+	}
+
+	var _baseMap = baseMap;
+
+	/**
+	 * The base implementation of `_.sortBy` which uses `comparer` to define the
+	 * sort order of `array` and replaces criteria objects with their corresponding
+	 * values.
+	 *
+	 * @private
+	 * @param {Array} array The array to sort.
+	 * @param {Function} comparer The function to define sort order.
+	 * @returns {Array} Returns `array`.
+	 */
+	function baseSortBy(array, comparer) {
+	  var length = array.length;
+
+	  array.sort(comparer);
+	  while (length--) {
+	    array[length] = array[length].value;
+	  }
+	  return array;
+	}
+
+	var _baseSortBy = baseSortBy;
+
+	/**
+	 * Compares values to sort them in ascending order.
+	 *
+	 * @private
+	 * @param {*} value The value to compare.
+	 * @param {*} other The other value to compare.
+	 * @returns {number} Returns the sort order indicator for `value`.
+	 */
+	function compareAscending(value, other) {
+	  if (value !== other) {
+	    var valIsDefined = value !== undefined,
+	        valIsNull = value === null,
+	        valIsReflexive = value === value,
+	        valIsSymbol = isSymbol_1(value);
+
+	    var othIsDefined = other !== undefined,
+	        othIsNull = other === null,
+	        othIsReflexive = other === other,
+	        othIsSymbol = isSymbol_1(other);
+
+	    if ((!othIsNull && !othIsSymbol && !valIsSymbol && value > other) ||
+	        (valIsSymbol && othIsDefined && othIsReflexive && !othIsNull && !othIsSymbol) ||
+	        (valIsNull && othIsDefined && othIsReflexive) ||
+	        (!valIsDefined && othIsReflexive) ||
+	        !valIsReflexive) {
+	      return 1;
+	    }
+	    if ((!valIsNull && !valIsSymbol && !othIsSymbol && value < other) ||
+	        (othIsSymbol && valIsDefined && valIsReflexive && !valIsNull && !valIsSymbol) ||
+	        (othIsNull && valIsDefined && valIsReflexive) ||
+	        (!othIsDefined && valIsReflexive) ||
+	        !othIsReflexive) {
+	      return -1;
+	    }
+	  }
+	  return 0;
+	}
+
+	var _compareAscending = compareAscending;
+
+	/**
+	 * Used by `_.orderBy` to compare multiple properties of a value to another
+	 * and stable sort them.
+	 *
+	 * If `orders` is unspecified, all values are sorted in ascending order. Otherwise,
+	 * specify an order of "desc" for descending or "asc" for ascending sort order
+	 * of corresponding values.
+	 *
+	 * @private
+	 * @param {Object} object The object to compare.
+	 * @param {Object} other The other object to compare.
+	 * @param {boolean[]|string[]} orders The order to sort by for each property.
+	 * @returns {number} Returns the sort order indicator for `object`.
+	 */
+	function compareMultiple(object, other, orders) {
+	  var index = -1,
+	      objCriteria = object.criteria,
+	      othCriteria = other.criteria,
+	      length = objCriteria.length,
+	      ordersLength = orders.length;
+
+	  while (++index < length) {
+	    var result = _compareAscending(objCriteria[index], othCriteria[index]);
+	    if (result) {
+	      if (index >= ordersLength) {
+	        return result;
+	      }
+	      var order = orders[index];
+	      return result * (order == 'desc' ? -1 : 1);
+	    }
+	  }
+	  // Fixes an `Array#sort` bug in the JS engine embedded in Adobe applications
+	  // that causes it, under certain circumstances, to provide the same value for
+	  // `object` and `other`. See https://github.com/jashkenas/underscore/pull/1247
+	  // for more details.
+	  //
+	  // This also ensures a stable sort in V8 and other engines.
+	  // See https://bugs.chromium.org/p/v8/issues/detail?id=90 for more details.
+	  return object.index - other.index;
+	}
+
+	var _compareMultiple = compareMultiple;
+
+	/**
+	 * The base implementation of `_.orderBy` without param guards.
+	 *
+	 * @private
+	 * @param {Array|Object} collection The collection to iterate over.
+	 * @param {Function[]|Object[]|string[]} iteratees The iteratees to sort by.
+	 * @param {string[]} orders The sort orders of `iteratees`.
+	 * @returns {Array} Returns the new sorted array.
+	 */
+	function baseOrderBy(collection, iteratees, orders) {
+	  var index = -1;
+	  iteratees = _arrayMap(iteratees.length ? iteratees : [identity_1], _baseUnary(_baseIteratee));
+
+	  var result = _baseMap(collection, function(value, key, collection) {
+	    var criteria = _arrayMap(iteratees, function(iteratee) {
+	      return iteratee(value);
+	    });
+	    return { 'criteria': criteria, 'index': ++index, 'value': value };
+	  });
+
+	  return _baseSortBy(result, function(object, other) {
+	    return _compareMultiple(object, other, orders);
+	  });
+	}
+
+	var _baseOrderBy = baseOrderBy;
+
+	/**
+	 * Creates an array of elements, sorted in ascending order by the results of
+	 * running each element in a collection thru each iteratee. This method
+	 * performs a stable sort, that is, it preserves the original sort order of
+	 * equal elements. The iteratees are invoked with one argument: (value).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Collection
+	 * @param {Array|Object} collection The collection to iterate over.
+	 * @param {...(Function|Function[])} [iteratees=[_.identity]]
+	 *  The iteratees to sort by.
+	 * @returns {Array} Returns the new sorted array.
+	 * @example
+	 *
+	 * var users = [
+	 *   { 'user': 'fred',   'age': 48 },
+	 *   { 'user': 'barney', 'age': 36 },
+	 *   { 'user': 'fred',   'age': 40 },
+	 *   { 'user': 'barney', 'age': 34 }
+	 * ];
+	 *
+	 * _.sortBy(users, [function(o) { return o.user; }]);
+	 * // => objects for [['barney', 36], ['barney', 34], ['fred', 48], ['fred', 40]]
+	 *
+	 * _.sortBy(users, ['user', 'age']);
+	 * // => objects for [['barney', 34], ['barney', 36], ['fred', 40], ['fred', 48]]
+	 */
+	var sortBy = _baseRest(function(collection, iteratees) {
+	  if (collection == null) {
+	    return [];
+	  }
+	  var length = iteratees.length;
+	  if (length > 1 && _isIterateeCall(collection, iteratees[0], iteratees[1])) {
+	    iteratees = [];
+	  } else if (length > 2 && _isIterateeCall(iteratees[0], iteratees[1], iteratees[2])) {
+	    iteratees = [iteratees[0]];
+	  }
+	  return _baseOrderBy(collection, _baseFlatten(iteratees, 1), []);
+	});
+
+	var sortBy_1 = sortBy;
+
+	// main
+
+	function PromiseCache (args) {
+
+	  var args = args || {};
+
+	  this.maxResolvedCache = args.maxResolvedCache || 1000;
+
+	  this._pendingPromises = {};
+	  this._resolvedPromises = {};
+
+	}
+
+	PromiseCache.prototype = {
+
+	  add: function (key, promise) {
+
+	    var self = this;
+
+	    // check if it already exists
+	    if (this._pendingPromises[ key ]) {
+	      return this._pendingPromises[ key ]
+	    }
+	    if (this._resolvedPromises[ key ]) {
+	      return this._resolvedPromises[ key ]
+	    }
+
+	    // create cache object
+	    var cacheObject = {
+	      key: key,
+	      timestamp: Date.now(),
+	      promise: promise
+	    };
+
+	    // add to store
+	    this._pendingPromises[ key ] = cacheObject;
+
+	    // move to resolved store and update state when resolved
+	    promise.then(function (data) {
+
+	      var cacheObject = self._pendingPromises[ key ];
+	      delete self._pendingPromises[ key ];
+
+	      cacheObject.data = data;
+
+	      self._resolvedPromises[ key ] = cacheObject;
+
+	    }, function () {
+
+	      delete self._pendingPromises[ key ];
+
+	    });
+
+	    // collect garbage
+	    this._collectGarbage();
+
+	    // return cache object
+	    return cacheObject
+
+	  },
+
+	  get: function (key) {
+
+	    // check store
+	    var cacheObject = this._pendingPromises[ key ] || this._resolvedPromises[ key ];
+	    if (!cacheObject) {
+	      return false
+	    }
+
+	    // update timestamp
+	    cacheObject.timestamp = Date.now();
+
+	    // return promise
+	    return cacheObject.promise
+
+	  },
+
+	  purge: function () {
+
+	    for (var key in this._resolvedPromises) {
+	      delete this._resolvedPromises[ key ];
+	    }
+
+	  },
+
+	  _collectGarbage: function () {
+
+	    // sort archive by timestamp
+	    var sortedPromises = sortBy_1(this._resolvedPromises, function (obj) {
+	      return obj.timestamp
+	    });
+
+	    // the amount of cache objects that have to be removed
+	    var removeCount = (sortedPromises.length - this.maxResolvedCache);
+	    if (removeCount <= 0) {
+	      return
+	    }
+
+	    for (var i = 0; i < removeCount; i++) {
+	      delete this._resolvedPromises[ sortedPromises[ i ].key ];
+	    }
+
+	  }
+
+	};
+
+	var promiseCache$1 = new PromiseCache();
+
+	function fetchScript (url) {
+	  runtime.assertBrowser('Please use "require()" to fetch modules in server environment.');
+
+	  // module wrapper
+	  window.___modules = window.___modules || {};
+
+	  // return module if it has been loaded already
+	  if (window.___modules[url]) {
+	    return Promise.resolve(window.___modules[url])
+
+	  } else {
+
+	    // try promise cache (could be in loading state)
+	    var promiseFromCache = promiseCache$1.get(url);
+	    if (promiseFromCache) return promiseFromCache
+
+	    // load code and use module wrapper
+	    var fetchPromise = fetch$1(url).then(function(response){
+	      if (!response.ok) throw 'Could not load script from URL: '+url
+	      return response.text()
+	    }).then(function(code){
+
+	      // check module type
+	      var moduleWrapper;
+	      if (code.indexOf('define(function()') > -1) {
+	        // AMD
+	        moduleWrapper = code+'\nfunction define(cb){ window.___modules["'+url+'"] = cb(); };';
+	      } else {
+	        // CommonJS
+	        moduleWrapper = 'window.___modules["'+url+'"] = (function(){ var exports = {}, module = {exports:exports};'+code+'\nreturn module.exports\n})()';
+	      }
+
+	      var script = document.createElement('script');
+	      try {
+	        script.appendChild(document.createTextNode(moduleWrapper));
+	        document.body.appendChild(script);
+	      } catch (e) {
+	        script.text = moduleWrapper;
+	        document.body.appendChild(script);
+	      }
+	      return window.___modules[url]
+	    });
+
+	    // add to cache
+	    promiseCache$1.add(url, fetchPromise);
+
+	    return fetchPromise
+
+	  }
+
+	}
+
+	var fragmentShader = {"text":"uniform vec3 u_color;\nuniform float u_metallic;\nuniform float u_roughness;\nuniform vec3 u_light0Pos;\nuniform vec3 u_light0Color;\nuniform vec3 u_light1Pos;\nuniform vec3 u_light1Color;\nuniform mat4 u_modelMatrix;\nuniform sampler2D u_reflectionCube;\nuniform sampler2D u_reflectionCubeBlur;","base64":"data:text/plain;base64,dW5pZm9ybSB2ZWMzIHVfY29sb3I7CnVuaWZvcm0gZmxvYXQgdV9tZXRhbGxpYzsKdW5pZm9ybSBmbG9hdCB1X3JvdWdobmVzczsKdW5pZm9ybSB2ZWMzIHVfbGlnaHQwUG9zOwp1bmlmb3JtIHZlYzMgdV9saWdodDBDb2xvcjsKdW5pZm9ybSB2ZWMzIHVfbGlnaHQxUG9zOwp1bmlmb3JtIHZlYzMgdV9saWdodDFDb2xvcjsKdW5pZm9ybSBtYXQ0IHVfbW9kZWxNYXRyaXg7CnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmU7CnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmVCbHVyOw=="};
+
+	var vertexShader = {"text":"varying vec3 v_normal;\nvarying vec3 v_position;\nvarying vec3 v_binormal;\nvarying vec3 v_tangent;\n","base64":"data:text/plain;base64,dmFyeWluZyB2ZWMzIHZfbm9ybWFsOwp2YXJ5aW5nIHZlYzMgdl9wb3NpdGlvbjsKdmFyeWluZyB2ZWMzIHZfYmlub3JtYWw7CnZhcnlpbmcgdmVjMyB2X3RhbmdlbnQ7Cg=="};
+
+	// TODO: Replace placeholder shaders by original ones (requires fixing projection matrix)
+	// configs
+
+	var LEGACY_GLFT_LOADER_URL = 'https://cdn.rawgit.com/mrdoob/three.js/r86/examples/js/loaders/GLTFLoader.js';
+	var GBLOCK_API_GET_OFFICIAL_GLTF_URL = 'https://us-central1-gblock-api.cloudfunctions.net/get-gltf-url/?url=';
+
+	// internals
+
+	var promiseCache = new PromiseCache();
+
+	// aframe module
+
+	var gBlockComponent = {
+
+	  schema: {type: 'asset'},
+
+	  init: function () {
+
+	    this.model = null;
+
+	  },
+
+	  update: function () {
+
+	    var self = this;
+	    var el = this.el;
+	    var src = this.data;
+
+	    if (!src) { return; }
+
+	    this.remove();
+
+	    bluebird_1.all([
+	      getGltfUrl(src),
+	      fetchGblockLoader()
+	    ]).then(function (results) {
+
+	      var gltfUrl = results[0];
+	      var GblockLoader = results[1];
+
+	      // load glTF model from original URL
+	      new GblockLoader().load( gltfUrl, function onLoaded (gltfModel) {
+
+	        self.model = gltfModel.scene || gltfModel.scenes[0];
+	        // FIXME: adapt projection matrix in original shaders and do not replace materials
+	        self.model.traverse(function (child) {
+	          if (child.material) child.material = new THREE.MeshPhongMaterial({ vertexColors: THREE.VertexColors });
+	        });
+	        self.model.animations = gltfModel.animations;
+
+	        el.setObject3D('mesh', self.model);
+	        el.emit('model-loaded', {format: 'gltf', model: self.model});
+
+	      }, function onProgress() {
+	        // do nothing
+
+	      }, function onError(error) {
+
+	        console.error('ERROR loading gblock model "'+ src +'" : ' + error);
+	        el.emit('model-error', { message: error });
+
+	      });
+
+	    }).catch(function(errorMessage){
+	      console.error('ERROR loading gblock model from "' + src +'" : ' + errorMessage);
+	      el.emit('model-error', { message: errorMessage });
+	    });
+
+	  },
+
+	  remove: function () {
+
+	    if (!this.model) { return; }
+	    this.el.removeObject3D('mesh');
+
+	  }
+
+	};
+
+	// private shared methods
+
+	// FIXME: Replace this with an official API URL once available
+	// This API call is only needed to obtain the official glTF URL of a google block model.
+	// The glTF itself is not being proxied and gets fetched from https://vr.google.com/downloads/* directly.
+	// https://github.com/archilogic-com/aframe-gblock/issues/1
+	// API server code: server/index.js
+	// try promise cache (could be in loading state)
+	function getGltfUrl (src) {
+
+	  // try cache
+	  var getUrlPromise = promiseCache.get(src);
+
+	  if (!getUrlPromise) {
+
+	    getUrlPromise = fetch(GBLOCK_API_GET_OFFICIAL_GLTF_URL + src).then(function (response) {
+
+	      // parse response
+	      return response.json().then(function (message) {
+	        if (response.ok) {
+	          // return glTF URL
+	          return message.gltfUrl
+	        } else {
+	          // handle error response
+	          var status = response.status;
+	          var errorMessage = message.message;
+	          console.error('ERROR loading gblock model "'+ src +'" : ' + status + ' "' + errorMessage + '"');
+	          return bluebird_1.reject(errorMessage)
+	        }
+	      }).catch(function(error){
+	        // handle server error
+	        var errorMessage = '3dio.js: Error parsing gblock API server JSON response: ' + error;
+	        console.error(errorMessage);
+	        return bluebird_1.reject(errorMessage)
+	      })
+
+	    });
+
+	    // add to cache
+	    promiseCache.add(src, getUrlPromise);
+
+	  }
+
+	  return getUrlPromise
+
+	}
+
+	// loader has to be created asynchronously because we have to fetch legacy glTF loader script
+	var GblockLoaderPromise;
+	function fetchGblockLoader() {
+
+	  if (!GblockLoaderPromise) {
+
+	    // legacy loader will overwrite THREE.GLTFLoader so we need to keep reference to it
+	    THREE.___OriginalGLTFLoader = THREE.GLTFLoader;
+
+	    GblockLoaderPromise = fetchScript(LEGACY_GLFT_LOADER_URL).then(function(){
+
+	      // keep reference to fetched legacy loader
+	      var LegacyGLTFLoader = THREE.GLTFLoader;
+
+	      // restore current GLTFLoader
+	      THREE.GLTFLoader = THREE.___OriginalGLTFLoader;
+
+	      // create modified GLTF loader for google blocks
+	      function GBlockLoader () {
+
+	        LegacyGLTFLoader.call(this);
+
+	        var self = this;
+
+	        this._parse = this.parse;
+	        this.parse = function (data, path, onLoad, onError) {
+	          // convert uint8 to json
+	          var json = JSON.parse(convertUint8ArrayToString(data));
+	          // use base64 shaders
+	          Object.keys(json.shaders).forEach(function (key, i) {
+	            // Replacing original shaders with placeholders
+	            if (key.indexOf('fragment') > -1) json.shaders[key].uri = fragmentShader.base64;
+	            else if (key.indexOf('vertex') > -1) json.shaders[key].uri = vertexShader.base64;
+	          });
+	          // convert json to uint8
+	          var uint8array = new TextEncoder('utf-8').encode(JSON.stringify(json));
+	          // parse data
+	          self._parse.call(self, uint8array, path, onLoad, onError);
+	        };
+
+	      }
+	      GBlockLoader.prototype = LegacyGLTFLoader.prototype;
+
+	      // expose loader
+	      return GBlockLoader
+
+	    });
+
+	  }
+
+	  return GblockLoaderPromise
+
+	}
+
+	// from https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/GLTFLoader.js
+	function convertUint8ArrayToString (array) {
+	  if (window.TextDecoder !== undefined) {
+	    return new TextDecoder().decode(array)
+	  }
+	  // Avoid the String.fromCharCode.apply(null, array) shortcut, which
+	  // throws a "maximum call stack size exceeded" error for large arrays.
+	  var s = '';
+	  for (var i = 0, il = array.length; i < il; i++) {
+	    s += String.fromCharCode(array[i]);
+	  }
+	  return s;
+	}
+
+	// internals
+
+	var INSPECTOR_PLUGINS_URL = 'https://dist.3d.io/3dio-inspector-plugins/0.x.x/3dio-inspector-plugins.js';
+
+	function init() {
+
+	  if (window.AFRAME && window.AFRAME.INSPECTOR && window.AFRAME.INSPECTOR.opened) {
+	    // inspector opened: load immediately
+	    loadPlugins();
+	  } else {
+	    // initialize on inspector ready event
+	    window.addEventListener('inspector-loaded', loadPlugins);
+	  }
+
+	// methods
+
+	  function loadPlugins () {
+	    if (window.io3d.aFrame.pluginsLoaded) return
+	    fetchScript(INSPECTOR_PLUGINS_URL).catch(function(error){
+	      console.error('Could not load inspector plugins: '+error);
+	    });
+	  }
+
+	}
+
+	// expose API
+
+	var inspectorPluginsLauncher = {
+	  init: init
+	};
+
+	var DDS_MAGIC = 0x20534444;
+
+	var DDSD_MIPMAPCOUNT = 0x20000;
+
+	var DDSCAPS2_CUBEMAP = 0x200;
+
+	var DDPF_FOURCC = 0x4;
+
+	// internals
+
+	var FOURCC_DXT1 = fourCCToInt32("DXT1");
+	var FOURCC_DXT3 = fourCCToInt32("DXT3");
+	var FOURCC_DXT5 = fourCCToInt32("DXT5");
+
+	// functions
+
+	function fourCCToInt32 (value) {
+
+	  return value.charCodeAt(0) +
+	    (value.charCodeAt(1) << 8) +
+	    (value.charCodeAt(2) << 16) +
+	    (value.charCodeAt(3) << 24);
+
+	}
+
+	function int32ToFourCC (value) {
+
+	  return String.fromCharCode(
+	    value & 0xff,
+	    (value >> 8) & 0xff,
+	    (value >> 16) & 0xff,
+	    (value >> 24) & 0xff
+	  );
+	}
+
+	function loadARGBMip (buffer, dataOffset, width, height) {
+	  var dataLength = width * height * 4;
+	  var srcBuffer = new Uint8Array(buffer, dataOffset, dataLength);
+	  var byteArray = new Uint8Array(dataLength);
+	  var dst = 0;
+	  var src = 0;
+	  for (var y = 0; y < height; y++) {
+	    for (var x = 0; x < width; x++) {
+	      var b = srcBuffer[ src ];
+	      src++;
+	      var g = srcBuffer[ src ];
+	      src++;
+	      var r = srcBuffer[ src ];
+	      src++;
+	      var a = srcBuffer[ src ];
+	      src++;
+	      byteArray[ dst ] = r;
+	      dst++;  //r
+	      byteArray[ dst ] = g;
+	      dst++;  //g
+	      byteArray[ dst ] = b;
+	      dst++;  //b
+	      byteArray[ dst ] = a;
+	      dst++;  //a
+	    }
+	  }
+	  return byteArray;
+	}
+
+	function parse (buffer, loadMipmaps) {
+
+	  var dds = { mipmaps: [], width: 0, height: 0, format: null, mipmapCount: 1 };
+
+	  var headerLengthInt = 31; // The header length in 32 bit ints
+
+	  // Offsets into the header array
+
+	  var off_magic = 0;
+
+	  var off_size = 1;
+	  var off_flags = 2;
+	  var off_height = 3;
+	  var off_width = 4;
+
+	  var off_mipmapCount = 7;
+
+	  var off_pfFlags = 20;
+	  var off_pfFourCC = 21;
+	  var off_RGBBitCount = 22;
+	  var off_RBitMask = 23;
+	  var off_GBitMask = 24;
+	  var off_BBitMask = 25;
+	  var off_ABitMask = 26;
+
+	  var off_caps = 27;
+	  var off_caps2 = 28;
+	  var off_caps3 = 29;
+	  var off_caps4 = 30;
+
+	  // Parse header
+
+	  var header = new Int32Array(buffer, 0, headerLengthInt);
+
+	  if (header[ off_magic ] !== DDS_MAGIC) {
+
+	    console.error('THREE.DDSLoader.parse: Invalid magic number in DDS header.');
+	    return dds;
+
+	  }
+
+	  if (!header[ off_pfFlags ] & DDPF_FOURCC) {
+
+	    console.error('THREE.DDSLoader.parse: Unsupported format, must contain a FourCC code.');
+	    return dds;
+
+	  }
+
+	  var blockBytes;
+
+	  var fourCC = header[ off_pfFourCC ];
+
+	  var isRGBAUncompressed = false;
+
+	  switch (fourCC) {
+
+	    case FOURCC_DXT1:
+
+	      blockBytes = 8;
+	      dds.format = THREE.RGB_S3TC_DXT1_Format;
+	      break;
+
+	    case FOURCC_DXT3:
+
+	      blockBytes = 16;
+	      dds.format = THREE.RGBA_S3TC_DXT3_Format;
+	      break;
+
+	    case FOURCC_DXT5:
+
+	      blockBytes = 16;
+	      dds.format = THREE.RGBA_S3TC_DXT5_Format;
+	      break;
+
+	    default:
+
+	      if (header[ off_RGBBitCount ] == 32
+	        && header[ off_RBitMask ] & 0xff0000
+	        && header[ off_GBitMask ] & 0xff00
+	        && header[ off_BBitMask ] & 0xff
+	        && header[ off_ABitMask ] & 0xff000000) {
+	        isRGBAUncompressed = true;
+	        blockBytes = 64;
+	        dds.format = THREE.RGBAFormat;
+	      } else {
+	        console.error('THREE.DDSLoader.parse: Unsupported FourCC code ', int32ToFourCC(fourCC));
+	        return dds;
+	      }
+	  }
+
+	  dds.mipmapCount = 1;
+
+	  if (header[ off_flags ] & DDSD_MIPMAPCOUNT && loadMipmaps !== false) {
+
+	    dds.mipmapCount = Math.max(1, header[ off_mipmapCount ]);
+
+	  }
+
+	  //TODO: Verify that all faces of the cubemap are present with DDSCAPS2_CUBEMAP_POSITIVEX, etc.
+
+	  dds.isCubemap = header[ off_caps2 ] & DDSCAPS2_CUBEMAP ? true : false;
+
+	  dds.width = header[ off_width ];
+	  dds.height = header[ off_height ];
+
+	  var dataOffset = header[ off_size ] + 4;
+
+	  // Extract mipmaps buffers
+
+	  var width = dds.width;
+	  var height = dds.height;
+
+	  var faces = dds.isCubemap ? 6 : 1;
+
+	  for (var face = 0; face < faces; face++) {
+
+	    for (var i = 0; i < dds.mipmapCount; i++) {
+
+	      var byteArray, dataLength;
+	      if (isRGBAUncompressed) {
+	        byteArray = loadARGBMip(buffer, dataOffset, width, height);
+	        dataLength = byteArray.length;
+	      } else {
+	        dataLength = Math.max(4, width) / 4 * Math.max(4, height) / 4 * blockBytes;
+	        byteArray = new Uint8Array(buffer, dataOffset, dataLength);
+	      }
+
+	      var mipmap = { "data": byteArray, "width": width, "height": height };
+	      dds.mipmaps.push(mipmap);
+
+	      dataOffset += dataLength;
+
+	      width = Math.max(width * 0.5, 1);
+	      height = Math.max(height * 0.5, 1);
+
+	    }
+
+	    width = dds.width;
+	    height = dds.height;
+
+	  }
+
+	  return dds;
+
+	}
+
+	function log2 (x) {
+	  return Math.log(x) / Math.LN2
+	}
+
+	// load function
+
+	function fetchDdsTexture (url) {
+	  return new bluebird_1(function (resolve, reject) {
+
+	    var xhr = new XMLHttpRequest();
+
+	    xhr.onload = function (event) {
+
+	      if (xhr.status >= 200 && xhr.status < 300) {
+
+	        var buffer = xhr.response,
+	          dds;
+
+	        // parse data
+	        try {
+	          dds = parse(buffer, true);
+	        } catch (e) {
+	          var message = 'Error Loading DDS Texture\n' + url + '\n' + e.name + ': ' + e.message;
+	          console.error(message);
+	          reject(message);
+	          return
+	        }
+
+	        // See OpenGL ES 2.0.25 p. 81 paragraph 1 for the number of required mipmaps.
+	        var mipmapCount = log2(Math.max(dds.width, dds.height)) + 1;
+	        if (dds.mipmapCount != mipmapCount) {
+	          console.error('Reading DDS texture failed: ' + url + '\nmipmaps counted: ' + dds.mipmapCount + ', should be: ' + mipmapCount +
+	            '\nPlease make sure you have mipmap generation enabled when creating DDS textures from images.');
+	          reject('Error parsing DDS. Wrong mipmaps count. ' + url);
+	          return
+	        }
+
+	        // create compressed texture
+	        var texture = new THREE.CompressedTexture();
+
+	        texture.format = dds.format;
+	        texture.mipmaps = dds.mipmaps;
+	        texture.image.width = dds.width;
+	        texture.image.height = dds.height;
+	        texture.image.src = url;
+	        texture.sourceFile = url;
+	        texture.url = url;
+	        texture.bufferByteLength = buffer.byteLength;
+
+	        // gl.generateMipmap fails for compressed textures
+	        // mipmaps must be embedded in the DDS file
+	        // or texture filters must not use mipmapping
+	        texture.generateMipmaps = false;
+
+	        resolve(texture);
+
+	      } else {
+	        reject({
+	          message: 'Http Request error',
+	          url: url,
+	          status: xhr.status,
+	          headers: xhr.getAllResponseHeaders(),
+	          event: event
+	        });
+	      }
+
+	    };
+	    xhr.onerror = function (event) {
+	      reject({
+	        message: 'Http Request error',
+	        url: url,
+	        status: xhr.status,
+	        headers: xhr.getAllResponseHeaders(),
+	        event: event
+	      });
+	    };
+
+	    xhr.open('GET', url, true);
+	    xhr.crossOrigin = "Anonymous";
+	    xhr.responseType = 'arraybuffer';
+	    xhr.send(null);
+
+	  })
+	}
+
+	// internals
+
+	// graphic card max supported texture size
+	var MAX_TEXTURE_SIZE = runtime.has.webGl ? runtime.webGl.maxTextureSize || 2048 : 2048;
+
+	// helpers
+
+	function checkPowerOfTwo (value) {
+	  return ( value & ( value - 1 ) ) === 0 && value !== 0
+	}
+
+	function nearestPowerOfTwoOrMaxTextureSize (n) {
+	  // max texture size supported by vga
+	  if (n > MAX_TEXTURE_SIZE) {
+	    return MAX_TEXTURE_SIZE
+	  }
+	  // next best power of two
+	  var l = Math.log(n) / Math.LN2;
+	  return Math.pow(2, Math.round(l))
+	}
+
+	function resizeImage (image, url) {
+
+	  var width = nearestPowerOfTwoOrMaxTextureSize(image.width);
+	  var height = nearestPowerOfTwoOrMaxTextureSize(image.height);
+
+	  var canvas = document.createElement('canvas');
+	  canvas.width = width;
+	  canvas.height = height;
+	  canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+
+	  console.log('Image size not compatible. Image has been resized from ' + image.width + 'x' + image.height + 'px to ' + canvas.width + 'x' + canvas.height +
+	    'px.\n' + url);
+
+	  return canvas
+	}
+
+	// function
+
+	function fetchImageTexture (url) {
+	  return new bluebird_1(function (resolve, reject) {
+
+	    var image = document.createElement('img');
+	    image.crossOrigin = 'Anonymous';
+
+	    image.onload = function () {
+
+	      var texture = new THREE.Texture();
+
+	      texture.sourceFile = url;
+	      texture.url = url;
+
+	      // image size compatibility check
+
+	      var isPowerOfTwo = (checkPowerOfTwo(image.width) && checkPowerOfTwo(image.height));
+	      var isNotTooBig = (image.width <= MAX_TEXTURE_SIZE && image.height <= MAX_TEXTURE_SIZE);
+
+	      if (isPowerOfTwo && isNotTooBig) {
+
+	        // use image as it is
+	        texture.image = image;
+
+	      } else {
+
+	        // resize image to make it compatible
+	        texture.image = resizeImage(image, url);
+	        // add url reference
+	        texture.image.src = url;
+
+	      }
+
+	      resolve(texture);
+
+	    };
+
+	    var triedWithCacheBust = false;
+	    image.onerror = function () {
+	      if(triedWithCacheBust) {
+	        reject('Error loading texture ' + url);
+	      } else {
+	        // try again with cache busting to avoid things like #1510
+	        triedWithCacheBust = true;
+	        if (url.indexOf('?') === -1) {
+	          url += '?cacheBust=' + new Date().getTime();
+	        } else {
+	          url += '&cacheBust=' + new Date().getTime();
+	        }
+	        image.src = url;
+	      }
+	    };
+
+	    // initiate image loading
+	    image.src = url;
+
+	  })
+	}
+
+	// configs
+
+	var maxConcurrentQueuedRequests = 15; // not queued requests are not limited in running parallel
+	var queuesByPriority = [
+	  'architectureGeometries',
+	  'architectureTexturesLoRes',
+	  'interiorGeometries',
+	  'interiorTexturesLoRes',
+	  'architectureTexturesHiRes',
+	  'interiorTexturesHiRes'
+	];
+
+	var queueFences = [
+	  false,
+	  false,
+	  true,
+	  false,
+	  false
+	];
+
+	// internals
+
+	var queues = {};
+	var queueFences = {};
+	var queuesChanged = false;
+	var queueInfo = {};
+	var queuesLength = queuesByPriority.length;
+	var concurrentRequests = 0;
+	var concurrentPerQueue = {};
+	var queueName;
+	for (var i$1 = 0, l = queuesLength; i$1 < l; i$1++) {
+	  queueName = queuesByPriority[i$1];
+	  queues[queueName] = [];
+	  queueFences[queueName] = queueFences[i$1];
+	  queueInfo[queueName] = {requestCount: 0};
+	  concurrentPerQueue[queueName] = 0;
+	}
+
+	// private methods
+
+	function startRequest(queueName) {
+	  // Update queue tracking information
+	  var info = queueInfo[queueName];
+	  var time = performance.now() / 1000;
+	  if (info.timeFirst) {
+	    info.timeFirst = time;
+	    info.timeLast  = time;
+	  } else
+	    info.timeLast  = time;
+	  info.requestCount++;
+	  // Update concurrent request counts
+	  concurrentPerQueue[queueName] += 1;
+	  concurrentRequests++;
+	  // set flag
+	  queuesChanged = true;
+	  // Start request
+	  var queue = queues[queueName];
+	  var request = queue.shift();
+	  request.start();
+	}
+
+	function processQueue() {
+	  var anchorStage = null;
+	  for (var i = 0; i < queuesLength; i++) {
+	    var queueName = queuesByPriority[i];
+	    while (queues[queueName].length > 0 && concurrentRequests < maxConcurrentQueuedRequests)
+	      startRequest(queueName);
+	    if (anchorStage === null && concurrentPerQueue[queueName] !== 0)
+	      anchorStage = i;
+	    if (anchorStage !== null && (queueFences[queueName] || (i - anchorStage > 0)))
+	      break;
+	  }
+	}
+
+	// public methods
+
+	function enqueue(queueName, url){
+
+	  // fallback to first queue
+	  if (!queues[queueName]) {
+	    if (queueName) console.error('onknown queue ', queueName);
+	    queueName = queuesByPriority[0];
+	  }
+
+	  // create promise and add to queue
+	  return new Promise(function(resolve, reject){
+	    // has to be asynchronous in order to decouple queue processing from synchronous code
+	    setTimeout(function(){
+	      var queue = queues[queueName];
+	      queue[ queue.length ] = { url: url, start: resolve };
+	      processQueue();
+	    },1);
+	  })
+
+	}
+
+	function dequeue(queueName, url) {
+	  var info = queueInfo[queueName];
+	  if (!info) {
+	    if (queueName) console.warn('Queue info not found for queue name "'+queueName+'"');
+	    return
+	  }
+	  info.timeLastFinished = performance.now() / 1000;
+	  concurrentPerQueue[queueName] -= 1;
+	  concurrentRequests -= 1;
+	  queuesChanged = true;
+	  processQueue();
+	}
+
+	// expose API
+
+	var queueManager = {
+	  enqueue: enqueue,
+	  dequeue: dequeue,
+	  info: queueInfo
+	};
+
+	var cache = new PromiseCache();
+
+	var fetchTextureByType = {
+	  '.dds': fetchDdsTexture,
+	  '.jpg': fetchImageTexture,
+	  '.jpeg': fetchImageTexture,
+	  '.jpe': fetchImageTexture,
+	  '.png': fetchImageTexture,
+	  '.gif': fetchImageTexture,
+	  '.svg': fetchImageTexture
+	};
+
+	function fetchTexture (url, queueName) {
+	  
+	  // internals
+	  var cacheKey = url;
+
+	  // try cache
+	  var promiseFromCache = cache.get(cacheKey);
+	  if (promiseFromCache) return promiseFromCache
+
+	  // get file extension
+	  var extSearch = url.match(/\.[A-Za-z]+(?=\?|$)/i);
+	  var type = extSearch ? extSearch[0].toLowerCase() : '.jpg';
+
+	  if (!fetchTextureByType[type]) {
+	    // unknown texture type. fallback to JPG
+	    console.warn('Unknown texture type ' + type + '. Trying to load as JPG.');
+	    type = '.jpg';
+	  }
+
+	  var promise = queueManager.enqueue(queueName, url).then(function(){
+
+	    return fetchTextureByType[type](url)
+
+	  }).then(function(texture){
+
+	    queueManager.dequeue(queueName, url);
+	    return texture
+
+	  }).catch(function (error) {
+
+	    queueManager.dequeue(queueName, url);
+	    return bluebird_1.reject(error)
+
+	  });
+
+	  // add to cache
+	  cache.add(cacheKey, promise);
+
+	  return promise
+
+	}
+
+	/*
+
+	 PERFORMANCE CRITICAL CODE
+
+	 readability may suffer from performance optimization
+	 ask tomas-polach if you have questions
+
+	*/
+
+	// static method, @memberof View
+
+	// constants
+
+	var THREEJS_TEXTURE_TYPES_MAP = {
+	  // hi-res textures
+	  'mapDiffuse': 'map',
+	  'mapSpecular': 'specularMap',
+	  'mapNormal':'normalMap',
+	  'mapAlpha':'alphaMap',
+	  'mapLight':'lightMap',
+	  // lo-res textures
+	  'mapDiffusePreview': 'map',
+	  'mapSpecularPreview': 'specularMap',
+	  'mapNormalPreview':'normalMap',
+	  'mapAlphaPreview':'alphaMap',
+	  'mapLightPreview':'lightMap'
+	};
+	var WEBGL_WRAP_TYPES = {
+	  repeat: 1000,
+	  mirror: 1002,
+	  clamp: 1001
+	};
+	// RepeatWrapping: 1000 / ClampToEdgeWrapping: 1001 / MirroredRepeatWrapping: 1002
+
+	// helpers
+
+	function onError (e) {
+	  console.error('Texture could not been loaded: ', e);
+	}
+
+	var textureRefCount = {};
+
+	function countTextureReference ( key ) {
+	  if ( key !== undefined ) {
+	    if (textureRefCount[ key ]) {
+	      textureRefCount[ key ]++;
+	    } else {
+	      textureRefCount[ key ] = 1;
+	    }
+	  }
+	}
+
+	function disposeIfPossible () {
+	  var texture3d = this;
+	  var key = this.url;
+	  if (key) {
+	    if (textureRefCount[ key ]) {
+	      textureRefCount[ key ]--;
+	      if (textureRefCount[ key ] === 0) {
+	//          console.log('dispose texture', texture3d.url)
+	        texture3d.dispose();
+	//          texture3d.needsUpdate = true
+	      }
+	    } else {
+	//        console.warn('texture not in cache ' + key)
+	      texture3d.dispose();
+	    }
+	  } else {
+	    texture3d.dispose();
+	//      texture3d.needsUpdate = true
+	  }
+	}
+
+	// class
+
+	function loadTextureSet ( queueName, TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, resetTexturesOnLoadStart) {
+	  
+	  // new textures
+
+	  var
+	    texture3dKeys = [],
+	    textureKeys = [],
+	    texturePromises = [],
+	    textureCount = 0,
+	    textureS3Key,
+	    texture3d,
+	    textureType3d,
+	    textureType,
+	    needsUpdate,
+	    hasUv1Textures = false,
+	    geometry3d = mesh3d ? mesh3d.geometry : null,
+	    attributes3d = geometry3d ? geometry3d.attributes : null,
+	    hasUvVertices = attributes3d && attributes3d.uv && attributes3d.uv.count > 0,
+	    hasUv2Vertices = attributes3d && attributes3d.uv2 && attributes3d.uv2.count > 0,
+	    i,
+	    l;
+
+	  // UV1 textures
+
+	  for (i = 0, l = TEXTURE_TYPES.UV1.length; i < l; i++) {
+	    textureType = TEXTURE_TYPES.UV1[ i ];
+	    textureS3Key = _attributes[ textureType ];
+	    textureType3d = THREEJS_TEXTURE_TYPES_MAP[ textureType ];
+	    texture3d = material3d[ textureType3d ];
+
+	    if (textureS3Key) {
+	      if (hasUvVertices) {
+	        hasUv1Textures = true;
+	      } else {
+	        console.error('Texture ' + textureS3Key + ' could not be assigned because geometry has no UV vertices.');
+	        continue
+	      }
+	    }
+
+	    if (textureS3Key) {
+
+	      needsUpdate = true;
+
+	      // update wrap
+	      wrap = WEBGL_WRAP_TYPES[ _attributes.wrap ] || WEBGL_WRAP_TYPES[ 'repeat' ];
+	      if (texture3d && wrap !== texture3d.wrapS) {
+	        texture3d.wrapS = wrap;
+	        texture3d.wrapT = wrap;
+	        texture3d.needsUpdate = true;
+	      }
+
+	      // don't reload texture if files are of same origin
+	      if (
+	        texture3d
+	        && texture3d.url
+	        && textureS3Key === texture3d.url
+	      ) {
+	        needsUpdate = false;
+	      }
+
+	      if (needsUpdate && texture3d && resetTexturesOnLoadStart) {
+	        // dispose old texture
+	        if (material3d[ textureType3d ] && material3d[ textureType3d ].disposeIfPossible) {
+	          material3d[ textureType3d ].disposeIfPossible();
+	        }
+	        material3d[ textureType3d ] = null;
+	      }
+
+	      if (needsUpdate) {
+	        // load new texture
+	        texturePromises[ textureCount ] = fetchTexture(textureS3Key, queueName).catch(onError);
+	        textureKeys[ textureCount ] = textureType;
+	        texture3dKeys[ textureCount ] = textureType3d;
+	        textureCount++;
+	        material3d.needsUpdate = true;
+	      }
+
+	    } else if (material3d[ textureType3d ]) {
+
+	      // no new texture: just dispose old texture
+	      if (material3d[ textureType3d ] && material3d[ textureType3d ].disposeIfPossible) {
+	        material3d[ textureType3d ].disposeIfPossible();
+	      }
+	      material3d[ textureType3d ] = null;
+	      material3d.needsUpdate = true;
+
+	    }
+
+	  }
+
+	  // UV1 vectors
+
+	  if (attributes3d) {
+
+	    // UV channel 1
+
+	    if (hasUv1Textures) {
+
+	      // resize UV array
+
+	      if (_attributes.size) {
+
+	        var
+	          targetScaleU = _attributes.size[ 0 ],
+	          targetScaleV = _attributes.size[ 1 ],
+	          currentScaleU = attributes3d.uv._scaleU || 1,
+	          currentScaleV = attributes3d.uv._scaleV || 1;
+	        // check if uv recalculation is needed
+	        if (targetScaleU !== currentScaleU || targetScaleV !== currentScaleV) {
+	          // remember original uv array
+	          if (!attributes3d.uv._source) {
+	            attributes3d.uv._source = attributes3d.uv.array;
+	          }
+	          // internals
+	          var
+	            sourceUVs = attributes3d.uv._source,
+	            resizedUVs = new Float32Array(sourceUVs.length);
+	          // resize array
+	          for (var i = 0, l = resizedUVs.length; i < l; i += 2) {
+	            resizedUVs[ i ] = sourceUVs[ i ] / targetScaleU;
+	            resizedUVs[ i + 1 ] = sourceUVs[ i + 1 ] / targetScaleV;
+	          }
+	          // set resized array
+	          attributes3d.uv.array = resizedUVs;
+	          // remember size
+	          attributes3d.uv._scaleU = targetScaleU;
+	          attributes3d.uv._scaleV = targetScaleV;
+	          // set update flag
+	          attributes3d.uv.needsUpdate = true;
+	        }
+
+	      }
+
+	    }
+
+	    // UV channel 2
+
+	    if (_attributes[ TEXTURE_TYPES.UV2 ]) {
+
+	      // check uv count
+	      if (hasUv2Vertices) {
+
+	        // everything ok - load lightmap
+	        textureType = TEXTURE_TYPES.UV2;
+	        textureS3Key = _attributes[ textureType ];
+	        texturePromises[ textureCount ] = fetchTexture(textureS3Key, queueName).catch(onError);
+	        textureKeys[ textureCount ] = textureType;
+	        texture3dKeys[ textureCount ] = THREEJS_TEXTURE_TYPES_MAP[ textureType ];
+	        textureCount++;
+
+	      } else {
+
+	        console.error('Lightmap ' + _attributes[ TEXTURE_TYPES.UV2 ] + ' could not be assigned because geometry has no lightmap UV (UV2) vertices.');
+
+	      }
+
+	    }
+
+	  }
+
+	  // load textures
+
+	  var promise, wrap, isTexture, isTextureToBeLoadedNext;
+	  if (textureCount) {
+
+	    promise = bluebird_1.all(texturePromises).then(function (textures) {
+
+	      // assign textures
+	      wrap = WEBGL_WRAP_TYPES[ _attributes.wrap ] || WEBGL_WRAP_TYPES[ 'repeat' ];
+	      for (i = 0; i < textureCount; i++) {
+
+	        // filter texture loading errors
+	        isTexture = textures[i] instanceof THREE.CompressedTexture || textures[i] instanceof THREE.Texture;
+	        // avoid racing conditions
+	        isTextureToBeLoadedNext = textures[i] && textures[i].url === material3d._texturesToBeLoaded[textureKeys[i]];
+
+	        if (!isTexture || !isTextureToBeLoadedNext) continue
+
+	        // cache
+	        countTextureReference(textures[ i ].url);
+	        textures[ i ].disposeIfPossible = disposeIfPossible;
+
+	        // set texture settings
+	        textures[ i ].wrapS = wrap;
+	        textures[ i ].wrapT = wrap;
+	        textures[ i ].anisotropy = 2;
+	        // dispose previous texture
+	        if (material3d[ texture3dKeys[ i ] ] && material3d[ texture3dKeys[ i ] ].disposeIfPossible) {
+	          material3d[ texture3dKeys[ i ] ].disposeIfPossible();
+	        }
+	        // add new texture
+	        material3d[ texture3dKeys[ i ] ] = textures[ i ];
+	        material3d.uniforms[ texture3dKeys[ i ] ].value = textures[ i ];
+	        material3d[ texture3dKeys[ i ] ].needsUpdate = true;
+
+	      }
+	      // update material
+	      material3d.needsUpdate = true;
+
+	      // to prevent warnings: "GL ERROR :GL_INVALID_OPERATION : glDrawElements: attempt to access out of range vertices in attribute 1 "
+	      // this happens when switching from a material without texture to a material with texture or vice versa
+	      if ( mesh3d && mesh3d.geometry ) {
+	        mesh3d.geometry.buffersNeedUpdate = true;
+	        mesh3d.geometry.uvsNeedUpdate = true;
+	      }
+
+	      // render
+	      if (vm) vm.viewport.render();
+
+	    });
+
+	  } else {
+
+	    promise = bluebird_1.resolve();
+
+	    // render
+	    if (vm) vm.viewport.render();
+
+	  }
+
+	  return promise
+
+	}
+
+	/*
+
+	 PERFORMANCE CRITICAL CODE
+
+	 readability may suffer from performance optimization
+	 ask tomas-polach if you have questions
+
+	*/
+
+	// static method, @memberof View
+
+	// constants
+
+	var HI_RES_TEXTURE_TYPES = {
+	  UV1: [ 'mapDiffuse', 'mapSpecular', 'mapNormal', 'mapAlpha' ],
+	  UV2: 'mapLight'
+	};
+	var LO_RES_TEXTURE_TYPES = {
+	  UV1: [ 'mapDiffusePreview', 'mapSpecularPreview', 'mapNormalPreview', 'mapAlphaPreview' ],
+	  UV2: 'mapLightPreview'
+	};
+
+	var DEFAULT_LIGHT_MAP_INTENSITY = 1.2;
+	var DEFAULT_LIGHT_MAP_EXPOSURE = 0.6;
+	var DEFAULT_LIGHT_MAP_FALLOFF = 0;
+
+	// RepeatWrapping: 1000 / ClampToEdgeWrapping: 1001 / MirroredRepeatWrapping: 1002
+
+	// function
+
+	function setMaterial (args) {
+
+	  // Args
+	  var vm = args.vm;
+	  var material3d = args.material3d;
+	  var mesh3d = args.mesh3d;
+	  var _attributes = args.attributes || {};
+	  var reset = args.reset !== undefined ? args.reset : true;
+	  var loadingQueuePrefix = args.loadingQueuePrefix;
+	  var onFirstTextureSetLoaded = args.onFirstTextureSetLoaded;
+	  var lightMapIntensity = args.lightMapIntensity;
+	  var lightMapExposure = args.lightMapExposure;
+
+
+	  material3d.userData = material3d.userData || {};
+	  material3d.userData.data3dMaterial = args.attributes;
+
+	  // opacity
+
+	  // depth buffer
+	  //    if (material3d.opacity < 1) {
+	  //      material3d.depthWrite = false
+	  //      var alphaTest = material3d.opacity - 0.001
+	  //      if (alphaTest < 0) alphaTest = 0
+	  //      material3d.alphaTest = alphaTest
+	  //    }
+
+	  if (_attributes.opacity !== undefined && _attributes.opacity < 1) {
+	    // 0 = fully transparent, 1 = non-transparent
+	    material3d.transparent = true;
+	    material3d.opacity = _attributes.opacity;
+	  } else if (_attributes.mapAlpha) {
+	    // has alpha map
+	    material3d.transparent = true;
+	    material3d.opacity = 1;
+	  } else {
+	    material3d.transparent = false;
+	    material3d.opacity = 1;
+	  }
+	  material3d.uniforms.opacity = { value: material3d.opacity };
+
+	  // normal map factor
+
+	  if (_attributes.mapNormalFactor !== undefined) {
+	    material3d.normalScale = new THREE.Vector2( _attributes.mapNormalFactor, _attributes.mapNormalFactor );
+	  } else {
+	    material3d.normalScale = new THREE.Vector2( 0.8, 0.8 );
+	  }
+	  material3d.uniforms.normalScale.value = material3d.normalScale;
+
+	  // specular coefficient
+
+	  material3d.shininess = (_attributes.specularCoef !== undefined) ? (_attributes.specularCoef ) : 0.1;
+	  material3d.uniforms.shininess.value = material3d.shininess;
+
+	  // colors
+	  var diffuse = {};
+	  if (_attributes.colorDiffuse) {
+	    diffuse.r = _attributes.colorDiffuse[ 0 ];
+	    diffuse.g = _attributes.colorDiffuse[ 1 ];
+	    diffuse.b = _attributes.colorDiffuse[ 2 ];
+	  } else if (reset) {
+	    if (_attributes.mapDiffuse ) {
+	      // has diffuse texture
+	      diffuse.r = 1;
+	      diffuse.g = 1;
+	      diffuse.b = 1;
+	    } else {
+	      // has NO diffuse texture
+	      diffuse.r = 0.85;
+	      diffuse.g = 0.85;
+	      diffuse.b = 0.85;
+	    }
+	  }
+	  material3d.color = diffuse;
+	  material3d.uniforms.color.value = new THREE.Color(diffuse.r, diffuse.g, diffuse.b);
+
+	  // We are not using color ambient
+	  /*if (_attributes.colorAmbient) {
+	    // material3d.ambient.r = _attributes.colorAmbient[ 0 ]
+	    // material3d.ambient.g = _attributes.colorAmbient[ 1 ]
+	    // material3d.ambient.b = _attributes.colorAmbient[ 2 ]
+	  } else if (reset) {
+	    // if (!material3d.ambient) {
+	    //   material3d.ambient = new THREE.Color()
+	    // }
+	    // material3d.ambient.r = material3d.color.r
+	    // material3d.ambient.g = material3d.color.g
+	    // material3d.ambient.b = material3d.color.b
+	  }*/
+
+	  var specular = {};
+	  if (_attributes.colorSpecular) {
+	    specular.r = _attributes.colorSpecular[ 0 ];
+	    specular.g = _attributes.colorSpecular[ 1 ];
+	    specular.b = _attributes.colorSpecular[ 2 ];
+	  } else if (reset) {
+	    specular.r = 0.25;
+	    specular.g = 0.25;
+	    specular.b = 0.25;
+	  }
+	  material3d.specular = specular;
+	  material3d.uniforms.specular.value = new THREE.Color(specular.r, specular.g, specular.b);
+
+	  var emissive = {};
+	  if (_attributes.colorEmissive) {
+	    emissive.r = _attributes.colorEmissive[ 0 ];
+	    emissive.g = _attributes.colorEmissive[ 1 ];
+	    emissive.b = _attributes.colorEmissive[ 2 ];
+	  } else if (_attributes.lightEmissionCoef) {
+	    var emissiveIntensity = _attributes.lightEmissionCoef / 10;
+	    if (_attributes.colorDiffuse) {
+	      emissive.r = _attributes.colorDiffuse[ 0 ];
+	      emissive.g = _attributes.colorDiffuse[ 1 ];
+	      emissive.b = _attributes.colorDiffuse[ 2 ];
+	    } else {
+	      emissive.r = 1.0;
+	      emissive.g = 1.0;
+	      emissive.b = 1.0;
+	    }
+	    emissive.r *= emissiveIntensity;
+	    emissive.g *= emissiveIntensity;
+	    emissive.b *= emissiveIntensity;
+
+	  } else if (reset) {
+	    emissive.r = 0;
+	    emissive.g = 0;
+	    emissive.b = 0;
+	  }
+	  material3d.emissive = emissive;
+	  material3d.uniforms.emissive.value = new THREE.Color(emissive.r, emissive.g, emissive.b);
+
+	  // lightmap settings
+	  if (_attributes.mapLight || _attributes.mapLightPreview) {
+	    // Fallback lightmap intensity and exposure values
+	    var lmi = DEFAULT_LIGHT_MAP_INTENSITY;
+	    var lme = DEFAULT_LIGHT_MAP_EXPOSURE;
+
+	    if (lightMapIntensity !== undefined && lightMapIntensity != null && lightMapIntensity !== -100) {
+	      lmi = lightMapIntensity;
+	    } else if (_attributes.mapLightIntensity !== undefined) {
+	      lmi = _attributes.mapLightIntensity;
+	    }
+
+	    if (lightMapExposure !== undefined && lightMapExposure != null && lightMapExposure !== -100) {
+	      lme = lightMapExposure;
+	    } else if (_attributes.mapLightCenter !== undefined) {
+	      // in data3d lightMapExposure is mapLightCenter
+	      lme = _attributes.mapLightCenter;
+	    }
+
+	    material3d.lightMapIntensity = (lmi >= 0.0) ? lmi : 0.0;
+	    material3d.lightMapExposure = lme;
+	    material3d.lightMapFalloff = (_attributes.mapLightFalloff !== undefined) ? _attributes.mapLightFalloff : DEFAULT_LIGHT_MAP_FALLOFF;
+	    material3d.uniforms.lightMapIntensity.value = material3d.lightMapIntensity;
+	    material3d.uniforms.lightMapExposure.value = material3d.lightMapExposure;
+	    material3d.uniforms.lightMapFalloff.value = material3d.lightMapFalloff;
+	  }
+
+	  // shadows
+
+	  if (mesh3d) {
+	    mesh3d.castShadow    = _attributes.castRealTimeShadows;
+	    mesh3d.receiveShadow = _attributes.receiveRealTimeShadows;
+	    mesh3d.material.needsUpdate = true; // without this, receiveShadow does not become effective
+	  }
+
+	  // load textures
+
+	  // remember current textures (avoiding racing conditions between texture loading and material updates)
+	  material3d._texturesToBeLoaded = {
+	    // hires textures
+	    mapDiffuse: _attributes.mapDiffuse,
+	    mapSpecular: _attributes.mapSpecular,
+	    mapNormal: _attributes.mapNormal,
+	    mapAlpha: _attributes.mapAlpha,
+	    mapLight: _attributes.mapLight,
+	    // lores textures
+	    mapDiffusePreview: _attributes.mapDiffusePreview,
+	    mapSpecularPreview: _attributes.mapSpecularPreview,
+	    mapNormalPreview: _attributes.mapNormalPreview,
+	    mapAlphaPreview: _attributes.mapAlphaPreview,
+	    mapLightPreview: _attributes.mapLightPreview
+	  };
+
+	  var
+	    loadingTexturesPromise,
+	    loadingQueueName,
+	    isLoadingLoResTextures,
+	    hasLoResTextures = _attributes.mapDiffusePreview || _attributes.mapSpecularPreview || _attributes.mapNormalPreview || _attributes.mapAlphaPreview || _attributes.mapLightPreview,
+	    // hasHiResTextures = _attributes.mapDiffuse || _attributes.mapSpecular || _attributes.mapNormal || _attributes.mapAlpha || _attributes.mapLight,
+	    // TODO: readd hiResTextures configs
+	    // hiResTexturesEnabled = !configs.isMobile && vm.viewport.a.hiResTextures && configs.compatibility.webglCompressedTextures
+	    hiResTexturesEnabled = !runtime.isMobile && runtime.webGl.supportsDds;
+
+	  if (!hiResTexturesEnabled || (hasLoResTextures && !material3d.firstTextureLoaded)) {
+	    if (loadingQueuePrefix) {
+	      loadingQueueName = loadingQueuePrefix + 'TexturesLoRes';
+	    }
+	    loadingTexturesPromise = loadTextureSet(loadingQueueName, LO_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
+	    isLoadingLoResTextures = true;
+	  } else {
+	    if (loadingQueuePrefix) {
+	      loadingQueueName = loadingQueuePrefix + 'TexturesHiRes';
+	    }
+	    loadingTexturesPromise = loadTextureSet(loadingQueueName, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
+	    isLoadingLoResTextures = false;
+	  }
+
+	  loadingTexturesPromise.then(function(){
+
+	    // trigger callback
+	    if (onFirstTextureSetLoaded) onFirstTextureSetLoaded();
+
+	    // set onFirstTextureLoaded
+	    if (hasLoResTextures) material3d.firstTextureLoaded = true;
+
+	  });
+
+	  // 2. load hi-res textures (if: material has preview texture set, not on mobile, hi-res enabled and supported)
+	  if (isLoadingLoResTextures && hiResTexturesEnabled) {
+	    loadingTexturesPromise.then(function(){
+	      if (loadingQueuePrefix) {
+	        loadingQueueName = loadingQueuePrefix + 'TexturesHiRes';
+	      }
+	      loadTextureSet(loadingQueueName, HI_RES_TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, false);
+	    });
+	  }
+
+	  // return texture loading promise
+
+	  return loadingTexturesPromise
+	}
+
+	var fragmentShader$1 = {"text":"uniform vec3 color;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapExposure;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\n#include <shadowmap_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( color, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #ifdef FLAT_SHADED\n      vec3 fdx = vec3( dFdx( vViewPosition.x ), dFdx( vViewPosition.y ), dFdx( vViewPosition.z ) );\n      vec3 fdy = vec3( dFdy( vViewPosition.x ), dFdy( vViewPosition.y ), dFdy( vViewPosition.z ) );\n      vec3 normal = normalize( cross( fdx, fdy ) );\n    #else\n      vec3 normal = normalize( vNormal );\n      #ifdef DOUBLE_SIDED\n        normal = normal * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n      #endif\n    #endif\n    #ifdef USE_NORMALMAP\n      normal = perturbNormal2Arb( -vViewPosition, normal );\n    #elif defined( USE_BUMPMAP )\n      normal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );\n    #endif\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}","base64":"data:text/plain;base64,dW5pZm9ybSB2ZWMzIGNvbG9yOwp1bmlmb3JtIHZlYzMgZW1pc3NpdmU7CnVuaWZvcm0gdmVjMyBzcGVjdWxhcjsKdW5pZm9ybSBmbG9hdCBzaGluaW5lc3M7CnVuaWZvcm0gZmxvYXQgb3BhY2l0eTsKI2luY2x1ZGUgPGNvbW1vbj4KI2luY2x1ZGUgPHBhY2tpbmc+CiNpbmNsdWRlIDx1dl9wYXJzX2ZyYWdtZW50PgojaW5jbHVkZSA8dXYyX3BhcnNfZnJhZ21lbnQ+CiNpbmNsdWRlIDxtYXBfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPGFscGhhbWFwX3BhcnNfZnJhZ21lbnQ+CiNpZmRlZiBVU0VfTElHSFRNQVAKCXVuaWZvcm0gc2FtcGxlcjJEIGxpZ2h0TWFwOwoJdW5pZm9ybSBmbG9hdCBsaWdodE1hcEludGVuc2l0eTsKCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBFeHBvc3VyZTsKCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBGYWxsb2ZmOwojZW5kaWYKI2luY2x1ZGUgPG5vcm1hbG1hcF9wYXJzX2ZyYWdtZW50PgojaW5jbHVkZSA8c3BlY3VsYXJtYXBfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPGJzZGZzPgojaW5jbHVkZSA8bGlnaHRzX3BhcnM+CiNpbmNsdWRlIDxsaWdodHNfcGhvbmdfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPHNoYWRvd21hcF9wYXJzX2ZyYWdtZW50Pgp2b2lkIG1haW4oKSB7CiAgICB2ZWM0IGRpZmZ1c2VDb2xvciA9IHZlYzQoIGNvbG9yLCBvcGFjaXR5ICk7CiAgICBSZWZsZWN0ZWRMaWdodCByZWZsZWN0ZWRMaWdodCA9IFJlZmxlY3RlZExpZ2h0KCB2ZWMzKCAwLjAgKSwgdmVjMyggMC4wICksIHZlYzMoIDAuMCApLCB2ZWMzKCAwLjAgKSApOwogICAgdmVjMyB0b3RhbEVtaXNzaXZlUmFkaWFuY2UgPSBlbWlzc2l2ZTsKICAgICNpbmNsdWRlIDxtYXBfZnJhZ21lbnQ+CiAgICAjaW5jbHVkZSA8YWxwaGFtYXBfZnJhZ21lbnQ+CiAgICAjaW5jbHVkZSA8YWxwaGF0ZXN0X2ZyYWdtZW50PgogICAgI2luY2x1ZGUgPHNwZWN1bGFybWFwX2ZyYWdtZW50PgogICAgI2lmZGVmIEZMQVRfU0hBREVECiAgICAgIHZlYzMgZmR4ID0gdmVjMyggZEZkeCggdlZpZXdQb3NpdGlvbi54ICksIGRGZHgoIHZWaWV3UG9zaXRpb24ueSApLCBkRmR4KCB2Vmlld1Bvc2l0aW9uLnogKSApOwogICAgICB2ZWMzIGZkeSA9IHZlYzMoIGRGZHkoIHZWaWV3UG9zaXRpb24ueCApLCBkRmR5KCB2Vmlld1Bvc2l0aW9uLnkgKSwgZEZkeSggdlZpZXdQb3NpdGlvbi56ICkgKTsKICAgICAgdmVjMyBub3JtYWwgPSBub3JtYWxpemUoIGNyb3NzKCBmZHgsIGZkeSApICk7CiAgICAjZWxzZQogICAgICB2ZWMzIG5vcm1hbCA9IG5vcm1hbGl6ZSggdk5vcm1hbCApOwogICAgICAjaWZkZWYgRE9VQkxFX1NJREVECiAgICAgICAgbm9ybWFsID0gbm9ybWFsICogKCBmbG9hdCggZ2xfRnJvbnRGYWNpbmcgKSAqIDIuMCAtIDEuMCApOwogICAgICAjZW5kaWYKICAgICNlbmRpZgogICAgI2lmZGVmIFVTRV9OT1JNQUxNQVAKICAgICAgbm9ybWFsID0gcGVydHVyYk5vcm1hbDJBcmIoIC12Vmlld1Bvc2l0aW9uLCBub3JtYWwgKTsKICAgICNlbGlmIGRlZmluZWQoIFVTRV9CVU1QTUFQICkKICAgICAgbm9ybWFsID0gcGVydHVyYk5vcm1hbEFyYiggLXZWaWV3UG9zaXRpb24sIG5vcm1hbCwgZEhkeHlfZndkKCkgKTsKICAgICNlbmRpZgogICAgI2luY2x1ZGUgPGxpZ2h0c19waG9uZ19mcmFnbWVudD4KICAgIEdlb21ldHJpY0NvbnRleHQgZ2VvbWV0cnk7CiAgICBnZW9tZXRyeS5wb3NpdGlvbiA9IC0gdlZpZXdQb3NpdGlvbjsKICAgIGdlb21ldHJ5Lm5vcm1hbCA9IG5vcm1hbDsKICAgIGdlb21ldHJ5LnZpZXdEaXIgPSBub3JtYWxpemUoIHZWaWV3UG9zaXRpb24gKTsKICAgIEluY2lkZW50TGlnaHQgZGlyZWN0TGlnaHQ7CiAgICAjaWYgKCBOVU1fUE9JTlRfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdCApCiAgICAgICAgUG9pbnRMaWdodCBwb2ludExpZ2h0OwogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9QT0lOVF9MSUdIVFM7IGkgKysgKSB7CiAgICAgICAgICAgIHBvaW50TGlnaHQgPSBwb2ludExpZ2h0c1sgaSBdOwogICAgICAgICAgICBnZXRQb2ludERpcmVjdExpZ2h0SXJyYWRpYW5jZSggcG9pbnRMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7CiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQCiAgICAgICAgICAgIGRpcmVjdExpZ2h0LmNvbG9yICo9IGFsbCggYnZlYzIoIHBvaW50TGlnaHQuc2hhZG93LCBkaXJlY3RMaWdodC52aXNpYmxlICkgKSA/IGdldFBvaW50U2hhZG93KCBwb2ludFNoYWRvd01hcFsgaSBdLCBwb2ludExpZ2h0LnNoYWRvd01hcFNpemUsIHBvaW50TGlnaHQuc2hhZG93QmlhcywgcG9pbnRMaWdodC5zaGFkb3dSYWRpdXMsIHZQb2ludFNoYWRvd0Nvb3JkWyBpIF0gKSA6IDEuMDsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIFJFX0RpcmVjdCggZGlyZWN0TGlnaHQsIGdlb21ldHJ5LCBtYXRlcmlhbCwgcmVmbGVjdGVkTGlnaHQgKTsKICAgICAgICB9CiAgICAjZW5kaWYKICAgICNpZiAoIE5VTV9TUE9UX0xJR0hUUyA+IDAgKSAmJiBkZWZpbmVkKCBSRV9EaXJlY3QgKQogICAgICAgIFNwb3RMaWdodCBzcG90TGlnaHQ7CiAgICAgICAgZm9yICggaW50IGkgPSAwOyBpIDwgTlVNX1NQT1RfTElHSFRTOyBpICsrICkgewogICAgICAgICAgICBzcG90TGlnaHQgPSBzcG90TGlnaHRzWyBpIF07CiAgICAgICAgICAgIGdldFNwb3REaXJlY3RMaWdodElycmFkaWFuY2UoIHNwb3RMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7CiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQCiAgICAgICAgICAgIGRpcmVjdExpZ2h0LmNvbG9yICo9IGFsbCggYnZlYzIoIHNwb3RMaWdodC5zaGFkb3csIGRpcmVjdExpZ2h0LnZpc2libGUgKSApID8gZ2V0U2hhZG93KCBzcG90U2hhZG93TWFwWyBpIF0sIHNwb3RMaWdodC5zaGFkb3dNYXBTaXplLCBzcG90TGlnaHQuc2hhZG93Qmlhcywgc3BvdExpZ2h0LnNoYWRvd1JhZGl1cywgdlNwb3RTaGFkb3dDb29yZFsgaSBdICkgOiAxLjA7CiAgICAgICAgICAgICNlbmRpZgogICAgICAgICAgICBSRV9EaXJlY3QoIGRpcmVjdExpZ2h0LCBnZW9tZXRyeSwgbWF0ZXJpYWwsIHJlZmxlY3RlZExpZ2h0ICk7CiAgICAgICAgfQogICAgI2VuZGlmCiAgICAjaWYgKCBOVU1fRElSX0xJR0hUUyA+IDAgKSAmJiBkZWZpbmVkKCBSRV9EaXJlY3QgKQogICAgICAgIERpcmVjdGlvbmFsTGlnaHQgZGlyZWN0aW9uYWxMaWdodDsKICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fRElSX0xJR0hUUzsgaSArKyApIHsKICAgICAgICAgICAgZGlyZWN0aW9uYWxMaWdodCA9IGRpcmVjdGlvbmFsTGlnaHRzWyBpIF07CiAgICAgICAgICAgIGdldERpcmVjdGlvbmFsRGlyZWN0TGlnaHRJcnJhZGlhbmNlKCBkaXJlY3Rpb25hbExpZ2h0LCBnZW9tZXRyeSwgZGlyZWN0TGlnaHQgKTsKICAgICAgICAgICAgI2lmZGVmIFVTRV9TSEFET1dNQVAKICAgICAgICAgICAgZGlyZWN0TGlnaHQuY29sb3IgKj0gYWxsKCBidmVjMiggZGlyZWN0aW9uYWxMaWdodC5zaGFkb3csIGRpcmVjdExpZ2h0LnZpc2libGUgKSApID8gZ2V0U2hhZG93KCBkaXJlY3Rpb25hbFNoYWRvd01hcFsgaSBdLCBkaXJlY3Rpb25hbExpZ2h0LnNoYWRvd01hcFNpemUsIGRpcmVjdGlvbmFsTGlnaHQuc2hhZG93QmlhcywgZGlyZWN0aW9uYWxMaWdodC5zaGFkb3dSYWRpdXMsIHZEaXJlY3Rpb25hbFNoYWRvd0Nvb3JkWyBpIF0gKSA6IDEuMDsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIFJFX0RpcmVjdCggZGlyZWN0TGlnaHQsIGdlb21ldHJ5LCBtYXRlcmlhbCwgcmVmbGVjdGVkTGlnaHQgKTsKICAgICAgICB9CiAgICAjZW5kaWYKICAgICNpZiAoIE5VTV9SRUNUX0FSRUFfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdF9SZWN0QXJlYSApCiAgICAgICAgUmVjdEFyZWFMaWdodCByZWN0QXJlYUxpZ2h0OwogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9SRUNUX0FSRUFfTElHSFRTOyBpICsrICkgewogICAgICAgICAgICByZWN0QXJlYUxpZ2h0ID0gcmVjdEFyZWFMaWdodHNbIGkgXTsKICAgICAgICAgICAgUkVfRGlyZWN0X1JlY3RBcmVhKCByZWN0QXJlYUxpZ2h0LCBnZW9tZXRyeSwgbWF0ZXJpYWwsIHJlZmxlY3RlZExpZ2h0ICk7CiAgICAgICAgfQogICAgI2VuZGlmCiAgICAjaWYgZGVmaW5lZCggUkVfSW5kaXJlY3REaWZmdXNlICkKICAgICAgICB2ZWMzIGlycmFkaWFuY2UgPSBnZXRBbWJpZW50TGlnaHRJcnJhZGlhbmNlKCBhbWJpZW50TGlnaHRDb2xvciApOwogICAgICAgICNpZmRlZiBVU0VfTElHSFRNQVAKICAgICAgICAgICAgdmVjMyB1bml0ID0gdmVjMygxLjApOwogICAgICAgICAgICB2ZWMzIGxpZ2h0ID0gMi4wICogKHRleHR1cmUyRCggbGlnaHRNYXAsIHZVdjIgKS54eXogLSBsaWdodE1hcEV4cG9zdXJlICogdW5pdCk7CiAgICAgICAgICAgIHZlYzMgbW9kaWZpZXIgPSAtbGlnaHRNYXBGYWxsb2ZmICogbGlnaHQgKiBsaWdodCArIHVuaXQ7CiAgICAgICAgICAgIHZlYzMgbGlnaHRNYXBJcnJhZGlhbmNlID0gbGlnaHQgKiBtb2RpZmllciAqIGxpZ2h0TWFwSW50ZW5zaXR5OwogICAgICAgICAgICAjaWZuZGVmIFBIWVNJQ0FMTFlfQ09SUkVDVF9MSUdIVFMKICAgICAgICAgICAgICAgIGxpZ2h0TWFwSXJyYWRpYW5jZSAqPSBQSTsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIGlycmFkaWFuY2UgKz0gbGlnaHRNYXBJcnJhZGlhbmNlOwogICAgICAgICNlbmRpZgogICAgICAgICNpZiAoIE5VTV9IRU1JX0xJR0hUUyA+IDAgKQogICAgICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fSEVNSV9MSUdIVFM7IGkgKysgKSB7CiAgICAgICAgICAgICAgICBpcnJhZGlhbmNlICs9IGdldEhlbWlzcGhlcmVMaWdodElycmFkaWFuY2UoIGhlbWlzcGhlcmVMaWdodHNbIGkgXSwgZ2VvbWV0cnkgKTsKICAgICAgICAgICAgfQogICAgICAgICNlbmRpZgogICAgICAgIFJFX0luZGlyZWN0RGlmZnVzZSggaXJyYWRpYW5jZSwgZ2VvbWV0cnksIG1hdGVyaWFsLCByZWZsZWN0ZWRMaWdodCApOwogICAgI2VuZGlmCiAgICB2ZWMzIG91dGdvaW5nTGlnaHQgPSByZWZsZWN0ZWRMaWdodC5kaXJlY3REaWZmdXNlICsgcmVmbGVjdGVkTGlnaHQuaW5kaXJlY3REaWZmdXNlICsgcmVmbGVjdGVkTGlnaHQuZGlyZWN0U3BlY3VsYXIgKyByZWZsZWN0ZWRMaWdodC5pbmRpcmVjdFNwZWN1bGFyICsgdG90YWxFbWlzc2l2ZVJhZGlhbmNlOwogICAgZ2xfRnJhZ0NvbG9yID0gdmVjNCggb3V0Z29pbmdMaWdodCwgZGlmZnVzZUNvbG9yLmEgKTsKfQ=="};
+
+	var vertexShader$1 = {"text":"varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}","base64":"data:text/plain;base64,dmFyeWluZyB2ZWMzIHZWaWV3UG9zaXRpb247CiNpZm5kZWYgRkxBVF9TSEFERUQKCXZhcnlpbmcgdmVjMyB2Tm9ybWFsOwojZW5kaWYKI2luY2x1ZGUgPHV2X3BhcnNfdmVydGV4PgojaW5jbHVkZSA8dXYyX3BhcnNfdmVydGV4PgojaW5jbHVkZSA8c2hhZG93bWFwX3BhcnNfdmVydGV4Pgp2b2lkIG1haW4oKQp7CiAgI2luY2x1ZGUgPHV2X3ZlcnRleD4KICAjaW5jbHVkZSA8dXYyX3ZlcnRleD4KICAjaW5jbHVkZSA8YmVnaW5ub3JtYWxfdmVydGV4PgogICNpbmNsdWRlIDxkZWZhdWx0bm9ybWFsX3ZlcnRleD4KICAjaWZuZGVmIEZMQVRfU0hBREVECiAgCXZOb3JtYWwgPSBub3JtYWxpemUoIHRyYW5zZm9ybWVkTm9ybWFsICk7CiAgI2VuZGlmCiAgI2luY2x1ZGUgPGJlZ2luX3ZlcnRleD4KICAjaW5jbHVkZSA8cHJvamVjdF92ZXJ0ZXg+CiAgdlZpZXdQb3NpdGlvbiA9IC0gbXZQb3NpdGlvbi54eXo7CiAgI2luY2x1ZGUgPHdvcmxkcG9zX3ZlcnRleD4KICAjaW5jbHVkZSA8c2hhZG93bWFwX3ZlcnRleD4KfQ=="};
+
+	var Io3dMaterial = checkDependencies ({
+	  three: true,
+	  aframe: false
+	}, function makeIo3dMaterial () {
+
+	  // CONFIGS
+
+	  var DEFAULT_LIGHT_MAP_INTENSITY = 1.2;
+	  var DEFAULT_LIGHT_MAP_EXPOSURE = 0.6;
+	  var DEFAULT_LIGHT_MAP_FALLOFF = 0;
+	  var DEFAULT_NORMAL_MAP_FACTOR = new THREE.Vector2(0.8, 0.8);
+
+	  // main
+
+	  function Io3dMaterial( params ) {
+	    THREE.ShaderMaterial.call( this, params );
+
+	    var params = params || {};
+	    this.lightMapExposure = params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE;
+	    this.lightMapFalloff = params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF;
+
+	    this.uniforms = THREE.UniformsUtils.merge( [
+	      THREE.UniformsLib[ "lights" ],
+	      THREE.UniformsLib[ "shadowmap" ],
+	      { color: { value: params.color || new THREE.Color(1.0, 1.0, 1.0) },
+	        map: { value: params.map || null },
+	        specularMap: { value: params.specularMap || null },
+	        alphaMap: { value: params.alphaMap || null },
+	        lightMap: { value: params.lightMap || null },
+	        lightMapIntensity: { value: params.lightMapIntensity || DEFAULT_LIGHT_MAP_INTENSITY },
+	        lightMapFalloff: { value: params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF },
+	        lightMapExposure: { value: params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE },
+	        normalMap: { value: params.normalMap || null },
+	        normalScale: { value: params.normalScale || DEFAULT_NORMAL_MAP_FACTOR },
+	        shininess: { value: params.shininess || 1.0 },
+	        specular: { value: params.specular || new THREE.Color(0.25, 0.25, 0.25) },
+	        emissive: { value: params.emissive || new THREE.Color(0.0, 0.0, 0.0) },
+	        opacity: { value: params.opacity || 1 },
+	        offsetRepeat: { value: params.offsetRepeat || new THREE.Vector4( 0, 0, 1, 1) }
+	      }
+	    ]);
+
+	    this.vertexShader = vertexShader$1.text;
+	    this.fragmentShader = fragmentShader$1.text;
+	    this.lights = true;
+	  }
+
+	  Io3dMaterial.prototype = Object.create(THREE.ShaderMaterial.prototype);
+	  Io3dMaterial.prototype.constructor = Io3dMaterial;
+
+	  return Io3dMaterial
+
+	});
+
+	// TODO: increase performance
+	// TODO: decouple from THREEjs
+	// TODO: make use of edge case threshold=0 (no need to compare face normals)
+
+	function generateWireframeBuffer( positions, thresholdAngle ) {
+		
+	//    console.time('calc')
+
+		// internals
+		var thresholdDot = Math.cos( thresholdAngle * Math.PI / 180 );
+		var edge = [ 0, 0 ];
+		var hash = {};
+		var keys = [ 'a', 'b', 'c' ];
+
+		var tempGeometry = new THREE.Geometry();
+		for (var i = 0, j = 0; i < positions.length / 3; i += 3, j += 9) {
+			tempGeometry.vertices[ tempGeometry.vertices.length ] = new THREE.Vector3( positions[ j ], positions[ j + 1 ], positions[ j + 2 ] );
+			tempGeometry.vertices[ tempGeometry.vertices.length ] = new THREE.Vector3( positions[ j + 3 ], positions[ j + 4 ], positions[ j + 5 ] );
+			tempGeometry.vertices[ tempGeometry.vertices.length ] = new THREE.Vector3( positions[ j + 6 ], positions[ j + 7 ], positions[ j + 8 ] );
+			tempGeometry.faces[ tempGeometry.faces.length ] = new THREE.Face3( i, i + 1, i + 2, [], [] );
+		}
+		tempGeometry.mergeVertices();
+		tempGeometry.computeFaceNormals();
+
+		var vertices = tempGeometry.vertices;
+		var faces = tempGeometry.faces;
+		var numEdges = 0;
+
+		for ( var i = 0, l = faces.length; i < l; i ++ ) {
+			var face = faces[ i ];
+			for ( var j = 0; j < 3; j ++ ) {
+
+				edge[ 0 ] = face[ keys[ j ] ];
+				edge[ 1 ] = face[ keys[ ( j + 1 ) % 3 ] ];
+				edge.sort( sortFunction );
+
+				var key = edge.toString();
+
+				if ( hash[ key ] === undefined ) {
+					hash[ key ] = { vert1: edge[ 0 ], vert2: edge[ 1 ], face1: i, face2: undefined };
+					numEdges ++;
+				} else {
+					hash[ key ].face2 = i;
+				}
+			}
+		}
+
+		var coords = new Float32Array( numEdges * 2 * 3 );
+		var index = 0;
+
+		for ( var key in hash ) {
+			var h = hash[ key ];
+			if ( h.face2 === undefined || faces[ h.face1 ].normal.dot( faces[ h.face2 ].normal ) <= thresholdDot ) {
+
+				var vertex = vertices[ h.vert1 ];
+				coords[ index ++ ] = vertex.x;
+				coords[ index ++ ] = vertex.y;
+				coords[ index ++ ] = vertex.z;
+
+				vertex = vertices[ h.vert2 ];
+				coords[ index ++ ] = vertex.x;
+				coords[ index ++ ] = vertex.y;
+				coords[ index ++ ] = vertex.z;
+
+			}
+		}
+
+	//    console.timeEnd('calc')
+
+		return coords
+
+	}
+
+	// helpers
+
+	function sortFunction ( a, b ) { return a - b }
+
+	function compareArrays(a, b, precision) {
+
+		if (a === b) {
+			return true
+		} else if (a.length !== b.length) {
+			return false
+		} else {
+			precision = precision === undefined ? 1 : precision;
+			var step = ~~(a.length / (a.length * precision));
+			for (var i = 0, l = a.length; i<l; i+=step) if (a[i] !== b[i]) return false
+			return true
+		}
+
+	}
+
+	var Wireframe = checkDependencies({
+	  three: true,
+	  aframe: false
+	}, function makeData3dView () {
+
+	  function Wireframe () {
+
+	    // internals
+	    this._wireframeGeometry = new THREE.BufferGeometry();
+	    this._wireframeGeometry.addAttribute( 'position', new THREE.BufferAttribute( new Float32Array(0), 3 ) );
+	    this._wireframeMaterial = new THREE.LineBasicMaterial();
+
+	    this._positions = null;
+	    this._buffer = null;
+	    this._thresholdAngle = 10;
+	    this._thickness = 1;
+	    this._color = [0,0,0];
+	    this._opacity = 1;
+
+	    // init
+	    this.isLineSegments = true;
+	    THREE.Line.call( this, this._wireframeGeometry, this._wireframeMaterial );
+
+	  }
+
+	// inherit from THREE Line prototype
+
+	  Wireframe.prototype = Object.create( THREE.Line.prototype );
+	  Wireframe.prototype.constructor = Wireframe;
+
+	// extend with own methods
+
+	  Wireframe.prototype.update = function (options) {
+	    
+	    // API
+	    var positions = options.positions;
+	    //var normals = options.normals
+	    var thresholdAngle = options.thresholdAngle === undefined ? this._thresholdAngle : options.thresholdAngle;
+	    var thickness = options.thickness === undefined ? this._thickness : options.thickness;
+	    var color = options.color === undefined ? this._color : options.color;
+	    var opacity = options.opacity === undefined ? this._opacity : options.opacity;
+
+
+	    if (thickness === 0) {
+
+	      this.visible = false;
+
+	    } else {
+
+	      // take care of line buffer
+	      var regenerateBuffer = (!this._buffer || thresholdAngle !== this._thresholdAngle || !compareArrays(this._positions, positions));
+	      if (regenerateBuffer) {
+
+	        // generate new buffer from positions
+	        var newBuffer = generateWireframeBuffer( positions, thresholdAngle );
+	        if (newBuffer.length) {
+						this._wireframeGeometry.attributes.position.setArray( newBuffer );
+	          this.visible = true;
+	        } else {
+	          this.visible = false;
+	        }
+	        // remember settings
+	        this._buffer = newBuffer;
+	        this._positions = positions;
+	        this._thresholdAngle = thresholdAngle;
+
+	      } else if (this._thickness === 0) {
+
+	        // was hidden
+	        this.visible = true;
+
+	      }
+
+	      // update material
+	      this._wireframeMaterial.color.r = color[ 0 ];
+	      this._wireframeMaterial.color.g = color[ 1 ];
+	      this._wireframeMaterial.color.b = color[ 2 ];
+	      this._wireframeMaterial.opacity = opacity;
+	      this._wireframeMaterial.linewidth = thickness;
+	      // remember settings
+	      this._color = color;
+	      this._opacity = opacity;
+
+	    }
+
+	    this._thickness = thickness;
+
+	  };
+
+	  Wireframe.prototype.destroy = function () {
+
+	    this._wireframeGeometry = null;
+	    this._wireframeMaterial = null;
+
+	    this._positions = null;
+	    this._buffer = null;
+	    this._thresholdAngle = null;
+	    this._thickness = null;
+	    this._color = null;
+	    this._opacity = null;
+
+	  };
+
+	  return Wireframe
+
+	});
+
+	// constants
+
+	var Data3dView = checkDependencies({
+	  three: true,
+	  aframe: false
+	}, function makeData3dView () {
+	  
+	  var WEBGL_SIDE = {
+	    front: 0,
+	    back: 1,
+	    both: 2
+	  };
+
+	  var DEG_TO_RAD = Math.PI / 180;
+	  var RAD_TO_DEG = 180 / Math.PI;
+
+	// shared variables
+
+	  var geometry3dCache = {};
+
+	  /**
+	   * @name three.Data3dView
+	   * @memberof three
+	   * @param options
+	   * @constructor
+	   */
+
+	  function Data3dView (options) {
+
+	    // API
+	    this.threeParent = options.parent;
+
+	    // internals
+	    this.meshKeys = [];
+	    this.meshes = {};
+	    this.materialKeys = [];
+	    this.materials = {};
+	    this._meshes3d = {}; // three meshes indexed by meshId
+	    this._wireframes3d = {}; // wireframe  three meshes indexed by meshId
+	    this._materials3d = {}; // three materials indexed by meshId
+
+	  }
+
+	  Data3dView.prototype = {
+
+	    set: function (data3d, options) {
+
+	      // API
+	      options = options || {};
+	      var
+	        meshes = data3d.meshes || this.meshes,
+	        meshKeys = data3d.meshKeys,
+	        materials = data3d.materials || this.materials,
+	        materialKeys = data3d.materialKeys,
+	        loadingQueuePrefix = data3d.loadingQueuePrefix || options.loadingQueuePrefix || 'architecture',
+	        onFirstTextureSetLoaded = options.onFirstTextureSetLoaded,
+	        lightMapIntensity = options.lightMapIntensity,
+	        lightMapExposure = options.lightMapExposure;
+
+	      // internals
+	      var self = this, meshId, mesh, materialId, wireframe3d, positions, uvs, uvs2, scale,
+	        normals, mesh3d, geometry3d, material3d, position, rotRad, rotDeg, i, l;
+
+	      // output
+	      var promise;
+
+	      ///////////////// meshes
+
+	      if (meshes) {
+
+	        // generate IDs if not provided
+	        if (!meshKeys) {
+	          meshKeys = Object.keys(meshes);
+	        }
+
+	        for (i = 0, l = meshKeys.length; i < l; i++) {
+
+	          meshId = meshKeys[ i ];
+	          mesh = meshes[ meshId ];
+
+	          // internals
+	          materialId = mesh.material;
+	          positions = mesh.positions;
+	          uvs = mesh.uvs;
+	          uvs2 = mesh.uvsLightmap;
+	          normals = mesh.normals;
+	          position = mesh.position;
+	          rotRad = mesh.rotRad;
+	          rotDeg = mesh.rotDeg;
+	          scale = mesh.scale;
+
+	          // three.js materials
+	          if (!self._materials3d[ meshId ]) {
+	            // (one material pro mesh, because some of our mesh properties are material properties and it does not matter performance wise)
+	            material3d = new Io3dMaterial();
+	            material3d.name = materialId;
+	            if (!materials) {
+	              // there is no material properties. using default properties
+	              setMaterial({
+	                material3d: material3d
+	              });
+	            }
+	            self._materials3d[ meshId ] = material3d;
+	          }
+
+	          // set face side (a mesh property in our data structure, but a material property in three.js data structure)
+	          self._materials3d[ meshId ].side = WEBGL_SIDE[ meshes[ meshId ].side ] || WEBGL_SIDE['front'];
+
+	          // create three.js meshes
+
+	          if (!self._meshes3d[ meshId ]) {
+
+	            // create geometry
+	            geometry3d = createOrReuseGeometry3d( mesh.cacheKey );
+	            // create mesh
+	            mesh3d = new THREE.Mesh(geometry3d, material3d);
+	            // add to parent
+	            self.threeParent.add(mesh3d);
+	            // remembers
+	            self._meshes3d[ meshId ] = mesh3d;
+
+	            // create a separate geometry object for wireframes
+	            wireframe3d = new Wireframe();
+	            // add to parent
+	            self._meshes3d[ meshId ].add(wireframe3d);
+	            // remember
+	            self._wireframes3d[ meshId ] = wireframe3d;
+
+	          } else {
+
+	            mesh3d = self._meshes3d[ meshId ];
+	            geometry3d = mesh3d.geometry;
+
+	          }
+
+	          // apply scale
+	          if (scale) {
+	            mesh3d.scale.set( scale[0] , scale[1], scale[2] );
+	          }
+
+	          // apply position
+	          if (position) {
+	            mesh3d.position.set( position[0] , position[1], position[2] );
+	          }
+
+	          // apply rotation
+	          if (rotRad) {
+	            mesh3d.rotation.set( rotRad[0] , rotRad[1], rotRad[2] );
+	          } else if (rotDeg) {
+	            mesh3d.rotation.set( rotDeg[0] * DEG_TO_RAD, rotDeg[1] * DEG_TO_RAD, rotDeg[2] * DEG_TO_RAD );
+	          }
+
+	          // apply buffers if they are different than current buffers
+	          if (geometry3d.attributes.position === undefined) {
+	            geometry3d.addAttribute( 'position', new THREE.BufferAttribute(positions, 3) );
+	            // The bounding box of the scene may need to be updated
+	            // self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true
+	          } else if (geometry3d.attributes.position.array !== positions ) {
+	            geometry3d.attributes.position.array = positions;
+	            geometry3d.attributes.position.needsUpdate = true;
+	            // Three.js needs this to update
+	            geometry3d.computeBoundingSphere();
+	            // The bounding box of the scene may need to be updated
+	            // self.vm.viewport.webglView.modelBoundingBoxNeedsUpdate = true
+	          }
+	          if (geometry3d.attributes.normal === undefined) {
+	            geometry3d.addAttribute( 'normal', new THREE.BufferAttribute(normals, 3) );
+	          } else if (geometry3d.attributes.normal.array !== normals ) {
+	            geometry3d.attributes.normal.array = normals;
+	            geometry3d.attributes.normal.needsUpdate = true;
+	          }
+	          // geometry3d.attributesKeys = ['position', 'normal']
+	          // set uvs channel 1 (material)
+	          if (uvs) {
+	            if (geometry3d.attributes.uv === undefined) {
+	              geometry3d.attributes.uv = new THREE.BufferAttribute(uvs, 2);
+	            } else if (geometry3d.attributes.uv.array !== uvs ) {
+	              geometry3d.attributes.uv.array = uvs;
+	              geometry3d.attributes.uv.needsUpdate = true;
+	              // remove previous scale settings
+	              delete geometry3d.attributes.uv._scaleU;
+	              delete geometry3d.attributes.uv._scaleV;
+	              delete geometry3d.attributes.uv._source;
+	            }
+	            // geometry3d.attributesKeys[ 2 ] = 'uv'
+	          } else if (geometry3d.attributes.uv) {
+	            delete geometry3d.attributes.uv;
+	          }
+	          if (uvs2) {
+	            if (geometry3d.attributes.uv2 === undefined) {
+	              geometry3d.attributes.uv2 = new THREE.BufferAttribute(uvs2, 2);
+	            } else if (geometry3d.attributes.uv2.array !== uvs2 ) {
+	              geometry3d.attributes.uv2.array = uvs2;
+	              geometry3d.attributes.uv2.needsUpdate = true;
+	            }
+	            // geometry3d.attributesKeys[ geometry3d.attributesKeys.length++ ] = 'uv2'
+	          } else if (geometry3d.attributes.uv2) {
+	            delete geometry3d.attributes.uv2;
+	          }
+
+	          // (2017/01/09) The WebGL buffer of the pickingColor attribute is erroneously deleted
+	          // by ThreeJS (r69) in deallocateGeometry(). ThreeJS doesn't seem to account for the fact
+	          // that the attribute is shared by multiple geometries. It then does not get recreated, because
+	          // this function was attempting to manually set BufferGeometry.attributesKeys, missing any
+	          // extra attributes such as pickingColor.
+	          geometry3d.attributesKeys = Object.keys(geometry3d.attributes);
+
+	          // update wireframe
+
+	          if (materials[ materialId ]) {
+	            self._wireframes3d[ meshId ].update({
+	              positions: positions,
+	              thickness: materials[ materialId ].wireframeThickness === undefined ? 0 : materials[ materialId ].wireframeThickness,
+	              thresholdAngle: materials[ materialId ].wireframeThresholdAngle,
+	              color: materials[ materialId ].wireframeColor,
+	              opacity: materials[ materialId ].wireframeOpacity
+	            });
+	          }
+
+	        }
+
+	        // remove obsolete three.js meshes
+	        var mesh, meshIds = Object.keys(self._meshes3d);
+	        meshIds.forEach(function(meshId, i){
+	          mesh = self._meshes3d[meshId];
+	          if (!meshes[ meshId ]) {
+	            // destroy wireframe geometry
+	           var wireframe3d = self._wireframes3d[ meshId ];
+	           if (wireframe3d.parent) {
+	             wireframe3d.parent.remove( wireframe3d );
+	             wireframe3d.geometry.dispose();
+	           }
+	            // destroy geometry
+	            var geometry3d = self._meshes3d[ meshId ].geometry;
+	            disposeGeometry3dIfNotUsedElsewhere(self.meshes[ meshId ].cacheKey, geometry3d);
+	            // destroy threejs mesh
+	            var mesh3d = self._meshes3d[ meshId ];
+	            if (mesh3d.parent) {
+	              mesh3d.parent.remove( mesh3d );
+	            }
+	            // destroy material
+	            var material3d = self._materials3d[ meshId ];
+	            if (material3d.map) material3d.map.disposeIfPossible();
+	            if (material3d.specularMap) material3d.specularMap.disposeIfPossible();
+	            if (material3d.normalMap) material3d.normalMap.disposeIfPossible();
+	            if (material3d.alphaMap) material3d.alphaMap.disposeIfPossible();
+	            if (material3d.lightMap) material3d.lightMap.disposeIfPossible();
+	            material3d.dispose();
+	            // remove reference to destroyed 3d objects
+	            delete self._meshes3d[ meshId ];
+	            delete self._wireframes3d[ meshId ];
+	            delete self._materials3d[ meshId ];
+	          }
+	        });
+
+	        // update properties
+	        self.meshKeys = meshKeys;
+	        self.meshes = meshes;
+
+	      }
+
+	      ///////////////// materials
+
+	      if (materials) {
+
+	        var materialPromises = [], material;
+	        for (i = 0, l = self.meshKeys.length; i < l; i++) {
+	          meshId = self.meshKeys[ i ];
+	          materialId = self.meshes[ meshId ].material;
+
+	          // material attributes
+	          material = materials[ materialId ];
+	          if (material && Object.keys(material).length) {
+	            // set material
+	            materialPromises[ i ] = setMaterial({
+	              vm: self.vm,
+	              loadingQueuePrefix: loadingQueuePrefix,
+	              mesh3d: self._meshes3d[ meshId ],
+	              material3d: self._materials3d[ meshId ],
+	              attributes: materials[ materialId ],
+	              onFirstTextureSetLoaded: onFirstTextureSetLoaded,
+	              lightMapIntensity: lightMapIntensity,
+	              lightMapExposure: lightMapExposure
+	            });
+	          }
+
+	        }
+
+	        // output
+	        promise = bluebird_1.all(materialPromises);
+
+	        // update properties
+	        self.materialKeys = materialKeys;
+	        self.materials = materials;
+
+	      }
+
+	      ///////////////// return
+
+	      return promise ? promise : bluebird_1.resolve()
+
+	    },
+
+	    hasMeshes: function hasMeshes() {
+	      return Object.keys(this._meshes3d).length > 0
+	    },
+
+	    setMeshes: function(meshes){
+	      this.set({
+	        meshes: meshes
+	      });
+	    },
+
+	    setMaterials: function(materials, options){
+	      this.set({
+	        materials: materials
+	      }, options);
+	    },
+
+	    reset: function(){
+
+	      this.set({
+	        meshes: {},
+	        materials: {}
+	      });
+
+	    },
+
+	    destroy: function(){
+
+	      this.isDestroyed = true;
+
+	      this.reset();
+
+	      this.threeParent = null;
+
+	      // internals
+	      this.meshKeys = null;
+	      this.meshes = null;
+	      this.materialKeys = null;
+	      this.materials = null;
+	      this._meshes3d = null;
+	      this._materials3d = null;
+
+	    }
+
+	  };
+
+	// helpers
+
+	  function createOrReuseGeometry3d( key ) {
+	    if (key) {
+	      // use cache
+	      if (geometry3dCache[ key ]) {
+	        geometry3dCache[ key ].refCount++;
+	      } else {
+	        geometry3dCache[ key ] = {
+	          geometry3d: new THREE.BufferGeometry(),
+	          refCount: 1
+	        };
+	      }
+	      return geometry3dCache[ key ].geometry3d
+	    } else {
+	      // no key no cache
+	      return new THREE.BufferGeometry()
+	    }
+	  }
+
+	  function disposeGeometry3dIfNotUsedElsewhere( key, geometry3d ) {
+	    if (key) {
+	      // involve cache
+	      if (geometry3dCache[ key ]) {
+	        geometry3dCache[ key ].refCount--;
+	        if (geometry3dCache[ key ].refCount < 1) {
+	          geometry3dCache[ key ].geometry3d.dispose();
+	          delete geometry3dCache[ key ];
+	        }
+	      } else {
+	        // (2017/01/09) See comment in ThreeView.set()
+	        // if (geometry3d.attributes.pickingColor)
+	        //  delete geometry3d.attributes['pickingColor'];
+	        geometry3d.dispose();
+	      }
+	    } else {
+	      // no key bo cache
+	      // (2017/01/09) See comment in ThreeView.set()
+	      // if (geometry3d.attributes.pickingColor)
+	      //   delete geometry3d.attributes['pickingColor'];
+	      geometry3d.dispose();
+	    }
+	  }
+
+	  return Data3dView
+
+	});
+
+	// components
+	// other
+	// dependency check (for node.js compatibility)
 
 	checkDependencies({
 	  three: false,
@@ -20450,9 +20748,25 @@
 	    if (runtime.isBrowser) console.warn('AFRAME library not found: related features will be disabled.');
 	  }
 	}, function registerComponents () {
+
+	  // register components
+
 	  AFRAME.registerComponent('io3d-data3d', data3dComponent);
 	  AFRAME.registerComponent('io3d-furniture', furnitureComponent);
 	  AFRAME.registerComponent('tour', tourComponent);
+	  // check if gblock component has already been registered
+	  if (AFRAME.components.gblock) {
+	    // legacy warning in case gblock has been registered using https://github.com/archilogic-com/aframe-gblock/
+	    console.error('3dio.js error: Please remove any other "<script>" tags registering the "gblock" A-Frame component. This component is included in 3dio.js');
+	  } else {
+	    AFRAME.registerComponent('gblock', gBlockComponent);
+	  }
+
+
+	  // init plugin launcher
+
+	  inspectorPluginsLauncher.init();
+
 	});
 
 	// export
@@ -20485,6 +20799,7 @@
 	    // geometry
 	    boundingBox: rawInfo.boundingBox,
 	    boundingPoints: rawInfo.boundingPoints,
+	    data3dStorageId: rawInfo.fileKey,
 	    data3dUrl: convertKeyToUrl(rawInfo.fileKey),
 	    // scene Structure definition
 	    sceneStructure: rawInfo.modelStructure,
@@ -21629,6 +21944,9 @@
 	Url.prototype._autoEscapeMap = autoEscapeMap;
 	Url.prototype._afterQueryAutoEscapeMap = afterQueryAutoEscapeMap;
 
+	// constants
+	var IS_URL = new RegExp('^http:\\/\\/.*$|^https:\\/\\/.*$');
+
 	// configs
 
 	var HEADER_BYTE_LENGTH = 16;
@@ -21774,7 +22092,10 @@
 	      texturePathKey = TEXTURE_PATH_KEYS[i2];
 
 	      if (m[texturePathKey]) {
-	        if (m[texturePathKey].substring(0,5) === '/http') {
+	        if (IS_URL.test(m[texturePathKey])) {
+	          // is full URL already
+	          m[texturePathKey] = m[texturePathKey];
+	        } else if (m[texturePathKey].substring(0,5) === '/http') {
 	          // FIXME: prevent leading slashes being added to absolute paths
 	          m[texturePathKey] = m[texturePathKey].substring(1);
 	        } else if (m[texturePathKey][0] === '/') {
@@ -22677,7 +22998,7 @@
 	}
 
 	// constants
-	var IS_URL = new RegExp('^http:\\/\\/.*$|^https:\\/\\/.*$');
+	var IS_URL$1 = new RegExp('^http:\\/\\/.*$|^https:\\/\\/.*$');
 	var ID_TO_URL_CACHE = {};
 
 	// main
@@ -22694,7 +23015,7 @@
 	  }
 
 	  // check if storageId is URL already
-	  if (IS_URL.test(storageId)) {
+	  if (IS_URL$1.test(storageId)) {
 	    // add to cache
 	    ID_TO_URL_CACHE[ storageId + cdn + encode ] = storageId;
 	    // return URL
@@ -23840,10 +24161,230 @@
 	    + '_' + d.getHours() + '-' + d.getMinutes() // + '-' + d.getSeconds()
 	}
 
+	// main
+	function getNoCdnUrlFromStorageId (storageId) {
+
+	  return getUrlFromStorageId(storageId, { cdn: false })
+
+	}
+
+	// constants
+	var URL_TO_ID_CACHE = {};
+	var IS_URL$2 = new RegExp(
+	  '^(http(s?))\\:\\/\\/(' +
+	    configs.storageDomain +
+	    '|' +
+	    configs.storageDomainNoCdn +
+	    ')'
+	);
+
+	// main
+	function getStorageIdFromUrl(url) {
+	  // check cache
+	  if (URL_TO_ID_CACHE[url]) return URL_TO_ID_CACHE[url]
+
+	  // check if url is valid url
+	  if (IS_URL$2.test(url)) {
+	    var storageId = url.replace(IS_URL$2, '');
+	    // add to cache
+	    URL_TO_ID_CACHE[url] = storageId;
+	    return storageId
+
+	  } else {
+	    console.error('Provided URL is not a valid URL:', url);
+	    return undefined
+	  }
+
+	}
+
+	function traverseData3d$1(data3d, callback) {
+
+	  callback(data3d);
+
+	  if (data3d.children) for (var i=0, l=data3d.children.length; i<l; i++) traverseData3d$1(data3d.children[i], callback);
+
+	}
+
+	// methods
+
+	traverseData3d$1.materials = function traverseMaterials (data3d, callback) {
+	  
+	  (function traverseMaterials_(data3d, callback) {
+
+	    var material;
+	    var materialKeys = data3d.materialKeys || Object.keys(data3d.materials || {});
+	    for (var i = 0; i < materialKeys.length; i++) {
+	      material = data3d.materials[ materialKeys[ i ] ];
+	      callback(material, data3d);
+	    }
+
+	    if (data3d.children) {
+	      for (var i=0, l=data3d.children.length; i<l; i++) {
+	        traverseMaterials_(data3d.children[i], callback);
+	      }
+	    }
+
+	  })(data3d, callback);
+
+	};
+
+	traverseData3d$1.meshes = function traverseMeshes (data3d, callback) {
+
+	  (function traverseMeshes_(data3d, callback) {
+
+	    var mesh, material;
+	    var meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
+	    for (var i = 0; i < meshKeys.length; i++) {
+	      mesh = data3d.meshes[ meshKeys[ i ] ];
+	      material = data3d.materials[ mesh.material ];
+	      callback(mesh, material, data3d);
+	    }
+
+	    if (data3d.children) {
+	      for (var i=0, l=data3d.children.length; i<l; i++) {
+	        traverseMeshes_(data3d.children[i], callback);
+	      }
+	    }
+
+	  })(data3d, callback);
+
+	};
+
+	function getTextureKeys(data3d, options) {
+	  // API
+	  var options = options || {};
+	  var filter = options.filter;
+
+	  // internals
+	  var cache = {};
+
+	  // internals
+	  traverseData3d$1.materials(data3d, function(material) {
+	    var filteredResult, attr, type, format, value;
+	    for (var i = 0, l = ATTRIBUTES.length; i < l; i++) {
+	      attr = ATTRIBUTES[i];
+	      value = material[attr];
+
+	      // apply filter function if specified in options
+	      if (filter) {
+	        // provide info on type and format of texture to the filter function
+	        type = ATTRIBUTE_TO_TYPE[attr];
+	        format = ATTRIBUTE_TO_FORMAT[attr];
+	        value = filter(value, type, format, material, data3d);
+	      }
+
+	      if (value) cache[value] = true;
+	    }
+	  });
+
+	  return Object.keys(cache)
+	}
+
+	// constants
+
+	var ATTRIBUTES = [
+	  'mapDiffuse',
+	  'mapDiffusePreview',
+	  'mapDiffuseSource',
+	  // specular
+	  'mapSpecular',
+	  'mapSpecularPreview',
+	  'mapSpecularSource',
+	  // normal
+	  'mapNormal',
+	  'mapNormalPreview',
+	  'mapNormalSource',
+	  // alpha
+	  'mapAlpha',
+	  'mapAlphaPreview',
+	  'mapAlphaSource'
+	];
+
+	var ATTRIBUTE_TO_TYPE = {
+	  // diffuse
+	  mapDiffuse: 'diffuse',
+	  mapDiffusePreview: 'diffuse',
+	  mapDiffuseSource: 'diffuse',
+	  // specular
+	  mapSpecular: 'specular',
+	  mapSpecularPreview: 'specular',
+	  mapSpecularSource: 'specular',
+	  // normal
+	  mapNormal: 'normal',
+	  mapNormalPreview: 'normal',
+	  mapNormalSource: 'normal',
+	  // alpha
+	  mapAlpha: 'alpha',
+	  mapAlphaPreview: 'alpha',
+	  mapAlphaSource: 'alpha'
+	};
+
+	var ATTRIBUTE_TO_FORMAT = {
+	  // loRes
+	  mapDiffusePreview: 'loRes',
+	  mapSpecularPreview: 'loRes',
+	  mapNormalPreview: 'loRes',
+	  mapAlphaPreview: 'loRes',
+	  // source
+	  mapDiffuseSource: 'source',
+	  mapSpecularSource: 'source',
+	  mapNormalSource: 'source',
+	  mapAlphaSource: 'source',
+	  // dds
+	  mapDiffuse: 'dds',
+	  mapSpecular: 'dds',
+	  mapNormal: 'dds',
+	  mapAlpha: 'dds'
+	};
+
+	function getConvertableTextures(storageId) {
+	  var url = getUrlFromStorageId(storageId);
+	  return loadData3d(url)
+	    .then(function(data3d) {
+	      return getTextureKeys(data3d)
+	    })
+	    .then(function(textures) {
+	      return textures.map(getStorageIdFromUrl)
+	    })
+	}
+
+	function getConverter(format) {
+	  return function convert(storageId, options) {
+	    // API
+	    options = options || {};
+	    var filename = options.filename !== undefined ? options.filename : null;
+
+	    return getConvertableTextures(storageId).then(function(textureKeys) {
+	      return callService('Processing.task.enqueue', {
+	        method: 'convert',
+	        params: {
+	          inputFileKey: storageId,
+	          options: {
+	            inputAssetKeys: textureKeys,
+	            outputFormat: format,
+	            outputFilename: filename
+	          }
+	        }
+	      })
+	    })
+	  }
+	}
+
+	var convert = {
+	  exportDae: getConverter('dae'),
+	  exportObj: getConverter('obj')
+	};
+
+	var { exportObj, exportDae } = convert;
+
 	var storage = {
 	  get: getFromStorage,
+	  put: putToStorage,
 	  getUrlFromStorageId: getUrlFromStorageId,
-	  put: putToStorage
+	  getNoCdnUrlFromStorageId: getNoCdnUrlFromStorageId,
+	  getStorageIdFromUrl: getStorageIdFromUrl,
+	  exportObj: exportObj,
+	  exportDae: exportDae
 	};
 
 	function getSceneStructure (id) {
@@ -24057,59 +24598,6 @@
 	  console.warn('io3d.scene.getHtmlFromSceneStructure will be removed soon please use io3d.scene.getAframeElementsFromSceneStructure');
 	  return toAframeElements.apply( toAframeElements, arguments )
 	}
-
-	function traverseData3d$1(data3d, callback) {
-
-	  callback(data3d);
-
-	  if (data3d.children) for (var i=0, l=data3d.children.length; i<l; i++) traverseData3d$1(data3d.children[i], callback);
-
-	}
-
-	// methods
-
-	traverseData3d$1.materials = function traverseMaterials (data3d, callback) {
-	  
-	  (function traverseMaterials_(data3d, callback) {
-
-	    var material;
-	    var materialKeys = data3d.materialKeys || Object.keys(data3d.materials || {});
-	    for (var i = 0; i < materialKeys.length; i++) {
-	      material = data3d.materials[ materialKeys[ i ] ];
-	      callback(material, data3d);
-	    }
-
-	    if (data3d.children) {
-	      for (var i=0, l=data3d.children.length; i<l; i++) {
-	        traverseMaterials_(data3d.children[i], callback);
-	      }
-	    }
-
-	  })(data3d, callback);
-
-	};
-
-	traverseData3d$1.meshes = function traverseMeshes (data3d, callback) {
-
-	  (function traverseMeshes_(data3d, callback) {
-
-	    var mesh, material;
-	    var meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
-	    for (var i = 0; i < meshKeys.length; i++) {
-	      mesh = data3d.meshes[ meshKeys[ i ] ];
-	      material = data3d.materials[ mesh.material ];
-	      callback(mesh, material, data3d);
-	    }
-
-	    if (data3d.children) {
-	      for (var i=0, l=data3d.children.length; i<l; i++) {
-	        traverseMeshes_(data3d.children[i], callback);
-	      }
-	    }
-
-	  })(data3d, callback);
-
-	};
 
 	// methods
 
@@ -25039,47 +25527,6 @@
 	  })
 	}
 
-	function fetchModule (url) {
-	  runtime.assertBrowser('Please use "require()" to fetch modules in server environment.');
-
-	  // module wrapper
-	  window.___modules = window.___modules || {};
-
-	  // return module if it has been loaded already
-	  if (window.___modules[url]) {
-	    return Promise.resolve(window.___modules[url])
-
-	  } else {
-	  // load code and use module wrapper
-	    return fetch$1(url).then(function(response){
-	      return response.text()
-	    }).then(function(code){
-
-	      // check module type
-	      var moduleWrapper;
-	      if (code.indexOf('define(function()') > -1) {
-	        // AMD
-	        moduleWrapper = code+'\nfunction define(cb){ window.___modules["'+url+'"] = cb(); };';
-	      } else {
-	        // CommonJS
-	        moduleWrapper = 'window.___modules["'+url+'"] = (function(){ var exports = {}, module = {exports:exports};'+code+'\nreturn module.exports\n})()';
-	      }
-
-	      var script = document.createElement('script');
-	      try {
-	        script.appendChild(document.createTextNode(moduleWrapper));
-	        document.body.appendChild(script);
-	      } catch (e) {
-	        script.text = moduleWrapper;
-	        document.body.appendChild(script);
-	      }
-	      return window.___modules[url]
-	    })
-
-	  }
-
-	}
-
 	// dependencies
 
 	var TARGA_PARSER_LIB = 'https://cdn.rawgit.com/archilogic-com/roBrowser/e4b5b53a/src/Loaders/Targa.js';
@@ -25139,7 +25586,7 @@
 	}
 
 	function getImageFromTga (file) {
-	  return fetchModule(TARGA_PARSER_LIB).then(function(Targa){
+	  return fetchScript(TARGA_PARSER_LIB).then(function(Targa){
 	    return readFile(file, 'arrayBuffer').then(function(buffer){
 	      return new bluebird_1(function(resolve, reject){
 
@@ -25328,12 +25775,8 @@
 
 	    })(object3d);
 
-	    return bluebird_1.all([
-	      consolidate(data3d),
-	      bluebird_1.all(texturePromises)
-	    ]).then(function(results){
-	      // return data3d
-	      return results[0]
+	    return bluebird_1.all(texturePromises).then(function(){
+	      return consolidate(data3d)
 	    })
 
 	  }
@@ -25602,29 +26045,46 @@
 	    var threeAttribName = attribs[0];
 	    var data3dAttribName = attribs[1];
 
-	    // if not compressed get textures from threejs material:
-	    var isNonCompressedImage = threeMaterial[threeAttribName] && threeMaterial[threeAttribName].image && !threeMaterial[threeAttribName].isCompressedTexture;
-	    if (isNonCompressedImage) {
+	    var image = threeMaterial[threeAttribName] ? threeMaterial[threeAttribName].image : null;
 
-	      var image = threeMaterial[threeName].image;
+	    if (!(image && image.src)) return
+
+	    var isCompressedTexture = threeMaterial[threeAttribName].isCompressedTexture;
+	    var originalData3dMaterial = threeMaterial.userData && threeMaterial.userData.data3dMaterial ? threeMaterial.userData.data3dMaterial : null;
+
+	    if (isCompressedTexture) {
+
+	      // try original data3dMaterial...
+	      if (
+	        // material has original data3dMaterial properties
+	        originalData3dMaterial
+	        // source texture is available
+	        && originalData3dMaterial[data3dAttribName+'Source']
+	        // current compressed texture is the same as the one in original texture set
+	        && originalData3dMaterial[data3dAttribName].indexOf(image.src) > -1
+	      ) {
+	        // use texture set from original material
+	        data3dMaterial[data3dAttribName+'Source'] = getStorageIdFromUrl( originalData3dMaterial[data3dAttribName+'Source'] );
+	        data3dMaterial[data3dAttribName+'Preview'] = getStorageIdFromUrl( originalData3dMaterial[data3dAttribName+'Preview'] );
+	        data3dMaterial[data3dAttribName] = getStorageIdFromUrl( originalData3dMaterial[data3dAttribName] );
+
+	      } else {
+	        // log warning
+	        console.warn('Texture "'+ image.src +'" could not be converted into data3d texture set.');
+	      }
+
+	    } else {
+
+	      // use texture from threejs material
 	      texturePromises.push(
 	        getTextureSet(image).then(function (result) {
 	          // add texture keys to data3d
-	          data3dMaterial[data3dName + 'Preview'] = result.loRes;
-	          data3dMaterial[data3dName + 'Source'] = result.source;
-	          data3dMaterial[data3dName] = result.dds;
+	          data3dMaterial[data3dAttribName + 'Preview'] = result.loRes;
+	          data3dMaterial[data3dAttribName + 'Source'] = result.source;
+	          data3dMaterial[data3dAttribName] = result.dds;
 	        })
 	      );
 
-	    } else {
-	      // fallback to data from data3dMaterial (if available)
-	      var hasOriginalData3dMaterial = threeMaterial.userData && threeMaterial.userData.data3dMaterial && threeMaterial.userData.data3dMaterial[data3dAttribName];
-	      if (hasOriginalData3dMaterial) {
-	        var originalData3dMaterial = threeMaterial.userData.data3dMaterial;
-	        data3dMaterial[data3dAttribName+'Preview'] = originalData3dMaterial[data3dAttribName+'Preview'];
-	        data3dMaterial[data3dAttribName+'Source'] = originalData3dMaterial[data3dAttribName+'Source'];
-	        data3dMaterial[data3dAttribName] = originalData3dMaterial[data3dAttribName];
-	      }
 	    }
 
 	  });
@@ -25700,11 +26160,11 @@
 	// helpers
 
 	function loadDeflateLib () {
-	  return runtime.isBrowser ? fetchModule(PAKO_LIB.deflate.url) : Promise.resolve(require(PAKO_LIB.deflate.module))
+	  return runtime.isBrowser ? fetchScript(PAKO_LIB.deflate.url) : Promise.resolve(require(PAKO_LIB.deflate.module))
 	}
 
 	function loadInflateLib () {
-	  return runtime.isBrowser ? fetchModule(PAKO_LIB.inflate.url) : Promise.resolve(require(PAKO_LIB.inflate.module))
+	  return runtime.isBrowser ? fetchScript(PAKO_LIB.inflate.url) : Promise.resolve(require(PAKO_LIB.inflate.module))
 	}
 
 	// config
@@ -25894,99 +26354,6 @@
 	  })
 	}
 
-	function getTextureKeys (data3d, options) {
-
-	  // API
-	  var options = options || {};
-	  var filter = options.filter;
-
-	  // internals
-	  var cache = {};
-
-	  // internals
-	  traverseData3d$1.materials(data3d, function(material) {
-
-	    var filteredResult, attr, type, format, value;
-	    for (var i=0, l=ATTRIBUTES.length; i<l; i++) {
-
-	      attr = ATTRIBUTES[i];
-	      value = material[attr];
-
-	      // apply filter function if specified in options
-	      if (filter) {
-	        // provide info on type and format of texture to the filter function
-	        type = ATTRIBUTE_TO_TYPE[attr];
-	        format = ATTRIBUTE_TO_FORMAT[attr];
-	        value = filter(value, type, format, material, data3d);
-	      }
-
-	      if (value) cache[value] = true;
-
-	    }
-
-	  });
-
-	  return Object.keys(cache)
-
-	}
-
-	// constants
-
-	var ATTRIBUTES = [
-	  'mapDiffuse',
-	  'mapDiffusePreview',
-	  'mapDiffuseSource',
-	  // specular
-	  'mapSpecular',
-	  'mapSpecularPreview',
-	  'mapSpecularPreview',
-	  // normal
-	  'mapNormal',
-	  'mapNormalPreview',
-	  'mapNormalPreview',
-	  // alpha
-	  'mapAlpha',
-	  'mapAlphaPreview',
-	  'mapAlphaPreview',
-	];
-
-	var ATTRIBUTE_TO_TYPE = {
-	  // diffuse
-	  mapDiffuse: 'diffuse',
-	  mapDiffusePreview: 'diffuse',
-	  mapDiffuseSource: 'diffuse',
-	  // specular
-	  mapSpecular: 'specular',
-	  mapSpecularPreview: 'specular',
-	  mapSpecularPreview: 'specular',
-	  // normal
-	  mapNormal: 'normal',
-	  mapNormalPreview: 'normal',
-	  mapNormalPreview: 'normal',
-	  // alpha
-	  mapAlpha: 'alpha',
-	  mapAlphaPreview: 'alpha',
-	  mapAlphaPreview: 'alpha',
-	};
-
-	var ATTRIBUTE_TO_FORMAT = {
-	  // loRes
-	  mapDiffusePreview: 'loRes',
-	  mapSpecularPreview: 'loRes',
-	  mapNormalPreview: 'loRes',
-	  mapAlphaPreview: 'loRes',
-	  // source
-	  mapDiffuseSource: 'source',
-	  mapSpecularSource: 'source',
-	  mapNormalSource: 'source',
-	  mapAlphaSource: 'source',
-	  // dds
-	  mapDiffuse: 'dds',
-	  mapSpecular: 'dds',
-	  mapNormal: 'dds',
-	  mapAlpha: 'dds',
-	};
-
 	/*
 	input: data3d (object or binary) or storageId (referencing data3d)
 	returns promise
@@ -26036,7 +26403,7 @@
 
 	function pollTexture(storageId) {
 
-	  var url = getUrlFromStorageId(storageId);
+	  var url = getNoCdnUrlFromStorageId(storageId);
 
 	  return poll(function (resolve, reject, next) {
 
@@ -26216,37 +26583,38 @@
 
 	// main
 
-	function getBakeResult (processingId) {
+	function getResult(processingId) {
+	  return poll(function(resolve, reject, next) {
+	    var url = 'https://' + configs.storageDomainNoCdn + '/' + processingId;
 
-	  return poll(function(resolve, reject, next){
+	    fetch$1(url)
+	      .then(function(response) {
+	        return response.json()
+	      })
+	      .then(function(message) {
+	        var status = message.params.status;
 
-	    var url = 'https://storage-nocdn.3d.io/' + processingId;
-
-	    fetch$1(url).then(function(response) {
-	      return response.json()
-	    }).then(function(message){
-	      var status = message.params.status;
-
-	      if (status === 'ERROR') {
-	        reject(message.params.data);
-	      } else if (status === 'SUCCESS') {
-	        resolve(message.params.data);
-	      } else {
-	        next();
-	      }
-
-	    });
+	        if (status === 'ERROR') {
+	          reject(message.params.data);
+	        } else if (status === 'SUCCESS') {
+	          resolve(message.params.data);
+	        } else {
+	          next();
+	        }
+	      });
 	  })
-
 	}
 
 	// main
 
-	function bake (storageId, options) {
-
+	function bake(storageId, options) {
 	  // API
 	  options = options || {};
-	  var sunDirection = sunDirection || [0.7487416646324341, -0.47789104947352223, -0.45935396425474223];
+	  var sunDirection = sunDirection || [
+	    0.7487416646324341,
+	    -0.47789104947352223,
+	    -0.45935396425474223
+	  ];
 
 	  // internals
 	  var assetStorageIds = [];
@@ -26264,12 +26632,7 @@
 	      }
 	    }
 	  })
-
 	}
-
-	// public methods
-
-	bake.whenDone = getBakeResult;
 
 	var light = {
 	  bake: bake
@@ -26346,6 +26709,10 @@
 	function extendWithConvenienceMethods (el) {
 	  el.remove = function removeElement (child) {
 	    child ? el.removeChild(child) : el.parentNode.removeChild(el);
+	    return el
+	  };
+	  el.empty = function emptyElement () {
+	    while (el.lastChild) el.removeChild(el.lastChild);
 	    return el
 	  };
 	  el.append = function append (o) {
@@ -26881,10 +27248,9 @@
 	    centerEl.style['animation'] = '600ms content-slide-in cubic-bezier(0.2, 0.80, 0.5, 1)';
 	    centerEl.style['-webkit-animation-fill-mode'] = 'forwards';
 	    centerEl.style['animation-fill-mode'] = 'forwards';
-	    
-	    if (callback && typeof callback === 'function') setTimeout(function(){
-	      callback();
-	    }, 500);
+
+	    // trigger callback function
+	    if (callback && typeof callback === 'function') setTimeout(function(){ callback();}, 500);
 
 	    return result
 	  }
@@ -26907,10 +27273,9 @@
 	    setTimeout(function(){
 	      mainEl.remove();
 	    }, 600);
+
 	    // trigger callback function
-	    setTimeout(function(){
-	      if (callback && typeof callback === 'function') callback();
-	    }, 300);
+	    if (callback && typeof callback === 'function') setTimeout(function(){ callback(); }, 300);
 
 	    return result
 	  }
@@ -28096,7 +28461,6 @@
 	if (runtime.isBrowser) {
 	  var style = document.createElement('style');
 	  style.setAttribute('media', 'screen');
-	  //style.innerHTML = css
 	  style.appendChild(document.createTextNode(css));
 	  document.head.appendChild(style);
 	}
@@ -28494,7 +28858,7 @@
 	  auth: auth,
 	  io: {
 	    fetch: fetch$1,
-	    fetchModule: fetchModule,
+	    fetchScript: fetchScript,
 	    checkIfFileExists: checkIfFileExists
 	  },
 	  image: {
@@ -28515,12 +28879,15 @@
 	    read: readFile,
 	    getMd5Hash: getMd5Hash
 	  },
+	  processing: {
+	    whenDone: getResult
+	  },
 	  url: Url,
 	  uuid: uuid,
 	  getShortId: getShortId,
 	  path: path,
 	  wait: wait
-	  
+
 	};
 
 	var io3d$1 = {
