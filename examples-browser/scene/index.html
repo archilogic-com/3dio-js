@@ -78,12 +78,13 @@
 
       function moveToFirstWaypoint() {
         const waypoint = document.querySelector('[tour-waypoint]')
-        const name = waypoint.getAttribute('tour-waypoint')
-        console.log('moving to:', name)
-        document.querySelector('[camera]').components['tour'].goTo(name)
+        const uuid = waypoint.getAttribute('io3d-uuid')
+        console.log('moving to:', uuid)
+        document.querySelector('[camera]').components['tour'].goTo(uuid)
       }
 
       function updateWaypoints () {
+        const tour = document.querySelector('[tour]')
         const waypoints = document.querySelectorAll('[tour-waypoint]')
         const waypointParent = document.querySelector('.waypoints')
         const existingWaypoints = document.querySelectorAll('.btn-waypoint')
@@ -96,9 +97,16 @@
         const playBtn = waypointParent.children[0]
         waypoints.forEach(el => {
           let name = el.getAttribute('tour-waypoint')
-          var newWaypoint = document.createElement('div')
-          newWaypoint.innerHTML = '<button class="btn-waypoint" onclick="document.querySelector(\'[camera]\').components[\'tour\'].goTo(\'' + name + '\')">' + name + '</button>'
-          waypointParent.insertBefore(newWaypoint.querySelector('button'), playBtn)
+          let waypointId = el.getAttribute('io3d-uuid')
+          let newWaypointBtn = document.createElement('button')
+
+          newWaypointBtn.className = 'btn-waypoint'
+          newWaypointBtn.textContent = name
+          newWaypointBtn.dataset.waypointId = waypointId
+          newWaypointBtn.onclick = function() {
+            tour.components.tour.goTo(this.dataset.waypointId)
+          }
+          waypointParent.insertBefore(newWaypointBtn, playBtn)
         })
         setTimeout(() => {
           console.log('start moving')
