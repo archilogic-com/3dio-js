@@ -42,14 +42,16 @@ function getAframeElementsFromSceneStructure(sceneStructure, parent) {
   var collection = parent ? null : [] // use collection or parent
   sceneStructure.forEach(function(element3d) {
     if (validTypes.indexOf(element3d.type) > -1) {
+      if (element3d.type === 'camera-bookmark' || element3d.name === 'lastSavePosition') {
+        // camera bookmarks are parsed as children of the camera later
+        return
+      }
       var el = addEntity({
         attributes: getAttributes(element3d),
         parent: parent
       })
       if (element3d.type === 'level' && (element3d.bakeRegularStatusFileKey || element3d.bakePreviewStatusFileKey)) {
         updateOnBake(el, element3d)
-      } else if(element3d.type === 'camera-bookmark' && element3d.name === 'lastSavePosition') {
-        // ?
       }
 
       if (element3d.children && element3d.children.length) getAframeElementsFromSceneStructure(element3d.children, el)
