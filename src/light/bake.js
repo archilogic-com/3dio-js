@@ -1,14 +1,17 @@
 import runtime from '../core/runtime.js'
 import callServices from '../utils/services/call.js'
-import whenDone from './when-done.js'
+import whenDone from '../utils/processing/when-done.js'
 
 // main
 
-function bake (storageId, options) {
-
+function bake(storageId, options) {
   // API
   options = options || {}
-  var sunDirection = sunDirection || [0.7487416646324341, -0.47789104947352223, -0.45935396425474223]
+  var sunDirection = sunDirection || [
+    0.7487416646324341,
+    -0.47789104947352223,
+    -0.45935396425474223
+  ]
 
   // internals
   var assetStorageIds = []
@@ -26,7 +29,6 @@ function bake (storageId, options) {
       }
     }
   })
-
 }
 
 // public methods
