@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.75
- * @date 2017/09/28 10:29
+ * @date 2017/09/28 11:26
  * @branch scene-api
- * @commit 498260d9eb078957e60306dcadb7c6a60beffa47
+ * @commit 29a056e62943ff0e956a69022e0aee234850abe8
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/28 10:29', GIT_BRANCH = 'scene-api', GIT_COMMIT = '498260d9eb078957e60306dcadb7c6a60beffa47'
+	var BUILD_DATE='2017/09/28 11:26', GIT_BRANCH = 'scene-api', GIT_COMMIT = '29a056e62943ff0e956a69022e0aee234850abe8'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.75";
@@ -20294,7 +20294,7 @@
 	    if (this._isPlaying) {
 	      if(this._isChangingAnimation) {
 	        clearTimeout(this._nextAnimationTimeout);
-	        this.goTo(this._waypoints[this._currentWayPoint].getAttribute('tour-waypoint'), this._isPlaying);
+	        this.goTo(this._waypoints[this._currentWayPoint].getAttribute('io3d-uuid'), this._isPlaying);
 	      } else {
 	        this.el.dispatchEvent(new CustomEvent('resumeTour'));
 	      }
@@ -20304,10 +20304,10 @@
 	      this._isPaused = false;
 	      this.el.addEventListener('animation__move-complete', this._nextWaypointHandler);
 	      var next = this._waypoints[++this._currentWayPoint];
-	      if (next) this.goTo(next.getAttribute('tour-waypoint'), true);
+	      if (next) this.goTo(next.getAttribute('io3d-uuid'), true);
 	      else if (this.data.loop) {
 	        this._currentWayPoint = 0;
-	        this.goTo(this._waypoints[0].getAttribute('tour-waypoint'), true);
+	        this.goTo(this._waypoints[0].getAttribute('io3d-uuid'), true);
 	      }
 	    }
 	  },
@@ -20324,11 +20324,11 @@
 	    this._isPaused = false;
 	  },
 
-	  goTo: function (label, keepPlaying) {
+	  goTo: function (uuid, keepPlaying) {
 	    this._isPlaying = !!keepPlaying;
-	    var target = this._waypoints.find(function (item) { return item.getAttribute('tour-waypoint') === label });
+	    var target = this._waypoints.find(function (item) { return item.getAttribute('io3d-uuid') === uuid });
 	    if (!target) {
-	      console.error('The given waypoint '+ label + ' does not exist. Available waypoints:', this._waypoints.map(function (elem) { elem.getAttribute('tour-waypoint'); }));
+	      console.error('The given waypoint ' + uuid + ' does not exist. Available waypoints:', this._waypoints.map(function (elem) { return elem.getAttribute('io3d-uuid') }));
 	      return
 	    }
 
@@ -20404,7 +20404,7 @@
 	    }
 	    this._isChangingAnimation = true;
 	    var next = this._waypoints[++this._currentWayPoint];
-	    this._nextAnimationTimeout = setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying); }.bind(this), this.data.wait === undefined ? 0 : this.data.wait);
+	    this._nextAnimationTimeout = setTimeout(function () { this.goTo(next.getAttribute('io3d-uuid'), this._isPlaying); }.bind(this), this.data.wait === undefined ? 0 : this.data.wait);
 	  }
 	};
 
@@ -22871,7 +22871,6 @@
 	// creates a camera and tour-waypoints from scene structure
 	function parseCameraBookmarks(sceneStructure, planRoot) {
 	  var bookmarks = flattenSceneStructure(sceneStructure[0]).filter(function (element) { return element.type === 'camera-bookmark' });
-	  console.log('bookmarks', bookmarks);
 	  if (bookmarks.length === 0) return
 
 	  var lastSavePosition = bookmarks.find(function (element) { return element.name === 'lastSavePosition' });
@@ -22886,8 +22885,6 @@
 	    //camRotation = { x: lastSavePosition.rx, y: lastSavePosition.ry, z: 0 }
 	  }
 
-	  console.log('parent', planRoot, planRoot.getAttribute('position'), planRoot.getAttribute('rotation'));
-
 	  var camera = addEntity({
 	    attributes: {
 	      camera: '',
@@ -22898,9 +22895,6 @@
 	      rotation: camRotation
 	    }
 	  });
-
-	  // (2017/09/23) See comment below
-	  var bookmarkId = 1;
 
 	  bookmarks
 	    .filter(function (element) { return element.name !== 'lastSavePosition' })
@@ -22939,10 +22933,8 @@
 	      addEntity({
 	        parent: camera,
 	        attributes: {
-	          // (2017/09/23) Temporarily add a unique ID in order to differentiate bookmarks with identical names.
-	          // There is a bug somewhere in the source code that has problems with duplicate names (stored as keys
-	          // in an object?). Please remove once the bug is fixed.
-	          'tour-waypoint': element.name + ' ' + bookmarkId++,
+	          'tour-waypoint': element.name,
+	          'io3d-uuid': element.id,
 	          position: position,
 	          rotation: rotation
 	        }
