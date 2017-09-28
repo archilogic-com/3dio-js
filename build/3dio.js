@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.75
- * @date 2017/09/26 15:01
+ * @date 2017/09/28 10:29
  * @branch scene-api
- * @commit c51556080f37686e5629869c7938a4d7e259d323
+ * @commit 498260d9eb078957e60306dcadb7c6a60beffa47
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/26 15:01', GIT_BRANCH = 'scene-api', GIT_COMMIT = 'c51556080f37686e5629869c7938a4d7e259d323'
+	var BUILD_DATE='2017/09/28 10:29', GIT_BRANCH = 'scene-api', GIT_COMMIT = '498260d9eb078957e60306dcadb7c6a60beffa47'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.75";
@@ -822,7 +822,7 @@
 	});
 
 	/**
-	 * A representation of any set of values over any amount of time. This is the most basic building block
+	 * A representation of any set of values over any amount of time. This the most basic building block
 	 * of RxJS.
 	 *
 	 * @class Observable<T>
@@ -830,7 +830,7 @@
 	var Observable = (function () {
 	    /**
 	     * @constructor
-	     * @param {Function} subscribe the function that is called when the Observable is
+	     * @param {Function} subscribe the function that is  called when the Observable is
 	     * initially subscribed to. This function is given a Subscriber, to which new values
 	     * can be `next`ed, or an `error` method can be called to raise an error, or
 	     * `complete` can be called to notify of a successful completion.
@@ -859,7 +859,7 @@
 	     *
 	     * <span class="informal">Use it when you have all these Observables, but still nothing is happening.</span>
 	     *
-	     * `subscribe` is not a regular operator, but a method that calls Observable's internal `subscribe` function. It
+	     * `subscribe` is not a regular operator, but a method that calls Observables internal `subscribe` function. It
 	     * might be for example a function that you passed to a {@link create} static factory, but most of the time it is
 	     * a library implementation, which defines what and when will be emitted by an Observable. This means that calling
 	     * `subscribe` is actually the moment when Observable starts its work, not when it is created, as it is often
@@ -901,7 +901,7 @@
 	     *     console.log('Adding: ' + value);
 	     *     this.sum = this.sum + value;
 	     *   },
-	     *   error() { // We actually could just remove this method,
+	     *   error() { // We actually could just remote this method,
 	     *   },        // since we do not really care about errors right now.
 	     *   complete() {
 	     *     console.log('Sum equals: ' + this.sum);
@@ -956,7 +956,7 @@
 	     * // Logs:
 	     * // 0 after 1s
 	     * // 1 after 2s
-	     * // "unsubscribed!" after 2.5s
+	     * // "unsubscribed!" after 2,5s
 	     *
 	     *
 	     * @param {Observer|Function} observerOrNext (optional) Either an observer with methods to be called,
@@ -7397,7 +7397,7 @@
 		var Logger = { };
 
 		// For those that are at home that are keeping score.
-		Logger.VERSION = "1.4.1";
+		Logger.VERSION = "1.3.0";
 
 		// Function which handles all incoming log messages.
 		var logHandler;
@@ -7453,11 +7453,6 @@
 				if (newLevel && "value" in newLevel) {
 					this.context.filterLevel = newLevel;
 				}
-			},
-			
-			// Gets the current logging level for the logging instance
-			getLevel: function () {
-				return this.context.filterLevel;
 			},
 
 			// Is the logger configured to output messages at the supplied level?
@@ -7543,11 +7538,6 @@
 			}
 		};
 
-		// Gets the global logging filter level
-		Logger.getLevel = function() {
-			return globalLogger.getLevel();
-		};
-
 		// Retrieve a ContextualLogger instance.  Note that named loggers automatically inherit the global logger's level,
 		// default context and log handler.
 		Logger.get = function (name) {
@@ -7619,8 +7609,6 @@
 						hdlr = console.error;
 					} else if (context.level === Logger.INFO && console.info) {
 						hdlr = console.info;
-					} else if (context.level === Logger.DEBUG && console.debug) {
-						hdlr = console.debug;
 					}
 
 					options.formatter(messages, context);
@@ -22801,14 +22789,18 @@
 	  var collection = parent ? null : []; // use collection or parent
 	  sceneStructure.forEach(function(element3d) {
 	    if (validTypes.indexOf(element3d.type) > -1) {
+	      if (element3d.type === 'camera-bookmark' || element3d.name === 'lastSavePosition') {
+	        // camera bookmarks are parsed as children of the camera later
+	        return
+	      }
+
 	      var el = addEntity({
 	        attributes: getAttributes(element3d),
 	        parent: parent
 	      });
-	      if (element3d.type === 'level' && (element3d.bakeRegularStatusFileKey || element3d.bakePreviewStatusFileKey)) {
-	        updateOnBake(el, element3d);
-	      } else if(element3d.type === 'camera-bookmark' && element3d.name === 'lastSavePosition') {
-	        // ?
+
+	      if (element3d.type === 'level') {
+	        createBakedElement(el, element3d);
 	      }
 
 	      if (element3d.children && element3d.children.length) getAframeElementsFromSceneStructure(element3d.children, el);
@@ -22828,10 +22820,6 @@
 	      if (!element3d.bakedModelUrl) {
 	        console.warn('Level without bakedModelUrl: ', element3d);
 	        return
-	      }
-	      attributes['io3d-data3d'] = 'key: ' + element3d.bakedModelUrl;
-	      if (element3d.lightMapIntensity) {
-	        attributes['io3d-data3d'] += '; lightMapIntensity: ' + element3d.lightMapIntensity + '; lightMapExposure: ' + element3d.lightMapCenter;
 	      }
 	      attributes['shadow'] = 'cast: false, receive: true';
 	      break
@@ -22856,6 +22844,28 @@
 	  attributes['io3d-uuid'] = element3d.id;
 
 	  return attributes
+	}
+
+	// creates a child for a baked model in the current element
+	function createBakedElement(parentElem, element3d) {
+	  var attributes = {
+	    'io3d-data3d': 'key: ' + element3d.bakedModelUrl,
+	    shadow: 'cast: false, receive: true'
+	  };
+
+	  if (element3d.lightMapIntensity) {
+	    attributes['io3d-data3d'] += '; lightMapIntensity: ' + element3d.lightMapIntensity + '; lightMapExposure: ' + element3d.lightMapCenter;
+	  }
+
+	  var bakedElem = addEntity({
+	    attributes: attributes,
+	    parent: parentElem
+	  });
+
+	  if (parentElem.bakeRegularStatusFileKey || parentElem.bakePreviewStatusFileKey) {
+	    updateOnBake(bakedElem, element3d);
+	  }
+
 	}
 
 	// creates a camera and tour-waypoints from scene structure
