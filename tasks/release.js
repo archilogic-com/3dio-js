@@ -44,6 +44,7 @@ const release = gulp.series(
   test,
   build,
   cleanDestDir,
+  copyBuildToDist,
   uglify,
   gitTag,
   gitCommit,
@@ -87,6 +88,12 @@ function cleanDestDir () {
     fs.mkdirSync(process.cwd() + `/${destDir}`, 0o744)
     fs.mkdirSync(process.cwd() + `/${destDir}/${version}`, 0o744)
   })
+}
+
+function copyBuildToDist () {
+  return gulp
+    .src(`${srcDir}/**`)
+    .pipe(gulp.dest(`${destDir}/${version}`))
 }
 
 function uglify () {
