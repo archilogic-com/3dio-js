@@ -79,10 +79,22 @@ function getAttributes(element3d) {
     case 'interior':
       attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1)
       // apply custom material settings for furniture items
-      if (element3d.materials && Array.isArray(element3d.materials) ) {
-        element3d.materials.forEach(function(mat) {
-          if (mat.mesh && mat.material) attributes['io3d-furniture'] += '; material_' + mat.mesh.replace(/\s/g, '_') + ':' + mat.material
-        })
+      if (element3d.materials) {
+        var mats = element3d.materials
+        // materials can be saved as arrays
+        if (Array.isArray(mats)) {
+          var matObj = {}
+          mats.forEach(function (mat) {
+            if (mat.mesh && mat.material) matObj[mat.mesh] = mat.material
+          })
+          mats = matObj
+        }
+        // apply alternative material setting to io3d-furniture attribute
+        if (typeof mats === 'object') {
+          Object.keys(mats).forEach(function (mesh) {
+            if (mesh && mats[mesh]) attributes['io3d-furniture'] += '; material_' + mesh.replace(/\s/g, '_') + ':' + mats[mesh]
+          })
+        }
       }
       attributes['shadow'] = 'cast: true, receive: false'
     break
@@ -186,7 +198,8 @@ function parseCameraBookmarks(sceneStructure, planRoot) {
       addEntity({
         parent: camera,
         attributes: {
-          'tour-waypoint': element.name,
+          // per default no name is set in the editor
+          'tour-waypoint': element.name || 'Waypoint',
           'io3d-uuid': element.id,
           position: position,
           rotation: rotation
