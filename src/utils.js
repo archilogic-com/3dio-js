@@ -25,6 +25,7 @@ import url                          from './utils/url.js'
 import path                         from './utils/path.js'
 import wait                         from './utils/wait.js'
 import callService                  from './utils/services/call.js'
+import whenDone                     from './utils/processing/when-done.js'
 
 var utils = {
 
@@ -62,12 +63,15 @@ var utils = {
     read: readFile,
     getMd5Hash: getMd5FileHash
   },
+  processing: {
+    whenDone: whenDone
+  },
   url: url,
   uuid: uuid,
   getShortId: getShortId,
   path: path,
   wait: wait
-  
+
 }
 
 export default utils

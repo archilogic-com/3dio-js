@@ -1,6 +1,5 @@
 import getConvertableTextures from './get-convertable-textures.js'
 import callServices from '../utils/services/call.js'
-import whenDone from '../utils/processing/when-done.js'
 
 function getConverter(format) {
   return function convert(storageId, options) {

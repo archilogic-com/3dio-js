@@ -31,10 +31,6 @@ function bake(storageId, options) {
   })
 }
 
-// public methods
-
-bake.whenDone = whenDone
-
 // expose API
 
 export default bake
