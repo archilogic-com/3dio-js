@@ -6,7 +6,7 @@ import configs from '../../core/configs.js'
 
 // main
 
-export default function getBakeResult(processingId) {
+export default function getResult(processingId) {
   return poll(function(resolve, reject, next) {
     var url = 'https://' + configs.storageDomainNoCdn + '/' + processingId
 
