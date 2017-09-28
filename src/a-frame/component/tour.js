@@ -87,7 +87,7 @@ export default {
 
   // set camera position and rotation by providing changes for certain axes
   // to reset camera to walking mode do:
-  // setViewPoint({position: {y:1.6}, rotation: {x:0})
+  // updateViewPoint({position: {y:1.6}, rotation: {x:0})
   updateViewPoint: function (args) {
     args = args || {}
     if (typeof args !== 'object') {
@@ -103,8 +103,8 @@ export default {
     var rot = defaults({}, rotChange, clone(this.el.getAttribute('rotation')))
 
     var target = {
-      position: AFRAME.utils.coordinates.stringify(pos),
-      rotation: AFRAME.utils.coordinates.stringify(rot)
+      position: pos,
+      rotation: rot
     }
     this.animate(target)
   },
