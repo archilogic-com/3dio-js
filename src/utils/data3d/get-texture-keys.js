@@ -1,7 +1,6 @@
 import traverseData3d from './traverse.js'
 
-export default function getTextureKeys (data3d, options) {
-
+export default function getTextureKeys(data3d, options) {
   // API
   var options = options || {}
   var filter = options.filter
@@ -11,10 +10,8 @@ export default function getTextureKeys (data3d, options) {
 
   // internals
   traverseData3d.materials(data3d, function(material) {
-
     var filteredResult, attr, type, format, value
-    for (var i=0, l=ATTRIBUTES.length; i<l; i++) {
-
+    for (var i = 0, l = ATTRIBUTES.length; i < l; i++) {
       attr = ATTRIBUTES[i]
       value = material[attr]
 
@@ -27,13 +24,10 @@ export default function getTextureKeys (data3d, options) {
       }
 
       if (value) cache[value] = true
-
     }
-
   })
-
+  console.log(Object.keys(cache))
   return Object.keys(cache)
-
 }
 
 // constants
@@ -45,15 +39,15 @@ var ATTRIBUTES = [
   // specular
   'mapSpecular',
   'mapSpecularPreview',
-  'mapSpecularPreview',
+  'mapSpecularSource',
   // normal
   'mapNormal',
   'mapNormalPreview',
-  'mapNormalPreview',
+  'mapNormalSource',
   // alpha
   'mapAlpha',
   'mapAlphaPreview',
-  'mapAlphaPreview',
+  'mapAlphaSource'
 ]
 
 var ATTRIBUTE_TO_TYPE = {
@@ -64,15 +58,15 @@ var ATTRIBUTE_TO_TYPE = {
   // specular
   mapSpecular: 'specular',
   mapSpecularPreview: 'specular',
-  mapSpecularPreview: 'specular',
+  mapSpecularSource: 'specular',
   // normal
   mapNormal: 'normal',
   mapNormalPreview: 'normal',
-  mapNormalPreview: 'normal',
+  mapNormalSource: 'normal',
   // alpha
   mapAlpha: 'alpha',
   mapAlphaPreview: 'alpha',
-  mapAlphaPreview: 'alpha',
+  mapAlphaSource: 'alpha'
 }
 
 var ATTRIBUTE_TO_FORMAT = {
@@ -90,5 +84,5 @@ var ATTRIBUTE_TO_FORMAT = {
   mapDiffuse: 'dds',
   mapSpecular: 'dds',
   mapNormal: 'dds',
-  mapAlpha: 'dds',
+  mapAlpha: 'dds'
 }
