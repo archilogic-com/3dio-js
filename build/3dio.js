@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.81
- * @date 2017/09/27 18:27
+ * @version 1.0.0-beta.82
+ * @date 2017/09/28 17:38
  * @branch master
- * @commit 9cf3c97e72b9ada92d33f117fbce89e18816aa39
+ * @commit 311beb05e51330d79c0bb0d4222fab433ed92ade
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/27 18:27', GIT_BRANCH = 'master', GIT_COMMIT = '9cf3c97e72b9ada92d33f117fbce89e18816aa39'
+	var BUILD_DATE='2017/09/28 17:38', GIT_BRANCH = 'master', GIT_COMMIT = '311beb05e51330d79c0bb0d4222fab433ed92ade'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.81";
+	var version = "1.0.0-beta.82";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -23896,12 +23896,16 @@
 
 	// constants
 	var URL_TO_ID_CACHE = {};
-	var IS_URL$2 = new RegExp('^(http(s?))\\:\\/\\/(' + configs.storageDomain +'|' + configs.storageDomainNoCdn + ')');
-
+	var IS_URL$2 = new RegExp(
+	  '^(http(s?))\\:\\/\\/(' +
+	    configs.storageDomain +
+	    '|' +
+	    configs.storageDomainNoCdn +
+	    ')'
+	);
 
 	// main
-	function getStorageIdFromUrl (url) {
-
+	function getStorageIdFromUrl(url) {
 	  // check cache
 	  if (URL_TO_ID_CACHE[url]) return URL_TO_ID_CACHE[url]
 
@@ -23909,19 +23913,202 @@
 	  if (IS_URL$2.test(url)) {
 	    var storageId = url.replace(IS_URL$2, '');
 	    // add to cache
-	    URL_TO_ID_CACHE[ url ] = storageId;
+	    URL_TO_ID_CACHE[url] = storageId;
 	    return storageId
+
 	  } else {
-	    throw new Error('Provided URL is not a valid URL:', url)
+	    console.error('Provided URL is not a valid URL:', url);
+	    return undefined
+	  }
+
+	}
+
+	function traverseData3d$1(data3d, callback) {
+
+	  callback(data3d);
+
+	  if (data3d.children) for (var i=0, l=data3d.children.length; i<l; i++) traverseData3d$1(data3d.children[i], callback);
+
+	}
+
+	// methods
+
+	traverseData3d$1.materials = function traverseMaterials (data3d, callback) {
+	  
+	  (function traverseMaterials_(data3d, callback) {
+
+	    var material;
+	    var materialKeys = data3d.materialKeys || Object.keys(data3d.materials || {});
+	    for (var i = 0; i < materialKeys.length; i++) {
+	      material = data3d.materials[ materialKeys[ i ] ];
+	      callback(material, data3d);
+	    }
+
+	    if (data3d.children) {
+	      for (var i=0, l=data3d.children.length; i<l; i++) {
+	        traverseMaterials_(data3d.children[i], callback);
+	      }
+	    }
+
+	  })(data3d, callback);
+
+	};
+
+	traverseData3d$1.meshes = function traverseMeshes (data3d, callback) {
+
+	  (function traverseMeshes_(data3d, callback) {
+
+	    var mesh, material;
+	    var meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
+	    for (var i = 0; i < meshKeys.length; i++) {
+	      mesh = data3d.meshes[ meshKeys[ i ] ];
+	      material = data3d.materials[ mesh.material ];
+	      callback(mesh, material, data3d);
+	    }
+
+	    if (data3d.children) {
+	      for (var i=0, l=data3d.children.length; i<l; i++) {
+	        traverseMeshes_(data3d.children[i], callback);
+	      }
+	    }
+
+	  })(data3d, callback);
+
+	};
+
+	function getTextureKeys(data3d, options) {
+	  // API
+	  var options = options || {};
+	  var filter = options.filter;
+
+	  // internals
+	  var cache = {};
+
+	  // internals
+	  traverseData3d$1.materials(data3d, function(material) {
+	    var filteredResult, attr, type, format, value;
+	    for (var i = 0, l = ATTRIBUTES.length; i < l; i++) {
+	      attr = ATTRIBUTES[i];
+	      value = material[attr];
+
+	      // apply filter function if specified in options
+	      if (filter) {
+	        // provide info on type and format of texture to the filter function
+	        type = ATTRIBUTE_TO_TYPE[attr];
+	        format = ATTRIBUTE_TO_FORMAT[attr];
+	        value = filter(value, type, format, material, data3d);
+	      }
+
+	      if (value) cache[value] = true;
+	    }
+	  });
+
+	  return Object.keys(cache)
+	}
+
+	// constants
+
+	var ATTRIBUTES = [
+	  'mapDiffuse',
+	  'mapDiffusePreview',
+	  'mapDiffuseSource',
+	  // specular
+	  'mapSpecular',
+	  'mapSpecularPreview',
+	  'mapSpecularSource',
+	  // normal
+	  'mapNormal',
+	  'mapNormalPreview',
+	  'mapNormalSource',
+	  // alpha
+	  'mapAlpha',
+	  'mapAlphaPreview',
+	  'mapAlphaSource'
+	];
+
+	var ATTRIBUTE_TO_TYPE = {
+	  // diffuse
+	  mapDiffuse: 'diffuse',
+	  mapDiffusePreview: 'diffuse',
+	  mapDiffuseSource: 'diffuse',
+	  // specular
+	  mapSpecular: 'specular',
+	  mapSpecularPreview: 'specular',
+	  mapSpecularSource: 'specular',
+	  // normal
+	  mapNormal: 'normal',
+	  mapNormalPreview: 'normal',
+	  mapNormalSource: 'normal',
+	  // alpha
+	  mapAlpha: 'alpha',
+	  mapAlphaPreview: 'alpha',
+	  mapAlphaSource: 'alpha'
+	};
+
+	var ATTRIBUTE_TO_FORMAT = {
+	  // loRes
+	  mapDiffusePreview: 'loRes',
+	  mapSpecularPreview: 'loRes',
+	  mapNormalPreview: 'loRes',
+	  mapAlphaPreview: 'loRes',
+	  // source
+	  mapDiffuseSource: 'source',
+	  mapSpecularSource: 'source',
+	  mapNormalSource: 'source',
+	  mapAlphaSource: 'source',
+	  // dds
+	  mapDiffuse: 'dds',
+	  mapSpecular: 'dds',
+	  mapNormal: 'dds',
+	  mapAlpha: 'dds'
+	};
+
+	function getConvertableTextures(storageId) {
+	  var url = getUrlFromStorageId(storageId);
+	  return loadData3d(url)
+	    .then(function(data3d) {
+	      return getTextureKeys(data3d)
+	    })
+	    .then(function(textures) {
+	      return textures.map(getStorageIdFromUrl)
+	    })
+	}
+
+	function getConverter(format) {
+	  return function convert(storageId, options) {
+	    // API
+	    options = options || {};
+	    var filename = options.filename !== undefined ? options.filename : null;
+
+	    return getConvertableTextures(storageId).then(function(textureKeys) {
+	      return callService('Processing.task.enqueue', {
+	        method: 'convert',
+	        params: {
+	          inputFileKey: storageId,
+	          options: {
+	            inputAssetKeys: textureKeys,
+	            outputFormat: format,
+	            outputFilename: filename
+	          }
+	        }
+	      })
+	    })
 	  }
 	}
+
+	var convert = {
+	  exportDae: getConverter('dae'),
+	  exportObj: getConverter('obj')
+	};
 
 	var storage = {
 	  get: getFromStorage,
 	  put: putToStorage,
 	  getUrlFromStorageId: getUrlFromStorageId,
 	  getNoCdnUrlFromStorageId: getNoCdnUrlFromStorageId,
-	  getStorageIdFromUrl: getStorageIdFromUrl
+	  getStorageIdFromUrl: getStorageIdFromUrl,
+	  exportObj: convert.exportObj,
+	  exportDae: convert.exportDae
 	};
 
 	function getViewerUrl (args) {
@@ -24102,59 +24289,6 @@
 	  validateSceneStructure: validateSceneStructure,
 	  normalizeSceneStructure: normalizeSceneStructure,
 	  getHtmlFromSceneStructure: toHtml
-	};
-
-	function traverseData3d$1(data3d, callback) {
-
-	  callback(data3d);
-
-	  if (data3d.children) for (var i=0, l=data3d.children.length; i<l; i++) traverseData3d$1(data3d.children[i], callback);
-
-	}
-
-	// methods
-
-	traverseData3d$1.materials = function traverseMaterials (data3d, callback) {
-	  
-	  (function traverseMaterials_(data3d, callback) {
-
-	    var material;
-	    var materialKeys = data3d.materialKeys || Object.keys(data3d.materials || {});
-	    for (var i = 0; i < materialKeys.length; i++) {
-	      material = data3d.materials[ materialKeys[ i ] ];
-	      callback(material, data3d);
-	    }
-
-	    if (data3d.children) {
-	      for (var i=0, l=data3d.children.length; i<l; i++) {
-	        traverseMaterials_(data3d.children[i], callback);
-	      }
-	    }
-
-	  })(data3d, callback);
-
-	};
-
-	traverseData3d$1.meshes = function traverseMeshes (data3d, callback) {
-
-	  (function traverseMeshes_(data3d, callback) {
-
-	    var mesh, material;
-	    var meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
-	    for (var i = 0; i < meshKeys.length; i++) {
-	      mesh = data3d.meshes[ meshKeys[ i ] ];
-	      material = data3d.materials[ mesh.material ];
-	      callback(mesh, material, data3d);
-	    }
-
-	    if (data3d.children) {
-	      for (var i=0, l=data3d.children.length; i<l; i++) {
-	        traverseMeshes_(data3d.children[i], callback);
-	      }
-	    }
-
-	  })(data3d, callback);
-
 	};
 
 	// methods
@@ -25953,99 +26087,6 @@
 	  })
 	}
 
-	function getTextureKeys (data3d, options) {
-
-	  // API
-	  var options = options || {};
-	  var filter = options.filter;
-
-	  // internals
-	  var cache = {};
-
-	  // internals
-	  traverseData3d$1.materials(data3d, function(material) {
-
-	    var filteredResult, attr, type, format, value;
-	    for (var i=0, l=ATTRIBUTES.length; i<l; i++) {
-
-	      attr = ATTRIBUTES[i];
-	      value = material[attr];
-
-	      // apply filter function if specified in options
-	      if (filter) {
-	        // provide info on type and format of texture to the filter function
-	        type = ATTRIBUTE_TO_TYPE[attr];
-	        format = ATTRIBUTE_TO_FORMAT[attr];
-	        value = filter(value, type, format, material, data3d);
-	      }
-
-	      if (value) cache[value] = true;
-
-	    }
-
-	  });
-
-	  return Object.keys(cache)
-
-	}
-
-	// constants
-
-	var ATTRIBUTES = [
-	  'mapDiffuse',
-	  'mapDiffusePreview',
-	  'mapDiffuseSource',
-	  // specular
-	  'mapSpecular',
-	  'mapSpecularPreview',
-	  'mapSpecularPreview',
-	  // normal
-	  'mapNormal',
-	  'mapNormalPreview',
-	  'mapNormalPreview',
-	  // alpha
-	  'mapAlpha',
-	  'mapAlphaPreview',
-	  'mapAlphaPreview',
-	];
-
-	var ATTRIBUTE_TO_TYPE = {
-	  // diffuse
-	  mapDiffuse: 'diffuse',
-	  mapDiffusePreview: 'diffuse',
-	  mapDiffuseSource: 'diffuse',
-	  // specular
-	  mapSpecular: 'specular',
-	  mapSpecularPreview: 'specular',
-	  mapSpecularPreview: 'specular',
-	  // normal
-	  mapNormal: 'normal',
-	  mapNormalPreview: 'normal',
-	  mapNormalPreview: 'normal',
-	  // alpha
-	  mapAlpha: 'alpha',
-	  mapAlphaPreview: 'alpha',
-	  mapAlphaPreview: 'alpha',
-	};
-
-	var ATTRIBUTE_TO_FORMAT = {
-	  // loRes
-	  mapDiffusePreview: 'loRes',
-	  mapSpecularPreview: 'loRes',
-	  mapNormalPreview: 'loRes',
-	  mapAlphaPreview: 'loRes',
-	  // source
-	  mapDiffuseSource: 'source',
-	  mapSpecularSource: 'source',
-	  mapNormalSource: 'source',
-	  mapAlphaSource: 'source',
-	  // dds
-	  mapDiffuse: 'dds',
-	  mapSpecular: 'dds',
-	  mapNormal: 'dds',
-	  mapAlpha: 'dds',
-	};
-
 	/*
 	input: data3d (object or binary) or storageId (referencing data3d)
 	returns promise
@@ -26275,37 +26316,38 @@
 
 	// main
 
-	function getBakeResult (processingId) {
+	function getResult(processingId) {
+	  return poll(function(resolve, reject, next) {
+	    var url = 'https://' + configs.storageDomainNoCdn + '/' + processingId;
 
-	  return poll(function(resolve, reject, next){
+	    fetch$1(url)
+	      .then(function(response) {
+	        return response.json()
+	      })
+	      .then(function(message) {
+	        var status = message.params.status;
 
-	    var url = 'https://storage-nocdn.3d.io/' + processingId;
-
-	    fetch$1(url).then(function(response) {
-	      return response.json()
-	    }).then(function(message){
-	      var status = message.params.status;
-
-	      if (status === 'ERROR') {
-	        reject(message.params.data);
-	      } else if (status === 'SUCCESS') {
-	        resolve(message.params.data);
-	      } else {
-	        next();
-	      }
-
-	    });
+	        if (status === 'ERROR') {
+	          reject(message.params.data);
+	        } else if (status === 'SUCCESS') {
+	          resolve(message.params.data);
+	        } else {
+	          next();
+	        }
+	      });
 	  })
-
 	}
 
 	// main
 
-	function bake (storageId, options) {
-
+	function bake(storageId, options) {
 	  // API
 	  options = options || {};
-	  var sunDirection = sunDirection || [0.7487416646324341, -0.47789104947352223, -0.45935396425474223];
+	  var sunDirection = sunDirection || [
+	    0.7487416646324341,
+	    -0.47789104947352223,
+	    -0.45935396425474223
+	  ];
 
 	  // internals
 	  var assetStorageIds = [];
@@ -26323,12 +26365,7 @@
 	      }
 	    }
 	  })
-
 	}
-
-	// public methods
-
-	bake.whenDone = getBakeResult;
 
 	var light = {
 	  bake: bake
@@ -28571,12 +28608,15 @@
 	    read: readFile,
 	    getMd5Hash: getMd5Hash
 	  },
+	  processing: {
+	    whenDone: getResult
+	  },
 	  url: Url,
 	  uuid: uuid,
 	  getShortId: getShortId,
 	  path: path,
 	  wait: wait
-	  
+
 	};
 
 	var io3d$1 = {
