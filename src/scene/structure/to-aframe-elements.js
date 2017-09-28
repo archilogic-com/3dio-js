@@ -46,12 +46,14 @@ function getAframeElementsFromSceneStructure(sceneStructure, parent) {
         // camera bookmarks are parsed as children of the camera later
         return
       }
+
       var el = addEntity({
         attributes: getAttributes(element3d),
         parent: parent
       })
-      if (element3d.type === 'level' && (element3d.bakeRegularStatusFileKey || element3d.bakePreviewStatusFileKey)) {
-        updateOnBake(el, element3d)
+
+      if (element3d.type === 'level') {
+        createBakedElement(el, element3d)
       }
 
       if (element3d.children && element3d.children.length) getAframeElementsFromSceneStructure(element3d.children, el)
@@ -71,10 +73,6 @@ function getAttributes(element3d) {
       if (!element3d.bakedModelUrl) {
         console.warn('Level without bakedModelUrl: ', element3d)
         return
-      }
-      attributes['io3d-data3d'] = 'key: ' + element3d.bakedModelUrl
-      if (element3d.lightMapIntensity) {
-        attributes['io3d-data3d'] += '; lightMapIntensity: ' + element3d.lightMapIntensity + '; lightMapExposure: ' + element3d.lightMapCenter
       }
       attributes['shadow'] = 'cast: false, receive: true'
       break
@@ -99,6 +97,28 @@ function getAttributes(element3d) {
   attributes['io3d-uuid'] = element3d.id
 
   return attributes
+}
+
+// creates a child for a baked model in the current element
+function createBakedElement(parentElem, element3d) {
+  var attributes = {
+    'io3d-data3d': 'key: ' + element3d.bakedModelUrl,
+    shadow: 'cast: false, receive: true'
+  }
+
+  if (element3d.lightMapIntensity) {
+    attributes['io3d-data3d'] += '; lightMapIntensity: ' + element3d.lightMapIntensity + '; lightMapExposure: ' + element3d.lightMapCenter
+  }
+
+  var bakedElem = addEntity({
+    attributes: attributes,
+    parent: parentElem
+  })
+
+  if (parentElem.bakeRegularStatusFileKey || parentElem.bakePreviewStatusFileKey) {
+    updateOnBake(bakedElem, element3d)
+  }
+
 }
 
 // creates a camera and tour-waypoints from scene structure
