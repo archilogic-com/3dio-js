@@ -5,16 +5,14 @@ import getNoCdnUrlFromStorageId from './storage/get-no-cdn-url-from-id.js'
 import getStorageIdFromUrl from './storage/get-id-from-url.js'
 import convert from './storage/convert.js'
 
-var { exportObj, exportDae } = convert
-
 var storage = {
   get: get,
   put: put,
   getUrlFromStorageId: getUrlFromStorageId,
   getNoCdnUrlFromStorageId: getNoCdnUrlFromStorageId,
   getStorageIdFromUrl: getStorageIdFromUrl,
-  exportObj: exportObj,
-  exportDae: exportDae
+  exportObj: convert.exportObj,
+  exportDae: convert.exportDae
 }
 
 export default storage
