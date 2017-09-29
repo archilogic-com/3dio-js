@@ -26,6 +26,7 @@ export default {
     this.el.setAttribute('animation__move', { startEvents: 'doNotFire', pauseEvents: 'pauseTour', resumeEvents:'resumeTour', property: 'position', easing: 'easeInOutSine', dur: 100 })
     this.el.setAttribute('animation__turn', { startEvents: 'doNotFire', pauseEvents: 'pauseTour', resumeEvents:'resumeTour', property: 'rotation', easing: 'easeInOutSine', dur: 100 })
     this._nextWaypointHandler = this._nextWaypoint.bind(this)
+    this.el.addEventListener('animation__move-complete', this._nextWaypointHandler)
   },
 
   update: function () {
@@ -52,7 +53,6 @@ export default {
     } else {
       this._isPlaying = true
       this._isPaused = false
-      this.el.addEventListener('animation__move-complete', this._nextWaypointHandler)
       var next = this._waypoints[++this._currentWayPoint]
       if (next) this.goTo(next.getAttribute('io3d-uuid'), true)
       else if (this.data.loop) {
@@ -69,7 +69,6 @@ export default {
 
   stopTour: function () {
     this.pauseTour()
-    this.el.removeEventListener('animation__move-complete', this._nextWaypointHandler)
     this._isPlaying = false
     this._isPaused = false
   },
@@ -150,8 +149,8 @@ export default {
 
   _nextWaypoint: function () {
     // FIXME: Find the root cause of the weird jumpy behaviour when using WASD controls
-    this.setAttribute('position', AFRAME.utils.coordinates.stringify(this.getAttribute('position')))
-    
+    this.el.setAttribute('position', AFRAME.utils.coordinates.stringify(this.el.getAttribute('position')))
+
     if (!this._isPlaying) return this.stopTour()
     if (this._currentWayPoint === this._waypoints.length - 1) {
       if (!this.data.loop) return
