@@ -1,3 +1,4 @@
+import bluebird                     from 'bluebird'
 import decodeBinary                 from './utils/data3d/decode-binary.js'
 import encodeBinary                 from './utils/data3d/encode-binary.js'
 import loadData3d                   from './utils/data3d/load.js'
@@ -72,7 +73,8 @@ var utils = {
   getShortId: getShortId,
   path: path,
   wait: wait,
-  debounce: debounce
+  debounce: debounce,
+  bluebird: bluebird
 
 }
 
