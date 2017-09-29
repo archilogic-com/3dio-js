@@ -181,8 +181,8 @@ function parseCameraBookmarks(sceneStructure, planRoot) {
       // Get camera position by rotating around the look-at point at a distance of element.distance.
       // This will make very little difference for 'person'-type bookmarks, but it should be done for
       // the sake of correctness.
-      var rx = element.rx * Math.PI / 180
-      var ry = element.ry * Math.PI / 180
+      var rx =                      element.rx  * Math.PI / 180
+      var ry = (element.parent.ry + element.ry) * Math.PI / 180
 
       position.x -= element.distance * Math.sin(ry) * Math.cos(rx)
       position.y -= element.distance * Math.sin(rx)
