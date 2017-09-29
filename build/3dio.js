@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.81
- * @date 2017/09/28 17:49
+ * @date 2017/09/29 02:09
  * @branch scene-api
- * @commit 7c516f9a607d175402f57845c73e5db18d434a7c
+ * @commit af917b446fe96d6eb64f86d26442ef69af5358c2
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/28 17:49', GIT_BRANCH = 'scene-api', GIT_COMMIT = '7c516f9a607d175402f57845c73e5db18d434a7c'
+	var BUILD_DATE='2017/09/29 02:09', GIT_BRANCH = 'scene-api', GIT_COMMIT = 'af917b446fe96d6eb64f86d26442ef69af5358c2'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.81";
@@ -23075,8 +23075,7 @@
 	  'group',
 	  'level',
 	  'plan',
-	  'object',
-	  'camera-bookmark'
+	  'object'
 	];
 
 	function toAframeElements(sceneStructure, options) {
@@ -23090,13 +23089,15 @@
 	  // api
 	  options = options || {};
 	  var isArray = Array.isArray(sceneStructure);
-	  console.log('isArray', isArray);
 	  sceneStructure = isArray ? sceneStructure : [sceneStructure];
 
 	  // start parsing
 	  var html = getAframeElementsFromSceneStructure(sceneStructure);
+	  // camera bookmarks are separately extracted from the sceneStructure
+	  // and added as waypoints to an aframe camera parent
 	  var camHtml = parseCameraBookmarks(sceneStructure, isArray ? html : html[0]);
 	  var result;
+	  // let's make sure input type is similar to output type
 	  if (!camHtml) {
 	    result = isArray ? html : html[0];
 	  } else {
@@ -23110,20 +23111,16 @@
 	  var collection = parent ? null : []; // use collection or parent
 	  sceneStructure.forEach(function(element3d) {
 	    if (validTypes.indexOf(element3d.type) > -1) {
-	      if (element3d.type === 'camera-bookmark' || element3d.name === 'lastSavePosition') {
-	        // camera bookmarks are parsed as children of the camera later
-	        return
-	      }
-
+	      // get html attributes from element3d objects
 	      var el = addEntity({
 	        attributes: getAttributes(element3d),
 	        parent: parent
 	      });
-
+	      // the level scene might be baked
 	      if (element3d.type === 'level') {
 	        createBakedElement(el, element3d);
 	      }
-
+	      // recursively proceed through sceneStructure
 	      if (element3d.children && element3d.children.length) getAframeElementsFromSceneStructure(element3d.children, el);
 	      if (collection) collection.push(el);
 	    }
@@ -23136,21 +23133,28 @@
 	function getAttributes(element3d) {
 	  var attributes = {};
 
+	  // map type specific attributes
+	  // camera-bookmarks and bakedModel are handled separately
 	  switch (element3d.type) {
-	    case 'level':
-	      if (!element3d.bakedModelUrl) {
-	        console.warn('Level without bakedModelUrl: ', element3d);
-	        return
-	      }
-	      attributes['shadow'] = 'cast: false, receive: true';
-	      break
 	    case 'interior':
 	      attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1);
 	      // apply custom material settings for furniture items
-	      if (element3d.materials && Array.isArray(element3d.materials) ) {
-	        element3d.materials.forEach(function(mat) {
-	          if (mat.mesh && mat.material) attributes['io3d-furniture'] += '; material_' + mat.mesh.replace(/\s/g, '_') + ':' + mat.material;
-	        });
+	      if (element3d.materials) {
+	        var mats = element3d.materials;
+	        // materials can be saved as arrays
+	        if (Array.isArray(mats)) {
+	          var matObj = {};
+	          mats.forEach(function (mat) {
+	            if (mat.mesh && mat.material) matObj[mat.mesh] = mat.material;
+	          });
+	          mats = matObj;
+	        }
+	        // apply alternative material setting to io3d-furniture attribute
+	        if (typeof mats === 'object') {
+	          Object.keys(mats).forEach(function (mesh) {
+	            if (mesh && mats[mesh]) attributes['io3d-furniture'] += '; material_' + mesh.replace(/\s/g, '_') + ':' + mats[mesh];
+	          });
+	        }
 	      }
 	      attributes['shadow'] = 'cast: true, receive: false';
 	    break
@@ -23160,6 +23164,7 @@
 	    break
 	  }
 
+	  // and generic attributes that apply for all nodes
 	  attributes.position = element3d.x + ' ' + element3d.y + ' ' + element3d.z;
 	  attributes.rotation = (element3d.rx || 0) + ' ' + element3d.ry + ' 0';
 	  attributes['io3d-uuid'] = element3d.id;
@@ -23169,11 +23174,17 @@
 
 	// creates a child for a baked model in the current element
 	function createBakedElement(parentElem, element3d) {
+	  // we might have a scene that has no baked level
+	  if (!element3d.bakedModelUrl) {
+	    console.warn('Level without bakedModelUrl: ', element3d);
+	    return
+	  }
+	  // set data3d.buffer file key
 	  var attributes = {
 	    'io3d-data3d': 'key: ' + element3d.bakedModelUrl,
 	    shadow: 'cast: false, receive: true'
 	  };
-
+	  // set lightmap settings
 	  if (element3d.lightMapIntensity) {
 	    attributes['io3d-data3d'] += '; lightMapIntensity: ' + element3d.lightMapIntensity + '; lightMapExposure: ' + element3d.lightMapCenter;
 	  }
@@ -23254,7 +23265,8 @@
 	      addEntity({
 	        parent: camera,
 	        attributes: {
-	          'tour-waypoint': element.name,
+	          // per default no name is set in the editor
+	          'tour-waypoint': element.name || 'Waypoint',
 	          'io3d-uuid': element.id,
 	          position: position,
 	          rotation: rotation
