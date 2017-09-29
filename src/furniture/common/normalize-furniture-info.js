@@ -1,5 +1,8 @@
 export default function normalizeFurnitureInfo (rawInfo) {
   // normalizes furniture definitions from server side endpoints
+
+  var indexImageUrl = convertKeyToUrl(rawInfo.preview)
+
   return {
     // main info
     id: rawInfo.productResourceId,
@@ -7,7 +10,9 @@ export default function normalizeFurnitureInfo (rawInfo) {
     description: rawInfo.description,
     manufacturer: rawInfo.manufacturer,
     designer: rawInfo.designer,
-    indexImage: convertKeyToUrl(rawInfo.preview),
+    // cloudinary API reference: http://cloudinary.com/documentation/image_transformation_reference#format_parameter
+    thumb: 'https://res.cloudinary.com/archilogic/image/fetch/c_limit,h_150,w_150/' + indexImageUrl,
+    indexImage: indexImageUrl,
     images: rawInfo.images.map(convertKeyToUrl),
     url: rawInfo.link,
     year: rawInfo.year,
