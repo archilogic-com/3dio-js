@@ -147,6 +147,9 @@ export default {
   },
 
   _nextWaypoint: function () {
+    // FIXME: Find the root cause of the weird jumpy behaviour when using WASD controls
+    this.setAttribute('position', AFRAME.utils.coordinates.stringify(this.getAttribute('position')))
+    
     if (!this._isPlaying) return this.stopTour()
     if (this._currentWayPoint === this._waypoints.length - 1) {
       if (!this.data.loop) return
