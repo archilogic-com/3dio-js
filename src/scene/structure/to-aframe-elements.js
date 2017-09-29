@@ -139,15 +139,16 @@ function parseCameraBookmarks(sceneStructure, planRoot) {
   if (bookmarks.length === 0) return
 
   var lastSavePosition = bookmarks.find(function (element) { return element.name === 'lastSavePosition' })
-  var camPosition = { x: 0, y: 1.6, z: 0 }
-  var camRotation = { x: 0, y: 0, z: 0 }
+  var camPosition = "0 1.6 0"
+  var camRotation = "0 0 0"
 
   if (lastSavePosition) {
     if (lastSavePosition.mode === 'bird') {
       lastSavePosition.y += lastSavePosition.distance
     }
-    //camPosition = { x: lastSavePosition.x, y: lastSavePosition.y, z: lastSavePosition.z }
-    //camRotation = { x: lastSavePosition.rx, y: lastSavePosition.ry, z: 0 }
+    var location = sphericalToCartesian(lastSavePosition)
+    camPosition = location.position
+    camRotation = location.rotation
   }
 
   var camera = addEntity({
@@ -157,45 +158,15 @@ function parseCameraBookmarks(sceneStructure, planRoot) {
       'wasd-controls': '',
       'look-controls': '',
       // stringify location objects
-      position: camPosition.x + ' ' + camPosition.y + ' ' + camPosition.z,
-      rotation: camRotation.x + ' ' + camRotation.y + ' ' + camRotation.z
+      position: camPosition,
+      rotation: camRotation
     }
   })
 
   bookmarks
     .filter(function (element) { return element.name !== 'lastSavePosition' })
     .forEach(function (element) {
-
-      // Rotate look-at point on the XZ plane around parent's center
-      var angleY = -element.parent.ry * Math.PI / 180
-
-      var rotatedX = element.x * Math.cos(angleY) - element.z * Math.sin(angleY)
-      var rotatedZ = element.z * Math.cos(angleY) + element.x * Math.sin(angleY)
-
-      // Get world space coordinates for our look-at point
-      var position = {}
-      position.x = element.parent.x + rotatedX
-      position.y = element.parent.y + element.y
-      position.z = element.parent.z + rotatedZ
-
-      // Get camera position by rotating around the look-at point at a distance of element.distance.
-      // This will make very little difference for 'person'-type bookmarks, but it should be done for
-      // the sake of correctness.
-      var rx =                      element.rx  * Math.PI / 180
-      var ry = (element.parent.ry + element.ry) * Math.PI / 180
-
-      position.x -= element.distance * Math.sin(ry) * Math.cos(rx)
-      position.y -= element.distance * Math.sin(rx)
-      position.z -= element.distance * Math.cos(ry) * Math.cos(rx)
-
-      // Finally, get camera rotation. Note that it's necessary to add 180 degrees to the rotation angle
-      // because of A-Frame's different convention. Also note that when animating the camera, the rotation
-      // angle should be interpolated through the shortest arc in order to avoid swirling motion.
-      var rotation = {}
-      rotation.x = element.rx
-      rotation.y = 180 + element.parent.ry + element.ry
-
-      if (element.mode === 'bird' || element.mode === 'floorplan') position.y = Math.max(element.distance - 5, 8)
+      var location = sphericalToCartesian(element)
       addEntity({
         parent: camera,
         attributes: {
@@ -203,13 +174,51 @@ function parseCameraBookmarks(sceneStructure, planRoot) {
           'tour-waypoint': element.name || 'Waypoint',
           'io3d-uuid': element.id,
           // stringify location objects
-          position: position.x + ' ' + position.y + ' ' + position.z,
-          rotation: rotation.x + ' ' + rotation.y + ' 0'
+          position: location.position,
+          rotation: location.rotation
         }
       })
     })
 
   return camera
+}
+
+function sphericalToCartesian(element) {
+  // Rotate look-at point on the XZ plane around parent's center
+  var angleY = -element.parent.ry * Math.PI / 180
+
+  var rotatedX = element.x * Math.cos(angleY) - element.z * Math.sin(angleY)
+  var rotatedZ = element.z * Math.cos(angleY) + element.x * Math.sin(angleY)
+
+  // Get world space coordinates for our look-at point
+  var position = {}
+  position.x = element.parent.x + rotatedX
+  position.y = element.parent.y + element.y
+  position.z = element.parent.z + rotatedZ
+
+  // Get camera position by rotating around the look-at point at a distance of element.distance.
+  // This will make very little difference for 'person'-type bookmarks, but it should be done for
+  // the sake of correctness.
+  var rx =                      element.rx  * Math.PI / 180
+  var ry = (element.parent.ry + element.ry) * Math.PI / 180
+
+  position.x -= element.distance * Math.sin(ry) * Math.cos(rx)
+  position.y -= element.distance * Math.sin(rx)
+  position.z -= element.distance * Math.cos(ry) * Math.cos(rx)
+
+  // Finally, get camera rotation. Note that it's necessary to add 180 degrees to the rotation angle
+  // because of A-Frame's different convention. Also note that when animating the camera, the rotation
+  // angle should be interpolated through the shortest arc in order to avoid swirling motion.
+  var rotation = {}
+  rotation.x = element.rx
+  rotation.y = 180 + element.parent.ry + element.ry
+
+  if (element.mode === 'bird' || element.mode === 'floorplan') position.y = Math.max(element.distance - 5, 8)
+
+  return {
+    rotation: rotation.x + ' ' + rotation.y + ' 0', //rotation,
+    position: position.x + ' ' + position.y + ' ' + position.z // position
+  }
 }
 
 
