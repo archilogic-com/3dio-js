@@ -5,6 +5,7 @@ import traverseData3d               from './utils/data3d/traverse.js'
 import cloneData3d                  from './utils/data3d/clone.js'
 import getData3dFromThreeJs         from './utils/data3d/from-three.js'
 import getData3dInspectorUrl        from './utils/data3d/get-inspector-url.js'
+import debounce                     from './utils/debounce.js'
 import ui                           from './utils/ui.js'
 import auth                         from './utils/auth.js'
 import fetch                        from './utils/io/fetch.js'
@@ -70,7 +71,8 @@ var utils = {
   uuid: uuid,
   getShortId: getShortId,
   path: path,
-  wait: wait
+  wait: wait,
+  debounce: debounce
 
 }
 
