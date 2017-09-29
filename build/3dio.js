@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.81
- * @date 2017/09/29 02:09
+ * @date 2017/09/29 03:08
  * @branch scene-api
- * @commit af917b446fe96d6eb64f86d26442ef69af5358c2
+ * @commit b6916cdbaa39aeb253d448d96376dc7e9fda2b21
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/29 02:09', GIT_BRANCH = 'scene-api', GIT_COMMIT = 'af917b446fe96d6eb64f86d26442ef69af5358c2'
+	var BUILD_DATE='2017/09/29 03:08', GIT_BRANCH = 'scene-api', GIT_COMMIT = 'b6916cdbaa39aeb253d448d96376dc7e9fda2b21'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.81";
@@ -23165,6 +23165,7 @@
 	  }
 
 	  // and generic attributes that apply for all nodes
+	  // stringify location objects
 	  attributes.position = element3d.x + ' ' + element3d.y + ' ' + element3d.z;
 	  attributes.rotation = (element3d.rx || 0) + ' ' + element3d.ry + ' 0';
 	  attributes['io3d-uuid'] = element3d.id;
@@ -23220,11 +23221,12 @@
 	  var camera = addEntity({
 	    attributes: {
 	      camera: '',
-	      tour: { autoStart: false },
+	      tour: 'autoStart: false',
 	      'wasd-controls': '',
 	      'look-controls': '',
-	      position: camPosition,
-	      rotation: camRotation
+	      // stringify location objects
+	      position: camPosition.x + ' ' + camPosition.y + ' ' + camPosition.z,
+	      rotation: camRotation.x + ' ' + camRotation.y + ' ' + camRotation.z
 	    }
 	  });
 
@@ -23268,8 +23270,9 @@
 	          // per default no name is set in the editor
 	          'tour-waypoint': element.name || 'Waypoint',
 	          'io3d-uuid': element.id,
-	          position: position,
-	          rotation: rotation
+	          // stringify location objects
+	          position: position.x + ' ' + position.y + ' ' + position.z,
+	          rotation: rotation.x + ' ' + rotation.y + ' 0'
 	        }
 	      });
 	    });

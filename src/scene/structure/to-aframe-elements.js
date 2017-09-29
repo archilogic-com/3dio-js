@@ -97,6 +97,7 @@ function getAttributes(element3d) {
   }
 
   // and generic attributes that apply for all nodes
+  // stringify location objects
   attributes.position = element3d.x + ' ' + element3d.y + ' ' + element3d.z
   attributes.rotation = (element3d.rx || 0) + ' ' + element3d.ry + ' 0'
   attributes['io3d-uuid'] = element3d.id
@@ -152,11 +153,12 @@ function parseCameraBookmarks(sceneStructure, planRoot) {
   var camera = addEntity({
     attributes: {
       camera: '',
-      tour: { autoStart: false },
+      tour: 'autoStart: false',
       'wasd-controls': '',
       'look-controls': '',
-      position: camPosition,
-      rotation: camRotation
+      // stringify location objects
+      position: camPosition.x + ' ' + camPosition.y + ' ' + camPosition.z,
+      rotation: camRotation.x + ' ' + camRotation.y + ' ' + camRotation.z
     }
   })
 
@@ -200,8 +202,9 @@ function parseCameraBookmarks(sceneStructure, planRoot) {
           // per default no name is set in the editor
           'tour-waypoint': element.name || 'Waypoint',
           'io3d-uuid': element.id,
-          position: position,
-          rotation: rotation
+          // stringify location objects
+          position: position.x + ' ' + position.y + ' ' + position.z,
+          rotation: rotation.x + ' ' + rotation.y + ' 0'
         }
       })
     })
