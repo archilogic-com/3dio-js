@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.0-beta.81
- * @date 2017/09/29 03:08
+ * @date 2017/09/29 17:13
  * @branch scene-api
- * @commit b6916cdbaa39aeb253d448d96376dc7e9fda2b21
+ * @commit 861e8d6ce6bece92c610640139ba7a1d07c12376
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/29 03:08', GIT_BRANCH = 'scene-api', GIT_COMMIT = 'b6916cdbaa39aeb253d448d96376dc7e9fda2b21'
+	var BUILD_DATE='2017/09/29 17:13', GIT_BRANCH = 'scene-api', GIT_COMMIT = '861e8d6ce6bece92c610640139ba7a1d07c12376'
 
 	var name = "3dio";
 	var version = "1.0.0-beta.81";
@@ -16909,6 +16909,7 @@
 	    this.el.setAttribute('animation__move', { startEvents: 'doNotFire', pauseEvents: 'pauseTour', resumeEvents:'resumeTour', property: 'position', easing: 'easeInOutSine', dur: 100 });
 	    this.el.setAttribute('animation__turn', { startEvents: 'doNotFire', pauseEvents: 'pauseTour', resumeEvents:'resumeTour', property: 'rotation', easing: 'easeInOutSine', dur: 100 });
 	    this._nextWaypointHandler = this._nextWaypoint.bind(this);
+	    this.el.addEventListener('animation__move-complete', this._nextWaypointHandler);
 	  },
 
 	  update: function () {
@@ -16935,7 +16936,6 @@
 	    } else {
 	      this._isPlaying = true;
 	      this._isPaused = false;
-	      this.el.addEventListener('animation__move-complete', this._nextWaypointHandler);
 	      var next = this._waypoints[++this._currentWayPoint];
 	      if (next) this.goTo(next.getAttribute('io3d-uuid'), true);
 	      else if (this.data.loop) {
@@ -16952,7 +16952,6 @@
 
 	  stopTour: function () {
 	    this.pauseTour();
-	    this.el.removeEventListener('animation__move-complete', this._nextWaypointHandler);
 	    this._isPlaying = false;
 	    this._isPaused = false;
 	  },
@@ -17000,8 +16999,10 @@
 	    var startPosition = entity.getAttribute('position');
 	    var startRotation = entity.getAttribute('rotation');
 
-	    // compute shortest rotation
-	    newRotation = normalizeRotation(startRotation, newRotation);
+	    // normalize start and end rotation and find shortest arc for each rotation
+	    var normalizedRotations = getNormalizeRotations(startRotation, newRotation);
+	    newRotation = normalizedRotations.end;
+	    startRotation = normalizedRotations.start;
 
 	    // compute distance to adapt speed
 	    var d = dist(startPosition, newPosition);
@@ -17030,6 +17031,9 @@
 	  },
 
 	  _nextWaypoint: function () {
+	    // FIXME: Find the root cause of the weird jumpy behaviour when using WASD controls
+	    this.el.setAttribute('position', AFRAME.utils.coordinates.stringify(this.el.getAttribute('position')));
+
 	    if (!this._isPlaying) return this.stopTour()
 	    if (this._currentWayPoint === this._waypoints.length - 1) {
 	      if (!this.data.loop) return
@@ -17042,18 +17046,23 @@
 	};
 
 	// we want to prevent excessive spinning in rotations
-	function normalizeRotation(start, end) {
-	  // prevent angles larger than 360
-	  var normRot = {
-	    x: end.x % 360,
-	    y: end.y % 360,
-	    z: end.z % 360,
-	  };
-	  // if delta is bigger than 180 degrees we spin to the other direction
-	  Object.keys(normRot).forEach(function(axis) {
-	    if (normRot[axis] - start[axis] > 180) normRot[axis] -= 360;
+	function getNormalizeRotations(start, end) {
+	  // normalize both rotations
+	  var normStart = normalizeRotation(start);
+	  var normEnd = normalizeRotation(end);
+	  // find the shortest arc for each rotation
+	  Object.keys(start).forEach(function(axis) {
+	    if (normEnd[axis] - normStart[axis] > 180) normEnd[axis] -= 360;
 	  });
-	  return normRot
+	  return { start: normStart, end: normEnd }
+	}
+
+	function normalizeRotation(rot) {
+	  return {
+	    x: rot.x % 360,
+	    y: rot.y % 360,
+	    z: rot.z % 360,
+	  }
 	}
 
 	function dist(p, q) {
@@ -23207,15 +23216,16 @@
 	  if (bookmarks.length === 0) return
 
 	  var lastSavePosition = bookmarks.find(function (element) { return element.name === 'lastSavePosition' });
-	  var camPosition = { x: 0, y: 1.6, z: 0 };
-	  var camRotation = { x: 0, y: 0, z: 0 };
+	  var camPosition = "0 1.6 0";
+	  var camRotation = "0 0 0";
 
 	  if (lastSavePosition) {
 	    if (lastSavePosition.mode === 'bird') {
 	      lastSavePosition.y += lastSavePosition.distance;
 	    }
-	    //camPosition = { x: lastSavePosition.x, y: lastSavePosition.y, z: lastSavePosition.z }
-	    //camRotation = { x: lastSavePosition.rx, y: lastSavePosition.ry, z: 0 }
+	    var location = sphericalToCartesian(lastSavePosition);
+	    camPosition = location.position;
+	    camRotation = location.rotation;
 	  }
 
 	  var camera = addEntity({
@@ -23225,45 +23235,15 @@
 	      'wasd-controls': '',
 	      'look-controls': '',
 	      // stringify location objects
-	      position: camPosition.x + ' ' + camPosition.y + ' ' + camPosition.z,
-	      rotation: camRotation.x + ' ' + camRotation.y + ' ' + camRotation.z
+	      position: camPosition,
+	      rotation: camRotation
 	    }
 	  });
 
 	  bookmarks
 	    .filter(function (element) { return element.name !== 'lastSavePosition' })
 	    .forEach(function (element) {
-
-	      // Rotate look-at point on the XZ plane around parent's center
-	      var angleY = -element.parent.ry * Math.PI / 180;
-
-	      var rotatedX = element.x * Math.cos(angleY) - element.z * Math.sin(angleY);
-	      var rotatedZ = element.z * Math.cos(angleY) + element.x * Math.sin(angleY);
-
-	      // Get world space coordinates for our look-at point
-	      var position = {};
-	      position.x = element.parent.x + rotatedX;
-	      position.y = element.parent.y + element.y;
-	      position.z = element.parent.z + rotatedZ;
-
-	      // Get camera position by rotating around the look-at point at a distance of element.distance.
-	      // This will make very little difference for 'person'-type bookmarks, but it should be done for
-	      // the sake of correctness.
-	      var rx = element.rx * Math.PI / 180;
-	      var ry = element.ry * Math.PI / 180;
-
-	      position.x -= element.distance * Math.sin(ry) * Math.cos(rx);
-	      position.y -= element.distance * Math.sin(rx);
-	      position.z -= element.distance * Math.cos(ry) * Math.cos(rx);
-
-	      // Finally, get camera rotation. Note that it's necessary to add 180 degrees to the rotation angle
-	      // because of A-Frame's different convention. Also note that when animating the camera, the rotation
-	      // angle should be interpolated through the shortest arc in order to avoid swirling motion.
-	      var rotation = {};
-	      rotation.x = element.rx;
-	      rotation.y = 180 + element.parent.ry + element.ry;
-
-	      if (element.mode === 'bird' || element.mode === 'floorplan') position.y = Math.max(element.distance - 5, 8);
+	      var location = sphericalToCartesian(element);
 	      addEntity({
 	        parent: camera,
 	        attributes: {
@@ -23271,13 +23251,51 @@
 	          'tour-waypoint': element.name || 'Waypoint',
 	          'io3d-uuid': element.id,
 	          // stringify location objects
-	          position: position.x + ' ' + position.y + ' ' + position.z,
-	          rotation: rotation.x + ' ' + rotation.y + ' 0'
+	          position: location.position,
+	          rotation: location.rotation
 	        }
 	      });
 	    });
 
 	  return camera
+	}
+
+	function sphericalToCartesian(element) {
+	  // Rotate look-at point on the XZ plane around parent's center
+	  var angleY = -element.parent.ry * Math.PI / 180;
+
+	  var rotatedX = element.x * Math.cos(angleY) - element.z * Math.sin(angleY);
+	  var rotatedZ = element.z * Math.cos(angleY) + element.x * Math.sin(angleY);
+
+	  // Get world space coordinates for our look-at point
+	  var position = {};
+	  position.x = element.parent.x + rotatedX;
+	  position.y = element.parent.y + element.y;
+	  position.z = element.parent.z + rotatedZ;
+
+	  // Get camera position by rotating around the look-at point at a distance of element.distance.
+	  // This will make very little difference for 'person'-type bookmarks, but it should be done for
+	  // the sake of correctness.
+	  var rx =                      element.rx  * Math.PI / 180;
+	  var ry = (element.parent.ry + element.ry) * Math.PI / 180;
+
+	  position.x -= element.distance * Math.sin(ry) * Math.cos(rx);
+	  position.y -= element.distance * Math.sin(rx);
+	  position.z -= element.distance * Math.cos(ry) * Math.cos(rx);
+
+	  // Finally, get camera rotation. Note that it's necessary to add 180 degrees to the rotation angle
+	  // because of A-Frame's different convention. Also note that when animating the camera, the rotation
+	  // angle should be interpolated through the shortest arc in order to avoid swirling motion.
+	  var rotation = {};
+	  rotation.x = element.rx;
+	  rotation.y = 180 + element.parent.ry + element.ry;
+
+	  if (element.mode === 'bird' || element.mode === 'floorplan') position.y = Math.max(element.distance - 5, 8);
+
+	  return {
+	    rotation: rotation.x + ' ' + rotation.y + ' 0', //rotation,
+	    position: position.x + ' ' + position.y + ' ' + position.z // position
+	  }
 	}
 
 
