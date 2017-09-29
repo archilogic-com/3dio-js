@@ -117,8 +117,10 @@ export default {
     var startPosition = entity.getAttribute('position')
     var startRotation = entity.getAttribute('rotation')
 
-    // compute shortest rotation
-    newRotation = normalizeRotation(startRotation, newRotation)
+    // normalize start and end rotation and find shortest arc for each rotation
+    var normalizedRotations = getNormalizeRotations(startRotation, newRotation)
+    newRotation = normalizedRotations.end
+    startRotation = normalizedRotations.start
 
     // compute distance to adapt speed
     var d = dist(startPosition, newPosition)
@@ -162,18 +164,23 @@ export default {
 }
 
 // we want to prevent excessive spinning in rotations
-function normalizeRotation(start, end) {
-  // prevent angles larger than 360
-  var normRot = {
-    x: end.x % 360,
-    y: end.y % 360,
-    z: end.z % 360,
-  }
-  // if delta is bigger than 180 degrees we spin to the other direction
-  Object.keys(normRot).forEach(function(axis) {
-    if (normRot[axis] - start[axis] > 180) normRot[axis] -= 360
+function getNormalizeRotations(start, end) {
+  // normalize both rotations
+  var normStart = normalizeRotation(start)
+  var normEnd = normalizeRotation(end)
+  // find the shortest arc for each rotation
+  Object.keys(start).forEach(function(axis) {
+    if (normEnd[axis] - normStart[axis] > 180) normEnd[axis] -= 360
   })
-  return normRot
+  return { start: normStart, end: normEnd }
+}
+
+function normalizeRotation(rot) {
+  return {
+    x: rot.x % 360,
+    y: rot.y % 360,
+    z: rot.z % 360,
+  }
 }
 
 function dist(p, q) {
