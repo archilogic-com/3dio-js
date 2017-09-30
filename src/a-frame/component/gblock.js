@@ -1,5 +1,6 @@
 // TODO: Replace placeholder shaders by original ones (requires fixing projection matrix)
 import Promise from 'bluebird'
+import decodeArrayToString from '../../utils/array/decode-to-string.js'
 import fetchScript from '../../utils/io/fetch-script.js'
 import PromiseCache from '../../utils/promise-cache.js'
 import fragmentShader from './gblock/fragment-placeholder.glsl'
@@ -156,8 +157,8 @@ function fetchGblockLoader() {
 
         this._parse = this.parse
         this.parse = function (data, path, onLoad, onError) {
-          // convert uint8 to json
-          var json = JSON.parse(convertUint8ArrayToString(data))
+          // convert uint8 array to json
+          var json = JSON.parse(decodeArrayToString.utf8(data))
           // use base64 shaders
           Object.keys(json.shaders).forEach(function (key, i) {
             // Replacing original shaders with placeholders
@@ -182,18 +183,4 @@ function fetchGblockLoader() {
 
   return GblockLoaderPromise
 
-}
-
-// from https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/GLTFLoader.js
-function convertUint8ArrayToString (array) {
-  if (window.TextDecoder !== undefined) {
-    return new TextDecoder().decode(array)
-  }
-  // Avoid the String.fromCharCode.apply(null, array) shortcut, which
-  // throws a "maximum call stack size exceeded" error for large arrays.
-  var s = '';
-  for (var i = 0, il = array.length; i < il; i++) {
-    s += String.fromCharCode(array[i])
-  }
-  return s;
 }
