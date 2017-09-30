@@ -96,6 +96,7 @@ export default function encodeBinary (data3d, options) {
   // write structure data into file buffer
   
   var structureArray = new Uint16Array( fileBuffer, HEADER_BYTE_LENGTH, structureByteLength / 2 )
+  // encode string to utf-16 array
   for (i = 0, l = structureString.length; i < l; i++) {
     structureArray[i] = structureString.charCodeAt(i)
   }
