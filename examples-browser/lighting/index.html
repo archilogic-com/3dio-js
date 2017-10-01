@@ -5,11 +5,6 @@
 
   <!-- boilerplate libs -->
   <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
-  <script src="https://cdn.rawgit.com/tizzle/aframe-orbit-controls-component/v0.1.12/dist/aframe-orbit-controls-component.min.js"></script>
-
-  <!--<script src="../_libs/aframe.0.6.1.min.js"></script>-->
-  <!--<script src="../_libs/aframe-orbit-controls-component.min.js"></script>-->
-
   <!-- 3dio lib -->
   <script src="../../../build/3dio.js"></script>
 
@@ -36,30 +31,40 @@
 
 <div id="top">
   Lighting component by <a target="_blank" href="https://3d.io">3d.io</a> for <a target="_blank" href="https://aframe.io/">A-Frame</a>
+  <select id="light-preset">
+    <option value="studio">Studio</option>
+    <option value="morning">Morning</option>
+    <option value="night">Night</option>
+  </select>
 </div>
 
 <!-- 3D -->
-<a-scene light="defaultLightsEnabled: false">
+<a-scene lighting shadow="type: pcfsoft">
 
   <!--<a-light type="point" position="-30 30 -30"></a-light>-->
 
-  <a-entity id="lounge-chair" io3d-furniture="id:ef62bf88-97e9-4468-ad0e-a87ced83578d" position="0.07 0 -1.543" rotation="0 -90 0" shadow="cast: true" ></a-entity>
-  <a-entity id="couch" io3d-furniture="id:e8175ef8-da73-4c71-9321-8cca94dd7ec6" position="1.917 0 -0.699" rotation="0 -90 0" shadow=""></a-entity>
-  <a-entity id="chair" io3d-furniture="id:9809a451-6767-4e8c-88dd-a3e622c30832" position="-0.823 0 0.335" shadow="" rotation="0 -90 0"></a-entity>
-  <a-entity id="vase" io3d-furniture="id:10a54bcf-3b9c-4518-b7ea-81c4251cf5a4" position="0.282 0 0.178" shadow="" rotation="0 180 0"></a-entity>
+  <a-entity id="lounge-chair" io3d-furniture="id:ef62bf88-97e9-4468-ad0e-a87ced83578d" position="0.07 0 -1.543" rotation="0 -90 0" shadow="cast: true; receive: false" ></a-entity>
+  <a-entity id="armchair" io3d-furniture="id:3ca717bf-d1e6-4722-aac5-03141cbcd1aa" position="-2 0 -1.543" rotation="0 -90 0" shadow="cast: true; receive: false" ></a-entity>
+  <a-entity id="couch" io3d-furniture="id:23c81ab7-820e-4180-ad52-5c4267f18cf2" position="1.917 0 -0.699" rotation="0 -90 0" shadow="cast: true; receive: false"></a-entity>
+  <a-entity id="chair" io3d-furniture="id:9809a451-6767-4e8c-88dd-a3e622c30832" position="-0.823 0 0.335" shadow="cast: true; receive: false" rotation="0 -90 0"></a-entity>
+  <a-entity id="vase" io3d-furniture="id:10a54bcf-3b9c-4518-b7ea-81c4251cf5a4" position="0.282 0 0.178" shadow="cast: true; receive: false" rotation="0 180 0"></a-entity>
 
   <a-box position="-1 0.5 -3" shadow="cast:true; receive:true;" rotation="0 45 0" color="#eee"></a-box>
-  <a-sphere position="0 1.25 -5" shadow="cast:true; receive:true;" radius="1.25" color="#eee"></a-sphere>
+  <a-sphere position="0 1.25 -5" shadow="cast:true; receive:true;" radius="1.25" color="#f5f5f5"></a-sphere>
   <a-cylinder position="1 0.75 -3" shadow="cast:true; receive:true;" radius="0.5" height="1.5" color="#eee"></a-cylinder>
-  <a-plane position="0 0 -4" shadow="cast:true; receive:true;" rotation="-90 0 0" width="40" height="40""></a-plane>
+  <a-plane position="0 0 -4" shadow="cast:true; receive:true;" rotation="-90 0 0" width="40" height="40" color="#eee"></a-plane>
   <a-sky color="#ECECEC"></a-sky>
 
-  <!-- inside camera -->
-  <a-entity lighting></a-entity>
-
-  <a-entity camera="user-height:1.60;" look-controls wasd-controls></a-entity>
+  <a-entity camera="user-height:1.60; fov:60" look-controls wasd-controls position="-3 0 2" rotation="0 -45 0"></a-entity>
 
 </a-scene>
-
+<script>
+  var lightEl = document.querySelector('#light-preset')
+  var sceneEl = document.querySelector('a-scene')
+  lightEl.addEventListener('change', changeLighting)
+  function changeLighting(e) {
+    sceneEl.setAttribute('lighting', {preset: e.target.value})
+  }
+</script>
 </body>
 </html>
