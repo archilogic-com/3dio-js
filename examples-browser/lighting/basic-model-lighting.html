@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Demo with dynamic lights and shadows</title>
+  <meta name="description" content="3d.io interior scene with dynamic lighting and realtime shadows">
+  <!-- aframe library -->
+  <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+  <!-- 3dio library. distributed via 'npm run dist' in https://github.com/archilogic-com/3dio-js -->
+  <script src="../../../build/3dio.js"></script>
+</head>
+<body>
+  <app-3dio id="light_shadow_setup" scene-id="62cb3510-6708-4f62-94c3-f9936db7e20b"></app-3dio>
+  <a-scene class="fullscreen" io3d-lighting>
+    <a-camera id="cam" position="-10.4 0 2" fov="60" rotation="0 -49 0" look-controls="" wasd-controls=""></a-camera>
+    <a-entity position="-6.081 0 0" rotation="0 311 0" io3d-uuid="6350c07d-9c8d-44d1-881c-9218ff1b3682">
+      <a-entity io3d-uuid="4221ef5b-4d1e-437f-860b-4b495c32fd26">
+        <a-entity io3d-data3d="key:535e624259ee6b0200000484/bake/2017-08-18_10-45-43_i13fnY/lighting.gz.data3d.buffer" shadow="receive:true; cast:false"></a-entity>
+        <a-entity io3d-furniture="id:33e17040-6128-4416-8493-f4abc350326f" shadow="receive:false; cast:true" position="-2.7814545591397675 0 -4.7068122520486995" rotation="0 -1.4033418597069752e-14 0" io3d-uuid="576c38f7-45c9-4f42-b725-ea1de4de727b"></a-entity>
+        <a-entity io3d-furniture="id:0074a26e-5ce5-41a5-b476-07f132f8688e" shadow="receive:false; cast:true" position="-0.38726443681790623 0 -4.508184071189661" rotation="0 -89.94818528205002 0" io3d-uuid="044fff24-f935-4eb5-b719-b87e7371e6b7"></a-entity>
+        <a-entity position="-1.4586158098942716 0 2.051769723424809" rotation="0 90.05152552485703 0" io3d-uuid="57c9be80-273f-4a68-8d03-864fa88fe891">
+          <a-entity io3d-furniture="id:6a00edfa-bb68-44b3-a59e-90fbcfdfce0d" shadow="receive:false; cast:true" io3d-uuid="0acb29b1-c6ee-4578-91f2-ce0344217894"></a-entity>
+          <a-entity io3d-furniture="id:6fcb5e77-b101-4c87-af2b-66f379e5e732" shadow="receive:false; cast:true" position="-0.375 0 -0.54" rotation="0 3 0" io3d-uuid="e360428f-2993-4d1f-84aa-f12eea2703fd"></a-entity>
+          <a-entity io3d-furniture="id:6fcb5e77-b101-4c87-af2b-66f379e5e732" shadow="receive:false; cast:true" position="0.375 0 -0.54" io3d-uuid="3414169c-dab0-452a-b99a-bb1e35a935ac"></a-entity>
+          <a-entity io3d-furniture="id:6fcb5e77-b101-4c87-af2b-66f379e5e732" shadow="receive:false; cast:true" position="-0.375 0 0.54" rotation="0 179 0" io3d-uuid="3a7054ac-8578-468f-9c0a-d73185079d7d"></a-entity>
+          <a-entity io3d-furniture="id:6fcb5e77-b101-4c87-af2b-66f379e5e732" shadow="receive:false; cast:true" position="0.375 0 0.54" rotation="0 181 0" io3d-uuid="7374bcf8-8367-4f4d-b277-b0db3e8353d9"></a-entity>
+          <a-entity io3d-furniture="id:6fcb5e77-b101-4c87-af2b-66f379e5e732" shadow="receive:false; cast:true" position="-1.0742187 0 0.0585938" rotation="0 99 0" io3d-uuid="50816412-a7e2-45e6-a797-9cd7afdb10ea"></a-entity>
+          <a-entity io3d-furniture="id:6fcb5e77-b101-4c87-af2b-66f379e5e732" shadow="receive:false; cast:true" position="1.0546875 0 0.0195313" rotation="0 270 0" io3d-uuid="d7c23cc8-0f29-48a1-8d75-0ef8bd19bc75"></a-entity>
+        </a-entity>
+        <a-entity position="-3.1114545591397675 0 4.236921294358887" rotation="0 90 0" io3d-uuid="3171ad75-5ca2-40bf-8ebd-2d1bd1c8ab77">
+          <a-entity io3d-furniture="id:57896013-9b90-4d4b-87c9-a460362260b4" shadow="receive:false; cast:true" io3d-uuid="59e100c5-3efd-4411-b5f8-d774208f5ea0"></a-entity>
+          <a-entity io3d-furniture="id:8e5a8e79-2278-42d1-932e-ea70999c9939" shadow="receive:false; cast:true" position="0 0 1.03" io3d-uuid="25b38376-5a2f-4c60-9139-a5b5c26ce3fb"></a-entity>
+          <a-entity io3d-furniture="id:c944cef8-c4f7-48eb-9780-8bc3cc833185" shadow="receive:false; cast:true" position="-1.06 0 0.010000000000000009" io3d-uuid="4dbcd7ec-9e1e-4cde-9abd-89d6cca70dbb"></a-entity>
+        </a-entity>
+        <a-entity position="-3.2914545591397677 0 0.9869212943588852" rotation="0 90 0" io3d-uuid="a643acf3-f449-47a7-aa5a-9c5a4032a8f8">
+          <a-entity io3d-furniture="id:5d6453a4-e520-4caf-b927-f095cd755ee7" shadow="receive:false; cast:true" position="0 0 -7.216449660063518e-16" io3d-uuid="460bc9d5-46c5-4151-a13c-39276d4f3831">
+            <a-entity io3d-furniture="id:effd9517-dcec-410e-8bcd-257f23e74d4a" shadow="receive:false; cast:true" position="0 0.7499999672758246 -0.0585937" io3d-uuid="acd33c3a-99d4-4b7a-8bee-0cdd56337754"></a-entity>
+          </a-entity>
+        </a-entity>
+        <a-entity io3d-furniture="id:69665153-2721-4511-99b2-7ad7af2641d9" shadow="receive:false; cast:true" position="2.5555959483596316 0 1.0375858814063532" rotation="0 -90.00000000000001 0" io3d-uuid="bd794ee4-7c92-4cc9-be65-af09749dd911"></a-entity>
+        <a-entity position="2.9755959483596315 0 3.117585881406354" rotation="0 -90.00000000000001 0" io3d-uuid="cf103c92-6b22-4096-afdd-c529da755577">
+          <a-entity io3d-furniture="id:eb38e439-9068-40e9-bd2d-a997f2992df0" shadow="receive:false; cast:true" position="-0.1171875 0 -0.0585937" rotation="0 18 0" io3d-uuid="2cbc8520-23da-44eb-891d-5171cbc0ea94"></a-entity>
+          <a-entity io3d-furniture="id:b549825d-8fdd-4c18-8ce9-248b315ee978" shadow="receive:false; cast:true" position="0.6835938 0 -0.15625" io3d-uuid="479ea4eb-1479-44f5-8a44-cc024eee9358"></a-entity>
+        </a-entity>
+        <a-entity io3d-furniture="id:0473ff14-4538-4186-bdde-1d6fb91ec03a" shadow="receive:false; cast:true" position="0.18891339527453813 0 3.6869212943588874" rotation="0 90 0" io3d-uuid="2426c955-1e49-4110-9666-b2ae71ef32de"></a-entity>
+        <a-entity io3d-furniture="id:77725308-eb20-4811-bfdd-e8da40a9bbfd" shadow="receive:false; cast:true" position="-2.4804687 0 -2.1679687" io3d-uuid="077ef22c-7b51-4e86-ad8a-2043a639ead6"></a-entity>
+        <a-entity io3d-furniture="id:a87b255a-df44-4b83-804a-d02b9d9f9220" shadow="receive:false; cast:true" position="-1.796875 0 -2.0507812" io3d-uuid="1e39dae6-9e74-4095-afcb-d87766724f78"></a-entity>
+      </a-entity>
+    </a-entity>
+  </a-scene>
+</body>
+</html>
