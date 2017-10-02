@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.0-beta.82
- * @date 2017/09/28 17:38
+ * @version 1.0.1
+ * @date 2017/10/02 15:25
  * @branch master
- * @commit 311beb05e51330d79c0bb0d4222fab433ed92ade
+ * @commit 9ee33d09ee2534023bd4a7bbb41b6555319efc64
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/09/28 17:38', GIT_BRANCH = 'master', GIT_COMMIT = '311beb05e51330d79c0bb0d4222fab433ed92ade'
+	var BUILD_DATE='2017/10/02 15:25', GIT_BRANCH = 'master', GIT_COMMIT = '9ee33d09ee2534023bd4a7bbb41b6555319efc64'
 
 	var name = "3dio";
-	var version = "1.0.0-beta.82";
+	var version = "1.0.1";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -822,7 +822,7 @@
 	});
 
 	/**
-	 * A representation of any set of values over any amount of time. This the most basic building block
+	 * A representation of any set of values over any amount of time. This is the most basic building block
 	 * of RxJS.
 	 *
 	 * @class Observable<T>
@@ -830,7 +830,7 @@
 	var Observable = (function () {
 	    /**
 	     * @constructor
-	     * @param {Function} subscribe the function that is  called when the Observable is
+	     * @param {Function} subscribe the function that is called when the Observable is
 	     * initially subscribed to. This function is given a Subscriber, to which new values
 	     * can be `next`ed, or an `error` method can be called to raise an error, or
 	     * `complete` can be called to notify of a successful completion.
@@ -859,7 +859,7 @@
 	     *
 	     * <span class="informal">Use it when you have all these Observables, but still nothing is happening.</span>
 	     *
-	     * `subscribe` is not a regular operator, but a method that calls Observables internal `subscribe` function. It
+	     * `subscribe` is not a regular operator, but a method that calls Observable's internal `subscribe` function. It
 	     * might be for example a function that you passed to a {@link create} static factory, but most of the time it is
 	     * a library implementation, which defines what and when will be emitted by an Observable. This means that calling
 	     * `subscribe` is actually the moment when Observable starts its work, not when it is created, as it is often
@@ -901,7 +901,7 @@
 	     *     console.log('Adding: ' + value);
 	     *     this.sum = this.sum + value;
 	     *   },
-	     *   error() { // We actually could just remote this method,
+	     *   error() { // We actually could just remove this method,
 	     *   },        // since we do not really care about errors right now.
 	     *   complete() {
 	     *     console.log('Sum equals: ' + this.sum);
@@ -956,7 +956,7 @@
 	     * // Logs:
 	     * // 0 after 1s
 	     * // 1 after 2s
-	     * // "unsubscribed!" after 2,5s
+	     * // "unsubscribed!" after 2.5s
 	     *
 	     *
 	     * @param {Observer|Function} observerOrNext (optional) Either an observer with methods to be called,
@@ -7397,7 +7397,7 @@
 		var Logger = { };
 
 		// For those that are at home that are keeping score.
-		Logger.VERSION = "1.3.0";
+		Logger.VERSION = "1.4.1";
 
 		// Function which handles all incoming log messages.
 		var logHandler;
@@ -7453,6 +7453,11 @@
 				if (newLevel && "value" in newLevel) {
 					this.context.filterLevel = newLevel;
 				}
+			},
+			
+			// Gets the current logging level for the logging instance
+			getLevel: function () {
+				return this.context.filterLevel;
 			},
 
 			// Is the logger configured to output messages at the supplied level?
@@ -7538,6 +7543,11 @@
 			}
 		};
 
+		// Gets the global logging filter level
+		Logger.getLevel = function() {
+			return globalLogger.getLevel();
+		};
+
 		// Retrieve a ContextualLogger instance.  Note that named loggers automatically inherit the global logger's level,
 		// default context and log handler.
 		Logger.get = function (name) {
@@ -7609,6 +7619,8 @@
 						hdlr = console.error;
 					} else if (context.level === Logger.INFO && console.info) {
 						hdlr = console.info;
+					} else if (context.level === Logger.DEBUG && console.debug) {
+						hdlr = console.debug;
 					}
 
 					options.formatter(messages, context);
@@ -8681,9 +8693,9 @@
 	};
 
 	var thenables = function(Promise, INTERNAL) {
-	var util$$1 = util;
-	var errorObj = util$$1.errorObj;
-	var isObject = util$$1.isObject;
+	var util$$2 = util;
+	var errorObj = util$$2.errorObj;
+	var isObject = util$$2.isObject;
 
 	function tryConvertToPromise(obj, context) {
 	    if (isObject(obj)) {
@@ -8741,7 +8753,7 @@
 	    promise._captureStackTrace();
 	    if (context) context._popContext();
 	    var synchronous = true;
-	    var result = util$$1.tryCatch(then).call(x, resolve, reject);
+	    var result = util$$2.tryCatch(then).call(x, resolve, reject);
 	    synchronous = false;
 
 	    if (promise && result === errorObj) {
@@ -8768,8 +8780,8 @@
 
 	var promise_array = function(Promise, INTERNAL, tryConvertToPromise,
 	    apiRejection, Proxyable) {
-	var util$$1 = util;
-	var isArray = util$$1.isArray;
+	var util$$2 = util;
+	var isArray = util$$2.isArray;
 
 	function toResolutionValue(val) {
 	    switch(val) {
@@ -8790,7 +8802,7 @@
 	    this._totalResolved = 0;
 	    this._init(undefined, -2);
 	}
-	util$$1.inherits(PromiseArray, Proxyable);
+	util$$2.inherits(PromiseArray, Proxyable);
 
 	PromiseArray.prototype.length = function () {
 	    return this._length;
@@ -8825,10 +8837,10 @@
 	            return this._cancel();
 	        }
 	    }
-	    values = util$$1.asArray(values);
+	    values = util$$2.asArray(values);
 	    if (values === null) {
 	        var err = apiRejection(
-	            "expecting an array or an iterable object but got " + util$$1.classString(values)).reason();
+	            "expecting an array or an iterable object but got " + util$$2.classString(values)).reason();
 	        this._promise._rejectCallback(err, false);
 	        return;
 	    }
@@ -9024,8 +9036,8 @@
 	var getDomain = Promise._getDomain;
 	var async = Promise._async;
 	var Warning = errors.Warning;
-	var util$$1 = util;
-	var canAttachTrace = util$$1.canAttachTrace;
+	var util$$2 = util;
+	var canAttachTrace = util$$2.canAttachTrace;
 	var unhandledRejectionHandled;
 	var possiblyUnhandledRejection;
 	var bluebirdFramePattern =
@@ -9036,19 +9048,19 @@
 	var formatStack = null;
 	var indentStackFrames = false;
 	var printWarning;
-	var debugging = !!(util$$1.env("BLUEBIRD_DEBUG") != 0 &&
+	var debugging = !!(util$$2.env("BLUEBIRD_DEBUG") != 0 &&
 	                        (false ||
-	                         util$$1.env("BLUEBIRD_DEBUG") ||
-	                         util$$1.env("NODE_ENV") === "development"));
+	                         util$$2.env("BLUEBIRD_DEBUG") ||
+	                         util$$2.env("NODE_ENV") === "development"));
 
-	var warnings = !!(util$$1.env("BLUEBIRD_WARNINGS") != 0 &&
-	    (debugging || util$$1.env("BLUEBIRD_WARNINGS")));
+	var warnings = !!(util$$2.env("BLUEBIRD_WARNINGS") != 0 &&
+	    (debugging || util$$2.env("BLUEBIRD_WARNINGS")));
 
-	var longStackTraces = !!(util$$1.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
-	    (debugging || util$$1.env("BLUEBIRD_LONG_STACK_TRACES")));
+	var longStackTraces = !!(util$$2.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
+	    (debugging || util$$2.env("BLUEBIRD_LONG_STACK_TRACES")));
 
-	var wForgottenReturn = util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
-	    (warnings || !!util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
+	var wForgottenReturn = util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
+	    (warnings || !!util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
 
 	Promise.prototype.suppressUnhandledRejections = function() {
 	    var target = this._target();
@@ -9120,7 +9132,7 @@
 	    var domain = getDomain();
 	    possiblyUnhandledRejection =
 	        typeof fn === "function" ? (domain === null ?
-	                                            fn : util$$1.domainBind(domain, fn))
+	                                            fn : util$$2.domainBind(domain, fn))
 	                                 : undefined;
 	};
 
@@ -9128,7 +9140,7 @@
 	    var domain = getDomain();
 	    unhandledRejectionHandled =
 	        typeof fn === "function" ? (domain === null ?
-	                                            fn : util$$1.domainBind(domain, fn))
+	                                            fn : util$$2.domainBind(domain, fn))
 	                                 : undefined;
 	};
 
@@ -9166,33 +9178,33 @@
 	    try {
 	        if (typeof CustomEvent === "function") {
 	            var event = new CustomEvent("CustomEvent");
-	            util$$1.global.dispatchEvent(event);
+	            util$$2.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = new CustomEvent(name.toLowerCase(), {
 	                    detail: event,
 	                    cancelable: true
 	                });
-	                return !util$$1.global.dispatchEvent(domEvent);
+	                return !util$$2.global.dispatchEvent(domEvent);
 	            };
 	        } else if (typeof Event === "function") {
 	            var event = new Event("CustomEvent");
-	            util$$1.global.dispatchEvent(event);
+	            util$$2.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = new Event(name.toLowerCase(), {
 	                    cancelable: true
 	                });
 	                domEvent.detail = event;
-	                return !util$$1.global.dispatchEvent(domEvent);
+	                return !util$$2.global.dispatchEvent(domEvent);
 	            };
 	        } else {
 	            var event = document.createEvent("CustomEvent");
 	            event.initCustomEvent("testingtheevent", false, true, {});
-	            util$$1.global.dispatchEvent(event);
+	            util$$2.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = document.createEvent("CustomEvent");
 	                domEvent.initCustomEvent(name.toLowerCase(), false, true,
 	                    event);
-	                return !util$$1.global.dispatchEvent(domEvent);
+	                return !util$$2.global.dispatchEvent(domEvent);
 	            };
 	        }
 	    } catch (e) {}
@@ -9202,21 +9214,21 @@
 	})();
 
 	var fireGlobalEvent = (function() {
-	    if (util$$1.isNode) {
+	    if (util$$2.isNode) {
 	        return function() {
 	            return process.emit.apply(process, arguments);
 	        };
 	    } else {
-	        if (!util$$1.global) {
+	        if (!util$$2.global) {
 	            return function() {
 	                return false;
 	            };
 	        }
 	        return function(name) {
 	            var methodName = "on" + name.toLowerCase();
-	            var method = util$$1.global[methodName];
+	            var method = util$$2.global[methodName];
 	            if (!method) return false;
-	            method.apply(util$$1.global, [].slice.call(arguments, 1));
+	            method.apply(util$$2.global, [].slice.call(arguments, 1));
 	            return true;
 	        };
 	    }
@@ -9279,7 +9291,7 @@
 	        config.warnings = !!warningsOption;
 	        wForgottenReturn = config.warnings;
 
-	        if (util$$1.isObject(warningsOption)) {
+	        if (util$$2.isObject(warningsOption)) {
 	            if ("wForgottenReturn" in warningsOption) {
 	                wForgottenReturn = !!warningsOption.wForgottenReturn;
 	            }
@@ -9342,7 +9354,7 @@
 	        executor(resolve, reject, function(onCancel) {
 	            if (typeof onCancel !== "function") {
 	                throw new TypeError("onCancel must be a function, got: " +
-	                                    util$$1.toString(onCancel));
+	                                    util$$2.toString(onCancel));
 	            }
 	            promise._attachCancellationCallback(onCancel);
 	        });
@@ -9356,7 +9368,7 @@
 
 	    var previousOnCancel = this._onCancel();
 	    if (previousOnCancel !== undefined) {
-	        if (util$$1.isArray(previousOnCancel)) {
+	        if (util$$2.isArray(previousOnCancel)) {
 	            previousOnCancel.push(onCancel);
 	        } else {
 	            this._setOnCancel([previousOnCancel, onCancel]);
@@ -9428,9 +9440,9 @@
 	            trace.attachExtraTrace(error);
 	        } else if (!error.__stackCleaned__) {
 	            var parsed = parseStackAndMessage(error);
-	            util$$1.notEnumerableProp(error, "stack",
+	            util$$2.notEnumerableProp(error, "stack",
 	                parsed.message + "\n" + parsed.stack.join("\n"));
-	            util$$1.notEnumerableProp(error, "__stackCleaned__", true);
+	            util$$2.notEnumerableProp(error, "__stackCleaned__", true);
 	        }
 	    }
 	}
@@ -9601,7 +9613,7 @@
 	function formatAndLogError(error, title, isSoft) {
 	    if (typeof console !== "undefined") {
 	        var message;
-	        if (util$$1.isObject(error)) {
+	        if (util$$2.isObject(error)) {
 	            var stack = error.stack;
 	            message = title + formatStack(stack, error);
 	        } else {
@@ -9648,7 +9660,7 @@
 	            "]";
 	    } else {
 	        str = obj && typeof obj.toString === "function"
-	            ? obj.toString() : util$$1.toString(obj);
+	            ? obj.toString() : util$$2.toString(obj);
 	        var ruselessToString = /\[object [a-zA-Z0-9$_]+\]/;
 	        if (ruselessToString.test(str)) {
 	            try {
@@ -9739,7 +9751,7 @@
 	    captureStackTrace(this, CapturedTrace);
 	    if (length > 32) this.uncycle();
 	}
-	util$$1.inherits(CapturedTrace, Error);
+	util$$2.inherits(CapturedTrace, Error);
 	Context.CapturedTrace = CapturedTrace;
 
 	CapturedTrace.prototype.uncycle = function() {
@@ -9804,8 +9816,8 @@
 	    }
 	    removeCommonRoots(stacks);
 	    removeDuplicateOrEmptyJumps(stacks);
-	    util$$1.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
-	    util$$1.notEnumerableProp(error, "__stackCleaned__", true);
+	    util$$2.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
+	    util$$2.notEnumerableProp(error, "__stackCleaned__", true);
 	};
 
 	var captureStackTrace = (function stackDetection() {
@@ -9885,12 +9897,12 @@
 	    printWarning = function (message) {
 	        console.warn(message);
 	    };
-	    if (util$$1.isNode && process.stderr.isTTY) {
+	    if (util$$2.isNode && process.stderr.isTTY) {
 	        printWarning = function(message, isSoft) {
 	            var color = isSoft ? "\u001b[33m" : "\u001b[31m";
 	            console.warn(color + message + "\u001b[0m\n");
 	        };
-	    } else if (!util$$1.isNode && typeof (new Error().stack) === "string") {
+	    } else if (!util$$2.isNode && typeof (new Error().stack) === "string") {
 	        printWarning = function(message, isSoft) {
 	            console.warn("%c" + message,
 	                        isSoft ? "color: darkorange" : "color: red");
@@ -9937,10 +9949,10 @@
 	};
 
 	var catch_filter = function(NEXT_FILTER) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var getKeys = es5.keys;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 
 	function catchFilter(instances, cb, promise) {
 	    return function(e) {
@@ -9960,7 +9972,7 @@
 	                } else if (matchesPredicate) {
 	                    return tryCatch(cb).call(boundTo, e);
 	                }
-	            } else if (util$$1.isObject(e)) {
+	            } else if (util$$2.isObject(e)) {
 	                var keys = getKeys(item);
 	                for (var j = 0; j < keys.length; ++j) {
 	                    var key = keys[j];
@@ -9979,9 +9991,9 @@
 	};
 
 	var _finally = function(Promise, tryConvertToPromise, NEXT_FILTER) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var CancellationError = Promise.CancellationError;
-	var errorObj = util$$1.errorObj;
+	var errorObj = util$$2.errorObj;
 	var catchFilter = catch_filter(NEXT_FILTER);
 
 	function PassThroughHandlerContext(promise, type, handler) {
@@ -10102,12 +10114,12 @@
 	            j = 0, i;
 	        for (i = 0; i < len - 1; ++i) {
 	            var item = arguments[i];
-	            if (util$$1.isObject(item)) {
+	            if (util$$2.isObject(item)) {
 	                catchInstances[j++] = item;
 	            } else {
 	                return Promise.reject(new TypeError(
 	                    "tapCatch statement predicate: "
-	                    + "expecting an object but got " + util$$1.classString(item)
+	                    + "expecting an object but got " + util$$2.classString(item)
 	                ));
 	            }
 	        }
@@ -10176,12 +10188,12 @@
 
 	var method =
 	function(Promise, INTERNAL, tryConvertToPromise, apiRejection, debug) {
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
 
 	Promise.method = function (fn) {
 	    if (typeof fn !== "function") {
-	        throw new Promise.TypeError("expecting a function but got " + util$$1.classString(fn));
+	        throw new Promise.TypeError("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    return function () {
 	        var ret = new Promise(INTERNAL);
@@ -10198,7 +10210,7 @@
 
 	Promise.attempt = Promise["try"] = function (fn) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    var ret = new Promise(INTERNAL);
 	    ret._captureStackTrace();
@@ -10208,7 +10220,7 @@
 	        debug.deprecated("calling Promise.try with more than 1 argument");
 	        var arg = arguments[1];
 	        var ctx = arguments[2];
-	        value = util$$1.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
+	        value = util$$2.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
 	                                  : tryCatch(fn).call(ctx, arg);
 	    } else {
 	        value = tryCatch(fn)();
@@ -10221,7 +10233,7 @@
 	};
 
 	Promise.prototype._resolveFromSyncValue = function (value) {
-	    if (value === util$$1.errorObj) {
+	    if (value === util$$2.errorObj) {
 	        this._rejectCallback(value.e, false);
 	    } else {
 	        this._resolveCallback(value, true);
@@ -10297,9 +10309,9 @@
 	};
 
 	var cancel = function(Promise, PromiseArray, apiRejection, debug) {
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 	var async = Promise._async;
 
 	Promise.prototype["break"] = Promise.prototype.cancel = function() {
@@ -10387,7 +10399,7 @@
 	};
 
 	Promise.prototype._doInvokeOnCancel = function(onCancelCallback, internalOnly) {
-	    if (util$$1.isArray(onCancelCallback)) {
+	    if (util$$2.isArray(onCancelCallback)) {
 	        for (var i = 0; i < onCancelCallback.length; ++i) {
 	            this._doInvokeOnCancel(onCancelCallback[i], internalOnly);
 	        }
@@ -10577,10 +10589,10 @@
 	var join =
 	function(Promise, PromiseArray, tryConvertToPromise, INTERNAL, async,
 	         getDomain) {
-	var util$$1 = util;
-	var canEvaluate = util$$1.canEvaluate;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var util$$2 = util;
+	var canEvaluate = util$$2.canEvaluate;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 	var reject;
 
 	{
@@ -10724,7 +10736,7 @@
 	                    if (holder.asyncNeeded) {
 	                        var domain = getDomain();
 	                        if (domain !== null) {
-	                            holder.fn = util$$1.domainBind(domain, holder.fn);
+	                            holder.fn = util$$2.domainBind(domain, holder.fn);
 	                        }
 	                    }
 	                    ret._setAsyncGuaranteed();
@@ -10749,16 +10761,16 @@
 	                          INTERNAL,
 	                          debug) {
 	var getDomain = Promise._getDomain;
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 	var async = Promise._async;
 
 	function MappingPromiseArray(promises, fn, limit, _filter) {
 	    this.constructor$(promises);
 	    this._promise._captureStackTrace();
 	    var domain = getDomain();
-	    this._callback = domain === null ? fn : util$$1.domainBind(domain, fn);
+	    this._callback = domain === null ? fn : util$$2.domainBind(domain, fn);
 	    this._preservedValues = _filter === INTERNAL
 	        ? new Array(this.length())
 	        : null;
@@ -10767,7 +10779,7 @@
 	    this._queue = [];
 	    async.invoke(this._asyncInit, this, undefined);
 	}
-	util$$1.inherits(MappingPromiseArray, PromiseArray);
+	util$$2.inherits(MappingPromiseArray, PromiseArray);
 
 	MappingPromiseArray.prototype._asyncInit = function() {
 	    this._init$(undefined, -2);
@@ -10876,7 +10888,7 @@
 
 	function map(promises, fn, options, _filter) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	    }
 
 	    var limit = 0;
@@ -10885,13 +10897,13 @@
 	            if (typeof options.concurrency !== "number") {
 	                return Promise.reject(
 	                    new TypeError("'concurrency' must be a number but it is " +
-	                                    util$$1.classString(options.concurrency)));
+	                                    util$$2.classString(options.concurrency)));
 	            }
 	            limit = options.concurrency;
 	        } else {
 	            return Promise.reject(new TypeError(
 	                            "options argument must be an object but it is " +
-	                             util$$1.classString(options)));
+	                             util$$2.classString(options)));
 	        }
 	    }
 	    limit = typeof limit === "number" &&
@@ -10918,9 +10930,9 @@
 	}
 
 	var call_get = function(Promise) {
-	var util$$1 = util;
-	var canEvaluate = util$$1.canEvaluate;
-	var isIdentifier = util$$1.isIdentifier;
+	var util$$2 = util;
+	var canEvaluate = util$$2.canEvaluate;
+	var isIdentifier = util$$2.isIdentifier;
 
 	var getMethodCaller;
 	var getGetter;
@@ -10981,8 +10993,8 @@
 	    var fn;
 	    if (obj != null) fn = obj[methodName];
 	    if (typeof fn !== "function") {
-	        var message = "Object " + util$$1.classString(obj) + " has no method '" +
-	            util$$1.toString(methodName) + "'";
+	        var message = "Object " + util$$2.classString(obj) + " has no method '" +
+	            util$$2.toString(methodName) + "'";
 	        throw new Promise.TypeError(message);
 	    }
 	    return fn;
@@ -11035,11 +11047,11 @@
 
 	var using = function (Promise, apiRejection, tryConvertToPromise,
 	    createContext, INTERNAL, debug) {
-	    var util$$1 = util;
+	    var util$$2 = util;
 	    var TypeError = errors.TypeError;
 	    var inherits = util.inherits;
-	    var errorObj = util$$1.errorObj;
-	    var tryCatch = util$$1.tryCatch;
+	    var errorObj = util$$2.errorObj;
+	    var tryCatch = util$$2.tryCatch;
 	    var NULL = {};
 
 	    function thrower(e) {
@@ -11162,7 +11174,7 @@
 	                        "you must pass at least 2 arguments to Promise.using");
 	        var fn = arguments[len - 1];
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	        }
 	        var input;
 	        var spreadArgs = true;
@@ -11260,7 +11272,7 @@
 	};
 
 	var timers$1 = function(Promise, INTERNAL, debug) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var TimeoutError = Promise.TimeoutError;
 
 	function HandleWrapper(handle)  {
@@ -11308,7 +11320,7 @@
 	    } else {
 	        err = new TimeoutError(message);
 	    }
-	    util$$1.markAsOriginatingFromRejection(err);
+	    util$$2.markAsOriginatingFromRejection(err);
 	    promise._attachExtraTrace(err);
 	    promise._reject(err);
 
@@ -11358,11 +11370,11 @@
 	                          tryConvertToPromise,
 	                          Proxyable,
 	                          debug) {
-	var errors$$1 = errors;
-	var TypeError = errors$$1.TypeError;
-	var util$$1 = util;
-	var errorObj = util$$1.errorObj;
-	var tryCatch = util$$1.tryCatch;
+	var errors$$2 = errors;
+	var TypeError = errors$$2.TypeError;
+	var util$$2 = util;
+	var errorObj = util$$2.errorObj;
+	var tryCatch = util$$2.tryCatch;
 	var yieldHandlers = [];
 
 	function promiseFromYieldHandler(value, yieldHandlers, traceParent) {
@@ -11405,7 +11417,7 @@
 	    this._yieldedPromise = null;
 	    this._cancellationPhase = false;
 	}
-	util$$1.inherits(PromiseSpawn, Proxyable);
+	util$$2.inherits(PromiseSpawn, Proxyable);
 
 	PromiseSpawn.prototype._isResolved = function() {
 	    return this._promise === null;
@@ -11558,7 +11570,7 @@
 
 	Promise.coroutine.addYieldHandler = function(fn) {
 	    if (typeof fn !== "function") {
-	        throw new TypeError("expecting a function but got " + util$$1.classString(fn));
+	        throw new TypeError("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    yieldHandlers.push(fn);
 	};
@@ -11576,14 +11588,14 @@
 	};
 
 	var nodeify = function(Promise) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var async = Promise._async;
-	var tryCatch = util$$1.tryCatch;
-	var errorObj = util$$1.errorObj;
+	var tryCatch = util$$2.tryCatch;
+	var errorObj = util$$2.errorObj;
 
 	function spreadAdapter(val, nodeback) {
 	    var promise = this;
-	    if (!util$$1.isArray(val)) return successAdapter.call(promise, val, nodeback);
+	    if (!util$$2.isArray(val)) return successAdapter.call(promise, val, nodeback);
 	    var ret =
 	        tryCatch(nodeback).apply(promise._boundValue(), [null].concat(val));
 	    if (ret === errorObj) {
@@ -11635,11 +11647,11 @@
 
 	var promisify = function(Promise, INTERNAL) {
 	var THIS = {};
-	var util$$1 = util;
+	var util$$2 = util;
 	var nodebackForPromise = nodeback;
-	var withAppended = util$$1.withAppended;
-	var maybeWrapAsError = util$$1.maybeWrapAsError;
-	var canEvaluate = util$$1.canEvaluate;
+	var withAppended = util$$2.withAppended;
+	var maybeWrapAsError = util$$2.maybeWrapAsError;
+	var canEvaluate = util$$2.canEvaluate;
 	var TypeError = errors.TypeError;
 	var defaultSuffix = "Async";
 	var defaultPromisified = {__isPromisified__: true};
@@ -11655,7 +11667,7 @@
 	var noCopyPropsPattern = new RegExp("^(?:" + noCopyProps.join("|") + ")$");
 
 	var defaultFilter = function(name) {
-	    return util$$1.isIdentifier(name) &&
+	    return util$$2.isIdentifier(name) &&
 	        name.charAt(0) !== "_" &&
 	        name !== "constructor";
 	};
@@ -11674,7 +11686,7 @@
 	}
 
 	function hasPromisified(obj, key, suffix) {
-	    var val = util$$1.getDataPropertyOrDefault(obj, key + suffix,
+	    var val = util$$2.getDataPropertyOrDefault(obj, key + suffix,
 	                                            defaultPromisified);
 	    return val ? isPromisified(val) : false;
 	}
@@ -11694,7 +11706,7 @@
 	}
 
 	function promisifiableMethods(obj, suffix, suffixRegexp, filter) {
-	    var keys = util$$1.inheritedDataKeys(obj);
+	    var keys = util$$2.inheritedDataKeys(obj);
 	    var ret = [];
 	    for (var i = 0; i < keys.length; ++i) {
 	        var key = keys[i];
@@ -11731,11 +11743,11 @@
 	};
 
 	var argumentSequence = function(argumentCount) {
-	    return util$$1.filledRange(argumentCount, "_arg", "");
+	    return util$$2.filledRange(argumentCount, "_arg", "");
 	};
 
 	var parameterDeclaration = function(parameterCount) {
-	    return util$$1.filledRange(
+	    return util$$2.filledRange(
 	        Math.max(parameterCount, 3), "_arg", "");
 	};
 
@@ -11832,9 +11844,9 @@
 	                    withAppended,
 	                    maybeWrapAsError,
 	                    nodebackForPromise,
-	                    util$$1.tryCatch,
-	                    util$$1.errorObj,
-	                    util$$1.notEnumerableProp,
+	                    util$$2.tryCatch,
+	                    util$$2.errorObj,
+	                    util$$2.notEnumerableProp,
 	                    INTERNAL);
 	};
 	}
@@ -11861,7 +11873,7 @@
 	        if (!promise._isFateSealed()) promise._setAsyncGuaranteed();
 	        return promise;
 	    }
-	    util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
+	    util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
 	    return promisified;
 	}
 
@@ -11886,11 +11898,11 @@
 	                return makeNodePromisified(key, THIS, key,
 	                                           fn, suffix, multiArgs);
 	            });
-	            util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
+	            util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
 	            obj[promisifiedKey] = promisified;
 	        }
 	    }
-	    util$$1.toFastProperties(obj);
+	    util$$2.toFastProperties(obj);
 	    return obj;
 	}
 
@@ -11901,7 +11913,7 @@
 
 	Promise.promisify = function (fn, options) {
 	    if (typeof fn !== "function") {
-	        throw new TypeError("expecting a function but got " + util$$1.classString(fn));
+	        throw new TypeError("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    if (isPromisified(fn)) {
 	        return fn;
@@ -11910,7 +11922,7 @@
 	    var receiver = options.context === undefined ? THIS : options.context;
 	    var multiArgs = !!options.multiArgs;
 	    var ret = promisify(fn, receiver, multiArgs);
-	    util$$1.copyDescriptors(fn, ret, propsFilter);
+	    util$$2.copyDescriptors(fn, ret, propsFilter);
 	    return ret;
 	};
 
@@ -11927,15 +11939,15 @@
 	    var promisifier = options.promisifier;
 	    if (typeof promisifier !== "function") promisifier = makeNodePromisified;
 
-	    if (!util$$1.isIdentifier(suffix)) {
+	    if (!util$$2.isIdentifier(suffix)) {
 	        throw new RangeError("suffix must be a valid identifier\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
 	    }
 
-	    var keys = util$$1.inheritedDataKeys(target);
+	    var keys = util$$2.inheritedDataKeys(target);
 	    for (var i = 0; i < keys.length; ++i) {
 	        var value = target[keys[i]];
 	        if (keys[i] !== "constructor" &&
-	            util$$1.isClass(value)) {
+	            util$$2.isClass(value)) {
 	            promisifyAll(value.prototype, suffix, filter, promisifier,
 	                multiArgs);
 	            promisifyAll(value, suffix, filter, promisifier, multiArgs);
@@ -11948,9 +11960,9 @@
 
 	var props = function(
 	    Promise, PromiseArray, tryConvertToPromise, apiRejection) {
-	var util$$1 = util;
-	var isObject = util$$1.isObject;
-	var es5$$1 = es5;
+	var util$$2 = util;
+	var isObject = util$$2.isObject;
+	var es5$$2 = es5;
 	var Es6Map;
 	if (typeof Map === "function") Es6Map = Map;
 
@@ -11991,7 +12003,7 @@
 	        entries = mapToEntries(obj);
 	        isMap = true;
 	    } else {
-	        var keys = es5$$1.keys(obj);
+	        var keys = es5$$2.keys(obj);
 	        var len = keys.length;
 	        entries = new Array(len * 2);
 	        for (var i = 0; i < len; ++i) {
@@ -12004,7 +12016,7 @@
 	    this._isMap = isMap;
 	    this._init$(undefined, isMap ? -6 : -3);
 	}
-	util$$1.inherits(PropertiesPromiseArray, PromiseArray);
+	util$$2.inherits(PropertiesPromiseArray, PromiseArray);
 
 	PropertiesPromiseArray.prototype._init = function () {};
 
@@ -12066,7 +12078,7 @@
 
 	var race = function(
 	    Promise, INTERNAL, tryConvertToPromise, apiRejection) {
-	var util$$1 = util;
+	var util$$2 = util;
 
 	var raceLater = function (promise) {
 	    return promise.then(function(array) {
@@ -12080,9 +12092,9 @@
 	    if (maybePromise instanceof Promise) {
 	        return raceLater(maybePromise);
 	    } else {
-	        promises = util$$1.asArray(promises);
+	        promises = util$$2.asArray(promises);
 	        if (promises === null)
-	            return apiRejection("expecting an array or an iterable object but got " + util$$1.classString(promises));
+	            return apiRejection("expecting an array or an iterable object but got " + util$$2.classString(promises));
 	    }
 
 	    var ret = new Promise(INTERNAL);
@@ -12120,13 +12132,13 @@
 	                          INTERNAL,
 	                          debug) {
 	var getDomain = Promise._getDomain;
-	var util$$1 = util;
-	var tryCatch = util$$1.tryCatch;
+	var util$$2 = util;
+	var tryCatch = util$$2.tryCatch;
 
 	function ReductionPromiseArray(promises, fn, initialValue, _each) {
 	    this.constructor$(promises);
 	    var domain = getDomain();
-	    this._fn = domain === null ? fn : util$$1.domainBind(domain, fn);
+	    this._fn = domain === null ? fn : util$$2.domainBind(domain, fn);
 	    if (initialValue !== undefined) {
 	        initialValue = Promise.resolve(initialValue);
 	        initialValue._attachCancellationCallback(this);
@@ -12143,7 +12155,7 @@
 	    this._promise._captureStackTrace();
 	    this._init$(undefined, -5);
 	}
-	util$$1.inherits(ReductionPromiseArray, PromiseArray);
+	util$$2.inherits(ReductionPromiseArray, PromiseArray);
 
 	ReductionPromiseArray.prototype._gotAccum = function(accum) {
 	    if (this._eachValues !== undefined && 
@@ -12241,7 +12253,7 @@
 
 	function reduce(promises, fn, initialValue, _each) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	    }
 	    var array = new ReductionPromiseArray(promises, fn, initialValue, _each);
 	    return array.promise();
@@ -12288,12 +12300,12 @@
 	var settle =
 	    function(Promise, PromiseArray, debug) {
 	var PromiseInspection = Promise.PromiseInspection;
-	var util$$1 = util;
+	var util$$2 = util;
 
 	function SettledPromiseArray(values) {
 	    this.constructor$(values);
 	}
-	util$$1.inherits(SettledPromiseArray, PromiseArray);
+	util$$2.inherits(SettledPromiseArray, PromiseArray);
 
 	SettledPromiseArray.prototype._promiseResolved = function (index, inspection) {
 	    this._values[index] = inspection;
@@ -12330,10 +12342,10 @@
 
 	var some =
 	function(Promise, PromiseArray, apiRejection) {
-	var util$$1 = util;
+	var util$$2 = util;
 	var RangeError = errors.RangeError;
 	var AggregateError = errors.AggregateError;
-	var isArray = util$$1.isArray;
+	var isArray = util$$2.isArray;
 	var CANCELLATION = {};
 
 
@@ -12343,7 +12355,7 @@
 	    this._unwrap = false;
 	    this._initialized = false;
 	}
-	util$$1.inherits(SomePromiseArray, PromiseArray);
+	util$$2.inherits(SomePromiseArray, PromiseArray);
 
 	SomePromiseArray.prototype._init = function () {
 	    if (!this._initialized) {
@@ -16531,6 +16543,347 @@
 
 	var clone_1 = clone$1;
 
+	/**
+	 * A faster alternative to `Function#apply`, this function invokes `func`
+	 * with the `this` binding of `thisArg` and the arguments of `args`.
+	 *
+	 * @private
+	 * @param {Function} func The function to invoke.
+	 * @param {*} thisArg The `this` binding of `func`.
+	 * @param {Array} args The arguments to invoke `func` with.
+	 * @returns {*} Returns the result of `func`.
+	 */
+	function apply(func, thisArg, args) {
+	  switch (args.length) {
+	    case 0: return func.call(thisArg);
+	    case 1: return func.call(thisArg, args[0]);
+	    case 2: return func.call(thisArg, args[0], args[1]);
+	    case 3: return func.call(thisArg, args[0], args[1], args[2]);
+	  }
+	  return func.apply(thisArg, args);
+	}
+
+	var _apply = apply;
+
+	/**
+	 * This method returns the first argument it receives.
+	 *
+	 * @static
+	 * @since 0.1.0
+	 * @memberOf _
+	 * @category Util
+	 * @param {*} value Any value.
+	 * @returns {*} Returns `value`.
+	 * @example
+	 *
+	 * var object = { 'a': 1 };
+	 *
+	 * console.log(_.identity(object) === object);
+	 * // => true
+	 */
+	function identity(value) {
+	  return value;
+	}
+
+	var identity_1 = identity;
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeMax = Math.max;
+
+	/**
+	 * A specialized version of `baseRest` which transforms the rest array.
+	 *
+	 * @private
+	 * @param {Function} func The function to apply a rest parameter to.
+	 * @param {number} [start=func.length-1] The start position of the rest parameter.
+	 * @param {Function} transform The rest array transform.
+	 * @returns {Function} Returns the new function.
+	 */
+	function overRest(func, start, transform) {
+	  start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
+	  return function() {
+	    var args = arguments,
+	        index = -1,
+	        length = nativeMax(args.length - start, 0),
+	        array = Array(length);
+
+	    while (++index < length) {
+	      array[index] = args[start + index];
+	    }
+	    index = -1;
+	    var otherArgs = Array(start + 1);
+	    while (++index < start) {
+	      otherArgs[index] = args[index];
+	    }
+	    otherArgs[start] = transform(array);
+	    return _apply(func, this, otherArgs);
+	  };
+	}
+
+	var _overRest = overRest;
+
+	/**
+	 * Creates a function that returns `value`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 2.4.0
+	 * @category Util
+	 * @param {*} value The value to return from the new function.
+	 * @returns {Function} Returns the new constant function.
+	 * @example
+	 *
+	 * var objects = _.times(2, _.constant({ 'a': 1 }));
+	 *
+	 * console.log(objects);
+	 * // => [{ 'a': 1 }, { 'a': 1 }]
+	 *
+	 * console.log(objects[0] === objects[1]);
+	 * // => true
+	 */
+	function constant(value) {
+	  return function() {
+	    return value;
+	  };
+	}
+
+	var constant_1 = constant;
+
+	/**
+	 * The base implementation of `setToString` without support for hot loop shorting.
+	 *
+	 * @private
+	 * @param {Function} func The function to modify.
+	 * @param {Function} string The `toString` result.
+	 * @returns {Function} Returns `func`.
+	 */
+	var baseSetToString = !_defineProperty ? identity_1 : function(func, string) {
+	  return _defineProperty(func, 'toString', {
+	    'configurable': true,
+	    'enumerable': false,
+	    'value': constant_1(string),
+	    'writable': true
+	  });
+	};
+
+	var _baseSetToString = baseSetToString;
+
+	/** Used to detect hot functions by number of calls within a span of milliseconds. */
+	var HOT_COUNT = 800;
+	var HOT_SPAN = 16;
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeNow = Date.now;
+
+	/**
+	 * Creates a function that'll short out and invoke `identity` instead
+	 * of `func` when it's called `HOT_COUNT` or more times in `HOT_SPAN`
+	 * milliseconds.
+	 *
+	 * @private
+	 * @param {Function} func The function to restrict.
+	 * @returns {Function} Returns the new shortable function.
+	 */
+	function shortOut(func) {
+	  var count = 0,
+	      lastCalled = 0;
+
+	  return function() {
+	    var stamp = nativeNow(),
+	        remaining = HOT_SPAN - (stamp - lastCalled);
+
+	    lastCalled = stamp;
+	    if (remaining > 0) {
+	      if (++count >= HOT_COUNT) {
+	        return arguments[0];
+	      }
+	    } else {
+	      count = 0;
+	    }
+	    return func.apply(undefined, arguments);
+	  };
+	}
+
+	var _shortOut = shortOut;
+
+	/**
+	 * Sets the `toString` method of `func` to return `string`.
+	 *
+	 * @private
+	 * @param {Function} func The function to modify.
+	 * @param {Function} string The `toString` result.
+	 * @returns {Function} Returns `func`.
+	 */
+	var setToString = _shortOut(_baseSetToString);
+
+	var _setToString = setToString;
+
+	/**
+	 * The base implementation of `_.rest` which doesn't validate or coerce arguments.
+	 *
+	 * @private
+	 * @param {Function} func The function to apply a rest parameter to.
+	 * @param {number} [start=func.length-1] The start position of the rest parameter.
+	 * @returns {Function} Returns the new function.
+	 */
+	function baseRest(func, start) {
+	  return _setToString(_overRest(func, start, identity_1), func + '');
+	}
+
+	var _baseRest = baseRest;
+
+	/**
+	 * Checks if the given arguments are from an iteratee call.
+	 *
+	 * @private
+	 * @param {*} value The potential iteratee value argument.
+	 * @param {*} index The potential iteratee index or key argument.
+	 * @param {*} object The potential iteratee object argument.
+	 * @returns {boolean} Returns `true` if the arguments are from an iteratee call,
+	 *  else `false`.
+	 */
+	function isIterateeCall(value, index, object) {
+	  if (!isObject_1$3(object)) {
+	    return false;
+	  }
+	  var type = typeof index;
+	  if (type == 'number'
+	        ? (isArrayLike_1(object) && _isIndex(index, object.length))
+	        : (type == 'string' && index in object)
+	      ) {
+	    return eq_1(object[index], value);
+	  }
+	  return false;
+	}
+
+	var _isIterateeCall = isIterateeCall;
+
+	/**
+	 * Creates a function like `_.assign`.
+	 *
+	 * @private
+	 * @param {Function} assigner The function to assign values.
+	 * @returns {Function} Returns the new assigner function.
+	 */
+	function createAssigner(assigner) {
+	  return _baseRest(function(object, sources) {
+	    var index = -1,
+	        length = sources.length,
+	        customizer = length > 1 ? sources[length - 1] : undefined,
+	        guard = length > 2 ? sources[2] : undefined;
+
+	    customizer = (assigner.length > 3 && typeof customizer == 'function')
+	      ? (length--, customizer)
+	      : undefined;
+
+	    if (guard && _isIterateeCall(sources[0], sources[1], guard)) {
+	      customizer = length < 3 ? undefined : customizer;
+	      length = 1;
+	    }
+	    object = Object(object);
+	    while (++index < length) {
+	      var source = sources[index];
+	      if (source) {
+	        assigner(object, source, index, customizer);
+	      }
+	    }
+	    return object;
+	  });
+	}
+
+	var _createAssigner = createAssigner;
+
+	/**
+	 * This method is like `_.assignIn` except that it accepts `customizer`
+	 * which is invoked to produce the assigned values. If `customizer` returns
+	 * `undefined`, assignment is handled by the method instead. The `customizer`
+	 * is invoked with five arguments: (objValue, srcValue, key, object, source).
+	 *
+	 * **Note:** This method mutates `object`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 4.0.0
+	 * @alias extendWith
+	 * @category Object
+	 * @param {Object} object The destination object.
+	 * @param {...Object} sources The source objects.
+	 * @param {Function} [customizer] The function to customize assigned values.
+	 * @returns {Object} Returns `object`.
+	 * @see _.assignWith
+	 * @example
+	 *
+	 * function customizer(objValue, srcValue) {
+	 *   return _.isUndefined(objValue) ? srcValue : objValue;
+	 * }
+	 *
+	 * var defaults = _.partialRight(_.assignInWith, customizer);
+	 *
+	 * defaults({ 'a': 1 }, { 'b': 2 }, { 'a': 3 });
+	 * // => { 'a': 1, 'b': 2 }
+	 */
+	var assignInWith = _createAssigner(function(object, source, srcIndex, customizer) {
+	  _copyObject(source, keysIn_1(source), object, customizer);
+	});
+
+	var assignInWith_1 = assignInWith;
+
+	/** Used for built-in method references. */
+	var objectProto$13 = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty$10 = objectProto$13.hasOwnProperty;
+
+	/**
+	 * Used by `_.defaults` to customize its `_.assignIn` use to assign properties
+	 * of source objects to the destination object for all destination properties
+	 * that resolve to `undefined`.
+	 *
+	 * @private
+	 * @param {*} objValue The destination value.
+	 * @param {*} srcValue The source value.
+	 * @param {string} key The key of the property to assign.
+	 * @param {Object} object The parent object of `objValue`.
+	 * @returns {*} Returns the value to assign.
+	 */
+	function customDefaultsAssignIn(objValue, srcValue, key, object) {
+	  if (objValue === undefined ||
+	      (eq_1(objValue, objectProto$13[key]) && !hasOwnProperty$10.call(object, key))) {
+	    return srcValue;
+	  }
+	  return objValue;
+	}
+
+	var _customDefaultsAssignIn = customDefaultsAssignIn;
+
+	/**
+	 * Assigns own and inherited enumerable string keyed properties of source
+	 * objects to the destination object for all destination properties that
+	 * resolve to `undefined`. Source objects are applied from left to right.
+	 * Once a property is set, additional values of the same property are ignored.
+	 *
+	 * **Note:** This method mutates `object`.
+	 *
+	 * @static
+	 * @since 0.1.0
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The destination object.
+	 * @param {...Object} [sources] The source objects.
+	 * @returns {Object} Returns `object`.
+	 * @see _.defaultsDeep
+	 * @example
+	 *
+	 * _.defaults({ 'a': 1 }, { 'b': 2 }, { 'a': 3 });
+	 * // => { 'a': 1, 'b': 2 }
+	 */
+	var defaults$1 = _baseRest(function(args) {
+	  args.push(undefined, _customDefaultsAssignIn);
+	  return _apply(assignInWith_1, undefined, args);
+	});
+
+	var defaults_1 = defaults$1;
+
 	var tourComponent = {
 	  schema: {
 	    autoStart: {
@@ -16556,6 +16909,7 @@
 	    this.el.setAttribute('animation__move', { startEvents: 'doNotFire', pauseEvents: 'pauseTour', resumeEvents:'resumeTour', property: 'position', easing: 'easeInOutSine', dur: 100 });
 	    this.el.setAttribute('animation__turn', { startEvents: 'doNotFire', pauseEvents: 'pauseTour', resumeEvents:'resumeTour', property: 'rotation', easing: 'easeInOutSine', dur: 100 });
 	    this._nextWaypointHandler = this._nextWaypoint.bind(this);
+	    this.el.addEventListener('animation__move-complete', this._nextWaypointHandler);
 	  },
 
 	  update: function () {
@@ -16567,10 +16921,14 @@
 	  },
 
 	  playTour: function () {
+	    if (!this._waypoints || !this._waypoints.length) {
+	      console.warn('camera tour has no waypoints');
+	      return
+	    }
 	    if (this._isPlaying) {
 	      if(this._isChangingAnimation) {
 	        clearTimeout(this._nextAnimationTimeout);
-	        this.goTo(this._waypoints[this._currentWayPoint].getAttribute('tour-waypoint'), this._isPlaying);
+	        this.goTo(this._waypoints[this._currentWayPoint].getAttribute('io3d-uuid'), this._isPlaying);
 	      } else {
 	        this.el.dispatchEvent(new CustomEvent('resumeTour'));
 	      }
@@ -16578,12 +16936,11 @@
 	    } else {
 	      this._isPlaying = true;
 	      this._isPaused = false;
-	      this.el.addEventListener('animation__move-complete', this._nextWaypointHandler);
 	      var next = this._waypoints[++this._currentWayPoint];
-	      if (next) this.goTo(next.getAttribute('tour-waypoint'), true);
+	      if (next) this.goTo(next.getAttribute('io3d-uuid'), true);
 	      else if (this.data.loop) {
 	        this._currentWayPoint = 0;
-	        this.goTo(this._waypoints[0].getAttribute('tour-waypoint'), true);
+	        this.goTo(this._waypoints[0].getAttribute('io3d-uuid'), true);
 	      }
 	    }
 	  },
@@ -16595,39 +16952,41 @@
 
 	  stopTour: function () {
 	    this.pauseTour();
-	    this.el.removeEventListener('animation__move-complete', this._nextWaypointHandler);
 	    this._isPlaying = false;
 	    this._isPaused = false;
 	  },
 
-	  goTo: function (label, keepPlaying) {
+	  goTo: function (uuid, keepPlaying) {
 	    this._isPlaying = !!keepPlaying;
-	    var target = this._waypoints.find(function (item) { return item.getAttribute('tour-waypoint') === label });
+	    var target = this._waypoints.find(function (item) { return item.getAttribute('io3d-uuid') === uuid });
 	    if (!target) {
-	      console.error('The given waypoint '+ label + ' does not exist. Available waypoints:', this._waypoints.map(function (elem) { elem.getAttribute('tour-waypoint'); }));
+	      console.error('The given waypoint ' + uuid + ' does not exist. Available waypoints:', this._waypoints.map(function (elem) { return elem.getAttribute('io3d-uuid') }));
 	      return
 	    }
 
 	    this.animate(target);
 	  },
 
-	  setViewPoint: function (mode) {
-	    var HEIGHT_PERSON = 1.4;
-	    var HEIGHT_BIRDS_EYE = 7;
-	    var ANGLE_PERSON = 0;
-	    var ANGLE_BIRDS_EYE = -60;
-	    if (['person', 'bird'].indexOf(mode) < -1) {
-	      console.error('not supported camera mode: ' + mode);
+	  // set camera position and rotation by providing changes for certain axes
+	  // to reset camera to walking mode do:
+	  // updateViewPoint({position: {y:1.6}, rotation: {x:0})
+	  updateViewPoint: function (args) {
+	    args = args || {};
+	    if (typeof args !== 'object') {
+	      console.error('not supported camera view point: ' + args);
 	      return
 	    }
+	    var posChange = args.position || {};
+	    var rotChange = args.rotation || {};
+
 	    this._isPlaying = false;
-	    var pos = clone_1(this.el.getAttribute('position'));
-	    var rot = clone_1(this.el.getAttribute('rotation'));
-	    pos.y = mode === 'person' ? HEIGHT_PERSON : HEIGHT_BIRDS_EYE;
-	    rot.x = mode === 'person' ? ANGLE_PERSON : ANGLE_BIRDS_EYE;
+	    // apply changes to current camera position
+	    var pos = defaults_1({}, posChange, clone_1(this.el.getAttribute('position')));
+	    var rot = defaults_1({}, rotChange, clone_1(this.el.getAttribute('rotation')));
+
 	    var target = {
-	      position: AFRAME.utils.coordinates.stringify(pos),
-	      rotation: AFRAME.utils.coordinates.stringify(rot)
+	      position: pos,
+	      rotation: rot
 	    };
 	    this.animate(target);
 	  },
@@ -16637,20 +16996,22 @@
 	    var entity = this.el;
 	    var newPosition = isDomElement ? bookmark.getAttribute('position') : bookmark.position;
 	    var newRotation = isDomElement ? bookmark.getAttribute('rotation') : bookmark.rotation;
-	    var currentPosition = entity.getAttribute('position');
-	    var currentRotation = entity.getAttribute('rotation');
-	    var startPosition = AFRAME.utils.coordinates.stringify(currentPosition);
-	    var startRotation = AFRAME.utils.coordinates.stringify(currentRotation);
+	    var startPosition = entity.getAttribute('position');
+	    var startRotation = entity.getAttribute('rotation');
+
+	    // normalize start and end rotation and find shortest arc for each rotation
+	    var normalizedRotations = getNormalizeRotations(startRotation, newRotation);
+	    newRotation = normalizedRotations.end;
+	    startRotation = normalizedRotations.start;
 
 	    // compute distance to adapt speed
-	    var d = dist(currentPosition, AFRAME.utils.coordinates.parse(newPosition));
+	    var d = dist(startPosition, newPosition);
 	    // compute angle difference to adapt speed
-	    var angle = Math.abs(currentRotation.y - AFRAME.utils.coordinates.parse(newRotation).y);
+	    var angle = Math.abs(startRotation.y - newRotation.y);
 	    // compute animation time
 	    // add 1 to the this.data.move parameter to allow users to specify 0 without the animation cancelling out
 	    var t = Math.round((this.data.move === undefined ? 3000 : this.data.move + 1) / 6 * (d + angle / 30));
-	    if (t > Math.max(10000, this.data.move)) t = Math.max(10000, this.data.move);
-
+	    if (t > Math.max(5000, this.data.move)) t = Math.max(5000, this.data.move);
 	    // prevent zero length animation
 	    if (!t) return this._nextWaypoint()
 
@@ -16670,6 +17031,9 @@
 	  },
 
 	  _nextWaypoint: function () {
+	    // FIXME: Find the root cause of the weird jumpy behaviour when using WASD controls
+	    this.el.setAttribute('position', AFRAME.utils.coordinates.stringify(this.el.getAttribute('position')));
+
 	    if (!this._isPlaying) return this.stopTour()
 	    if (this._currentWayPoint === this._waypoints.length - 1) {
 	      if (!this.data.loop) return
@@ -16677,9 +17041,29 @@
 	    }
 	    this._isChangingAnimation = true;
 	    var next = this._waypoints[++this._currentWayPoint];
-	    this._nextAnimationTimeout = setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying); }.bind(this), this.data.wait === undefined ? 0 : this.data.wait);
+	    this._nextAnimationTimeout = setTimeout(function () { this.goTo(next.getAttribute('io3d-uuid'), this._isPlaying); }.bind(this), this.data.wait === undefined ? 0 : this.data.wait);
 	  }
 	};
+
+	// we want to prevent excessive spinning in rotations
+	function getNormalizeRotations(start, end) {
+	  // normalize both rotations
+	  var normStart = normalizeRotation(start);
+	  var normEnd = normalizeRotation(end);
+	  // find the shortest arc for each rotation
+	  Object.keys(start).forEach(function(axis) {
+	    if (normEnd[axis] - normStart[axis] > 180) normEnd[axis] -= 360;
+	  });
+	  return { start: normStart, end: normEnd }
+	}
+
+	function normalizeRotation(rot) {
+	  return {
+	    x: rot.x % 360,
+	    y: rot.y % 360,
+	    z: rot.z % 360,
+	  }
+	}
 
 	function dist(p, q) {
 	  var a = parseFloat(q.x) - parseFloat(p.x);
@@ -17060,10 +17444,10 @@
 	var COMPARE_PARTIAL_FLAG$4 = 1;
 
 	/** Used for built-in method references. */
-	var objectProto$14 = Object.prototype;
+	var objectProto$15 = Object.prototype;
 
 	/** Used to check objects for own properties. */
-	var hasOwnProperty$11 = objectProto$14.hasOwnProperty;
+	var hasOwnProperty$12 = objectProto$15.hasOwnProperty;
 
 	/**
 	 * A specialized version of `baseIsEqualDeep` for objects with support for
@@ -17091,7 +17475,7 @@
 	  var index = objLength;
 	  while (index--) {
 	    var key = objProps[index];
-	    if (!(isPartial ? key in other : hasOwnProperty$11.call(other, key))) {
+	    if (!(isPartial ? key in other : hasOwnProperty$12.call(other, key))) {
 	      return false;
 	    }
 	  }
@@ -17153,10 +17537,10 @@
 	var objectTag$3 = '[object Object]';
 
 	/** Used for built-in method references. */
-	var objectProto$13 = Object.prototype;
+	var objectProto$14 = Object.prototype;
 
 	/** Used to check objects for own properties. */
-	var hasOwnProperty$10 = objectProto$13.hasOwnProperty;
+	var hasOwnProperty$11 = objectProto$14.hasOwnProperty;
 
 	/**
 	 * A specialized version of `baseIsEqual` for arrays and objects which performs
@@ -17199,8 +17583,8 @@
 	      : _equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
 	  }
 	  if (!(bitmask & COMPARE_PARTIAL_FLAG$1)) {
-	    var objIsWrapped = objIsObj && hasOwnProperty$10.call(object, '__wrapped__'),
-	        othIsWrapped = othIsObj && hasOwnProperty$10.call(other, '__wrapped__');
+	    var objIsWrapped = objIsObj && hasOwnProperty$11.call(object, '__wrapped__'),
+	        othIsWrapped = othIsObj && hasOwnProperty$11.call(other, '__wrapped__');
 
 	    if (objIsWrapped || othIsWrapped) {
 	      var objUnwrapped = objIsWrapped ? object.value() : object,
@@ -17816,28 +18200,6 @@
 	var _baseMatchesProperty = baseMatchesProperty;
 
 	/**
-	 * This method returns the first argument it receives.
-	 *
-	 * @static
-	 * @since 0.1.0
-	 * @memberOf _
-	 * @category Util
-	 * @param {*} value Any value.
-	 * @returns {*} Returns `value`.
-	 * @example
-	 *
-	 * var object = { 'a': 1 };
-	 *
-	 * console.log(_.identity(object) === object);
-	 * // => true
-	 */
-	function identity(value) {
-	  return value;
-	}
-
-	var identity_1 = identity;
-
-	/**
 	 * The base implementation of `_.property` without support for deep paths.
 	 *
 	 * @private
@@ -18170,199 +18532,6 @@
 	}
 
 	var _baseOrderBy = baseOrderBy;
-
-	/**
-	 * A faster alternative to `Function#apply`, this function invokes `func`
-	 * with the `this` binding of `thisArg` and the arguments of `args`.
-	 *
-	 * @private
-	 * @param {Function} func The function to invoke.
-	 * @param {*} thisArg The `this` binding of `func`.
-	 * @param {Array} args The arguments to invoke `func` with.
-	 * @returns {*} Returns the result of `func`.
-	 */
-	function apply(func, thisArg, args) {
-	  switch (args.length) {
-	    case 0: return func.call(thisArg);
-	    case 1: return func.call(thisArg, args[0]);
-	    case 2: return func.call(thisArg, args[0], args[1]);
-	    case 3: return func.call(thisArg, args[0], args[1], args[2]);
-	  }
-	  return func.apply(thisArg, args);
-	}
-
-	var _apply = apply;
-
-	/* Built-in method references for those with the same name as other `lodash` methods. */
-	var nativeMax = Math.max;
-
-	/**
-	 * A specialized version of `baseRest` which transforms the rest array.
-	 *
-	 * @private
-	 * @param {Function} func The function to apply a rest parameter to.
-	 * @param {number} [start=func.length-1] The start position of the rest parameter.
-	 * @param {Function} transform The rest array transform.
-	 * @returns {Function} Returns the new function.
-	 */
-	function overRest(func, start, transform) {
-	  start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
-	  return function() {
-	    var args = arguments,
-	        index = -1,
-	        length = nativeMax(args.length - start, 0),
-	        array = Array(length);
-
-	    while (++index < length) {
-	      array[index] = args[start + index];
-	    }
-	    index = -1;
-	    var otherArgs = Array(start + 1);
-	    while (++index < start) {
-	      otherArgs[index] = args[index];
-	    }
-	    otherArgs[start] = transform(array);
-	    return _apply(func, this, otherArgs);
-	  };
-	}
-
-	var _overRest = overRest;
-
-	/**
-	 * Creates a function that returns `value`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 2.4.0
-	 * @category Util
-	 * @param {*} value The value to return from the new function.
-	 * @returns {Function} Returns the new constant function.
-	 * @example
-	 *
-	 * var objects = _.times(2, _.constant({ 'a': 1 }));
-	 *
-	 * console.log(objects);
-	 * // => [{ 'a': 1 }, { 'a': 1 }]
-	 *
-	 * console.log(objects[0] === objects[1]);
-	 * // => true
-	 */
-	function constant(value) {
-	  return function() {
-	    return value;
-	  };
-	}
-
-	var constant_1 = constant;
-
-	/**
-	 * The base implementation of `setToString` without support for hot loop shorting.
-	 *
-	 * @private
-	 * @param {Function} func The function to modify.
-	 * @param {Function} string The `toString` result.
-	 * @returns {Function} Returns `func`.
-	 */
-	var baseSetToString = !_defineProperty ? identity_1 : function(func, string) {
-	  return _defineProperty(func, 'toString', {
-	    'configurable': true,
-	    'enumerable': false,
-	    'value': constant_1(string),
-	    'writable': true
-	  });
-	};
-
-	var _baseSetToString = baseSetToString;
-
-	/** Used to detect hot functions by number of calls within a span of milliseconds. */
-	var HOT_COUNT = 800;
-	var HOT_SPAN = 16;
-
-	/* Built-in method references for those with the same name as other `lodash` methods. */
-	var nativeNow = Date.now;
-
-	/**
-	 * Creates a function that'll short out and invoke `identity` instead
-	 * of `func` when it's called `HOT_COUNT` or more times in `HOT_SPAN`
-	 * milliseconds.
-	 *
-	 * @private
-	 * @param {Function} func The function to restrict.
-	 * @returns {Function} Returns the new shortable function.
-	 */
-	function shortOut(func) {
-	  var count = 0,
-	      lastCalled = 0;
-
-	  return function() {
-	    var stamp = nativeNow(),
-	        remaining = HOT_SPAN - (stamp - lastCalled);
-
-	    lastCalled = stamp;
-	    if (remaining > 0) {
-	      if (++count >= HOT_COUNT) {
-	        return arguments[0];
-	      }
-	    } else {
-	      count = 0;
-	    }
-	    return func.apply(undefined, arguments);
-	  };
-	}
-
-	var _shortOut = shortOut;
-
-	/**
-	 * Sets the `toString` method of `func` to return `string`.
-	 *
-	 * @private
-	 * @param {Function} func The function to modify.
-	 * @param {Function} string The `toString` result.
-	 * @returns {Function} Returns `func`.
-	 */
-	var setToString = _shortOut(_baseSetToString);
-
-	var _setToString = setToString;
-
-	/**
-	 * The base implementation of `_.rest` which doesn't validate or coerce arguments.
-	 *
-	 * @private
-	 * @param {Function} func The function to apply a rest parameter to.
-	 * @param {number} [start=func.length-1] The start position of the rest parameter.
-	 * @returns {Function} Returns the new function.
-	 */
-	function baseRest(func, start) {
-	  return _setToString(_overRest(func, start, identity_1), func + '');
-	}
-
-	var _baseRest = baseRest;
-
-	/**
-	 * Checks if the given arguments are from an iteratee call.
-	 *
-	 * @private
-	 * @param {*} value The potential iteratee value argument.
-	 * @param {*} index The potential iteratee index or key argument.
-	 * @param {*} object The potential iteratee object argument.
-	 * @returns {boolean} Returns `true` if the arguments are from an iteratee call,
-	 *  else `false`.
-	 */
-	function isIterateeCall(value, index, object) {
-	  if (!isObject_1$3(object)) {
-	    return false;
-	  }
-	  var type = typeof index;
-	  if (type == 'number'
-	        ? (isArrayLike_1(object) && _isIndex(index, object.length))
-	        : (type == 'string' && index in object)
-	      ) {
-	    return eq_1(object[index], value);
-	  }
-	  return false;
-	}
-
-	var _isIterateeCall = isIterateeCall;
 
 	/**
 	 * Creates an array of elements, sorted in ascending order by the results of
@@ -18764,6 +18933,193 @@
 	    s += String.fromCharCode(array[i]);
 	  }
 	  return s;
+	}
+
+	var lightingComponent = {
+
+	  schema: {
+	    preset: {
+	      type: 'string',
+	      default: 'studio'
+	    },
+	    intensity: {
+	      type: 'float',
+	      default: 1
+	    },
+	    saturation: {
+	      type: 'float',
+	      default: 1
+	    }
+	  },
+
+	  init: function () {
+
+	    var cameraEL = document.querySelector('a-entity[camera]') || document.querySelector('a-camera');
+	    if (!cameraEL) {
+	      console.warn('this scene has no camera, add one to make the lighting work');
+	    }
+	    this.cam = cameraEL.object3D;
+
+	    // main
+	    this.staticLights = document.createElement('a-entity');
+	    this.staticLights.id = 'static-lights';
+	    this.movingWithCamera = document.createElement('a-entity');
+	    this.movingWithCamera.id = 'moving-lights';
+	    this.rotatingWithCamera = document.createElement('a-entity');
+	    this.rotatingWithCamera.id = 'rotating-lights';
+	    this.el.appendChild(this.staticLights);
+	    this.el.appendChild(this.movingWithCamera);
+	    this.el.appendChild(this.rotatingWithCamera);
+	  },
+
+	  update: function () {
+
+	    this.remove();
+
+	    createLighting[this.data.preset](
+	      this.movingWithCamera,
+	      this.rotatingWithCamera,
+	      this.staticLights,
+	      this.data.intensity,
+	      this.data.saturation
+	    );
+
+	  },
+
+	  remove: function () {
+	    // clear previous light setup
+	    while (this.movingWithCamera.hasChildNodes()) {
+	      this.movingWithCamera.removeChild(this.movingWithCamera.lastChild);
+	    }
+	    while (this.staticLights.hasChildNodes()) {
+	      this.staticLights.removeChild(this.staticLights.lastChild);
+	    }
+	  },
+
+	  tick: function (dt) {
+	    // set position from camera
+	    this.movingWithCamera.setAttribute('position', this.cam.position);
+	    // set y rotation - convert rad to deg
+	    var lightRotation = {x: 0, y: this.cam.rotation.y * 180 / Math.PI, z: 0};
+	    this.rotatingWithCamera.setAttribute('rotation', AFRAME.utils.coordinates.stringify(lightRotation));
+	  }
+
+	};
+
+	// configs
+
+	var SHADOW_CAMERA_NEAR = 1;
+	var SHADOW_CAMERA_FAR = 60;
+	var SHADOW_SIZE = 20; // real size of shadow map in meters
+	var SHADOW_MAP_SIZE = 1024; // pixel size of shadow map
+	var SHADOW_BIAS = 0.001;
+	// var SHADOW_DARKNESS = 0.2
+
+	// light presets
+
+	var createLighting = {
+	  studio: function(movingWithCamera, rotatingWithCamera, staticLights, intensity, saturation) {
+
+	    // target for moving directional lights
+	    addElement({
+	      'id': 'light-target',
+	      'position': {x: 0, y: 0, z:-2}
+	    }, movingWithCamera);
+
+	    // shadow casting top down light
+	    addElement({
+	      'light': {
+	        type: 'directional',
+	        color: '#333',
+	        intensity: 1,
+	        target: '#light-target',
+	        castShadow: true,
+	        shadowCameraLeft: -SHADOW_SIZE / 2,
+	        shadowCameraRight: SHADOW_SIZE / 2,
+	        shadowCameraBottom: -SHADOW_SIZE / 2,
+	        shadowCameraTop: SHADOW_SIZE / 2,
+	        shadowMapHeight: SHADOW_MAP_SIZE,
+	        shadowMapWidth: SHADOW_MAP_SIZE,
+	        shadowBias: SHADOW_BIAS,
+	        shadowCameraNear: SHADOW_CAMERA_NEAR,
+	        shadowCameraFar: SHADOW_CAMERA_FAR
+	      },
+	      'position': {x: 0, y: 10, z:-2},
+	      'id': 'shadow-light'
+	    }, movingWithCamera);
+
+	    // hemisphere light for yellow - blue tint
+	    addElement({
+	      'light': {
+	        type: 'hemisphere',
+	        // yellow
+	        color: 'hsl(35, ' + 15 * saturation + '%, 60%)',
+	        // blue
+	        groundColor: 'hsl(220, ' + 10 * saturation + '%, 65%)',
+	        intensity: 0.4 * intensity
+	      },
+	      // positioning left equals rotation by 90°
+	      'position': {x: -2, y: 0, z:0},
+	      'rotation': {x: 0, y: 45, z:0},
+	      'id': 'hemisphere-color'
+	      }, rotatingWithCamera);
+
+	    // hemisphere light for brightness from front
+	    addElement({
+	      'light': {
+	        type: 'hemisphere',
+	        color: 'hsl(0, 0%, 0%)',
+	        groundColor: 'hsl(0, 0%, 80%)',
+	        intensity: 0.3 * intensity
+	      },
+	      // positioning front equals rotation by 90°
+	      'position': {x: 0, y: 1, z:0},
+	      'id': 'hemisphere-white'
+	    }, rotatingWithCamera);
+
+	    // lights for specular
+	    // blue
+	    addElement({
+	      'light': {
+	        type: 'directional',
+	        color: 'hsl(200, ' + 10 * saturation + '%, 60%)',
+	        intensity: 0.25 * intensity,
+	        // target: '#light-target'
+	      },
+	      'position': {x: 2, y: 2, z:-1},
+	      'id': 'specular-blue'
+	    }, rotatingWithCamera);
+
+	    // yellow
+	    addElement({
+	      'light': {
+	        type: 'directional',
+	        color: 'hsl(35, ' + 10 * saturation + '%, 60%)',
+	        intensity: 0.35 * intensity,
+	        // target: '#light-target'
+	      },
+	      'position': {x: -2, y: 1, z:2},
+	      'id': 'specular-yellow'
+	    }, rotatingWithCamera);
+
+	    // overall ambient light
+	    addElement({
+	      'light': {
+	        type: 'ambient',
+	        color: '#FFF',
+	        intensity: 0.5
+	      },
+	      'id': 'ambient-light'
+	    }, staticLights);
+	  }
+	};
+
+	function addElement(attributes, parent) {
+	  var el = document.createElement('a-entity');
+	  Object.keys(attributes).forEach(function(key) {
+	    el.setAttribute(key, attributes[key]);
+	  });
+	  parent.appendChild(el);
 	}
 
 	// internals
@@ -20594,6 +20950,7 @@
 	  AFRAME.registerComponent('io3d-data3d', data3dComponent);
 	  AFRAME.registerComponent('io3d-furniture', furnitureComponent);
 	  AFRAME.registerComponent('tour', tourComponent);
+	  AFRAME.registerComponent('io3d-lighting', lightingComponent);
 	  // check if gblock component has already been registered
 	  if (AFRAME.components.gblock) {
 	    // legacy warning in case gblock has been registered using https://github.com/archilogic-com/aframe-gblock/
@@ -20619,6 +20976,9 @@
 
 	function normalizeFurnitureInfo (rawInfo) {
 	  // normalizes furniture definitions from server side endpoints
+
+	  var indexImageUrl = convertKeyToUrl(rawInfo.preview);
+
 	  return {
 	    // main info
 	    id: rawInfo.productResourceId,
@@ -20626,7 +20986,9 @@
 	    description: rawInfo.description,
 	    manufacturer: rawInfo.manufacturer,
 	    designer: rawInfo.designer,
-	    indexImage: convertKeyToUrl(rawInfo.preview),
+	    // cloudinary API reference: http://cloudinary.com/documentation/image_transformation_reference#format_parameter
+	    thumb: 'https://res.cloudinary.com/archilogic/image/fetch/c_limit,h_150,w_150/' + indexImageUrl,
+	    indexImage: indexImageUrl,
 	    images: rawInfo.images.map(convertKeyToUrl),
 	    url: rawInfo.link,
 	    year: rawInfo.year,
@@ -21821,11 +22183,13 @@
 
 	  // API
 	  options = options || {};
-	  var url = options.url;
+	  var url$$1 = options.url;
 
-	  var parsedUrl = Url.parse(url);
-	  var rootDir = path.parse(parsedUrl.path || parsedUrl.pathname || '').dir;
-	  var origin = parsedUrl.protocol + '//' + parsedUrl.host;
+	  if (url$$1) {
+	    var parsedUrl = Url.parse(url$$1);
+	    var rootDir = path.parse(parsedUrl.path || parsedUrl.pathname || '').dir;
+	    var origin = parsedUrl.protocol + '//' + parsedUrl.host;
+	  }
 
 	  // check buffer type
 	  if (!buffer) {
@@ -21871,14 +22235,14 @@
 	    return bluebird_1.reject(e)
 	  }
 
-	  
+
 	  // add geometry arrays to data3d
 
 	  var payloadByteOffset = HEADER_BYTE_LENGTH + structureByteLength;
 	  traverseData3d(structure.data3d, function (data3d) {
 
 	    // map typed arrays to payload area in file buffer
-	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url);
+	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url$$1);
 
 	    //  convert relative material keys into absolute one
 	    if (origin && data3d.materials) convertTextureKeys(data3d, origin, rootDir);
@@ -21950,7 +22314,7 @@
 
 	}
 
-	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url) {
+	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url$$1) {
 
 	  var mesh, i, l, meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
 
@@ -21980,7 +22344,7 @@
 	    }
 
 	    // add cache key
-	    if (url) mesh.cacheKey = url + ':' + meshKeys[i];
+	    if (url$$1) mesh.cacheKey = url$$1 + ':' + meshKeys[i];
 
 	  }
 
@@ -22049,7 +22413,7 @@
 	  params: {
 	    type: {
 	      type: 'string',
-	      possibleValues: ['plan', 'level', 'box', 'wall', 'camera-bookmarks', 'interior', 'group', 'railing', 'window', 'door', 'floor', 'polyfloor', 'floorplan'],
+	      possibleValues: ['plan', 'level', 'box', 'wall', 'camera-bookmark', 'interior', 'group', 'railing', 'window', 'door', 'floor', 'polyfloor', 'floorplan'],
 	      optional: false
 	    },
 	    x: { // x position in meters
@@ -22110,7 +22474,11 @@
 	};
 
 	var cameraBookmark = {
-	  params: {}
+	  params: {
+	    distance: {
+	      type: 'number'
+	    }
+	  }
 	};
 
 	var door = {
@@ -22268,7 +22636,7 @@
 
 	var level$1 = {
 	  params: {},
-	  possibleChildrenTypes: ['wall', 'railing', 'floor', 'polyfloor', 'floorplan', 'group', 'box']
+	  possibleChildrenTypes: ['interior', 'wall', 'railing', 'floor', 'polyfloor', 'floorplan', 'group', 'box']
 	};
 
 	var plan = {
@@ -22283,7 +22651,7 @@
 	      optional: false
 	    }
 	  },
-	  possibleChildrenTypes: ['level']
+	  possibleChildrenTypes: ['level', 'camera-bookmark']
 	};
 
 	var polyfloor = {
@@ -22403,137 +22771,11 @@
 	  possibleChildrenTypes: []
 	};
 
-	/**
-	 * Creates a function like `_.assign`.
-	 *
-	 * @private
-	 * @param {Function} assigner The function to assign values.
-	 * @returns {Function} Returns the new assigner function.
-	 */
-	function createAssigner(assigner) {
-	  return _baseRest(function(object, sources) {
-	    var index = -1,
-	        length = sources.length,
-	        customizer = length > 1 ? sources[length - 1] : undefined,
-	        guard = length > 2 ? sources[2] : undefined;
-
-	    customizer = (assigner.length > 3 && typeof customizer == 'function')
-	      ? (length--, customizer)
-	      : undefined;
-
-	    if (guard && _isIterateeCall(sources[0], sources[1], guard)) {
-	      customizer = length < 3 ? undefined : customizer;
-	      length = 1;
-	    }
-	    object = Object(object);
-	    while (++index < length) {
-	      var source = sources[index];
-	      if (source) {
-	        assigner(object, source, index, customizer);
-	      }
-	    }
-	    return object;
-	  });
-	}
-
-	var _createAssigner = createAssigner;
-
-	/**
-	 * This method is like `_.assignIn` except that it accepts `customizer`
-	 * which is invoked to produce the assigned values. If `customizer` returns
-	 * `undefined`, assignment is handled by the method instead. The `customizer`
-	 * is invoked with five arguments: (objValue, srcValue, key, object, source).
-	 *
-	 * **Note:** This method mutates `object`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 4.0.0
-	 * @alias extendWith
-	 * @category Object
-	 * @param {Object} object The destination object.
-	 * @param {...Object} sources The source objects.
-	 * @param {Function} [customizer] The function to customize assigned values.
-	 * @returns {Object} Returns `object`.
-	 * @see _.assignWith
-	 * @example
-	 *
-	 * function customizer(objValue, srcValue) {
-	 *   return _.isUndefined(objValue) ? srcValue : objValue;
-	 * }
-	 *
-	 * var defaults = _.partialRight(_.assignInWith, customizer);
-	 *
-	 * defaults({ 'a': 1 }, { 'b': 2 }, { 'a': 3 });
-	 * // => { 'a': 1, 'b': 2 }
-	 */
-	var assignInWith = _createAssigner(function(object, source, srcIndex, customizer) {
-	  _copyObject(source, keysIn_1(source), object, customizer);
-	});
-
-	var assignInWith_1 = assignInWith;
-
-	/** Used for built-in method references. */
-	var objectProto$15 = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty$12 = objectProto$15.hasOwnProperty;
-
-	/**
-	 * Used by `_.defaults` to customize its `_.assignIn` use to assign properties
-	 * of source objects to the destination object for all destination properties
-	 * that resolve to `undefined`.
-	 *
-	 * @private
-	 * @param {*} objValue The destination value.
-	 * @param {*} srcValue The source value.
-	 * @param {string} key The key of the property to assign.
-	 * @param {Object} object The parent object of `objValue`.
-	 * @returns {*} Returns the value to assign.
-	 */
-	function customDefaultsAssignIn(objValue, srcValue, key, object) {
-	  if (objValue === undefined ||
-	      (eq_1(objValue, objectProto$15[key]) && !hasOwnProperty$12.call(object, key))) {
-	    return srcValue;
-	  }
-	  return objValue;
-	}
-
-	var _customDefaultsAssignIn = customDefaultsAssignIn;
-
-	/**
-	 * Assigns own and inherited enumerable string keyed properties of source
-	 * objects to the destination object for all destination properties that
-	 * resolve to `undefined`. Source objects are applied from left to right.
-	 * Once a property is set, additional values of the same property are ignored.
-	 *
-	 * **Note:** This method mutates `object`.
-	 *
-	 * @static
-	 * @since 0.1.0
-	 * @memberOf _
-	 * @category Object
-	 * @param {Object} object The destination object.
-	 * @param {...Object} [sources] The source objects.
-	 * @returns {Object} Returns `object`.
-	 * @see _.defaultsDeep
-	 * @example
-	 *
-	 * _.defaults({ 'a': 1 }, { 'b': 2 }, { 'a': 3 });
-	 * // => { 'a': 1, 'b': 2 }
-	 */
-	var defaults$1 = _baseRest(function(args) {
-	  args.push(undefined, _customDefaultsAssignIn);
-	  return _apply(assignInWith_1, undefined, args);
-	});
-
-	var defaults_1 = defaults$1;
-
 	// import sceneStructure types
 	function getDefaultsByType() {
 	  var types = {
 	    box: box,
-	    cameraBookmark: cameraBookmark,
+	    'camera-bookmark': cameraBookmark,
 	    door: door,
 	    floor: floor,
 	    floorplan: floorplan,
@@ -22882,7 +23124,7 @@
 	  return offset
 	}
 
-	function getSceneStructureFromHtml(el) {
+	function getSceneStructureFromAframeElements(el) {
 	  if (!isValidElement(el)) {
 	    console.error('element is not an "a-entity" DOM element');
 	  }
@@ -22916,15 +23158,129 @@
 	  );
 	}
 
-	// TODO: extend this for bakedModel
+	function poll(callback, options) {
+
+	  // API
+	  options = options || {};
+	  var timeout = options.timeout || 10 * 60 * 1000;
+	  var minInterval = options.minInterval || 1000;
+	  var maxInterval = options.maxInterval || 5000;
+	  var intervalIncreaseFactor = options.intervalIncreaseFactor || 1.05;
+
+	  return new bluebird_1(function( fulfill, reject, onCancel ){
+	    var flags = { isCancelled: false };
+	    // cancellation is supported in bluebird version > 3.x
+	    // enable cancellation in Promise.config as it is off by default
+	    if (onCancel) onCancel(function(){ flags.isCancelled = true; });
+	    // start recursive poll
+	    recursivePoll(callback, fulfill, reject, minInterval, maxInterval, intervalIncreaseFactor, 0, timeout, flags);
+	  })
+
+	}
+
+	// helper
+
+	function recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags) {
+
+	  // return if poll has been cancelled in meanwhile
+	  if (flags.isCancelled) return reject('Poll request has been cancelled')
+	  // increase interval
+	  if (interval < maxInterval) interval *= intervalIncreaseFactor;
+	  // check timeout
+	  if (timeElapsed > timeout) return reject('Poll request timed out')
+	  // count time
+	  timeElapsed += interval;
+	  // call
+	  callback(fulfill, reject, function next() {
+	    window.setTimeout(function(){
+	      recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags);
+	    }, interval);
+	  });
+
+	}
+
+	// constants
+	var IS_URL$1 = new RegExp('^http:\\/\\/.*$|^https:\\/\\/.*$');
+	var ID_TO_URL_CACHE = {};
+
+	// main
+	function getUrlFromStorageId (storageId, options) {
+
+	  // API
+	  options = options || {};
+	  var cdn = options.cdn !== undefined ? options.cdn : true;
+	  var encode = options.encode !== undefined ? options.encode : true;
+
+	  // check cache
+	  if (ID_TO_URL_CACHE[storageId + cdn + encode]) {
+	    return ID_TO_URL_CACHE[storageId + cdn + encode]
+	  }
+
+	  // check if storageId is URL already
+	  if (IS_URL$1.test(storageId)) {
+	    // add to cache
+	    ID_TO_URL_CACHE[ storageId + cdn + encode ] = storageId;
+	    // return URL
+	    return storageId
+	  }
+
+	  // internals
+	  var processedStorageId = storageId;
+
+	  // remove leading slash
+	  var startsWithSlash = /^\/(.*)$/.exec(processedStorageId);
+	  if (startsWithSlash) {
+	    processedStorageId = startsWithSlash[1];
+	  }
+
+	  // encode storageId if containig special chars
+	  if (encode && !/^[\.\-\_\/a-zA-Z0-9]+$/.test(processedStorageId)) {
+	    processedStorageId = encodeURIComponent(processedStorageId);
+	  }
+
+	  // compose url
+	  var url = 'https://' + (cdn ? configs.storageDomain : configs.storageDomainNoCdn) + '/' + processedStorageId;
+
+	  // add to cache
+	  ID_TO_URL_CACHE[ storageId + cdn + encode ] = url;
+	  
+	  return url
+	}
+
+	// main
+
+	function getFromStorage (storageId, options) {
+
+	  // WIP: for now, assume that this is only being used for data3d
+	  options = options || {};
+	  options.type = options.type || 'data3d'; // TODO: support more types
+	  var queueName = options.queueName;
+	  var loadingQueuePrefix = options.loadingQueuePrefix;
+
+	  switch(options.type) {
+	    case 'json':
+	      // do not use queue for generic JSON requests
+	      return fetch$1(getUrlFromStorageId(storageId, options)).then(function(response) { return response.json() })
+	    break
+	    default:
+	      return loadData3d(getUrlFromStorageId(storageId), {
+	        queueName: queueName,
+	        loadingQueuePrefix: loadingQueuePrefix
+	      })
+	    break
+	  }
+
+	}
+
 	var validTypes = [
 	  'interior',
 	  'group',
 	  'level',
-	  'plan'
+	  'plan',
+	  'object'
 	];
 
-	function toHtml(sceneStructure, options) {
+	function toAframeElements(sceneStructure, options) {
 	  if (!sceneStructure) {
 	    console.error('nothing to convert');
 	    return
@@ -22938,40 +23294,203 @@
 	  sceneStructure = isArray ? sceneStructure : [sceneStructure];
 
 	  // start parsing
-	  var html = getHtmlFromSceneStructure(sceneStructure);
-	  return isArray ? html : html[0]
+	  var html = getAframeElementsFromSceneStructure(sceneStructure);
+	  // camera bookmarks are separately extracted from the sceneStructure
+	  // and added as waypoints to an aframe camera parent
+	  var camHtml = parseCameraBookmarks(sceneStructure, isArray ? html : html[0]);
+	  var result;
+	  // let's make sure input type is similar to output type
+	  if (!camHtml) {
+	    result = isArray ? html : html[0];
+	  } else {
+	    result = (Array.isArray(html) ? html : [html]).concat(camHtml);
+	  }
+	  return result
 	}
 
 	// recursive parsing through sceneStructre
-	function getHtmlFromSceneStructure(sceneStructure, parent) {
+	function getAframeElementsFromSceneStructure(sceneStructure, parent) {
 	  var collection = parent ? null : []; // use collection or parent
 	  sceneStructure.forEach(function(element3d) {
 	    if (validTypes.indexOf(element3d.type) > -1) {
+	      // get html attributes from element3d objects
 	      var el = addEntity({
 	        attributes: getAttributes(element3d),
 	        parent: parent
 	      });
-	      if (element3d.children && element3d.children.length) getHtmlFromSceneStructure(element3d.children, el);
+	      // the level scene might be baked
+	      if (element3d.type === 'level') {
+	        createBakedElement(el, element3d);
+	      }
+	      // recursively proceed through sceneStructure
+	      if (element3d.children && element3d.children.length) getAframeElementsFromSceneStructure(element3d.children, el);
 	      if (collection) collection.push(el);
 	    }
 	  });
+
 	  return collection
 	}
 
 	// get html attributes from element3d params
 	function getAttributes(element3d) {
-	  var attributes = {
-	    'io3d-uuid': element3d.id,
-	    position: element3d.x + ' ' + element3d.y + ' ' + element3d.z,
-	    rotation: '0 ' + element3d.ry + ' 0'
-	  };
-	  if (element3d.type === 'interior') {
-	    attributes['io3d-furniture'] = {id: element3d.src.substring(1)};
-	    attributes['shadow'] = {cast: true, receive: false};
+	  var attributes = {};
+
+	  // map type specific attributes
+	  // camera-bookmarks and bakedModel are handled separately
+	  switch (element3d.type) {
+	    case 'interior':
+	      attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1);
+	      // apply custom material settings for furniture items
+	      if (element3d.materials) {
+	        var mats = element3d.materials;
+	        // materials can be saved as arrays
+	        if (Array.isArray(mats)) {
+	          var matObj = {};
+	          mats.forEach(function (mat) {
+	            if (mat.mesh && mat.material) matObj[mat.mesh] = mat.material;
+	          });
+	          mats = matObj;
+	        }
+	        // apply alternative material setting to io3d-furniture attribute
+	        if (typeof mats === 'object') {
+	          Object.keys(mats).forEach(function (mesh) {
+	            if (mesh && mats[mesh]) attributes['io3d-furniture'] += '; material_' + mesh.replace(/\s/g, '_') + ':' + mats[mesh];
+	          });
+	        }
+	      }
+	      attributes['shadow'] = 'cast: true; receive: false';
+	    break
+	    case 'object':
+	      attributes['io3d-data3d'] = 'key: ' + element3d.object;
+	      attributes['shadow'] = 'cast: true; receive: true';
+	    break
 	  }
+
+	  // and generic attributes that apply for all nodes
+	  // stringify location objects
+	  attributes.position = element3d.x + ' ' + element3d.y + ' ' + element3d.z;
+	  attributes.rotation = (element3d.rx || 0) + ' ' + element3d.ry + ' 0';
+	  attributes['io3d-uuid'] = element3d.id;
 
 	  return attributes
 	}
+
+	// creates a child for a baked model in the current element
+	function createBakedElement(parentElem, element3d) {
+	  // we might have a scene that has no baked level
+	  if (!element3d.bakedModelUrl) {
+	    console.warn('Level without bakedModelUrl: ', element3d);
+	    return
+	  }
+	  // set data3d.buffer file key
+	  var attributes = {
+	    'io3d-data3d': 'key: ' + element3d.bakedModelUrl,
+	    shadow: 'cast: false; receive: true'
+	  };
+	  // set lightmap settings
+	  if (element3d.lightMapIntensity) {
+	    attributes['io3d-data3d'] += '; lightMapIntensity: ' + element3d.lightMapIntensity + '; lightMapExposure: ' + element3d.lightMapCenter;
+	  }
+
+	  var bakedElem = addEntity({
+	    attributes: attributes,
+	    parent: parentElem
+	  });
+
+	  if (parentElem.bakeRegularStatusFileKey || parentElem.bakePreviewStatusFileKey) {
+	    updateOnBake(bakedElem, element3d);
+	  }
+
+	}
+
+	// creates a camera and tour-waypoints from scene structure
+	function parseCameraBookmarks(sceneStructure, planRoot) {
+	  var bookmarks = flattenSceneStructure(sceneStructure[0]).filter(function (element) { return element.type === 'camera-bookmark' });
+	  if (bookmarks.length === 0) return
+
+	  var lastSavePosition = bookmarks.find(function (element) { return element.name === 'lastSavePosition' });
+	  var camPosition = "0 1.6 0";
+	  var camRotation = "0 0 0";
+
+	  if (lastSavePosition) {
+	    if (lastSavePosition.mode === 'bird') {
+	      lastSavePosition.y += lastSavePosition.distance;
+	    }
+	    var location = sphericalToCartesian(lastSavePosition);
+	    camPosition = location.position;
+	    camRotation = location.rotation;
+	  }
+
+	  var camera = addEntity({
+	    attributes: {
+	      camera: '',
+	      tour: 'autoStart: false',
+	      'wasd-controls': '',
+	      'look-controls': '',
+	      // stringify location objects
+	      position: camPosition,
+	      rotation: camRotation
+	    }
+	  });
+
+	  bookmarks
+	    .filter(function (element) { return element.name !== 'lastSavePosition' })
+	    .forEach(function (element) {
+	      var location = sphericalToCartesian(element);
+	      addEntity({
+	        parent: camera,
+	        attributes: {
+	          // per default no name is set in the editor
+	          'tour-waypoint': element.name || 'Waypoint',
+	          'io3d-uuid': element.id,
+	          // stringify location objects
+	          position: location.position,
+	          rotation: location.rotation
+	        }
+	      });
+	    });
+
+	  return camera
+	}
+
+	function sphericalToCartesian(element) {
+	  // Rotate look-at point on the XZ plane around parent's center
+	  var angleY = -element.parent.ry * Math.PI / 180;
+
+	  var rotatedX = element.x * Math.cos(angleY) - element.z * Math.sin(angleY);
+	  var rotatedZ = element.z * Math.cos(angleY) + element.x * Math.sin(angleY);
+
+	  // Get world space coordinates for our look-at point
+	  var position = {};
+	  position.x = element.parent.x + rotatedX;
+	  position.y = element.parent.y + element.y;
+	  position.z = element.parent.z + rotatedZ;
+
+	  // Get camera position by rotating around the look-at point at a distance of element.distance.
+	  // This will make very little difference for 'person'-type bookmarks, but it should be done for
+	  // the sake of correctness.
+	  var rx =                      element.rx  * Math.PI / 180;
+	  var ry = (element.parent.ry + element.ry) * Math.PI / 180;
+
+	  position.x -= element.distance * Math.sin(ry) * Math.cos(rx);
+	  position.y -= element.distance * Math.sin(rx);
+	  position.z -= element.distance * Math.cos(ry) * Math.cos(rx);
+
+	  // Finally, get camera rotation. Note that it's necessary to add 180 degrees to the rotation angle
+	  // because of A-Frame's different convention. Also note that when animating the camera, the rotation
+	  // angle should be interpolated through the shortest arc in order to avoid swirling motion.
+	  var rotation = {};
+	  rotation.x = element.rx;
+	  rotation.y = 180 + element.parent.ry + element.ry;
+
+	  if (element.mode === 'bird' || element.mode === 'floorplan') position.y = Math.max(element.distance - 5, 8);
+
+	  return {
+	    rotation: rotation.x + ' ' + rotation.y + ' 0', //rotation,
+	    position: position.x + ' ' + position.y + ' ' + position.z // position
+	  }
+	}
+
 
 	function addEntity(args) {
 	  var
@@ -22989,6 +23508,60 @@
 	  else return el
 	}
 
+	function updateOnBake(htmlElement, element3d) {
+	  var statusFileKey = element3d.bakeRegularStatusFileKey || element3d.bakePreviewStatusFileKey;
+
+	  pollStatusFile(statusFileKey)
+	    .then(function (bakedModelKey) {
+	      var attribValue = 'key: ' + bakedModelKey;
+	      if (element3d.lightMapIntensity) {
+	        attribValue += '; lightMapIntensity: ' + element3d.lightMapIntensity + '; lightMapExposure: ' + element3d.lightMapCenter;
+	      }
+
+	      htmlElement.setAttribute('io3d-data3d', attribValue);
+	    });
+	}
+
+	// TODO: Migrate that to a shared helper
+
+	function pollStatusFile(fileKey) {
+	  return poll(function onPoll(onSuccess, onError, next) {
+	    /*
+	    1. Read status file content
+	    2. Check if we're done -> call onSuccess
+	       Check if it failed  -> call onError
+	       Otherwise call next
+	     */
+	    getFromStorage(fileKey, { type: "json", cdn: false }).then(function checkContent(content) {
+	      if (content && content.params) {
+	        switch (content.params.status) {
+	          case 'SUCCESS':
+	            onSuccess(content.params.data);
+	            break
+	          case 'PROCESSING':
+	          case 'ENQUEUED':
+	            next();
+	            break
+	          default:
+	            onError(content.params.data);
+	        }
+	      }
+	    });
+	  })
+	}
+
+	function flattenSceneStructure(sceneStructure, parent) {
+	  var result = [];
+	  sceneStructure.parent = parent;
+	  result.push(sceneStructure);
+	  if(sceneStructure.children) {
+	    sceneStructure.children.forEach(function (child) {
+	      result = result.concat(flattenSceneStructure(child, sceneStructure));
+	    });
+	  }
+	  return result
+	}
+
 	// consumes sceneStructure or DOM elements
 	// replaces furniture Ids and adjusts positioning
 	// outputs input type
@@ -23004,7 +23577,7 @@
 	  var isDomElement = isElement$1(input);
 	  if (isDomElement) {
 	    // convert to sceneStructure
-	    input = getSceneStructureFromHtml(input);
+	    input = getSceneStructureFromAframeElements(input);
 	  }
 
 	  return normalizeSceneStructure(input)
@@ -23029,7 +23602,7 @@
 	      // replace params in furniture elements
 	      var sceneStructure = updateSceneStructureWithResult(input, alternatives, random);
 	      if (isDomElement) {
-	        return toHtml(sceneStructure)
+	        return toAframeElements(sceneStructure)
 	      } else return sceneStructure
 	    })
 	    .catch(function(error) {
@@ -23814,79 +24387,6 @@
 	    + '_' + d.getHours() + '-' + d.getMinutes() // + '-' + d.getSeconds()
 	}
 
-	// constants
-	var IS_URL$1 = new RegExp('^http:\\/\\/.*$|^https:\\/\\/.*$');
-	var ID_TO_URL_CACHE = {};
-
-	// main
-	function getUrlFromStorageId (storageId, options) {
-
-	  // API
-	  options = options || {};
-	  var cdn = options.cdn !== undefined ? options.cdn : true;
-	  var encode = options.encode !== undefined ? options.encode : true;
-
-	  // check cache
-	  if (ID_TO_URL_CACHE[storageId + cdn + encode]) {
-	    return ID_TO_URL_CACHE[storageId + cdn + encode]
-	  }
-
-	  // check if storageId is URL already
-	  if (IS_URL$1.test(storageId)) {
-	    // add to cache
-	    ID_TO_URL_CACHE[ storageId + cdn + encode ] = storageId;
-	    // return URL
-	    return storageId
-	  }
-
-	  // internals
-	  var processedStorageId = storageId;
-
-	  // remove leading slash
-	  var startsWithSlash = /^\/(.*)$/.exec(processedStorageId);
-	  if (startsWithSlash) {
-	    processedStorageId = startsWithSlash[1];
-	  }
-
-	  // encode storageId if containig special chars
-	  if (encode && !/^[\.\-\_\/a-zA-Z0-9]+$/.test(processedStorageId)) {
-	    processedStorageId = encodeURIComponent(processedStorageId);
-	  }
-
-	  // compose url
-	  var url = 'https://' + (cdn ? configs.storageDomain : configs.storageDomainNoCdn) + '/' + processedStorageId;
-
-	  // add to cache
-	  ID_TO_URL_CACHE[ storageId + cdn + encode ] = url;
-	  
-	  return url
-	}
-
-	// main
-
-	function getFromStorage (storageId, options) {
-
-	  // WIP: for now, assume that this is only being used for data3d
-	  options = options || {};
-	  options.type = options.type || 'data3d'; // TODO: support more types
-	  var queueName = options.queueName;
-	  var loadingQueuePrefix = options.loadingQueuePrefix;
-
-	  switch(options.type) {
-	    case 'json':
-	      // do not use queue for generic JSON requests
-	      return fetch$1(getUrlFromStorageId(storageId, options)).then(function(response) { return response.json() })
-	    break
-	    default:
-	      return loadData3d(getUrlFromStorageId(storageId), {
-	        queueName: queueName,
-	        loadingQueuePrefix: loadingQueuePrefix
-	      })
-	    break
-	  }
-
-	}
-
 	// main
 	function getNoCdnUrlFromStorageId (storageId) {
 
@@ -24111,6 +24611,24 @@
 	  exportDae: convert.exportDae
 	};
 
+	function getSceneStructure (id) {
+	  if (!uuid.validate(id)) return Promise.reject('id not valid')
+	  return callService('Model.read', { arguments: {resourceId:id}})
+	    .then(function(result) {
+	      var sceneStructure = result.modelStructure;
+	      sceneStructure.id = result.modelResourceId;
+	      sceneStructure.v = 1;
+	      sceneStructure.modelDisplayName = result.modelDisplayName;
+	      sceneStructure.modelResourceName = result.modelResourceName;
+	      return sceneStructure
+	    })
+	}
+
+	function getAframeElements(id) {
+	  return getSceneStructure(id)
+	    .then(toAframeElements)
+	}
+
 	function getViewerUrl (args) {
 	  return 'https://spaces.archilogic.com/3d/!'+args.sceneId
 	}
@@ -24285,11 +24803,25 @@
 	}
 
 	var scene = {
+	  getStructure: getSceneStructure,
+	  getHtml: getHtml,
+	  getAframeElements: getAframeElements,
 	  getViewerUrl: getViewerUrl,
 	  validateSceneStructure: validateSceneStructure,
 	  normalizeSceneStructure: normalizeSceneStructure,
-	  getHtmlFromSceneStructure: toHtml
+	  getHtmlFromSceneStructure: getHtmlFromSceneStructure,
+	  getAframeElementsFromSceneStructure: toAframeElements
 	};
+
+	function getHtml() {
+	  console.warn('io3d.scene.getHtml will be removed soon please use io3d.scene.getAframeElements');
+	  return getAframeElements.apply( getAframeElements, arguments )
+	}
+
+	function getHtmlFromSceneStructure() {
+	  console.warn('io3d.scene.getHtmlFromSceneStructure will be removed soon please use io3d.scene.getAframeElementsFromSceneStructure');
+	  return toAframeElements.apply( toAframeElements, arguments )
+	}
 
 	// methods
 
@@ -26015,47 +26547,6 @@
 	  return Math.ceil(value / multiple) === value / multiple
 	}
 
-	function poll(callback, options) {
-
-	  // API
-	  options = options || {};
-	  var timeout = options.timeout || 10 * 60 * 1000;
-	  var minInterval = options.minInterval || 1000;
-	  var maxInterval = options.maxInterval || 5000;
-	  var intervalIncreaseFactor = options.intervalIncreaseFactor || 1.05;
-
-	  return new bluebird_1(function( fulfill, reject, onCancel ){
-	    var flags = { isCancelled: false };
-	    // cancellation is supported in bluebird version > 3.x
-	    // enable cancellation in Promise.config as it is off by default
-	    if (onCancel) onCancel(function(){ flags.isCancelled = true; });
-	    // start recursive poll
-	    recursivePoll(callback, fulfill, reject, minInterval, maxInterval, intervalIncreaseFactor, 0, timeout, flags);
-	  })
-
-	}
-
-	// helper
-
-	function recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags) {
-
-	  // return if poll has been cancelled in meanwhile
-	  if (flags.isCancelled) return reject('Poll request has been cancelled')
-	  // increase interval
-	  if (interval < maxInterval) interval *= intervalIncreaseFactor;
-	  // check timeout
-	  if (timeElapsed > timeout) return reject('Poll request timed out')
-	  // count time
-	  timeElapsed += interval;
-	  // call
-	  callback(fulfill, reject, function next() {
-	    window.setTimeout(function(){
-	      recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags);
-	    }, interval);
-	  });
-
-	}
-
 	function addCacheBustToQuery (url) {
 	  var cacheBust = '___cacheBust='+Date.now();
 	  if (url.indexOf('?') > -1) {
@@ -26393,7 +26884,7 @@
 	      var tagSearch = elementStringRegex.exec(x);
 	      var tag = tagSearch ? tagSearch[1] : null;
 	      if (tag) {
-	        return addElement(tag, attributes)
+	        return addElement$1(tag, attributes)
 	      } else {
 	        throw 'Only basic tags like "<div>" without attributes are currently supported. (No queries and no HTML strings)'
 	      }
@@ -26411,7 +26902,7 @@
 
 	// helpers
 
-	function addElement (type, attrs) {
+	function addElement$1 (type, attrs) {
 	  runtime.assertBrowser();
 
 	  // create element
@@ -26835,6 +27326,10 @@
 
 	  // get reference to main DOM element
 	  var mainEl = document.getElementById(elementId);
+	  if (!mainEl) {
+	    console.error('file drop ui could not be created, element not found:', elementId);
+	    return
+	  }
 	  // input allows selecting files on click
 	  var fileInputEl = document.createElement('input');
 	  fileInputEl.setAttribute('type', 'file');
@@ -28615,7 +29110,8 @@
 	  uuid: uuid,
 	  getShortId: getShortId,
 	  path: path,
-	  wait: wait
+	  wait: wait,
+	  bluebird: bluebird_1
 
 	};
 

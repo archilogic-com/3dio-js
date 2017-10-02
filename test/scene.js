@@ -1,6 +1,18 @@
 import test from 'ava'
 import io3d from '../build/3dio'
 
+// get sceneStructure form if
+
+test('Scene: get sceneStructure form id', t => {
+  const id = '5a281187-475a-4613-8fa5-a2e92af9914d'
+  return io3d.scene.getStructure(id)
+    .then(io3d.scene.validateSceneStructure)
+    .then(result => {
+      console.log(result)
+      t.is(result.isValid, true)
+    })
+})
+
 // url from scene id
 
 test('Scene: get url form id', t => {

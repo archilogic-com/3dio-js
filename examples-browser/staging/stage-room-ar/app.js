@@ -151,7 +151,7 @@ function changeStyle(e) {
 
 function placeFurniture(input) {
   // convert sceneStructure to aframe Html so we can place it in the scene
-  var elements = io3d.scene.getHtmlFromSceneStructure(input)
+  var elements = io3d.scene.getAframeElementsFromSceneStructure(input)
   // check for previously added elements and remove them
   addedItems.forEach(el => {
     el.parentNode.removeChild(el)

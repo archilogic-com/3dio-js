@@ -1,3 +1,7 @@
 export default {
-  params: {}
+  params: {
+    distance: {
+      type: 'number'
+    }
+  }
 }

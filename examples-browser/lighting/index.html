@@ -5,11 +5,6 @@
 
   <!-- boilerplate libs -->
   <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
-  <script src="https://cdn.rawgit.com/tizzle/aframe-orbit-controls-component/v0.1.12/dist/aframe-orbit-controls-component.min.js"></script>
-
-  <!--<script src="../_libs/aframe.0.6.1.min.js"></script>-->
-  <!--<script src="../_libs/aframe-orbit-controls-component.min.js"></script>-->
-
   <!-- 3dio lib -->
   <script src="../../../build/3dio.js"></script>
 
@@ -36,167 +31,37 @@
 
 <div id="top">
   Lighting component by <a target="_blank" href="https://3d.io">3d.io</a> for <a target="_blank" href="https://aframe.io/">A-Frame</a>
+  <!--select id="light-preset">
+    <option value="studio">Studio</option>
+    <option value="morning">Morning</option>
+    <option value="night">Night</option>
+  </select-->
 </div>
 
-<script>
-  (function(){
-
-    // component
-
-    AFRAME.registerComponent('lighting', {
-
-      schema: {
-        preset: {
-          type: 'string',
-          default: 'malibu'
-        },
-        intensity: {
-          type: 'float',
-          default: 1
-        },
-        saturation: {
-          type: 'float',
-          default: 1
-        }
-      },
-
-      init: function () {
-
-        this.cam = document.querySelector('a-entity[camera]').object3D
-
-        // main
-        var lighting = new THREE.Object3D()
-        this.el.setObject3D('lighting', lighting)
-
-        // lights moving with camera
-        this.movingWithCamera = new THREE.Object3D()
-        lighting.add(this.movingWithCamera)
-
-        // static lights
-        this.static = new THREE.Object3D()
-        lighting.add(this.static)
-
-      },
-
-      update: function () {
-
-        this.remove()
-
-        createPreset[this.data.preset](
-          this.movingWithCamera,
-          this.static,
-          this.data.intensity,
-          this.data.saturation
-        )
-
-      },
-
-      remove: function () {
-
-        this.movingWithCamera.children.forEach(function(child){
-          child.parent.remove(child)
-        })
-
-        this.static.children.forEach(function(child){
-          child.parent.remove(child)
-        })
-
-      },
-
-      tick: function (dt) {
-
-        this.movingWithCamera.position.copy(this.cam.position)
-        this.movingWithCamera.rotation.copy(this.cam.rotation)
-
-      }
-
-    })
-
-    // configs
-
-    var SHADOW_CAMERA_NEAR = 1
-    var SHADOW_CAMERA_FAR = 60
-    var SHADOW_SIZE = 40 // real size of shadow map in meters
-    var SHADOW_MAP_SIZE = 1024 // pixel size of shadow map
-    var SHADOW_BIAS = 0.001
-    var SHADOW_DARKNESS = 0.2
-
-    // light presets
-
-    var createPreset = {
-      malibu: function(movingWithCamera, static, intensity, saturation) {
-
-        var target = new THREE.Object3D()
-        movingWithCamera.add(target)
-
-        // spec: left (orange) / right (blue)
-
-        var leftColor = new THREE.Color().setHSL(0.095, 0.5, 0.6) // orange
-        var rightColor = new THREE.Color().setHSL(0.6, 0.4, 0.6) // blue
-        var leftRightSpec = new THREE.HemisphereLight(leftColor, rightColor, 0.6 * intensity)
-        leftRightSpec.position.set(-500, 200, 200)
-        leftRightSpec.target = target
-        movingWithCamera.add(leftRightSpec)
-
-        // fspec: front / back
-
-        var frontColor = new THREE.Color().setHSL(0, 0, 0.3)
-        var backColor = new THREE.Color().setHSL(0, 0, 0.8)
-        var frontBackSpec = new THREE.HemisphereLight(frontColor, backColor, 0.5 * intensity)
-        frontBackSpec.position.set(0, 100, -10000)
-        frontBackSpec.target = target
-        movingWithCamera.add(frontBackSpec)
-
-        // ambient
-
-        var ambientColor = new THREE.Color().setHSL(0,0,0.3 * intensity)
-        var ambient = new THREE.AmbientLight(ambientColor)
-        static.add(ambient)
-
-        // sun & shadow
-
-        var sunTarget = new THREE.Object3D()
-        static.add(sunTarget)
-
-        var sunColor = new THREE.Color().setHSL(0,0,1)
-        var sun = new THREE.DirectionalLight(sunColor, 0 * intensity)
-        sun.position.set(100, 100, 0)
-        sun.target = sunTarget
-        sun.shadow.camera.visible = false // helper
-        sun.castShadow = true
-        sun.shadowMapEnabled = true
-        sun.shadow.bias = SHADOW_BIAS
-        sun.shadow.darkness = SHADOW_DARKNESS
-        sun.shadow.mapSize.width = sun.shadow.mapSize.height = SHADOW_MAP_SIZE
-        sun.shadow.camera.near = SHADOW_CAMERA_NEAR
-        sun.shadow.camera.Far = SHADOW_CAMERA_FAR
-        sun.shadow.camera.right = sun.shadow.camera.top = SHADOW_SIZE / 2
-        sun.shadow.camera.left = sun.shadow.camera.bottom = -SHADOW_SIZE / 2
-        static.add(sun)
-
-      }
-    }
-
-  })()
-</script>
-
 <!-- 3D -->
-<a-scene light="defaultLightsEnabled: false">
+<a-scene shadow="type: pcfsoft" io3d-lighting>
 
-  <!--<a-light type="point" position="-30 30 -30"></a-light>-->
+  <a-entity id="lounge-chair" io3d-furniture="id:ef62bf88-97e9-4468-ad0e-a87ced83578d" position="0.07 0 -1.543" rotation="0 -90 0" shadow="cast: true; receive: false" ></a-entity>
+  <a-entity id="armchair" io3d-furniture="id:3ca717bf-d1e6-4722-aac5-03141cbcd1aa" position="-2 0 -1.543" rotation="0 -90 0" shadow="cast: true; receive: false" ></a-entity>
+  <a-entity id="couch" io3d-furniture="id:23c81ab7-820e-4180-ad52-5c4267f18cf2" position="1.917 0 -0.699" rotation="0 -90 0" shadow="cast: true; receive: false"></a-entity>
+  <a-entity id="chair" io3d-furniture="id:9809a451-6767-4e8c-88dd-a3e622c30832" position="-0.823 0 0.335" shadow="cast: true; receive: false" rotation="0 -90 0"></a-entity>
+  <a-entity id="vase" io3d-furniture="id:10a54bcf-3b9c-4518-b7ea-81c4251cf5a4" position="0.282 0 0.178" shadow="cast: true; receive: false" rotation="0 180 0"></a-entity>
 
   <a-box position="-1 0.5 -3" shadow="cast:true; receive:true;" rotation="0 45 0" color="#eee"></a-box>
-  <a-sphere position="0 1.25 -5" shadow="cast:true; receive:true;" radius="1.25" color="#eee"></a-sphere>
+  <a-sphere position="0 1.25 -5" shadow="cast:true; receive:true;" radius="1.25" color="#f5f5f5"></a-sphere>
   <a-cylinder position="1 0.75 -3" shadow="cast:true; receive:true;" radius="0.5" height="1.5" color="#eee"></a-cylinder>
-  <a-plane material="normalMap:url('..examples-browser/_models/normal-test.jpg');" position="0 0 -4" shadow="cast:true; receive:true;" rotation="-90 0 0" width="40" height="40""></a-plane>
+  <a-plane position="0 0 -4" shadow="cast:true; receive:true;" rotation="-90 0 0" width="40" height="40" color="#eee"></a-plane>
   <a-sky color="#ECECEC"></a-sky>
 
-  <!-- inside camera -->
-  <a-entity lighting></a-entity>
-
-  <a-entity camera="user-height:1.60;" look-controls wasd-controls></a-entity>
-
+  <a-entity camera="user-height:1.60; fov:60" look-controls wasd-controls position="-3 0 2" rotation="0 -45 0"></a-entity>
 </a-scene>
-
+<script>
+//  var lightEl = document.querySelector('#light-preset')
+//  var sceneEl = document.querySelector('a-scene')
+//  lightEl.addEventListener('change', changeLighting)
+//  function changeLighting(e) {
+//    sceneEl.setAttribute('lighting', {preset: e.target.value})
+//  }
+</script>
 </body>
 </html>

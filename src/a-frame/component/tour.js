@@ -1,4 +1,5 @@
 import clone from 'lodash/clone'
+import defaults from 'lodash/defaults'
 
 export default {
   schema: {
@@ -25,6 +26,7 @@ export default {
     this.el.setAttribute('animation__move', { startEvents: 'doNotFire', pauseEvents: 'pauseTour', resumeEvents:'resumeTour', property: 'position', easing: 'easeInOutSine', dur: 100 })
     this.el.setAttribute('animation__turn', { startEvents: 'doNotFire', pauseEvents: 'pauseTour', resumeEvents:'resumeTour', property: 'rotation', easing: 'easeInOutSine', dur: 100 })
     this._nextWaypointHandler = this._nextWaypoint.bind(this)
+    this.el.addEventListener('animation__move-complete', this._nextWaypointHandler)
   },
 
   update: function () {
@@ -36,10 +38,14 @@ export default {
   },
 
   playTour: function () {
+    if (!this._waypoints || !this._waypoints.length) {
+      console.warn('camera tour has no waypoints')
+      return
+    }
     if (this._isPlaying) {
       if(this._isChangingAnimation) {
         clearTimeout(this._nextAnimationTimeout)
-        this.goTo(this._waypoints[this._currentWayPoint].getAttribute('tour-waypoint'), this._isPlaying)
+        this.goTo(this._waypoints[this._currentWayPoint].getAttribute('io3d-uuid'), this._isPlaying)
       } else {
         this.el.dispatchEvent(new CustomEvent('resumeTour'))
       }
@@ -47,12 +53,11 @@ export default {
     } else {
       this._isPlaying = true
       this._isPaused = false
-      this.el.addEventListener('animation__move-complete', this._nextWaypointHandler)
       var next = this._waypoints[++this._currentWayPoint]
-      if (next) this.goTo(next.getAttribute('tour-waypoint'), true)
+      if (next) this.goTo(next.getAttribute('io3d-uuid'), true)
       else if (this.data.loop) {
         this._currentWayPoint = 0
-        this.goTo(this._waypoints[0].getAttribute('tour-waypoint'), true)
+        this.goTo(this._waypoints[0].getAttribute('io3d-uuid'), true)
       }
     }
   },
@@ -64,39 +69,41 @@ export default {
 
   stopTour: function () {
     this.pauseTour()
-    this.el.removeEventListener('animation__move-complete', this._nextWaypointHandler)
     this._isPlaying = false
     this._isPaused = false
   },
 
-  goTo: function (label, keepPlaying) {
+  goTo: function (uuid, keepPlaying) {
     this._isPlaying = !!keepPlaying
-    var target = this._waypoints.find(function (item) { return item.getAttribute('tour-waypoint') === label })
+    var target = this._waypoints.find(function (item) { return item.getAttribute('io3d-uuid') === uuid })
     if (!target) {
-      console.error('The given waypoint '+ label + ' does not exist. Available waypoints:', this._waypoints.map(function (elem) { elem.getAttribute('tour-waypoint') }))
+      console.error('The given waypoint ' + uuid + ' does not exist. Available waypoints:', this._waypoints.map(function (elem) { return elem.getAttribute('io3d-uuid') }))
       return
     }
 
     this.animate(target)
   },
 
-  setViewPoint: function (mode) {
-    var HEIGHT_PERSON = 1.4
-    var HEIGHT_BIRDS_EYE = 7
-    var ANGLE_PERSON = 0
-    var ANGLE_BIRDS_EYE = -60
-    if (['person', 'bird'].indexOf(mode) < -1) {
-      console.error('not supported camera mode: ' + mode)
+  // set camera position and rotation by providing changes for certain axes
+  // to reset camera to walking mode do:
+  // updateViewPoint({position: {y:1.6}, rotation: {x:0})
+  updateViewPoint: function (args) {
+    args = args || {}
+    if (typeof args !== 'object') {
+      console.error('not supported camera view point: ' + args)
       return
     }
+    var posChange = args.position || {}
+    var rotChange = args.rotation || {}
+
     this._isPlaying = false
-    var pos = clone(this.el.getAttribute('position'))
-    var rot = clone(this.el.getAttribute('rotation'))
-    pos.y = mode === 'person' ? HEIGHT_PERSON : HEIGHT_BIRDS_EYE
-    rot.x = mode === 'person' ? ANGLE_PERSON : ANGLE_BIRDS_EYE
+    // apply changes to current camera position
+    var pos = defaults({}, posChange, clone(this.el.getAttribute('position')))
+    var rot = defaults({}, rotChange, clone(this.el.getAttribute('rotation')))
+
     var target = {
-      position: AFRAME.utils.coordinates.stringify(pos),
-      rotation: AFRAME.utils.coordinates.stringify(rot)
+      position: pos,
+      rotation: rot
     }
     this.animate(target)
   },
@@ -106,20 +113,22 @@ export default {
     var entity = this.el
     var newPosition = isDomElement ? bookmark.getAttribute('position') : bookmark.position
     var newRotation = isDomElement ? bookmark.getAttribute('rotation') : bookmark.rotation
-    var currentPosition = entity.getAttribute('position')
-    var currentRotation = entity.getAttribute('rotation')
-    var startPosition = AFRAME.utils.coordinates.stringify(currentPosition)
-    var startRotation = AFRAME.utils.coordinates.stringify(currentRotation)
+    var startPosition = entity.getAttribute('position')
+    var startRotation = entity.getAttribute('rotation')
+
+    // normalize start and end rotation and find shortest arc for each rotation
+    var normalizedRotations = getNormalizeRotations(startRotation, newRotation)
+    newRotation = normalizedRotations.end
+    startRotation = normalizedRotations.start
 
     // compute distance to adapt speed
-    var d = dist(currentPosition, AFRAME.utils.coordinates.parse(newPosition))
+    var d = dist(startPosition, newPosition)
     // compute angle difference to adapt speed
-    var angle = Math.abs(currentRotation.y - AFRAME.utils.coordinates.parse(newRotation).y)
+    var angle = Math.abs(startRotation.y - newRotation.y)
     // compute animation time
     // add 1 to the this.data.move parameter to allow users to specify 0 without the animation cancelling out
     var t = Math.round((this.data.move === undefined ? 3000 : this.data.move + 1) / 6 * (d + angle / 30))
-    if (t > Math.max(10000, this.data.move)) t = Math.max(10000, this.data.move)
-
+    if (t > Math.max(5000, this.data.move)) t = Math.max(5000, this.data.move)
     // prevent zero length animation
     if (!t) return this._nextWaypoint()
 
@@ -139,6 +148,9 @@ export default {
   },
 
   _nextWaypoint: function () {
+    // FIXME: Find the root cause of the weird jumpy behaviour when using WASD controls
+    this.el.setAttribute('position', AFRAME.utils.coordinates.stringify(this.el.getAttribute('position')))
+
     if (!this._isPlaying) return this.stopTour()
     if (this._currentWayPoint === this._waypoints.length - 1) {
       if (!this.data.loop) return
@@ -146,7 +158,27 @@ export default {
     }
     this._isChangingAnimation = true
     var next = this._waypoints[++this._currentWayPoint]
-    this._nextAnimationTimeout = setTimeout(function () { this.goTo(next.getAttribute('tour-waypoint'), this._isPlaying) }.bind(this), this.data.wait === undefined ? 0 : this.data.wait)
+    this._nextAnimationTimeout = setTimeout(function () { this.goTo(next.getAttribute('io3d-uuid'), this._isPlaying) }.bind(this), this.data.wait === undefined ? 0 : this.data.wait)
+  }
+}
+
+// we want to prevent excessive spinning in rotations
+function getNormalizeRotations(start, end) {
+  // normalize both rotations
+  var normStart = normalizeRotation(start)
+  var normEnd = normalizeRotation(end)
+  // find the shortest arc for each rotation
+  Object.keys(start).forEach(function(axis) {
+    if (normEnd[axis] - normStart[axis] > 180) normEnd[axis] -= 360
+  })
+  return { start: normStart, end: normEnd }
+}
+
+function normalizeRotation(rot) {
+  return {
+    x: rot.x % 360,
+    y: rot.y % 360,
+    z: rot.z % 360,
   }
 }
 

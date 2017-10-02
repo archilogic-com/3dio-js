@@ -5,6 +5,7 @@ import data3dComponent from './a-frame/component/data3d.js'
 import furnitureComponent from './a-frame/component/furniture.js'
 import tourComponent from './a-frame/component/tour.js'
 import gBlockComponent from './a-frame/component/gblock.js'
+import lightingComponent from './a-frame/component/lighting.js'
 // other
 import inspectorPluginsLauncher from './a-frame/inspector-plugins-launcher.js'
 import Data3dView from './a-frame/three/data3d-view.js'
@@ -25,6 +26,7 @@ checkDependencies({
   AFRAME.registerComponent('io3d-data3d', data3dComponent)
   AFRAME.registerComponent('io3d-furniture', furnitureComponent)
   AFRAME.registerComponent('tour', tourComponent)
+  AFRAME.registerComponent('io3d-lighting', lightingComponent)
   // check if gblock component has already been registered
   if (AFRAME.components.gblock) {
     // legacy warning in case gblock has been registered using https://github.com/archilogic-com/aframe-gblock/

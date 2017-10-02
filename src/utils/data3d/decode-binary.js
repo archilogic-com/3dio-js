@@ -40,9 +40,11 @@ export default function decodeBinary (buffer, options) {
   options = options || {}
   var url = options.url
 
-  var parsedUrl = urlUtil.parse(url)
-  var rootDir = pathUtil.parse(parsedUrl.path || parsedUrl.pathname || '').dir
-  var origin = parsedUrl.protocol + '//' + parsedUrl.host
+  if (url) {
+    var parsedUrl = urlUtil.parse(url)
+    var rootDir = pathUtil.parse(parsedUrl.path || parsedUrl.pathname || '').dir
+    var origin = parsedUrl.protocol + '//' + parsedUrl.host
+  }
 
   // check buffer type
   if (!buffer) {
@@ -88,7 +90,7 @@ export default function decodeBinary (buffer, options) {
     return Promise.reject(e)
   }
 
-  
+
   // add geometry arrays to data3d
 
   var payloadByteOffset = HEADER_BYTE_LENGTH + structureByteLength

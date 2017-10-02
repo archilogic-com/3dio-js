@@ -20,10 +20,10 @@
   <a-box color="blue" position="-5 0 0"></a-box>
   <!-- Camera -->
   <a-entity id="camera" tour="loop:true" camera="userHeight: 1.6" position="0 0 0" rotation="0 0 0">
-    <a-entity tour-waypoint="Overview" position="5 5 5" rotation="-45 45 0"></a-entity>
-    <a-entity tour-waypoint="Red" position="0 0 4" rotation="0 0 0"></a-entity>
-    <a-entity tour-waypoint="Green" position="0 0 -2" rotation="0 0 0"></a-entity>
-    <a-entity tour-waypoint="Blue" position="-2 0 0" rotation="0 90 0"></a-entity>
+    <a-entity tour-waypoint="Overview" position="5 5 5" rotation="-45 45 0" io3d-uuid="f35dfda4-b023-4540-bff0-ea4a880f592f"></a-entity>
+    <a-entity tour-waypoint="Red" position="0 0 4" rotation="0 0 0" io3d-uuid="f598d3ec-7966-4ed6-bf76-0e818aa6ec05"></a-entity>
+    <a-entity tour-waypoint="Green" position="0 0 -2" rotation="0 0 0" io3d-uuid="ad8fc879-b0a9-499c-a898-9c51e58bf516"></a-entity>
+    <a-entity tour-waypoint="Blue" position="-2 0 0" rotation="0 90 0" io3d-uuid="6c8a0179-855c-4790-801f-9f00e605788f"></a-entity>
   </a-entity>
 </a-scene>
 
@@ -33,10 +33,10 @@
 </div>
 <div class="camera-controls">
   <div class="waypoints">
-    <button onclick="document.querySelector('[camera]').components['tour'].goTo('Overview')">Overview</button>
-    <button onclick="document.querySelector('[camera]').components['tour'].goTo('Red')">Red box</button>
-    <button onclick="document.querySelector('[camera]').components['tour'].goTo('Green')">Green box</button>
-    <button onclick="document.querySelector('[camera]').components['tour'].goTo('Blue')">Blue box</button>
+    <button onclick="document.querySelector('[camera]').components['tour'].goTo(this.dataset.waypointId)" data-waypoint-id="f35dfda4-b023-4540-bff0-ea4a880f592f">Overview</button>
+    <button onclick="document.querySelector('[camera]').components['tour'].goTo(this.dataset.waypointId)" data-waypoint-id="f598d3ec-7966-4ed6-bf76-0e818aa6ec05">Red box</button>
+    <button onclick="document.querySelector('[camera]').components['tour'].goTo(this.dataset.waypointId)" data-waypoint-id="ad8fc879-b0a9-499c-a898-9c51e58bf516">Green box</button>
+    <button onclick="document.querySelector('[camera]').components['tour'].goTo(this.dataset.waypointId)" data-waypoint-id="6c8a0179-855c-4790-801f-9f00e605788f">Blue box</button>
     <button class="btn-toggle-play playing"
             onclick="this.classList.contains('playing') ? document.querySelector('[camera]').components['tour'].pauseTour() : document.querySelector('[camera]').components['tour'].playTour(), this.classList.toggle('playing')">
     </button>
@@ -47,11 +47,11 @@
     </div>
     <div class="btn bird"
          id="btn-bird"
-         onclick="document.querySelector('[camera]').components['tour'].setViewPoint('bird'), document.querySelector('#btn-person').classList.remove('active'), this.classList.add('active')">
+         onclick="document.querySelector('[camera]').components['tour'].updateViewPoint({position:{y:7}, rotation:{x:-60}}), document.querySelector('#btn-person').classList.remove('active'), this.classList.add('active')">
     </div>
     <div class="btn person active"
          id="btn-person"
-         onclick="document.querySelector('[camera]').components['tour'].setViewPoint('person'), document.querySelector('#btn-bird').classList.remove('active'), this.classList.add('active')">
+         onclick="document.querySelector('[camera]').components['tour'].updateViewPoint({position:{y:1.6}, rotation:{x:0}}), document.querySelector('#btn-bird').classList.remove('active'), this.classList.add('active')">
     </div>
   </div>
 </div>
