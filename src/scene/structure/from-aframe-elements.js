@@ -1,6 +1,6 @@
 import uuid from '../../utils/uuid'
 
-export default function getSceneStructureFromHtml(el) {
+export default function getSceneStructureFromAframeElements(el) {
   if (!isValidElement(el)) {
     console.error('element is not an "a-entity" DOM element')
   }

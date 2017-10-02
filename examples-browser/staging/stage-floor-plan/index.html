@@ -56,7 +56,7 @@
             msgStagingStart.close()
             io3d.utils.ui.message('home staging finished')
             // convert sceneStructure to aframe Html so we can place it in the scene
-            var elements = io3d.scene.getHtmlFromSceneStructure(results)
+            var elements = io3d.scene.getAframeElementsFromSceneStructure(results)
             // check for previously added elements
             addedItems.forEach(el => {
               el.parentNode.removeChild(el)

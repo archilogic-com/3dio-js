@@ -10,5 +10,5 @@ export default  {
       optional: false
     }
   },
-  possibleChildrenTypes: ['level']
+  possibleChildrenTypes: ['level', 'camera-bookmark']
 }

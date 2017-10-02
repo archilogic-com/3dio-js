@@ -19,7 +19,7 @@ import defaults from 'lodash/defaults'
 export default function getDefaultsByType() {
   var types = {
     box: box,
-    cameraBookmark: cameraBookmark,
+    'camera-bookmark': cameraBookmark,
     door: door,
     floor: floor,
     floorplan: floorplan,

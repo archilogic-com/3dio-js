@@ -26,6 +26,10 @@ export default function createFileDropUi (args) {
 
   // get reference to main DOM element
   var mainEl = document.getElementById(elementId)
+  if (!mainEl) {
+    console.error('file drop ui could not be created, element not found:', elementId)
+    return
+  }
   // input allows selecting files on click
   var fileInputEl = document.createElement('input')
   fileInputEl.setAttribute('type', 'file')

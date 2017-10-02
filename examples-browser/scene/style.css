@@ -1,0 +1,15 @@
+.custom-controls {
+  position: absolute;
+  z-index:1000; top: 20px; left: 20px;
+}
+
+.custom-controls > input {
+  height: 30px;
+  font-size: 16px;
+  padding: 0px 12px;
+  outline: none;
+  border: 0;
+  font-weight: bold;
+  border-bottom: 2px solid #333;
+  margin: 0 10px 20px 0;
+}
