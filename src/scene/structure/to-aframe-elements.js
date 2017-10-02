@@ -88,11 +88,11 @@ function getAttributes(element3d) {
           })
         }
       }
-      attributes['shadow'] = 'cast: true, receive: false'
+      attributes['shadow'] = 'cast: true; receive: false'
     break
     case 'object':
       attributes['io3d-data3d'] = 'key: ' + element3d.object
-      attributes['shadow'] = 'cast: true, receive: true'
+      attributes['shadow'] = 'cast: true; receive: true'
     break
   }
 
@@ -115,7 +115,7 @@ function createBakedElement(parentElem, element3d) {
   // set data3d.buffer file key
   var attributes = {
     'io3d-data3d': 'key: ' + element3d.bakedModelUrl,
-    shadow: 'cast: false, receive: true'
+    shadow: 'cast: false; receive: true'
   }
   // set lightmap settings
   if (element3d.lightMapIntensity) {
