@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Demo with dynamic lights and shadows</title>
+  <meta name="description" content="3d.io interior scene with dynamic lighting and realtime shadows">
+  <!-- aframe library -->
+  <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+  <!-- 3dio library. distributed via 'npm run dist' in https://github.com/archilogic-com/3dio-js -->
+  <script src="../../../build/3dio.js"></script>
+</head>
+<body>
+  <app-3dio id="light_shadow_setup" scene-id="62cb3510-6708-4f62-94c3-f9936db7e20b"></app-3dio>
+  <a-scene class="fullscreen" lighting>
+    <a-entity io3d-furniture="id:859cee91-c04b-4f2c-99ac-960825459be2" position="-3.72 0 1.19" rotation="0 180 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:20a7e6c3-5944-485c-849f-afbea11f43df" position="-4.78 0 0.59" rotation="0 180 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:e69ef9b3-cef1-4716-9d2a-b33ab51b315a" position="-2.83 0 1.55" rotation="0 180 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:45ea2592-1d34-4a4d-a068-70d43ca45d8d" position="-2.81 0 1.2899999999999994" rotation="0 180 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:e69ef9b3-cef1-4716-9d2a-b33ab51b315a" position="1.45 0 -8.99" rotation="0 180 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:45ea2592-1d34-4a4d-a068-70d43ca45d8d" position="1.45 0 -9.28" rotation="0 180 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:859cee91-c04b-4f2c-99ac-960825459be2" position="1.6 0 -11.18" rotation="0 0 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:20a7e6c3-5944-485c-849f-afbea11f43df" position="2.6 0 -9.91" rotation="0 180 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:fb4a3cef-3329-45f6-ab29-e0a72ad706ae" position="-3.55 0 -4.57" rotation="0 12 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:4385d6a9-d5ec-44fa-93d0-1b79d00b2b2a" position="-3.56 0 -4.2" rotation="0 270 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:adc5a904-e3ef-4353-9cd4-a27a735fef43" position="-3.429999985610995 0 -0.2999998189170965" rotation="0 180 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:d23062b7-6ec4-45c0-9cee-c96d835b5f54" position="-3.46 -1.7763568394002505e-15 -2.12" rotation="0 90 0" shadow="cast:true"></a-entity>
+    <a-entity io3d-furniture="id:29f0b877-f048-437f-a319-120341c96e2d" position="-3.4799999868581697 0 -2.0699998630670358" rotation="0 180 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:db2aa032-24d8-403e-8477-0df205983be8" position="-2.1899999546810953 0 -0.5899998261507013" rotation="0 180 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:db2aa032-24d8-403e-8477-0df205983be8" position="-4.700000017289199 0 -0.6099998266495721" rotation="0 180 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:b60d51b9-2a08-4382-8f9b-2acb2d9b3b09" position="-3.43999998586043 0 -0.23999981742048782" rotation="0 180 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:0acc26ae-6ed0-49b0-b842-7b2c613bf8dd" position="-2.65 0 -6.46" rotation="0 270 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:3fdc8ac8-1d63-4cfd-a828-ac36c66d3157" position="-1.8599999380111718 -8.881784197001252e-16 -11.160000038146972" rotation="0 180 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:75e0fee0-a7a7-445d-857f-cd3984eb8bab" position="-2.8199999380111715 0 -11.460000038146973" rotation="0 0 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:fa55eb69-ac75-4d7e-81b3-07f6ba55aca4" position="-3.8799999380111716 0 -11.24000003814697" rotation="0 90 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:2008509a-c55c-4982-abdb-9e07b6d755c2" position="-2.829999938011172 -8.881784197001252e-16 -10.500000038146972" rotation="0 0 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:c981f7e8-fed7-4ddb-b71a-198e6db662ee" position="-3.75 0 -9.42" rotation="0 90 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:a75c3525-7a0f-4d5c-8432-d0d6a9b8126a" position="-4.5 8.881784197001252e-16 -8.45" rotation="0 139 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:e0201dc0-0029-4216-8ca2-18f289469d44" position="0.97 0 6.58" rotation="0 270 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:201e83ed-a8fa-422a-8a92-acb8f44b8927" position="0.89 0 5.49" rotation="0 119 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:07fc0229-eb2f-4b12-8867-207f082fad7f" position="-0.5199999380111691 0 4.839999866485597" rotation="0 0 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:77e8320d-8028-4489-924e-ba1827c488b6" position="-0.62 0 6.07" rotation="0 270 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:6535df6d-25d6-487e-9388-ff8c06ebf4bb" position="-2.0999999380111682 0 6.1499998664855955" rotation="0 40 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:345f3fb8-f834-491b-8ea8-a90bbbbeb3ef" position="3.3898338852371457 0 6.261087516717122" rotation="0 32 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:345f3fb8-f834-491b-8ea8-a90bbbbeb3ef" position="4.72 0 6.71" rotation="0 324 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:8c4f02f4-d9ef-45d4-9b60-02596aeee123" position="1.79 0 3.21" rotation="0 90 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity io3d-furniture="id:dfbf1720-51f5-4de2-8661-fdb657d17e63" position="-3.17 0 0.5" rotation="0 90 0" shadow="cast:true; receive:false"></a-entity>
+    <a-entity class="io3d-group" position="-4.25 0 4.4" rotation="0 270 0">
+      <a-entity io3d-furniture="id:f2c328fa-24aa-4848-b7b8-e2f4648f5a82" position="9.536741951698957e-9 0 5.7220459037665705e-8" rotation="0 125 0" shadow="cast:true; receive:false"></a-entity>
+      <a-entity io3d-furniture="id:f2c328fa-24aa-4848-b7b8-e2f4648f5a82" position="-0.009999990463258057 0 -0.6399999427795406" rotation="0 56 0" shadow="cast:true; receive:false"></a-entity>
+      <a-entity io3d-furniture="id:d0894b11-024b-4386-82bf-0fc18ca36d75" position="0.4900000137090676 0 -0.30999983787536634" rotation="0 0 0" shadow="cast:true; receive:false"></a-entity>
+      <a-entity io3d-furniture="id:53bc13ed-595f-4f58-9686-eed0ad4b3f70" position="0.4600000137090676 0 -0.2799998378753661" rotation="0 90 0" shadow="cast:true; receive:false"></a-entity>
+    </a-entity>
+    <!-- apartment -->
+    <a-entity id="apartment" io3d-data3d="key:/535e624259ee6b0200000484/bake/2017-06-30_11-05-49_P144IW/regular/lighting.gz.data3d.buffer; lightMapIntensity:1; lightMapExposure:0.75" shadow="receive:true; cast:false"></a-entity>
+    <a-sky src="https://storage.3d.io/535e624259ee6b0200000484/2017-08-08_15-19-35_C6qRcB/empire_low.jpg"></a-sky>
+    <a-camera id="cam" position="1.5 0 4" rotation="00 120 0"></a-camera>
+  </a-scene>
+</body>
+</html>

@@ -31,17 +31,15 @@
 
 <div id="top">
   Lighting component by <a target="_blank" href="https://3d.io">3d.io</a> for <a target="_blank" href="https://aframe.io/">A-Frame</a>
-  <select id="light-preset">
+  <!--select id="light-preset">
     <option value="studio">Studio</option>
     <option value="morning">Morning</option>
     <option value="night">Night</option>
-  </select>
+  </select-->
 </div>
 
 <!-- 3D -->
-<a-scene lighting shadow="type: pcfsoft">
-
-  <!--<a-light type="point" position="-30 30 -30"></a-light>-->
+<a-scene shadow="type: pcfsoft" lighting>
 
   <a-entity id="lounge-chair" io3d-furniture="id:ef62bf88-97e9-4468-ad0e-a87ced83578d" position="0.07 0 -1.543" rotation="0 -90 0" shadow="cast: true; receive: false" ></a-entity>
   <a-entity id="armchair" io3d-furniture="id:3ca717bf-d1e6-4722-aac5-03141cbcd1aa" position="-2 0 -1.543" rotation="0 -90 0" shadow="cast: true; receive: false" ></a-entity>
@@ -56,15 +54,14 @@
   <a-sky color="#ECECEC"></a-sky>
 
   <a-entity camera="user-height:1.60; fov:60" look-controls wasd-controls position="-3 0 2" rotation="0 -45 0"></a-entity>
-
 </a-scene>
 <script>
-  var lightEl = document.querySelector('#light-preset')
-  var sceneEl = document.querySelector('a-scene')
-  lightEl.addEventListener('change', changeLighting)
-  function changeLighting(e) {
-    sceneEl.setAttribute('lighting', {preset: e.target.value})
-  }
+//  var lightEl = document.querySelector('#light-preset')
+//  var sceneEl = document.querySelector('a-scene')
+//  lightEl.addEventListener('change', changeLighting)
+//  function changeLighting(e) {
+//    sceneEl.setAttribute('lighting', {preset: e.target.value})
+//  }
 </script>
 </body>
 </html>

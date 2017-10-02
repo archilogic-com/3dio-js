@@ -17,24 +17,31 @@ export default {
 
   init: function () {
 
-    this.cam = document.querySelector('a-entity[camera]').object3D
+    var cameraEL = document.querySelector('a-entity[camera]') || document.querySelector('a-camera')
+    if (!cameraEL) {
+      console.warn('this scene has no camera, add one to make the lighting work')
+    }
+    this.cam = cameraEL.object3D
 
     // main
     this.staticLights = document.createElement('a-entity')
     this.staticLights.id = 'static-lights'
     this.movingWithCamera = document.createElement('a-entity')
     this.movingWithCamera.id = 'moving-lights'
+    this.rotatingWithCamera = document.createElement('a-entity')
+    this.rotatingWithCamera.id = 'rotating-lights'
     this.el.appendChild(this.staticLights)
     this.el.appendChild(this.movingWithCamera)
+    this.el.appendChild(this.rotatingWithCamera)
   },
 
   update: function () {
 
     this.remove()
 
-    createLighting(
-      this.data.preset,
+    createLighting[this.data.preset](
       this.movingWithCamera,
+      this.rotatingWithCamera,
       this.staticLights,
       this.data.intensity,
       this.data.saturation
@@ -57,7 +64,7 @@ export default {
     this.movingWithCamera.setAttribute('position', this.cam.position)
     // set y rotation - convert rad to deg
     var lightRotation = {x: 0, y: this.cam.rotation.y * 180 / Math.PI, z: 0}
-    this.movingWithCamera.setAttribute('rotation', AFRAME.utils.coordinates.stringify(lightRotation))
+    this.rotatingWithCamera.setAttribute('rotation', AFRAME.utils.coordinates.stringify(lightRotation))
   }
 
 }
@@ -73,89 +80,107 @@ var SHADOW_BIAS = 0.001
 
 // light presets
 
-var lightPresets = {
-  studio: function() {
-    return { }
-  },
-  morning: function() {
-    return {
-      COLOR_AMBIENT: '#d0ac89',
-      INT_LEFT: 0.75
-    }
-  },
-  night: function() {
-    return {
-      COLOR_AMBIENT: '#646d80',
-      INT_RIGHT: 0.35,
-      INT_LEFT: 0.35,
-      INT_AMBIENT: 0.50
-    }
+var createLighting = {
+  studio: function(movingWithCamera, rotatingWithCamera, staticLights, intensity, saturation) {
+
+    // target for moving directional lights
+    addElement({
+      'id': 'light-target',
+      'position': {x: 0, y: 0, z:-2}
+    }, movingWithCamera)
+
+    // shadow casting top down light
+    addElement({
+      'light': {
+        type: 'directional',
+        color: '#333',
+        intensity: 1,
+        target: '#light-target',
+        castShadow: true,
+        shadowCameraLeft: -SHADOW_SIZE / 2,
+        shadowCameraRight: SHADOW_SIZE / 2,
+        shadowCameraBottom: -SHADOW_SIZE / 2,
+        shadowCameraTop: SHADOW_SIZE / 2,
+        shadowMapHeight: SHADOW_MAP_SIZE,
+        shadowMapWidth: SHADOW_MAP_SIZE,
+        shadowBias: SHADOW_BIAS,
+        shadowCameraNear: SHADOW_CAMERA_NEAR,
+        shadowCameraFar: SHADOW_CAMERA_FAR
+      },
+      'position': {x: 0, y: 10, z:-2},
+      'id': 'shadow-light'
+    }, movingWithCamera)
+
+    // hemisphere light for yellow - blue tint
+    addElement({
+      'light': {
+        type: 'hemisphere',
+        // yellow
+        color: 'hsl(35, ' + 15 * saturation + '%, 60%)',
+        // blue
+        groundColor: 'hsl(220, ' + 10 * saturation + '%, 65%)',
+        intensity: 0.4 * intensity
+      },
+      // positioning left equals rotation by 90°
+      'position': {x: -2, y: 0, z:0},
+      'rotation': {x: 0, y: 45, z:0},
+      'id': 'hemisphere-color'
+      }, rotatingWithCamera)
+
+    // hemisphere light for brightness from front
+    addElement({
+      'light': {
+        type: 'hemisphere',
+        color: 'hsl(0, 0%, 0%)',
+        groundColor: 'hsl(0, 0%, 80%)',
+        intensity: 0.3 * intensity
+      },
+      // positioning front equals rotation by 90°
+      'position': {x: 0, y: 1, z:0},
+      'id': 'hemisphere-white'
+    }, rotatingWithCamera)
+
+    // lights for specular
+    // blue
+    addElement({
+      'light': {
+        type: 'directional',
+        color: 'hsl(200, ' + 10 * saturation + '%, 60%)',
+        intensity: 0.25 * intensity,
+        // target: '#light-target'
+      },
+      'position': {x: 2, y: 2, z:-1},
+      'id': 'specular-blue'
+    }, rotatingWithCamera)
+
+    // yellow
+    addElement({
+      'light': {
+        type: 'directional',
+        color: 'hsl(35, ' + 10 * saturation + '%, 60%)',
+        intensity: 0.35 * intensity,
+        // target: '#light-target'
+      },
+      'position': {x: -2, y: 1, z:2},
+      'id': 'specular-yellow'
+    }, rotatingWithCamera)
+
+    // overall ambient light
+    addElement({
+      'light': {
+        type: 'ambient',
+        color: '#FFF',
+        intensity: 0.5
+      },
+      'id': 'ambient-light'
+    }, staticLights)
   }
 }
 
-var createLighting = function(preset, movingWithCamera, staticLights, intensity, saturation) {
-
-  preset = lightPresets[preset](saturation)
-
-  var COLOR_AMBIENT = preset.COLOR_AMBIENT || '#fffcfa'
-  var COLOR_RIGHT = preset.COLOR_RIGHT || 'hsl(190, ' + 30 * saturation + '%, 60%)'
-  var COLOR_LEFT = preset.COLOR_LEFT || 'hsl(24, ' + 30 * saturation + '%, 60%)'
-  var COLOR_FRONT = preset.COLOR_FRONT || 'hsl(25, ' + 20 * saturation + '%, 95%)'
-
-  var INT_SHADOW = preset.INT_SHADOW || 0.15
-  var INT_RIGHT = preset.INT_RIGHT || 0.25
-  var INT_LEFT = preset.INT_LEFT || 0.25
-  var INT_FRONT = preset.INT_FRONT || 0.18
-  var INT_AMBIENT = preset.INT_AMBIENT || 0.78
-
-  var POS_RIGHT = preset.POS_RIGHT || {x: 10, y: 4, z:-2}
-  var POS_LEFT = preset.POS_LEFT || {x: -10, y: 4, z:-2}
-  var POS_FRONT = preset.POS_FRONT || {x:0, y: 2, z:10}
-  var POS_SHADOW = preset.POS_SHADOW || {x: 0, y: 10, z:-2}
-  var POS_TARGET = preset.POS_TARGET || {x: 0, y: 0, z:-2}
-
-  var shadowLight = document.createElement('a-entity')
-  shadowLight.id = 'shadow-light'
-  shadowLight.setAttribute('light', {
-    type: 'directional',
-    color: COLOR_AMBIENT,
-    intensity: INT_SHADOW,
-    target: '#light-target',
-    castShadow: true,
-    shadowCameraLeft: -SHADOW_SIZE / 2,
-    shadowCameraRight: SHADOW_SIZE / 2,
-    shadowCameraBottom: -SHADOW_SIZE / 2,
-    shadowCameraTop: SHADOW_SIZE / 2,
-    shadowMapHeight: SHADOW_MAP_SIZE,
-    shadowMapWidth: SHADOW_MAP_SIZE,
-    shadowBias: SHADOW_BIAS,
-    shadowCameraNear: SHADOW_CAMERA_NEAR,
-    shadowCameraFar: SHADOW_CAMERA_FAR
+function addElement(attributes, parent) {
+  var el = document.createElement('a-entity')
+  Object.keys(attributes).forEach(function(key) {
+    el.setAttribute(key, attributes[key])
   })
-  shadowLight.setAttribute('position', POS_SHADOW)
-
-  var leftLight = document.createElement('a-entity')
-  leftLight.setAttribute('light', {type: 'directional', color: COLOR_LEFT, intensity: INT_LEFT * intensity, target: '#light-target'})
-  leftLight.setAttribute('position', POS_LEFT)
-  var rightLight = document.createElement('a-entity')
-  rightLight.setAttribute('light', {type: 'directional', color: COLOR_RIGHT, intensity: INT_RIGHT * intensity, target: '#light-target'})
-  rightLight.setAttribute('position', POS_RIGHT)
-  var frontLight = document.createElement('a-entity')
-  frontLight.setAttribute('light', {type: 'directional', color: COLOR_FRONT, intensity: INT_FRONT * intensity, target: '#light-target'})
-  frontLight.setAttribute('position', POS_FRONT)
-
-  var target = document.createElement('a-entity')
-  target.id = 'light-target'
-  target.setAttribute('position', POS_TARGET)
-
-  movingWithCamera.appendChild(target)
-  movingWithCamera.appendChild(shadowLight)
-  movingWithCamera.appendChild(leftLight)
-  movingWithCamera.appendChild(rightLight)
-  movingWithCamera.appendChild(frontLight)
-
-  var ambientLight = document.createElement('a-entity')
-  ambientLight.setAttribute('light', {type: 'ambient', color: COLOR_AMBIENT, intensity: INT_AMBIENT})
-
-  staticLights.appendChild(ambientLight)
+  parent.appendChild(el)
 }
