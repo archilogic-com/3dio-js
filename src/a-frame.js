@@ -26,7 +26,7 @@ checkDependencies({
   AFRAME.registerComponent('io3d-data3d', data3dComponent)
   AFRAME.registerComponent('io3d-furniture', furnitureComponent)
   AFRAME.registerComponent('tour', tourComponent)
-  AFRAME.registerComponent('lighting', lightingComponent)
+  AFRAME.registerComponent('io3d-lighting', lightingComponent)
   // check if gblock component has already been registered
   if (AFRAME.components.gblock) {
     // legacy warning in case gblock has been registered using https://github.com/archilogic-com/aframe-gblock/
