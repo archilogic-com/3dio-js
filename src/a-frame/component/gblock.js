@@ -102,22 +102,18 @@ function getGltfUrl (src) {
     getUrlPromise = fetch(GBLOCK_API_GET_OFFICIAL_GLTF_URL + src).then(function (response) {
 
       // parse response
-      return response.json().then(function (message) {
+      return response.json().catch(function(error){
+        // handle JSON parsing error
+        var errorMessage = 'ERROR parsing gblock API server response JSON.\nRequested Model: "' + src + '"\nError: "' + JSON.stringify(error) + '"'
+        return Promise.reject(errorMessage)
+      }).then(function (message) {
         if (response.ok) {
           // return glTF URL
           return message.gltfUrl
         } else {
           // handle error response
-          var status = response.status
-          var errorMessage = message.message
-          console.error('ERROR loading gblock model "'+ src +'" : ' + status + ' "' + errorMessage + '"')
-          return Promise.reject(errorMessage)
+          return Promise.reject('ERROR loading gblock model "'+ src +'" : ' + response.status + ' "' + message.message + '"')
         }
-      }).catch(function(error){
-        // handle server error
-        var errorMessage = '3dio.js: Error parsing gblock API server JSON response: ' + error
-        console.error(errorMessage)
-        return Promise.reject(errorMessage)
       })
 
     })
