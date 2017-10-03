@@ -40,10 +40,12 @@ export default function decodeBinary (buffer, options) {
   options = options || {}
   var url = options.url
 
+  var parsedUrl, rootDir, origin
+
   if (url) {
-    var parsedUrl = urlUtil.parse(url)
-    var rootDir = pathUtil.parse(parsedUrl.path || parsedUrl.pathname || '').dir
-    var origin = parsedUrl.protocol + '//' + parsedUrl.host
+    parsedUrl = urlUtil.parse(url)
+    rootDir = pathUtil.parse(parsedUrl.path || parsedUrl.pathname || '').dir
+    origin = parsedUrl.protocol + '//' + parsedUrl.host
   }
 
   // check buffer type
