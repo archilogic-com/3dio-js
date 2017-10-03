@@ -9,7 +9,7 @@ import vertexShader from './gblock/vertex-placeholder.glsl'
 // configs
 
 var LEGACY_GLFT_LOADER_URL = 'https://cdn.rawgit.com/mrdoob/three.js/r86/examples/js/loaders/GLTFLoader.js'
-var GBLOCK_API_GET_OFFICIAL_GLTF_URL = 'https://us-central1-gblock-api.cloudfunctions.net/get-gltf-url/?url='
+var GBLOCK_API_GET_OFFICIAL_GLTF_URL = 'https://gblock.3d.io/api/get-gltf-url/?url='
 
 // internals
 
