@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.2
- * @date 2017/10/04 01:10
+ * @version 1.0.3
+ * @date 2017/10/04 01:27
  * @branch master
- * @commit 7ab4e84fd62d84610c93acdbb887b337b67d6b30
+ * @commit d354d78b736b5f63f3b39f549b23a4ec57ceef12
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/10/04 01:10', GIT_BRANCH = 'master', GIT_COMMIT = '7ab4e84fd62d84610c93acdbb887b337b67d6b30'
+	var BUILD_DATE='2017/10/04 01:27', GIT_BRANCH = 'master', GIT_COMMIT = 'd354d78b736b5f63f3b39f549b23a4ec57ceef12'
 
 	var name = "3dio";
-	var version = "1.0.2";
+	var version = "1.0.3";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -1392,7 +1392,7 @@
 	// detect whether webgl is available
 	var webGlInfo = getWebGlInfo();
 	// detect whether aframe or webgl libs are avilable
-	var aFrameReady = !!(isBrowser && window.AFRAME);
+	var aframeReady = !!(isBrowser && window.AFRAME);
 	var threeReady = !!(isBrowser && window.THREE);
 
 	var isVisible$ = new BehaviorSubject_1.BehaviorSubject();
@@ -1416,7 +1416,7 @@
 
 	  has: {
 	    webGl: !!webGlInfo,
-	    aFrame: aFrameReady,
+	    aframe: aframeReady,
 	    three: threeReady
 	  },
 
@@ -7768,7 +7768,7 @@
 
 	  if (args.three && !runtime.has.three) {
 	    return handleError(args.onError, target, 'Sorry: THREE not available.')
-	  } else if (args.aFrame && !runtime.has.aFrame) {
+	  } else if (args.aframe && !runtime.has.aframe) {
 	    return handleError(args.onError, target, 'Sorry: AFRAME not available.')
 	  } else {
 	    return typeof target === 'function' ? target() : target
@@ -13633,7 +13633,7 @@
 
 	    // create new one
 	    this_.mesh = new THREE.Object3D();
-	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
+	    this_.data3dView = new io3d.aframe.three.Data3dView({parent: this_.mesh});
 	    this_.el.data3dView = this_.data3dView;
 
 	    // load 3d file
@@ -13924,7 +13924,7 @@
 
 	    // create new one
 	    this_.mesh = new THREE.Object3D();
-	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
+	    this_.data3dView = new io3d.aframe.three.Data3dView({parent: this_.mesh});
 	    this_.el.data3dView = this_.data3dView;
 
 	    // get furniture data
@@ -13949,7 +13949,7 @@
 	        data3d = this_.data3d = clone(data3d);
 	        // get material name from inspector
 	        var materialPropName = 'material_' + meshId.replace(/\s/g, '_');
-	        // get materialId from a-frame attribute or from furniture API scene structure preset
+	        // get materialId from aframe attribute or from furniture API scene structure preset
 	        var newMaterialId =  data[materialPropName] || (materialPreset ? materialPreset[meshId] : null);
 
 	        // update view with custom material (if available)
@@ -19185,7 +19185,7 @@
 	// methods
 
 	  function loadPlugins () {
-	    if (window.io3d.aFrame.pluginsLoaded) return
+	    if (window.io3d.aframe.pluginsLoaded) return
 	    fetchScript(INSPECTOR_PLUGINS_URL).catch(function(error){
 	      console.error('Could not load inspector plugins: '+error);
 	    });
@@ -20984,7 +20984,7 @@
 
 	checkDependencies({
 	  three: false,
-	  aFrame: true,
+	  aframe: true,
 	  onError: function (){
 	    // show aframe dependency warning, since it is unexpected to run aframe on server
 	    if (runtime.isBrowser) console.warn('AFRAME library not found: related features will be disabled.');
@@ -21014,7 +21014,7 @@
 
 	// export
 
-	var aFrame = {
+	var aframe = {
 	  three: {
 	    Data3dView: Data3dView
 	  }
@@ -29370,7 +29370,8 @@
 	var io3d$1 = {
 
 	  // APIs
-	  aFrame: aFrame,
+	  aFrame: aframe, // alias for legacy support
+	  aframe: aframe,
 	  furniture: furniture,
 	  staging:staging,
 	  storage: storage,
