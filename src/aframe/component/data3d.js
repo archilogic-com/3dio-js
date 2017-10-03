@@ -82,7 +82,7 @@ export default {
 
     // create new one
     this_.mesh = new THREE.Object3D()
-    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh})
+    this_.data3dView = new io3d.aframe.three.Data3dView({parent: this_.mesh})
     this_.el.data3dView = this_.data3dView
 
     // load 3d file

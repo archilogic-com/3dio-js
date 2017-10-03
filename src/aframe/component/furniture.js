@@ -26,7 +26,7 @@ export default {
 
     // create new one
     this_.mesh = new THREE.Object3D()
-    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh})
+    this_.data3dView = new io3d.aframe.three.Data3dView({parent: this_.mesh})
     this_.el.data3dView = this_.data3dView
 
     // get furniture data
@@ -51,7 +51,7 @@ export default {
         data3d = this_.data3d = cloneData3d(data3d)
         // get material name from inspector
         var materialPropName = 'material_' + meshId.replace(/\s/g, '_')
-        // get materialId from a-frame attribute or from furniture API scene structure preset
+        // get materialId from aframe attribute or from furniture API scene structure preset
         var newMaterialId =  data[materialPropName] || (materialPreset ? materialPreset[meshId] : null)
 
         // update view with custom material (if available)

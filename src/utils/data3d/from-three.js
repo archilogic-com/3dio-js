@@ -1,7 +1,7 @@
 import Promise from 'bluebird'
 import normalizeData3d from './normalize.js'
 import generateTextureSet from './generate-texture-set.js'
-import checkDependencies from '../../a-frame/check-dependencies.js'
+import checkDependencies from '../../aframe/check-dependencies.js'
 import getStorageIdFromUrl from '../../storage/get-id-from-url.js'
 import runtime from '../../core/runtime.js'
 
