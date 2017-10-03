@@ -55,7 +55,6 @@
       function loadScene(id) {
         // clean 3d scene
         addedElements.forEach(el => {
-          console.log('remove', el)
           if (el && el.parentNode) el.parentNode.removeChild(el)
         })
         addedElements = []
@@ -64,11 +63,18 @@
 
         io3d.scene.getAframeElements(id)
           .then(result => {
-            console.log(result)
+            // this will give us two elements
+            // element 1 is the actual scene according to the scene structure hierarchy
+            // element 2 is the camera with potential waypoints that where defined in the scene structure
             result.forEach((elem) => {
+              // save them for later removal
               addedElements.push(elem)
+              // add elements to the scene
               sceneEl.appendChild(elem)
             })
+            // reinitialise lighting component to connect it to the camera
+            sceneEl.removeAttribute('io3d-lighting')
+            sceneEl.setAttribute('io3d-lighting', true)
             updateWaypoints ()
           })
           .catch(error => {

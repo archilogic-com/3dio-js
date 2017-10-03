@@ -16,12 +16,12 @@ export default {
   },
 
   init: function () {
-
-    var cameraEL = document.querySelector('a-entity[camera]') || document.querySelector('a-camera')
-    if (!cameraEL) {
+    var cameraEl = document.querySelector('a-entity[camera]') || document.querySelector('a-camera')
+    if (!cameraEl) {
       console.warn('this scene has no camera, add one to make the lighting work')
+      return
     }
-    this.cam = cameraEL.object3D
+    this.cam = cameraEl.object3D
 
     // main
     this.staticLights = document.createElement('a-entity')
@@ -36,9 +36,20 @@ export default {
   },
 
   update: function () {
+    if (this.camera) this.cam = this.camera.object3D
 
-    this.remove()
+    // clear existing lights
+    while (this.movingWithCamera.hasChildNodes()) {
+      this.movingWithCamera.removeChild(this.movingWithCamera.lastChild);
+    }
+    while (this.rotatingWithCamera.hasChildNodes()) {
+      this.rotatingWithCamera.removeChild(this.rotatingWithCamera.lastChild);
+    }
+    while (this.staticLights.hasChildNodes()) {
+      this.staticLights.removeChild(this.staticLights.lastChild);
+    }
 
+    // create new light setup
     createLighting[this.data.preset](
       this.movingWithCamera,
       this.rotatingWithCamera,
@@ -46,20 +57,17 @@ export default {
       this.data.intensity,
       this.data.saturation
     )
-
   },
 
   remove: function () {
-    // clear previous light setup
-    while (this.movingWithCamera.hasChildNodes()) {
-      this.movingWithCamera.removeChild(this.movingWithCamera.lastChild);
-    }
-    while (this.staticLights.hasChildNodes()) {
-      this.staticLights.removeChild(this.staticLights.lastChild);
-    }
+    // tear down light setup
+    this.el.removeChild(this.staticLights)
+    this.el.removeChild(this.movingWithCamera)
+    this.el.removeChild(this.rotatingWithCamera)
   },
 
   tick: function (dt) {
+    if (!this.movingWithCamera) return
     // set position from camera
     this.movingWithCamera.setAttribute('position', this.cam.position)
     // set y rotation - convert rad to deg
@@ -116,9 +124,9 @@ var createLighting = {
       'light': {
         type: 'hemisphere',
         // yellow
-        color: 'hsl(35, ' + 15 * saturation + '%, 60%)',
+        color: 'hsl(35, ' + Math.round(15 * saturation) + '%, 60%)',
         // blue
-        groundColor: 'hsl(220, ' + 10 * saturation + '%, 65%)',
+        groundColor: 'hsl(220, ' + Math.round(10 * saturation) + '%, 65%)',
         intensity: 0.4 * intensity
       },
       // positioning left equals rotation by 90°
@@ -145,7 +153,7 @@ var createLighting = {
     addElement({
       'light': {
         type: 'directional',
-        color: 'hsl(200, ' + 10 * saturation + '%, 60%)',
+        color: 'hsl(200, ' + Math.round(10 * saturation) + '%, 60%)',
         intensity: 0.25 * intensity,
         // target: '#light-target'
       },
@@ -157,7 +165,7 @@ var createLighting = {
     addElement({
       'light': {
         type: 'directional',
-        color: 'hsl(35, ' + 10 * saturation + '%, 60%)',
+        color: 'hsl(35, ' + Math.round(10 * saturation) + '%, 60%)',
         intensity: 0.35 * intensity,
         // target: '#light-target'
       },
@@ -170,7 +178,7 @@ var createLighting = {
       'light': {
         type: 'ambient',
         color: '#FFF',
-        intensity: 0.5
+        intensity: 0.45
       },
       'id': 'ambient-light'
     }, staticLights)

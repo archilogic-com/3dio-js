@@ -21,7 +21,7 @@
 <html>
 <head>
   <script src="https://aframe.io/releases/0.6.0/aframe.min.js"></script>
-  <script src="https://dist.3d.io/3dio-js/1.x.x-beta/3dio.min.js"></script>
+  <script src="https://dist.3d.io/3dio-js/1.x.x/3dio.min.js"></script>
 </head>
 <body>
 <a-scene>
@@ -46,7 +46,7 @@ https://3d.io/docs/api/1/
 ```html
 <head>
   <!-- latest minor version -->
-  <script src="https://dist.3d.io/3dio-js/1.x.x-beta/3dio.min.js"></script>
+  <script src="https://dist.3d.io/3dio-js/1.x.x/3dio.min.js"></script>
 </head>
 ```
 
