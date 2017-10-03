@@ -14,7 +14,7 @@ var isBrowser = !isNode && typeof window !== 'undefined' && Object.prototype.toS
 // detect whether webgl is available
 var webGlInfo = getWebGlInfo()
 // detect whether aframe or webgl libs are avilable
-var aFrameReady = !!(isBrowser && window.AFRAME)
+var aframeReady = !!(isBrowser && window.AFRAME)
 var threeReady = !!(isBrowser && window.THREE)
 
 var isVisible$ = new Rx.BehaviorSubject()
@@ -38,7 +38,7 @@ var runtime = {
 
   has: {
     webGl: !!webGlInfo,
-    aFrame: aFrameReady,
+    aframe: aframeReady,
     three: threeReady
   },
 

@@ -17,7 +17,7 @@ function init() {
 // methods
 
   function loadPlugins () {
-    if (window.io3d.aFrame.pluginsLoaded) return
+    if (window.io3d.aframe.pluginsLoaded) return
     fetchScript(INSPECTOR_PLUGINS_URL).catch(function(error){
       console.error('Could not load inspector plugins: '+error)
     })

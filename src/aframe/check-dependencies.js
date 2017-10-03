@@ -4,7 +4,7 @@ export default function checkDependencies (args, target) {
 
   if (args.three && !runtime.has.three) {
     return handleError(args.onError, target, 'Sorry: THREE not available.')
-  } else if (args.aFrame && !runtime.has.aFrame) {
+  } else if (args.aframe && !runtime.has.aframe) {
     return handleError(args.onError, target, 'Sorry: AFRAME not available.')
   } else {
     return typeof target === 'function' ? target() : target

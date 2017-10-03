@@ -1,20 +1,20 @@
 import runtime from './core/runtime.js'
-import checkDependencies from './a-frame/check-dependencies.js'
+import checkDependencies from './aframe/check-dependencies.js'
 // components
-import data3dComponent from './a-frame/component/data3d.js'
-import furnitureComponent from './a-frame/component/furniture.js'
-import tourComponent from './a-frame/component/tour.js'
-import gBlockComponent from './a-frame/component/gblock.js'
-import lightingComponent from './a-frame/component/lighting.js'
+import data3dComponent from './aframe/component/data3d.js'
+import furnitureComponent from './aframe/component/furniture.js'
+import tourComponent from './aframe/component/tour.js'
+import gBlockComponent from './aframe/component/gblock.js'
+import lightingComponent from './aframe/component/lighting.js'
 // other
-import inspectorPluginsLauncher from './a-frame/inspector-plugins-launcher.js'
-import Data3dView from './a-frame/three/data3d-view.js'
+import inspectorPluginsLauncher from './aframe/inspector-plugins-launcher.js'
+import Data3dView from './aframe/three/data3d-view.js'
 
 // dependency check (for node.js compatibility)
 
 checkDependencies({
   three: false,
-  aFrame: true,
+  aframe: true,
   onError: function (){
     // show aframe dependency warning, since it is unexpected to run aframe on server
     if (runtime.isBrowser) console.warn('AFRAME library not found: related features will be disabled.')
@@ -44,10 +44,10 @@ checkDependencies({
 
 // export
 
-var aFrame = {
+var aframe = {
   three: {
     Data3dView: Data3dView
   }
 }
 
-export default aFrame
+export default aframe
