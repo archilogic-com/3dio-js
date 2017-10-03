@@ -139,7 +139,6 @@ test('Replace furniture items', t => {
   return io3d.staging.replaceFurniture(sceneStructure)
     .then(result => {
       // furniture ids should have changed
-      console.log(result.children[0].src, result.children[1].src, result.children[2].src)
       t.true(result
         && copy.children[0].src !== result.children[0].src
         && copy.children[1].src !== result.children[1].src
@@ -161,7 +160,7 @@ test('Replace furniture items - invalid furnture id', t => {
   // create copy to test against later
   return io3d.staging.replaceFurniture(sceneStructure)
     .then(result => {
-      console.log(result)
+      // console.log(result)
     })
     .catch(error => {
       t.is(error, 'No valid furniture elements were found')
