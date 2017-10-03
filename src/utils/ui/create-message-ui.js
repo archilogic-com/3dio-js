@@ -15,9 +15,9 @@ function message (message, expire, type) {
   // do nothing if there is no message
   if (!message || message === '') return Promise.resolve()
   // default expire value is 4 secs
-  var expire = expire !== undefined ? expire : 4000 // ms
+  expire = expire !== undefined ? expire : 4000 // ms
   // default message type
-  var type = type || 'neutral' // can be: neutral, success, warning, error
+  type = type || 'neutral' // can be: neutral, success, warning, error
 
   // internals
   var isClosed = false
