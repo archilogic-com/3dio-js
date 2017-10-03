@@ -112,7 +112,7 @@ function getGltfUrl (src) {
           return message.gltfUrl
         } else {
           // handle error response
-          console.error('ERROR loading gblock model "'+ src +'" : ' + response.status + ' "' + )
+          console.error('ERROR loading gblock model "'+ src +'" : ' + response.status + ' "' + message.message)
           return Promise.reject(message.message)
         }
       })
