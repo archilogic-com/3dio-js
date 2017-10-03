@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Empty scene</title>
+    <meta name="description" content="3d.io interior scene with dynamic lighting and realtime shadows">
+    <!-- aframe library -->
+    <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+    <!-- 3dio library. distributed via 'npm run dist' in https://github.com/archilogic-com/3dio-js -->
+    <script src="../../../build/3dio.js"></script>
+    <link href="style.css" rel="stylesheet">
+  </head>
+  <body>
+    <!-- ui -->
+    <div class="controls">
+      <div style="margin-bottom: 10px;">Select a space to furnish it</div>
+      <svg width="150"></svg>
+      <br>
+      <ul id="select-label">
+        <li data-label="living">Living</li>
+        <li data-label="dining_living">Living & Dining</li>
+        <li data-label="dining">Dining</li>
+        <li data-label="bedroom">Bedroom</li>
+        <li data-label="homeOffice">Home Office</li>
+      </ul>
+    </div>
+    <!-- 3d scene -->
+    <a-scene io3d-lighting>
+      <a-entity camera="fov:50" tour wasd-controls look-controls position="-7 16 1" rotation="-90 0 0"></a-entity>
+    </a-scene>
+    <script>
+      io3d.config({
+        // home staging need api keys
+        // get yours from https://3d.io
+        publishableApiKey: null
+      })
+
+      // Archilogic scene we want to load
+      const sceneId = '62aa2e6a-b72d-46cb-989b-d55c96c9cb43'
+      const sceneEl = document.querySelector('a-scene')
+      const menuEl = document.querySelector('#select-label')
+      const labelsEl = document.querySelectorAll('#select-label li')
+      let levelEl
+      let sceneStructure
+      let addedItems = {}
+
+      // get scene structure
+      io3d.scene.getStructure(sceneId)
+        .then(result => {
+          sceneStructure = result
+          if (!Array.isArray(result)) result = [result]
+          // find all spaces in the model
+          const spaces = getSpaces(result)
+          // generate a clickable plan
+          generatePlan(spaces)
+          // get aframe dom elements from scene structure
+          let elements = io3d.scene.getAframeElementsFromSceneStructure(sceneStructure)
+          // filter out furniture items
+          let furniture = elements[0].querySelectorAll('[io3d-furniture]')
+          furniture.forEach(el => el.parentNode.removeChild(el))
+          // add elements to A-Frame scene
+          sceneEl.appendChild(elements[0])
+          // set the level to correctly position the furnishings later
+          // level is always the 2nd item in sceneStructure hierarchy
+          levelEl = elements[0].firstChild
+        })
+        .catch(error => {
+          console.error(error)
+        })
+
+      // furnish a specific space
+      function furnish(id, label) {
+        // const label = labelsEl.value
+        if (!sceneStructure) return
+        // home staging api call
+        io3d.staging.getFurnishings(sceneStructure, {spaceId: id, label: label})
+          .then(result => {
+            // do get these into A-Frame we can use
+            // the getAframeElementsFromSceneStructure method
+            var elements = io3d.scene.getAframeElementsFromSceneStructure(result)
+            // check for previously added elements
+            if (addedItems[id] && addedItems[id].length) {
+              addedItems[id].forEach(el => {
+                el.parentNode.removeChild(el)
+              })
+            }
+            // add elements to the scene
+            elements.forEach(el => {
+              levelEl.appendChild(el)
+            })
+            // store them for later removal
+            addedItems[id] = elements
+          })
+          .catch(error => {
+            console.error(error)
+          })
+      }
+
+      // generate a pictogram of the floor plan
+      function generatePlan(spaces) {
+        // empty svg element to fill
+        var svgEl = document.querySelector('svg')
+        var min = [Infinity, Infinity]
+        var max = [-Infinity, -Infinity]
+        var polygonStr = ''
+
+        const style1 = 'fill:rgba(248, 248, 250, 0.8); stroke:rgba(48, 48, 50, 0.8); stroke-width:0.5;'
+        const style2 = 'fill:rgba(255, 127, 80, 0.8);'
+
+        spaces.forEach(space => {
+          var polygon = document.createElement('polygon')
+          var pointStr = ''
+          // get the polygon data for each space
+          space.polygon.forEach(point => {
+            // get absolute coordinates and map z to y
+            // polygon points are relative to the polygon position
+            var x = Math.round((point[0] + space.x) * 10)
+            var y = Math.round((point[1] + space.z) * 10)
+            // get min and max values for the overall boundingbox
+            if (x < min[0]) min[0] = x
+            else if (x > max[0]) max[0] = x
+            if (y < min[1]) min[1] = y
+            else if (y > max[1]) max[1] = y
+            pointStr += x + ',' + y + ' '
+          })
+          polygonStr += `<polygon points="${pointStr}" style="${style1}" space-id="${space.id}"/>`
+        })
+        // populate the svg
+        svgEl.innerHTML = polygonStr
+        // match the svg viewbox with the bouningbox of the polygons
+        svgEl.setAttribute('viewBox', `${min[0]} ${min[1]} ${max[0] - min[0]} ${max[1] - min[1]}`)
+        // set rotation according to the plan rotation
+        svgEl.setAttribute('style', `transform: rotate(${sceneStructure.ry || 0}deg)`)
+        // get all added svg polygons
+        var spaces = document.querySelectorAll('[space-id]')
+        // add interactivity to the polygons we created
+        spaces.forEach(space => {
+          // basic hovering
+          space.addEventListener('mouseenter', function(e) {
+            e.target.setAttribute('style', style2)
+          })
+          space.addEventListener('mouseleave', function(e) {
+            if (!e.target.classList.contains('active')) e.target.setAttribute('style', style1)
+          })
+          space.addEventListener('mouseup', function(e) {
+            e.target.classList.add('active')
+            // show space label menu
+            menuEl.style.display = 'block'
+            var id = space.getAttribute('space-id')
+            e.target.setAttribute('style', style2)
+            spaces.forEach(space => {
+              if (space.getAttribute('space-id') !== id) {
+                space.classList.remove('active')
+                space.setAttribute('style', style1)
+              }
+            })
+          })
+        })
+        // add events to space labels menu
+        labelsEl.forEach(label => {
+          label.addEventListener('mouseup', function(e) {
+            var space = document.querySelector('.active')
+            var id = space.getAttribute('space-id')
+            var label = e.target.getAttribute('data-label')
+            menuEl.style.display = 'none'
+            furnish(id, label)
+          })
+        })
+      }
+
+      // recursively search through sceneStructure
+      function getSpaces(sceneStructure) {
+        var spaces = []
+        sceneStructure.forEach(element3d => {
+          if (element3d.type === 'polyfloor') spaces.push(element3d)
+          if (element3d.children && element3d.children.length) {
+            spaces = spaces.concat(getSpaces(element3d.children))
+          }
+        })
+        return spaces
+      }
+    </script>
+  </body>
+</html>

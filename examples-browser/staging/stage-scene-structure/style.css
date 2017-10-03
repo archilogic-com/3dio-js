@@ -1,0 +1,28 @@
+.controls {
+  font-family: arial;
+  font-size: 14px;
+  position: absolute;
+  z-index:1000; top: 20px; left: 20px;
+}
+
+#select-label {
+  display: none;
+  list-style-type: none;
+  padding: 0;
+  margin: 5px 0;
+}
+
+#select-label li {
+  font-family: arial;
+  font-size: 12px;
+  letter-spacing: 1px;
+  padding: 4px 15px;
+  width: 100px;
+  background: rgba(248, 248, 250, 0.8);
+  margin-bottom: 2px;
+  cursor: pointer;
+}
+
+#select-label li:hover {
+  background: rgba(255, 127, 80, 0.8);
+}

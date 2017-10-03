@@ -1,14 +1,13 @@
 import test from 'ava'
 import io3d from '../build/3dio'
 
-// get sceneStructure form if
+// get sceneStructure form id
 
 test('Scene: get sceneStructure form id', t => {
   const id = '5a281187-475a-4613-8fa5-a2e92af9914d'
   return io3d.scene.getStructure(id)
     .then(io3d.scene.validateSceneStructure)
     .then(result => {
-      console.log(result)
       t.is(result.isValid, true)
     })
 })
@@ -94,6 +93,35 @@ test('Scene: test valid scene structure', t => {
 })
 
 // sceneStructure normalization
+
+test('Scene: valid types', t => {
+  const sceneStructure = [
+    { type: 'box'},
+    { type: 'camera-bookmark'},
+    { type: 'closet'},
+    { type: 'curtain'},
+    { type: 'door'},
+    { type: 'floor'},
+    { type: 'floorplan'},
+    { type: 'group'},
+    { type: 'interior'},
+    { type: 'kitchen'},
+    { type: 'level'},
+    { type: 'object'},
+    { type: 'plan'},
+    { type: 'polybox'},
+    { type: 'polyfloor'},
+    { type: 'railing'},
+    { type: 'stairs'},
+    { type: 'tag'},
+    { type: 'wall'},
+    { type: 'window'}
+  ]
+  return io3d.scene.normalizeSceneStructure(sceneStructure)
+    .then(result => {
+      t.is(result.length, 20)
+    })
+})
 
 test('Scene: fix invalid children', t => {
   const sceneStructure = {

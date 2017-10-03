@@ -5,5 +5,5 @@ export default {
       optional: false
     }
   },
-  possibleChildrenTypes: ['interior']
+  possibleChildrenTypes: ['interior', 'object', 'tag']
 }

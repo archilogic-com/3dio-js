@@ -2,7 +2,27 @@ export default {
   params: {
     type: {
       type: 'string',
-      possibleValues: ['plan', 'level', 'box', 'wall', 'camera-bookmark', 'interior', 'group', 'railing', 'window', 'door', 'floor', 'polyfloor', 'floorplan'],
+      possibleValues: [
+        'box',
+        'camera-bookmark',
+        'closet',
+        'curtain',
+        'door',
+        'floor',
+        'floorplan',
+        'group',
+        'interior',
+        'kitchen',
+        'level',
+        'plan',
+        'polybox',
+        'polyfloor',
+        'railing',
+        'stairs',
+        'tag',
+        'wall',
+        'window',
+      ],
       optional: false
     },
     x: { // x position in meters
