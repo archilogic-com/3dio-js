@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.1
- * @date 2017/10/04 01:05
+ * @version 1.0.2
+ * @date 2017/10/04 01:10
  * @branch master
- * @commit 4612bbf34c855d824c3b164398372ab3ef2ebf8e
+ * @commit 7ab4e84fd62d84610c93acdbb887b337b67d6b30
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/10/04 01:05', GIT_BRANCH = 'master', GIT_COMMIT = '4612bbf34c855d824c3b164398372ab3ef2ebf8e'
+	var BUILD_DATE='2017/10/04 01:10', GIT_BRANCH = 'master', GIT_COMMIT = '7ab4e84fd62d84610c93acdbb887b337b67d6b30'
 
 	var name = "3dio";
-	var version = "1.0.1";
+	var version = "1.0.2";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
