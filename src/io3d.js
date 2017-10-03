@@ -9,7 +9,6 @@ import furniture from './furniture.js'
 import staging from './staging.js'
 import storage from './storage.js'
 import scene from './scene.js'
-import publish from './publish.js'
 import floorPlan from './floor-plan.js'
 import light from './light.js'
 
@@ -18,12 +17,12 @@ import utils from './utils.js'
 var io3d = {
 
   // APIs
-  aFrame: aFrame,
+  aFrame: aFrame, // alias (to be deprecated)
+  aframe: aFrame,
   furniture: furniture,
   staging:staging,
   storage: storage,
   scene: scene,
-  publish: publish,
   floorPlan: floorPlan,
   light: light,
 

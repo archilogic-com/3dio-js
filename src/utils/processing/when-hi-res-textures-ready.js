@@ -1,10 +1,10 @@
-import poll from '../poll.js'
-import checkIfFileExists from '../io/check-if-file-exists.js'
-import loadData3d from './load.js'
-import decodeBinaryData3d from './decode-binary.js'
-import getTextureKeys from './get-texture-keys.js'
 import getUrlFromStorageId from '../../storage/get-url-from-id.js'
 import getNoCdnUrlFromStorageId from '../../storage/get-no-cdn-url-from-id.js'
+import poll from '../poll.js'
+import checkIfFileExists from '../io/check-if-file-exists.js'
+import loadData3d from '../data3d/load.js'
+import decodeBinaryData3d from '../data3d/decode-binary.js'
+import getTextureKeys from '../data3d/get-texture-keys.js'
 
 /*
 input: data3d (object or binary) or storageId (referencing data3d)
