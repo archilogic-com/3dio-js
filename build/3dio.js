@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.1
- * @date 2017/10/02 15:25
+ * @date 2017/10/04 01:05
  * @branch master
- * @commit 9ee33d09ee2534023bd4a7bbb41b6555319efc64
+ * @commit 4612bbf34c855d824c3b164398372ab3ef2ebf8e
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/10/02 15:25', GIT_BRANCH = 'master', GIT_COMMIT = '9ee33d09ee2534023bd4a7bbb41b6555319efc64'
+	var BUILD_DATE='2017/10/04 01:05', GIT_BRANCH = 'master', GIT_COMMIT = '4612bbf34c855d824c3b164398372ab3ef2ebf8e'
 
 	var name = "3dio";
 	var version = "1.0.1";
@@ -822,7 +822,7 @@
 	});
 
 	/**
-	 * A representation of any set of values over any amount of time. This is the most basic building block
+	 * A representation of any set of values over any amount of time. This the most basic building block
 	 * of RxJS.
 	 *
 	 * @class Observable<T>
@@ -830,7 +830,7 @@
 	var Observable = (function () {
 	    /**
 	     * @constructor
-	     * @param {Function} subscribe the function that is called when the Observable is
+	     * @param {Function} subscribe the function that is  called when the Observable is
 	     * initially subscribed to. This function is given a Subscriber, to which new values
 	     * can be `next`ed, or an `error` method can be called to raise an error, or
 	     * `complete` can be called to notify of a successful completion.
@@ -859,7 +859,7 @@
 	     *
 	     * <span class="informal">Use it when you have all these Observables, but still nothing is happening.</span>
 	     *
-	     * `subscribe` is not a regular operator, but a method that calls Observable's internal `subscribe` function. It
+	     * `subscribe` is not a regular operator, but a method that calls Observables internal `subscribe` function. It
 	     * might be for example a function that you passed to a {@link create} static factory, but most of the time it is
 	     * a library implementation, which defines what and when will be emitted by an Observable. This means that calling
 	     * `subscribe` is actually the moment when Observable starts its work, not when it is created, as it is often
@@ -901,7 +901,7 @@
 	     *     console.log('Adding: ' + value);
 	     *     this.sum = this.sum + value;
 	     *   },
-	     *   error() { // We actually could just remove this method,
+	     *   error() { // We actually could just remote this method,
 	     *   },        // since we do not really care about errors right now.
 	     *   complete() {
 	     *     console.log('Sum equals: ' + this.sum);
@@ -956,7 +956,7 @@
 	     * // Logs:
 	     * // 0 after 1s
 	     * // 1 after 2s
-	     * // "unsubscribed!" after 2.5s
+	     * // "unsubscribed!" after 2,5s
 	     *
 	     *
 	     * @param {Observer|Function} observerOrNext (optional) Either an observer with methods to be called,
@@ -7397,7 +7397,7 @@
 		var Logger = { };
 
 		// For those that are at home that are keeping score.
-		Logger.VERSION = "1.4.1";
+		Logger.VERSION = "1.3.0";
 
 		// Function which handles all incoming log messages.
 		var logHandler;
@@ -7453,11 +7453,6 @@
 				if (newLevel && "value" in newLevel) {
 					this.context.filterLevel = newLevel;
 				}
-			},
-			
-			// Gets the current logging level for the logging instance
-			getLevel: function () {
-				return this.context.filterLevel;
 			},
 
 			// Is the logger configured to output messages at the supplied level?
@@ -7543,11 +7538,6 @@
 			}
 		};
 
-		// Gets the global logging filter level
-		Logger.getLevel = function() {
-			return globalLogger.getLevel();
-		};
-
 		// Retrieve a ContextualLogger instance.  Note that named loggers automatically inherit the global logger's level,
 		// default context and log handler.
 		Logger.get = function (name) {
@@ -7619,8 +7609,6 @@
 						hdlr = console.error;
 					} else if (context.level === Logger.INFO && console.info) {
 						hdlr = console.info;
-					} else if (context.level === Logger.DEBUG && console.debug) {
-						hdlr = console.debug;
 					}
 
 					options.formatter(messages, context);
@@ -8693,9 +8681,9 @@
 	};
 
 	var thenables = function(Promise, INTERNAL) {
-	var util$$2 = util;
-	var errorObj = util$$2.errorObj;
-	var isObject = util$$2.isObject;
+	var util$$1 = util;
+	var errorObj = util$$1.errorObj;
+	var isObject = util$$1.isObject;
 
 	function tryConvertToPromise(obj, context) {
 	    if (isObject(obj)) {
@@ -8753,7 +8741,7 @@
 	    promise._captureStackTrace();
 	    if (context) context._popContext();
 	    var synchronous = true;
-	    var result = util$$2.tryCatch(then).call(x, resolve, reject);
+	    var result = util$$1.tryCatch(then).call(x, resolve, reject);
 	    synchronous = false;
 
 	    if (promise && result === errorObj) {
@@ -8780,8 +8768,8 @@
 
 	var promise_array = function(Promise, INTERNAL, tryConvertToPromise,
 	    apiRejection, Proxyable) {
-	var util$$2 = util;
-	var isArray = util$$2.isArray;
+	var util$$1 = util;
+	var isArray = util$$1.isArray;
 
 	function toResolutionValue(val) {
 	    switch(val) {
@@ -8802,7 +8790,7 @@
 	    this._totalResolved = 0;
 	    this._init(undefined, -2);
 	}
-	util$$2.inherits(PromiseArray, Proxyable);
+	util$$1.inherits(PromiseArray, Proxyable);
 
 	PromiseArray.prototype.length = function () {
 	    return this._length;
@@ -8837,10 +8825,10 @@
 	            return this._cancel();
 	        }
 	    }
-	    values = util$$2.asArray(values);
+	    values = util$$1.asArray(values);
 	    if (values === null) {
 	        var err = apiRejection(
-	            "expecting an array or an iterable object but got " + util$$2.classString(values)).reason();
+	            "expecting an array or an iterable object but got " + util$$1.classString(values)).reason();
 	        this._promise._rejectCallback(err, false);
 	        return;
 	    }
@@ -9036,8 +9024,8 @@
 	var getDomain = Promise._getDomain;
 	var async = Promise._async;
 	var Warning = errors.Warning;
-	var util$$2 = util;
-	var canAttachTrace = util$$2.canAttachTrace;
+	var util$$1 = util;
+	var canAttachTrace = util$$1.canAttachTrace;
 	var unhandledRejectionHandled;
 	var possiblyUnhandledRejection;
 	var bluebirdFramePattern =
@@ -9048,19 +9036,19 @@
 	var formatStack = null;
 	var indentStackFrames = false;
 	var printWarning;
-	var debugging = !!(util$$2.env("BLUEBIRD_DEBUG") != 0 &&
+	var debugging = !!(util$$1.env("BLUEBIRD_DEBUG") != 0 &&
 	                        (false ||
-	                         util$$2.env("BLUEBIRD_DEBUG") ||
-	                         util$$2.env("NODE_ENV") === "development"));
+	                         util$$1.env("BLUEBIRD_DEBUG") ||
+	                         util$$1.env("NODE_ENV") === "development"));
 
-	var warnings = !!(util$$2.env("BLUEBIRD_WARNINGS") != 0 &&
-	    (debugging || util$$2.env("BLUEBIRD_WARNINGS")));
+	var warnings = !!(util$$1.env("BLUEBIRD_WARNINGS") != 0 &&
+	    (debugging || util$$1.env("BLUEBIRD_WARNINGS")));
 
-	var longStackTraces = !!(util$$2.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
-	    (debugging || util$$2.env("BLUEBIRD_LONG_STACK_TRACES")));
+	var longStackTraces = !!(util$$1.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
+	    (debugging || util$$1.env("BLUEBIRD_LONG_STACK_TRACES")));
 
-	var wForgottenReturn = util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
-	    (warnings || !!util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
+	var wForgottenReturn = util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
+	    (warnings || !!util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
 
 	Promise.prototype.suppressUnhandledRejections = function() {
 	    var target = this._target();
@@ -9132,7 +9120,7 @@
 	    var domain = getDomain();
 	    possiblyUnhandledRejection =
 	        typeof fn === "function" ? (domain === null ?
-	                                            fn : util$$2.domainBind(domain, fn))
+	                                            fn : util$$1.domainBind(domain, fn))
 	                                 : undefined;
 	};
 
@@ -9140,7 +9128,7 @@
 	    var domain = getDomain();
 	    unhandledRejectionHandled =
 	        typeof fn === "function" ? (domain === null ?
-	                                            fn : util$$2.domainBind(domain, fn))
+	                                            fn : util$$1.domainBind(domain, fn))
 	                                 : undefined;
 	};
 
@@ -9178,33 +9166,33 @@
 	    try {
 	        if (typeof CustomEvent === "function") {
 	            var event = new CustomEvent("CustomEvent");
-	            util$$2.global.dispatchEvent(event);
+	            util$$1.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = new CustomEvent(name.toLowerCase(), {
 	                    detail: event,
 	                    cancelable: true
 	                });
-	                return !util$$2.global.dispatchEvent(domEvent);
+	                return !util$$1.global.dispatchEvent(domEvent);
 	            };
 	        } else if (typeof Event === "function") {
 	            var event = new Event("CustomEvent");
-	            util$$2.global.dispatchEvent(event);
+	            util$$1.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = new Event(name.toLowerCase(), {
 	                    cancelable: true
 	                });
 	                domEvent.detail = event;
-	                return !util$$2.global.dispatchEvent(domEvent);
+	                return !util$$1.global.dispatchEvent(domEvent);
 	            };
 	        } else {
 	            var event = document.createEvent("CustomEvent");
 	            event.initCustomEvent("testingtheevent", false, true, {});
-	            util$$2.global.dispatchEvent(event);
+	            util$$1.global.dispatchEvent(event);
 	            return function(name, event) {
 	                var domEvent = document.createEvent("CustomEvent");
 	                domEvent.initCustomEvent(name.toLowerCase(), false, true,
 	                    event);
-	                return !util$$2.global.dispatchEvent(domEvent);
+	                return !util$$1.global.dispatchEvent(domEvent);
 	            };
 	        }
 	    } catch (e) {}
@@ -9214,21 +9202,21 @@
 	})();
 
 	var fireGlobalEvent = (function() {
-	    if (util$$2.isNode) {
+	    if (util$$1.isNode) {
 	        return function() {
 	            return process.emit.apply(process, arguments);
 	        };
 	    } else {
-	        if (!util$$2.global) {
+	        if (!util$$1.global) {
 	            return function() {
 	                return false;
 	            };
 	        }
 	        return function(name) {
 	            var methodName = "on" + name.toLowerCase();
-	            var method = util$$2.global[methodName];
+	            var method = util$$1.global[methodName];
 	            if (!method) return false;
-	            method.apply(util$$2.global, [].slice.call(arguments, 1));
+	            method.apply(util$$1.global, [].slice.call(arguments, 1));
 	            return true;
 	        };
 	    }
@@ -9291,7 +9279,7 @@
 	        config.warnings = !!warningsOption;
 	        wForgottenReturn = config.warnings;
 
-	        if (util$$2.isObject(warningsOption)) {
+	        if (util$$1.isObject(warningsOption)) {
 	            if ("wForgottenReturn" in warningsOption) {
 	                wForgottenReturn = !!warningsOption.wForgottenReturn;
 	            }
@@ -9354,7 +9342,7 @@
 	        executor(resolve, reject, function(onCancel) {
 	            if (typeof onCancel !== "function") {
 	                throw new TypeError("onCancel must be a function, got: " +
-	                                    util$$2.toString(onCancel));
+	                                    util$$1.toString(onCancel));
 	            }
 	            promise._attachCancellationCallback(onCancel);
 	        });
@@ -9368,7 +9356,7 @@
 
 	    var previousOnCancel = this._onCancel();
 	    if (previousOnCancel !== undefined) {
-	        if (util$$2.isArray(previousOnCancel)) {
+	        if (util$$1.isArray(previousOnCancel)) {
 	            previousOnCancel.push(onCancel);
 	        } else {
 	            this._setOnCancel([previousOnCancel, onCancel]);
@@ -9440,9 +9428,9 @@
 	            trace.attachExtraTrace(error);
 	        } else if (!error.__stackCleaned__) {
 	            var parsed = parseStackAndMessage(error);
-	            util$$2.notEnumerableProp(error, "stack",
+	            util$$1.notEnumerableProp(error, "stack",
 	                parsed.message + "\n" + parsed.stack.join("\n"));
-	            util$$2.notEnumerableProp(error, "__stackCleaned__", true);
+	            util$$1.notEnumerableProp(error, "__stackCleaned__", true);
 	        }
 	    }
 	}
@@ -9613,7 +9601,7 @@
 	function formatAndLogError(error, title, isSoft) {
 	    if (typeof console !== "undefined") {
 	        var message;
-	        if (util$$2.isObject(error)) {
+	        if (util$$1.isObject(error)) {
 	            var stack = error.stack;
 	            message = title + formatStack(stack, error);
 	        } else {
@@ -9660,7 +9648,7 @@
 	            "]";
 	    } else {
 	        str = obj && typeof obj.toString === "function"
-	            ? obj.toString() : util$$2.toString(obj);
+	            ? obj.toString() : util$$1.toString(obj);
 	        var ruselessToString = /\[object [a-zA-Z0-9$_]+\]/;
 	        if (ruselessToString.test(str)) {
 	            try {
@@ -9751,7 +9739,7 @@
 	    captureStackTrace(this, CapturedTrace);
 	    if (length > 32) this.uncycle();
 	}
-	util$$2.inherits(CapturedTrace, Error);
+	util$$1.inherits(CapturedTrace, Error);
 	Context.CapturedTrace = CapturedTrace;
 
 	CapturedTrace.prototype.uncycle = function() {
@@ -9816,8 +9804,8 @@
 	    }
 	    removeCommonRoots(stacks);
 	    removeDuplicateOrEmptyJumps(stacks);
-	    util$$2.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
-	    util$$2.notEnumerableProp(error, "__stackCleaned__", true);
+	    util$$1.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
+	    util$$1.notEnumerableProp(error, "__stackCleaned__", true);
 	};
 
 	var captureStackTrace = (function stackDetection() {
@@ -9897,12 +9885,12 @@
 	    printWarning = function (message) {
 	        console.warn(message);
 	    };
-	    if (util$$2.isNode && process.stderr.isTTY) {
+	    if (util$$1.isNode && process.stderr.isTTY) {
 	        printWarning = function(message, isSoft) {
 	            var color = isSoft ? "\u001b[33m" : "\u001b[31m";
 	            console.warn(color + message + "\u001b[0m\n");
 	        };
-	    } else if (!util$$2.isNode && typeof (new Error().stack) === "string") {
+	    } else if (!util$$1.isNode && typeof (new Error().stack) === "string") {
 	        printWarning = function(message, isSoft) {
 	            console.warn("%c" + message,
 	                        isSoft ? "color: darkorange" : "color: red");
@@ -9949,10 +9937,10 @@
 	};
 
 	var catch_filter = function(NEXT_FILTER) {
-	var util$$2 = util;
+	var util$$1 = util;
 	var getKeys = es5.keys;
-	var tryCatch = util$$2.tryCatch;
-	var errorObj = util$$2.errorObj;
+	var tryCatch = util$$1.tryCatch;
+	var errorObj = util$$1.errorObj;
 
 	function catchFilter(instances, cb, promise) {
 	    return function(e) {
@@ -9972,7 +9960,7 @@
 	                } else if (matchesPredicate) {
 	                    return tryCatch(cb).call(boundTo, e);
 	                }
-	            } else if (util$$2.isObject(e)) {
+	            } else if (util$$1.isObject(e)) {
 	                var keys = getKeys(item);
 	                for (var j = 0; j < keys.length; ++j) {
 	                    var key = keys[j];
@@ -9991,9 +9979,9 @@
 	};
 
 	var _finally = function(Promise, tryConvertToPromise, NEXT_FILTER) {
-	var util$$2 = util;
+	var util$$1 = util;
 	var CancellationError = Promise.CancellationError;
-	var errorObj = util$$2.errorObj;
+	var errorObj = util$$1.errorObj;
 	var catchFilter = catch_filter(NEXT_FILTER);
 
 	function PassThroughHandlerContext(promise, type, handler) {
@@ -10114,12 +10102,12 @@
 	            j = 0, i;
 	        for (i = 0; i < len - 1; ++i) {
 	            var item = arguments[i];
-	            if (util$$2.isObject(item)) {
+	            if (util$$1.isObject(item)) {
 	                catchInstances[j++] = item;
 	            } else {
 	                return Promise.reject(new TypeError(
 	                    "tapCatch statement predicate: "
-	                    + "expecting an object but got " + util$$2.classString(item)
+	                    + "expecting an object but got " + util$$1.classString(item)
 	                ));
 	            }
 	        }
@@ -10188,12 +10176,12 @@
 
 	var method =
 	function(Promise, INTERNAL, tryConvertToPromise, apiRejection, debug) {
-	var util$$2 = util;
-	var tryCatch = util$$2.tryCatch;
+	var util$$1 = util;
+	var tryCatch = util$$1.tryCatch;
 
 	Promise.method = function (fn) {
 	    if (typeof fn !== "function") {
-	        throw new Promise.TypeError("expecting a function but got " + util$$2.classString(fn));
+	        throw new Promise.TypeError("expecting a function but got " + util$$1.classString(fn));
 	    }
 	    return function () {
 	        var ret = new Promise(INTERNAL);
@@ -10210,7 +10198,7 @@
 
 	Promise.attempt = Promise["try"] = function (fn) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
 	    }
 	    var ret = new Promise(INTERNAL);
 	    ret._captureStackTrace();
@@ -10220,7 +10208,7 @@
 	        debug.deprecated("calling Promise.try with more than 1 argument");
 	        var arg = arguments[1];
 	        var ctx = arguments[2];
-	        value = util$$2.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
+	        value = util$$1.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
 	                                  : tryCatch(fn).call(ctx, arg);
 	    } else {
 	        value = tryCatch(fn)();
@@ -10233,7 +10221,7 @@
 	};
 
 	Promise.prototype._resolveFromSyncValue = function (value) {
-	    if (value === util$$2.errorObj) {
+	    if (value === util$$1.errorObj) {
 	        this._rejectCallback(value.e, false);
 	    } else {
 	        this._resolveCallback(value, true);
@@ -10309,9 +10297,9 @@
 	};
 
 	var cancel = function(Promise, PromiseArray, apiRejection, debug) {
-	var util$$2 = util;
-	var tryCatch = util$$2.tryCatch;
-	var errorObj = util$$2.errorObj;
+	var util$$1 = util;
+	var tryCatch = util$$1.tryCatch;
+	var errorObj = util$$1.errorObj;
 	var async = Promise._async;
 
 	Promise.prototype["break"] = Promise.prototype.cancel = function() {
@@ -10399,7 +10387,7 @@
 	};
 
 	Promise.prototype._doInvokeOnCancel = function(onCancelCallback, internalOnly) {
-	    if (util$$2.isArray(onCancelCallback)) {
+	    if (util$$1.isArray(onCancelCallback)) {
 	        for (var i = 0; i < onCancelCallback.length; ++i) {
 	            this._doInvokeOnCancel(onCancelCallback[i], internalOnly);
 	        }
@@ -10589,10 +10577,10 @@
 	var join =
 	function(Promise, PromiseArray, tryConvertToPromise, INTERNAL, async,
 	         getDomain) {
-	var util$$2 = util;
-	var canEvaluate = util$$2.canEvaluate;
-	var tryCatch = util$$2.tryCatch;
-	var errorObj = util$$2.errorObj;
+	var util$$1 = util;
+	var canEvaluate = util$$1.canEvaluate;
+	var tryCatch = util$$1.tryCatch;
+	var errorObj = util$$1.errorObj;
 	var reject;
 
 	{
@@ -10736,7 +10724,7 @@
 	                    if (holder.asyncNeeded) {
 	                        var domain = getDomain();
 	                        if (domain !== null) {
-	                            holder.fn = util$$2.domainBind(domain, holder.fn);
+	                            holder.fn = util$$1.domainBind(domain, holder.fn);
 	                        }
 	                    }
 	                    ret._setAsyncGuaranteed();
@@ -10761,16 +10749,16 @@
 	                          INTERNAL,
 	                          debug) {
 	var getDomain = Promise._getDomain;
-	var util$$2 = util;
-	var tryCatch = util$$2.tryCatch;
-	var errorObj = util$$2.errorObj;
+	var util$$1 = util;
+	var tryCatch = util$$1.tryCatch;
+	var errorObj = util$$1.errorObj;
 	var async = Promise._async;
 
 	function MappingPromiseArray(promises, fn, limit, _filter) {
 	    this.constructor$(promises);
 	    this._promise._captureStackTrace();
 	    var domain = getDomain();
-	    this._callback = domain === null ? fn : util$$2.domainBind(domain, fn);
+	    this._callback = domain === null ? fn : util$$1.domainBind(domain, fn);
 	    this._preservedValues = _filter === INTERNAL
 	        ? new Array(this.length())
 	        : null;
@@ -10779,7 +10767,7 @@
 	    this._queue = [];
 	    async.invoke(this._asyncInit, this, undefined);
 	}
-	util$$2.inherits(MappingPromiseArray, PromiseArray);
+	util$$1.inherits(MappingPromiseArray, PromiseArray);
 
 	MappingPromiseArray.prototype._asyncInit = function() {
 	    this._init$(undefined, -2);
@@ -10888,7 +10876,7 @@
 
 	function map(promises, fn, options, _filter) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
 	    }
 
 	    var limit = 0;
@@ -10897,13 +10885,13 @@
 	            if (typeof options.concurrency !== "number") {
 	                return Promise.reject(
 	                    new TypeError("'concurrency' must be a number but it is " +
-	                                    util$$2.classString(options.concurrency)));
+	                                    util$$1.classString(options.concurrency)));
 	            }
 	            limit = options.concurrency;
 	        } else {
 	            return Promise.reject(new TypeError(
 	                            "options argument must be an object but it is " +
-	                             util$$2.classString(options)));
+	                             util$$1.classString(options)));
 	        }
 	    }
 	    limit = typeof limit === "number" &&
@@ -10930,9 +10918,9 @@
 	}
 
 	var call_get = function(Promise) {
-	var util$$2 = util;
-	var canEvaluate = util$$2.canEvaluate;
-	var isIdentifier = util$$2.isIdentifier;
+	var util$$1 = util;
+	var canEvaluate = util$$1.canEvaluate;
+	var isIdentifier = util$$1.isIdentifier;
 
 	var getMethodCaller;
 	var getGetter;
@@ -10993,8 +10981,8 @@
 	    var fn;
 	    if (obj != null) fn = obj[methodName];
 	    if (typeof fn !== "function") {
-	        var message = "Object " + util$$2.classString(obj) + " has no method '" +
-	            util$$2.toString(methodName) + "'";
+	        var message = "Object " + util$$1.classString(obj) + " has no method '" +
+	            util$$1.toString(methodName) + "'";
 	        throw new Promise.TypeError(message);
 	    }
 	    return fn;
@@ -11047,11 +11035,11 @@
 
 	var using = function (Promise, apiRejection, tryConvertToPromise,
 	    createContext, INTERNAL, debug) {
-	    var util$$2 = util;
+	    var util$$1 = util;
 	    var TypeError = errors.TypeError;
 	    var inherits = util.inherits;
-	    var errorObj = util$$2.errorObj;
-	    var tryCatch = util$$2.tryCatch;
+	    var errorObj = util$$1.errorObj;
+	    var tryCatch = util$$1.tryCatch;
 	    var NULL = {};
 
 	    function thrower(e) {
@@ -11174,7 +11162,7 @@
 	                        "you must pass at least 2 arguments to Promise.using");
 	        var fn = arguments[len - 1];
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
 	        }
 	        var input;
 	        var spreadArgs = true;
@@ -11272,7 +11260,7 @@
 	};
 
 	var timers$1 = function(Promise, INTERNAL, debug) {
-	var util$$2 = util;
+	var util$$1 = util;
 	var TimeoutError = Promise.TimeoutError;
 
 	function HandleWrapper(handle)  {
@@ -11320,7 +11308,7 @@
 	    } else {
 	        err = new TimeoutError(message);
 	    }
-	    util$$2.markAsOriginatingFromRejection(err);
+	    util$$1.markAsOriginatingFromRejection(err);
 	    promise._attachExtraTrace(err);
 	    promise._reject(err);
 
@@ -11370,11 +11358,11 @@
 	                          tryConvertToPromise,
 	                          Proxyable,
 	                          debug) {
-	var errors$$2 = errors;
-	var TypeError = errors$$2.TypeError;
-	var util$$2 = util;
-	var errorObj = util$$2.errorObj;
-	var tryCatch = util$$2.tryCatch;
+	var errors$$1 = errors;
+	var TypeError = errors$$1.TypeError;
+	var util$$1 = util;
+	var errorObj = util$$1.errorObj;
+	var tryCatch = util$$1.tryCatch;
 	var yieldHandlers = [];
 
 	function promiseFromYieldHandler(value, yieldHandlers, traceParent) {
@@ -11417,7 +11405,7 @@
 	    this._yieldedPromise = null;
 	    this._cancellationPhase = false;
 	}
-	util$$2.inherits(PromiseSpawn, Proxyable);
+	util$$1.inherits(PromiseSpawn, Proxyable);
 
 	PromiseSpawn.prototype._isResolved = function() {
 	    return this._promise === null;
@@ -11570,7 +11558,7 @@
 
 	Promise.coroutine.addYieldHandler = function(fn) {
 	    if (typeof fn !== "function") {
-	        throw new TypeError("expecting a function but got " + util$$2.classString(fn));
+	        throw new TypeError("expecting a function but got " + util$$1.classString(fn));
 	    }
 	    yieldHandlers.push(fn);
 	};
@@ -11588,14 +11576,14 @@
 	};
 
 	var nodeify = function(Promise) {
-	var util$$2 = util;
+	var util$$1 = util;
 	var async = Promise._async;
-	var tryCatch = util$$2.tryCatch;
-	var errorObj = util$$2.errorObj;
+	var tryCatch = util$$1.tryCatch;
+	var errorObj = util$$1.errorObj;
 
 	function spreadAdapter(val, nodeback) {
 	    var promise = this;
-	    if (!util$$2.isArray(val)) return successAdapter.call(promise, val, nodeback);
+	    if (!util$$1.isArray(val)) return successAdapter.call(promise, val, nodeback);
 	    var ret =
 	        tryCatch(nodeback).apply(promise._boundValue(), [null].concat(val));
 	    if (ret === errorObj) {
@@ -11647,11 +11635,11 @@
 
 	var promisify = function(Promise, INTERNAL) {
 	var THIS = {};
-	var util$$2 = util;
+	var util$$1 = util;
 	var nodebackForPromise = nodeback;
-	var withAppended = util$$2.withAppended;
-	var maybeWrapAsError = util$$2.maybeWrapAsError;
-	var canEvaluate = util$$2.canEvaluate;
+	var withAppended = util$$1.withAppended;
+	var maybeWrapAsError = util$$1.maybeWrapAsError;
+	var canEvaluate = util$$1.canEvaluate;
 	var TypeError = errors.TypeError;
 	var defaultSuffix = "Async";
 	var defaultPromisified = {__isPromisified__: true};
@@ -11667,7 +11655,7 @@
 	var noCopyPropsPattern = new RegExp("^(?:" + noCopyProps.join("|") + ")$");
 
 	var defaultFilter = function(name) {
-	    return util$$2.isIdentifier(name) &&
+	    return util$$1.isIdentifier(name) &&
 	        name.charAt(0) !== "_" &&
 	        name !== "constructor";
 	};
@@ -11686,7 +11674,7 @@
 	}
 
 	function hasPromisified(obj, key, suffix) {
-	    var val = util$$2.getDataPropertyOrDefault(obj, key + suffix,
+	    var val = util$$1.getDataPropertyOrDefault(obj, key + suffix,
 	                                            defaultPromisified);
 	    return val ? isPromisified(val) : false;
 	}
@@ -11706,7 +11694,7 @@
 	}
 
 	function promisifiableMethods(obj, suffix, suffixRegexp, filter) {
-	    var keys = util$$2.inheritedDataKeys(obj);
+	    var keys = util$$1.inheritedDataKeys(obj);
 	    var ret = [];
 	    for (var i = 0; i < keys.length; ++i) {
 	        var key = keys[i];
@@ -11743,11 +11731,11 @@
 	};
 
 	var argumentSequence = function(argumentCount) {
-	    return util$$2.filledRange(argumentCount, "_arg", "");
+	    return util$$1.filledRange(argumentCount, "_arg", "");
 	};
 
 	var parameterDeclaration = function(parameterCount) {
-	    return util$$2.filledRange(
+	    return util$$1.filledRange(
 	        Math.max(parameterCount, 3), "_arg", "");
 	};
 
@@ -11844,9 +11832,9 @@
 	                    withAppended,
 	                    maybeWrapAsError,
 	                    nodebackForPromise,
-	                    util$$2.tryCatch,
-	                    util$$2.errorObj,
-	                    util$$2.notEnumerableProp,
+	                    util$$1.tryCatch,
+	                    util$$1.errorObj,
+	                    util$$1.notEnumerableProp,
 	                    INTERNAL);
 	};
 	}
@@ -11873,7 +11861,7 @@
 	        if (!promise._isFateSealed()) promise._setAsyncGuaranteed();
 	        return promise;
 	    }
-	    util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
+	    util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
 	    return promisified;
 	}
 
@@ -11898,11 +11886,11 @@
 	                return makeNodePromisified(key, THIS, key,
 	                                           fn, suffix, multiArgs);
 	            });
-	            util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
+	            util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
 	            obj[promisifiedKey] = promisified;
 	        }
 	    }
-	    util$$2.toFastProperties(obj);
+	    util$$1.toFastProperties(obj);
 	    return obj;
 	}
 
@@ -11913,7 +11901,7 @@
 
 	Promise.promisify = function (fn, options) {
 	    if (typeof fn !== "function") {
-	        throw new TypeError("expecting a function but got " + util$$2.classString(fn));
+	        throw new TypeError("expecting a function but got " + util$$1.classString(fn));
 	    }
 	    if (isPromisified(fn)) {
 	        return fn;
@@ -11922,7 +11910,7 @@
 	    var receiver = options.context === undefined ? THIS : options.context;
 	    var multiArgs = !!options.multiArgs;
 	    var ret = promisify(fn, receiver, multiArgs);
-	    util$$2.copyDescriptors(fn, ret, propsFilter);
+	    util$$1.copyDescriptors(fn, ret, propsFilter);
 	    return ret;
 	};
 
@@ -11939,15 +11927,15 @@
 	    var promisifier = options.promisifier;
 	    if (typeof promisifier !== "function") promisifier = makeNodePromisified;
 
-	    if (!util$$2.isIdentifier(suffix)) {
+	    if (!util$$1.isIdentifier(suffix)) {
 	        throw new RangeError("suffix must be a valid identifier\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
 	    }
 
-	    var keys = util$$2.inheritedDataKeys(target);
+	    var keys = util$$1.inheritedDataKeys(target);
 	    for (var i = 0; i < keys.length; ++i) {
 	        var value = target[keys[i]];
 	        if (keys[i] !== "constructor" &&
-	            util$$2.isClass(value)) {
+	            util$$1.isClass(value)) {
 	            promisifyAll(value.prototype, suffix, filter, promisifier,
 	                multiArgs);
 	            promisifyAll(value, suffix, filter, promisifier, multiArgs);
@@ -11960,9 +11948,9 @@
 
 	var props = function(
 	    Promise, PromiseArray, tryConvertToPromise, apiRejection) {
-	var util$$2 = util;
-	var isObject = util$$2.isObject;
-	var es5$$2 = es5;
+	var util$$1 = util;
+	var isObject = util$$1.isObject;
+	var es5$$1 = es5;
 	var Es6Map;
 	if (typeof Map === "function") Es6Map = Map;
 
@@ -12003,7 +11991,7 @@
 	        entries = mapToEntries(obj);
 	        isMap = true;
 	    } else {
-	        var keys = es5$$2.keys(obj);
+	        var keys = es5$$1.keys(obj);
 	        var len = keys.length;
 	        entries = new Array(len * 2);
 	        for (var i = 0; i < len; ++i) {
@@ -12016,7 +12004,7 @@
 	    this._isMap = isMap;
 	    this._init$(undefined, isMap ? -6 : -3);
 	}
-	util$$2.inherits(PropertiesPromiseArray, PromiseArray);
+	util$$1.inherits(PropertiesPromiseArray, PromiseArray);
 
 	PropertiesPromiseArray.prototype._init = function () {};
 
@@ -12078,7 +12066,7 @@
 
 	var race = function(
 	    Promise, INTERNAL, tryConvertToPromise, apiRejection) {
-	var util$$2 = util;
+	var util$$1 = util;
 
 	var raceLater = function (promise) {
 	    return promise.then(function(array) {
@@ -12092,9 +12080,9 @@
 	    if (maybePromise instanceof Promise) {
 	        return raceLater(maybePromise);
 	    } else {
-	        promises = util$$2.asArray(promises);
+	        promises = util$$1.asArray(promises);
 	        if (promises === null)
-	            return apiRejection("expecting an array or an iterable object but got " + util$$2.classString(promises));
+	            return apiRejection("expecting an array or an iterable object but got " + util$$1.classString(promises));
 	    }
 
 	    var ret = new Promise(INTERNAL);
@@ -12132,13 +12120,13 @@
 	                          INTERNAL,
 	                          debug) {
 	var getDomain = Promise._getDomain;
-	var util$$2 = util;
-	var tryCatch = util$$2.tryCatch;
+	var util$$1 = util;
+	var tryCatch = util$$1.tryCatch;
 
 	function ReductionPromiseArray(promises, fn, initialValue, _each) {
 	    this.constructor$(promises);
 	    var domain = getDomain();
-	    this._fn = domain === null ? fn : util$$2.domainBind(domain, fn);
+	    this._fn = domain === null ? fn : util$$1.domainBind(domain, fn);
 	    if (initialValue !== undefined) {
 	        initialValue = Promise.resolve(initialValue);
 	        initialValue._attachCancellationCallback(this);
@@ -12155,7 +12143,7 @@
 	    this._promise._captureStackTrace();
 	    this._init$(undefined, -5);
 	}
-	util$$2.inherits(ReductionPromiseArray, PromiseArray);
+	util$$1.inherits(ReductionPromiseArray, PromiseArray);
 
 	ReductionPromiseArray.prototype._gotAccum = function(accum) {
 	    if (this._eachValues !== undefined && 
@@ -12253,7 +12241,7 @@
 
 	function reduce(promises, fn, initialValue, _each) {
 	    if (typeof fn !== "function") {
-	        return apiRejection("expecting a function but got " + util$$2.classString(fn));
+	        return apiRejection("expecting a function but got " + util$$1.classString(fn));
 	    }
 	    var array = new ReductionPromiseArray(promises, fn, initialValue, _each);
 	    return array.promise();
@@ -12300,12 +12288,12 @@
 	var settle =
 	    function(Promise, PromiseArray, debug) {
 	var PromiseInspection = Promise.PromiseInspection;
-	var util$$2 = util;
+	var util$$1 = util;
 
 	function SettledPromiseArray(values) {
 	    this.constructor$(values);
 	}
-	util$$2.inherits(SettledPromiseArray, PromiseArray);
+	util$$1.inherits(SettledPromiseArray, PromiseArray);
 
 	SettledPromiseArray.prototype._promiseResolved = function (index, inspection) {
 	    this._values[index] = inspection;
@@ -12342,10 +12330,10 @@
 
 	var some =
 	function(Promise, PromiseArray, apiRejection) {
-	var util$$2 = util;
+	var util$$1 = util;
 	var RangeError = errors.RangeError;
 	var AggregateError = errors.AggregateError;
-	var isArray = util$$2.isArray;
+	var isArray = util$$1.isArray;
 	var CANCELLATION = {};
 
 
@@ -12355,7 +12343,7 @@
 	    this._unwrap = false;
 	    this._initialized = false;
 	}
-	util$$2.inherits(SomePromiseArray, PromiseArray);
+	util$$1.inherits(SomePromiseArray, PromiseArray);
 
 	SomePromiseArray.prototype._init = function () {
 	    if (!this._initialized) {
@@ -17082,6 +17070,73 @@
 	  );
 	}
 
+	// decodes Uint8Array to String
+
+	// TODO: use StringDecoder in Node environment
+
+	// from https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/GLTFLoader.js
+	function decodeArrayToStringUtf8 (a) {
+	  // FIXME: give this some more testing (i.e. inside gblock component)
+	  // Avoid the String.fromCharCode.apply(null, array) shortcut, which
+	  // throws a "maximum call stack size exceeded" error for large arrays.
+	  for (var i = 0, l = a.length, s = ''; i < l; i++) s += String.fromCharCode(a[i]);
+	  return s
+	}
+
+	function decodeArrayToStringUtf16 (a) {
+	  var
+	    s = '',
+	    // ignore any initial character other than '{' = 123 and '[' = 91 (>> bug #9818)
+	    i = a[0] === 123 || a[1] === 91 ? 0 : 1,
+	    l20 = a.length - 20,
+	    l2 = a.length;
+	  // passing 20 arguments into fromCharCode function provides fastest performance
+	  // (based on practical performance testing)
+	  for (; i < l20; i += 20) {
+	    s += String.fromCharCode(
+	      a[i], a[i + 1], a[i + 2], a[i + 3], a[i + 4], a[i + 5], a[i + 6], a[i + 7], a[i + 8], a[i + 9],
+	      a[i + 10], a[i + 11], a[i + 12], a[i + 13], a[i + 14], a[i + 15], a[i + 16], a[i + 17], a[i + 18], a[i + 19]
+	    );
+	  }
+	  // the rest we do char by char
+	  for (; i < l2; i++) {
+	    s += String.fromCharCode(a[i]);
+	  }
+	  return s
+	}
+
+	var decodeArrayToStringShims = {
+	  // UTF-8
+	  'utf-8': decodeArrayToStringUtf8,
+	  'UTF-8': decodeArrayToStringUtf8,
+	  // UTF-16
+	  'utf-16': decodeArrayToStringUtf16,
+	  'UTF-16': decodeArrayToStringUtf16
+	};
+
+	function makeArrayToStringDecoder (enc) {
+
+	  // use native decoder when available
+	  if (runtime.isBrowser && window.TextDecoder) {
+	    var textDecoderUtf16 = new window.TextDecoder(enc);
+	    return textDecoderUtf16.decode.bind(textDecoderUtf16)
+
+	  } else {
+	    // use shim
+	    return decodeArrayToStringShims[enc]
+	  }
+
+	}
+
+	// API
+
+	var decodeTextArray = {
+
+	  utf8: makeArrayToStringDecoder('utf-8'),
+	  utf16: makeArrayToStringDecoder('utf-16')
+
+	};
+
 	/** Built-in value references. */
 	var spreadableSymbol = _Symbol ? _Symbol.isConcatSpreadable : undefined;
 
@@ -18737,15 +18792,15 @@
 
 	}
 
-	var fragmentShader = {"text":"uniform vec3 u_color;\nuniform float u_metallic;\nuniform float u_roughness;\nuniform vec3 u_light0Pos;\nuniform vec3 u_light0Color;\nuniform vec3 u_light1Pos;\nuniform vec3 u_light1Color;\nuniform mat4 u_modelMatrix;\nuniform sampler2D u_reflectionCube;\nuniform sampler2D u_reflectionCubeBlur;","base64":"data:text/plain;base64,dW5pZm9ybSB2ZWMzIHVfY29sb3I7CnVuaWZvcm0gZmxvYXQgdV9tZXRhbGxpYzsKdW5pZm9ybSBmbG9hdCB1X3JvdWdobmVzczsKdW5pZm9ybSB2ZWMzIHVfbGlnaHQwUG9zOwp1bmlmb3JtIHZlYzMgdV9saWdodDBDb2xvcjsKdW5pZm9ybSB2ZWMzIHVfbGlnaHQxUG9zOwp1bmlmb3JtIHZlYzMgdV9saWdodDFDb2xvcjsKdW5pZm9ybSBtYXQ0IHVfbW9kZWxNYXRyaXg7CnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmU7CnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmVCbHVyOw=="};
+	var fragmentShader = {"text":"uniform vec3 u_color;\r\nuniform float u_metallic;\r\nuniform float u_roughness;\r\nuniform vec3 u_light0Pos;\r\nuniform vec3 u_light0Color;\r\nuniform vec3 u_light1Pos;\r\nuniform vec3 u_light1Color;\r\nuniform mat4 u_modelMatrix;\r\nuniform sampler2D u_reflectionCube;\r\nuniform sampler2D u_reflectionCubeBlur;","base64":"data:text/plain;base64,dW5pZm9ybSB2ZWMzIHVfY29sb3I7DQp1bmlmb3JtIGZsb2F0IHVfbWV0YWxsaWM7DQp1bmlmb3JtIGZsb2F0IHVfcm91Z2huZXNzOw0KdW5pZm9ybSB2ZWMzIHVfbGlnaHQwUG9zOw0KdW5pZm9ybSB2ZWMzIHVfbGlnaHQwQ29sb3I7DQp1bmlmb3JtIHZlYzMgdV9saWdodDFQb3M7DQp1bmlmb3JtIHZlYzMgdV9saWdodDFDb2xvcjsNCnVuaWZvcm0gbWF0NCB1X21vZGVsTWF0cml4Ow0KdW5pZm9ybSBzYW1wbGVyMkQgdV9yZWZsZWN0aW9uQ3ViZTsNCnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmVCbHVyOw=="};
 
-	var vertexShader = {"text":"varying vec3 v_normal;\nvarying vec3 v_position;\nvarying vec3 v_binormal;\nvarying vec3 v_tangent;\n","base64":"data:text/plain;base64,dmFyeWluZyB2ZWMzIHZfbm9ybWFsOwp2YXJ5aW5nIHZlYzMgdl9wb3NpdGlvbjsKdmFyeWluZyB2ZWMzIHZfYmlub3JtYWw7CnZhcnlpbmcgdmVjMyB2X3RhbmdlbnQ7Cg=="};
+	var vertexShader = {"text":"varying vec3 v_normal;\r\nvarying vec3 v_position;\r\nvarying vec3 v_binormal;\r\nvarying vec3 v_tangent;\r\n","base64":"data:text/plain;base64,dmFyeWluZyB2ZWMzIHZfbm9ybWFsOw0KdmFyeWluZyB2ZWMzIHZfcG9zaXRpb247DQp2YXJ5aW5nIHZlYzMgdl9iaW5vcm1hbDsNCnZhcnlpbmcgdmVjMyB2X3RhbmdlbnQ7DQo="};
 
 	// TODO: Replace placeholder shaders by original ones (requires fixing projection matrix)
 	// configs
 
 	var LEGACY_GLFT_LOADER_URL = 'https://cdn.rawgit.com/mrdoob/three.js/r86/examples/js/loaders/GLTFLoader.js';
-	var GBLOCK_API_GET_OFFICIAL_GLTF_URL = 'https://us-central1-gblock-api.cloudfunctions.net/get-gltf-url/?url=';
+	var GBLOCK_API_GET_OFFICIAL_GLTF_URL = 'https://gblock.3d.io/api/get-gltf-url/?url=';
 
 	// internals
 
@@ -18838,22 +18893,19 @@
 	    getUrlPromise = fetch(GBLOCK_API_GET_OFFICIAL_GLTF_URL + src).then(function (response) {
 
 	      // parse response
-	      return response.json().then(function (message) {
+	      return response.json().catch(function(error){
+	        // handle JSON parsing error
+	        console.log('ERROR parsing gblock API server response JSON.\nRequested Model: "' + src + '"\nError: "' + JSON.stringify(error) + '"');
+	        return bluebird_1.reject('gblock API server error. Check console for details.')
+	      }).then(function (message) {
 	        if (response.ok) {
 	          // return glTF URL
 	          return message.gltfUrl
 	        } else {
 	          // handle error response
-	          var status = response.status;
-	          var errorMessage = message.message;
-	          console.error('ERROR loading gblock model "'+ src +'" : ' + status + ' "' + errorMessage + '"');
-	          return bluebird_1.reject(errorMessage)
+	          console.error('ERROR loading gblock model "'+ src +'" : ' + response.status + ' "' + message.message);
+	          return bluebird_1.reject(message.message)
 	        }
-	      }).catch(function(error){
-	        // handle server error
-	        var errorMessage = '3dio.js: Error parsing gblock API server JSON response: ' + error;
-	        console.error(errorMessage);
-	        return bluebird_1.reject(errorMessage)
 	      })
 
 	    });
@@ -18893,8 +18945,8 @@
 
 	        this._parse = this.parse;
 	        this.parse = function (data, path, onLoad, onError) {
-	          // convert uint8 to json
-	          var json = JSON.parse(convertUint8ArrayToString(data));
+	          // convert uint8 array to json
+	          var json = JSON.parse(decodeTextArray.utf8(data));
 	          // use base64 shaders
 	          Object.keys(json.shaders).forEach(function (key, i) {
 	            // Replacing original shaders with placeholders
@@ -18921,20 +18973,6 @@
 
 	}
 
-	// from https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/GLTFLoader.js
-	function convertUint8ArrayToString (array) {
-	  if (window.TextDecoder !== undefined) {
-	    return new TextDecoder().decode(array)
-	  }
-	  // Avoid the String.fromCharCode.apply(null, array) shortcut, which
-	  // throws a "maximum call stack size exceeded" error for large arrays.
-	  var s = '';
-	  for (var i = 0, il = array.length; i < il; i++) {
-	    s += String.fromCharCode(array[i]);
-	  }
-	  return s;
-	}
-
 	var lightingComponent = {
 
 	  schema: {
@@ -18953,12 +18991,12 @@
 	  },
 
 	  init: function () {
-
-	    var cameraEL = document.querySelector('a-entity[camera]') || document.querySelector('a-camera');
-	    if (!cameraEL) {
+	    var cameraEl = document.querySelector('a-entity[camera]') || document.querySelector('a-camera');
+	    if (!cameraEl) {
 	      console.warn('this scene has no camera, add one to make the lighting work');
+	      return
 	    }
-	    this.cam = cameraEL.object3D;
+	    this.cam = cameraEl.object3D;
 
 	    // main
 	    this.staticLights = document.createElement('a-entity');
@@ -18973,9 +19011,20 @@
 	  },
 
 	  update: function () {
+	    if (this.camera) this.cam = this.camera.object3D;
 
-	    this.remove();
+	    // clear existing lights
+	    while (this.movingWithCamera.hasChildNodes()) {
+	      this.movingWithCamera.removeChild(this.movingWithCamera.lastChild);
+	    }
+	    while (this.rotatingWithCamera.hasChildNodes()) {
+	      this.rotatingWithCamera.removeChild(this.rotatingWithCamera.lastChild);
+	    }
+	    while (this.staticLights.hasChildNodes()) {
+	      this.staticLights.removeChild(this.staticLights.lastChild);
+	    }
 
+	    // create new light setup
 	    createLighting[this.data.preset](
 	      this.movingWithCamera,
 	      this.rotatingWithCamera,
@@ -18983,20 +19032,17 @@
 	      this.data.intensity,
 	      this.data.saturation
 	    );
-
 	  },
 
 	  remove: function () {
-	    // clear previous light setup
-	    while (this.movingWithCamera.hasChildNodes()) {
-	      this.movingWithCamera.removeChild(this.movingWithCamera.lastChild);
-	    }
-	    while (this.staticLights.hasChildNodes()) {
-	      this.staticLights.removeChild(this.staticLights.lastChild);
-	    }
+	    // tear down light setup
+	    this.el.removeChild(this.staticLights);
+	    this.el.removeChild(this.movingWithCamera);
+	    this.el.removeChild(this.rotatingWithCamera);
 	  },
 
 	  tick: function (dt) {
+	    if (!this.movingWithCamera) return
 	    // set position from camera
 	    this.movingWithCamera.setAttribute('position', this.cam.position);
 	    // set y rotation - convert rad to deg
@@ -19053,9 +19099,9 @@
 	      'light': {
 	        type: 'hemisphere',
 	        // yellow
-	        color: 'hsl(35, ' + 15 * saturation + '%, 60%)',
+	        color: 'hsl(35, ' + Math.round(15 * saturation) + '%, 60%)',
 	        // blue
-	        groundColor: 'hsl(220, ' + 10 * saturation + '%, 65%)',
+	        groundColor: 'hsl(220, ' + Math.round(10 * saturation) + '%, 65%)',
 	        intensity: 0.4 * intensity
 	      },
 	      // positioning left equals rotation by 90°
@@ -19082,7 +19128,7 @@
 	    addElement({
 	      'light': {
 	        type: 'directional',
-	        color: 'hsl(200, ' + 10 * saturation + '%, 60%)',
+	        color: 'hsl(200, ' + Math.round(10 * saturation) + '%, 60%)',
 	        intensity: 0.25 * intensity,
 	        // target: '#light-target'
 	      },
@@ -19094,7 +19140,7 @@
 	    addElement({
 	      'light': {
 	        type: 'directional',
-	        color: 'hsl(35, ' + 10 * saturation + '%, 60%)',
+	        color: 'hsl(35, ' + Math.round(10 * saturation) + '%, 60%)',
 	        intensity: 0.35 * intensity,
 	        // target: '#light-target'
 	      },
@@ -19107,7 +19153,7 @@
 	      'light': {
 	        type: 'ambient',
 	        color: '#FFF',
-	        intensity: 0.5
+	        intensity: 0.45
 	      },
 	      'id': 'ambient-light'
 	    }, staticLights);
@@ -20279,9 +20325,9 @@
 	  return loadingTexturesPromise
 	}
 
-	var fragmentShader$1 = {"text":"uniform vec3 color;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapExposure;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\n#include <shadowmap_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( color, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #ifdef FLAT_SHADED\n      vec3 fdx = vec3( dFdx( vViewPosition.x ), dFdx( vViewPosition.y ), dFdx( vViewPosition.z ) );\n      vec3 fdy = vec3( dFdy( vViewPosition.x ), dFdy( vViewPosition.y ), dFdy( vViewPosition.z ) );\n      vec3 normal = normalize( cross( fdx, fdy ) );\n    #else\n      vec3 normal = normalize( vNormal );\n      #ifdef DOUBLE_SIDED\n        normal = normal * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n      #endif\n    #endif\n    #ifdef USE_NORMALMAP\n      normal = perturbNormal2Arb( -vViewPosition, normal );\n    #elif defined( USE_BUMPMAP )\n      normal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );\n    #endif\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}","base64":"data:text/plain;base64,dW5pZm9ybSB2ZWMzIGNvbG9yOwp1bmlmb3JtIHZlYzMgZW1pc3NpdmU7CnVuaWZvcm0gdmVjMyBzcGVjdWxhcjsKdW5pZm9ybSBmbG9hdCBzaGluaW5lc3M7CnVuaWZvcm0gZmxvYXQgb3BhY2l0eTsKI2luY2x1ZGUgPGNvbW1vbj4KI2luY2x1ZGUgPHBhY2tpbmc+CiNpbmNsdWRlIDx1dl9wYXJzX2ZyYWdtZW50PgojaW5jbHVkZSA8dXYyX3BhcnNfZnJhZ21lbnQ+CiNpbmNsdWRlIDxtYXBfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPGFscGhhbWFwX3BhcnNfZnJhZ21lbnQ+CiNpZmRlZiBVU0VfTElHSFRNQVAKCXVuaWZvcm0gc2FtcGxlcjJEIGxpZ2h0TWFwOwoJdW5pZm9ybSBmbG9hdCBsaWdodE1hcEludGVuc2l0eTsKCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBFeHBvc3VyZTsKCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBGYWxsb2ZmOwojZW5kaWYKI2luY2x1ZGUgPG5vcm1hbG1hcF9wYXJzX2ZyYWdtZW50PgojaW5jbHVkZSA8c3BlY3VsYXJtYXBfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPGJzZGZzPgojaW5jbHVkZSA8bGlnaHRzX3BhcnM+CiNpbmNsdWRlIDxsaWdodHNfcGhvbmdfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPHNoYWRvd21hcF9wYXJzX2ZyYWdtZW50Pgp2b2lkIG1haW4oKSB7CiAgICB2ZWM0IGRpZmZ1c2VDb2xvciA9IHZlYzQoIGNvbG9yLCBvcGFjaXR5ICk7CiAgICBSZWZsZWN0ZWRMaWdodCByZWZsZWN0ZWRMaWdodCA9IFJlZmxlY3RlZExpZ2h0KCB2ZWMzKCAwLjAgKSwgdmVjMyggMC4wICksIHZlYzMoIDAuMCApLCB2ZWMzKCAwLjAgKSApOwogICAgdmVjMyB0b3RhbEVtaXNzaXZlUmFkaWFuY2UgPSBlbWlzc2l2ZTsKICAgICNpbmNsdWRlIDxtYXBfZnJhZ21lbnQ+CiAgICAjaW5jbHVkZSA8YWxwaGFtYXBfZnJhZ21lbnQ+CiAgICAjaW5jbHVkZSA8YWxwaGF0ZXN0X2ZyYWdtZW50PgogICAgI2luY2x1ZGUgPHNwZWN1bGFybWFwX2ZyYWdtZW50PgogICAgI2lmZGVmIEZMQVRfU0hBREVECiAgICAgIHZlYzMgZmR4ID0gdmVjMyggZEZkeCggdlZpZXdQb3NpdGlvbi54ICksIGRGZHgoIHZWaWV3UG9zaXRpb24ueSApLCBkRmR4KCB2Vmlld1Bvc2l0aW9uLnogKSApOwogICAgICB2ZWMzIGZkeSA9IHZlYzMoIGRGZHkoIHZWaWV3UG9zaXRpb24ueCApLCBkRmR5KCB2Vmlld1Bvc2l0aW9uLnkgKSwgZEZkeSggdlZpZXdQb3NpdGlvbi56ICkgKTsKICAgICAgdmVjMyBub3JtYWwgPSBub3JtYWxpemUoIGNyb3NzKCBmZHgsIGZkeSApICk7CiAgICAjZWxzZQogICAgICB2ZWMzIG5vcm1hbCA9IG5vcm1hbGl6ZSggdk5vcm1hbCApOwogICAgICAjaWZkZWYgRE9VQkxFX1NJREVECiAgICAgICAgbm9ybWFsID0gbm9ybWFsICogKCBmbG9hdCggZ2xfRnJvbnRGYWNpbmcgKSAqIDIuMCAtIDEuMCApOwogICAgICAjZW5kaWYKICAgICNlbmRpZgogICAgI2lmZGVmIFVTRV9OT1JNQUxNQVAKICAgICAgbm9ybWFsID0gcGVydHVyYk5vcm1hbDJBcmIoIC12Vmlld1Bvc2l0aW9uLCBub3JtYWwgKTsKICAgICNlbGlmIGRlZmluZWQoIFVTRV9CVU1QTUFQICkKICAgICAgbm9ybWFsID0gcGVydHVyYk5vcm1hbEFyYiggLXZWaWV3UG9zaXRpb24sIG5vcm1hbCwgZEhkeHlfZndkKCkgKTsKICAgICNlbmRpZgogICAgI2luY2x1ZGUgPGxpZ2h0c19waG9uZ19mcmFnbWVudD4KICAgIEdlb21ldHJpY0NvbnRleHQgZ2VvbWV0cnk7CiAgICBnZW9tZXRyeS5wb3NpdGlvbiA9IC0gdlZpZXdQb3NpdGlvbjsKICAgIGdlb21ldHJ5Lm5vcm1hbCA9IG5vcm1hbDsKICAgIGdlb21ldHJ5LnZpZXdEaXIgPSBub3JtYWxpemUoIHZWaWV3UG9zaXRpb24gKTsKICAgIEluY2lkZW50TGlnaHQgZGlyZWN0TGlnaHQ7CiAgICAjaWYgKCBOVU1fUE9JTlRfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdCApCiAgICAgICAgUG9pbnRMaWdodCBwb2ludExpZ2h0OwogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9QT0lOVF9MSUdIVFM7IGkgKysgKSB7CiAgICAgICAgICAgIHBvaW50TGlnaHQgPSBwb2ludExpZ2h0c1sgaSBdOwogICAgICAgICAgICBnZXRQb2ludERpcmVjdExpZ2h0SXJyYWRpYW5jZSggcG9pbnRMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7CiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQCiAgICAgICAgICAgIGRpcmVjdExpZ2h0LmNvbG9yICo9IGFsbCggYnZlYzIoIHBvaW50TGlnaHQuc2hhZG93LCBkaXJlY3RMaWdodC52aXNpYmxlICkgKSA/IGdldFBvaW50U2hhZG93KCBwb2ludFNoYWRvd01hcFsgaSBdLCBwb2ludExpZ2h0LnNoYWRvd01hcFNpemUsIHBvaW50TGlnaHQuc2hhZG93QmlhcywgcG9pbnRMaWdodC5zaGFkb3dSYWRpdXMsIHZQb2ludFNoYWRvd0Nvb3JkWyBpIF0gKSA6IDEuMDsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIFJFX0RpcmVjdCggZGlyZWN0TGlnaHQsIGdlb21ldHJ5LCBtYXRlcmlhbCwgcmVmbGVjdGVkTGlnaHQgKTsKICAgICAgICB9CiAgICAjZW5kaWYKICAgICNpZiAoIE5VTV9TUE9UX0xJR0hUUyA+IDAgKSAmJiBkZWZpbmVkKCBSRV9EaXJlY3QgKQogICAgICAgIFNwb3RMaWdodCBzcG90TGlnaHQ7CiAgICAgICAgZm9yICggaW50IGkgPSAwOyBpIDwgTlVNX1NQT1RfTElHSFRTOyBpICsrICkgewogICAgICAgICAgICBzcG90TGlnaHQgPSBzcG90TGlnaHRzWyBpIF07CiAgICAgICAgICAgIGdldFNwb3REaXJlY3RMaWdodElycmFkaWFuY2UoIHNwb3RMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7CiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQCiAgICAgICAgICAgIGRpcmVjdExpZ2h0LmNvbG9yICo9IGFsbCggYnZlYzIoIHNwb3RMaWdodC5zaGFkb3csIGRpcmVjdExpZ2h0LnZpc2libGUgKSApID8gZ2V0U2hhZG93KCBzcG90U2hhZG93TWFwWyBpIF0sIHNwb3RMaWdodC5zaGFkb3dNYXBTaXplLCBzcG90TGlnaHQuc2hhZG93Qmlhcywgc3BvdExpZ2h0LnNoYWRvd1JhZGl1cywgdlNwb3RTaGFkb3dDb29yZFsgaSBdICkgOiAxLjA7CiAgICAgICAgICAgICNlbmRpZgogICAgICAgICAgICBSRV9EaXJlY3QoIGRpcmVjdExpZ2h0LCBnZW9tZXRyeSwgbWF0ZXJpYWwsIHJlZmxlY3RlZExpZ2h0ICk7CiAgICAgICAgfQogICAgI2VuZGlmCiAgICAjaWYgKCBOVU1fRElSX0xJR0hUUyA+IDAgKSAmJiBkZWZpbmVkKCBSRV9EaXJlY3QgKQogICAgICAgIERpcmVjdGlvbmFsTGlnaHQgZGlyZWN0aW9uYWxMaWdodDsKICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fRElSX0xJR0hUUzsgaSArKyApIHsKICAgICAgICAgICAgZGlyZWN0aW9uYWxMaWdodCA9IGRpcmVjdGlvbmFsTGlnaHRzWyBpIF07CiAgICAgICAgICAgIGdldERpcmVjdGlvbmFsRGlyZWN0TGlnaHRJcnJhZGlhbmNlKCBkaXJlY3Rpb25hbExpZ2h0LCBnZW9tZXRyeSwgZGlyZWN0TGlnaHQgKTsKICAgICAgICAgICAgI2lmZGVmIFVTRV9TSEFET1dNQVAKICAgICAgICAgICAgZGlyZWN0TGlnaHQuY29sb3IgKj0gYWxsKCBidmVjMiggZGlyZWN0aW9uYWxMaWdodC5zaGFkb3csIGRpcmVjdExpZ2h0LnZpc2libGUgKSApID8gZ2V0U2hhZG93KCBkaXJlY3Rpb25hbFNoYWRvd01hcFsgaSBdLCBkaXJlY3Rpb25hbExpZ2h0LnNoYWRvd01hcFNpemUsIGRpcmVjdGlvbmFsTGlnaHQuc2hhZG93QmlhcywgZGlyZWN0aW9uYWxMaWdodC5zaGFkb3dSYWRpdXMsIHZEaXJlY3Rpb25hbFNoYWRvd0Nvb3JkWyBpIF0gKSA6IDEuMDsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIFJFX0RpcmVjdCggZGlyZWN0TGlnaHQsIGdlb21ldHJ5LCBtYXRlcmlhbCwgcmVmbGVjdGVkTGlnaHQgKTsKICAgICAgICB9CiAgICAjZW5kaWYKICAgICNpZiAoIE5VTV9SRUNUX0FSRUFfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdF9SZWN0QXJlYSApCiAgICAgICAgUmVjdEFyZWFMaWdodCByZWN0QXJlYUxpZ2h0OwogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9SRUNUX0FSRUFfTElHSFRTOyBpICsrICkgewogICAgICAgICAgICByZWN0QXJlYUxpZ2h0ID0gcmVjdEFyZWFMaWdodHNbIGkgXTsKICAgICAgICAgICAgUkVfRGlyZWN0X1JlY3RBcmVhKCByZWN0QXJlYUxpZ2h0LCBnZW9tZXRyeSwgbWF0ZXJpYWwsIHJlZmxlY3RlZExpZ2h0ICk7CiAgICAgICAgfQogICAgI2VuZGlmCiAgICAjaWYgZGVmaW5lZCggUkVfSW5kaXJlY3REaWZmdXNlICkKICAgICAgICB2ZWMzIGlycmFkaWFuY2UgPSBnZXRBbWJpZW50TGlnaHRJcnJhZGlhbmNlKCBhbWJpZW50TGlnaHRDb2xvciApOwogICAgICAgICNpZmRlZiBVU0VfTElHSFRNQVAKICAgICAgICAgICAgdmVjMyB1bml0ID0gdmVjMygxLjApOwogICAgICAgICAgICB2ZWMzIGxpZ2h0ID0gMi4wICogKHRleHR1cmUyRCggbGlnaHRNYXAsIHZVdjIgKS54eXogLSBsaWdodE1hcEV4cG9zdXJlICogdW5pdCk7CiAgICAgICAgICAgIHZlYzMgbW9kaWZpZXIgPSAtbGlnaHRNYXBGYWxsb2ZmICogbGlnaHQgKiBsaWdodCArIHVuaXQ7CiAgICAgICAgICAgIHZlYzMgbGlnaHRNYXBJcnJhZGlhbmNlID0gbGlnaHQgKiBtb2RpZmllciAqIGxpZ2h0TWFwSW50ZW5zaXR5OwogICAgICAgICAgICAjaWZuZGVmIFBIWVNJQ0FMTFlfQ09SUkVDVF9MSUdIVFMKICAgICAgICAgICAgICAgIGxpZ2h0TWFwSXJyYWRpYW5jZSAqPSBQSTsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIGlycmFkaWFuY2UgKz0gbGlnaHRNYXBJcnJhZGlhbmNlOwogICAgICAgICNlbmRpZgogICAgICAgICNpZiAoIE5VTV9IRU1JX0xJR0hUUyA+IDAgKQogICAgICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fSEVNSV9MSUdIVFM7IGkgKysgKSB7CiAgICAgICAgICAgICAgICBpcnJhZGlhbmNlICs9IGdldEhlbWlzcGhlcmVMaWdodElycmFkaWFuY2UoIGhlbWlzcGhlcmVMaWdodHNbIGkgXSwgZ2VvbWV0cnkgKTsKICAgICAgICAgICAgfQogICAgICAgICNlbmRpZgogICAgICAgIFJFX0luZGlyZWN0RGlmZnVzZSggaXJyYWRpYW5jZSwgZ2VvbWV0cnksIG1hdGVyaWFsLCByZWZsZWN0ZWRMaWdodCApOwogICAgI2VuZGlmCiAgICB2ZWMzIG91dGdvaW5nTGlnaHQgPSByZWZsZWN0ZWRMaWdodC5kaXJlY3REaWZmdXNlICsgcmVmbGVjdGVkTGlnaHQuaW5kaXJlY3REaWZmdXNlICsgcmVmbGVjdGVkTGlnaHQuZGlyZWN0U3BlY3VsYXIgKyByZWZsZWN0ZWRMaWdodC5pbmRpcmVjdFNwZWN1bGFyICsgdG90YWxFbWlzc2l2ZVJhZGlhbmNlOwogICAgZ2xfRnJhZ0NvbG9yID0gdmVjNCggb3V0Z29pbmdMaWdodCwgZGlmZnVzZUNvbG9yLmEgKTsKfQ=="};
+	var fragmentShader$1 = {"text":"uniform vec3 color;\r\nuniform vec3 emissive;\r\nuniform vec3 specular;\r\nuniform float shininess;\r\nuniform float opacity;\r\n\r\n#include <common>\r\n#include <packing>\r\n#include <uv_pars_fragment>\r\n#include <uv2_pars_fragment>\r\n#include <map_pars_fragment>\r\n#include <alphamap_pars_fragment>\r\n\r\n// Replaces <lightmap_pars_fragment>;\r\n\r\n#ifdef USE_LIGHTMAP\r\n\tuniform sampler2D lightMap;\r\n\tuniform float lightMapIntensity;\r\n\tuniform float lightMapExposure;\r\n\tuniform float lightMapFalloff;\r\n#endif\r\n\r\n#include <normalmap_pars_fragment>\r\n#include <specularmap_pars_fragment>\r\n\r\n#include <bsdfs>\r\n#include <lights_pars>\r\n#include <lights_phong_pars_fragment>\r\n#include <shadowmap_pars_fragment>\r\n\r\n\r\nvoid main() {\r\n\r\n    vec4 diffuseColor = vec4( color, opacity );\r\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\r\n\r\n    vec3 totalEmissiveRadiance = emissive;\r\n\r\n    #include <map_fragment>\r\n    #include <alphamap_fragment>\r\n    #include <alphatest_fragment>\r\n    #include <specularmap_fragment>\r\n\r\n    // Start of <normal_fragment> replace block\r\n    #ifdef FLAT_SHADED\r\n\r\n      // Workaround for Adreno/Nexus5 not able able to do dFdx( vViewPosition ) ...\r\n\r\n      vec3 fdx = vec3( dFdx( vViewPosition.x ), dFdx( vViewPosition.y ), dFdx( vViewPosition.z ) );\r\n      vec3 fdy = vec3( dFdy( vViewPosition.x ), dFdy( vViewPosition.y ), dFdy( vViewPosition.z ) );\r\n      vec3 normal = normalize( cross( fdx, fdy ) );\r\n\r\n    #else\r\n\r\n      vec3 normal = normalize( vNormal );\r\n\r\n      #ifdef DOUBLE_SIDED\r\n\r\n        normal = normal * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\r\n\r\n      #endif\r\n\r\n    #endif\r\n\r\n    #ifdef USE_NORMALMAP\r\n\r\n      normal = perturbNormal2Arb( -vViewPosition, normal );\r\n\r\n    #elif defined( USE_BUMPMAP )\r\n\r\n      normal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );\r\n\r\n    #endif\r\n    // End of <normal_fragment> replace block\r\n\r\n    // accumulation\r\n    #include <lights_phong_fragment>\r\n\r\n    // Start of <light-template> replace block\r\n    GeometricContext geometry;\r\n\r\n    geometry.position = - vViewPosition;\r\n    geometry.normal = normal;\r\n    geometry.viewDir = normalize( vViewPosition );\r\n\r\n    IncidentLight directLight;\r\n\r\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        PointLight pointLight;\r\n\r\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\r\n\r\n            pointLight = pointLights[ i ];\r\n\r\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        SpotLight spotLight;\r\n\r\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\r\n\r\n            spotLight = spotLights[ i ];\r\n\r\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        DirectionalLight directionalLight;\r\n\r\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\r\n\r\n            directionalLight = directionalLights[ i ];\r\n\r\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\r\n\r\n        RectAreaLight rectAreaLight;\r\n\r\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\r\n\r\n            rectAreaLight = rectAreaLights[ i ];\r\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if defined( RE_IndirectDiffuse )\r\n\r\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\r\n\r\n        #ifdef USE_LIGHTMAP\r\n\r\n            // compute the light value\r\n            vec3 unit = vec3(1.0);\r\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\r\n            // compute the light intensity modifier\r\n            vec3 modifier = -lightMapFalloff * light * light + unit;\r\n            // apply light\r\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\r\n\r\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\r\n\r\n                lightMapIrradiance *= PI; // factor of PI should not be present; included here to prevent breakage\r\n\r\n            #endif\r\n\r\n            irradiance += lightMapIrradiance;\r\n\r\n        #endif\r\n\r\n        #if ( NUM_HEMI_LIGHTS > 0 )\r\n\r\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\r\n\r\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\r\n\r\n            }\r\n\r\n        #endif\r\n\r\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\r\n\r\n    #endif\r\n    // End of <light-template> replace block\r\n\r\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\r\n\r\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\r\n\r\n}","base64":"data:text/plain;base64,dW5pZm9ybSB2ZWMzIGNvbG9yOw0KdW5pZm9ybSB2ZWMzIGVtaXNzaXZlOw0KdW5pZm9ybSB2ZWMzIHNwZWN1bGFyOw0KdW5pZm9ybSBmbG9hdCBzaGluaW5lc3M7DQp1bmlmb3JtIGZsb2F0IG9wYWNpdHk7DQoNCiNpbmNsdWRlIDxjb21tb24+DQojaW5jbHVkZSA8cGFja2luZz4NCiNpbmNsdWRlIDx1dl9wYXJzX2ZyYWdtZW50Pg0KI2luY2x1ZGUgPHV2Ml9wYXJzX2ZyYWdtZW50Pg0KI2luY2x1ZGUgPG1hcF9wYXJzX2ZyYWdtZW50Pg0KI2luY2x1ZGUgPGFscGhhbWFwX3BhcnNfZnJhZ21lbnQ+DQoNCi8vIFJlcGxhY2VzIDxsaWdodG1hcF9wYXJzX2ZyYWdtZW50PjsNCg0KI2lmZGVmIFVTRV9MSUdIVE1BUA0KCXVuaWZvcm0gc2FtcGxlcjJEIGxpZ2h0TWFwOw0KCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBJbnRlbnNpdHk7DQoJdW5pZm9ybSBmbG9hdCBsaWdodE1hcEV4cG9zdXJlOw0KCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBGYWxsb2ZmOw0KI2VuZGlmDQoNCiNpbmNsdWRlIDxub3JtYWxtYXBfcGFyc19mcmFnbWVudD4NCiNpbmNsdWRlIDxzcGVjdWxhcm1hcF9wYXJzX2ZyYWdtZW50Pg0KDQojaW5jbHVkZSA8YnNkZnM+DQojaW5jbHVkZSA8bGlnaHRzX3BhcnM+DQojaW5jbHVkZSA8bGlnaHRzX3Bob25nX3BhcnNfZnJhZ21lbnQ+DQojaW5jbHVkZSA8c2hhZG93bWFwX3BhcnNfZnJhZ21lbnQ+DQoNCg0Kdm9pZCBtYWluKCkgew0KDQogICAgdmVjNCBkaWZmdXNlQ29sb3IgPSB2ZWM0KCBjb2xvciwgb3BhY2l0eSApOw0KICAgIFJlZmxlY3RlZExpZ2h0IHJlZmxlY3RlZExpZ2h0ID0gUmVmbGVjdGVkTGlnaHQoIHZlYzMoIDAuMCApLCB2ZWMzKCAwLjAgKSwgdmVjMyggMC4wICksIHZlYzMoIDAuMCApICk7DQoNCiAgICB2ZWMzIHRvdGFsRW1pc3NpdmVSYWRpYW5jZSA9IGVtaXNzaXZlOw0KDQogICAgI2luY2x1ZGUgPG1hcF9mcmFnbWVudD4NCiAgICAjaW5jbHVkZSA8YWxwaGFtYXBfZnJhZ21lbnQ+DQogICAgI2luY2x1ZGUgPGFscGhhdGVzdF9mcmFnbWVudD4NCiAgICAjaW5jbHVkZSA8c3BlY3VsYXJtYXBfZnJhZ21lbnQ+DQoNCiAgICAvLyBTdGFydCBvZiA8bm9ybWFsX2ZyYWdtZW50PiByZXBsYWNlIGJsb2NrDQogICAgI2lmZGVmIEZMQVRfU0hBREVEDQoNCiAgICAgIC8vIFdvcmthcm91bmQgZm9yIEFkcmVuby9OZXh1czUgbm90IGFibGUgYWJsZSB0byBkbyBkRmR4KCB2Vmlld1Bvc2l0aW9uICkgLi4uDQoNCiAgICAgIHZlYzMgZmR4ID0gdmVjMyggZEZkeCggdlZpZXdQb3NpdGlvbi54ICksIGRGZHgoIHZWaWV3UG9zaXRpb24ueSApLCBkRmR4KCB2Vmlld1Bvc2l0aW9uLnogKSApOw0KICAgICAgdmVjMyBmZHkgPSB2ZWMzKCBkRmR5KCB2Vmlld1Bvc2l0aW9uLnggKSwgZEZkeSggdlZpZXdQb3NpdGlvbi55ICksIGRGZHkoIHZWaWV3UG9zaXRpb24ueiApICk7DQogICAgICB2ZWMzIG5vcm1hbCA9IG5vcm1hbGl6ZSggY3Jvc3MoIGZkeCwgZmR5ICkgKTsNCg0KICAgICNlbHNlDQoNCiAgICAgIHZlYzMgbm9ybWFsID0gbm9ybWFsaXplKCB2Tm9ybWFsICk7DQoNCiAgICAgICNpZmRlZiBET1VCTEVfU0lERUQNCg0KICAgICAgICBub3JtYWwgPSBub3JtYWwgKiAoIGZsb2F0KCBnbF9Gcm9udEZhY2luZyApICogMi4wIC0gMS4wICk7DQoNCiAgICAgICNlbmRpZg0KDQogICAgI2VuZGlmDQoNCiAgICAjaWZkZWYgVVNFX05PUk1BTE1BUA0KDQogICAgICBub3JtYWwgPSBwZXJ0dXJiTm9ybWFsMkFyYiggLXZWaWV3UG9zaXRpb24sIG5vcm1hbCApOw0KDQogICAgI2VsaWYgZGVmaW5lZCggVVNFX0JVTVBNQVAgKQ0KDQogICAgICBub3JtYWwgPSBwZXJ0dXJiTm9ybWFsQXJiKCAtdlZpZXdQb3NpdGlvbiwgbm9ybWFsLCBkSGR4eV9md2QoKSApOw0KDQogICAgI2VuZGlmDQogICAgLy8gRW5kIG9mIDxub3JtYWxfZnJhZ21lbnQ+IHJlcGxhY2UgYmxvY2sNCg0KICAgIC8vIGFjY3VtdWxhdGlvbg0KICAgICNpbmNsdWRlIDxsaWdodHNfcGhvbmdfZnJhZ21lbnQ+DQoNCiAgICAvLyBTdGFydCBvZiA8bGlnaHQtdGVtcGxhdGU+IHJlcGxhY2UgYmxvY2sNCiAgICBHZW9tZXRyaWNDb250ZXh0IGdlb21ldHJ5Ow0KDQogICAgZ2VvbWV0cnkucG9zaXRpb24gPSAtIHZWaWV3UG9zaXRpb247DQogICAgZ2VvbWV0cnkubm9ybWFsID0gbm9ybWFsOw0KICAgIGdlb21ldHJ5LnZpZXdEaXIgPSBub3JtYWxpemUoIHZWaWV3UG9zaXRpb24gKTsNCg0KICAgIEluY2lkZW50TGlnaHQgZGlyZWN0TGlnaHQ7DQoNCiAgICAjaWYgKCBOVU1fUE9JTlRfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdCApDQoNCiAgICAgICAgUG9pbnRMaWdodCBwb2ludExpZ2h0Ow0KDQogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9QT0lOVF9MSUdIVFM7IGkgKysgKSB7DQoNCiAgICAgICAgICAgIHBvaW50TGlnaHQgPSBwb2ludExpZ2h0c1sgaSBdOw0KDQogICAgICAgICAgICBnZXRQb2ludERpcmVjdExpZ2h0SXJyYWRpYW5jZSggcG9pbnRMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7DQoNCiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQDQogICAgICAgICAgICBkaXJlY3RMaWdodC5jb2xvciAqPSBhbGwoIGJ2ZWMyKCBwb2ludExpZ2h0LnNoYWRvdywgZGlyZWN0TGlnaHQudmlzaWJsZSApICkgPyBnZXRQb2ludFNoYWRvdyggcG9pbnRTaGFkb3dNYXBbIGkgXSwgcG9pbnRMaWdodC5zaGFkb3dNYXBTaXplLCBwb2ludExpZ2h0LnNoYWRvd0JpYXMsIHBvaW50TGlnaHQuc2hhZG93UmFkaXVzLCB2UG9pbnRTaGFkb3dDb29yZFsgaSBdICkgOiAxLjA7DQogICAgICAgICAgICAjZW5kaWYNCg0KICAgICAgICAgICAgUkVfRGlyZWN0KCBkaXJlY3RMaWdodCwgZ2VvbWV0cnksIG1hdGVyaWFsLCByZWZsZWN0ZWRMaWdodCApOw0KDQogICAgICAgIH0NCg0KICAgICNlbmRpZg0KDQogICAgI2lmICggTlVNX1NQT1RfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdCApDQoNCiAgICAgICAgU3BvdExpZ2h0IHNwb3RMaWdodDsNCg0KICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fU1BPVF9MSUdIVFM7IGkgKysgKSB7DQoNCiAgICAgICAgICAgIHNwb3RMaWdodCA9IHNwb3RMaWdodHNbIGkgXTsNCg0KICAgICAgICAgICAgZ2V0U3BvdERpcmVjdExpZ2h0SXJyYWRpYW5jZSggc3BvdExpZ2h0LCBnZW9tZXRyeSwgZGlyZWN0TGlnaHQgKTsNCg0KICAgICAgICAgICAgI2lmZGVmIFVTRV9TSEFET1dNQVANCiAgICAgICAgICAgIGRpcmVjdExpZ2h0LmNvbG9yICo9IGFsbCggYnZlYzIoIHNwb3RMaWdodC5zaGFkb3csIGRpcmVjdExpZ2h0LnZpc2libGUgKSApID8gZ2V0U2hhZG93KCBzcG90U2hhZG93TWFwWyBpIF0sIHNwb3RMaWdodC5zaGFkb3dNYXBTaXplLCBzcG90TGlnaHQuc2hhZG93Qmlhcywgc3BvdExpZ2h0LnNoYWRvd1JhZGl1cywgdlNwb3RTaGFkb3dDb29yZFsgaSBdICkgOiAxLjA7DQogICAgICAgICAgICAjZW5kaWYNCg0KICAgICAgICAgICAgUkVfRGlyZWN0KCBkaXJlY3RMaWdodCwgZ2VvbWV0cnksIG1hdGVyaWFsLCByZWZsZWN0ZWRMaWdodCApOw0KDQogICAgICAgIH0NCg0KICAgICNlbmRpZg0KDQogICAgI2lmICggTlVNX0RJUl9MSUdIVFMgPiAwICkgJiYgZGVmaW5lZCggUkVfRGlyZWN0ICkNCg0KICAgICAgICBEaXJlY3Rpb25hbExpZ2h0IGRpcmVjdGlvbmFsTGlnaHQ7DQoNCiAgICAgICAgZm9yICggaW50IGkgPSAwOyBpIDwgTlVNX0RJUl9MSUdIVFM7IGkgKysgKSB7DQoNCiAgICAgICAgICAgIGRpcmVjdGlvbmFsTGlnaHQgPSBkaXJlY3Rpb25hbExpZ2h0c1sgaSBdOw0KDQogICAgICAgICAgICBnZXREaXJlY3Rpb25hbERpcmVjdExpZ2h0SXJyYWRpYW5jZSggZGlyZWN0aW9uYWxMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7DQoNCiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQDQogICAgICAgICAgICBkaXJlY3RMaWdodC5jb2xvciAqPSBhbGwoIGJ2ZWMyKCBkaXJlY3Rpb25hbExpZ2h0LnNoYWRvdywgZGlyZWN0TGlnaHQudmlzaWJsZSApICkgPyBnZXRTaGFkb3coIGRpcmVjdGlvbmFsU2hhZG93TWFwWyBpIF0sIGRpcmVjdGlvbmFsTGlnaHQuc2hhZG93TWFwU2l6ZSwgZGlyZWN0aW9uYWxMaWdodC5zaGFkb3dCaWFzLCBkaXJlY3Rpb25hbExpZ2h0LnNoYWRvd1JhZGl1cywgdkRpcmVjdGlvbmFsU2hhZG93Q29vcmRbIGkgXSApIDogMS4wOw0KICAgICAgICAgICAgI2VuZGlmDQoNCiAgICAgICAgICAgIFJFX0RpcmVjdCggZGlyZWN0TGlnaHQsIGdlb21ldHJ5LCBtYXRlcmlhbCwgcmVmbGVjdGVkTGlnaHQgKTsNCg0KICAgICAgICB9DQoNCiAgICAjZW5kaWYNCg0KICAgICNpZiAoIE5VTV9SRUNUX0FSRUFfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdF9SZWN0QXJlYSApDQoNCiAgICAgICAgUmVjdEFyZWFMaWdodCByZWN0QXJlYUxpZ2h0Ow0KDQogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9SRUNUX0FSRUFfTElHSFRTOyBpICsrICkgew0KDQogICAgICAgICAgICByZWN0QXJlYUxpZ2h0ID0gcmVjdEFyZWFMaWdodHNbIGkgXTsNCiAgICAgICAgICAgIFJFX0RpcmVjdF9SZWN0QXJlYSggcmVjdEFyZWFMaWdodCwgZ2VvbWV0cnksIG1hdGVyaWFsLCByZWZsZWN0ZWRMaWdodCApOw0KDQogICAgICAgIH0NCg0KICAgICNlbmRpZg0KDQogICAgI2lmIGRlZmluZWQoIFJFX0luZGlyZWN0RGlmZnVzZSApDQoNCiAgICAgICAgdmVjMyBpcnJhZGlhbmNlID0gZ2V0QW1iaWVudExpZ2h0SXJyYWRpYW5jZSggYW1iaWVudExpZ2h0Q29sb3IgKTsNCg0KICAgICAgICAjaWZkZWYgVVNFX0xJR0hUTUFQDQoNCiAgICAgICAgICAgIC8vIGNvbXB1dGUgdGhlIGxpZ2h0IHZhbHVlDQogICAgICAgICAgICB2ZWMzIHVuaXQgPSB2ZWMzKDEuMCk7DQogICAgICAgICAgICB2ZWMzIGxpZ2h0ID0gMi4wICogKHRleHR1cmUyRCggbGlnaHRNYXAsIHZVdjIgKS54eXogLSBsaWdodE1hcEV4cG9zdXJlICogdW5pdCk7DQogICAgICAgICAgICAvLyBjb21wdXRlIHRoZSBsaWdodCBpbnRlbnNpdHkgbW9kaWZpZXINCiAgICAgICAgICAgIHZlYzMgbW9kaWZpZXIgPSAtbGlnaHRNYXBGYWxsb2ZmICogbGlnaHQgKiBsaWdodCArIHVuaXQ7DQogICAgICAgICAgICAvLyBhcHBseSBsaWdodA0KICAgICAgICAgICAgdmVjMyBsaWdodE1hcElycmFkaWFuY2UgPSBsaWdodCAqIG1vZGlmaWVyICogbGlnaHRNYXBJbnRlbnNpdHk7DQoNCiAgICAgICAgICAgICNpZm5kZWYgUEhZU0lDQUxMWV9DT1JSRUNUX0xJR0hUUw0KDQogICAgICAgICAgICAgICAgbGlnaHRNYXBJcnJhZGlhbmNlICo9IFBJOyAvLyBmYWN0b3Igb2YgUEkgc2hvdWxkIG5vdCBiZSBwcmVzZW50OyBpbmNsdWRlZCBoZXJlIHRvIHByZXZlbnQgYnJlYWthZ2UNCg0KICAgICAgICAgICAgI2VuZGlmDQoNCiAgICAgICAgICAgIGlycmFkaWFuY2UgKz0gbGlnaHRNYXBJcnJhZGlhbmNlOw0KDQogICAgICAgICNlbmRpZg0KDQogICAgICAgICNpZiAoIE5VTV9IRU1JX0xJR0hUUyA+IDAgKQ0KDQogICAgICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fSEVNSV9MSUdIVFM7IGkgKysgKSB7DQoNCiAgICAgICAgICAgICAgICBpcnJhZGlhbmNlICs9IGdldEhlbWlzcGhlcmVMaWdodElycmFkaWFuY2UoIGhlbWlzcGhlcmVMaWdodHNbIGkgXSwgZ2VvbWV0cnkgKTsNCg0KICAgICAgICAgICAgfQ0KDQogICAgICAgICNlbmRpZg0KDQogICAgICAgIFJFX0luZGlyZWN0RGlmZnVzZSggaXJyYWRpYW5jZSwgZ2VvbWV0cnksIG1hdGVyaWFsLCByZWZsZWN0ZWRMaWdodCApOw0KDQogICAgI2VuZGlmDQogICAgLy8gRW5kIG9mIDxsaWdodC10ZW1wbGF0ZT4gcmVwbGFjZSBibG9jaw0KDQogICAgdmVjMyBvdXRnb2luZ0xpZ2h0ID0gcmVmbGVjdGVkTGlnaHQuZGlyZWN0RGlmZnVzZSArIHJlZmxlY3RlZExpZ2h0LmluZGlyZWN0RGlmZnVzZSArIHJlZmxlY3RlZExpZ2h0LmRpcmVjdFNwZWN1bGFyICsgcmVmbGVjdGVkTGlnaHQuaW5kaXJlY3RTcGVjdWxhciArIHRvdGFsRW1pc3NpdmVSYWRpYW5jZTsNCg0KICAgIGdsX0ZyYWdDb2xvciA9IHZlYzQoIG91dGdvaW5nTGlnaHQsIGRpZmZ1c2VDb2xvci5hICk7DQoNCn0="};
 
-	var vertexShader$1 = {"text":"varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}","base64":"data:text/plain;base64,dmFyeWluZyB2ZWMzIHZWaWV3UG9zaXRpb247CiNpZm5kZWYgRkxBVF9TSEFERUQKCXZhcnlpbmcgdmVjMyB2Tm9ybWFsOwojZW5kaWYKI2luY2x1ZGUgPHV2X3BhcnNfdmVydGV4PgojaW5jbHVkZSA8dXYyX3BhcnNfdmVydGV4PgojaW5jbHVkZSA8c2hhZG93bWFwX3BhcnNfdmVydGV4Pgp2b2lkIG1haW4oKQp7CiAgI2luY2x1ZGUgPHV2X3ZlcnRleD4KICAjaW5jbHVkZSA8dXYyX3ZlcnRleD4KICAjaW5jbHVkZSA8YmVnaW5ub3JtYWxfdmVydGV4PgogICNpbmNsdWRlIDxkZWZhdWx0bm9ybWFsX3ZlcnRleD4KICAjaWZuZGVmIEZMQVRfU0hBREVECiAgCXZOb3JtYWwgPSBub3JtYWxpemUoIHRyYW5zZm9ybWVkTm9ybWFsICk7CiAgI2VuZGlmCiAgI2luY2x1ZGUgPGJlZ2luX3ZlcnRleD4KICAjaW5jbHVkZSA8cHJvamVjdF92ZXJ0ZXg+CiAgdlZpZXdQb3NpdGlvbiA9IC0gbXZQb3NpdGlvbi54eXo7CiAgI2luY2x1ZGUgPHdvcmxkcG9zX3ZlcnRleD4KICAjaW5jbHVkZSA8c2hhZG93bWFwX3ZlcnRleD4KfQ=="};
+	var vertexShader$1 = {"text":"varying vec3 vViewPosition;\r\n\r\n#ifndef FLAT_SHADED\r\n\tvarying vec3 vNormal;\r\n#endif\r\n\r\n#include <uv_pars_vertex>\r\n#include <uv2_pars_vertex>\r\n#include <shadowmap_pars_vertex>\r\n\r\nvoid main()\r\n{\r\n//  vUv = uv;\r\n  #include <uv_vertex>\r\n  #include <uv2_vertex>\r\n\r\n  #include <beginnormal_vertex>\r\n  #include <defaultnormal_vertex>\r\n\r\n  #ifndef FLAT_SHADED\r\n    // Normal computed with derivatives when FLAT_SHADED\r\n  \tvNormal = normalize( transformedNormal );\r\n  #endif\r\n\r\n  #include <begin_vertex>\r\n  #include <project_vertex>\r\n\r\n  vViewPosition = - mvPosition.xyz;\r\n\r\n  #include <worldpos_vertex>\r\n  #include <shadowmap_vertex>\r\n\r\n}","base64":"data:text/plain;base64,dmFyeWluZyB2ZWMzIHZWaWV3UG9zaXRpb247DQoNCiNpZm5kZWYgRkxBVF9TSEFERUQNCgl2YXJ5aW5nIHZlYzMgdk5vcm1hbDsNCiNlbmRpZg0KDQojaW5jbHVkZSA8dXZfcGFyc192ZXJ0ZXg+DQojaW5jbHVkZSA8dXYyX3BhcnNfdmVydGV4Pg0KI2luY2x1ZGUgPHNoYWRvd21hcF9wYXJzX3ZlcnRleD4NCg0Kdm9pZCBtYWluKCkNCnsNCi8vICB2VXYgPSB1djsNCiAgI2luY2x1ZGUgPHV2X3ZlcnRleD4NCiAgI2luY2x1ZGUgPHV2Ml92ZXJ0ZXg+DQoNCiAgI2luY2x1ZGUgPGJlZ2lubm9ybWFsX3ZlcnRleD4NCiAgI2luY2x1ZGUgPGRlZmF1bHRub3JtYWxfdmVydGV4Pg0KDQogICNpZm5kZWYgRkxBVF9TSEFERUQNCiAgICAvLyBOb3JtYWwgY29tcHV0ZWQgd2l0aCBkZXJpdmF0aXZlcyB3aGVuIEZMQVRfU0hBREVEDQogIAl2Tm9ybWFsID0gbm9ybWFsaXplKCB0cmFuc2Zvcm1lZE5vcm1hbCApOw0KICAjZW5kaWYNCg0KICAjaW5jbHVkZSA8YmVnaW5fdmVydGV4Pg0KICAjaW5jbHVkZSA8cHJvamVjdF92ZXJ0ZXg+DQoNCiAgdlZpZXdQb3NpdGlvbiA9IC0gbXZQb3NpdGlvbi54eXo7DQoNCiAgI2luY2x1ZGUgPHdvcmxkcG9zX3ZlcnRleD4NCiAgI2luY2x1ZGUgPHNoYWRvd21hcF92ZXJ0ZXg+DQoNCn0="};
 
 	var Io3dMaterial = checkDependencies ({
 	  three: true,
@@ -22174,8 +22220,6 @@
 	  'mapAlphaPreview',
 	  'mapLightPreview'
 	];
-	// TODO: use StringDecoder in Node environment
-	var textDecoder = runtime.isBrowser && window.TextDecoder ? new window.TextDecoder('utf-16') : makeUtf16Decoder();
 
 	// public methods
 
@@ -22183,12 +22227,14 @@
 
 	  // API
 	  options = options || {};
-	  var url$$1 = options.url;
+	  var url = options.url;
 
-	  if (url$$1) {
-	    var parsedUrl = Url.parse(url$$1);
-	    var rootDir = path.parse(parsedUrl.path || parsedUrl.pathname || '').dir;
-	    var origin = parsedUrl.protocol + '//' + parsedUrl.host;
+	  var parsedUrl, rootDir, origin;
+
+	  if (url) {
+	    parsedUrl = Url.parse(url);
+	    rootDir = path.parse(parsedUrl.path || parsedUrl.pathname || '').dir;
+	    origin = parsedUrl.protocol + '//' + parsedUrl.host;
 	  }
 
 	  // check buffer type
@@ -22227,7 +22273,7 @@
 	  // parse structure info
 
 	  var structureArray = new Uint16Array(buffer, HEADER_BYTE_LENGTH, structureByteLength / 2);
-	  var structureString = textDecoder.decode(structureArray);
+	  var structureString = decodeTextArray.utf16(structureArray);
 	  var structure;
 	  try {
 	    structure = JSON.parse(structureString);
@@ -22242,7 +22288,7 @@
 	  traverseData3d(structure.data3d, function (data3d) {
 
 	    // map typed arrays to payload area in file buffer
-	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url$$1);
+	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url);
 
 	    //  convert relative material keys into absolute one
 	    if (origin && data3d.materials) convertTextureKeys(data3d, origin, rootDir);
@@ -22251,35 +22297,6 @@
 
 	  return bluebird_1.resolve(structure.data3d)
 
-	}
-
-	// text decoder shim
-	function makeUtf16Decoder () {
-	  return {
-
-	    decode: function decodeText (a) {
-	      var
-	        string = '',
-	        // ignore any initial character other than '{' = 123 and '[' = 91 (>> bug #9818)
-	        i = a[0] === 123 || a[1] === 91 ? 0 : 1,
-	        l20 = a.length - 20,
-	        l2 = a.length;
-	      // passing 20 arguments into fromCharCode function provides fastest performance
-	      // (based on practical performance testing)
-	      for (; i < l20; i += 20) {
-	        string += String.fromCharCode(
-	          a[i], a[i + 1], a[i + 2], a[i + 3], a[i + 4], a[i + 5], a[i + 6], a[i + 7], a[i + 8], a[i + 9],
-	          a[i + 10], a[i + 11], a[i + 12], a[i + 13], a[i + 14], a[i + 15], a[i + 16], a[i + 17], a[i + 18], a[i + 19]
-	        );
-	      }
-	      // the rest we do char by char
-	      for (; i < l2; i++) {
-	        string += String.fromCharCode(a[i]);
-	      }
-	      return string
-	    }
-
-	  }
 	}
 
 	function convertTextureKeys (data3d, origin, rootDir) {
@@ -22314,7 +22331,7 @@
 
 	}
 
-	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url$$1) {
+	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url) {
 
 	  var mesh, i, l, meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
 
@@ -22344,7 +22361,7 @@
 	    }
 
 	    // add cache key
-	    if (url$$1) mesh.cacheKey = url$$1 + ':' + meshKeys[i];
+	    if (url) mesh.cacheKey = url + ':' + meshKeys[i];
 
 	  }
 
@@ -22413,7 +22430,27 @@
 	  params: {
 	    type: {
 	      type: 'string',
-	      possibleValues: ['plan', 'level', 'box', 'wall', 'camera-bookmark', 'interior', 'group', 'railing', 'window', 'door', 'floor', 'polyfloor', 'floorplan'],
+	      possibleValues: [
+	        'box',
+	        'camera-bookmark',
+	        'closet',
+	        'curtain',
+	        'door',
+	        'floor',
+	        'floorplan',
+	        'group',
+	        'interior',
+	        'kitchen',
+	        'level',
+	        'plan',
+	        'polybox',
+	        'polyfloor',
+	        'railing',
+	        'stairs',
+	        'tag',
+	        'wall',
+	        'window',
+	      ],
 	      optional: false
 	    },
 	    x: { // x position in meters
@@ -22479,6 +22516,90 @@
 	      type: 'number'
 	    }
 	  }
+	};
+
+	var closet = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 0.6,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 1.8,
+	      optional: false,
+	      min: 0.01
+	    },
+	    baseboard: {
+	      type: 'number',
+	      defaultValue: 0.1,
+	      optional: true,
+	      min: 0.01
+	    },
+	    doorWidth: {
+	      type: 'number',
+	      defaultValue: 0.02,
+	      optional: true,
+	      min: 0.01
+	    },
+	    handleLength: {
+	      type: 'number',
+	      defaultValue: 0.02,
+	      optional: true,
+	      min: 0.01
+	    },
+	    handleWidth: {
+	      type: 'number',
+	      defaultValue: 0.02,
+	      optional: true,
+	      min: 0.01
+	    },
+	    handleHeight: {
+	      type: 'number',
+	      defaultValue: 0.3,
+	      optional: true,
+	      min: 0.01
+	    }
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var curtain = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 0.2,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 1.8,
+	      optional: false,
+	      min: 0.01
+	    },
+	    folds: {
+	      type: 'number',
+	      defaultValue: 14,
+	      optional: true,
+	      min: 0.01
+	    }
+	  },
+	  possibleChildrenTypes: []
 	};
 
 	var door = {
@@ -22631,12 +22752,67 @@
 	      optional: false
 	    }
 	  },
-	  possibleChildrenTypes: ['interior']
+	  possibleChildrenTypes: ['interior', 'object', 'tag']
+	};
+
+	var kitchen = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 0.6,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 1.8,
+	      optional: false,
+	      min: 0.01
+	    }
+	    // TODO: add all the default values
+	  },
+	  possibleChildrenTypes: []
 	};
 
 	var level$1 = {
 	  params: {},
-	  possibleChildrenTypes: ['interior', 'wall', 'railing', 'floor', 'polyfloor', 'floorplan', 'group', 'box']
+	  possibleChildrenTypes: [
+	    'box',
+	    'closet',
+	    'curtain',
+	    'floor',
+	    'floorplan',
+	    'group',
+	    'interior',
+	    'kitchen',
+	    'object',
+	    'polybox',
+	    'polyfloor',
+	    'railing',
+	    'stairs',
+	    'tag',
+	    'wall'
+	  ]
+	};
+
+	var object = {
+	  params: {
+	    object: {
+	      type: 'string',
+	      optional: false
+	    },
+	    sourceScale: {
+	      type: 'number',
+	      optional: true
+	    }
+	  },
+	  possibleChildrenTypes: ['interior']
 	};
 
 	var plan = {
@@ -22652,6 +22828,23 @@
 	    }
 	  },
 	  possibleChildrenTypes: ['level', 'camera-bookmark']
+	};
+
+	var polybox = {
+	  params: {
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    polygon: {
+	      //type: 'array-with-arrays-with-numbers',
+	      type: 'array',
+	      optional: false
+	    }
+	  },
+	  possibleChildrenTypes: []
 	};
 
 	var polyfloor = {
@@ -22699,6 +22892,57 @@
 	      type: 'number',
 	      optional: false,
 	      min: 0.01
+	    },
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var stairs = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 1.2,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 4,
+	      optional: false,
+	      min: 0.01
+	    },
+	    stepWidth: {
+	      type: 'number',
+	      defaultValue: 1.2,
+	      optional: true,
+	      min: 0.01
+	    },
+	    stairType: {
+	      type: 'string',
+	      defaultValue: 'straight',
+	      optional: true,
+	      min: 0.01
+	    }
+	    // TODO: add all default values
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var tag = {
+	  params: {
+	    title: {
+	      type: 'string',
+	      optional: false
+	    },
+	    notes: {
+	      type: 'string',
+	      optional: true
 	    },
 	  },
 	  possibleChildrenTypes: []
@@ -22776,15 +23020,22 @@
 	  var types = {
 	    box: box,
 	    'camera-bookmark': cameraBookmark,
+	    closet: closet,
+	    curtain: curtain,
 	    door: door,
 	    floor: floor,
 	    floorplan: floorplan,
 	    group: group,
 	    interior: interior,
+	    kitchen: kitchen,
 	    level: level$1,
+	    object: object,
 	    plan: plan,
+	    polybox: polybox,
 	    polyfloor: polyfloor,
 	    railing: railing,
+	    stairs: stairs,
+	    tag: tag,
 	    wall: wall,
 	    window: window$1
 	  };
@@ -26482,6 +26733,7 @@
 	  // write structure data into file buffer
 	  
 	  var structureArray = new Uint16Array( fileBuffer, HEADER_BYTE_LENGTH$1, structureByteLength / 2 );
+	  // encode string to utf-16 array
 	  for (i = 0, l = structureString.length; i < l; i++) {
 	    structureArray[i] = structureString.charCodeAt(i);
 	  }
@@ -27061,9 +27313,9 @@
 	  // do nothing if there is no message
 	  if (!message || message === '') return bluebird_1.resolve()
 	  // default expire value is 4 secs
-	  var expire = expire !== undefined ? expire : 4000; // ms
+	  expire = expire !== undefined ? expire : 4000; // ms
 	  // default message type
-	  var type = type || 'neutral'; // can be: neutral, success, warning, error
+	  type = type || 'neutral'; // can be: neutral, success, warning, error
 
 	  // internals
 	  var isClosed = false;
