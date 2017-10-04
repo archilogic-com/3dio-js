@@ -27,6 +27,7 @@ import path                         from './utils/path.js'
 import wait                         from './utils/wait.js'
 import callService                  from './utils/services/call.js'
 import whenDone                     from './utils/processing/when-done.js'
+import whenHiResTexturesReady       from './utils/processing/when-hi-res-textures-ready.js'
 
 var utils = {
 
@@ -65,7 +66,8 @@ var utils = {
     getMd5Hash: getMd5FileHash
   },
   processing: {
-    whenDone: whenDone
+    whenDone: whenDone,
+    whenHiResTexturesReady: whenHiResTexturesReady
   },
   url: url,
   uuid: uuid,
