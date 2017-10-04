@@ -81,12 +81,16 @@ function normalizeInput(input) {
 }
 
 function getSceneStructureFromFurnishingResult(result) {
-  var furnishing = result.furnishings
-  var spaceIds = Object.keys(furnishing)
-  if (!uuid.validate(spaceIds[0])) return Promise.reject('No furnishings were found')
+  // assumes that only one space is furnished at a time
+  var spaceId = Object.keys(result.furnishings)[0]
+
+  if (spaceId in result.errors) {
+    return Promise.reject(result.errors[spaceId])
+  }
 
   // get furniture groups from api result
-  var groups = furnishing[spaceIds[0]][0].groups
+  // assumes that only one result is requested from the home stagin API
+  var groups = result.furnishings[spaceId][0].groups
 
   // get normailzed sceneStructure for each furniture group
   return Promise.map(groups, getFurnitureGroupData)
