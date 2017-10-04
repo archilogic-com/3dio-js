@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.3
- * @date 2017/10/04 01:27
+ * @version 1.0.4
+ * @date 2017/10/04 16:05
  * @branch master
- * @commit d354d78b736b5f63f3b39f549b23a4ec57ceef12
+ * @commit 1ada0cb04434d4a7fc0fa8b4dd0caa332fcafe66
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/10/04 01:27', GIT_BRANCH = 'master', GIT_COMMIT = 'd354d78b736b5f63f3b39f549b23a4ec57ceef12'
+	var BUILD_DATE='2017/10/04 16:05', GIT_BRANCH = 'master', GIT_COMMIT = '1ada0cb04434d4a7fc0fa8b4dd0caa332fcafe66'
 
 	var name = "3dio";
-	var version = "1.0.3";
+	var version = "1.0.4";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -24727,353 +24727,6 @@
 
 	};
 
-	function getTextureKeys(data3d, options) {
-	  // API
-	  var options = options || {};
-	  var filter = options.filter;
-
-	  // internals
-	  var cache = {};
-
-	  // internals
-	  traverseData3d$1.materials(data3d, function(material) {
-	    var filteredResult, attr, type, format, value;
-	    for (var i = 0, l = ATTRIBUTES.length; i < l; i++) {
-	      attr = ATTRIBUTES[i];
-	      value = material[attr];
-
-	      // apply filter function if specified in options
-	      if (filter) {
-	        // provide info on type and format of texture to the filter function
-	        type = ATTRIBUTE_TO_TYPE[attr];
-	        format = ATTRIBUTE_TO_FORMAT[attr];
-	        value = filter(value, type, format, material, data3d);
-	      }
-
-	      if (value) cache[value] = true;
-	    }
-	  });
-
-	  return Object.keys(cache)
-	}
-
-	// constants
-
-	var ATTRIBUTES = [
-	  'mapDiffuse',
-	  'mapDiffusePreview',
-	  'mapDiffuseSource',
-	  // specular
-	  'mapSpecular',
-	  'mapSpecularPreview',
-	  'mapSpecularSource',
-	  // normal
-	  'mapNormal',
-	  'mapNormalPreview',
-	  'mapNormalSource',
-	  // alpha
-	  'mapAlpha',
-	  'mapAlphaPreview',
-	  'mapAlphaSource'
-	];
-
-	var ATTRIBUTE_TO_TYPE = {
-	  // diffuse
-	  mapDiffuse: 'diffuse',
-	  mapDiffusePreview: 'diffuse',
-	  mapDiffuseSource: 'diffuse',
-	  // specular
-	  mapSpecular: 'specular',
-	  mapSpecularPreview: 'specular',
-	  mapSpecularSource: 'specular',
-	  // normal
-	  mapNormal: 'normal',
-	  mapNormalPreview: 'normal',
-	  mapNormalSource: 'normal',
-	  // alpha
-	  mapAlpha: 'alpha',
-	  mapAlphaPreview: 'alpha',
-	  mapAlphaSource: 'alpha'
-	};
-
-	var ATTRIBUTE_TO_FORMAT = {
-	  // loRes
-	  mapDiffusePreview: 'loRes',
-	  mapSpecularPreview: 'loRes',
-	  mapNormalPreview: 'loRes',
-	  mapAlphaPreview: 'loRes',
-	  // source
-	  mapDiffuseSource: 'source',
-	  mapSpecularSource: 'source',
-	  mapNormalSource: 'source',
-	  mapAlphaSource: 'source',
-	  // dds
-	  mapDiffuse: 'dds',
-	  mapSpecular: 'dds',
-	  mapNormal: 'dds',
-	  mapAlpha: 'dds'
-	};
-
-	function getConvertableTextures(storageId) {
-	  var url = getUrlFromStorageId(storageId);
-	  return loadData3d(url)
-	    .then(function(data3d) {
-	      return getTextureKeys(data3d)
-	    })
-	    .then(function(textures) {
-	      return textures.map(getStorageIdFromUrl)
-	    })
-	}
-
-	function getConverter(format) {
-	  return function convert(storageId, options) {
-	    // API
-	    options = options || {};
-	    var filename = options.filename !== undefined ? options.filename : null;
-
-	    return getConvertableTextures(storageId).then(function(textureKeys) {
-	      return callService('Processing.task.enqueue', {
-	        method: 'convert',
-	        params: {
-	          inputFileKey: storageId,
-	          options: {
-	            inputAssetKeys: textureKeys,
-	            outputFormat: format,
-	            outputFilename: filename
-	          }
-	        }
-	      })
-	    })
-	  }
-	}
-
-	var convert = {
-	  exportDae: getConverter('dae'),
-	  exportObj: getConverter('obj')
-	};
-
-	var storage = {
-	  get: getFromStorage,
-	  put: putToStorage,
-	  getUrlFromStorageId: getUrlFromStorageId,
-	  getNoCdnUrlFromStorageId: getNoCdnUrlFromStorageId,
-	  getStorageIdFromUrl: getStorageIdFromUrl,
-	  exportObj: convert.exportObj,
-	  exportDae: convert.exportDae
-	};
-
-	function getSceneStructure (id) {
-	  if (!uuid.validate(id)) return Promise.reject('id not valid')
-	  return callService('Model.read', { arguments: {resourceId:id}})
-	    .then(function(result) {
-	      var sceneStructure = result.modelStructure;
-	      sceneStructure.id = result.modelResourceId;
-	      sceneStructure.v = 1;
-	      sceneStructure.modelDisplayName = result.modelDisplayName;
-	      sceneStructure.modelResourceName = result.modelResourceName;
-	      return sceneStructure
-	    })
-	}
-
-	function getAframeElements(id) {
-	  return getSceneStructure(id)
-	    .then(toAframeElements)
-	}
-
-	function getViewerUrl (args) {
-	  return 'https://spaces.archilogic.com/3d/!'+args.sceneId
-	}
-
-	var ErrorCodes = {
-	  OK: 0,
-	  MIN_VALUE: 1,
-	  MAX_VALUE: 2,
-	  MISSED: 3,
-	  NOT_SUPPOPRTED: 4,
-	  VALUE: 5,
-	  TYPE: 6,
-	  CHILDREN_TYPE: 7
-	};
-
-	var typeSpecificValidations = getDefaultsByType();
-
-	// methods
-
-	function validateSceneStructure (elements3d) {
-
-	  var result = {
-	    isValid: true,
-	    validatedSceneStructure: null,
-	    warnings: [],
-	    errors: []
-	  };
-
-	  // model structure can be a sole element or array of element
-	  // make sure we return the same type
-	  var inputIsArray = Array.isArray(elements3d);
-	  // start recursive validation
-	  var validatedSceneStructure = validateElements3d(result, inputIsArray ? elements3d : [elements3d]);
-	  // add result to in corresponding input type
-	  result.validatedSceneStructure = inputIsArray ? validatedSceneStructure : validatedSceneStructure[0];
-
-	  return Promise.resolve(result)
-
-	}
-
-	function validateElements3d (result, sourceElements3d, parentType) {
-	  var validatedElements3d = [];
-
-	  sourceElements3d.forEach(function (sourceElement3d) {
-
-	    // validate if children types are correct
-	    if (parentType) {
-	      var validChild = typeSpecificValidations[parentType].possibleChildrenTypes.indexOf(sourceElement3d.type) > -1;
-	      if (!validChild)  {
-	        result.isValid = false;
-	        var message = '"' + sourceElement3d.type + '" is invalid child for "' + parentType + '"';
-	        result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.CHILDREN_TYPE});
-	        return
-	      }
-	    }
-
-	    if (!sourceElement3d || !sourceElement3d.type) {
-	      // missing type param => invalid
-	      result.isValid = false;
-	      var message = 'Missing "type" parameter';
-	      result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.TYPE});
-	      return
-	    } else if (!typeSpecificValidations[sourceElement3d.type]) {
-	      // missing type validation (typ not supported) => invalid
-	      result.isValid = false;
-	      var message = 'Parameter "type" of value "'+sourceElement3d.type+'" is not supported';
-	      result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.NOT_SUPPOPRTED});
-	      return
-	    }
-
-	    var validatedElement3d = {};
-	    var passedValidations = validateParams(result, typeSpecificValidations[sourceElement3d.type], sourceElement3d, validatedElement3d);
-
-	    // if element passed validations...
-	    if (passedValidations) {
-
-	      // add to array
-	      validatedElements3d.push(validatedElement3d);
-
-	      // parse children
-	      if (validatedElement3d.children && validatedElement3d.children.length) {
-	        validatedElement3d.children = validateElements3d(result, validatedElement3d.children, validatedElement3d.type);
-	      }
-
-	    }
-
-	  });
-
-	  return validatedElements3d
-	}
-
-	function validateParams (result, validations, sourceElement3d, validatedElement3d) {
-
-	  var isValid = true;
-
-	  // iterate through param validations and copy valid params from source to validated element
-	  Object.keys(validations.params).sort().forEach(function (paramName) {
-	    var v = validations.params[paramName];
-	    var value = sourceElement3d[paramName];
-
-	    if (value !== undefined) {
-
-	      // check type
-	      var paramValueType = getParamValueType(value);
-	      if (v.type !== paramValueType) {
-	        isValid = false;
-	        var message = 'Parameter "' + paramName + '" is of type "' + paramValueType + '" but should be type "' + v.type + '"';
-	        result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.TYPE});
-	        return
-	      }
-
-	      // check if value allowed
-	      if (v.possibleValues !== undefined && v.possibleValues.indexOf(value) === -1) {
-	        isValid = false;
-	        var message = 'Parameter "' + paramName + '" has value "' + value + '" but should be one of: ' + JSON.stringify(v.possibleValues);
-	        result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.VALUE});
-	        return
-	      }
-
-	      // check if above min
-	      if (v.min !== undefined && (v.type === 'number' && value <= v.min)) {
-	        isValid = false;
-	        var message = 'Parameter "' + paramName + '" has value ' + value + ' which is below allowed minimum of ' + v.min;
-	        result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.MIN_VALUE});
-	        return
-	      }
-
-	      // check if below max
-	      if (v.max !== undefined && (v.type === 'number' && value >= v.max)) {
-	        isValid = false;
-	        var message = 'Parameter "' + paramName + '" has value ' + value + ' which is above allowed maximum of ' + v.max;
-	        result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.MAX_VALUE});
-	        return
-	      }
-
-	      // everything ok: assign value to validated object
-	      validatedElement3d[paramName] = value;
-
-	    } else if (!v.optional) {
-	      // param not set but mandatory
-
-	      isValid = false;
-	      var message = 'Parameter "' + paramName + '" is mandatory but not set';
-	      result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.MISSED});
-	      return
-
-	    }
-
-	  });
-
-	  // check for unexpected params
-	  Object.keys(sourceElement3d).forEach(function (paramName) {
-	    if (!validations.params[paramName]) {
-	      var message = 'Parameter "' + paramName + '" is not supported and will be ignored';
-	      result.warnings.push({message: message, item: sourceElement3d, code: ErrorCodes.NOT_SUPPOPRTED});
-	    }
-	  });
-
-	  if (!isValid) result.isValid = false;
-	  return isValid
-
-	}
-
-	function getParamValueType (value) {
-	  if (Array.isArray(value)) {
-	    // TODO: add support for more sophisticated array types
-	    // array-with-objects, array-with-numbers, array-with-arrays-with-numbers
-	    return 'array'
-	  } else {
-	    return typeof value
-	  }
-	}
-
-	var scene = {
-	  getStructure: getSceneStructure,
-	  getHtml: getHtml,
-	  getAframeElements: getAframeElements,
-	  getViewerUrl: getViewerUrl,
-	  validateSceneStructure: validateSceneStructure,
-	  normalizeSceneStructure: normalizeSceneStructure,
-	  getHtmlFromSceneStructure: getHtmlFromSceneStructure,
-	  getAframeElementsFromSceneStructure: toAframeElements
-	};
-
-	function getHtml() {
-	  console.warn('io3d.scene.getHtml will be removed soon please use io3d.scene.getAframeElements');
-	  return getAframeElements.apply( getAframeElements, arguments )
-	}
-
-	function getHtmlFromSceneStructure() {
-	  console.warn('io3d.scene.getHtmlFromSceneStructure will be removed soon please use io3d.scene.getAframeElementsFromSceneStructure');
-	  return toAframeElements.apply( toAframeElements, arguments )
-	}
-
 	// methods
 
 	function projectAxisY (v) {
@@ -26830,6 +26483,93 @@
 	  })
 	}
 
+	function getTextureKeys(data3d, options) {
+	  // API
+	  var options = options || {};
+	  var filter = options.filter;
+
+	  // internals
+	  var cache = {};
+
+	  // internals
+	  traverseData3d$1.materials(data3d, function(material) {
+	    var filteredResult, attr, type, format, value;
+	    for (var i = 0, l = ATTRIBUTES.length; i < l; i++) {
+	      attr = ATTRIBUTES[i];
+	      value = material[attr];
+
+	      // apply filter function if specified in options
+	      if (filter) {
+	        // provide info on type and format of texture to the filter function
+	        type = ATTRIBUTE_TO_TYPE[attr];
+	        format = ATTRIBUTE_TO_FORMAT[attr];
+	        value = filter(value, type, format, material, data3d);
+	      }
+
+	      if (value) cache[value] = true;
+	    }
+	  });
+
+	  return Object.keys(cache)
+	}
+
+	// constants
+
+	var ATTRIBUTES = [
+	  'mapDiffuse',
+	  'mapDiffusePreview',
+	  'mapDiffuseSource',
+	  // specular
+	  'mapSpecular',
+	  'mapSpecularPreview',
+	  'mapSpecularSource',
+	  // normal
+	  'mapNormal',
+	  'mapNormalPreview',
+	  'mapNormalSource',
+	  // alpha
+	  'mapAlpha',
+	  'mapAlphaPreview',
+	  'mapAlphaSource'
+	];
+
+	var ATTRIBUTE_TO_TYPE = {
+	  // diffuse
+	  mapDiffuse: 'diffuse',
+	  mapDiffusePreview: 'diffuse',
+	  mapDiffuseSource: 'diffuse',
+	  // specular
+	  mapSpecular: 'specular',
+	  mapSpecularPreview: 'specular',
+	  mapSpecularSource: 'specular',
+	  // normal
+	  mapNormal: 'normal',
+	  mapNormalPreview: 'normal',
+	  mapNormalSource: 'normal',
+	  // alpha
+	  mapAlpha: 'alpha',
+	  mapAlphaPreview: 'alpha',
+	  mapAlphaSource: 'alpha'
+	};
+
+	var ATTRIBUTE_TO_FORMAT = {
+	  // loRes
+	  mapDiffusePreview: 'loRes',
+	  mapSpecularPreview: 'loRes',
+	  mapNormalPreview: 'loRes',
+	  mapAlphaPreview: 'loRes',
+	  // source
+	  mapDiffuseSource: 'source',
+	  mapSpecularSource: 'source',
+	  mapNormalSource: 'source',
+	  mapAlphaSource: 'source',
+	  // dds
+	  mapDiffuse: 'dds',
+	  mapSpecular: 'dds',
+	  mapNormal: 'dds',
+	  mapAlpha: 'dds'
+	};
+
 	/*
 	input: data3d (object or binary) or storageId (referencing data3d)
 	returns promise
@@ -26842,7 +26582,7 @@
 	  // - PVRTC for iOS (not yet implemented)
 	  // - ETC1 for Android (not yet implemented)
 
-	  return normalizeInput$2(input).then(function (data3d) {
+	  return normalizeInput$1(input).then(function (data3d) {
 
 	    var values = getTextureKeys(data3d, {
 	      filter: function (value, type, format, material, data3d) {
@@ -26858,7 +26598,7 @@
 
 	// helpers
 
-	function normalizeInput$2(input) {
+	function normalizeInput$1(input) {
 	  var inputType = typeof input;
 	  if (inputType === 'string') {
 	    // load data3d from URL
@@ -26893,67 +26633,301 @@
 
 	// main
 
-	/*
-	 input: dom selector referencing aframe element, file, array of files, three.js Object3D
-	 returns storageId
-	 */
-	function publish(input) {
+	function importThreeObject(o) {
 
-	  return normalizeInput$1(input)
+	  return getData3dFromThreeJs(o)
 	    .then(encodeBinary)
 	    .then(putToStorage)
 
 	}
 
-	// public methods
+	function importAframeElement(selector) {
 
-	publish.whenHiResTexturesReady = whenHiResTexturesReady;
+	  var threeObject = document.querySelector(selector).object3D;
 
-	// private methods
+	  return importThreeObject(threeObject)
 
-	/*
-	 input: dom selector referencing aframe element, file, array of files, three.js Object3D
-	 returns data3d
-	 */
-	function normalizeInput$1(input) {
+	}
 
-	  if (typeof input === 'string') {
+	function getConvertableTextureKeys(storageId) {
 
-	    if (input[0] === '#' || input === 'a-scene') {
-	      // selector
-	      return getData3dFromThreeJs(document.querySelector(input).object3D)
+	  var url = getUrlFromStorageId(storageId);
 
-	    } else {
-	      // url
-	      return fetch(input).then(function(response){
-	        return response.blob()
-	      }).then(getData3dFromFiles)
-	    }
+	  return loadData3d(url)
+	    .then(getTextureKeys)
+	    .then(function(textures) {
+	      return textures.map(getStorageIdFromUrl)
+	    })
 
-	  } else if (Array.isArray(input) || input instanceof Blob) {
-	    // files
-	    return getData3dFromFiles(input)
+	}
 
-	  } else if (typeof input === 'object' && input.isObject3D) {
-	    // three.js object
-	    return getData3dFromThreeJs(input)
+	function getExporter(format) {
+	  return function exportModel(storageId, options) {
 
-	  } else {
-	    // not supported
-	    throw new Error('Unknown input param')
+	    // API
+	    options = options || {};
+	    var filename = options.filename !== undefined ? options.filename : null;
+
+	    return getConvertableTextureKeys(storageId).then(function(textureIds) {
+
+	      var params = {
+	        method: 'convert',
+	        params: {
+	          inputFileKey: storageId,
+	          options: {
+	            inputAssetKeys: textureIds,
+	            outputFormat: format,
+	            outputFilename: filename
+	          }
+	        }
+	      };
+
+	      return callService('Processing.task.enqueue', params)
+
+	    })
 	  }
 	}
 
-	/*
-	input: file or array of files
-	returns data3d
-	 */
-	function getData3dFromFiles(files) {
+	// expose API
 
-	  // TODO: implement
-	  if (!Arrray.isArray(files)) files = [files];
-	  return Promise.reject('Importing files is not supported yet')
+	var modelExporter = {
+	  export3ds: getExporter('3ds'),
+	  exportBlend: getExporter('blend'),
+	  exportDae: getExporter('dae'),
+	  exportFbx: getExporter('fbx'),
+	  exportObj: getExporter('obj')
+	};
 
+	var storage = {
+	  // low level
+	  get: getFromStorage,
+	  put: putToStorage,
+	  // import
+	  importThreeObject: importThreeObject,
+	  importAframeElement: importAframeElement,
+	  // export
+	  export3ds: modelExporter.export3ds,
+	  exportBlend: modelExporter.exportBlend,
+	  exportDae: modelExporter.exportDae,
+	  exportFbx: modelExporter.exportFbx,
+	  exportObj: modelExporter.exportObj,
+	  // helpers
+	  getUrlFromStorageId: getUrlFromStorageId,
+	  getNoCdnUrlFromStorageId: getNoCdnUrlFromStorageId,
+	  getStorageIdFromUrl: getStorageIdFromUrl
+
+	};
+
+	function getSceneStructure (id) {
+	  if (!uuid.validate(id)) return Promise.reject('id not valid')
+	  return callService('Model.read', { arguments: {resourceId:id}})
+	    .then(function(result) {
+	      var sceneStructure = result.modelStructure;
+	      sceneStructure.id = result.modelResourceId;
+	      sceneStructure.v = 1;
+	      sceneStructure.modelDisplayName = result.modelDisplayName;
+	      sceneStructure.modelResourceName = result.modelResourceName;
+	      return sceneStructure
+	    })
+	}
+
+	function getAframeElements(id) {
+	  return getSceneStructure(id)
+	    .then(toAframeElements)
+	}
+
+	function getViewerUrl (args) {
+	  return 'https://spaces.archilogic.com/3d/!'+args.sceneId
+	}
+
+	var ErrorCodes = {
+	  OK: 0,
+	  MIN_VALUE: 1,
+	  MAX_VALUE: 2,
+	  MISSED: 3,
+	  NOT_SUPPOPRTED: 4,
+	  VALUE: 5,
+	  TYPE: 6,
+	  CHILDREN_TYPE: 7
+	};
+
+	var typeSpecificValidations = getDefaultsByType();
+
+	// methods
+
+	function validateSceneStructure (elements3d) {
+
+	  var result = {
+	    isValid: true,
+	    validatedSceneStructure: null,
+	    warnings: [],
+	    errors: []
+	  };
+
+	  // model structure can be a sole element or array of element
+	  // make sure we return the same type
+	  var inputIsArray = Array.isArray(elements3d);
+	  // start recursive validation
+	  var validatedSceneStructure = validateElements3d(result, inputIsArray ? elements3d : [elements3d]);
+	  // add result to in corresponding input type
+	  result.validatedSceneStructure = inputIsArray ? validatedSceneStructure : validatedSceneStructure[0];
+
+	  return Promise.resolve(result)
+
+	}
+
+	function validateElements3d (result, sourceElements3d, parentType) {
+	  var validatedElements3d = [];
+
+	  sourceElements3d.forEach(function (sourceElement3d) {
+
+	    // validate if children types are correct
+	    if (parentType) {
+	      var validChild = typeSpecificValidations[parentType].possibleChildrenTypes.indexOf(sourceElement3d.type) > -1;
+	      if (!validChild)  {
+	        result.isValid = false;
+	        var message = '"' + sourceElement3d.type + '" is invalid child for "' + parentType + '"';
+	        result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.CHILDREN_TYPE});
+	        return
+	      }
+	    }
+
+	    if (!sourceElement3d || !sourceElement3d.type) {
+	      // missing type param => invalid
+	      result.isValid = false;
+	      var message = 'Missing "type" parameter';
+	      result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.TYPE});
+	      return
+	    } else if (!typeSpecificValidations[sourceElement3d.type]) {
+	      // missing type validation (typ not supported) => invalid
+	      result.isValid = false;
+	      var message = 'Parameter "type" of value "'+sourceElement3d.type+'" is not supported';
+	      result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.NOT_SUPPOPRTED});
+	      return
+	    }
+
+	    var validatedElement3d = {};
+	    var passedValidations = validateParams(result, typeSpecificValidations[sourceElement3d.type], sourceElement3d, validatedElement3d);
+
+	    // if element passed validations...
+	    if (passedValidations) {
+
+	      // add to array
+	      validatedElements3d.push(validatedElement3d);
+
+	      // parse children
+	      if (validatedElement3d.children && validatedElement3d.children.length) {
+	        validatedElement3d.children = validateElements3d(result, validatedElement3d.children, validatedElement3d.type);
+	      }
+
+	    }
+
+	  });
+
+	  return validatedElements3d
+	}
+
+	function validateParams (result, validations, sourceElement3d, validatedElement3d) {
+
+	  var isValid = true;
+
+	  // iterate through param validations and copy valid params from source to validated element
+	  Object.keys(validations.params).sort().forEach(function (paramName) {
+	    var v = validations.params[paramName];
+	    var value = sourceElement3d[paramName];
+
+	    if (value !== undefined) {
+
+	      // check type
+	      var paramValueType = getParamValueType(value);
+	      if (v.type !== paramValueType) {
+	        isValid = false;
+	        var message = 'Parameter "' + paramName + '" is of type "' + paramValueType + '" but should be type "' + v.type + '"';
+	        result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.TYPE});
+	        return
+	      }
+
+	      // check if value allowed
+	      if (v.possibleValues !== undefined && v.possibleValues.indexOf(value) === -1) {
+	        isValid = false;
+	        var message = 'Parameter "' + paramName + '" has value "' + value + '" but should be one of: ' + JSON.stringify(v.possibleValues);
+	        result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.VALUE});
+	        return
+	      }
+
+	      // check if above min
+	      if (v.min !== undefined && (v.type === 'number' && value <= v.min)) {
+	        isValid = false;
+	        var message = 'Parameter "' + paramName + '" has value ' + value + ' which is below allowed minimum of ' + v.min;
+	        result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.MIN_VALUE});
+	        return
+	      }
+
+	      // check if below max
+	      if (v.max !== undefined && (v.type === 'number' && value >= v.max)) {
+	        isValid = false;
+	        var message = 'Parameter "' + paramName + '" has value ' + value + ' which is above allowed maximum of ' + v.max;
+	        result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.MAX_VALUE});
+	        return
+	      }
+
+	      // everything ok: assign value to validated object
+	      validatedElement3d[paramName] = value;
+
+	    } else if (!v.optional) {
+	      // param not set but mandatory
+
+	      isValid = false;
+	      var message = 'Parameter "' + paramName + '" is mandatory but not set';
+	      result.errors.push({message: message, item: sourceElement3d, code: ErrorCodes.MISSED});
+	      return
+
+	    }
+
+	  });
+
+	  // check for unexpected params
+	  Object.keys(sourceElement3d).forEach(function (paramName) {
+	    if (!validations.params[paramName]) {
+	      var message = 'Parameter "' + paramName + '" is not supported and will be ignored';
+	      result.warnings.push({message: message, item: sourceElement3d, code: ErrorCodes.NOT_SUPPOPRTED});
+	    }
+	  });
+
+	  if (!isValid) result.isValid = false;
+	  return isValid
+
+	}
+
+	function getParamValueType (value) {
+	  if (Array.isArray(value)) {
+	    // TODO: add support for more sophisticated array types
+	    // array-with-objects, array-with-numbers, array-with-arrays-with-numbers
+	    return 'array'
+	  } else {
+	    return typeof value
+	  }
+	}
+
+	var scene = {
+	  getStructure: getSceneStructure,
+	  getHtml: getHtml,
+	  getAframeElements: getAframeElements,
+	  getViewerUrl: getViewerUrl,
+	  validateSceneStructure: validateSceneStructure,
+	  normalizeSceneStructure: normalizeSceneStructure,
+	  getHtmlFromSceneStructure: getHtmlFromSceneStructure,
+	  getAframeElementsFromSceneStructure: toAframeElements
+	};
+
+	function getHtml() {
+	  console.warn('io3d.scene.getHtml will be removed soon please use io3d.scene.getAframeElements');
+	  return getAframeElements.apply( getAframeElements, arguments )
+	}
+
+	function getHtmlFromSceneStructure() {
+	  console.warn('io3d.scene.getHtmlFromSceneStructure will be removed soon please use io3d.scene.getAframeElementsFromSceneStructure');
+	  return toAframeElements.apply( toAframeElements, arguments )
 	}
 
 	function convertFloorPlanToBasic3dModel (args) {
@@ -29356,7 +29330,8 @@
 	    getMd5Hash: getMd5Hash
 	  },
 	  processing: {
-	    whenDone: getResult
+	    whenDone: getResult,
+	    whenHiResTexturesReady: whenHiResTexturesReady
 	  },
 	  url: Url,
 	  uuid: uuid,
@@ -29376,7 +29351,6 @@
 	  staging:staging,
 	  storage: storage,
 	  scene: scene,
-	  publish: publish,
 	  floorPlan: floorPlan,
 	  light: light,
 
