@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.4
- * @date 2017/10/04 16:05
+ * @version 1.0.5
+ * @date 2017/10/06 23:12
  * @branch master
- * @commit 1ada0cb04434d4a7fc0fa8b4dd0caa332fcafe66
+ * @commit 966024f8b2e58d3e1455d714ff2368c62983938e
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/10/04 16:05', GIT_BRANCH = 'master', GIT_COMMIT = '1ada0cb04434d4a7fc0fa8b4dd0caa332fcafe66'
+	var BUILD_DATE='2017/10/06 23:12', GIT_BRANCH = 'master', GIT_COMMIT = '966024f8b2e58d3e1455d714ff2368c62983938e'
 
 	var name = "3dio";
-	var version = "1.0.4";
+	var version = "1.0.5";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -22420,10 +22420,23 @@
 	  })
 	}
 
+	function getFurnitureData3dStorageId (furnitureId) {
+	  return callService('Product.read', { resourceId:furnitureId }).then(function(rawInfo){
+
+	    var info = normalizeFurnitureInfo(rawInfo);
+
+	    // some furniture might not have a storage id (i.e. groups)
+	    var storageId = info && info.data3dStorageId ? info.data3dStorageId : null;
+
+	    return storageId ? storageId : Promise.reject('This furniture has no own Storage ID (i.e. is a group of furniture objects)')
+	  })
+	}
+
 	var furniture = {
 	  search: searchFurniture,
 	  get: getFurniture,
-	  getInfo: getFurnitureInfo
+	  getInfo: getFurnitureInfo,
+	  getData3dStorageId: getFurnitureData3dStorageId
 	};
 
 	var generic = {
@@ -23192,12 +23205,16 @@
 	}
 
 	function getSceneStructureFromFurnishingResult(result) {
-	  var furnishing = result.furnishings;
-	  var spaceIds = Object.keys(furnishing);
-	  if (!uuid.validate(spaceIds[0])) return bluebird_1.reject('No furnishings were found')
+	  // assumes that only one space is furnished at a time
+	  var spaceId = Object.keys(result.furnishings)[0];
+
+	  if (spaceId in result.errors) {
+	    return bluebird_1.reject(result.errors[spaceId])
+	  }
 
 	  // get furniture groups from api result
-	  var groups = furnishing[spaceIds[0]][0].groups;
+	  // assumes that only one result is requested from the home stagin API
+	  var groups = result.furnishings[spaceId][0].groups;
 
 	  // get normailzed sceneStructure for each furniture group
 	  return bluebird_1.map(groups, getFurnitureGroupData)
