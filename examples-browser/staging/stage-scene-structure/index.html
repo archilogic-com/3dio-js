@@ -21,6 +21,7 @@
         <li data-label="dining">Dining</li>
         <li data-label="bedroom">Bedroom</li>
         <li data-label="homeOffice">Home Office</li>
+        <input id="tag-input"/>
       </ul>
     </div>
     <!-- 3d scene -->
@@ -31,7 +32,8 @@
       io3d.config({
         // home staging need api keys
         // get yours from https://3d.io
-        publishableApiKey: null
+        servicesUrl: 'https://testing.archilogic.com/api/v2',
+        publishableApiKey: '213edd35-0500-4953-bbc1-b4d7535d604f'
       })
 
       // Archilogic scene we want to load
@@ -39,6 +41,8 @@
       const sceneEl = document.querySelector('a-scene')
       const menuEl = document.querySelector('#select-label')
       const labelsEl = document.querySelectorAll('#select-label li')
+      const tagEl = document.querySelector('#tag-input')
+
       let levelEl
       let sceneStructure
       let addedItems = {}
@@ -68,11 +72,11 @@
         })
 
       // furnish a specific space
-      function furnish(id, label) {
+      function furnish(id, label, tags) {
         // const label = labelsEl.value
         if (!sceneStructure) return
         // home staging api call
-        io3d.staging.getFurnishings(sceneStructure, {spaceId: id, label: label})
+        io3d.staging.getFurnishings(sceneStructure, {spaceId: id, label: label, tags: tags})
           .then(result => {
             // do get these into A-Frame we can use
             // the getAframeElementsFromSceneStructure method
@@ -162,7 +166,8 @@
             var id = space.getAttribute('space-id')
             var label = e.target.getAttribute('data-label')
             menuEl.style.display = 'none'
-            furnish(id, label)
+            var tags = tagEl.value && tagEl.value.trim() !== '' ? [tagEl.value] : ['generic']
+            furnish(id, label, tags)
           })
         })
       }
