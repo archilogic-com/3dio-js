@@ -166,7 +166,8 @@
             var id = space.getAttribute('space-id')
             var label = e.target.getAttribute('data-label')
             menuEl.style.display = 'none'
-            var tags = tagEl.value && tagEl.value.trim() !== '' ? [tagEl.value] : ['generic']
+            var tags = tagEl.value && tagEl.value.trim() !== '' ? tagEl.value : 'generic'
+            tags = tags.split(',').map(tag => tag.trim())
             furnish(id, label, tags)
           })
         })

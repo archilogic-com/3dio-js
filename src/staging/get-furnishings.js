@@ -33,7 +33,7 @@ export default function furnish (sceneStructure, options) {
       var params = {
         floors: spaceLabels,
         modelStructure: result,
-        maxResults: 1,
+        maxResults: 3,
         tags: tags
       }
 
