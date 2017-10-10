@@ -6,6 +6,7 @@ const s3 = require('gulp-s3')
 const through2 = require('through2')
 const UglifyJS = require('uglify-js')
 const build = require('./build.js')
+const jshint = require('./jshint.js')
 const test = require('./test.js')
 const packageInfo = require('../package.json')
 const preamble = require('./preamble.js')
@@ -41,6 +42,7 @@ const release = gulp.series(
   checkWorkingDirectoryClean,
   checkBranchName,
   npmCheckVersion,
+  jshint,
   test,
   setBabelEnv,
   build,
