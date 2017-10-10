@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.5
- * @date 2017/10/06 23:12
+ * @date 2017/10/10 19:34
  * @branch master
- * @commit 966024f8b2e58d3e1455d714ff2368c62983938e
+ * @commit 78611f120519124604e83a7523ca4bb787a332a8
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/10/06 23:12', GIT_BRANCH = 'master', GIT_COMMIT = '966024f8b2e58d3e1455d714ff2368c62983938e'
+	var BUILD_DATE='2017/10/10 19:34', GIT_BRANCH = 'master', GIT_COMMIT = '78611f120519124604e83a7523ca4bb787a332a8'
 
 	var name = "3dio";
 	var version = "1.0.5";
@@ -29,9 +29,9 @@
 	var license = "MIT";
 	var author = {"name":"archilogic","email":"dev.rocks@archilogic.com","url":"https://archilogic.com"};
 	var main = "index.js";
-	var scripts = {"start":"gulp dev-browser","dev-browser":"gulp dev-browser","dev-node":"gulp dev-node","test":"gulp test","build":"gulp build","release":"gulp release"};
-	var dependencies = {"bluebird":"^3.5.0","form-data":"^2.1.4","js-logger":"^1.3.0","lodash":"^4.17.4","node-fetch":"2.0.0-alpha.8","pako":"^1.0.5","performance-now":"^2.1.0","rxjs":"^5.4.2","three":"^0.85.2","whatwg-fetch":"^2.0.3"};
-	var devDependencies = {"ava":"^0.22.0","babel-runtime":"^6.25.0","chalk":"^2.0.1","confirm-cli":"^0.4.0","del":"^3.0.0","gulp":"github:gulpjs/gulp#4.0","gulp-ava":"^0.18.0","gulp-git":"^2.4.1","gulp-gzip":"^1.4.0","gulp-less":"^3.3.2","gulp-s3":"^0.11.0","gulp-watch":"^4.3.11","lite-server":"^2.3.0","moment":"^2.18.1","rollup":"^0.41.6","rollup-plugin-commonjs":"^8.0.2","rollup-plugin-json":"^2.1.1","rollup-plugin-less":"^0.1.3","rollup-plugin-node-resolve":"^3.0.0","through2":"^2.0.3","uglify-js":"^3.0.10"};
+	var scripts = {"start":"gulp dev-browser","dev-browser":"gulp dev-browser","dev-node":"gulp dev-node","jshint":"gulp jshint","test":"gulp test","build":"gulp build","release":"gulp release"};
+	var dependencies = {"bluebird":"^3.5.1","form-data":"^2.3.1","js-logger":"^1.4.1","lodash":"^4.17.4","node-fetch":"2.0.0-alpha.8","pako":"^1.0.5","performance-now":"^2.1.0","rxjs":"^5.4.3","three":"^0.85.2","whatwg-fetch":"^2.0.3"};
+	var devDependencies = {"ava":"^0.22.0","babel-plugin-external-helpers":"^6.22.0","babel-preset-es2015":"^6.24.1","babel-runtime":"^6.26.0","chalk":"^2.1.0","confirm-cli":"^0.4.0","del":"^3.0.0","gulp":"github:gulpjs/gulp#4.0","gulp-ava":"^0.18.0","gulp-git":"^2.4.2","gulp-gzip":"^1.4.0","gulp-jshint":"^2.0.4","gulp-less":"^3.3.2","gulp-s3":"^0.11.0","gulp-watch":"^4.3.11","jshint":"^2.9.5","jshint-stylish":"^2.2.1","lite-server":"^2.3.0","moment":"^2.19.0","rollup":"^0.41.6","rollup-plugin-babel":"^3.0.2","rollup-plugin-commonjs":"^8.2.1","rollup-plugin-json":"^2.3.0","rollup-plugin-less":"^0.1.3","rollup-plugin-node-resolve":"^3.0.0","through2":"^2.0.3","uglify-js":"^3.1.3"};
 	var packageJson = {
 		name: name,
 		version: version,
@@ -822,7 +822,7 @@
 	});
 
 	/**
-	 * A representation of any set of values over any amount of time. This the most basic building block
+	 * A representation of any set of values over any amount of time. This is the most basic building block
 	 * of RxJS.
 	 *
 	 * @class Observable<T>
@@ -830,7 +830,7 @@
 	var Observable = (function () {
 	    /**
 	     * @constructor
-	     * @param {Function} subscribe the function that is  called when the Observable is
+	     * @param {Function} subscribe the function that is called when the Observable is
 	     * initially subscribed to. This function is given a Subscriber, to which new values
 	     * can be `next`ed, or an `error` method can be called to raise an error, or
 	     * `complete` can be called to notify of a successful completion.
@@ -859,7 +859,7 @@
 	     *
 	     * <span class="informal">Use it when you have all these Observables, but still nothing is happening.</span>
 	     *
-	     * `subscribe` is not a regular operator, but a method that calls Observables internal `subscribe` function. It
+	     * `subscribe` is not a regular operator, but a method that calls Observable's internal `subscribe` function. It
 	     * might be for example a function that you passed to a {@link create} static factory, but most of the time it is
 	     * a library implementation, which defines what and when will be emitted by an Observable. This means that calling
 	     * `subscribe` is actually the moment when Observable starts its work, not when it is created, as it is often
@@ -901,7 +901,7 @@
 	     *     console.log('Adding: ' + value);
 	     *     this.sum = this.sum + value;
 	     *   },
-	     *   error() { // We actually could just remote this method,
+	     *   error() { // We actually could just remove this method,
 	     *   },        // since we do not really care about errors right now.
 	     *   complete() {
 	     *     console.log('Sum equals: ' + this.sum);
@@ -956,7 +956,7 @@
 	     * // Logs:
 	     * // 0 after 1s
 	     * // 1 after 2s
-	     * // "unsubscribed!" after 2,5s
+	     * // "unsubscribed!" after 2.5s
 	     *
 	     *
 	     * @param {Observer|Function} observerOrNext (optional) Either an observer with methods to be called,
@@ -1554,7 +1554,7 @@
 	 * 
 	 */
 	/**
-	 * bluebird build version 3.5.0
+	 * bluebird build version 3.5.1
 	 * Features enabled: core, race, call_get, generators, map, nodeify, promisify, props, reduce, settle, some, using, timers, filter, any, each
 	*/
 	!function(e){module.exports=e();}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof _dereq_=="function"&&_dereq_;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r);}return n[o].exports}var i=typeof _dereq_=="function"&&_dereq_;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
@@ -2175,7 +2175,10 @@
 	Promise.prototype._ensurePossibleRejectionHandled = function () {
 	    if ((this._bitField & 524288) !== 0) return;
 	    this._setRejectionIsUnhandled();
-	    async.invokeLater(this._notifyUnhandledRejection, this, undefined);
+	    var self = this;
+	    setTimeout(function() {
+	        self._notifyUnhandledRejection();
+	    }, 1);
 	};
 
 	Promise.prototype._notifyUnhandledRejectionIsHandled = function () {
@@ -4823,7 +4826,7 @@
 	_dereq_("./join")(
 	    Promise, PromiseArray, tryConvertToPromise, INTERNAL, async, getDomain);
 	Promise.Promise = Promise;
-	Promise.version = "3.5.0";
+	Promise.version = "3.5.1";
 	_dereq_('./map.js')(Promise, PromiseArray, apiRejection, tryConvertToPromise, INTERNAL, debug);
 	_dereq_('./call_get.js')(Promise);
 	_dereq_('./using.js')(Promise, apiRejection, tryConvertToPromise, createContext, INTERNAL, debug);
@@ -6665,10 +6668,11 @@
 	}
 
 	function isError(obj) {
-	    return obj !== null &&
+	    return obj instanceof Error ||
+	        (obj !== null &&
 	           typeof obj === "object" &&
 	           typeof obj.message === "string" &&
-	           typeof obj.name === "string";
+	           typeof obj.name === "string");
 	}
 
 	function markAsOriginatingFromRejection(e) {
@@ -7397,7 +7401,7 @@
 		var Logger = { };
 
 		// For those that are at home that are keeping score.
-		Logger.VERSION = "1.3.0";
+		Logger.VERSION = "1.4.1";
 
 		// Function which handles all incoming log messages.
 		var logHandler;
@@ -7453,6 +7457,11 @@
 				if (newLevel && "value" in newLevel) {
 					this.context.filterLevel = newLevel;
 				}
+			},
+			
+			// Gets the current logging level for the logging instance
+			getLevel: function () {
+				return this.context.filterLevel;
 			},
 
 			// Is the logger configured to output messages at the supplied level?
@@ -7538,6 +7547,11 @@
 			}
 		};
 
+		// Gets the global logging filter level
+		Logger.getLevel = function() {
+			return globalLogger.getLevel();
+		};
+
 		// Retrieve a ContextualLogger instance.  Note that named loggers automatically inherit the global logger's level,
 		// default context and log handler.
 		Logger.get = function (name) {
@@ -7609,6 +7623,8 @@
 						hdlr = console.error;
 					} else if (context.level === Logger.INFO && console.info) {
 						hdlr = console.info;
+					} else if (context.level === Logger.DEBUG && console.debug) {
+						hdlr = console.debug;
 					}
 
 					options.formatter(messages, context);
@@ -8113,10 +8129,11 @@
 	}
 
 	function isError(obj) {
-	    return obj !== null &&
+	    return obj instanceof Error ||
+	        (obj !== null &&
 	           typeof obj === "object" &&
 	           typeof obj.message === "string" &&
-	           typeof obj.name === "string";
+	           typeof obj.name === "string");
 	}
 
 	function markAsOriginatingFromRejection(e) {
@@ -9059,7 +9076,10 @@
 	Promise.prototype._ensurePossibleRejectionHandled = function () {
 	    if ((this._bitField & 524288) !== 0) return;
 	    this._setRejectionIsUnhandled();
-	    async.invokeLater(this._notifyUnhandledRejection, this, undefined);
+	    var self = this;
+	    setTimeout(function() {
+	        self._notifyUnhandledRejection();
+	    }, 1);
 	};
 
 	Promise.prototype._notifyUnhandledRejectionIsHandled = function () {
@@ -13274,7 +13294,7 @@
 	join(
 	    Promise, PromiseArray, tryConvertToPromise, INTERNAL, async$$1, getDomain);
 	Promise.Promise = Promise;
-	Promise.version = "3.5.0";
+	Promise.version = "3.5.1";
 	map(Promise, PromiseArray, apiRejection, tryConvertToPromise, INTERNAL, debug);
 	call_get(Promise);
 	using(Promise, apiRejection, tryConvertToPromise, createContext, INTERNAL, debug);
