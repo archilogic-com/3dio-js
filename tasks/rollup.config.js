@@ -2,6 +2,7 @@ import json from 'rollup-plugin-json'
 import commonjs from 'rollup-plugin-commonjs'
 import resolve from 'rollup-plugin-node-resolve'
 import less from 'rollup-plugin-less'
+import babel from 'rollup-plugin-babel'
 const preamble = require('./preamble.js')
 
 // from https://github.com/mrdoob/three.js/blob/86424d9b318f617254eb857b31be07502ea27ce9/rollup.config.js
@@ -53,6 +54,15 @@ export default {
         'node_modules/performance-now/**'
       ]
     }),
+    (function(){
+      if (process.env.ROLLUP_USE_BABEL) {
+        // use babel
+        return babel()
+      } else {
+        // return empty plugin doing nothing
+        return { transform: function() {} }
+      }
+    })(),
     resolve()
   ],
   context: 'global', // required for whatwg-fetch module

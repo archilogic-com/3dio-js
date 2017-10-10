@@ -42,7 +42,9 @@ const release = gulp.series(
   checkBranchName,
   npmCheckVersion,
   test,
+  setBabelEnv,
   build,
+  unsetBabelEnv,
   cleanDestDir,
   copyBuildToDist,
   uglify,
@@ -81,6 +83,16 @@ function checkBranchName () {
   } else {
     return Promise.resolve()
   }
+}
+
+function setBabelEnv () {
+  process.env.ROLLUP_USE_BABEL = true
+  return Promise.resolve()
+}
+
+function unsetBabelEnv () {
+  process.env.ROLLUP_USE_BABEL = false
+  return Promise.resolve()
 }
 
 function cleanDestDir () {
