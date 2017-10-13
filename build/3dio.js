@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.5
- * @date 2017/10/13 23:58
+ * @date 2017/10/13 23:59
  * @branch HEAD
- * @commit b8b072065fbf90f54bc866526ce7882b93b478d2
+ * @commit 6edbf32710d7dec7a5233b1ab97d730723d8dd68
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/10/13 23:58', GIT_BRANCH = 'HEAD', GIT_COMMIT = 'b8b072065fbf90f54bc866526ce7882b93b478d2'
+	var BUILD_DATE='2017/10/13 23:59', GIT_BRANCH = 'HEAD', GIT_COMMIT = '6edbf32710d7dec7a5233b1ab97d730723d8dd68'
 
 	var name = "3dio";
 	var version = "1.0.5";
@@ -27130,20 +27130,7 @@
 	  return 'https://spaces.archilogic.com/3d/?mode=sdk&file='+storageId
 	}
 
-	function storeInCache (url, cacheName) {
-	  if (!isCacheAvailable()) return Promise.reject()
-
-	  return caches.open(cacheName || '3dio-data3d').then(function onCacheReady(cache) {
-	    return loadData3d(url).then(function onData3dReady(data3d) {
-	      var cacheUrls = new Array(url).concat(parseMaterials(data3d));
-	      return cache.addAll(cacheUrls)
-	    })
-	  })
-	}
-
-	// helpers
-
-	function parseMaterials (data3d) {
+	function getTextureUrls (data3d) {
 	  var materialUrls = [];
 	  Object.keys(data3d.materials).forEach(function cacheMaterial(materialKey) {
 	    var material = data3d.materials[materialKey];
@@ -27166,7 +27153,47 @@
 	  return materialUrls
 	}
 
+	function storeInCache (url, cacheName) {
+	  if (!isCacheAvailable()) return Promise.reject()
+
+	  return caches.open(cacheName || '3dio-data3d').then(function onCacheReady(cache) {
+	    return loadData3d(url).then(function onData3dReady(data3d) {
+	      var cacheUrls = new Array(url).concat(getTextureUrls(data3d));
+	      return cache.addAll(cacheUrls)
+	    })
+	  })
+	}
+
+	// helpers
+
 	function isCacheAvailable () {
+	  if (!runtime.isBrowser) {
+	    console.warn('The offline cache is only available in the browser');
+	    return false
+	  }
+
+	  if (typeof caches === 'undefined') {
+	    console.warn('Your browser does not support offline cache storage');
+	    return false
+	  }
+
+	  return true
+	}
+
+	function removeFromCache (url, cacheName) {
+	  if (!isCacheAvailable$1()) return Promise.reject()
+
+	  return caches.open(cacheName || '3dio-data3d').then(function onCacheReady(cache) {
+	    return loadData3d(url).then(function onData3dReady(data3d) {
+	      var cacheUrls = new Array(url).concat(getTextureUrls(data3d));
+	      return Promise.all(cacheUrls.map(function removeItem(url) { return cache.delete(url) }))
+	    })
+	  })
+	}
+
+	// helpers
+
+	function isCacheAvailable$1 () {
 	  if (!runtime.isBrowser) {
 	    console.warn('The offline cache is only available in the browser');
 	    return false
@@ -29390,7 +29417,8 @@
 	    clone: clone,
 	    traverse: traverseData3d$1,
 	    getInspectorUrl: getData3dInspectorUrl,
-	    storeInCache: storeInCache
+	    storeInCache: storeInCache,
+	    removeFromCache: removeFromCache
 	  },
 	  ui: ui,
 	  auth: auth,
