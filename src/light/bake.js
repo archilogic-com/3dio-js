@@ -3,34 +3,40 @@ import callServices from '../utils/services/call.js'
 import whenDone from '../utils/processing/when-done.js'
 
 // main
+function bakeStage(stage) {
+  function bake(storageId, options) {
+    // API
+    options = options || {}
 
-function bake(storageId, options) {
-  // API
-  options = options || {}
-  var sunDirection = sunDirection || [
-    0.7487416646324341,
-    -0.47789104947352223,
-    -0.45935396425474223
-  ]
+    // Optional bake parameters for API call
+    var bakeOptions = { sunDirection: options.sunDirection || [ 0.75, -0.48, -0.46 ] }
+    if (options.lightmapCount) { bakeOptions.lightmapCount = options.lightmapCount }
+    if (options.samples) { bakeOptions.samples = options.samples }
 
-  // internals
-  var assetStorageIds = []
-  // TODO: reimplement caching mechanism on server side
-  var cacheKey = null
+    // internals
+    // TODO: reimplement send "exportable" textures to bake
+    var assetStorageIds = []
+    // TODO: reimplement caching mechanism on server side
+    var cacheKey = null
 
-  return callServices('Processing.task.enqueue', {
-    method: 'bakePreview',
-    params: {
-      inputFileKey: storageId,
-      options: {
-        inputAssetKeys: assetStorageIds,
-        sunDirection: sunDirection,
-        cacheKey: cacheKey
+    var bakeParams = {
+      method: 'bake'.concat('.', stage),
+      params: {
+        inputFileKey: storageId,
+        //inputAssetKeys: assetStorageIds,
+        //cacheKey: cacheKey,
+        options: JSON.stringify(bakeOptions)
       }
     }
-  })
+
+    return callServices('Processing.task.enqueue', bakeParams)
+  }
 }
 
 // expose API
 
-export default bake
+export default {
+  bake: bakeStage('preview'),
+  bakePreview: bakeStage('preview'),
+  bakeRegular: bakeStage('regular')
+}

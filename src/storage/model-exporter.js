@@ -6,27 +6,46 @@ function getExporter(format) {
 
     // API
     options = options || {}
-    var filename = options.filename !== undefined ? options.filename : null
 
     return getConvertableTextureIds(storageId).then(function(textureIds) {
 
-      var params = {
-        method: 'convert',
+      var convertParams = {
+        method: 'convert'.concat('.', outputFormat),
         params: {
           inputFileKey: storageId,
-          options: {
-            inputAssetKeys: textureIds,
-            outputFormat: format,
-            outputFilename: filename
-          }
+          inputAssetKeys: textureIds
         }
       }
 
-      return callServices('Processing.task.enqueue', params)
+      // Optional convert parameters for API call
+      if (options.filename) {
+        convertParams.params.options = JSON.stringify( { outputFilename: options.filename } )
+      }
+
+      return callServices('Processing.task.enqueue', convertParams)
 
     })
   }
 }
+
+function exportDxf(storageId, options) {
+    // API
+    options = options || {}
+
+    var dxfParams = {
+      method: 'convert.dxf'
+      params: {
+        inputFileKey: storageId
+      }
+    }
+
+    if (options.projection) {
+      dxfParams.params.options = JSON.stringify( { projection: options.projection } )
+    }
+
+    return callServices('Processing.task.enqueue', dxfParams)
+}
+
 
 // expose API
 
@@ -35,5 +54,6 @@ export default {
   exportBlend: getExporter('blend'),
   exportDae: getExporter('dae'),
   exportFbx: getExporter('fbx'),
-  exportObj: getExporter('obj')
+  exportObj: getExporter('obj'),
+  exportDxf
 }
