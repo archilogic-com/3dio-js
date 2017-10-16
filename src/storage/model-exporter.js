@@ -33,7 +33,7 @@ function exportDxf(storageId, options) {
     options = options || {}
 
     var dxfParams = {
-      method: 'convert.dxf'
+      method: 'convert.dxf',
       params: {
         inputFileKey: storageId
       }
