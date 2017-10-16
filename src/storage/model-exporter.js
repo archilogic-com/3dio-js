@@ -1,4 +1,4 @@
-import getConvertableTextureIds from '../utils/processing/get-convertable-texture-ids.js'
+import getConvertibleTextureIds from '../utils/processing/get-convertible-texture-ids.js'
 import callServices from '../utils/services/call.js'
 
 function getExporter(format) {
@@ -7,7 +7,7 @@ function getExporter(format) {
     // API
     options = options || {}
 
-    return getConvertableTextureIds(storageId).then(function(textureIds) {
+    return getConvertibleTextureIds(storageId).then(function(textureIds) {
 
       var convertParams = {
         method: 'convert'.concat('.', outputFormat),
