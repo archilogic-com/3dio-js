@@ -19,7 +19,7 @@ function getExporter(format) {
 
       // Optional convert parameters for API call
       if (options.filename) {
-        convertParams.params.options = JSON.stringify( { outputFilename: options.filename } )
+        convertParams.params.settings = JSON.stringify( { outputFilename: options.filename } )
       }
 
       return callServices('Processing.task.enqueue', convertParams)
@@ -40,7 +40,7 @@ function exportDxf(storageId, options) {
     }
 
     if (options.projection) {
-      dxfParams.params.options = JSON.stringify( { projection: options.projection } )
+      dxfParams.params.settings = JSON.stringify( { projection: options.projection } )
     }
 
     return callServices('Processing.task.enqueue', dxfParams)

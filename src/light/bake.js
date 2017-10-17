@@ -9,9 +9,9 @@ function bakeStage(stage) {
     options = options || {}
 
     // Optional bake parameters for API call
-    var bakeOptions = { sunDirection: options.sunDirection || [ 0.75, -0.48, -0.46 ] }
-    if (options.lightmapCount) { bakeOptions.lightmapCount = options.lightmapCount }
-    if (options.samples) { bakeOptions.samples = options.samples }
+    var bakeSettings = { sunDirection: options.sunDirection || [ 0.75, -0.48, -0.46 ] }
+    if (options.lightmapCount) { bakeSettings.lightmapCount = options.lightmapCount }
+    if (options.samples) { bakeSettings.samples = options.samples }
 
     // internals
     // TODO: reimplement send "exportable" textures to bake
@@ -25,7 +25,7 @@ function bakeStage(stage) {
         inputFileKey: storageId,
         //inputAssetKeys: assetStorageIds,
         //cacheKey: cacheKey,
-        options: JSON.stringify(bakeOptions)
+        settings: JSON.stringify(bakeSettings)
       }
     }
 
