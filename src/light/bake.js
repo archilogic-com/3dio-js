@@ -10,7 +10,7 @@ function bakeStage(stage) {
 
     // Optional bake parameters for API call
     var bakeSettings = { sunDirection: options.sunDirection || [ 0.75, -0.48, -0.46 ] }
-    if (options.lightmapCount) { bakeSettings.lightmapCount = options.lightmapCount }
+    if (options.lightMapCount) { bakeSettings.lightMapCount = options.lightMapCount }
     if (options.samples) { bakeSettings.samples = options.samples }
 
     // internals
