@@ -1,4 +1,4 @@
-import GetFurnitureAlternatives from './get-furniture-alternatives.js'
+import getFurnitureAlternatives from './get-furniture-alternatives.js'
 import getSceneStructureFromAframeElements from '../scene/structure/from-aframe-elements.js'
 import getAframeElementsFromSceneStructure from '../scene/structure/to-aframe-elements.js'
 import normalizeSceneStructure from '../scene/structure/normalize.js'
@@ -31,7 +31,7 @@ export default function replaceFurniture(input, options) {
 
       var promises = []
       Object.keys(furnitureIds).forEach(function(id) {
-        promises.push(new GetFurnitureAlternatives(id, options))
+        promises.push(getFurnitureAlternatives(id, options))
       })
       return Promise.all(promises)
     })
