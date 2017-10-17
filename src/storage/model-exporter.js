@@ -10,7 +10,7 @@ function getExporter(format) {
     return getConvertibleTextureIds(storageId).then(function(textureIds) {
 
       var convertParams = {
-        method: 'convert'.concat('.', outputFormat),
+        method: 'convert'.concat('.', format),
         params: {
           inputFileKey: storageId,
           inputAssetKeys: textureIds
