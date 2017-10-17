@@ -117,10 +117,8 @@ function getQuery(options) {
   }
 
   queries = queries.concat(tags)
-  console.log('debugging q', queries)
   if (options.userQuery && tags.indexOf('TV') < 0)
     queries = queries.concat(options.userQuery)
-  console.log('debugging q', queries)
   var searchQuery = { query: queries.join(' ') }
 
   // add dimension search params if source provides dimensions
