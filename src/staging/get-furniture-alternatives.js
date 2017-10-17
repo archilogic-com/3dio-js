@@ -42,9 +42,9 @@ var config = {
   ]
 }
 
-export default function getAlternatives(id, query) {
-  var options = {
-    userQuery: query || null,
+export default function getAlternatives(id, options) {
+  options = {
+    userQuery: options.query || null,
     searchCount: 0,
     margin: config['default_margin']
   }
