@@ -1,11 +1,11 @@
-import getFurnitureInfo  from '../furniture/get-info.js'
-import callService  from '../utils/services/call.js'
+import getFurnitureInfo from '../furniture/get-info.js'
+import callService from '../utils/services/call.js'
 import normalizeFurnitureInfo from '../furniture/common/normalize-furniture-info.js'
 
 var config = {
-  'default_margin': 0.1,
-  'default_search': 'isPublished:true -generic',
-  'tag_black_list': [
+  default_margin: 0.1,
+  default_search: 'isPublished:true -generic',
+  tag_black_list: [
     'simplygon',
     'hasChangeableMaterials',
     'autofurnish',
@@ -14,7 +14,7 @@ var config = {
     '3 seater',
     '4 seater'
   ],
-  'tag_white_list': [
+  tag_white_list: [
     'shelf',
     'armchair',
     'sofa',
@@ -31,51 +31,56 @@ var config = {
     'relaxing',
     'picture'
   ],
-  'edgeAligned': ['sofa', 'shelf', 'armchair', 'sideboad', 'double bed', 'single bed', 'bed'],
+  edgeAligned: [
+    'sofa',
+    'shelf',
+    'armchair',
+    'sideboad',
+    'double bed',
+    'single bed',
+    'bed'
+  ]
 }
 
-var getAlternatives = function(id, options) {
-  if (typeof id !== 'string') return Promise.reject('invalid input')
-
-  options = options || {}
-
-  this.userQuery = options.query || null
-  this.searchCount = 0
-  this.margin = config['default_margin']
-  this.furnitureInfo = null
-
-  var self = this
+export default function getAlternatives(id, query) {
+  var options = {
+    userQuery: query || null,
+    searchCount: 0,
+    margin: config['default_margin']
+  }
   return getFurnitureInfo(id)
-    .then(function(info){
-      self.furnitureInfo = info
-      var searchQuery = self.getQuery(self.furnitureInfo)
-      return search(searchQuery)
+    .then(function(info) {
+      options.info = info
+      var query = getQuery(options)
+      return search(getQuery(options))
     })
     .then(function(result) {
-      return self.verifyResult(result, id)
+      return verifyResult(result, id, options)
     })
-    .catch(function(error) {
-      console.error(error)
-    })
+    .catch(function(error) {})
 }
 
-getAlternatives.prototype.verifyResult = function(result, id) {
-  if (this.searchCount > 10 ) {
+function verifyResult(result, id, options) {
+  var info = options.info
+
+  if (options.searchCount > 10) {
     return Promise.reject(new Error('No furniture was found'))
   }
-  var rawResult = result.filter(function(el){
+
+  var rawResult = result.filter(function(el) {
     return el.productResourceId !== id
-  });
+  })
+
   // if we didn't find anything in the first place
   // let's increase dimensions a bit
-  var self = this
+
   if (rawResult.length < 1) {
-    if (this.searchCount >= 3) this.margin += 0.10
-    var searchQuery = this.getQuery(this.furnitureInfo);
-    this.searchCount += 1
+    if (options.searchCount >= 3) options.margin += 0.1
+    var searchQuery = getQuery(info, options)
+    options.searchCount += 1
     return search(searchQuery)
       .then(function(result) {
-        return self.verifyResult(result, id)
+        return verifyResult(result, id, options)
       })
       .catch(function(error) {
         console.error('catch', searchQuery.query, error)
@@ -85,51 +90,58 @@ getAlternatives.prototype.verifyResult = function(result, id) {
     var cleanResult = rawResult.map(normalizeFurnitureInfo).map(function(res) {
       return {
         furniture: res,
-        offset: getOffset(self.furnitureInfo, res)
+        offset: getOffset(info, res)
       }
     })
     return Promise.resolve(cleanResult)
   }
 }
 
-getAlternatives.prototype.getQuery = function(info) {
-  var query = config['default_search']
-  var tags = this.searchCount < 6 ? info.tags.concat(info.categories) : info.tags
+function getQuery(options) {
+  var info = options.info
+  var queries = [config['default_search']]
+  var dimensions = ['length', 'height', 'width']
+  var includeCategories = options.searchCount < 6
+  var tags = includeCategories ? info.tags.concat(info.categories) : info.tags
+
   tags = tags.filter(function(tag) {
     // removes blacklisted tags as well as 1P, 2P, ...
     return config['tag_black_list'].indexOf(tag) < 0 && !/^\d+P$/.test(tag)
   })
+
   // remove secondary tags from query when increasing dimensions didn't work
-  if (this.searchCount > 2) {
+  if (options.searchCount > 2) {
     tags = tags.filter(function(tag) {
       return config['tag_white_list'].indexOf(tag) > -1
     })
   }
 
-  query += ' ' + tags.join(' ')
-  if (this.userQuery && tags.indexOf('TV') < 0) query += ' ' + this.userQuery
-  var searchQuery = {query: query};
+  queries = queries.concat(tags)
+  console.log('debugging q', queries)
+  if (options.userQuery && tags.indexOf('TV') < 0)
+    queries = queries.concat(options.userQuery)
+  console.log('debugging q', queries)
+  var searchQuery = { query: queries.join(' ') }
 
   // add dimension search params if source provides dimensions
   var dim = info.boundingBox
-  var self = this
   if (dim) {
-    ['length', 'height', 'width'].forEach(function(d) {
-      if (dim[d] -self.margin > 0) {
-        searchQuery[d + 'Min'] = Math.round((dim[d] - self.margin) * 1e2) / 1e2
-        searchQuery[d + 'Max'] = Math.round((dim[d] + self.margin) * 1e2) / 1e2
+    ;['length', 'height', 'width'].forEach(function(d) {
+      if (dim[d] - options.margin > 0) {
+        searchQuery[d + 'Min'] =
+          Math.round((dim[d] - options.margin) * 1e2) / 1e2
+        searchQuery[d + 'Max'] =
+          Math.round((dim[d] + options.margin) * 1e2) / 1e2
       }
     })
   }
   return searchQuery
 }
 
-// helper
-
 function search(searchQuery) {
   // let's make sure we don't have trailing or double spaces
   searchQuery.query = searchQuery.query.trim().replace(/\s+/g, ' ')
-  return callService('Product.search', {searchQuery: searchQuery, limit: 200})
+  return callService('Product.search', { searchQuery: searchQuery, limit: 200 })
 }
 
 // get offset based on bounding boxes
@@ -140,10 +152,12 @@ function getOffset(a, b) {
   var tags = a.tags
   a = a.boundingPoints
   b = b.boundingPoints
-  if (!a || !b) return {x: 0, y:0, z:0}
+  if (!a || !b) return { x: 0, y: 0, z: 0 }
 
   // check if the furniture's virtual origin should be center or edge
-  var isEdgeAligned = edgeAligned.some(function(t) { return tags.includes(t) })
+  var isEdgeAligned = edgeAligned.some(function(t) {
+    return tags.includes(t)
+  })
 
   var zOffset
   // compute offset between edges or centers
@@ -158,5 +172,3 @@ function getOffset(a, b) {
   }
   return offset
 }
-
-export default getAlternatives
