@@ -20,6 +20,7 @@ var storage = {
   exportDae: modelExporter.exportDae,
   exportFbx: modelExporter.exportFbx,
   exportObj: modelExporter.exportObj,
+  exportDxf: modelExporter.exportDxf,
   // helpers
   getUrlFromStorageId: getUrlFromStorageId,
   getNoCdnUrlFromStorageId: getNoCdnUrlFromStorageId,

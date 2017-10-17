@@ -4,7 +4,7 @@ import whenDone from '../utils/processing/when-done.js'
 
 // main
 function bakeStage(stage) {
-  function bake(storageId, options) {
+  return function bake(storageId, options) {
     // API
     options = options || {}
 
