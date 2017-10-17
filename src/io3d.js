@@ -11,6 +11,7 @@ import storage from './storage.js'
 import scene from './scene.js'
 import floorPlan from './floor-plan.js'
 import light from './light.js'
+import modify from './modify.js'
 
 import utils from './utils.js'
 
@@ -25,6 +26,7 @@ var io3d = {
   scene: scene,
   floorPlan: floorPlan,
   light: light,
+  modify: modify,
 
   // utils
   auth: utils.auth,
