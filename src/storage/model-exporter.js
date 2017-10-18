@@ -19,7 +19,7 @@ function getExporter(format) {
 
       // Optional convert parameters for API call
       if (options.filename) {
-        convertParams.params.settings = JSON.stringify( { outputFilename: options.filename } )
+        convertParams.params.settings = JSON.stringify( { outputFileName: options.filename } )
       }
 
       return callServices('Processing.task.enqueue', convertParams)
@@ -39,9 +39,20 @@ function exportDxf(storageId, options) {
       }
     }
 
-    if (options.projection) {
-      dxfParams.params.settings = JSON.stringify( { projection: options.projection } )
+    // Optional convert parameters for API call
+    if (options.filename || options.projection) {
+      var dxfSettings = {}
+        if (options.filename) {
+         dxfSettings.outputFileName = options.filename
+        }
+        if (options.projection) {
+          dxfSettings.projection = options.projection
+        }
+
+      convertParams.params.settings = JSON.stringify(dxfSettings)
+
     }
+
 
     return callServices('Processing.task.enqueue', dxfParams)
 }
