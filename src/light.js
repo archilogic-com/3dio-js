@@ -1,9 +1,9 @@
 import bake from './light/bake.js'
 
 var light = {
-  bake: bake.bake,
-  bakePreview: bake.bakePreview,
-  bakeRegular: bake.bakeRegular
+  bake: bake.bakePreview,
+  bakeLoRes: bake.bakePreview,
+  bakeHiRes: bake.bakeRegular
 }
 
 export default light

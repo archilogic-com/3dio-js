@@ -36,7 +36,6 @@ function bakeStage(stage) {
 // expose API
 
 export default {
-  bake: bakeStage('preview'),
   bakePreview: bakeStage('preview'),
   bakeRegular: bakeStage('regular')
 }
