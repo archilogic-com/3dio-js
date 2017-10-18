@@ -6,6 +6,8 @@ import furnitureComponent from './aframe/component/furniture.js'
 import tourComponent from './aframe/component/tour.js'
 import gBlockComponent from './aframe/component/gblock.js'
 import lightingComponent from './aframe/component/lighting.js'
+// dynamic entities
+import getElementComponent from './aframe/component/dynamic-entities/element3d.js'
 // other
 import inspectorPluginsLauncher from './aframe/inspector-plugins-launcher.js'
 import Data3dView from './aframe/three/data3d-view.js'
@@ -21,12 +23,21 @@ checkDependencies({
   }
 }, function registerComponents () {
 
-  // register components
+  // get dynamic entities
+  var wallComponent = getElementComponent('wall')
+  var windowComponent = getElementComponent('window')
+  var doorComponent = getElementComponent('door')
+  var polyFloorComponent = getElementComponent('polyfloor')
 
+  // register components
   AFRAME.registerComponent('io3d-data3d', data3dComponent)
   AFRAME.registerComponent('io3d-furniture', furnitureComponent)
   AFRAME.registerComponent('tour', tourComponent)
   AFRAME.registerComponent('io3d-lighting', lightingComponent)
+  AFRAME.registerComponent('io3d-wall', wallComponent)
+  AFRAME.registerComponent('io3d-window', windowComponent)
+  AFRAME.registerComponent('io3d-door', doorComponent)
+  AFRAME.registerComponent('io3d-polyfloor', polyFloorComponent)
   // check if gblock component has already been registered
   if (AFRAME.components.gblock) {
     // legacy warning in case gblock has been registered using https://github.com/archilogic-com/aframe-gblock/

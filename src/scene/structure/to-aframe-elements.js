@@ -7,7 +7,11 @@ var validTypes = [
   'group',
   'level',
   'plan',
-  'object'
+  'object',
+  'wall',
+  'door',
+  'window',
+  'polyfloor'
 ]
 
 export default function toAframeElements(sceneStructure, options) {
@@ -93,6 +97,18 @@ function getAttributes(element3d) {
     case 'object':
       attributes['io3d-data3d'] = 'key: ' + element3d.object
       attributes['shadow'] = 'cast: true; receive: true'
+    break
+    case 'wall':
+      attributes['io3d-wall'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h
+    break
+    case 'window':
+      attributes['io3d-window'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h
+    break
+    case 'door':
+      attributes['io3d-door'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h
+    break
+    case 'polyfloor':
+      attributes['io3d-polyfloor'] = 'h: ' + element3d.h + '; polygon: ' + element3d.polygon.map(function(p) { return p.join(',')}).join(',')
     break
   }
 

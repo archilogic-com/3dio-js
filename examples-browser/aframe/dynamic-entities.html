@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href = "style.css" rel = "stylesheet" type = "text/css"/>
+
+  <!-- boilerplate libs -->
+  <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+  <!-- 3dio lib -->
+  <script src="../../../build/3dio.js"></script>
+</head>
+<body>
+
+<!-- 3D -->
+<a-scene io3d-lighting>
+  <!-- data3d files specified by io3d-store-key key or URL -->
+  <!-- object shadow attributes
+       receive - toggle object receives realtime shadow (true or false, valid for entire object)
+       cast - toggle object casts realtime shadow (true or false, valid for entire object)
+       note: realtime shadows require at least one light source that casts shadows
+       note: fallback to material attribute from data3d file if not set
+  -->
+  <a-entity io3d-wall="l:3; w:0.12; h:2.4;" position="0 0 0" shadow="receive: true">
+    <a-entity io3d-window="h:1.2; l:1.6" position="1.2 1 0"></a-entity>
+    <a-entity io3d-door="l:0.8" position="0.2 0 0"></a-entity>
+  </a-entity>
+  <a-entity io3d-polyfloor="polygon:-2.5,0,2.0,4.0,5.5,3.5,5.5,-10.5,-1.5,-9.5" position="0.2 0 0"></a-entity>
+  <!-- Camera -->
+  <a-entity id="camera" camera="userHeight: 1.6" position="-1.2 0 -5.5" rotation="0 210 0" wasd-controls="acceleration:8;easing:5;" look-controls ></a-entity>
+</a-scene>
+
+<!-- 2D / UI -->
+<div id="buttons">
+  <a href="javascript:window.postMessage('INJECT_AFRAME_INSPECTOR','*');">visual inspector</a>
+</div>
+
+</body>
+</html>
+
