@@ -102,10 +102,15 @@ function getAttributes(element3d) {
       attributes['io3d-wall'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h
     break
     case 'window':
-      attributes['io3d-window'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h
+      attributes['io3d-window'] = 'l: ' + element3d.l + '; h: ' + element3d.h
     break
     case 'door':
+      var doorParams = ['hinge', 'side', 'doorType']
       attributes['io3d-door'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h
+      doorParams.forEach(function(param) {
+        if(element3d[param]) attributes['io3d-door'] += '; ' + param + ': ' + element3d[param]
+      })
+      console.log(attributes['io3d-door'])
     break
     case 'polyfloor':
       attributes['io3d-polyfloor'] = 'h: ' + element3d.h + '; polygon: ' + element3d.polygon.map(function(p) { return p.join(',')}).join(',')

@@ -23,10 +23,6 @@ function getElementComponent(type) {
       materials: {
         type: 'string',
         default: ''
-      },
-      polygon: {
-        type: 'string',
-        default: ''
       }
     },
 
@@ -37,11 +33,7 @@ function getElementComponent(type) {
       var this_ = this
       var el = this.el
       var data = this.data
-      var l = data.l
-      var h = data.h
-      var w = data.w
       var materials = data.materials
-      var polygon = data.polygon
 
       // check el3d types
       var validTypes = ['box', 'closet', 'curtain', 'polyfloor', 'stairs', 'wall', 'window', 'door']
@@ -65,15 +57,11 @@ function getElementComponent(type) {
       if (!el3d) return
 
       if (materials && materials !== '') materials = parseMats(materials)
-      if (type === 'polyfloor' && polygon && polygon !== '') {
-        polygon = parsePolygon(polygon)
-        console.log('polygon', polygon)
-      }
 
       // get default values
       a = el3d.params
       // apply entity values
-      a = mapAttributes(a, {l, h, w, polygon})
+      a = mapAttributes(a, data)
 
       if (materials !== '') {
         console.log(a.type, materials)
@@ -171,20 +159,24 @@ function getMaterial(material) {
 }
 
 function mapAttributes(a, args) {
+  console.log('map attributes', a, args)
   // set custom attributes
   var validProps = {
     box: ['h', 'l', 'w'],
     closet: ['h', 'l', 'w'],
     curtain: ['h', 'l', 'w'],
-    door: ['h', 'l', 'w', 'x', 'y'],
+    door: ['h', 'l', 'w', 'x', 'y', 'hinge', 'side', 'doorType'],
     polyfloor: ['h', 'polygon'],
     stairs: ['h', 'l', 'w'],
     wall: ['h', 'l', 'w'],
-    window: ['h', 'l', 'w', 'x', 'y']
+    window: ['h', 'l', 'x', 'y']
   }
   var _type = a.type
   Object.keys(args).forEach(prop => {
-    if (validProps[_type].indexOf(prop) > -1 && (args[prop] || args[prop] === 0)) a[prop] = args[prop]
+    if (validProps[_type].indexOf(prop) > -1 && (args[prop] || args[prop] === 0)) {
+      if (prop === 'polygon') a[prop] = parsePolygon(args[prop])
+      else a[prop] = args[prop]
+    }
   })
   return a
 }
