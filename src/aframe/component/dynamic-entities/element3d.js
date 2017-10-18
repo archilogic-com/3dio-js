@@ -1,7 +1,11 @@
-import wallType from './by-type/wall'
-import windowType from './by-type/window'
+import closetType from './by-type/closet'
 import doorType from './by-type/door'
+import floorType from './by-type/floor'
+import kitchenType from './by-type/kitchen'
 import polyFloorType from './by-type/polyfloor'
+import windowType from './by-type/window'
+import wallType from './by-type/wall'
+
 import cloneDeep from 'lodash/cloneDeep'
 import materialDefinitions from './material-definitions/mat-lib.js'
 
@@ -35,21 +39,21 @@ function getElementComponent(type) {
       var data = this.data
       var materials = data.materials
 
-      // check el3d types
-      var validTypes = ['box', 'closet', 'curtain', 'polyfloor', 'stairs', 'wall', 'window', 'door']
-      if (validTypes.indexOf(type) < 0) return
-
       // map el3d modules
       var types = {
         // 'box': boxType,
-        // 'closet': closetType,
+        'closet': closetType,
         // 'curtain': curtainType,
         'door': doorType,
+        'floor': floorType,
+        'kitchen': kitchenType,
         'polyfloor': polyFloorType,
         // 'stairs': stairsType,
         'wall': wallType,
         'window': windowType
       }
+
+      if (Object.keys(types).indexOf(type) < 0) return
 
       var a, el3d, meshes, materials, data3d
 
@@ -166,6 +170,8 @@ function mapAttributes(a, args) {
     closet: ['h', 'l', 'w'],
     curtain: ['h', 'l', 'w'],
     door: ['h', 'l', 'w', 'x', 'y', 'hinge', 'side', 'doorType'],
+    floor: ['h', 'l', 'w'],
+    kitchen: ['h', 'l', 'w', 'highCabinetLeft', 'highCabinetRight', 'wallCabinet'],
     polyfloor: ['h', 'polygon'],
     stairs: ['h', 'l', 'w'],
     wall: ['h', 'l', 'w'],
@@ -175,6 +181,10 @@ function mapAttributes(a, args) {
   Object.keys(args).forEach(prop => {
     if (validProps[_type].indexOf(prop) > -1 && (args[prop] || args[prop] === 0)) {
       if (prop === 'polygon') a[prop] = parsePolygon(args[prop])
+      // TODO: add proper type checking
+      else if (prop === 'highCabinetLeft') a[prop] = parseInt(args[prop])
+      else if (prop === 'highCabinetRight') a[prop] = parseInt(args[prop])
+      else if (prop === 'wallCabinet') a[prop] = args[prop] === 'true'
       else a[prop] = args[prop]
     }
   })

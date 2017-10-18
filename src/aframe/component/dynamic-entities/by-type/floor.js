@@ -12,7 +12,7 @@ export default {
 
   params: {
 
-    type: 'polyfloor',
+    type: 'floor',
 
     x: 0,
     y: 0,
@@ -20,6 +20,8 @@ export default {
 
     ry: 0,
 
+    l: 4,
+    w: 4,
     h: 0.2,
 
     lock: false,
@@ -34,20 +36,7 @@ export default {
     },
 
     hasCeiling: true,
-    hCeiling: 2.4,
-
-    polygon: [
-      [ 1.5, 1.5 ],
-      [ 1.5, -1.5 ],
-      [ -1.5, -1.5 ],
-      [ -1.5, 1.5 ]
-    ],
-
-    _afFurnishings: undefined,
-    _afGroups: undefined,
-    _afShuffleIndex: undefined,
-    _afAddedGroups: undefined,
-    _afStyle: 'generic'
+    hCeiling: 2.4
 
   },
 
@@ -64,6 +53,12 @@ export default {
     },
     ry: {
       lock: false
+    },
+    l: {
+      step: 0.05
+    },
+    w: {
+      step: 0.05
     }
   },
 
@@ -82,18 +77,38 @@ export default {
       this.a.materials.side = this.a.sideMaterial
       delete this.a.sideMaterial
     }
-    // on the fly migration of 'old' usage combination
-    if (this.a.usage === 'living,dining') this.a.usage = 'dining_living'
-    if (this.a.usage === 'office') this.a.usage = 'homeOffice'
 
   },
 
-  contextMenu: function gerContextMenu (){
+  bindings: [{
+    events: [
+      'change:hasCeiling'
+    ],
+    call: 'contextMenu'
+  },{
+    events: [
+      'change:x',
+      'change:z',
+      'change:l',
+      'change:w',
+      'change:h',
+      'change:hasCeiling',
+      'change:hCeiling'
+    ],
+    call: 'meshes3d'
+  },{
+    events: [
+      'change:materials.*'
+    ],
+    call: 'materials3d'
+  }],
+
+  contextMenu: function generateContectMenu () {
 
     var contextMenu = {
       templateId: 'generic',
       templateOptions: {
-        title: 'Polyfloor'
+        title: 'Floor'
       },
       controls: [
         {
@@ -129,11 +144,11 @@ export default {
           title: 'Lock this item',
           type: 'boolean',
           param: 'locked',
-          subscriptions: [ 'pro', 'modeller', 'artist3d' ]
+          subscriptions: ['pro', 'modeller', 'artist3d']
         },
         {
-          display: '<h2>Materials</h2>',
-          type: 'html'
+          type: 'html',
+          display: '<h2>Materials<h2>'
         },
         {
           title: 'Floor',
@@ -150,7 +165,6 @@ export default {
       ]
     }
 
-
     if (this.params.hasCeiling) {
       contextMenu.controls.push({
         title: 'Ceiling',
@@ -160,71 +174,20 @@ export default {
       })
     }
 
-    var usageList = {
-      'Living': 'living',
-      'Living & Dining': 'dining_living',
-      'Home office': 'homeOffice',
-      'Bedroom': 'bedroom',
-      'Dining': 'dining',
-      'Bathroom': 'bathroom'
-    }
-
-    if (self.vm.user.a.isDev && !config.isProduction) {
-      usageList['Office Working'] = 'officeWorking'
-      usageList['Office Meeting'] = 'officeMeeting'
-    }
-
     return contextMenu
 
   },
 
-  bindings: [ {
-    events: [
-      'change:_afFurnishings',
-      'change:hasCeiling'
-    ],
-    call: 'contextMenu'
-  }, {
-    events: [
-      'change:x',
-      'change:z',
-      'change:h',
-      'change:polygon',
-      'change:hasCeiling',
-      'change:hCeiling'
-    ],
-    call: 'meshes3d'
-  }, {
-    events: [
-      'change:materials.*'
-    ],
-    call: 'materials3d'
-  }],
-
   loadingQueuePrefix: 'architecture',
 
-  controls3d: 'polyFloor',
+  controls3d: 'floor',
 
   meshes3d: function generateMeshes3d (a) {
 
     //var a = this.a
 
-    // a polygon can not have less than 3 points
-    if (a.polygon.length < 3) {
-      if (this.model) {
-        this.model.a.parent.remove(this.model)
-      }
-      return Promise.resolve({
-        meshes: {}
-      })
-    }
-
-    // prepare format
-    var vertices = []
-    for (var i = 0, l = a.polygon.length; i < l; i++) {
-      vertices[ i * 2 ] = a.polygon[ i ][ 0 ]
-      vertices[ i * 2 + 1 ] = a.polygon[ i ][ 1 ]
-    }
+    // 2d polygon vertices
+    var vertices = [ 0, 0, 0, a.w, a.l, a.w, a.l, 0 ]
 
     // top polygon
     var topPolygon = generatePolygonBuffer({

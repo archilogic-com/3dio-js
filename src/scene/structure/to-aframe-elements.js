@@ -3,15 +3,18 @@ import poll from '../../utils/poll.js'
 import getFromStorage from '../../storage/get.js'
 
 var validTypes = [
-  'interior',
-  'group',
-  'level',
-  'plan',
-  'object',
-  'wall',
+  'closet',
   'door',
-  'window',
-  'polyfloor'
+  'floor',
+  'group',
+  'interior',
+  'kitchen',
+  'level',
+  'object',
+  'plan',
+  'polyfloor',
+  'wall',
+  'window'
 ]
 
 export default function toAframeElements(sceneStructure, options) {
@@ -72,6 +75,19 @@ function getAttributes(element3d) {
   // map type specific attributes
   // camera-bookmarks and bakedModel are handled separately
   switch (element3d.type) {
+    case 'closet':
+      attributes['io3d-closet'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h
+      break
+    case 'door':
+      var doorParams = ['hinge', 'side', 'doorType']
+      attributes['io3d-door'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h
+      doorParams.forEach(function(param) {
+        if(element3d[param]) attributes['io3d-door'] += '; ' + param + ': ' + element3d[param]
+      })
+      break
+    case 'floor':
+      attributes['io3d-floor'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h
+      break
     case 'interior':
       attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1)
       // apply custom material settings for furniture items
@@ -93,28 +109,28 @@ function getAttributes(element3d) {
         }
       }
       attributes['shadow'] = 'cast: true; receive: false'
-    break
+      break
+    case 'kitchen':
+      var kitchenParams = ['highCabinetLeft', 'highCabinetRight', 'wallCabinet']
+      attributes['io3d-kitchen'] = 'l: ' + element3d.l + '; h: ' + element3d.h
+      kitchenParams.forEach(function(param) {
+        if(element3d[param] !== undefined ) attributes['io3d-kitchen'] += '; ' + param + ': ' + element3d[param]
+      })
+      console.log(attributes['io3d-kitchen'])
+      break
     case 'object':
       attributes['io3d-data3d'] = 'key: ' + element3d.object
       attributes['shadow'] = 'cast: true; receive: true'
-    break
-    case 'wall':
-      attributes['io3d-wall'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h
-    break
-    case 'window':
-      attributes['io3d-window'] = 'l: ' + element3d.l + '; h: ' + element3d.h
-    break
-    case 'door':
-      var doorParams = ['hinge', 'side', 'doorType']
-      attributes['io3d-door'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h
-      doorParams.forEach(function(param) {
-        if(element3d[param]) attributes['io3d-door'] += '; ' + param + ': ' + element3d[param]
-      })
-      console.log(attributes['io3d-door'])
-    break
+      break
     case 'polyfloor':
       attributes['io3d-polyfloor'] = 'h: ' + element3d.h + '; polygon: ' + element3d.polygon.map(function(p) { return p.join(',')}).join(',')
-    break
+      break
+    case 'wall':
+      attributes['io3d-wall'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h
+      break
+    case 'window':
+      attributes['io3d-window'] = 'l: ' + element3d.l + '; h: ' + element3d.h
+      break
   }
 
   // and generic attributes that apply for all nodes
