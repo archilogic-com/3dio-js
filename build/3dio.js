@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.5
- * @date 2017/10/18 17:58
+ * @date 2017/10/18 21:30
  * @branch dynamic-entities
- * @commit 582c72f4958d7196b38b39c3ca0ee9fff416b8a2
+ * @commit e8b17adb026edcbcb40c46ffd94a4d81cc6341b8
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/10/18 17:58', GIT_BRANCH = 'dynamic-entities', GIT_COMMIT = '582c72f4958d7196b38b39c3ca0ee9fff416b8a2'
+	var BUILD_DATE='2017/10/18 21:30', GIT_BRANCH = 'dynamic-entities', GIT_COMMIT = 'e8b17adb026edcbcb40c46ffd94a4d81cc6341b8'
 
 	var name = "3dio";
 	var version = "1.0.5";
@@ -30,7 +30,7 @@
 	var author = {"name":"archilogic","email":"dev.rocks@archilogic.com","url":"https://archilogic.com"};
 	var main = "index.js";
 	var scripts = {"start":"gulp dev-browser","dev-browser":"gulp dev-browser","dev-node":"gulp dev-node","jshint":"gulp jshint","test":"gulp test","build":"gulp build","release":"gulp release"};
-	var dependencies = {"any-shell-escape":"^0.1.1","bluebird":"^3.5.1","form-data":"^2.3.1","js-logger":"^1.4.1","lodash":"^4.17.4","node-fetch":"2.0.0-alpha.8","pako":"^1.0.5","performance-now":"^2.1.0","require-dir":"^0.3.2","rollup-pluginutils":"^2.0.1","rxjs":"^5.4.3","three":"^0.85.2","whatwg-fetch":"^2.0.3"};
+	var dependencies = {"bluebird":"^3.5.1","form-data":"^2.3.1","js-logger":"^1.4.1","lodash":"^4.17.4","node-fetch":"2.0.0-alpha.8","pako":"^1.0.5","performance-now":"^2.1.0","rxjs":"^5.4.3","three":"^0.85.2","whatwg-fetch":"^2.0.3"};
 	var devDependencies = {"ava":"^0.22.0","babel-plugin-external-helpers":"^6.22.0","babel-preset-es2015":"^6.24.1","babel-runtime":"^6.26.0","chalk":"^2.1.0","confirm-cli":"^0.4.0","del":"^3.0.0","gulp":"github:gulpjs/gulp#4.0","gulp-ava":"^0.18.0","gulp-git":"^2.4.2","gulp-gzip":"^1.4.0","gulp-jshint":"^2.0.4","gulp-less":"^3.3.2","gulp-s3":"^0.11.0","gulp-watch":"^4.3.11","jshint":"^2.9.5","jshint-stylish":"^2.2.1","lite-server":"^2.3.0","moment":"^2.19.0","rollup":"^0.41.6","rollup-plugin-babel":"^3.0.2","rollup-plugin-commonjs":"^8.2.1","rollup-plugin-json":"^2.3.0","rollup-plugin-less":"^0.1.3","rollup-plugin-node-resolve":"^3.0.0","through2":"^2.0.3","uglify-js":"^3.1.3"};
 	var packageJson = {
 		name: name,
@@ -821,6 +821,44 @@
 
 	});
 
+	/* tslint:disable:no-empty */
+	function noop() { }
+	var noop_2 = noop;
+
+
+	var noop_1 = {
+		noop: noop_2
+	};
+
+	/* tslint:enable:max-line-length */
+	function pipe() {
+	    var fns = [];
+	    for (var _i = 0; _i < arguments.length; _i++) {
+	        fns[_i - 0] = arguments[_i];
+	    }
+	    return pipeFromArray(fns);
+	}
+	var pipe_2 = pipe;
+	/* @internal */
+	function pipeFromArray(fns) {
+	    if (!fns) {
+	        return noop_1.noop;
+	    }
+	    if (fns.length === 1) {
+	        return fns[0];
+	    }
+	    return function piped(input) {
+	        return fns.reduce(function (prev, fn) { return fn(prev); }, input);
+	    };
+	}
+	var pipeFromArray_1 = pipeFromArray;
+
+
+	var pipe_1 = {
+		pipe: pipe_2,
+		pipeFromArray: pipeFromArray_1
+	};
+
 	/**
 	 * A representation of any set of values over any amount of time. This is the most basic building block
 	 * of RxJS.
@@ -1055,6 +1093,54 @@
 	     */
 	    Observable.prototype[observable.observable] = function () {
 	        return this;
+	    };
+	    /* tslint:enable:max-line-length */
+	    /**
+	     * Used to stitch together functional operators into a chain.
+	     * @method pipe
+	     * @return {Observable} the Observable result of all of the operators having
+	     * been called in the order they were passed in.
+	     *
+	     * @example
+	     *
+	     * import { map, filter, scan } from 'rxjs/operators';
+	     *
+	     * Rx.Observable.interval(1000)
+	     *   .pipe(
+	     *     filter(x => x % 2 === 0),
+	     *     map(x => x + x),
+	     *     scan((acc, x) => acc + x)
+	     *   )
+	     *   .subscribe(x => console.log(x))
+	     */
+	    Observable.prototype.pipe = function () {
+	        var operations = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            operations[_i - 0] = arguments[_i];
+	        }
+	        if (operations.length === 0) {
+	            return this;
+	        }
+	        return pipe_1.pipeFromArray(operations)(this);
+	    };
+	    /* tslint:enable:max-line-length */
+	    Observable.prototype.toPromise = function (PromiseCtor) {
+	        var _this = this;
+	        if (!PromiseCtor) {
+	            if (root.root.Rx && root.root.Rx.config && root.root.Rx.config.Promise) {
+	                PromiseCtor = root.root.Rx.config.Promise;
+	            }
+	            else if (root.root.Promise) {
+	                PromiseCtor = root.root.Promise;
+	            }
+	        }
+	        if (!PromiseCtor) {
+	            throw new Error('no Promise impl found');
+	        }
+	        return new PromiseCtor(function (resolve, reject) {
+	            var value;
+	            _this.subscribe(function (x) { return value = x; }, function (err) { return reject(err); }, function () { return resolve(value); });
+	        });
 	    };
 	    // HACK: Since TypeScript inherits static properties too, we have to
 	    // fight against TypeScript here so Subject can have a different static create signature
@@ -22708,1303 +22794,38 @@
 
 	};
 
-	// from https://github.com/jbgutierrez/path-parse
-	// Split a filename into [root, dir, basename, ext], unix version
-	// 'root' is just a slash, or nothing.
-	var splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+	/** `Object#toString` result references. */
+	var stringTag$4 = '[object String]';
 
-	function parsePath (path) {
-	  if (typeof path !== 'string') {
-	    throw new TypeError(
-	      "Parameter 'path' must be a string, not " + typeof path
-	    );
-	  }
-	  var allParts = splitPathRe.exec(path).slice(1);
-	  if (!allParts || allParts.length !== 4) {
-	    throw new TypeError("Invalid path '" + path + "'");
-	  }
-	  allParts[2] = allParts[2] || '';
-	  allParts[3] = allParts[3] || '';
-
-	  return {
-	    root: allParts[0],
-	    dir: allParts[0] + allParts[1].slice(0, -1),
-	    base: allParts[2],
-	    ext: allParts[3],
-	    name: allParts[2].slice(0, allParts[2].length - allParts[3].length)
-	  }
-	}
-
-	var path = {
-	  parse: parsePath
-	};
-
-	// source: https://github.com/petkaantonov/urlparser
-	// modified for browser compatibility
-
-	/*
-	 Copyright (c) 2014 Petka Antonov
-
-	 Permission is hereby granted, free of charge, to any person obtaining a copy
-	 of this software and associated documentation files (the "Software"), to deal
-	 in the Software without restriction, including without limitation the rights
-	 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-	 copies of the Software, and to permit persons to whom the Software is
-	 furnished to do so, subject to the following conditions:
-
-	 The above copyright notice and this permission notice shall be included in
-	 all copies or substantial portions of the Software.
-
-	 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-	 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-	 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
-	 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-	 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-	 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-	 THE SOFTWARE.
+	/**
+	 * Checks if `value` is classified as a `String` primitive or object.
+	 *
+	 * @static
+	 * @since 0.1.0
+	 * @memberOf _
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a string, else `false`.
+	 * @example
+	 *
+	 * _.isString('abc');
+	 * // => true
+	 *
+	 * _.isString(1);
+	 * // => false
 	 */
-	function Url() {
-	  //For more efficient internal representation and laziness.
-	  //The non-underscore versions of these properties are accessor functions
-	  //defined on the prototype.
-	  this._protocol = null;
-	  this._href = "";
-	  this._port = -1;
-	  this._query = null;
-
-	  this.auth = null;
-	  this.slashes = null;
-	  this.host = null;
-	  this.hostname = null;
-	  this.hash = null;
-	  this.search = null;
-	  this.pathname = null;
-
-	  this._prependSlash = false;
+	function isString(value) {
+	  return typeof value == 'string' ||
+	    (!isArray_1$2(value) && isObjectLike_1(value) && _baseGetTag(value) == stringTag$4);
 	}
 
-	Url.prototype.parse =
-	  function Url$parse(str, parseQueryString, hostDenotesSlash, disableAutoEscapeChars) {
-	    if (typeof str !== "string") {
-	      throw new TypeError("Parameter 'url' must be a string, not " +
-	        typeof str);
-	    }
-
-	    // check for relative URL in a browser
-	    if(typeof window !== 'undefined' && !str.match(/^[^:]+:\/\//) && str.substr(0, 2) !== '//') {
-	      if(str[0] === '/') str = str.slice(1);
-	      str = window.location.protocol + '//' + window.location.host + window.location.pathname + str;
-	      console.error('mutated', str);
-	    }
-
-	    if (str.substr(0,2) === '//' && typeof window !== 'undefined' && window.location && window.location.protocol) {
-	      str = window.location.protocol + str;
-	    }
-	    var start = 0;
-	    var end = str.length - 1;
-
-	    //Trim leading and trailing ws
-	    while (str.charCodeAt(start) <= 0x20 /*' '*/) start++;
-	    while (str.charCodeAt(end) <= 0x20 /*' '*/) end--;
-
-	    start = this._parseProtocol(str, start, end);
-
-	    //Javascript doesn't have host
-	    if (this._protocol !== "javascript") {
-	      start = this._parseHost(str, start, end, hostDenotesSlash);
-	      var proto = this._protocol;
-	      if (!this.hostname &&
-	        (this.slashes || (proto && !slashProtocols[proto]))) {
-	        this.hostname = this.host = "";
-	      }
-	    }
-
-	    if (start <= end) {
-	      var ch = str.charCodeAt(start);
-
-	      if (ch === 0x2F /*'/'*/ || ch === 0x5C /*'\'*/) {
-	        this._parsePath(str, start, end, disableAutoEscapeChars);
-	      }
-	      else if (ch === 0x3F /*'?'*/) {
-	        this._parseQuery(str, start, end, disableAutoEscapeChars);
-	      }
-	      else if (ch === 0x23 /*'#'*/) {
-	        this._parseHash(str, start, end, disableAutoEscapeChars);
-	      }
-	      else if (this._protocol !== "javascript") {
-	        this._parsePath(str, start, end, disableAutoEscapeChars);
-	      }
-	      else { //For javascript the pathname is just the rest of it
-	        this.pathname = str.slice(start, end + 1 );
-	      }
-
-	    }
-
-	    if (!this.pathname && this.hostname &&
-	      this._slashProtocols[this._protocol]) {
-	      this.pathname = "/";
-	    }
-
-	    if (parseQueryString) {
-	      var search = this.search;
-	      if (search == null) {
-	        search = this.search = "";
-	      }
-	      if (search.charCodeAt(0) === 0x3F /*'?'*/) {
-	        search = search.slice(1);
-	      }
-	      //This calls a setter function, there is no .query data property
-	      this.query = Url.queryString.parse(search);
-	    }
-	  };
-
-	Url.prototype.resolve = function Url$resolve(relative) {
-	  return this.resolveObject(Url.parse(relative, false, true)).format();
-	};
-
-	Url.prototype.format = function Url$format() {
-	  var auth = this.auth || "";
-
-	  if (auth) {
-	    auth = encodeURIComponent(auth);
-	    auth = auth.replace(/%3A/i, ":");
-	    auth += "@";
-	  }
-
-	  var protocol = this.protocol || "";
-	  var pathname = this.pathname || "";
-	  var hash = this.hash || "";
-	  var search = this.search || "";
-	  var query = "";
-	  var hostname = this.hostname || "";
-	  var port = this.port || "";
-	  var host = false;
-	  var scheme = "";
-
-	  //Cache the result of the getter function
-	  var q = this.query;
-	  if (q && typeof q === "object") {
-	    query = Url.queryString.stringify(q);
-	  }
-
-	  if (!search) {
-	    search = query ? "?" + query : "";
-	  }
-
-	  if (protocol && protocol.charCodeAt(protocol.length - 1) !== 0x3A /*':'*/)
-	    protocol += ":";
-
-	  if (this.host) {
-	    host = auth + this.host;
-	  }
-	  else if (hostname) {
-	    var ip6 = hostname.indexOf(":") > -1;
-	    if (ip6) hostname = "[" + hostname + "]";
-	    host = auth + hostname + (port ? ":" + port : "");
-	  }
-
-	  var slashes = this.slashes ||
-	    ((!protocol ||
-	    slashProtocols[protocol]) && host !== false);
-
-
-	  if (protocol) scheme = protocol + (slashes ? "//" : "");
-	  else if (slashes) scheme = "//";
-
-	  if (slashes && pathname && pathname.charCodeAt(0) !== 0x2F /*'/'*/) {
-	    pathname = "/" + pathname;
-	  }
-	  if (search && search.charCodeAt(0) !== 0x3F /*'?'*/)
-	    search = "?" + search;
-	  if (hash && hash.charCodeAt(0) !== 0x23 /*'#'*/)
-	    hash = "#" + hash;
-
-	  pathname = escapePathName(pathname);
-	  search = escapeSearch(search);
-
-	  return scheme + (host === false ? "" : host) + pathname + search + hash;
-	};
-
-	Url.prototype.resolveObject = function Url$resolveObject(relative) {
-	  if (typeof relative === "string")
-	    relative = Url.parse(relative, false, true);
-
-	  var result = this._clone();
-
-	  // hash is always overridden, no matter what.
-	  // even href="" will remove it.
-	  result.hash = relative.hash;
-
-	  // if the relative url is empty, then there"s nothing left to do here.
-	  if (!relative.href) {
-	    result._href = "";
-	    return result;
-	  }
-
-	  // hrefs like //foo/bar always cut to the protocol.
-	  if (relative.slashes && !relative._protocol) {
-	    relative._copyPropsTo(result, true);
-
-	    if (slashProtocols[result._protocol] &&
-	      result.hostname && !result.pathname) {
-	      result.pathname = "/";
-	    }
-	    result._href = "";
-	    return result;
-	  }
-
-	  if (relative._protocol && relative._protocol !== result._protocol) {
-	    // if it"s a known url protocol, then changing
-	    // the protocol does weird things
-	    // first, if it"s not file:, then we MUST have a host,
-	    // and if there was a path
-	    // to begin with, then we MUST have a path.
-	    // if it is file:, then the host is dropped,
-	    // because that"s known to be hostless.
-	    // anything else is assumed to be absolute.
-	    if (!slashProtocols[relative._protocol]) {
-	      relative._copyPropsTo(result, false);
-	      result._href = "";
-	      return result;
-	    }
-
-	    result._protocol = relative._protocol;
-	    if (!relative.host && relative._protocol !== "javascript") {
-	      var relPath = (relative.pathname || "").split("/");
-	      while (relPath.length && !(relative.host = relPath.shift()));
-	      if (!relative.host) relative.host = "";
-	      if (!relative.hostname) relative.hostname = "";
-	      if (relPath[0] !== "") relPath.unshift("");
-	      if (relPath.length < 2) relPath.unshift("");
-	      result.pathname = relPath.join("/");
-	    } else {
-	      result.pathname = relative.pathname;
-	    }
-
-	    result.search = relative.search;
-	    result.host = relative.host || "";
-	    result.auth = relative.auth;
-	    result.hostname = relative.hostname || relative.host;
-	    result._port = relative._port;
-	    result.slashes = result.slashes || relative.slashes;
-	    result._href = "";
-	    return result;
-	  }
-
-	  var isSourceAbs =
-	    (result.pathname && result.pathname.charCodeAt(0) === 0x2F /*'/'*/);
-	  var isRelAbs = (
-	    relative.host ||
-	    (relative.pathname &&
-	    relative.pathname.charCodeAt(0) === 0x2F /*'/'*/)
-	  );
-	  var mustEndAbs = (isRelAbs || isSourceAbs ||
-	  (result.host && relative.pathname));
-
-	  var removeAllDots = mustEndAbs;
-
-	  var srcPath = result.pathname && result.pathname.split("/") || [];
-	  var relPath = relative.pathname && relative.pathname.split("/") || [];
-	  var psychotic = result._protocol && !slashProtocols[result._protocol];
-
-	  // if the url is a non-slashed url, then relative
-	  // links like ../.. should be able
-	  // to crawl up to the hostname, as well.  This is strange.
-	  // result.protocol has already been set by now.
-	  // Later on, put the first path part into the host field.
-	  if (psychotic) {
-	    result.hostname = "";
-	    result._port = -1;
-	    if (result.host) {
-	      if (srcPath[0] === "") srcPath[0] = result.host;
-	      else srcPath.unshift(result.host);
-	    }
-	    result.host = "";
-	    if (relative._protocol) {
-	      relative.hostname = "";
-	      relative._port = -1;
-	      if (relative.host) {
-	        if (relPath[0] === "") relPath[0] = relative.host;
-	        else relPath.unshift(relative.host);
-	      }
-	      relative.host = "";
-	    }
-	    mustEndAbs = mustEndAbs && (relPath[0] === "" || srcPath[0] === "");
-	  }
-
-	  if (isRelAbs) {
-	    // it"s absolute.
-	    result.host = relative.host ?
-	      relative.host : result.host;
-	    result.hostname = relative.hostname ?
-	      relative.hostname : result.hostname;
-	    result.search = relative.search;
-	    srcPath = relPath;
-	    // fall through to the dot-handling below.
-	  } else if (relPath.length) {
-	    // it"s relative
-	    // throw away the existing file, and take the new path instead.
-	    if (!srcPath) srcPath = [];
-	    srcPath.pop();
-	    srcPath = srcPath.concat(relPath);
-	    result.search = relative.search;
-	  } else if (relative.search) {
-	    // just pull out the search.
-	    // like href="?foo".
-	    // Put this after the other two cases because it simplifies the booleans
-	    if (psychotic) {
-	      result.hostname = result.host = srcPath.shift();
-	      //occationaly the auth can get stuck only in host
-	      //this especialy happens in cases like
-	      //url.resolveObject("mailto:local1@domain1", "local2@domain2")
-	      var authInHost = result.host && result.host.indexOf("@") > 0 ?
-	        result.host.split("@") : false;
-	      if (authInHost) {
-	        result.auth = authInHost.shift();
-	        result.host = result.hostname = authInHost.shift();
-	      }
-	    }
-	    result.search = relative.search;
-	    result._href = "";
-	    return result;
-	  }
-
-	  if (!srcPath.length) {
-	    // no path at all.  easy.
-	    // we"ve already handled the other stuff above.
-	    result.pathname = null;
-	    result._href = "";
-	    return result;
-	  }
-
-	  // if a url ENDs in . or .., then it must get a trailing slash.
-	  // however, if it ends in anything else non-slashy,
-	  // then it must NOT get a trailing slash.
-	  var last = srcPath.slice(-1)[0];
-	  var hasTrailingSlash = (
-	  (result.host || relative.host) && (last === "." || last === "..") ||
-	  last === "");
-
-	  // strip single dots, resolve double dots to parent dir
-	  // if the path tries to go above the root, `up` ends up > 0
-	  var up = 0;
-	  for (var i = srcPath.length; i >= 0; i--) {
-	    last = srcPath[i];
-	    if (last === ".") {
-	      srcPath.splice(i, 1);
-	    } else if (last === "..") {
-	      srcPath.splice(i, 1);
-	      up++;
-	    } else if (up) {
-	      srcPath.splice(i, 1);
-	      up--;
-	    }
-	  }
-
-	  // if the path is allowed to go above the root, restore leading ..s
-	  if (!mustEndAbs && !removeAllDots) {
-	    for (; up--; up) {
-	      srcPath.unshift("..");
-	    }
-	  }
-
-	  if (mustEndAbs && srcPath[0] !== "" &&
-	    (!srcPath[0] || srcPath[0].charCodeAt(0) !== 0x2F /*'/'*/)) {
-	    srcPath.unshift("");
-	  }
-
-	  if (hasTrailingSlash && (srcPath.join("/").substr(-1) !== "/")) {
-	    srcPath.push("");
-	  }
-
-	  var isAbsolute = srcPath[0] === "" ||
-	    (srcPath[0] && srcPath[0].charCodeAt(0) === 0x2F /*'/'*/);
-
-	  // put the host back
-	  if (psychotic) {
-	    result.hostname = result.host = isAbsolute ? "" :
-	      srcPath.length ? srcPath.shift() : "";
-	    //occationaly the auth can get stuck only in host
-	    //this especialy happens in cases like
-	    //url.resolveObject("mailto:local1@domain1", "local2@domain2")
-	    var authInHost = result.host && result.host.indexOf("@") > 0 ?
-	      result.host.split("@") : false;
-	    if (authInHost) {
-	      result.auth = authInHost.shift();
-	      result.host = result.hostname = authInHost.shift();
-	    }
-	  }
-
-	  mustEndAbs = mustEndAbs || (result.host && srcPath.length);
-
-	  if (mustEndAbs && !isAbsolute) {
-	    srcPath.unshift("");
-	  }
-
-	  result.pathname = srcPath.length === 0 ? null : srcPath.join("/");
-	  result.auth = relative.auth || result.auth;
-	  result.slashes = result.slashes || relative.slashes;
-	  result._href = "";
-	  return result;
-	};
-
-	var escapePathName = Url.prototype._escapePathName =
-	  function Url$_escapePathName(pathname) {
-	    if (!containsCharacter2(pathname, 0x23 /*'#'*/, 0x3F /*'?'*/)) {
-	      return pathname;
-	    }
-	    //Avoid closure creation to keep this inlinable
-	    return _escapePath(pathname);
-	  };
-
-	var escapeSearch = Url.prototype._escapeSearch =
-	  function Url$_escapeSearch(search) {
-	    if (!containsCharacter2(search, 0x23 /*'#'*/, -1)) return search;
-	    //Avoid closure creation to keep this inlinable
-	    return _escapeSearch(search);
-	  };
-
-	Url.prototype._parseProtocol = function Url$_parseProtocol(str, start, end) {
-	  var doLowerCase = false;
-	  var protocolCharacters = this._protocolCharacters;
-
-	  for (var i = start; i <= end; ++i) {
-	    var ch = str.charCodeAt(i);
-
-	    if (ch === 0x3A /*':'*/) {
-	      var protocol = str.slice(start, i);
-	      if (doLowerCase) protocol = protocol.toLowerCase();
-	      this._protocol = protocol;
-	      return i + 1;
-	    }
-	    else if (protocolCharacters[ch] === 1) {
-	      if (ch < 0x61 /*'a'*/)
-	        doLowerCase = true;
-	    }
-	    else {
-	      return start;
-	    }
-
-	  }
-	  return start;
-	};
-
-	Url.prototype._parseAuth = function Url$_parseAuth(str, start, end, decode) {
-	  var auth = str.slice(start, end + 1);
-	  if (decode) {
-	    auth = decodeURIComponent(auth);
-	  }
-	  this.auth = auth;
-	};
-
-	Url.prototype._parsePort = function Url$_parsePort(str, start, end) {
-	  //Internal format is integer for more efficient parsing
-	  //and for efficient trimming of leading zeros
-	  var port = 0;
-	  //Distinguish between :0 and : (no port number at all)
-	  var hadChars = false;
-	  var validPort = true;
-
-	  for (var i = start; i <= end; ++i) {
-	    var ch = str.charCodeAt(i);
-
-	    if (0x30 /*'0'*/ <= ch && ch <= 0x39 /*'9'*/) {
-	      port = (10 * port) + (ch - 0x30 /*'0'*/);
-	      hadChars = true;
-	    }
-	    else {
-	      validPort = false;
-	      if (ch === 0x5C/*'\'*/ || ch === 0x2F/*'/'*/) {
-	        validPort = true;
-	      }
-	      break;
-	    }
-
-	  }
-	  if ((port === 0 && !hadChars) || !validPort) {
-	    if (!validPort) {
-	      this._port = -2;
-	    }
-	    return 0;
-	  }
-
-	  this._port = port;
-	  return i - start;
-	};
-
-	Url.prototype._parseHost =
-	  function Url$_parseHost(str, start, end, slashesDenoteHost) {
-	    var hostEndingCharacters = this._hostEndingCharacters;
-	    var first = str.charCodeAt(start);
-	    var second = str.charCodeAt(start + 1);
-	    if ((first === 0x2F /*'/'*/ || first === 0x5C /*'\'*/) &&
-	      (second === 0x2F /*'/'*/ || second === 0x5C /*'\'*/)) {
-	      this.slashes = true;
-
-	      //The string starts with //
-	      if (start === 0) {
-	        //The string is just "//"
-	        if (end < 2) return start;
-	        //If slashes do not denote host and there is no auth,
-	        //there is no host when the string starts with //
-	        var hasAuth =
-	          containsCharacter(str, 0x40 /*'@'*/, 2, hostEndingCharacters);
-	        if (!hasAuth && !slashesDenoteHost) {
-	          this.slashes = null;
-	          return start;
-	        }
-	      }
-	      //There is a host that starts after the //
-	      start += 2;
-	    }
-	    //If there is no slashes, there is no hostname if
-	    //1. there was no protocol at all
-	    else if (!this._protocol ||
-	      //2. there was a protocol that requires slashes
-	      //e.g. in 'http:asd' 'asd' is not a hostname
-	      slashProtocols[this._protocol]
-	    ) {
-	      return start;
-	    }
-
-	    var doLowerCase = false;
-	    var idna = false;
-	    var hostNameStart = start;
-	    var hostNameEnd = end;
-	    var lastCh = -1;
-	    var portLength = 0;
-	    var charsAfterDot = 0;
-	    var authNeedsDecoding = false;
-
-	    var j = -1;
-
-	    //Find the last occurrence of an @-sign until hostending character is met
-	    //also mark if decoding is needed for the auth portion
-	    for (var i = start; i <= end; ++i) {
-	      var ch = str.charCodeAt(i);
-
-	      if (ch === 0x40 /*'@'*/) {
-	        j = i;
-	      }
-	      //This check is very, very cheap. Unneeded decodeURIComponent is very
-	      //very expensive
-	      else if (ch === 0x25 /*'%'*/) {
-	        authNeedsDecoding = true;
-	      }
-	      else if (hostEndingCharacters[ch] === 1) {
-	        break;
-	      }
-	    }
-
-	    //@-sign was found at index j, everything to the left from it
-	    //is auth part
-	    if (j > -1) {
-	      this._parseAuth(str, start, j - 1, authNeedsDecoding);
-	      //hostname starts after the last @-sign
-	      start = hostNameStart = j + 1;
-	    }
-
-	    //Host name is starting with a [
-	    if (str.charCodeAt(start) === 0x5B /*'['*/) {
-	      for (var i = start + 1; i <= end; ++i) {
-	        var ch = str.charCodeAt(i);
-
-	        //Assume valid IP6 is between the brackets
-	        if (ch === 0x5D /*']'*/) {
-	          if (str.charCodeAt(i + 1) === 0x3A /*':'*/) {
-	            portLength = this._parsePort(str, i + 2, end) + 1;
-	          }
-	          var hostname = str.slice(start + 1, i).toLowerCase();
-	          this.hostname = hostname;
-	          this.host = this._port > 0 ?
-	            "[" + hostname + "]:" + this._port :
-	            "[" + hostname + "]";
-	          this.pathname = "/";
-	          return i + portLength + 1;
-	        }
-	      }
-	      //Empty hostname, [ starts a path
-	      return start;
-	    }
-
-	    for (var i = start; i <= end; ++i) {
-	      if (charsAfterDot > 62) {
-	        this.hostname = this.host = str.slice(start, i);
-	        return i;
-	      }
-	      var ch = str.charCodeAt(i);
-
-	      if (ch === 0x3A /*':'*/) {
-	        portLength = this._parsePort(str, i + 1, end) + 1;
-	        hostNameEnd = i - 1;
-	        break;
-	      }
-	      else if (ch < 0x61 /*'a'*/) {
-	        if (ch === 0x2E /*'.'*/) {
-	          //Node.js ignores this error
-	          /*
-	           if (lastCh === DOT || lastCh === -1) {
-	           this.hostname = this.host = "";
-	           return start;
-	           }
-	           */
-	          charsAfterDot = -1;
-	        }
-	        else if (0x41 /*'A'*/ <= ch && ch <= 0x5A /*'Z'*/) {
-	          doLowerCase = true;
-	        }
-	        //Valid characters other than ASCII letters -, _, +, 0-9
-	        else if (!(ch === 0x2D /*'-'*/ ||
-	          ch === 0x5F /*'_'*/ ||
-	          ch === 0x2B /*'+'*/ ||
-	          (0x30 /*'0'*/ <= ch && ch <= 0x39 /*'9'*/))
-	        ) {
-	          if (hostEndingCharacters[ch] === 0 &&
-	            this._noPrependSlashHostEnders[ch] === 0) {
-	            this._prependSlash = true;
-	          }
-	          hostNameEnd = i - 1;
-	          break;
-	        }
-	      }
-	      else if (ch >= 0x7B /*'{'*/) {
-	        if (ch <= 0x7E /*'~'*/) {
-	          if (this._noPrependSlashHostEnders[ch] === 0) {
-	            this._prependSlash = true;
-	          }
-	          hostNameEnd = i - 1;
-	          break;
-	        }
-	        idna = true;
-	      }
-	      lastCh = ch;
-	      charsAfterDot++;
-	    }
-
-	    //Node.js ignores this error
-	    /*
-	     if (lastCh === DOT) {
-	     hostNameEnd--;
-	     }
-	     */
-
-	    if (hostNameEnd + 1 !== start &&
-	      hostNameEnd - hostNameStart <= 256) {
-	      var hostname = str.slice(hostNameStart, hostNameEnd + 1);
-	      if (doLowerCase) hostname = hostname.toLowerCase();
-	      this.hostname = hostname;
-	      this.host = this._port > 0 ? hostname + ":" + this._port : hostname;
-	    }
-
-	    return hostNameEnd + 1 + portLength;
-
-	  };
-
-	Url.prototype._copyPropsTo = function Url$_copyPropsTo(input, noProtocol) {
-	  if (!noProtocol) {
-	    input._protocol = this._protocol;
-	  }
-	  input._href = this._href;
-	  input._port = this._port;
-	  input._prependSlash = this._prependSlash;
-	  input.auth = this.auth;
-	  input.slashes = this.slashes;
-	  input.host = this.host;
-	  input.hostname = this.hostname;
-	  input.hash = this.hash;
-	  input.search = this.search;
-	  input.pathname = this.pathname;
-	};
-
-	Url.prototype._clone = function Url$_clone() {
-	  var ret = new Url();
-	  ret._protocol = this._protocol;
-	  ret._href = this._href;
-	  ret._port = this._port;
-	  ret._prependSlash = this._prependSlash;
-	  ret.auth = this.auth;
-	  ret.slashes = this.slashes;
-	  ret.host = this.host;
-	  ret.hostname = this.hostname;
-	  ret.hash = this.hash;
-	  ret.search = this.search;
-	  ret.pathname = this.pathname;
-	  return ret;
-	};
-
-	Url.prototype._getComponentEscaped =
-	  function Url$_getComponentEscaped(str, start, end, isAfterQuery) {
-	    var cur = start;
-	    var i = start;
-	    var ret = "";
-	    var autoEscapeMap = isAfterQuery ?
-	      this._afterQueryAutoEscapeMap : this._autoEscapeMap;
-	    for (; i <= end; ++i) {
-	      var ch = str.charCodeAt(i);
-	      var escaped = autoEscapeMap[ch];
-
-	      if (escaped !== "" && escaped !== undefined) {
-	        if (cur < i) ret += str.slice(cur, i);
-	        ret += escaped;
-	        cur = i + 1;
-	      }
-	    }
-	    if (cur < i + 1) ret += str.slice(cur, i);
-	    return ret;
-	  };
-
-	Url.prototype._parsePath =
-	  function Url$_parsePath(str, start, end, disableAutoEscapeChars) {
-	    var pathStart = start;
-	    var pathEnd = end;
-	    var escape = false;
-	    var autoEscapeCharacters = this._autoEscapeCharacters;
-	    var prePath = this._port === -2 ? "/:" : "";
-
-	    for (var i = start; i <= end; ++i) {
-	      var ch = str.charCodeAt(i);
-	      if (ch === 0x23 /*'#'*/) {
-	        this._parseHash(str, i, end, disableAutoEscapeChars);
-	        pathEnd = i - 1;
-	        break;
-	      }
-	      else if (ch === 0x3F /*'?'*/) {
-	        this._parseQuery(str, i, end, disableAutoEscapeChars);
-	        pathEnd = i - 1;
-	        break;
-	      }
-	      else if (!disableAutoEscapeChars && !escape && autoEscapeCharacters[ch] === 1) {
-	        escape = true;
-	      }
-	    }
-
-	    if (pathStart > pathEnd) {
-	      this.pathname = prePath === "" ? "/" : prePath;
-	      return;
-	    }
-
-	    var path;
-	    if (escape) {
-	      path = this._getComponentEscaped(str, pathStart, pathEnd, false);
-	    }
-	    else {
-	      path = str.slice(pathStart, pathEnd + 1);
-	    }
-	    this.pathname = prePath === ""
-	      ? (this._prependSlash ? "/" + path : path)
-	      : prePath + path;
-	  };
-
-	Url.prototype._parseQuery = function Url$_parseQuery(str, start, end, disableAutoEscapeChars) {
-	  var queryStart = start;
-	  var queryEnd = end;
-	  var escape = false;
-	  var autoEscapeCharacters = this._autoEscapeCharacters;
-
-	  for (var i = start; i <= end; ++i) {
-	    var ch = str.charCodeAt(i);
-
-	    if (ch === 0x23 /*'#'*/) {
-	      this._parseHash(str, i, end, disableAutoEscapeChars);
-	      queryEnd = i - 1;
-	      break;
-	    }
-	    else if (!disableAutoEscapeChars && !escape && autoEscapeCharacters[ch] === 1) {
-	      escape = true;
-	    }
-	  }
-
-	  if (queryStart > queryEnd) {
-	    this.search = "";
-	    return;
-	  }
-
-	  var query;
-	  if (escape) {
-	    query = this._getComponentEscaped(str, queryStart, queryEnd, true);
-	  }
-	  else {
-	    query = str.slice(queryStart, queryEnd + 1);
-	  }
-	  this.search = query;
-	};
-
-	Url.prototype._parseHash = function Url$_parseHash(str, start, end, disableAutoEscapeChars) {
-	  if (start > end) {
-	    this.hash = "";
-	    return;
-	  }
-
-	  this.hash = disableAutoEscapeChars ?
-	    str.slice(start, end + 1) : this._getComponentEscaped(str, start, end, true);
-	};
-
-	Object.defineProperty(Url.prototype, "port", {
-	  get: function() {
-	    if (this._port >= 0) {
-	      return ("" + this._port);
-	    }
-	    return null;
-	  },
-	  set: function(v) {
-	    if (v == null) {
-	      this._port = -1;
-	    }
-	    else {
-	      this._port = parseInt(v, 10);
-	    }
-	  }
-	});
-
-	Object.defineProperty(Url.prototype, "query", {
-	  get: function() {
-	    var query = this._query;
-	    if (query != null) {
-	      return query;
-	    }
-	    var search = this.search;
-
-	    if (search) {
-	      if (search.charCodeAt(0) === 0x3F /*'?'*/) {
-	        search = search.slice(1);
-	      }
-	      if (search !== "") {
-	        this._query = search;
-	        return search;
-	      }
-	    }
-	    return search;
-	  },
-	  set: function(v) {
-	    this._query = v;
-	  }
-	});
-
-	Object.defineProperty(Url.prototype, "path", {
-	  get: function() {
-	    var p = this.pathname || "";
-	    var s = this.search || "";
-	    if (p || s) {
-	      return p + s;
-	    }
-	    return (p == null && s) ? ("/" + s) : null;
-	  },
-	  set: function() {}
-	});
-
-	Object.defineProperty(Url.prototype, "protocol", {
-	  get: function() {
-	    var proto = this._protocol;
-	    return proto ? proto + ":" : proto;
-	  },
-	  set: function(v) {
-	    if (typeof v === "string") {
-	      var end = v.length - 1;
-	      if (v.charCodeAt(end) === 0x3A /*':'*/) {
-	        this._protocol = v.slice(0, end);
-	      }
-	      else {
-	        this._protocol = v;
-	      }
-	    }
-	    else if (v == null) {
-	      this._protocol = null;
-	    }
-	  }
-	});
-
-	Object.defineProperty(Url.prototype, "href", {
-	  get: function() {
-	    var href = this._href;
-	    if (!href) {
-	      href = this._href = this.format();
-	    }
-	    return href;
-	  },
-	  set: function(v) {
-	    this._href = v;
-	  }
-	});
-
-	Url.parse = function Url$Parse(str, parseQueryString, hostDenotesSlash, disableAutoEscapeChars) {
-	  if (str instanceof Url) return str;
-	  var ret = new Url();
-	  ret.parse(str, !!parseQueryString, !!hostDenotesSlash, !!disableAutoEscapeChars);
-	  return ret;
-	};
-
-	Url.format = function Url$Format(obj) {
-	  if (typeof obj === "string") {
-	    obj = Url.parse(obj);
-	  }
-	  if (!(obj instanceof Url)) {
-	    return Url.prototype.format.call(obj);
-	  }
-	  return obj.format();
-	};
-
-	Url.resolve = function Url$Resolve(source, relative) {
-	  return Url.parse(source, false, true).resolve(relative);
-	};
-
-	Url.resolveObject = function Url$ResolveObject(source, relative) {
-	  if (!source) return relative;
-	  return Url.parse(source, false, true).resolveObject(relative);
-	};
-
-	function _escapePath(pathname) {
-	  return pathname.replace(/[?#]/g, function(match) {
-	    return encodeURIComponent(match);
-	  });
-	}
-
-	function _escapeSearch(search) {
-	  return search.replace(/#/g, function(match) {
-	    return encodeURIComponent(match);
-	  });
-	}
-
-	//Search `char1` (integer code for a character) in `string`
-	//starting from `fromIndex` and ending at `string.length - 1`
-	//or when a stop character is found
-	function containsCharacter(string, char1, fromIndex, stopCharacterTable) {
-	  var len = string.length;
-	  for (var i = fromIndex; i < len; ++i) {
-	    var ch = string.charCodeAt(i);
-
-	    if (ch === char1) {
-	      return true;
-	    }
-	    else if (stopCharacterTable[ch] === 1) {
-	      return false;
-	    }
-	  }
-	  return false;
-	}
-
-	//See if `char1` or `char2` (integer codes for characters)
-	//is contained in `string`
-	function containsCharacter2(string, char1, char2) {
-	  for (var i = 0, len = string.length; i < len; ++i) {
-	    var ch = string.charCodeAt(i);
-	    if (ch === char1 || ch === char2) return true;
-	  }
-	  return false;
-	}
-
-	//Makes an array of 128 uint8's which represent boolean values.
-	//Spec is an array of ascii code points or ascii code point ranges
-	//ranges are expressed as [start, end]
-
-	//Create a table with the characters 0x30-0x39 (decimals '0' - '9') and
-	//0x7A (lowercaseletter 'z') as `true`:
-	//
-	//var a = makeAsciiTable([[0x30, 0x39], 0x7A]);
-	//a[0x30]; //1
-	//a[0x15]; //0
-	//a[0x35]; //1
-	function makeAsciiTable(spec) {
-	  var ret = new Uint8Array(128);
-	  spec.forEach(function(item){
-	    if (typeof item === "number") {
-	      ret[item] = 1;
-	    }
-	    else {
-	      var start = item[0];
-	      var end = item[1];
-	      for (var j = start; j <= end; ++j) {
-	        ret[j] = 1;
-	      }
-	    }
-	  });
-
-	  return ret;
-	}
-
-
-	var autoEscape = ["<", ">", "\"", "`", " ", "\r", "\n",
-	  "\t", "{", "}", "|", "\\", "^", "`", "'"];
-
-	var autoEscapeMap = new Array(128);
-
-
-
-	for (var i$1 = 0, len = autoEscapeMap.length; i$1 < len; ++i$1) {
-	  autoEscapeMap[i$1] = "";
-	}
-
-	for (var i$1 = 0, len = autoEscape.length; i$1 < len; ++i$1) {
-	  var c = autoEscape[i$1];
-	  var esc = encodeURIComponent(c);
-	  if (esc === c) {
-	    esc = escape(c);
-	  }
-	  autoEscapeMap[c.charCodeAt(0)] = esc;
-	}
-	var afterQueryAutoEscapeMap = autoEscapeMap.slice();
-	autoEscapeMap[0x5C /*'\'*/] = "/";
-
-	var slashProtocols = Url.prototype._slashProtocols = {
-	  http: true,
-	  https: true,
-	  gopher: true,
-	  file: true,
-	  ftp: true,
-
-	  "http:": true,
-	  "https:": true,
-	  "gopher:": true,
-	  "file:": true,
-	  "ftp:": true
-	};
-
-	Url.prototype._protocolCharacters = makeAsciiTable([
-	  [0x61 /*'a'*/, 0x7A /*'z'*/],
-	  [0x41 /*'A'*/, 0x5A /*'Z'*/],
-	  0x2E /*'.'*/, 0x2B /*'+'*/, 0x2D /*'-'*/
-	]);
-
-	Url.prototype._hostEndingCharacters = makeAsciiTable([
-	  0x23 /*'#'*/, 0x3F /*'?'*/, 0x2F /*'/'*/, 0x5C /*'\'*/
-	]);
-
-	Url.prototype._autoEscapeCharacters = makeAsciiTable(
-	  autoEscape.map(function(v) {
-	    return v.charCodeAt(0);
-	  })
-	);
-
-	//If these characters end a host name, the path will not be prepended a /
-	Url.prototype._noPrependSlashHostEnders = makeAsciiTable(
-	  [
-	    "<", ">", "'", "`", " ", "\r",
-	    "\n", "\t", "{", "}", "|",
-	    "^", "`", "\"", "%", ";"
-	  ].map(function(v) {
-	    return v.charCodeAt(0);
-	  })
-	);
-
-	Url.prototype._autoEscapeMap = autoEscapeMap;
-	Url.prototype._afterQueryAutoEscapeMap = afterQueryAutoEscapeMap;
-
-	// constants
-	var IS_URL = new RegExp('^http:\\/\\/.*$|^https:\\/\\/.*$');
-
-	// configs
-
-	var HEADER_BYTE_LENGTH = 16;
-	var MAGIC_NUMBER = 0x41443344; // AD3D encoded as ASCII characters in hex
-	var VERSION = 1;
-	var TEXTURE_PATH_KEYS = [
-	  // source
-	  'mapDiffuseSource',
-	  'mapSpecularSource',
-	  'mapNormalSource',
-	  'mapAlphaSource',
-	  'mapLightSource',
-	  // hi-res
-	  'mapDiffuse',
-	  'mapSpecular',
-	  'mapNormal',
-	  'mapAlpha',
-	  'mapLight',
-	  // preview
-	  'mapDiffusePreview',
-	  'mapSpecularPreview',
-	  'mapNormalPreview',
-	  'mapAlphaPreview',
-	  'mapLightPreview'
-	];
-
-	// public methods
-
-	function decodeBinary (buffer, options) {
-
-	  // API
-	  options = options || {};
-	  var url = options.url;
-
-	  var parsedUrl, rootDir, origin;
-
-	  if (url) {
-	    parsedUrl = Url.parse(url);
-	    rootDir = path.parse(parsedUrl.path || parsedUrl.pathname || '').dir;
-	    origin = parsedUrl.protocol + '//' + parsedUrl.host;
-	  }
-
-	  // check buffer type
-	  if (!buffer) {
-	    return bluebird_1.reject('Missing buffer parameter.')
-	  } else if (typeof Buffer !== 'undefined' && buffer instanceof Buffer) {
-	    // convert node buffer to arrayBuffer
-	    buffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
-	  }
-
-	  // internals
-	  var headerArray = new Int32Array(buffer, 0, HEADER_BYTE_LENGTH / 4);
-	  var magicNumber = headerArray[0];
-	  var version = headerArray[1];
-	  var structureByteLength = headerArray[2];
-	  var payloadByteLength = headerArray[3];
-	  var expectedFileByteLength = HEADER_BYTE_LENGTH + structureByteLength + payloadByteLength;
-
-	  // validation warnings
-
-	  if (magicNumber !== MAGIC_NUMBER) {
-	    console.error('File header error: Wrong magic number. File is probably not data3d buffer format.');
-	  }
-	  if (version !== VERSION) {
-	    console.error('File header error: Wrong version number: ' + version + '. Parser supports version: ' + VERSION);
-	  }
-
-	  // validation errors
-
-	  if (buffer.byteLength !== expectedFileByteLength) {
-	    var errorMessage = 'Can not parse Data3d buffer. Wrong buffer size: ' + buffer.byteLength + ' Expected: ' + expectedFileByteLength;
-	    console.error(errorMessage);
-	    return bluebird_1.reject(errorMessage)
-	  }
-
-	  // parse structure info
-
-	  var structureArray = new Uint16Array(buffer, HEADER_BYTE_LENGTH, structureByteLength / 2);
-	  var structureString = decodeTextArray.utf16(structureArray);
-	  var structure;
-	  try {
-	    structure = JSON.parse(structureString);
-	  } catch (e) {
-	    return bluebird_1.reject(e)
-	  }
-
-
-	  // add geometry arrays to data3d
-
-	  var payloadByteOffset = HEADER_BYTE_LENGTH + structureByteLength;
-	  traverseData3d(structure.data3d, function (data3d) {
-
-	    // map typed arrays to payload area in file buffer
-	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url);
-
-	    //  convert relative material keys into absolute one
-	    if (origin && data3d.materials) convertTextureKeys(data3d, origin, rootDir);
-
-	  });
-
-	  return bluebird_1.resolve(structure.data3d)
-
-	}
-
-	function convertTextureKeys (data3d, origin, rootDir) {
-
-	  var i, l, i2, l2, m, materialKeys = data3d.materialKeys || Object.keys(data3d.materials || {}), texturePathKey;
-
-	  for (i = 0, l = materialKeys.length; i < l; i++) {
-	    m = data3d.materials[materialKeys[i]];
-
-	    // hi-res textures
-	    for (i2 = 0, l2 = TEXTURE_PATH_KEYS.length; i2 < l2; i2++) {
-	      texturePathKey = TEXTURE_PATH_KEYS[i2];
-
-	      if (m[texturePathKey]) {
-	        if (IS_URL.test(m[texturePathKey])) {
-	          // is full URL already
-	          m[texturePathKey] = m[texturePathKey];
-	        } else if (m[texturePathKey].substring(0,5) === '/http') {
-	          // FIXME: prevent leading slashes being added to absolute paths
-	          m[texturePathKey] = m[texturePathKey].substring(1);
-	        } else if (m[texturePathKey][0] === '/') {
-	          // absolute path
-	          m[texturePathKey] = origin + m[texturePathKey];
-	        } else {
-	          // relative path
-	          m[texturePathKey] = origin + rootDir +'/'+ m[texturePathKey];
-	        }
-	      }
-	    }
-
-	  }
-
-	}
-
-	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url) {
-
-	  var mesh, i, l, meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
-
-	  for (i = 0, l = meshKeys.length; i < l; i++) {
-	    mesh = data3d.meshes[meshKeys[i]];
-
-	    // map arrays to meshes
-	    if (mesh.positionsOffset !== undefined && mesh.positionsLength !== undefined) {
-	      mesh.positions = new Float32Array(buffer, payloadByteOffset + mesh.positionsOffset * 4, mesh.positionsLength);
-	      delete mesh.positionsOffset;
-	      delete mesh.positionsLength;
-	    }
-	    if (mesh.normalsOffset !== undefined && mesh.normalsLength !== undefined) {
-	      mesh.normals = new Float32Array(buffer, payloadByteOffset + mesh.normalsOffset * 4, mesh.normalsLength);
-	      delete mesh.normalsOffset;
-	      delete mesh.normalsLength;
-	    }
-	    if (mesh.uvsOffset !== undefined && mesh.uvsLength !== undefined) {
-	      mesh.uvs = new Float32Array(buffer, payloadByteOffset + mesh.uvsOffset * 4, mesh.uvsLength);
-	      delete mesh.uvsOffset;
-	      delete mesh.uvsLength;
-	    }
-	    if (mesh.uvsLightmapOffset !== undefined && mesh.uvsLightmapLength !== undefined) {
-	      mesh.uvsLightmap = new Float32Array(buffer, payloadByteOffset + mesh.uvsLightmapOffset * 4, mesh.uvsLightmapLength);
-	      delete mesh.uvsLightmapOffset;
-	      delete mesh.uvsLightmapLength;
-	    }
-
-	    // add cache key
-	    if (url) mesh.cacheKey = url + ':' + meshKeys[i];
-
-	  }
-
-	}
-
-	function traverseData3d (data3d, callback) {
-
-	  callback(data3d);
-
-	  if (data3d.children) {
-	    for (var i = 0, l = data3d.children.length; i < l; i++) {
-	      traverseData3d(data3d.children[i], callback);
-	    }
-	  }
-
-	}
-
-	// private shared
-
-	var cache = new PromiseCache();
-
-	// main
-
-	function loadData3d (url, options) {
-
-	  // try cache
-	  var cacheKey = url;
-	  var promiseFromCache = cache.get(cacheKey);
-	  if (promiseFromCache) return promiseFromCache
-
-	  // fetch
-	  var promise = fetch$1(url, options).then(function(res){
-	    return res.arrayBuffer()
-	  }).then(function(buffer){
-	    return decodeBinary(buffer, { url: url })
-	  });
-
-	  // add to cache
-	  cache.add(cacheKey, promise);
-
-	  return promise
-
-	}
+	var isString_1 = isString;
 
 	// dependencies
 
 	/*
+	import loadData3d from '../../../../utils/data3d/load'
+
 	TODO: add external asset loading
 
 	var s3 = require('s3')
@@ -24505,8 +23326,6 @@
 
 	  meshes3d: function (a) {
 
-	    console.log('kitchen mesh', JSON.stringify(a));
-
 	    //var a = this.attributes
 
 	    // internals
@@ -24559,13 +23378,13 @@
 
 	    // validate materials
 	    try {
-	      if (this.a.ovenPos === this.a.cooktopPos && _.isString(this.a.materials.oven)) {
-	        if (largeCooktop && _.isString(this.a.materials.oven) && this.a.materials.oven.indexOf('_60') > -1) this.setMaterial('oven', 'oven_miele_90-48');
-	        if (!largeCooktop && _.isString(this.a.materials.oven) && this.a.materials.oven.indexOf('_90') > -1) this.setMaterial('oven', 'oven_miele_60-60');
+	      if (a.ovenPos === a.cooktopPos && isString_1(a.materials.oven)) {
+	        if (largeCooktop && isString_1(a.materials.oven) && a.materials.oven.indexOf('_60') > -1) this.setMaterial('oven', 'oven_miele_90-48');
+	        if (!largeCooktop && isString_1(a.materials.oven) && a.materials.oven.indexOf('_90') > -1) this.setMaterial('oven', 'oven_miele_60-60');
 	      }
-	      if (_.isString(this.a.materials.cooktop)) {
-	        if (largeCooktop && this.a.materials.cooktop.indexOf('_60') > -1) this.setMaterial('cooktop', 'cooktop_westinghouse_90');
-	        if (!largeCooktop && this.a.materials.cooktop.indexOf('_90') > -1) this.setMaterial('cooktop', 'cooktop_westinghouse_60');
+	      if (isString_1(a.materials.cooktop)) {
+	        if (largeCooktop && a.materials.cooktop.indexOf('_60') > -1) this.setMaterial('cooktop', 'cooktop_westinghouse_90');
+	        if (!largeCooktop && a.materials.cooktop.indexOf('_90') > -1) this.setMaterial('cooktop', 'cooktop_westinghouse_60');
 	      }
 	    } catch(err) { /* */ }
 
@@ -25845,7 +24664,7 @@
 	    // WALL CABINET BOX
 	    if (a.wallCabinet && baseCabinetNum > 0) {
 	      var leftWallCabinet = a.cooktopPos > a.highCabinetLeft + 1;
-	      var rightWallCabinet = elements[a.cooktopPos] >= minWallCabinet || this.a.extractorType === 'integrated';
+	      var rightWallCabinet = elements[a.cooktopPos] >= minWallCabinet || a.extractorType === 'integrated';
 	      //console.log(elements.length, a.cooktopPos, elements[a.cooktopPos])
 	      if (!extractor || a.cooktopType === 'none') {
 	        // one single wall cabinet
@@ -26426,7 +25245,7 @@
 	    cooktop = a.cooktopType !== 'none',
 	    largeCooktop = cooktop && a.cooktopType.slice(-2) === '90',
 	    fridgeLength = 0.52;
-	  //console.log('cooktop', _.clone(a.cooktopPos), elements && _.clone(elements[a.cooktopPos - 1]))
+
 	  var elements = [];
 	  var elNum = config.elementNum;
 	  // set all element lengths
@@ -31276,7 +30095,6 @@
 	}
 
 	function mapAttributes(a, args) {
-	  console.log('map attributes', a, args);
 	  // set custom attributes
 	  var validProps = {
 	    box: ['h', 'l', 'w'],
@@ -31777,10 +30595,10 @@
 	var concurrentRequests = 0;
 	var concurrentPerQueue = {};
 	var queueName;
-	for (var i$2 = 0, l = queuesLength; i$2 < l; i$2++) {
-	  queueName = queuesByPriority[i$2];
+	for (var i$1 = 0, l = queuesLength; i$1 < l; i$1++) {
+	  queueName = queuesByPriority[i$1];
 	  queues[queueName] = [];
-	  queueFences[queueName] = queueFences[i$2];
+	  queueFences[queueName] = queueFences[i$1];
 	  queueInfo[queueName] = {requestCount: 0};
 	  concurrentPerQueue[queueName] = 0;
 	}
@@ -31864,7 +30682,7 @@
 	  info: queueInfo
 	};
 
-	var cache$1 = new PromiseCache();
+	var cache = new PromiseCache();
 
 	var fetchTextureByType = {
 	  '.dds': fetchDdsTexture,
@@ -31882,7 +30700,7 @@
 	  var cacheKey = url;
 
 	  // try cache
-	  var promiseFromCache = cache$1.get(cacheKey);
+	  var promiseFromCache = cache.get(cacheKey);
 	  if (promiseFromCache) return promiseFromCache
 
 	  // get file extension
@@ -31912,7 +30730,7 @@
 	  });
 
 	  // add to cache
-	  cache$1.add(cacheKey, promise);
+	  cache.add(cacheKey, promise);
 
 	  return promise
 
@@ -33285,6 +32103,1300 @@
 	  })
 	}
 
+	// from https://github.com/jbgutierrez/path-parse
+	// Split a filename into [root, dir, basename, ext], unix version
+	// 'root' is just a slash, or nothing.
+	var splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+
+	function parsePath (path) {
+	  if (typeof path !== 'string') {
+	    throw new TypeError(
+	      "Parameter 'path' must be a string, not " + typeof path
+	    );
+	  }
+	  var allParts = splitPathRe.exec(path).slice(1);
+	  if (!allParts || allParts.length !== 4) {
+	    throw new TypeError("Invalid path '" + path + "'");
+	  }
+	  allParts[2] = allParts[2] || '';
+	  allParts[3] = allParts[3] || '';
+
+	  return {
+	    root: allParts[0],
+	    dir: allParts[0] + allParts[1].slice(0, -1),
+	    base: allParts[2],
+	    ext: allParts[3],
+	    name: allParts[2].slice(0, allParts[2].length - allParts[3].length)
+	  }
+	}
+
+	var path = {
+	  parse: parsePath
+	};
+
+	// source: https://github.com/petkaantonov/urlparser
+	// modified for browser compatibility
+
+	/*
+	 Copyright (c) 2014 Petka Antonov
+
+	 Permission is hereby granted, free of charge, to any person obtaining a copy
+	 of this software and associated documentation files (the "Software"), to deal
+	 in the Software without restriction, including without limitation the rights
+	 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	 copies of the Software, and to permit persons to whom the Software is
+	 furnished to do so, subject to the following conditions:
+
+	 The above copyright notice and this permission notice shall be included in
+	 all copies or substantial portions of the Software.
+
+	 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+	 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+	 THE SOFTWARE.
+	 */
+	function Url() {
+	  //For more efficient internal representation and laziness.
+	  //The non-underscore versions of these properties are accessor functions
+	  //defined on the prototype.
+	  this._protocol = null;
+	  this._href = "";
+	  this._port = -1;
+	  this._query = null;
+
+	  this.auth = null;
+	  this.slashes = null;
+	  this.host = null;
+	  this.hostname = null;
+	  this.hash = null;
+	  this.search = null;
+	  this.pathname = null;
+
+	  this._prependSlash = false;
+	}
+
+	Url.prototype.parse =
+	  function Url$parse(str, parseQueryString, hostDenotesSlash, disableAutoEscapeChars) {
+	    if (typeof str !== "string") {
+	      throw new TypeError("Parameter 'url' must be a string, not " +
+	        typeof str);
+	    }
+
+	    // check for relative URL in a browser
+	    if(typeof window !== 'undefined' && !str.match(/^[^:]+:\/\//) && str.substr(0, 2) !== '//') {
+	      if(str[0] === '/') str = str.slice(1);
+	      str = window.location.protocol + '//' + window.location.host + window.location.pathname + str;
+	      console.error('mutated', str);
+	    }
+
+	    if (str.substr(0,2) === '//' && typeof window !== 'undefined' && window.location && window.location.protocol) {
+	      str = window.location.protocol + str;
+	    }
+	    var start = 0;
+	    var end = str.length - 1;
+
+	    //Trim leading and trailing ws
+	    while (str.charCodeAt(start) <= 0x20 /*' '*/) start++;
+	    while (str.charCodeAt(end) <= 0x20 /*' '*/) end--;
+
+	    start = this._parseProtocol(str, start, end);
+
+	    //Javascript doesn't have host
+	    if (this._protocol !== "javascript") {
+	      start = this._parseHost(str, start, end, hostDenotesSlash);
+	      var proto = this._protocol;
+	      if (!this.hostname &&
+	        (this.slashes || (proto && !slashProtocols[proto]))) {
+	        this.hostname = this.host = "";
+	      }
+	    }
+
+	    if (start <= end) {
+	      var ch = str.charCodeAt(start);
+
+	      if (ch === 0x2F /*'/'*/ || ch === 0x5C /*'\'*/) {
+	        this._parsePath(str, start, end, disableAutoEscapeChars);
+	      }
+	      else if (ch === 0x3F /*'?'*/) {
+	        this._parseQuery(str, start, end, disableAutoEscapeChars);
+	      }
+	      else if (ch === 0x23 /*'#'*/) {
+	        this._parseHash(str, start, end, disableAutoEscapeChars);
+	      }
+	      else if (this._protocol !== "javascript") {
+	        this._parsePath(str, start, end, disableAutoEscapeChars);
+	      }
+	      else { //For javascript the pathname is just the rest of it
+	        this.pathname = str.slice(start, end + 1 );
+	      }
+
+	    }
+
+	    if (!this.pathname && this.hostname &&
+	      this._slashProtocols[this._protocol]) {
+	      this.pathname = "/";
+	    }
+
+	    if (parseQueryString) {
+	      var search = this.search;
+	      if (search == null) {
+	        search = this.search = "";
+	      }
+	      if (search.charCodeAt(0) === 0x3F /*'?'*/) {
+	        search = search.slice(1);
+	      }
+	      //This calls a setter function, there is no .query data property
+	      this.query = Url.queryString.parse(search);
+	    }
+	  };
+
+	Url.prototype.resolve = function Url$resolve(relative) {
+	  return this.resolveObject(Url.parse(relative, false, true)).format();
+	};
+
+	Url.prototype.format = function Url$format() {
+	  var auth = this.auth || "";
+
+	  if (auth) {
+	    auth = encodeURIComponent(auth);
+	    auth = auth.replace(/%3A/i, ":");
+	    auth += "@";
+	  }
+
+	  var protocol = this.protocol || "";
+	  var pathname = this.pathname || "";
+	  var hash = this.hash || "";
+	  var search = this.search || "";
+	  var query = "";
+	  var hostname = this.hostname || "";
+	  var port = this.port || "";
+	  var host = false;
+	  var scheme = "";
+
+	  //Cache the result of the getter function
+	  var q = this.query;
+	  if (q && typeof q === "object") {
+	    query = Url.queryString.stringify(q);
+	  }
+
+	  if (!search) {
+	    search = query ? "?" + query : "";
+	  }
+
+	  if (protocol && protocol.charCodeAt(protocol.length - 1) !== 0x3A /*':'*/)
+	    protocol += ":";
+
+	  if (this.host) {
+	    host = auth + this.host;
+	  }
+	  else if (hostname) {
+	    var ip6 = hostname.indexOf(":") > -1;
+	    if (ip6) hostname = "[" + hostname + "]";
+	    host = auth + hostname + (port ? ":" + port : "");
+	  }
+
+	  var slashes = this.slashes ||
+	    ((!protocol ||
+	    slashProtocols[protocol]) && host !== false);
+
+
+	  if (protocol) scheme = protocol + (slashes ? "//" : "");
+	  else if (slashes) scheme = "//";
+
+	  if (slashes && pathname && pathname.charCodeAt(0) !== 0x2F /*'/'*/) {
+	    pathname = "/" + pathname;
+	  }
+	  if (search && search.charCodeAt(0) !== 0x3F /*'?'*/)
+	    search = "?" + search;
+	  if (hash && hash.charCodeAt(0) !== 0x23 /*'#'*/)
+	    hash = "#" + hash;
+
+	  pathname = escapePathName(pathname);
+	  search = escapeSearch(search);
+
+	  return scheme + (host === false ? "" : host) + pathname + search + hash;
+	};
+
+	Url.prototype.resolveObject = function Url$resolveObject(relative) {
+	  if (typeof relative === "string")
+	    relative = Url.parse(relative, false, true);
+
+	  var result = this._clone();
+
+	  // hash is always overridden, no matter what.
+	  // even href="" will remove it.
+	  result.hash = relative.hash;
+
+	  // if the relative url is empty, then there"s nothing left to do here.
+	  if (!relative.href) {
+	    result._href = "";
+	    return result;
+	  }
+
+	  // hrefs like //foo/bar always cut to the protocol.
+	  if (relative.slashes && !relative._protocol) {
+	    relative._copyPropsTo(result, true);
+
+	    if (slashProtocols[result._protocol] &&
+	      result.hostname && !result.pathname) {
+	      result.pathname = "/";
+	    }
+	    result._href = "";
+	    return result;
+	  }
+
+	  if (relative._protocol && relative._protocol !== result._protocol) {
+	    // if it"s a known url protocol, then changing
+	    // the protocol does weird things
+	    // first, if it"s not file:, then we MUST have a host,
+	    // and if there was a path
+	    // to begin with, then we MUST have a path.
+	    // if it is file:, then the host is dropped,
+	    // because that"s known to be hostless.
+	    // anything else is assumed to be absolute.
+	    if (!slashProtocols[relative._protocol]) {
+	      relative._copyPropsTo(result, false);
+	      result._href = "";
+	      return result;
+	    }
+
+	    result._protocol = relative._protocol;
+	    if (!relative.host && relative._protocol !== "javascript") {
+	      var relPath = (relative.pathname || "").split("/");
+	      while (relPath.length && !(relative.host = relPath.shift()));
+	      if (!relative.host) relative.host = "";
+	      if (!relative.hostname) relative.hostname = "";
+	      if (relPath[0] !== "") relPath.unshift("");
+	      if (relPath.length < 2) relPath.unshift("");
+	      result.pathname = relPath.join("/");
+	    } else {
+	      result.pathname = relative.pathname;
+	    }
+
+	    result.search = relative.search;
+	    result.host = relative.host || "";
+	    result.auth = relative.auth;
+	    result.hostname = relative.hostname || relative.host;
+	    result._port = relative._port;
+	    result.slashes = result.slashes || relative.slashes;
+	    result._href = "";
+	    return result;
+	  }
+
+	  var isSourceAbs =
+	    (result.pathname && result.pathname.charCodeAt(0) === 0x2F /*'/'*/);
+	  var isRelAbs = (
+	    relative.host ||
+	    (relative.pathname &&
+	    relative.pathname.charCodeAt(0) === 0x2F /*'/'*/)
+	  );
+	  var mustEndAbs = (isRelAbs || isSourceAbs ||
+	  (result.host && relative.pathname));
+
+	  var removeAllDots = mustEndAbs;
+
+	  var srcPath = result.pathname && result.pathname.split("/") || [];
+	  var relPath = relative.pathname && relative.pathname.split("/") || [];
+	  var psychotic = result._protocol && !slashProtocols[result._protocol];
+
+	  // if the url is a non-slashed url, then relative
+	  // links like ../.. should be able
+	  // to crawl up to the hostname, as well.  This is strange.
+	  // result.protocol has already been set by now.
+	  // Later on, put the first path part into the host field.
+	  if (psychotic) {
+	    result.hostname = "";
+	    result._port = -1;
+	    if (result.host) {
+	      if (srcPath[0] === "") srcPath[0] = result.host;
+	      else srcPath.unshift(result.host);
+	    }
+	    result.host = "";
+	    if (relative._protocol) {
+	      relative.hostname = "";
+	      relative._port = -1;
+	      if (relative.host) {
+	        if (relPath[0] === "") relPath[0] = relative.host;
+	        else relPath.unshift(relative.host);
+	      }
+	      relative.host = "";
+	    }
+	    mustEndAbs = mustEndAbs && (relPath[0] === "" || srcPath[0] === "");
+	  }
+
+	  if (isRelAbs) {
+	    // it"s absolute.
+	    result.host = relative.host ?
+	      relative.host : result.host;
+	    result.hostname = relative.hostname ?
+	      relative.hostname : result.hostname;
+	    result.search = relative.search;
+	    srcPath = relPath;
+	    // fall through to the dot-handling below.
+	  } else if (relPath.length) {
+	    // it"s relative
+	    // throw away the existing file, and take the new path instead.
+	    if (!srcPath) srcPath = [];
+	    srcPath.pop();
+	    srcPath = srcPath.concat(relPath);
+	    result.search = relative.search;
+	  } else if (relative.search) {
+	    // just pull out the search.
+	    // like href="?foo".
+	    // Put this after the other two cases because it simplifies the booleans
+	    if (psychotic) {
+	      result.hostname = result.host = srcPath.shift();
+	      //occationaly the auth can get stuck only in host
+	      //this especialy happens in cases like
+	      //url.resolveObject("mailto:local1@domain1", "local2@domain2")
+	      var authInHost = result.host && result.host.indexOf("@") > 0 ?
+	        result.host.split("@") : false;
+	      if (authInHost) {
+	        result.auth = authInHost.shift();
+	        result.host = result.hostname = authInHost.shift();
+	      }
+	    }
+	    result.search = relative.search;
+	    result._href = "";
+	    return result;
+	  }
+
+	  if (!srcPath.length) {
+	    // no path at all.  easy.
+	    // we"ve already handled the other stuff above.
+	    result.pathname = null;
+	    result._href = "";
+	    return result;
+	  }
+
+	  // if a url ENDs in . or .., then it must get a trailing slash.
+	  // however, if it ends in anything else non-slashy,
+	  // then it must NOT get a trailing slash.
+	  var last = srcPath.slice(-1)[0];
+	  var hasTrailingSlash = (
+	  (result.host || relative.host) && (last === "." || last === "..") ||
+	  last === "");
+
+	  // strip single dots, resolve double dots to parent dir
+	  // if the path tries to go above the root, `up` ends up > 0
+	  var up = 0;
+	  for (var i = srcPath.length; i >= 0; i--) {
+	    last = srcPath[i];
+	    if (last === ".") {
+	      srcPath.splice(i, 1);
+	    } else if (last === "..") {
+	      srcPath.splice(i, 1);
+	      up++;
+	    } else if (up) {
+	      srcPath.splice(i, 1);
+	      up--;
+	    }
+	  }
+
+	  // if the path is allowed to go above the root, restore leading ..s
+	  if (!mustEndAbs && !removeAllDots) {
+	    for (; up--; up) {
+	      srcPath.unshift("..");
+	    }
+	  }
+
+	  if (mustEndAbs && srcPath[0] !== "" &&
+	    (!srcPath[0] || srcPath[0].charCodeAt(0) !== 0x2F /*'/'*/)) {
+	    srcPath.unshift("");
+	  }
+
+	  if (hasTrailingSlash && (srcPath.join("/").substr(-1) !== "/")) {
+	    srcPath.push("");
+	  }
+
+	  var isAbsolute = srcPath[0] === "" ||
+	    (srcPath[0] && srcPath[0].charCodeAt(0) === 0x2F /*'/'*/);
+
+	  // put the host back
+	  if (psychotic) {
+	    result.hostname = result.host = isAbsolute ? "" :
+	      srcPath.length ? srcPath.shift() : "";
+	    //occationaly the auth can get stuck only in host
+	    //this especialy happens in cases like
+	    //url.resolveObject("mailto:local1@domain1", "local2@domain2")
+	    var authInHost = result.host && result.host.indexOf("@") > 0 ?
+	      result.host.split("@") : false;
+	    if (authInHost) {
+	      result.auth = authInHost.shift();
+	      result.host = result.hostname = authInHost.shift();
+	    }
+	  }
+
+	  mustEndAbs = mustEndAbs || (result.host && srcPath.length);
+
+	  if (mustEndAbs && !isAbsolute) {
+	    srcPath.unshift("");
+	  }
+
+	  result.pathname = srcPath.length === 0 ? null : srcPath.join("/");
+	  result.auth = relative.auth || result.auth;
+	  result.slashes = result.slashes || relative.slashes;
+	  result._href = "";
+	  return result;
+	};
+
+	var escapePathName = Url.prototype._escapePathName =
+	  function Url$_escapePathName(pathname) {
+	    if (!containsCharacter2(pathname, 0x23 /*'#'*/, 0x3F /*'?'*/)) {
+	      return pathname;
+	    }
+	    //Avoid closure creation to keep this inlinable
+	    return _escapePath(pathname);
+	  };
+
+	var escapeSearch = Url.prototype._escapeSearch =
+	  function Url$_escapeSearch(search) {
+	    if (!containsCharacter2(search, 0x23 /*'#'*/, -1)) return search;
+	    //Avoid closure creation to keep this inlinable
+	    return _escapeSearch(search);
+	  };
+
+	Url.prototype._parseProtocol = function Url$_parseProtocol(str, start, end) {
+	  var doLowerCase = false;
+	  var protocolCharacters = this._protocolCharacters;
+
+	  for (var i = start; i <= end; ++i) {
+	    var ch = str.charCodeAt(i);
+
+	    if (ch === 0x3A /*':'*/) {
+	      var protocol = str.slice(start, i);
+	      if (doLowerCase) protocol = protocol.toLowerCase();
+	      this._protocol = protocol;
+	      return i + 1;
+	    }
+	    else if (protocolCharacters[ch] === 1) {
+	      if (ch < 0x61 /*'a'*/)
+	        doLowerCase = true;
+	    }
+	    else {
+	      return start;
+	    }
+
+	  }
+	  return start;
+	};
+
+	Url.prototype._parseAuth = function Url$_parseAuth(str, start, end, decode) {
+	  var auth = str.slice(start, end + 1);
+	  if (decode) {
+	    auth = decodeURIComponent(auth);
+	  }
+	  this.auth = auth;
+	};
+
+	Url.prototype._parsePort = function Url$_parsePort(str, start, end) {
+	  //Internal format is integer for more efficient parsing
+	  //and for efficient trimming of leading zeros
+	  var port = 0;
+	  //Distinguish between :0 and : (no port number at all)
+	  var hadChars = false;
+	  var validPort = true;
+
+	  for (var i = start; i <= end; ++i) {
+	    var ch = str.charCodeAt(i);
+
+	    if (0x30 /*'0'*/ <= ch && ch <= 0x39 /*'9'*/) {
+	      port = (10 * port) + (ch - 0x30 /*'0'*/);
+	      hadChars = true;
+	    }
+	    else {
+	      validPort = false;
+	      if (ch === 0x5C/*'\'*/ || ch === 0x2F/*'/'*/) {
+	        validPort = true;
+	      }
+	      break;
+	    }
+
+	  }
+	  if ((port === 0 && !hadChars) || !validPort) {
+	    if (!validPort) {
+	      this._port = -2;
+	    }
+	    return 0;
+	  }
+
+	  this._port = port;
+	  return i - start;
+	};
+
+	Url.prototype._parseHost =
+	  function Url$_parseHost(str, start, end, slashesDenoteHost) {
+	    var hostEndingCharacters = this._hostEndingCharacters;
+	    var first = str.charCodeAt(start);
+	    var second = str.charCodeAt(start + 1);
+	    if ((first === 0x2F /*'/'*/ || first === 0x5C /*'\'*/) &&
+	      (second === 0x2F /*'/'*/ || second === 0x5C /*'\'*/)) {
+	      this.slashes = true;
+
+	      //The string starts with //
+	      if (start === 0) {
+	        //The string is just "//"
+	        if (end < 2) return start;
+	        //If slashes do not denote host and there is no auth,
+	        //there is no host when the string starts with //
+	        var hasAuth =
+	          containsCharacter(str, 0x40 /*'@'*/, 2, hostEndingCharacters);
+	        if (!hasAuth && !slashesDenoteHost) {
+	          this.slashes = null;
+	          return start;
+	        }
+	      }
+	      //There is a host that starts after the //
+	      start += 2;
+	    }
+	    //If there is no slashes, there is no hostname if
+	    //1. there was no protocol at all
+	    else if (!this._protocol ||
+	      //2. there was a protocol that requires slashes
+	      //e.g. in 'http:asd' 'asd' is not a hostname
+	      slashProtocols[this._protocol]
+	    ) {
+	      return start;
+	    }
+
+	    var doLowerCase = false;
+	    var idna = false;
+	    var hostNameStart = start;
+	    var hostNameEnd = end;
+	    var lastCh = -1;
+	    var portLength = 0;
+	    var charsAfterDot = 0;
+	    var authNeedsDecoding = false;
+
+	    var j = -1;
+
+	    //Find the last occurrence of an @-sign until hostending character is met
+	    //also mark if decoding is needed for the auth portion
+	    for (var i = start; i <= end; ++i) {
+	      var ch = str.charCodeAt(i);
+
+	      if (ch === 0x40 /*'@'*/) {
+	        j = i;
+	      }
+	      //This check is very, very cheap. Unneeded decodeURIComponent is very
+	      //very expensive
+	      else if (ch === 0x25 /*'%'*/) {
+	        authNeedsDecoding = true;
+	      }
+	      else if (hostEndingCharacters[ch] === 1) {
+	        break;
+	      }
+	    }
+
+	    //@-sign was found at index j, everything to the left from it
+	    //is auth part
+	    if (j > -1) {
+	      this._parseAuth(str, start, j - 1, authNeedsDecoding);
+	      //hostname starts after the last @-sign
+	      start = hostNameStart = j + 1;
+	    }
+
+	    //Host name is starting with a [
+	    if (str.charCodeAt(start) === 0x5B /*'['*/) {
+	      for (var i = start + 1; i <= end; ++i) {
+	        var ch = str.charCodeAt(i);
+
+	        //Assume valid IP6 is between the brackets
+	        if (ch === 0x5D /*']'*/) {
+	          if (str.charCodeAt(i + 1) === 0x3A /*':'*/) {
+	            portLength = this._parsePort(str, i + 2, end) + 1;
+	          }
+	          var hostname = str.slice(start + 1, i).toLowerCase();
+	          this.hostname = hostname;
+	          this.host = this._port > 0 ?
+	            "[" + hostname + "]:" + this._port :
+	            "[" + hostname + "]";
+	          this.pathname = "/";
+	          return i + portLength + 1;
+	        }
+	      }
+	      //Empty hostname, [ starts a path
+	      return start;
+	    }
+
+	    for (var i = start; i <= end; ++i) {
+	      if (charsAfterDot > 62) {
+	        this.hostname = this.host = str.slice(start, i);
+	        return i;
+	      }
+	      var ch = str.charCodeAt(i);
+
+	      if (ch === 0x3A /*':'*/) {
+	        portLength = this._parsePort(str, i + 1, end) + 1;
+	        hostNameEnd = i - 1;
+	        break;
+	      }
+	      else if (ch < 0x61 /*'a'*/) {
+	        if (ch === 0x2E /*'.'*/) {
+	          //Node.js ignores this error
+	          /*
+	           if (lastCh === DOT || lastCh === -1) {
+	           this.hostname = this.host = "";
+	           return start;
+	           }
+	           */
+	          charsAfterDot = -1;
+	        }
+	        else if (0x41 /*'A'*/ <= ch && ch <= 0x5A /*'Z'*/) {
+	          doLowerCase = true;
+	        }
+	        //Valid characters other than ASCII letters -, _, +, 0-9
+	        else if (!(ch === 0x2D /*'-'*/ ||
+	          ch === 0x5F /*'_'*/ ||
+	          ch === 0x2B /*'+'*/ ||
+	          (0x30 /*'0'*/ <= ch && ch <= 0x39 /*'9'*/))
+	        ) {
+	          if (hostEndingCharacters[ch] === 0 &&
+	            this._noPrependSlashHostEnders[ch] === 0) {
+	            this._prependSlash = true;
+	          }
+	          hostNameEnd = i - 1;
+	          break;
+	        }
+	      }
+	      else if (ch >= 0x7B /*'{'*/) {
+	        if (ch <= 0x7E /*'~'*/) {
+	          if (this._noPrependSlashHostEnders[ch] === 0) {
+	            this._prependSlash = true;
+	          }
+	          hostNameEnd = i - 1;
+	          break;
+	        }
+	        idna = true;
+	      }
+	      lastCh = ch;
+	      charsAfterDot++;
+	    }
+
+	    //Node.js ignores this error
+	    /*
+	     if (lastCh === DOT) {
+	     hostNameEnd--;
+	     }
+	     */
+
+	    if (hostNameEnd + 1 !== start &&
+	      hostNameEnd - hostNameStart <= 256) {
+	      var hostname = str.slice(hostNameStart, hostNameEnd + 1);
+	      if (doLowerCase) hostname = hostname.toLowerCase();
+	      this.hostname = hostname;
+	      this.host = this._port > 0 ? hostname + ":" + this._port : hostname;
+	    }
+
+	    return hostNameEnd + 1 + portLength;
+
+	  };
+
+	Url.prototype._copyPropsTo = function Url$_copyPropsTo(input, noProtocol) {
+	  if (!noProtocol) {
+	    input._protocol = this._protocol;
+	  }
+	  input._href = this._href;
+	  input._port = this._port;
+	  input._prependSlash = this._prependSlash;
+	  input.auth = this.auth;
+	  input.slashes = this.slashes;
+	  input.host = this.host;
+	  input.hostname = this.hostname;
+	  input.hash = this.hash;
+	  input.search = this.search;
+	  input.pathname = this.pathname;
+	};
+
+	Url.prototype._clone = function Url$_clone() {
+	  var ret = new Url();
+	  ret._protocol = this._protocol;
+	  ret._href = this._href;
+	  ret._port = this._port;
+	  ret._prependSlash = this._prependSlash;
+	  ret.auth = this.auth;
+	  ret.slashes = this.slashes;
+	  ret.host = this.host;
+	  ret.hostname = this.hostname;
+	  ret.hash = this.hash;
+	  ret.search = this.search;
+	  ret.pathname = this.pathname;
+	  return ret;
+	};
+
+	Url.prototype._getComponentEscaped =
+	  function Url$_getComponentEscaped(str, start, end, isAfterQuery) {
+	    var cur = start;
+	    var i = start;
+	    var ret = "";
+	    var autoEscapeMap = isAfterQuery ?
+	      this._afterQueryAutoEscapeMap : this._autoEscapeMap;
+	    for (; i <= end; ++i) {
+	      var ch = str.charCodeAt(i);
+	      var escaped = autoEscapeMap[ch];
+
+	      if (escaped !== "" && escaped !== undefined) {
+	        if (cur < i) ret += str.slice(cur, i);
+	        ret += escaped;
+	        cur = i + 1;
+	      }
+	    }
+	    if (cur < i + 1) ret += str.slice(cur, i);
+	    return ret;
+	  };
+
+	Url.prototype._parsePath =
+	  function Url$_parsePath(str, start, end, disableAutoEscapeChars) {
+	    var pathStart = start;
+	    var pathEnd = end;
+	    var escape = false;
+	    var autoEscapeCharacters = this._autoEscapeCharacters;
+	    var prePath = this._port === -2 ? "/:" : "";
+
+	    for (var i = start; i <= end; ++i) {
+	      var ch = str.charCodeAt(i);
+	      if (ch === 0x23 /*'#'*/) {
+	        this._parseHash(str, i, end, disableAutoEscapeChars);
+	        pathEnd = i - 1;
+	        break;
+	      }
+	      else if (ch === 0x3F /*'?'*/) {
+	        this._parseQuery(str, i, end, disableAutoEscapeChars);
+	        pathEnd = i - 1;
+	        break;
+	      }
+	      else if (!disableAutoEscapeChars && !escape && autoEscapeCharacters[ch] === 1) {
+	        escape = true;
+	      }
+	    }
+
+	    if (pathStart > pathEnd) {
+	      this.pathname = prePath === "" ? "/" : prePath;
+	      return;
+	    }
+
+	    var path;
+	    if (escape) {
+	      path = this._getComponentEscaped(str, pathStart, pathEnd, false);
+	    }
+	    else {
+	      path = str.slice(pathStart, pathEnd + 1);
+	    }
+	    this.pathname = prePath === ""
+	      ? (this._prependSlash ? "/" + path : path)
+	      : prePath + path;
+	  };
+
+	Url.prototype._parseQuery = function Url$_parseQuery(str, start, end, disableAutoEscapeChars) {
+	  var queryStart = start;
+	  var queryEnd = end;
+	  var escape = false;
+	  var autoEscapeCharacters = this._autoEscapeCharacters;
+
+	  for (var i = start; i <= end; ++i) {
+	    var ch = str.charCodeAt(i);
+
+	    if (ch === 0x23 /*'#'*/) {
+	      this._parseHash(str, i, end, disableAutoEscapeChars);
+	      queryEnd = i - 1;
+	      break;
+	    }
+	    else if (!disableAutoEscapeChars && !escape && autoEscapeCharacters[ch] === 1) {
+	      escape = true;
+	    }
+	  }
+
+	  if (queryStart > queryEnd) {
+	    this.search = "";
+	    return;
+	  }
+
+	  var query;
+	  if (escape) {
+	    query = this._getComponentEscaped(str, queryStart, queryEnd, true);
+	  }
+	  else {
+	    query = str.slice(queryStart, queryEnd + 1);
+	  }
+	  this.search = query;
+	};
+
+	Url.prototype._parseHash = function Url$_parseHash(str, start, end, disableAutoEscapeChars) {
+	  if (start > end) {
+	    this.hash = "";
+	    return;
+	  }
+
+	  this.hash = disableAutoEscapeChars ?
+	    str.slice(start, end + 1) : this._getComponentEscaped(str, start, end, true);
+	};
+
+	Object.defineProperty(Url.prototype, "port", {
+	  get: function() {
+	    if (this._port >= 0) {
+	      return ("" + this._port);
+	    }
+	    return null;
+	  },
+	  set: function(v) {
+	    if (v == null) {
+	      this._port = -1;
+	    }
+	    else {
+	      this._port = parseInt(v, 10);
+	    }
+	  }
+	});
+
+	Object.defineProperty(Url.prototype, "query", {
+	  get: function() {
+	    var query = this._query;
+	    if (query != null) {
+	      return query;
+	    }
+	    var search = this.search;
+
+	    if (search) {
+	      if (search.charCodeAt(0) === 0x3F /*'?'*/) {
+	        search = search.slice(1);
+	      }
+	      if (search !== "") {
+	        this._query = search;
+	        return search;
+	      }
+	    }
+	    return search;
+	  },
+	  set: function(v) {
+	    this._query = v;
+	  }
+	});
+
+	Object.defineProperty(Url.prototype, "path", {
+	  get: function() {
+	    var p = this.pathname || "";
+	    var s = this.search || "";
+	    if (p || s) {
+	      return p + s;
+	    }
+	    return (p == null && s) ? ("/" + s) : null;
+	  },
+	  set: function() {}
+	});
+
+	Object.defineProperty(Url.prototype, "protocol", {
+	  get: function() {
+	    var proto = this._protocol;
+	    return proto ? proto + ":" : proto;
+	  },
+	  set: function(v) {
+	    if (typeof v === "string") {
+	      var end = v.length - 1;
+	      if (v.charCodeAt(end) === 0x3A /*':'*/) {
+	        this._protocol = v.slice(0, end);
+	      }
+	      else {
+	        this._protocol = v;
+	      }
+	    }
+	    else if (v == null) {
+	      this._protocol = null;
+	    }
+	  }
+	});
+
+	Object.defineProperty(Url.prototype, "href", {
+	  get: function() {
+	    var href = this._href;
+	    if (!href) {
+	      href = this._href = this.format();
+	    }
+	    return href;
+	  },
+	  set: function(v) {
+	    this._href = v;
+	  }
+	});
+
+	Url.parse = function Url$Parse(str, parseQueryString, hostDenotesSlash, disableAutoEscapeChars) {
+	  if (str instanceof Url) return str;
+	  var ret = new Url();
+	  ret.parse(str, !!parseQueryString, !!hostDenotesSlash, !!disableAutoEscapeChars);
+	  return ret;
+	};
+
+	Url.format = function Url$Format(obj) {
+	  if (typeof obj === "string") {
+	    obj = Url.parse(obj);
+	  }
+	  if (!(obj instanceof Url)) {
+	    return Url.prototype.format.call(obj);
+	  }
+	  return obj.format();
+	};
+
+	Url.resolve = function Url$Resolve(source, relative) {
+	  return Url.parse(source, false, true).resolve(relative);
+	};
+
+	Url.resolveObject = function Url$ResolveObject(source, relative) {
+	  if (!source) return relative;
+	  return Url.parse(source, false, true).resolveObject(relative);
+	};
+
+	function _escapePath(pathname) {
+	  return pathname.replace(/[?#]/g, function(match) {
+	    return encodeURIComponent(match);
+	  });
+	}
+
+	function _escapeSearch(search) {
+	  return search.replace(/#/g, function(match) {
+	    return encodeURIComponent(match);
+	  });
+	}
+
+	//Search `char1` (integer code for a character) in `string`
+	//starting from `fromIndex` and ending at `string.length - 1`
+	//or when a stop character is found
+	function containsCharacter(string, char1, fromIndex, stopCharacterTable) {
+	  var len = string.length;
+	  for (var i = fromIndex; i < len; ++i) {
+	    var ch = string.charCodeAt(i);
+
+	    if (ch === char1) {
+	      return true;
+	    }
+	    else if (stopCharacterTable[ch] === 1) {
+	      return false;
+	    }
+	  }
+	  return false;
+	}
+
+	//See if `char1` or `char2` (integer codes for characters)
+	//is contained in `string`
+	function containsCharacter2(string, char1, char2) {
+	  for (var i = 0, len = string.length; i < len; ++i) {
+	    var ch = string.charCodeAt(i);
+	    if (ch === char1 || ch === char2) return true;
+	  }
+	  return false;
+	}
+
+	//Makes an array of 128 uint8's which represent boolean values.
+	//Spec is an array of ascii code points or ascii code point ranges
+	//ranges are expressed as [start, end]
+
+	//Create a table with the characters 0x30-0x39 (decimals '0' - '9') and
+	//0x7A (lowercaseletter 'z') as `true`:
+	//
+	//var a = makeAsciiTable([[0x30, 0x39], 0x7A]);
+	//a[0x30]; //1
+	//a[0x15]; //0
+	//a[0x35]; //1
+	function makeAsciiTable(spec) {
+	  var ret = new Uint8Array(128);
+	  spec.forEach(function(item){
+	    if (typeof item === "number") {
+	      ret[item] = 1;
+	    }
+	    else {
+	      var start = item[0];
+	      var end = item[1];
+	      for (var j = start; j <= end; ++j) {
+	        ret[j] = 1;
+	      }
+	    }
+	  });
+
+	  return ret;
+	}
+
+
+	var autoEscape = ["<", ">", "\"", "`", " ", "\r", "\n",
+	  "\t", "{", "}", "|", "\\", "^", "`", "'"];
+
+	var autoEscapeMap = new Array(128);
+
+
+
+	for (var i$2 = 0, len = autoEscapeMap.length; i$2 < len; ++i$2) {
+	  autoEscapeMap[i$2] = "";
+	}
+
+	for (var i$2 = 0, len = autoEscape.length; i$2 < len; ++i$2) {
+	  var c = autoEscape[i$2];
+	  var esc = encodeURIComponent(c);
+	  if (esc === c) {
+	    esc = escape(c);
+	  }
+	  autoEscapeMap[c.charCodeAt(0)] = esc;
+	}
+	var afterQueryAutoEscapeMap = autoEscapeMap.slice();
+	autoEscapeMap[0x5C /*'\'*/] = "/";
+
+	var slashProtocols = Url.prototype._slashProtocols = {
+	  http: true,
+	  https: true,
+	  gopher: true,
+	  file: true,
+	  ftp: true,
+
+	  "http:": true,
+	  "https:": true,
+	  "gopher:": true,
+	  "file:": true,
+	  "ftp:": true
+	};
+
+	Url.prototype._protocolCharacters = makeAsciiTable([
+	  [0x61 /*'a'*/, 0x7A /*'z'*/],
+	  [0x41 /*'A'*/, 0x5A /*'Z'*/],
+	  0x2E /*'.'*/, 0x2B /*'+'*/, 0x2D /*'-'*/
+	]);
+
+	Url.prototype._hostEndingCharacters = makeAsciiTable([
+	  0x23 /*'#'*/, 0x3F /*'?'*/, 0x2F /*'/'*/, 0x5C /*'\'*/
+	]);
+
+	Url.prototype._autoEscapeCharacters = makeAsciiTable(
+	  autoEscape.map(function(v) {
+	    return v.charCodeAt(0);
+	  })
+	);
+
+	//If these characters end a host name, the path will not be prepended a /
+	Url.prototype._noPrependSlashHostEnders = makeAsciiTable(
+	  [
+	    "<", ">", "'", "`", " ", "\r",
+	    "\n", "\t", "{", "}", "|",
+	    "^", "`", "\"", "%", ";"
+	  ].map(function(v) {
+	    return v.charCodeAt(0);
+	  })
+	);
+
+	Url.prototype._autoEscapeMap = autoEscapeMap;
+	Url.prototype._afterQueryAutoEscapeMap = afterQueryAutoEscapeMap;
+
+	// constants
+	var IS_URL = new RegExp('^http:\\/\\/.*$|^https:\\/\\/.*$');
+
+	// configs
+
+	var HEADER_BYTE_LENGTH = 16;
+	var MAGIC_NUMBER = 0x41443344; // AD3D encoded as ASCII characters in hex
+	var VERSION = 1;
+	var TEXTURE_PATH_KEYS = [
+	  // source
+	  'mapDiffuseSource',
+	  'mapSpecularSource',
+	  'mapNormalSource',
+	  'mapAlphaSource',
+	  'mapLightSource',
+	  // hi-res
+	  'mapDiffuse',
+	  'mapSpecular',
+	  'mapNormal',
+	  'mapAlpha',
+	  'mapLight',
+	  // preview
+	  'mapDiffusePreview',
+	  'mapSpecularPreview',
+	  'mapNormalPreview',
+	  'mapAlphaPreview',
+	  'mapLightPreview'
+	];
+
+	// public methods
+
+	function decodeBinary (buffer, options) {
+
+	  // API
+	  options = options || {};
+	  var url = options.url;
+
+	  var parsedUrl, rootDir, origin;
+
+	  if (url) {
+	    parsedUrl = Url.parse(url);
+	    rootDir = path.parse(parsedUrl.path || parsedUrl.pathname || '').dir;
+	    origin = parsedUrl.protocol + '//' + parsedUrl.host;
+	  }
+
+	  // check buffer type
+	  if (!buffer) {
+	    return bluebird_1.reject('Missing buffer parameter.')
+	  } else if (typeof Buffer !== 'undefined' && buffer instanceof Buffer) {
+	    // convert node buffer to arrayBuffer
+	    buffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+	  }
+
+	  // internals
+	  var headerArray = new Int32Array(buffer, 0, HEADER_BYTE_LENGTH / 4);
+	  var magicNumber = headerArray[0];
+	  var version = headerArray[1];
+	  var structureByteLength = headerArray[2];
+	  var payloadByteLength = headerArray[3];
+	  var expectedFileByteLength = HEADER_BYTE_LENGTH + structureByteLength + payloadByteLength;
+
+	  // validation warnings
+
+	  if (magicNumber !== MAGIC_NUMBER) {
+	    console.error('File header error: Wrong magic number. File is probably not data3d buffer format.');
+	  }
+	  if (version !== VERSION) {
+	    console.error('File header error: Wrong version number: ' + version + '. Parser supports version: ' + VERSION);
+	  }
+
+	  // validation errors
+
+	  if (buffer.byteLength !== expectedFileByteLength) {
+	    var errorMessage = 'Can not parse Data3d buffer. Wrong buffer size: ' + buffer.byteLength + ' Expected: ' + expectedFileByteLength;
+	    console.error(errorMessage);
+	    return bluebird_1.reject(errorMessage)
+	  }
+
+	  // parse structure info
+
+	  var structureArray = new Uint16Array(buffer, HEADER_BYTE_LENGTH, structureByteLength / 2);
+	  var structureString = decodeTextArray.utf16(structureArray);
+	  var structure;
+	  try {
+	    structure = JSON.parse(structureString);
+	  } catch (e) {
+	    return bluebird_1.reject(e)
+	  }
+
+
+	  // add geometry arrays to data3d
+
+	  var payloadByteOffset = HEADER_BYTE_LENGTH + structureByteLength;
+	  traverseData3d(structure.data3d, function (data3d) {
+
+	    // map typed arrays to payload area in file buffer
+	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url);
+
+	    //  convert relative material keys into absolute one
+	    if (origin && data3d.materials) convertTextureKeys(data3d, origin, rootDir);
+
+	  });
+
+	  return bluebird_1.resolve(structure.data3d)
+
+	}
+
+	function convertTextureKeys (data3d, origin, rootDir) {
+
+	  var i, l, i2, l2, m, materialKeys = data3d.materialKeys || Object.keys(data3d.materials || {}), texturePathKey;
+
+	  for (i = 0, l = materialKeys.length; i < l; i++) {
+	    m = data3d.materials[materialKeys[i]];
+
+	    // hi-res textures
+	    for (i2 = 0, l2 = TEXTURE_PATH_KEYS.length; i2 < l2; i2++) {
+	      texturePathKey = TEXTURE_PATH_KEYS[i2];
+
+	      if (m[texturePathKey]) {
+	        if (IS_URL.test(m[texturePathKey])) {
+	          // is full URL already
+	          m[texturePathKey] = m[texturePathKey];
+	        } else if (m[texturePathKey].substring(0,5) === '/http') {
+	          // FIXME: prevent leading slashes being added to absolute paths
+	          m[texturePathKey] = m[texturePathKey].substring(1);
+	        } else if (m[texturePathKey][0] === '/') {
+	          // absolute path
+	          m[texturePathKey] = origin + m[texturePathKey];
+	        } else {
+	          // relative path
+	          m[texturePathKey] = origin + rootDir +'/'+ m[texturePathKey];
+	        }
+	      }
+	    }
+
+	  }
+
+	}
+
+	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url) {
+
+	  var mesh, i, l, meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
+
+	  for (i = 0, l = meshKeys.length; i < l; i++) {
+	    mesh = data3d.meshes[meshKeys[i]];
+
+	    // map arrays to meshes
+	    if (mesh.positionsOffset !== undefined && mesh.positionsLength !== undefined) {
+	      mesh.positions = new Float32Array(buffer, payloadByteOffset + mesh.positionsOffset * 4, mesh.positionsLength);
+	      delete mesh.positionsOffset;
+	      delete mesh.positionsLength;
+	    }
+	    if (mesh.normalsOffset !== undefined && mesh.normalsLength !== undefined) {
+	      mesh.normals = new Float32Array(buffer, payloadByteOffset + mesh.normalsOffset * 4, mesh.normalsLength);
+	      delete mesh.normalsOffset;
+	      delete mesh.normalsLength;
+	    }
+	    if (mesh.uvsOffset !== undefined && mesh.uvsLength !== undefined) {
+	      mesh.uvs = new Float32Array(buffer, payloadByteOffset + mesh.uvsOffset * 4, mesh.uvsLength);
+	      delete mesh.uvsOffset;
+	      delete mesh.uvsLength;
+	    }
+	    if (mesh.uvsLightmapOffset !== undefined && mesh.uvsLightmapLength !== undefined) {
+	      mesh.uvsLightmap = new Float32Array(buffer, payloadByteOffset + mesh.uvsLightmapOffset * 4, mesh.uvsLightmapLength);
+	      delete mesh.uvsLightmapOffset;
+	      delete mesh.uvsLightmapLength;
+	    }
+
+	    // add cache key
+	    if (url) mesh.cacheKey = url + ':' + meshKeys[i];
+
+	  }
+
+	}
+
+	function traverseData3d (data3d, callback) {
+
+	  callback(data3d);
+
+	  if (data3d.children) {
+	    for (var i = 0, l = data3d.children.length; i < l; i++) {
+	      traverseData3d(data3d.children[i], callback);
+	    }
+	  }
+
+	}
+
+	// private shared
+
+	var cache$1 = new PromiseCache();
+
+	// main
+
+	function loadData3d (url, options) {
+
+	  // try cache
+	  var cacheKey = url;
+	  var promiseFromCache = cache$1.get(cacheKey);
+	  if (promiseFromCache) return promiseFromCache
+
+	  // fetch
+	  var promise = fetch$1(url, options).then(function(res){
+	    return res.arrayBuffer()
+	  }).then(function(buffer){
+	    return decodeBinary(buffer, { url: url })
+	  });
+
+	  // add to cache
+	  cache$1.add(cacheKey, promise);
+
+	  return promise
+
+	}
+
 	function getFurniture (id) {
 	  // we need to call furniture info first in order to obtain data3d URL
 	  return getFurnitureInfo(id).then(function(info){
@@ -34533,7 +34645,6 @@
 	      kitchenParams.forEach(function(param) {
 	        if(element3d[param] !== undefined ) attributes['io3d-kitchen'] += '; ' + param + ': ' + element3d[param];
 	      });
-	      console.log(attributes['io3d-kitchen']);
 	      break
 	    case 'object':
 	      attributes['io3d-data3d'] = 'key: ' + element3d.object;
