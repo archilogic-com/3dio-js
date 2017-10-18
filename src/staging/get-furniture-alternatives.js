@@ -43,27 +43,32 @@ var config = {
 }
 
 export default function getAlternatives(id, options) {
-  options = {
-    userQuery: options.query || null,
+  // API
+  options = options || {}
+  var userQuery = options.query !== undefined ? options.query : null
+
+  var params = {
+    userQuery: userQuery,
     searchCount: 0,
     margin: config['default_margin']
   }
+
   return getFurnitureInfo(id)
     .then(function(info) {
-      options.info = info
-      var query = getQuery(options)
-      return search(getQuery(options))
+      params.info = info
+      var query = getQuery(params)
+      return search(getQuery(params))
     })
     .then(function(result) {
-      return verifyResult(result, id, options)
+      return verifyResult(result, id, params)
     })
     .catch(function(error) {})
 }
 
-function verifyResult(result, id, options) {
-  var info = options.info
+function verifyResult(result, id, params) {
+  var info = params.info
 
-  if (options.searchCount > 10) {
+  if (params.searchCount > 10) {
     return Promise.reject(new Error('No furniture was found'))
   }
 
@@ -75,12 +80,12 @@ function verifyResult(result, id, options) {
   // let's increase dimensions a bit
 
   if (rawResult.length < 1) {
-    if (options.searchCount >= 3) options.margin += 0.1
-    var searchQuery = getQuery(info, options)
-    options.searchCount += 1
+    if (params.searchCount >= 3) params.margin += 0.1
+    var searchQuery = getQuery(info, params)
+    params.searchCount += 1
     return search(searchQuery)
       .then(function(result) {
-        return verifyResult(result, id, options)
+        return verifyResult(result, id, params)
       })
       .catch(function(error) {
         console.error('catch', searchQuery.query, error)
@@ -97,11 +102,11 @@ function verifyResult(result, id, options) {
   }
 }
 
-function getQuery(options) {
-  var info = options.info
+function getQuery(params) {
+  var info = params.info
   var queries = [config['default_search']]
   var dimensions = ['length', 'height', 'width']
-  var includeCategories = options.searchCount < 6
+  var includeCategories = params.searchCount < 6
   var tags = includeCategories ? info.tags.concat(info.categories) : info.tags
 
   tags = tags.filter(function(tag) {
@@ -110,26 +115,26 @@ function getQuery(options) {
   })
 
   // remove secondary tags from query when increasing dimensions didn't work
-  if (options.searchCount > 2) {
+  if (params.searchCount > 2) {
     tags = tags.filter(function(tag) {
       return config['tag_white_list'].indexOf(tag) > -1
     })
   }
 
   queries = queries.concat(tags)
-  if (options.userQuery && tags.indexOf('TV') < 0)
-    queries = queries.concat(options.userQuery)
+  if (params.userQuery && tags.indexOf('TV') < 0)
+    queries = queries.concat(params.userQuery)
   var searchQuery = { query: queries.join(' ') }
 
   // add dimension search params if source provides dimensions
   var dim = info.boundingBox
   if (dim) {
     ;['length', 'height', 'width'].forEach(function(d) {
-      if (dim[d] - options.margin > 0) {
+      if (dim[d] - params.margin > 0) {
         searchQuery[d + 'Min'] =
-          Math.round((dim[d] - options.margin) * 1e2) / 1e2
+          Math.round((dim[d] - params.margin) * 1e2) / 1e2
         searchQuery[d + 'Max'] =
-          Math.round((dim[d] + options.margin) * 1e2) / 1e2
+          Math.round((dim[d] + params.margin) * 1e2) / 1e2
       }
     })
   }
