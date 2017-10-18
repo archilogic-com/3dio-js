@@ -56,7 +56,6 @@ export default function getAlternatives(id, options) {
   return getFurnitureInfo(id)
     .then(function(info) {
       params.info = info
-      var query = getQuery(params)
       return search(getQuery(params))
     })
     .then(function(result) {
