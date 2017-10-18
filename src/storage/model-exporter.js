@@ -49,7 +49,7 @@ function exportDxf(storageId, options) {
           dxfSettings.projection = options.projection
         }
 
-      convertParams.params.settings = JSON.stringify(dxfSettings)
+      dxfParams.params.settings = JSON.stringify(dxfSettings)
 
     }
 
