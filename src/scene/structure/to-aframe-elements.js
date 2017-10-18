@@ -116,7 +116,6 @@ function getAttributes(element3d) {
       kitchenParams.forEach(function(param) {
         if(element3d[param] !== undefined ) attributes['io3d-kitchen'] += '; ' + param + ': ' + element3d[param]
       })
-      console.log(attributes['io3d-kitchen'])
       break
     case 'object':
       attributes['io3d-data3d'] = 'key: ' + element3d.object

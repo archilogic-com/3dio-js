@@ -163,7 +163,6 @@ function getMaterial(material) {
 }
 
 function mapAttributes(a, args) {
-  console.log('map attributes', a, args)
   // set custom attributes
   var validProps = {
     box: ['h', 'l', 'w'],

@@ -4,8 +4,11 @@
 
 import generateNormals from '../../../../utils/data3d/buffer/get-normals'
 import generateUvs from '../../../../utils/data3d/buffer/get-uvs'
-import loadData3d from '../../../../utils/data3d/load'
+
+import isString from 'lodash/isString'
 /*
+import loadData3d from '../../../../utils/data3d/load'
+
 TODO: add external asset loading
 
 var s3 = require('s3')
@@ -504,8 +507,6 @@ export default {
 
   meshes3d: function (a) {
 
-    console.log('kitchen mesh', JSON.stringify(a))
-
     //var a = this.attributes
 
     // internals
@@ -558,13 +559,13 @@ export default {
 
     // validate materials
     try {
-      if (this.a.ovenPos === this.a.cooktopPos && _.isString(this.a.materials.oven)) {
-        if (largeCooktop && _.isString(this.a.materials.oven) && this.a.materials.oven.indexOf('_60') > -1) this.setMaterial('oven', 'oven_miele_90-48')
-        if (!largeCooktop && _.isString(this.a.materials.oven) && this.a.materials.oven.indexOf('_90') > -1) this.setMaterial('oven', 'oven_miele_60-60')
+      if (a.ovenPos === a.cooktopPos && isString(a.materials.oven)) {
+        if (largeCooktop && isString(a.materials.oven) && a.materials.oven.indexOf('_60') > -1) this.setMaterial('oven', 'oven_miele_90-48')
+        if (!largeCooktop && isString(a.materials.oven) && a.materials.oven.indexOf('_90') > -1) this.setMaterial('oven', 'oven_miele_60-60')
       }
-      if (_.isString(this.a.materials.cooktop)) {
-        if (largeCooktop && this.a.materials.cooktop.indexOf('_60') > -1) this.setMaterial('cooktop', 'cooktop_westinghouse_90')
-        if (!largeCooktop && this.a.materials.cooktop.indexOf('_90') > -1) this.setMaterial('cooktop', 'cooktop_westinghouse_60')
+      if (isString(a.materials.cooktop)) {
+        if (largeCooktop && a.materials.cooktop.indexOf('_60') > -1) this.setMaterial('cooktop', 'cooktop_westinghouse_90')
+        if (!largeCooktop && a.materials.cooktop.indexOf('_90') > -1) this.setMaterial('cooktop', 'cooktop_westinghouse_60')
       }
     } catch(err) { /* */ }
 
@@ -1844,7 +1845,7 @@ export default {
     // WALL CABINET BOX
     if (a.wallCabinet && baseCabinetNum > 0) {
       var leftWallCabinet = a.cooktopPos > a.highCabinetLeft + 1
-      var rightWallCabinet = elements[a.cooktopPos] >= minWallCabinet || this.a.extractorType === 'integrated'
+      var rightWallCabinet = elements[a.cooktopPos] >= minWallCabinet || a.extractorType === 'integrated'
       //console.log(elements.length, a.cooktopPos, elements[a.cooktopPos])
       if (!extractor || a.cooktopType === 'none') {
         // one single wall cabinet
@@ -2425,7 +2426,7 @@ function updatePositions(a, config) {
     cooktop = a.cooktopType !== 'none',
     largeCooktop = cooktop && a.cooktopType.slice(-2) === '90',
     fridgeLength = 0.52
-  //console.log('cooktop', _.clone(a.cooktopPos), elements && _.clone(elements[a.cooktopPos - 1]))
+
   var elements = []
   var elNum = config.elementNum
   // set all element lengths
