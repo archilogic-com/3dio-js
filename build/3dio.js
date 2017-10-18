@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.5
- * @date 2017/10/10 19:34
- * @branch master
- * @commit 78611f120519124604e83a7523ca4bb787a332a8
+ * @date 2017/10/18 02:44
+ * @branch dynamic-entities
+ * @commit c8d44ac2306c24f3202c842ece20bb4fcb3f93fa
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/10/10 19:34', GIT_BRANCH = 'master', GIT_COMMIT = '78611f120519124604e83a7523ca4bb787a332a8'
+	var BUILD_DATE='2017/10/18 02:44', GIT_BRANCH = 'dynamic-entities', GIT_COMMIT = 'c8d44ac2306c24f3202c842ece20bb4fcb3f93fa'
 
 	var name = "3dio";
 	var version = "1.0.5";
@@ -30,7 +30,7 @@
 	var author = {"name":"archilogic","email":"dev.rocks@archilogic.com","url":"https://archilogic.com"};
 	var main = "index.js";
 	var scripts = {"start":"gulp dev-browser","dev-browser":"gulp dev-browser","dev-node":"gulp dev-node","jshint":"gulp jshint","test":"gulp test","build":"gulp build","release":"gulp release"};
-	var dependencies = {"bluebird":"^3.5.1","form-data":"^2.3.1","js-logger":"^1.4.1","lodash":"^4.17.4","node-fetch":"2.0.0-alpha.8","pako":"^1.0.5","performance-now":"^2.1.0","rxjs":"^5.4.3","three":"^0.85.2","whatwg-fetch":"^2.0.3"};
+	var dependencies = {"any-shell-escape":"^0.1.1","bluebird":"^3.5.1","form-data":"^2.3.1","js-logger":"^1.4.1","lodash":"^4.17.4","node-fetch":"2.0.0-alpha.8","pako":"^1.0.5","performance-now":"^2.1.0","require-dir":"^0.3.2","rollup-pluginutils":"^2.0.1","rxjs":"^5.4.3","three":"^0.85.2","whatwg-fetch":"^2.0.3"};
 	var devDependencies = {"ava":"^0.22.0","babel-plugin-external-helpers":"^6.22.0","babel-preset-es2015":"^6.24.1","babel-runtime":"^6.26.0","chalk":"^2.1.0","confirm-cli":"^0.4.0","del":"^3.0.0","gulp":"github:gulpjs/gulp#4.0","gulp-ava":"^0.18.0","gulp-git":"^2.4.2","gulp-gzip":"^1.4.0","gulp-jshint":"^2.0.4","gulp-less":"^3.3.2","gulp-s3":"^0.11.0","gulp-watch":"^4.3.11","jshint":"^2.9.5","jshint-stylish":"^2.2.1","lite-server":"^2.3.0","moment":"^2.19.0","rollup":"^0.41.6","rollup-plugin-babel":"^3.0.2","rollup-plugin-commonjs":"^8.2.1","rollup-plugin-json":"^2.3.0","rollup-plugin-less":"^0.1.3","rollup-plugin-node-resolve":"^3.0.0","through2":"^2.0.3","uglify-js":"^3.1.3"};
 	var packageJson = {
 		name: name,
@@ -18812,9 +18812,9 @@
 
 	}
 
-	var fragmentShader = {"text":"uniform vec3 u_color;\r\nuniform float u_metallic;\r\nuniform float u_roughness;\r\nuniform vec3 u_light0Pos;\r\nuniform vec3 u_light0Color;\r\nuniform vec3 u_light1Pos;\r\nuniform vec3 u_light1Color;\r\nuniform mat4 u_modelMatrix;\r\nuniform sampler2D u_reflectionCube;\r\nuniform sampler2D u_reflectionCubeBlur;","base64":"data:text/plain;base64,dW5pZm9ybSB2ZWMzIHVfY29sb3I7DQp1bmlmb3JtIGZsb2F0IHVfbWV0YWxsaWM7DQp1bmlmb3JtIGZsb2F0IHVfcm91Z2huZXNzOw0KdW5pZm9ybSB2ZWMzIHVfbGlnaHQwUG9zOw0KdW5pZm9ybSB2ZWMzIHVfbGlnaHQwQ29sb3I7DQp1bmlmb3JtIHZlYzMgdV9saWdodDFQb3M7DQp1bmlmb3JtIHZlYzMgdV9saWdodDFDb2xvcjsNCnVuaWZvcm0gbWF0NCB1X21vZGVsTWF0cml4Ow0KdW5pZm9ybSBzYW1wbGVyMkQgdV9yZWZsZWN0aW9uQ3ViZTsNCnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmVCbHVyOw=="};
+	var fragmentShader = {"text":"uniform vec3 u_color;\nuniform float u_metallic;\nuniform float u_roughness;\nuniform vec3 u_light0Pos;\nuniform vec3 u_light0Color;\nuniform vec3 u_light1Pos;\nuniform vec3 u_light1Color;\nuniform mat4 u_modelMatrix;\nuniform sampler2D u_reflectionCube;\nuniform sampler2D u_reflectionCubeBlur;","base64":"data:text/plain;base64,dW5pZm9ybSB2ZWMzIHVfY29sb3I7CnVuaWZvcm0gZmxvYXQgdV9tZXRhbGxpYzsKdW5pZm9ybSBmbG9hdCB1X3JvdWdobmVzczsKdW5pZm9ybSB2ZWMzIHVfbGlnaHQwUG9zOwp1bmlmb3JtIHZlYzMgdV9saWdodDBDb2xvcjsKdW5pZm9ybSB2ZWMzIHVfbGlnaHQxUG9zOwp1bmlmb3JtIHZlYzMgdV9saWdodDFDb2xvcjsKdW5pZm9ybSBtYXQ0IHVfbW9kZWxNYXRyaXg7CnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmU7CnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmVCbHVyOw=="};
 
-	var vertexShader = {"text":"varying vec3 v_normal;\r\nvarying vec3 v_position;\r\nvarying vec3 v_binormal;\r\nvarying vec3 v_tangent;\r\n","base64":"data:text/plain;base64,dmFyeWluZyB2ZWMzIHZfbm9ybWFsOw0KdmFyeWluZyB2ZWMzIHZfcG9zaXRpb247DQp2YXJ5aW5nIHZlYzMgdl9iaW5vcm1hbDsNCnZhcnlpbmcgdmVjMyB2X3RhbmdlbnQ7DQo="};
+	var vertexShader = {"text":"varying vec3 v_normal;\nvarying vec3 v_position;\nvarying vec3 v_binormal;\nvarying vec3 v_tangent;\n","base64":"data:text/plain;base64,dmFyeWluZyB2ZWMzIHZfbm9ybWFsOwp2YXJ5aW5nIHZlYzMgdl9wb3NpdGlvbjsKdmFyeWluZyB2ZWMzIHZfYmlub3JtYWw7CnZhcnlpbmcgdmVjMyB2X3RhbmdlbnQ7Cg=="};
 
 	// TODO: Replace placeholder shaders by original ones (requires fixing projection matrix)
 	// configs
@@ -19186,6 +19186,7497 @@
 	    el.setAttribute(key, attributes[key]);
 	  });
 	  parent.appendChild(el);
+	}
+
+	var DEBUG = true;
+
+	// methods
+
+	function flat (v) {
+	  // calculate normals for flat shading
+	  var n = new Float32Array(v.length);
+	  var i, l, crx, cry, crz, invScalar;
+	  var hasFaultyTrigons = false;
+	  for (i = 0, l = v.length; i < l; i += 9) {
+	    // cross product (a-b) x (c-b)
+	    crx = (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]);
+	    cry = (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]);
+	    crz = (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3]);
+	    // normalize
+	    invScalar = 1 / Math.sqrt(crx * crx + cry * cry + crz * crz);
+	    // Fallback for trigons that don't span an area
+	    if (invScalar === Infinity) {
+	      invScalar = 0;
+	      hasFaultyTrigons = true;
+	    }
+	    // set normals
+	    n[i] = n[i + 3] = n[i + 6] = crx * invScalar;
+	    n[i + 1] = n[i + 4] = n[i + 7] = cry * invScalar;
+	    n[i + 2] = n[i + 5] = n[i + 8] = crz * invScalar;
+
+	  }
+	  if (DEBUG && hasFaultyTrigons) console.error('Geometry contains trigons that don\'t span an area.');
+	  return n
+	}
+	flat.title = 'Flat';
+
+	function smooth (v) {
+
+	  // output
+
+	  var normals = new Float32Array(v.length);
+
+	  // internals
+
+	  var hash, hashes = [], vertexRelatedNormals = {}, faceNormals, averageNormal;
+	  var n;
+	  var crx, cry, crz, invScalar;
+	  var hasFaultyTrigons = false;
+	  var i, l, i2, l2;
+
+	  ////////// 1. connect vertices to faces
+
+	  // go face by face
+	  for (i = 0, l = v.length; i < l; i += 9) {
+
+	    // calculate face normal
+	    // cross product (a-b) x (c-b)
+	    crx = (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]);
+	    cry = (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]);
+	    crz = (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3]);
+	    // normalize
+	    invScalar = 1 / Math.sqrt(crx * crx + cry * cry + crz * crz);
+	    if (invScalar === Infinity) {
+	      hasFaultyTrigons = true;
+	      invScalar = 0;
+	    }
+	    // set normals
+	    n = [crx * invScalar, cry * invScalar, crz * invScalar];
+
+	    for (i2 = 0, l2 = 9; i2 < l2; i2 += 3) {
+	      hash = v[i + i2] + '_' + v[i + i2 + 1] + '_' + v[i + i2 + 2];
+	      if (!vertexRelatedNormals[hash]) {
+	        vertexRelatedNormals[hash] = {
+	          faceNormals: [n]
+	        };
+	        hashes[hashes.length] = hash;
+	      } else {
+	        vertexRelatedNormals[hash].faceNormals.push(n);
+	      }
+	    }
+	  }
+
+	  ////////// 2. calculate average normals from related face normals
+
+	  var avx, avy, avz;
+	  for (i = 0, l = hashes.length; i < l; i++) {
+	    hash = hashes[i];
+	    faceNormals = vertexRelatedNormals[hash].faceNormals;
+	    avx = 0;
+	    avy = 0;
+	    avz = 0;
+	    for (i2 = 0, l2 = faceNormals.length; i2 < l2; i2++) {
+	      avx += faceNormals[i2][0];
+	      avy += faceNormals[i2][1];
+	      avz += faceNormals[i2][2];
+	    }
+	    // normalize
+	    invScalar = 1 / Math.sqrt(avx * avx + avy * avy + avz * avz);
+	    if (invScalar === Infinity) {
+	      hasFaultyTrigons = true;
+	      invScalar = 0;
+	    }
+	    // set average normal
+	    vertexRelatedNormals[hash].averageNormal = [avx * invScalar, avy * invScalar, avz * invScalar];
+	  }
+
+	  ////////// 3. apply average normals to vertices
+
+	  for (i = 0, l = v.length; i < l; i += 3) {
+	    hash = v[i] + '_' + v[i + 1] + '_' + v[i + 2];
+	    averageNormal = vertexRelatedNormals[hash].averageNormal;
+	    normals[i] = averageNormal[0];
+	    normals[i + 1] = averageNormal[1];
+	    normals[i + 2] = averageNormal[2];
+	  }
+
+	  // return
+	  if (DEBUG && hasFaultyTrigons) console.error('Shade Smooth: Geometry contains trigons that don\'t span an area.');
+	  return normals
+
+	}
+	smooth.title = 'Smooth';
+
+	// API
+
+	var getNormalsBuffer = {
+	  flat: flat,
+	  smooth: smooth,
+	};
+
+	// methods
+
+	function projectAxisY (v) {
+
+	  var uvs = new Float32Array(v.length / 1.5);
+	  var uvPos = 0;
+
+	  var i, l;
+	  for (i = 0, l = v.length; i < l; i += 9) {
+
+	    uvs[uvPos] = v[i + 2];
+	    uvs[uvPos + 1] = v[i];
+	    uvs[uvPos + 2] = v[i + 5];
+	    uvs[uvPos + 3] = v[i + 3];
+	    uvs[uvPos + 4] = v[i + 8];
+	    uvs[uvPos + 5] = v[i + 6];
+	    uvPos += 6;
+
+	  }
+
+	  return uvs
+
+	}
+	projectAxisY.title = 'Project Top Down';
+
+	function architectural (v) {
+
+	  var uvs = new Float32Array(v.length / 1.5);
+	  var uvPos = 0;
+
+	  var i, l, n, components;
+	  for (i = 0, l = v.length; i < l; i += 9) {
+
+	    // calculate face normal
+	    // cross product (a-b) x (c-b)
+	    n = [
+	      (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]),
+	      (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]),
+	      (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3])
+	    ];
+
+	    // normals should be absolute
+	    if (n[0] < 0) {
+	      n[0] *= -1;
+	    }
+	    if (n[1] < 0) {
+	      n[1] *= -1;
+	    }
+	    if (n[2] < 0) {
+	      n[2] *= -1;
+	    }
+
+	    // highest first?
+	    components = [1, 0, 2].sort(function (a, b) {
+	      return n[a] - n[b]
+	    });
+
+	    uvs[uvPos] = v[i + components[1]];
+	    uvs[uvPos + 1] = v[i + components[0]];
+	    uvs[uvPos + 2] = v[i + 3 + components[1]];
+	    uvs[uvPos + 3] = v[i + 3 + components[0]];
+	    uvs[uvPos + 4] = v[i + 6 + components[1]];
+	    uvs[uvPos + 5] = v[i + 6 + components[0]];
+	    uvPos += 6;
+
+	  }
+
+	  return uvs
+
+	}
+	architectural.title = 'Architectural';
+
+	// API
+
+	var getUvsBuffer = {
+	  architectural: architectural,
+	  projectAxisY: projectAxisY
+	};
+
+	// dependencies
+
+	// helpers
+
+	function round (x) {
+	  return Math.round(x * 1000000) / 1000000
+	}
+
+	// class
+
+	var wallType = {
+
+	  params: {
+
+	    type: 'wall',
+
+	    x: 0,
+	    y: 0,
+	    z: 0,
+
+	    ry: 0,       // rotation angle (deg)
+
+	    l: 1,        // length
+	    w: 0.15,     // width (=thickness)
+	    h: 2.4,      // height (! use apartment height)
+
+	    lock: false,
+
+	    bake: true,
+	    bakeStatus: 'none', // none, pending, done
+
+	    materials: {
+	      front: 'default_plaster_001', //'basic-wall',
+	      back: 'default_plaster_001', //'basic-wall',
+	      base: {
+	        colorDiffuse: [ 0.95, 0.95, 0.95 ]
+	      },
+	      top: 'wall_top'
+	    },
+
+	    baseHeight: 0,
+	    frontHasBase: true,
+	    backHasBase: true
+
+	  },
+
+	  valid: {
+	    children: [ 'door', 'window' ],
+	    x: {
+	      step: 0.05
+	    },
+	    z: {
+	      step: 0.05
+	    },
+	    ry: {
+	      //step: 45
+	      snap: 45
+	    },
+	    l: {
+	      step: 0.05
+	    }
+	  },
+
+	  initialize: function(){
+
+	    // backwards compatibility
+	    if (this.a.frontMaterial) {
+	      this.a.materials.front = this.a.frontMaterial;
+	      delete this.a.frontMaterial;
+	    }
+	    if (this.a.backMaterial) {
+	      this.a.materials.back = this.a.backMaterial;
+	      delete this.a.backMaterial;
+	    }
+	    if (this.a.baseMaterial) {
+	      this.a.materials.base = this.a.baseMaterial;
+	      delete this.a.baseMaterial;
+	    }
+
+	  },
+
+	  contextMenu: {
+	    templateId: 'generic',
+	    templateOptions: {
+	      title: 'Wall'
+	    },
+	    controls: [
+	      {
+	        title: 'Height',
+	        type: 'number',
+	        param: 'h',
+	        unit: 'm',
+	        min: 0.05,
+	        step: 0.05,
+	        round: 0.01
+	      },
+	      {
+	        title: 'Length',
+	        type: 'number',
+	        param: 'l',
+	        unit: 'm',
+	        step: 0.05,
+	        round: 0.01
+	      },
+	      {
+	        title: 'Width',
+	        type: 'number',
+	        param: 'w',
+	        unit: 'm',
+	        min: 0.05,
+	        max: 1,
+	        step: 0.05,
+	        round: 0.01
+	      },
+	      {
+	        title: 'Vertical Position',
+	        type: 'number',
+	        param: 'y',
+	        unit: 'm',
+	        step: 0.1,
+	        round: 0.01
+	      },
+	      {
+	        title: 'Baseboard on Front',
+	        type: 'boolean',
+	        param: 'frontHasBase'
+	      },
+	      {
+	        title: 'Baseboard on Back',
+	        type: 'boolean',
+	        param: 'backHasBase'
+	      },
+	      {
+	        title: 'Baseboard Height',
+	        type: 'number',
+	        param: 'baseHeight',
+	        unit: 'm',
+	        step: 0.05,
+	        round: 0.01
+	      },
+	      {
+	        title: 'Lock this item',
+	        type: 'boolean',
+	        param: 'locked',
+	        subscriptions: ['pro', 'modeller', 'artist3d']
+	      },
+	      {
+	        display: '<h2>Materials</h2>',
+	        type: 'html'
+	      },
+	      {
+	        title: 'Front',
+	        type: 'material',
+	        param: 'materials.front',
+	        category: 'wall'
+	      },
+	      {
+	        title: 'Back',
+	        type: 'material',
+	        param: 'materials.back',
+	        category: 'wall'
+	      },
+	      {
+	        title: 'Baseboard',
+	        type: 'material',
+	        param: 'materials.base',
+	        category: 'wall'
+	      }
+	    ]
+	  },
+
+	  bindings: [{
+	    events: [
+	      'change:h',
+	      'change:l',
+	      'change:w',
+	      'change:baseHeight',
+	      'change:frontHasBase',
+	      'change:backHasBase',
+	      '*/add',
+	      '*/remove',
+	      '*/change:x',
+	      '*/change:y',
+	      '*/change:z',
+	      '*/change:ry',
+	      '*/change:l',
+	      '*/change:h'
+	    ],
+	    call: 'meshes3d'
+	  },{
+	    events: [
+	      'change:materials.*'
+	    ],
+	    call: 'materials3d'
+	  }],
+
+	  loadingQueuePrefix: 'architecture',
+
+	  controls3d: 'wall',
+
+	  meshes3d: function generateMeshes3d(a) {
+
+	    //var a = this.attributes
+
+	    // get children
+	    var children = a.children; //.models
+	    children = sortBy_1(children, function (model) {
+	      if (model.a !== undefined) {
+	        return model.a.x
+	      } else {
+	        return model.x
+	      }
+	    });
+
+	    // geometry
+	    var baseHeightFront = a.frontHasBase ? a.baseHeight : 0,
+	      baseHeightBack = a.backHasBase ? a.baseHeight : 0,
+
+	      baseVertices = [],
+	      baseVerticesPointer = 0,
+	      frontVertices = [],
+	      frontVerticesPointer = 0,
+	      frontUvs = [],
+	      frontUvsPointer = 0,
+	      backVertices = [],
+	      backVerticesPointer = 0,
+	      backUvs = [],
+	      backUvsPointer = 0,
+	      topVertices = [],
+	      topVerticesPointer = 0,
+
+	      pointer = 0,
+
+	      al = a.l,
+	      aw = a.w,
+	      ah = a.h,
+
+	      c, cPrev, cNext, cx, cy, cl, cw, ch, _y1, _y2;
+
+	    for (var i = 0, l = children.length; i < l; i++) {
+
+	      c = (children[ i ].a) ? children[ i ].a : children[ i ]; // children attributes
+	      cPrev = children[ i - 1 ] ? children[ i - 1 ].a : null; // previous children attributes
+	      cNext = children[ i + 1 ] ? children[ i + 1 ].a : null; // next children attributes
+
+	      cx = c.x;
+	      cy = c.y;
+	      cl = c.l;
+	      cw = c.w;
+	      ch = c.h;
+
+	      // wall before children
+
+	      if (pointer < cx) {
+
+	        // front quad vertices
+	        frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	        frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = baseHeightFront;
+	        frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = aw;
+	        frontVertices[ frontVerticesPointer + 3 ] = cx;
+	        frontVertices[ frontVerticesPointer + 4 ] = baseHeightFront;
+	        frontVertices[ frontVerticesPointer + 5 ] = aw;
+	        frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = cx;
+	        frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = ah;
+	        frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = aw;
+	        frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	        frontVertices[ frontVerticesPointer + 16 ] = ah;
+	        frontVertices[ frontVerticesPointer + 17 ] = aw;
+	        frontVerticesPointer += 18;
+	        // front quad uvs
+	        frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = pointer;
+	        frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = baseHeightFront;
+	        frontUvs[ frontUvsPointer + 2 ] = cx;
+	        frontUvs[ frontUvsPointer + 3 ] = baseHeightFront;
+	        frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = cx;
+	        frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = ah;
+	        frontUvs[ frontUvsPointer + 10 ] = pointer;
+	        frontUvs[ frontUvsPointer + 11 ] = ah;
+	        frontUvsPointer += 12;
+
+	        // front baseboard quad vertices
+	        if (baseHeightFront) {
+	          baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	          baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	          baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = aw;
+	          baseVertices[ baseVerticesPointer + 3 ] = cx;
+	          baseVertices[ baseVerticesPointer + 4 ] = 0;
+	          baseVertices[ baseVerticesPointer + 5 ] = aw;
+	          baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = cx;
+	          baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = baseHeightFront;
+	          baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = aw;
+	          baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	          baseVertices[ baseVerticesPointer + 16 ] = baseHeightFront;
+	          baseVertices[ baseVerticesPointer + 17 ] = aw;
+	          baseVerticesPointer += 18;
+	        }
+
+	        // back quad vertices
+	        backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer;
+	        backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = ah;
+	        backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = 0;
+	        backVertices[ backVerticesPointer + 3 ] = cx;
+	        backVertices[ backVerticesPointer + 4 ] = ah;
+	        backVertices[ backVerticesPointer + 5 ] = 0;
+	        backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = cx;
+	        backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = baseHeightBack;
+	        backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = 0;
+	        backVertices[ backVerticesPointer + 15 ] = pointer;
+	        backVertices[ backVerticesPointer + 16 ] = baseHeightBack;
+	        backVertices[ backVerticesPointer + 17 ] = 0;
+	        backVerticesPointer += 18;
+	        // back quad uvs
+	        backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = pointer;
+	        backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = ah;
+	        backUvs[ backUvsPointer + 2 ] = cx;
+	        backUvs[ backUvsPointer + 3 ] = ah;
+	        backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = cx;
+	        backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = baseHeightBack;
+	        backUvs[ backUvsPointer + 10 ] = pointer;
+	        backUvs[ backUvsPointer + 11 ] = baseHeightBack;
+	        backUvsPointer += 12;
+
+	        // back baseboard quad vertices
+	        if (baseHeightBack) {
+	          baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	          baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = baseHeightBack;
+	          baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = 0;
+	          baseVertices[ baseVerticesPointer + 3 ] = cx;
+	          baseVertices[ baseVerticesPointer + 4 ] = baseHeightBack;
+	          baseVertices[ baseVerticesPointer + 5 ] = 0;
+	          baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = cx;
+	          baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = 0;
+	          baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = 0;
+	          baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	          baseVertices[ baseVerticesPointer + 16 ] = 0;
+	          baseVertices[ baseVerticesPointer + 17 ] = 0;
+	          baseVerticesPointer += 18;
+	        }
+
+	        // top quad vertices
+	        topVertices[ topVerticesPointer ] = topVertices[ topVerticesPointer + 9 ] = pointer;
+	        topVertices[ topVerticesPointer + 1 ] = topVertices[ topVerticesPointer + 10 ] = ah;
+	        topVertices[ topVerticesPointer + 2 ] = topVertices[ topVerticesPointer + 11 ] = aw;
+	        topVertices[ topVerticesPointer + 3 ] = cx;
+	        topVertices[ topVerticesPointer + 4 ] = ah;
+	        topVertices[ topVerticesPointer + 5 ] = aw;
+	        topVertices[ topVerticesPointer + 6 ] = topVertices[ topVerticesPointer + 12 ] = cx;
+	        topVertices[ topVerticesPointer + 7 ] = topVertices[ topVerticesPointer + 13 ] = ah;
+	        topVertices[ topVerticesPointer + 8 ] = topVertices[ topVerticesPointer + 14 ] = 0;
+	        topVertices[ topVerticesPointer + 15 ] = pointer;
+	        topVertices[ topVerticesPointer + 16 ] = ah;
+	        topVertices[ topVerticesPointer + 17 ] = 0;
+	        topVerticesPointer += 18;
+
+	        if (pointer === 0) {
+	          // left side quad vertices
+	          frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = baseHeightFront;
+	          frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = 0;
+	          frontVertices[ frontVerticesPointer + 3 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 4 ] = baseHeightFront;
+	          frontVertices[ frontVerticesPointer + 5 ] = aw;
+	          frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = ah;
+	          frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = aw;
+	          frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 16 ] = ah;
+	          frontVertices[ frontVerticesPointer + 17 ] = 0;
+	          frontVerticesPointer += 18;
+	          // left side quad uvs
+	          frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = 0;
+	          frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = baseHeightFront;
+	          frontUvs[ frontUvsPointer + 2 ] = aw;
+	          frontUvs[ frontUvsPointer + 3 ] = baseHeightFront;
+	          frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = aw;
+	          frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = ah;
+	          frontUvs[ frontUvsPointer + 10 ] = 0;
+	          frontUvs[ frontUvsPointer + 11 ] = ah;
+	          frontUvsPointer += 12;
+
+	          // left side baseboard quad vertrices
+	          if (baseHeightFront) {
+	            baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	            baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = 0;
+	            baseVertices[ baseVerticesPointer + 3 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 4 ] = 0;
+	            baseVertices[ baseVerticesPointer + 5 ] = aw;
+	            baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = baseHeightFront;
+	            baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = aw;
+	            baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 16 ] = baseHeightFront;
+	            baseVertices[ baseVerticesPointer + 17 ] = 0;
+	            baseVerticesPointer += 18;
+	          }
+
+	        }
+	      }
+
+	      // move pointer position
+	      pointer = cx;
+
+	      // wall below children
+	      if (cy > 0) {
+	        var baseHeightBackBelow = baseHeightBack > c.y ? c.y : baseHeightBack;
+	        var baseHeightFrontBelow = baseHeightFront > c.y ? c.y : baseHeightFront;
+
+	        if (c.y>baseHeightFront){
+	          // front quad vertices
+	          frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = baseHeightFront;
+	          frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = aw;
+	          frontVertices[ frontVerticesPointer + 3 ] = pointer + cl;
+	          frontVertices[ frontVerticesPointer + 4 ] = baseHeightFront;
+	          frontVertices[ frontVerticesPointer + 5 ] = aw;
+	          frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer + cl;
+	          frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = cy;
+	          frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = aw;
+	          frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 16 ] = cy;
+	          frontVertices[ frontVerticesPointer + 17 ] = aw;
+	          frontVerticesPointer += 18;
+	          // front quad uvs
+	          frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = pointer;
+	          frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = baseHeightFront;
+	          frontUvs[ frontUvsPointer + 2 ] = pointer + cl;
+	          frontUvs[ frontUvsPointer + 3 ] = baseHeightFront;
+	          frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = pointer + cl;
+	          frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = cy;
+	          frontUvs[ frontUvsPointer + 10 ] = pointer;
+	          frontUvs[ frontUvsPointer + 11 ] = cy;
+	          frontUvsPointer += 12;
+	        }
+
+	        if (baseHeightFront) {
+	          // front baseboard quad vertices
+	          baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	          baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	          baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = aw;
+	          baseVertices[ baseVerticesPointer + 3 ] = pointer + cl;
+	          baseVertices[ baseVerticesPointer + 4 ] = 0;
+	          baseVertices[ baseVerticesPointer + 5 ] = aw;
+	          baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer + cl;
+	          baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = baseHeightFrontBelow;
+	          baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = aw;
+	          baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	          baseVertices[ baseVerticesPointer + 16 ] = baseHeightFrontBelow;
+	          baseVertices[ baseVerticesPointer + 17 ] = aw;
+	          baseVerticesPointer += 18;
+	        }
+
+	        if (c.y>baseHeightBack){
+	          // back quad vertices
+	          backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer;
+	          backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = cy;
+	          backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = 0;
+	          backVertices[ backVerticesPointer + 3 ] = pointer + cl;
+	          backVertices[ backVerticesPointer + 4 ] = cy;
+	          backVertices[ backVerticesPointer + 5 ] = 0;
+	          backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = pointer + cl;
+	          backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = baseHeightBack;
+	          backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = 0;
+	          backVertices[ backVerticesPointer + 15 ] = pointer;
+	          backVertices[ backVerticesPointer + 16 ] = baseHeightBack;
+	          backVertices[ backVerticesPointer + 17 ] = 0;
+	          backVerticesPointer += 18;
+	          // back quad uvs
+	          backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = pointer;
+	          backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = cy;
+	          backUvs[ backUvsPointer + 2 ] = pointer + cl;
+	          backUvs[ backUvsPointer + 3 ] = cy;
+	          backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = pointer + cl;
+	          backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = baseHeightBack;
+	          backUvs[ backUvsPointer + 10 ] = pointer;
+	          backUvs[ backUvsPointer + 11 ] = baseHeightBack;
+	          backUvsPointer += 12;
+	        }
+
+	        if (baseHeightBack) {
+	          // back base quad vertices
+	          baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	          baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = baseHeightBackBelow;
+	          baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = 0;
+	          baseVertices[ baseVerticesPointer + 3 ] = pointer + cl;
+	          baseVertices[ baseVerticesPointer + 4 ] = baseHeightBackBelow;
+	          baseVertices[ baseVerticesPointer + 5 ] = 0;
+	          baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer + cl;
+	          baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = 0;
+	          baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = 0;
+	          baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	          baseVertices[ baseVerticesPointer + 16 ] = 0;
+	          baseVertices[ baseVerticesPointer + 17 ] = 0;
+	          baseVerticesPointer += 18;
+	        }
+
+	        // top quad vertices
+	        frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	        frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = cy;
+	        frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = aw;
+	        frontVertices[ frontVerticesPointer + 3 ] = pointer + cl;
+	        frontVertices[ frontVerticesPointer + 4 ] = cy;
+	        frontVertices[ frontVerticesPointer + 5 ] = aw;
+	        frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer + cl;
+	        frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = cy;
+	        frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = 0;
+	        frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	        frontVertices[ frontVerticesPointer + 16 ] = cy;
+	        frontVertices[ frontVerticesPointer + 17 ] = 0;
+	        frontVerticesPointer += 18;
+	        // top quad uvs
+	        frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = pointer;
+	        frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = aw;
+	        frontUvs[ frontUvsPointer + 2 ] = pointer + cl;
+	        frontUvs[ frontUvsPointer + 3 ] = aw;
+	        frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = pointer + cl;
+	        frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = 0;
+	        frontUvs[ frontUvsPointer + 10 ] = pointer;
+	        frontUvs[ frontUvsPointer + 11 ] = 0;
+	        frontUvsPointer += 12;
+
+	        // left side
+	        if (pointer <= 0) {
+	          // left side quad vertices
+	          if (c.y>baseHeightFront){
+	            frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = baseHeightFront;
+	            frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = 0;
+	            frontVertices[ frontVerticesPointer + 3 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 4 ] = baseHeightFront;
+	            frontVertices[ frontVerticesPointer + 5 ] = aw;
+	            frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = cy;
+	            frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = aw;
+	            frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 16 ] = cy;
+	            frontVertices[ frontVerticesPointer + 17 ] = 0;
+	            frontVerticesPointer += 18;
+	            // left side quad uvs
+	            frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = 0;
+	            frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = baseHeightFront;
+	            frontUvs[ frontUvsPointer + 2 ] = aw;
+	            frontUvs[ frontUvsPointer + 3 ] = baseHeightFront;
+	            frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = aw;
+	            frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = cy;
+	            frontUvs[ frontUvsPointer + 10 ] = 0;
+	            frontUvs[ frontUvsPointer + 11 ] = cy;
+	            frontUvsPointer += 12;
+	          }
+	          // left side baseboard quad vertices
+	          if (baseHeightFront) {
+	            baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	            baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = 0;
+	            baseVertices[ baseVerticesPointer + 3 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 4 ] = 0;
+	            baseVertices[ baseVerticesPointer + 5 ] = aw;
+	            baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = baseHeightFrontBelow;
+	            baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = aw;
+	            baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 16 ] = baseHeightFrontBelow;
+	            baseVertices[ baseVerticesPointer + 17 ] = 0;
+	            baseVerticesPointer += 18;
+	          }
+	        } else if (cPrev && cx === round(cPrev.x + cPrev.l) && cPrev.y < cy) {
+	          // adjacent to a window
+	          _y1 = Math.max(baseHeightFront, cPrev.y);
+	          // left side quad vertices
+	          if (c.y>baseHeightFront){
+	            frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = _y1;
+	            frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = 0;
+	            frontVertices[ frontVerticesPointer + 3 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 4 ] = _y1;
+	            frontVertices[ frontVerticesPointer + 5 ] = aw;
+	            frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = cy;
+	            frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = aw;
+	            frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 16 ] = cy;
+	            frontVertices[ frontVerticesPointer + 17 ] = 0;
+	            frontVerticesPointer += 18;
+	            // left side quad uvs
+	            frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = 0;
+	            frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = _y1;
+	            frontUvs[ frontUvsPointer + 2 ] = aw;
+	            frontUvs[ frontUvsPointer + 3 ] = _y1;
+	            frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = aw;
+	            frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = cy;
+	            frontUvs[ frontUvsPointer + 10 ] = 0;
+	            frontUvs[ frontUvsPointer + 11 ] = cy;
+	            frontUvsPointer += 12;
+	          }
+
+	          // left side base quad vertices
+	          if (baseHeightFront && cPrev.y < baseHeightFront) {
+	            baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	            baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = 0;
+	            baseVertices[ baseVerticesPointer + 3 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 4 ] = 0;
+	            baseVertices[ baseVerticesPointer + 5 ] = aw;
+	            baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = _y1;
+	            baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = aw;
+	            baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 16 ] = _y1;
+	            baseVertices[ baseVerticesPointer + 17 ] = 0;
+	            baseVerticesPointer += 18;
+	          }
+	        }
+
+	        // right side
+	        if (round(pointer + cl) >= al) {
+	          // right side quad vertices
+	          if (c.y>baseHeightFront){
+	            frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = baseHeightFront;
+	            frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = aw;
+	            frontVertices[ frontVerticesPointer + 3 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 4 ] = baseHeightFront;
+	            frontVertices[ frontVerticesPointer + 5 ] = 0;
+	            frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = cy;
+	            frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = 0;
+	            frontVertices[ frontVerticesPointer + 15 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 16 ] = cy;
+	            frontVertices[ frontVerticesPointer + 17 ] = aw;
+	            frontVerticesPointer += 18;
+	            // right side quad uvs
+	            frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = aw;
+	            frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = baseHeightFront;
+	            frontUvs[ frontUvsPointer + 2 ] = 0;
+	            frontUvs[ frontUvsPointer + 3 ] = baseHeightFront;
+	            frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = 0;
+	            frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = cy;
+	            frontUvs[ frontUvsPointer + 10 ] = aw;
+	            frontUvs[ frontUvsPointer + 11 ] = cy;
+	            frontUvsPointer += 12;
+	          }
+
+	          if (baseHeightFront) {
+	            // right side base quad vertices
+	            baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer + cl;
+	            baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	            baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = aw;
+	            baseVertices[ baseVerticesPointer + 3 ] = pointer + cl;
+	            baseVertices[ baseVerticesPointer + 4 ] = 0;
+	            baseVertices[ baseVerticesPointer + 5 ] = 0;
+	            baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer + cl;
+	            baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = baseHeightFrontBelow;
+	            baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = 0;
+	            baseVertices[ baseVerticesPointer + 15 ] = pointer + cl;
+	            baseVertices[ baseVerticesPointer + 16 ] = baseHeightFrontBelow;
+	            baseVertices[ baseVerticesPointer + 17 ] = aw;
+	            baseVerticesPointer += 18;
+	          }
+	        } else if (cNext && round(cx + cl) === cNext.x && cNext.y < cy) {
+	          // adjacent to a window
+	          _y1 = Math.max(baseHeightFront, cNext.y);
+	          // right side quad vertices
+	          if (c.y>baseHeightFront){
+	            frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = cy;
+	            frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = aw;
+	            frontVertices[ frontVerticesPointer + 3 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 4 ] = _y1;
+	            frontVertices[ frontVerticesPointer + 5 ] = aw;
+	            frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = _y1;
+	            frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = 0;
+	            frontVertices[ frontVerticesPointer + 15 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 16 ] = cy;
+	            frontVertices[ frontVerticesPointer + 17 ] = 0;
+	            frontVerticesPointer += 18;
+	            // right side quad uvs
+	            frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = aw;
+	            frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = cy;
+	            frontUvs[ frontUvsPointer + 2 ] = aw;
+	            frontUvs[ frontUvsPointer + 3 ] = _y1;
+	            frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = 0;
+	            frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = _y1;
+	            frontUvs[ frontUvsPointer + 10 ] = 0;
+	            frontUvs[ frontUvsPointer + 11 ] = cy;
+	            frontUvsPointer += 12;
+	          }
+
+	          if (baseHeightFront && cNext.y < baseHeightFront) {
+	            // right side base quad vertices
+	            baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer + cl;
+	            baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = _y1;
+	            baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = aw;
+	            baseVertices[ baseVerticesPointer + 3 ] = pointer + cl;
+	            baseVertices[ baseVerticesPointer + 4 ] = 0;
+	            baseVertices[ baseVerticesPointer + 5 ] = aw;
+	            baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer + cl;
+	            baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = 0;
+	            baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = 0;
+	            baseVertices[ baseVerticesPointer + 15 ] = pointer + cl;
+	            baseVertices[ baseVerticesPointer + 16 ] = _y1;
+	            baseVertices[ baseVerticesPointer + 17 ] = 0;
+	            baseVerticesPointer += 18;
+	          }
+	        }
+	      }
+
+	      // wall left of children
+	      if (cx > 0) {
+
+	        if (!cPrev || cx !== round(cPrev.x + cPrev.l)) {
+
+	          _y1 = Math.max(baseHeightFront, cy);
+	          _y2 = Math.max(baseHeightFront, cy + ch);
+
+	          // left side quad vertices
+	          frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = _y1;
+	          frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = aw;
+	          frontVertices[ frontVerticesPointer + 3 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 4 ] = _y1;
+	          frontVertices[ frontVerticesPointer + 5 ] = 0;
+	          frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = _y2;
+	          frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = 0;
+	          frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 16 ] = _y2;
+	          frontVertices[ frontVerticesPointer + 17 ] = aw;
+	          frontVerticesPointer += 18;
+	          // left side quad uvs
+	          frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = aw;
+	          frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = _y1;
+	          frontUvs[ frontUvsPointer + 2 ] = 0;
+	          frontUvs[ frontUvsPointer + 3 ] = _y1;
+	          frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = 0;
+	          frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = _y2;
+	          frontUvs[ frontUvsPointer + 10 ] = aw;
+	          frontUvs[ frontUvsPointer + 11 ] = _y2;
+	          frontUvsPointer += 12;
+
+	          if (baseHeightFront && cy < baseHeightFront) {
+	            // left side base quad vertices
+	            baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	            baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = aw;
+	            baseVertices[ baseVerticesPointer + 3 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 4 ] = 0;
+	            baseVertices[ baseVerticesPointer + 5 ] = 0;
+	            baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = _y1;
+	            baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = 0;
+	            baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 16 ] = _y1;
+	            baseVertices[ baseVerticesPointer + 17 ] = aw;
+	            baseVerticesPointer += 18;
+
+	          }
+	        }
+	      }
+
+	      // wall right of children
+	      if (cx + cl < al) {
+
+	        if (!cNext || round(cx + cl) !== cNext.x) {
+
+	          _y1 = Math.max(baseHeightFront, cy);
+	          _y2 = Math.max(baseHeightFront, cy + ch);
+
+	          // right side quad vertices
+	          frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer + cl;
+	          frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = _y1;
+	          frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = 0;
+	          frontVertices[ frontVerticesPointer + 3 ] = pointer + cl;
+	          frontVertices[ frontVerticesPointer + 4 ] = _y1;
+	          frontVertices[ frontVerticesPointer + 5 ] = aw;
+	          frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer + cl;
+	          frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = _y2;
+	          frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = aw;
+	          frontVertices[ frontVerticesPointer + 15 ] = pointer + cl;
+	          frontVertices[ frontVerticesPointer + 16 ] = _y2;
+	          frontVertices[ frontVerticesPointer + 17 ] = 0;
+	          frontVerticesPointer += 18;
+	          // right side quad uvs
+	          frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = 0;
+	          frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = _y1;
+	          frontUvs[ frontUvsPointer + 2 ] = aw;
+	          frontUvs[ frontUvsPointer + 3 ] = _y1;
+	          frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = aw;
+	          frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = _y2;
+	          frontUvs[ frontUvsPointer + 10 ] = 0;
+	          frontUvs[ frontUvsPointer + 11 ] = _y2;
+	          frontUvsPointer += 12;
+
+	          if (baseHeightFront && cy < baseHeightFront) {
+	            // right side baseboard quad vertices
+	            baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer + cl;
+	            baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	            baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = 0;
+	            baseVertices[ baseVerticesPointer + 3 ] = pointer + cl;
+	            baseVertices[ baseVerticesPointer + 4 ] = 0;
+	            baseVertices[ baseVerticesPointer + 5 ] = aw;
+	            baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer + cl;
+	            baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = _y1;
+	            baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = aw;
+	            baseVertices[ baseVerticesPointer + 15 ] = pointer + cl;
+	            baseVertices[ baseVerticesPointer + 16 ] = _y1;
+	            baseVertices[ baseVerticesPointer + 17 ] = 0;
+	            baseVerticesPointer += 18;
+	          }
+	        }
+
+	      }
+
+	      // wall above children
+	      if (round(cy + ch) < ah) {
+
+	        // front quad vertices
+	        frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	        frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = cy + ch;
+	        frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = aw;
+	        frontVertices[ frontVerticesPointer + 3 ] = pointer + cl;
+	        frontVertices[ frontVerticesPointer + 4 ] = cy + ch;
+	        frontVertices[ frontVerticesPointer + 5 ] = aw;
+	        frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer + cl;
+	        frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = ah;
+	        frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = aw;
+	        frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	        frontVertices[ frontVerticesPointer + 16 ] = ah;
+	        frontVertices[ frontVerticesPointer + 17 ] = aw;
+	        frontVerticesPointer += 18;
+	        // front quad uvs
+	        frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = pointer;
+	        frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = cy + ch;
+	        frontUvs[ frontUvsPointer + 2 ] = pointer + cl;
+	        frontUvs[ frontUvsPointer + 3 ] = cy + ch;
+	        frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = pointer + cl;
+	        frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = ah;
+	        frontUvs[ frontUvsPointer + 10 ] = pointer;
+	        frontUvs[ frontUvsPointer + 11 ] = ah;
+	        frontUvsPointer += 12;
+
+	        // back quad vertices
+	        backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer;
+	        backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = ah;
+	        backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = 0;
+	        backVertices[ backVerticesPointer + 3 ] = pointer + cl;
+	        backVertices[ backVerticesPointer + 4 ] = ah;
+	        backVertices[ backVerticesPointer + 5 ] = 0;
+	        backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = pointer + cl;
+	        backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = cy + ch;
+	        backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = 0;
+	        backVertices[ backVerticesPointer + 15 ] = pointer;
+	        backVertices[ backVerticesPointer + 16 ] = cy + ch;
+	        backVertices[ backVerticesPointer + 17 ] = 0;
+	        backVerticesPointer += 18;
+	        // back quad uvs
+	        backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = pointer;
+	        backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = ah;
+	        backUvs[ backUvsPointer + 2 ] = pointer + cl;
+	        backUvs[ backUvsPointer + 3 ] = ah;
+	        backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = pointer + cl;
+	        backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = cy + ch;
+	        backUvs[ backUvsPointer + 10 ] = pointer;
+	        backUvs[ backUvsPointer + 11 ] = cy + ch;
+	        backUvsPointer += 12;
+
+	        // top quad vertices
+	        topVertices[ topVerticesPointer ] = topVertices[ topVerticesPointer + 9 ] = pointer;
+	        topVertices[ topVerticesPointer + 1 ] = topVertices[ topVerticesPointer + 10 ] = ah;
+	        topVertices[ topVerticesPointer + 2 ] = topVertices[ topVerticesPointer + 11 ] = aw;
+	        topVertices[ topVerticesPointer + 3 ] = pointer + cl;
+	        topVertices[ topVerticesPointer + 4 ] = ah;
+	        topVertices[ topVerticesPointer + 5 ] = aw;
+	        topVertices[ topVerticesPointer + 6 ] = topVertices[ topVerticesPointer + 12 ] = pointer + cl;
+	        topVertices[ topVerticesPointer + 7 ] = topVertices[ topVerticesPointer + 13 ] = ah;
+	        topVertices[ topVerticesPointer + 8 ] = topVertices[ topVerticesPointer + 14 ] = 0;
+	        topVertices[ topVerticesPointer + 15 ] = pointer;
+	        topVertices[ topVerticesPointer + 16 ] = ah;
+	        topVertices[ topVerticesPointer + 17 ] = 0;
+	        topVerticesPointer += 18;
+
+	        // below quad vertices
+	        frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	        frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = cy + ch;
+	        frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = 0;
+	        frontVertices[ frontVerticesPointer + 3 ] = pointer + cl;
+	        frontVertices[ frontVerticesPointer + 4 ] = cy + ch;
+	        frontVertices[ frontVerticesPointer + 5 ] = 0;
+	        frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer + cl;
+	        frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = cy + ch;
+	        frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = aw;
+	        frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	        frontVertices[ frontVerticesPointer + 16 ] = cy + ch;
+	        frontVertices[ frontVerticesPointer + 17 ] = aw;
+	        frontVerticesPointer += 18;
+	        // below quad uvs
+	        frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = pointer;
+	        frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = 0;
+	        frontUvs[ frontUvsPointer + 2 ] = pointer + cl;
+	        frontUvs[ frontUvsPointer + 3 ] = 0;
+	        frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = pointer + cl;
+	        frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = aw;
+	        frontUvs[ frontUvsPointer + 10 ] = pointer;
+	        frontUvs[ frontUvsPointer + 11 ] = aw;
+	        frontUvsPointer += 12;
+
+	        if (pointer <= 0) {
+
+	          // left side quad vertices
+	          frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = cy + ch;
+	          frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = 0;
+	          frontVertices[ frontVerticesPointer + 3 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 4 ] = cy + ch;
+	          frontVertices[ frontVerticesPointer + 5 ] = aw;
+	          frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = ah;
+	          frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = aw;
+	          frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 16 ] = ah;
+	          frontVertices[ frontVerticesPointer + 17 ] = 0;
+	          frontVerticesPointer += 18;
+	          // left side quad uvs
+	          frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = 0;
+	          frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = cy + ch;
+	          frontUvs[ frontUvsPointer + 2 ] = aw;
+	          frontUvs[ frontUvsPointer + 3 ] = cy + ch;
+	          frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = aw;
+	          frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = cy;
+	          frontUvs[ frontUvsPointer + 10 ] = 0;
+	          frontUvs[ frontUvsPointer + 11 ] = ah;
+	          frontUvsPointer += 12;
+
+	        } else if (cPrev && cx === round(cPrev.x + cPrev.l) && round(cPrev.y + cPrev.h) > round(cy + ch)) {
+
+	          // adjacent windows
+
+	          // left side quad vertices
+	          frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = cy + ch;
+	          frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = 0;
+	          frontVertices[ frontVerticesPointer + 3 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 4 ] = cy + ch;
+	          frontVertices[ frontVerticesPointer + 5 ] = aw;
+	          frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = cPrev.y + cPrev.h;
+	          frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = aw;
+	          frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 16 ] = cPrev.y + cPrev.h;
+	          frontVertices[ frontVerticesPointer + 17 ] = 0;
+	          frontVerticesPointer += 18;
+	          // left side quad uvs
+	          frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = 0;
+	          frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = cy + ch;
+	          frontUvs[ frontUvsPointer + 2 ] = aw;
+	          frontUvs[ frontUvsPointer + 3 ] = cy + ch;
+	          frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = aw;
+	          frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = cPrev.y + cPrev.h;
+	          frontUvs[ frontUvsPointer + 10 ] = 0;
+	          frontUvs[ frontUvsPointer + 11 ] = cPrev.y + cPrev.h;
+	          frontUvsPointer += 12;
+	        }
+
+	        if (round(pointer + cl) >= al) {
+
+	          // right side quad vertices
+	          frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer + cl;
+	          frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = cy + ch;
+	          frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = aw;
+	          frontVertices[ frontVerticesPointer + 3 ] = pointer + cl;
+	          frontVertices[ frontVerticesPointer + 4 ] = cy + ch;
+	          frontVertices[ frontVerticesPointer + 5 ] = 0;
+	          frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer + cl;
+	          frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = ah;
+	          frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = 0;
+	          frontVertices[ frontVerticesPointer + 15 ] = pointer + cl;
+	          frontVertices[ frontVerticesPointer + 16 ] = ah;
+	          frontVertices[ frontVerticesPointer + 17 ] = aw;
+	          frontVerticesPointer += 18;
+	          // right side quad uvs
+	          frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = aw;
+	          frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = cy + ch;
+	          frontUvs[ frontUvsPointer + 2 ] = 0;
+	          frontUvs[ frontUvsPointer + 3 ] = cy + ch;
+	          frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = 0;
+	          frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = ah;
+	          frontUvs[ frontUvsPointer + 10 ] = aw;
+	          frontUvs[ frontUvsPointer + 11 ] = ah;
+	          frontUvsPointer += 12;
+
+	        } else if (cNext && round(cx + cl) === cNext.x && round(cNext.y + cNext.h) > round(cy + ch)) {
+
+	          // adjacent windows
+	          // right side quad vertices
+	          frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer + cl;
+	          frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = cy + ch;
+	          frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = aw;
+	          frontVertices[ frontVerticesPointer + 3 ] = pointer + cl;
+	          frontVertices[ frontVerticesPointer + 4 ] = cy + ch;
+	          frontVertices[ frontVerticesPointer + 5 ] = 0;
+	          frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer + cl;
+	          frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = cNext.y + cNext.h;
+	          frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = 0;
+	          frontVertices[ frontVerticesPointer + 15 ] = pointer + cl;
+	          frontVertices[ frontVerticesPointer + 16 ] = cNext.y + cNext.h;
+	          frontVertices[ frontVerticesPointer + 17 ] = aw;
+	          frontVerticesPointer += 18;
+	          // right side quad uvs
+	          frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = aw;
+	          frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = cy + ch;
+	          frontUvs[ frontUvsPointer + 2 ] = 0;
+	          frontUvs[ frontUvsPointer + 3 ] = cy + ch;
+	          frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = 0;
+	          frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = cNext.y + cNext.h;
+	          frontUvs[ frontUvsPointer + 10 ] = aw;
+	          frontUvs[ frontUvsPointer + 11 ] = cNext.y + cNext.h;
+	          frontUvsPointer += 12;
+
+	        }
+	      }
+
+	      pointer += cl; // set new pointer position
+
+	    }
+
+	    // wall after last children ( or the only wall if there is no children )
+	    if (pointer < al) {
+
+	      // front quad vertices
+	      frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	      frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = baseHeightFront;
+	      frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = aw;
+	      frontVertices[ frontVerticesPointer + 3 ] = al;
+	      frontVertices[ frontVerticesPointer + 4 ] = baseHeightFront;
+	      frontVertices[ frontVerticesPointer + 5 ] = aw;
+	      frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = al;
+	      frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = ah;
+	      frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = aw;
+	      frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	      frontVertices[ frontVerticesPointer + 16 ] = ah;
+	      frontVertices[ frontVerticesPointer + 17 ] = aw;
+	      frontVerticesPointer += 18;
+	      // front quad uvs
+	      frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = pointer;
+	      frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = baseHeightFront;
+	      frontUvs[ frontUvsPointer + 2 ] = al;
+	      frontUvs[ frontUvsPointer + 3 ] = baseHeightFront;
+	      frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = al;
+	      frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = ah;
+	      frontUvs[ frontUvsPointer + 10 ] = pointer;
+	      frontUvs[ frontUvsPointer + 11 ] = ah;
+	      frontUvsPointer += 12;
+
+	      if (baseHeightFront) {
+	        // front baseboard vertices
+	        baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	        baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	        baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = aw;
+	        baseVertices[ baseVerticesPointer + 3 ] = al;
+	        baseVertices[ baseVerticesPointer + 4 ] = 0;
+	        baseVertices[ baseVerticesPointer + 5 ] = aw;
+	        baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = al;
+	        baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = baseHeightFront;
+	        baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = aw;
+	        baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	        baseVertices[ baseVerticesPointer + 16 ] = baseHeightFront;
+	        baseVertices[ baseVerticesPointer + 17 ] = aw;
+	        baseVerticesPointer += 18;
+	      }
+
+	      // back quad vertices
+	      backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer;
+	      backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = ah;
+	      backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = 0;
+	      backVertices[ backVerticesPointer + 3 ] = al;
+	      backVertices[ backVerticesPointer + 4 ] = ah;
+	      backVertices[ backVerticesPointer + 5 ] = 0;
+	      backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = al;
+	      backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = baseHeightBack;
+	      backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = 0;
+	      backVertices[ backVerticesPointer + 15 ] = pointer;
+	      backVertices[ backVerticesPointer + 16 ] = baseHeightBack;
+	      backVertices[ backVerticesPointer + 17 ] = 0;
+	      backVerticesPointer += 18;
+	      // back quad uvs
+	      backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = pointer;
+	      backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = ah;
+	      backUvs[ backUvsPointer + 2 ] = al;
+	      backUvs[ backUvsPointer + 3 ] = ah;
+	      backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = al;
+	      backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = baseHeightBack;
+	      backUvs[ backUvsPointer + 10 ] = pointer;
+	      backUvs[ backUvsPointer + 11 ] = baseHeightBack;
+	      backUvsPointer += 12;
+
+	      if (baseHeightBack) {
+	        // back baseboard vertices
+	        baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	        baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = baseHeightBack;
+	        baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = 0;
+	        baseVertices[ baseVerticesPointer + 3 ] = al;
+	        baseVertices[ baseVerticesPointer + 4 ] = baseHeightBack;
+	        baseVertices[ baseVerticesPointer + 5 ] = 0;
+	        baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = al;
+	        baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = 0;
+	        baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = 0;
+	        baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	        baseVertices[ baseVerticesPointer + 16 ] = 0;
+	        baseVertices[ baseVerticesPointer + 17 ] = 0;
+	        baseVerticesPointer += 18;
+	      }
+
+	      // top quad vertices
+	      topVertices[ topVerticesPointer ] = topVertices[ topVerticesPointer + 9 ] = pointer;
+	      topVertices[ topVerticesPointer + 1 ] = topVertices[ topVerticesPointer + 10 ] = ah;
+	      topVertices[ topVerticesPointer + 2 ] = topVertices[ topVerticesPointer + 11 ] = aw;
+	      topVertices[ topVerticesPointer + 3 ] = al;
+	      topVertices[ topVerticesPointer + 4 ] = ah;
+	      topVertices[ topVerticesPointer + 5 ] = aw;
+	      topVertices[ topVerticesPointer + 6 ] = topVertices[ topVerticesPointer + 12 ] = al;
+	      topVertices[ topVerticesPointer + 7 ] = topVertices[ topVerticesPointer + 13 ] = ah;
+	      topVertices[ topVerticesPointer + 8 ] = topVertices[ topVerticesPointer + 14 ] = 0;
+	      topVertices[ topVerticesPointer + 15 ] = pointer;
+	      topVertices[ topVerticesPointer + 16 ] = ah;
+	      topVertices[ topVerticesPointer + 17 ] = 0;
+	      topVerticesPointer += 18;
+
+	      // front quad vertices
+	      frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	      frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = 0;
+	      frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = 0;
+	      frontVertices[ frontVerticesPointer + 3 ] = al;
+	      frontVertices[ frontVerticesPointer + 4 ] = 0;
+	      frontVertices[ frontVerticesPointer + 5 ] = 0;
+	      frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = al;
+	      frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = 0;
+	      frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = aw;
+	      frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	      frontVertices[ frontVerticesPointer + 16 ] = 0;
+	      frontVertices[ frontVerticesPointer + 17 ] = aw;
+	      frontVerticesPointer += 18;
+	      // front quad uvs
+	      frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = pointer;
+	      frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = 0;
+	      frontUvs[ frontUvsPointer + 2 ] = al;
+	      frontUvs[ frontUvsPointer + 3 ] = 0;
+	      frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = al;
+	      frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = 0;
+	      frontUvs[ frontUvsPointer + 10 ] = pointer;
+	      frontUvs[ frontUvsPointer + 11 ] = 0;
+	      frontUvsPointer += 12;
+
+	      if (pointer === 0) {
+	        // left side quad vertices
+	        frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	        frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = baseHeightFront;
+	        frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = 0;
+	        frontVertices[ frontVerticesPointer + 3 ] = pointer;
+	        frontVertices[ frontVerticesPointer + 4 ] = baseHeightFront;
+	        frontVertices[ frontVerticesPointer + 5 ] = aw;
+	        frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer;
+	        frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = ah;
+	        frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = aw;
+	        frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	        frontVertices[ frontVerticesPointer + 16 ] = ah;
+	        frontVertices[ frontVerticesPointer + 17 ] = 0;
+	        frontVerticesPointer += 18;
+	        // left side quad uvs
+	        frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = 0;
+	        frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = baseHeightFront;
+	        frontUvs[ frontUvsPointer + 2 ] = aw;
+	        frontUvs[ frontUvsPointer + 3 ] = baseHeightFront;
+	        frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = aw;
+	        frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = ah;
+	        frontUvs[ frontUvsPointer + 10 ] = 0;
+	        frontUvs[ frontUvsPointer + 11 ] = ah;
+	        frontUvsPointer += 12;
+
+	        if (baseHeightFront) {
+	          // left side baseboard quad vertices
+	          baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	          baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	          baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = 0;
+	          baseVertices[ baseVerticesPointer + 3 ] = pointer;
+	          baseVertices[ baseVerticesPointer + 4 ] = 0;
+	          baseVertices[ baseVerticesPointer + 5 ] = aw;
+	          baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer;
+	          baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = baseHeightFront;
+	          baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = aw;
+	          baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	          baseVertices[ baseVerticesPointer + 16 ] = baseHeightFront;
+	          baseVertices[ baseVerticesPointer + 17 ] = 0;
+	          baseVerticesPointer += 18;
+	        }
+	      }
+
+	      // right side quad vertices
+	      frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = al;
+	      frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = baseHeightFront;
+	      frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = aw;
+	      frontVertices[ frontVerticesPointer + 3 ] = al;
+	      frontVertices[ frontVerticesPointer + 4 ] = baseHeightFront;
+	      frontVertices[ frontVerticesPointer + 5 ] = 0;
+	      frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = al;
+	      frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = ah;
+	      frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = 0;
+	      frontVertices[ frontVerticesPointer + 15 ] = al;
+	      frontVertices[ frontVerticesPointer + 16 ] = ah;
+	      frontVertices[ frontVerticesPointer + 17 ] = aw;
+	      frontVerticesPointer += 18;
+	      // right side quad uvs
+	      frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = aw;
+	      frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = baseHeightFront;
+	      frontUvs[ frontUvsPointer + 2 ] = 0;
+	      frontUvs[ frontUvsPointer + 3 ] = baseHeightFront;
+	      frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = 0;
+	      frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = ah;
+	      frontUvs[ frontUvsPointer + 10 ] = aw;
+	      frontUvs[ frontUvsPointer + 11 ] = ah;
+	      frontUvsPointer += 12;
+
+	      if (baseHeightFront) {
+	        // right side baseboard quad
+	        baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = al;
+	        baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	        baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = aw;
+	        baseVertices[ baseVerticesPointer + 3 ] = al;
+	        baseVertices[ baseVerticesPointer + 4 ] = 0;
+	        baseVertices[ baseVerticesPointer + 5 ] = 0;
+	        baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = al;
+	        baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = baseHeightFront;
+	        baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = 0;
+	        baseVertices[ baseVerticesPointer + 15 ] = al;
+	        baseVertices[ baseVerticesPointer + 16 ] = baseHeightFront;
+	        baseVertices[ baseVerticesPointer + 17 ] = aw;
+	        baseVerticesPointer += 18;
+	      }
+	    }
+
+	    return {
+	      front: {
+	        positions: new Float32Array(frontVertices),
+	        normals: getNormalsBuffer.flat(frontVertices),
+	        uvs: new Float32Array(frontUvs),
+	        material: 'front'
+	      },
+	      back: {
+	        positions: new Float32Array(backVertices),
+	        normals: getNormalsBuffer.flat(backVertices),
+	        uvs: new Float32Array(backUvs),
+	        material: 'back'
+	      },
+	      top: {
+	        positions: new Float32Array(topVertices),
+	        normals: getNormalsBuffer.flat(topVertices),
+	        material: 'top'
+	      },
+	      base: {
+	        positions: new Float32Array(baseVertices),
+	        normals: getNormalsBuffer.flat(baseVertices),
+	        uvs: getUvsBuffer.architectural(baseVertices),
+	        material: 'base'
+	      }
+	    }
+
+	  },
+
+	  materials3d: function generateMaterials3d(a) {
+	    return a.materials
+	  }
+
+	};
+
+	// dependencies
+
+	// class
+
+	var windowType = {
+
+	  params: {
+	    type: 'window',
+	    x: 0,
+	    y: 0.8,
+	    z: 0,
+	    ry: 0,
+	    l: 1.6,        // length
+	    h: 1.5,        // height
+	    lock: false,
+
+	    bake: true,
+	    bakeStatus: 'none', // none, pending, done
+
+	    rowRatios: [ 1 ],
+	    columnRatios: [ [ 1 ] ],
+
+	    frameLength: 0.04,
+	    frameWidth: 0.06,
+
+	    materials: {
+	      frame: {
+	        colorDiffuse: [0.85, 0.85, 0.85]
+	      },
+	      glass: 'glass'
+	    }
+
+	  },
+
+	  valid: {
+	    children: [],
+	    x: {
+	      step: 0.05
+	    },
+	    z: {
+	      lock: true
+	    },
+	    ry: {
+	      step: 180
+	    },
+	    l: {
+	      min: 0.3,
+	      step: 0.05
+	    }
+	  },
+
+	  initialize: function(){
+
+	    // backwards compatibility
+	    if (this.a.frameMaterial) {
+	      this.a.materials.frame = this.a.frameMaterial;
+	      delete this.a.frameMaterial;
+	    }
+	    if (this.a.glassMaterial) {
+	      this.a.materials.glass = this.a.glassMaterial;
+	      delete this.a.glassMaterial;
+	    }
+	    if (this.a.materials && this.a.materials.frame && this.a.materials.frame.length === 3) {
+	      // deprecated color format
+	      this.a.materials.frame = { colorDiffuse: this.a.materials.frame };
+	    }
+
+	  },
+
+	  bindings: [{
+	    events: [
+	      'change:l',
+	      'change:w',
+	      'change:h',
+	      'change:rowRatios',
+	      'change:columnRatios',
+	      'change:frameLength',
+	      'change:frameWidth'
+	    ],
+	    call: 'meshes3d'
+	  },{
+	    events: [
+	      'change:materials.*'
+	    ],
+	    call: 'materials3d'
+	  }],
+
+	  _setRatios: function (args) {
+	    var rowRatios = args.rows || this.a.rowRatios;
+	    var columnRatios = args.columns || this.a.columnRatios;
+	    if (!args.rows) {
+	      // adapt rows
+	      var _rowRatios = [];
+	      for (var i = 0, l = columnRatios.length; i < l; i++) {
+	        if (rowRatios[ i ]) {
+	          _rowRatios[ i ] = rowRatios[ i ];
+	        } else {
+	          _rowRatios[ i ] = 1;
+	        }
+	      }
+	      rowRatios = _rowRatios;
+	    } else {
+	      // adapt columns
+	      var _columnRatios = [];
+	      for (var i = 0, l = rowRatios.length; i < l; i++) {
+	        if (columnRatios[ i ]) {
+	          _columnRatios[ i ] = columnRatios[ i ];
+	        } else {
+	          _columnRatios[ i ] = [ 1 ];
+	        }
+	      }
+	      columnRatios = _columnRatios;
+	    }
+	    this.set({
+	      rowRatios: rowRatios,
+	      columnRatios: columnRatios
+	    });
+	  },
+
+	  contextMenu: function generateContextMenu (){
+	    var self = this;
+	    return {
+	      templateId: 'generic',
+	      templateOptions: {
+	        title: 'Window'
+	      },
+	      controls: [
+	        {
+	          title: 'Height',
+	          type: 'number',
+	          param: 'h',
+	          unit: 'm',
+	          step: 0.05,
+	          round: 0.01
+	        },{
+	          title: 'Length',
+	          type: 'number',
+	          param: 'l',
+	          unit: 'm',
+	          step: 0.05,
+	          round: 0.01
+	        },{
+	          title: 'Vertical Position',
+	          type: 'number',
+	          param: 'y',
+	          unit: 'm',
+	          step: 0.1,
+	          round: 0.01
+	        },{
+	          title: 'Border Length',
+	          type: 'number',
+	          param: 'frameLength',
+	          unit: 'm',
+	          min: 0.02,
+	          max: 0.2,
+	          step: 0.01,
+	          round: 0.01
+	        },{
+	          title: 'Border Width',
+	          type: 'number',
+	          param: 'frameWidth',
+	          unit: 'm',
+	          min: 0.02,
+	          max: 0.2,
+	          step: 0.05,
+	          round: 0.01
+	        },
+	        {
+	          title: 'Row Ratios',
+	          type: 'text',
+	          display: function(){
+	            // encode
+	            return self.a.rowRatios.join(':')
+	          },
+	          onInput: function(value){
+	            // decode
+	            var rows = [];
+	            value.split(':').forEach(function(_value, i){
+	              rows[ i ] = window.Number(_value);
+	            });
+	            self._setRatios({ rows: rows });
+	          },
+	          bindings: ['change:rowRatios', 'change:columnRatios'],
+	          realtimeInput: false,
+	          subscriptions: ['pro', 'modeller', 'artist3d']
+	        },
+	        {
+	          title: 'Column Ratios',
+	          type: 'text',
+	          display: function(){
+	            // encode
+	            var columns = [];
+	            self.a.columnRatios.forEach(function(row, i){
+	              columns[ i ] = row.join(':');
+	            });
+	            return columns.join('\n')
+	          },
+	          onInput: function(value){
+	            // decode
+	            var columns = [];
+	            value.split('\n').forEach(function(row, i){
+	              columns[ i ] = [];
+	              row.split(':').forEach(function(_value, j){
+	                columns[ i ][ j ] = window.Number(_value);
+	              });
+	            });
+	            self._setRatios({ columns: columns });
+	          },
+	          bindings: ['change:rowRatios', 'change:columnRatios'],
+	          realtimeInput: false,
+	          multiLine: true,
+	          subscriptions: ['pro', 'modeller', 'artist3d']
+	        },
+	        {
+	          title: 'Lock this item',
+	          type: 'boolean',
+	          param: 'locked',
+	          subscriptions: ['pro', 'modeller', 'artist3d']
+	        },
+	        {
+	          title: 'Border Material',
+	          type: 'material',
+	          param: 'materials.frame',
+	          mode: 'custom',
+	          controls: [ 'colorDiffuse', 'colorSpecular', 'specularCoef' ]
+	        }
+	      ]
+	    }
+	  },
+
+	  loadingQueuePrefix: 'architecture',
+
+	  controls3d: 'insideWall',
+
+	  meshes3d: function (a) {
+
+	    //var a = this.attributes
+
+	    var rowRatios = a.rowRatios;
+	    var columnRatios = a.columnRatios;
+	    var frameLength = a.frameLength;
+	    var frameWidth = a.frameWidth;
+
+	    // internals
+
+	    // initial cursor positions (yCursor at the top, xCursor at the left)
+	    var yCursor = a.h;
+	    var xCursor = 0;
+
+	    var evenFrameHeight = a.h - frameLength;
+	    var evenFrameLength = a.l - frameLength;
+
+	    var rLen = rowRatios.length;
+	    var cLen;
+
+	    var rowSegments = 0;
+	    var columnSegments = [];
+
+	    var frameFacesCount = rLen * 4 + 18;
+	    var glassFacesCount = 0;
+
+	    for (var r = 0; r < rLen; r++) {
+	      rowSegments += rowRatios[ r ];
+	      columnSegments[ r ] = 0;
+	      cLen = columnRatios[ r ].length;
+	      frameFacesCount += (cLen - 1) * 4 + cLen * 8;
+	      glassFacesCount += cLen * 4;
+	      for (var c = 0; c < cLen; c++) {
+	        columnSegments[ r ] += columnRatios[ r ][ c ];
+	      }
+	    }
+
+	    var segmentLength;
+	    var segmentHeight = evenFrameHeight / rowSegments;
+
+	    var frameVertices = new Float32Array(frameFacesCount * 9);
+	    var fvPos = 0;
+
+	    var glassVertices = new Float32Array(glassFacesCount * 9);
+	    var gvPos = 0;
+
+	    // iterate
+	    for (var r = 0; r < rLen; r++) {
+
+	      cLen = columnRatios[ r ].length;
+	      segmentLength = evenFrameLength / columnSegments[ r ];
+
+	      // horizontal bar quad
+
+	      frameVertices[ fvPos ] = frameLength;
+	      frameVertices[ fvPos + 1 ] = yCursor;
+	      frameVertices[ fvPos + 2 ] = 0;
+	      frameVertices[ fvPos + 3 ] = evenFrameLength;
+	      frameVertices[ fvPos + 4 ] = yCursor - frameLength;
+	      frameVertices[ fvPos + 5 ] = 0;
+	      frameVertices[ fvPos + 6 ] = frameLength;
+	      frameVertices[ fvPos + 7 ] = yCursor - frameLength;
+	      frameVertices[ fvPos + 8 ] = 0;
+
+	      frameVertices[ fvPos + 9 ] = evenFrameLength;
+	      frameVertices[ fvPos + 10 ] = yCursor - frameLength;
+	      frameVertices[ fvPos + 11 ] = 0;
+	      frameVertices[ fvPos + 12 ] = frameLength;
+	      frameVertices[ fvPos + 13 ] = yCursor;
+	      frameVertices[ fvPos + 14 ] = 0;
+	      frameVertices[ fvPos + 15 ] = evenFrameLength;
+	      frameVertices[ fvPos + 16 ] = yCursor;
+	      frameVertices[ fvPos + 17 ] = 0;
+
+	      frameVertices[ fvPos + 18 ] = frameLength;
+	      frameVertices[ fvPos + 19 ] = yCursor;
+	      frameVertices[ fvPos + 20 ] = frameWidth;
+	      frameVertices[ fvPos + 21 ] = frameLength;
+	      frameVertices[ fvPos + 22 ] = yCursor - frameLength;
+	      frameVertices[ fvPos + 23 ] = frameWidth;
+	      frameVertices[ fvPos + 24 ] = evenFrameLength;
+	      frameVertices[ fvPos + 25 ] = yCursor - frameLength;
+	      frameVertices[ fvPos + 26 ] = frameWidth;
+
+	      frameVertices[ fvPos + 27 ] = evenFrameLength;
+	      frameVertices[ fvPos + 28 ] = yCursor - frameLength;
+	      frameVertices[ fvPos + 29 ] = frameWidth;
+	      frameVertices[ fvPos + 30 ] = evenFrameLength;
+	      frameVertices[ fvPos + 31 ] = yCursor;
+	      frameVertices[ fvPos + 32 ] = frameWidth;
+	      frameVertices[ fvPos + 33 ] = frameLength;
+	      frameVertices[ fvPos + 34 ] = yCursor;
+	      frameVertices[ fvPos + 35 ] = frameWidth;
+
+	      fvPos += 36;
+	      yCursor -= frameLength;
+
+	      // vertical bars
+
+	      for (var c = 0; c < cLen - 1; c++) {
+
+	        // move xCursor to the right
+	        xCursor += segmentLength * columnRatios[ r ][ c ];
+
+	        // vertical bar quad
+
+	        frameVertices[ fvPos ] = xCursor;
+	        frameVertices[ fvPos + 1 ] = yCursor;
+	        frameVertices[ fvPos + 2 ] = 0;
+	        frameVertices[ fvPos + 3 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 5 ] = 0;
+	        frameVertices[ fvPos + 6 ] = xCursor;
+	        frameVertices[ fvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 8 ] = 0;
+
+	        frameVertices[ fvPos + 9 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 10 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 11 ] = 0;
+	        frameVertices[ fvPos + 12 ] = xCursor;
+	        frameVertices[ fvPos + 13 ] = yCursor;
+	        frameVertices[ fvPos + 14 ] = 0;
+	        frameVertices[ fvPos + 15 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 16 ] = yCursor;
+	        frameVertices[ fvPos + 17 ] = 0;
+
+	        frameVertices[ fvPos + 18 ] = xCursor;
+	        frameVertices[ fvPos + 19 ] = yCursor;
+	        frameVertices[ fvPos + 20 ] = frameWidth;
+	        frameVertices[ fvPos + 21 ] = xCursor;
+	        frameVertices[ fvPos + 22 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 23 ] = frameWidth;
+	        frameVertices[ fvPos + 24 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 25 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 26 ] = frameWidth;
+
+	        frameVertices[ fvPos + 27 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 28 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 29 ] = frameWidth;
+	        frameVertices[ fvPos + 30 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 31 ] = yCursor;
+	        frameVertices[ fvPos + 32 ] = frameWidth;
+	        frameVertices[ fvPos + 33 ] = xCursor;
+	        frameVertices[ fvPos + 34 ] = yCursor;
+	        frameVertices[ fvPos + 35 ] = frameWidth;
+
+	        fvPos += 36;
+
+	      }
+
+	      // glass & extrusions
+	      xCursor = 0;
+	      for (var c = 0; c < cLen; c++) {
+
+	        // glass quad
+
+	        glassVertices[ gvPos ] = xCursor + frameLength;
+	        glassVertices[ gvPos + 1 ] = yCursor;
+	        glassVertices[ gvPos + 2 ] = 0;
+	        glassVertices[ gvPos + 3 ] = xCursor + frameLength;
+	        glassVertices[ gvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        glassVertices[ gvPos + 5 ] = 0;
+	        glassVertices[ gvPos + 6 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        glassVertices[ gvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        glassVertices[ gvPos + 8 ] = 0;
+
+	        glassVertices[ gvPos + 9 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        glassVertices[ gvPos + 10 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        glassVertices[ gvPos + 11 ] = 0;
+	        glassVertices[ gvPos + 12 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        glassVertices[ gvPos + 13 ] = yCursor;
+	        glassVertices[ gvPos + 14 ] = 0;
+	        glassVertices[ gvPos + 15 ] = xCursor + frameLength;
+	        glassVertices[ gvPos + 16 ] = yCursor;
+	        glassVertices[ gvPos + 17 ] = 0;
+
+	        gvPos += 18;
+
+	        glassVertices[ gvPos ] = xCursor + frameLength;
+	        glassVertices[ gvPos + 1 ] = yCursor;
+	        glassVertices[ gvPos + 2 ] = 0;
+	        glassVertices[ gvPos + 3 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        glassVertices[ gvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        glassVertices[ gvPos + 5 ] = 0;
+	        glassVertices[ gvPos + 6 ] = xCursor + frameLength;
+	        glassVertices[ gvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        glassVertices[ gvPos + 8 ] = 0;
+
+	        glassVertices[ gvPos + 9 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        glassVertices[ gvPos + 10 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        glassVertices[ gvPos + 11 ] = 0;
+	        glassVertices[ gvPos + 12 ] = xCursor + frameLength;
+	        glassVertices[ gvPos + 13 ] = yCursor;
+	        glassVertices[ gvPos + 14 ] = 0;
+	        glassVertices[ gvPos + 15 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        glassVertices[ gvPos + 16 ] = yCursor;
+	        glassVertices[ gvPos + 17 ] = 0;
+
+	        gvPos += 18;
+
+	        // left side extrusion
+
+	        frameVertices[ fvPos ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 1 ] = yCursor;
+	        frameVertices[ fvPos + 2 ] = 0;
+	        frameVertices[ fvPos + 3 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 5 ] = frameWidth;
+	        frameVertices[ fvPos + 6 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 8 ] = 0;
+
+	        frameVertices[ fvPos + 9 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 10 ] = yCursor;
+	        frameVertices[ fvPos + 11 ] = 0;
+	        frameVertices[ fvPos + 12 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 13 ] = yCursor;
+	        frameVertices[ fvPos + 14 ] = frameWidth;
+	        frameVertices[ fvPos + 15 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 16 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 17 ] = frameWidth;
+
+	        fvPos += 18;
+
+	        // bottom side extrusion
+
+	        frameVertices[ fvPos ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 1 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 2 ] = 0;
+	        frameVertices[ fvPos + 3 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        frameVertices[ fvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 5 ] = frameWidth;
+	        frameVertices[ fvPos + 6 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        frameVertices[ fvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 8 ] = 0;
+
+	        frameVertices[ fvPos + 9 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 10 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 11 ] = 0;
+	        frameVertices[ fvPos + 12 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 13 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 14 ] = frameWidth;
+	        frameVertices[ fvPos + 15 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        frameVertices[ fvPos + 16 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 17 ] = frameWidth;
+
+	        fvPos += 18;
+
+	        // top side extrusion
+
+	        frameVertices[ fvPos ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 1 ] = yCursor;
+	        frameVertices[ fvPos + 2 ] = 0;
+	        frameVertices[ fvPos + 3 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        frameVertices[ fvPos + 4 ] = yCursor;
+	        frameVertices[ fvPos + 5 ] = 0;
+	        frameVertices[ fvPos + 6 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        frameVertices[ fvPos + 7 ] = yCursor;
+	        frameVertices[ fvPos + 8 ] = frameWidth;
+
+	        frameVertices[ fvPos + 9 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 10 ] = yCursor;
+	        frameVertices[ fvPos + 11 ] = 0;
+	        frameVertices[ fvPos + 12 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        frameVertices[ fvPos + 13 ] = yCursor;
+	        frameVertices[ fvPos + 14 ] = frameWidth;
+	        frameVertices[ fvPos + 15 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 16 ] = yCursor;
+	        frameVertices[ fvPos + 17 ] = frameWidth;
+
+	        fvPos += 18;
+
+	        // move xCursor to the right
+	        xCursor += segmentLength * columnRatios[ r ][ c ];
+
+	        // right side extrusion
+
+	        frameVertices[ fvPos ] = xCursor;
+	        frameVertices[ fvPos + 1 ] = yCursor;
+	        frameVertices[ fvPos + 2 ] = 0;
+	        frameVertices[ fvPos + 3 ] = xCursor;
+	        frameVertices[ fvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 5 ] = 0;
+	        frameVertices[ fvPos + 6 ] = xCursor;
+	        frameVertices[ fvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 8 ] = frameWidth;
+
+	        frameVertices[ fvPos + 9 ] = xCursor;
+	        frameVertices[ fvPos + 10 ] = yCursor;
+	        frameVertices[ fvPos + 11 ] = 0;
+	        frameVertices[ fvPos + 12 ] = xCursor;
+	        frameVertices[ fvPos + 13 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 14 ] = frameWidth;
+	        frameVertices[ fvPos + 15 ] = xCursor;
+	        frameVertices[ fvPos + 16 ] = yCursor;
+	        frameVertices[ fvPos + 17 ] = frameWidth;
+
+	        fvPos += 18;
+
+	      }
+
+	      // reset xCursor, move yCursor downwards
+	      xCursor = 0;
+	      yCursor -= segmentHeight * rowRatios[ r ] - frameLength;
+
+	    }
+
+	    // add last horizontal frame bar quad
+
+	    frameVertices[ fvPos ] = frameLength;
+	    frameVertices[ fvPos + 1 ] = yCursor;
+	    frameVertices[ fvPos + 2 ] = 0;
+	    frameVertices[ fvPos + 3 ] = evenFrameLength;
+	    frameVertices[ fvPos + 4 ] = yCursor - frameLength;
+	    frameVertices[ fvPos + 5 ] = 0;
+	    frameVertices[ fvPos + 6 ] = frameLength;
+	    frameVertices[ fvPos + 7 ] = yCursor - frameLength;
+	    frameVertices[ fvPos + 8 ] = 0;
+
+	    frameVertices[ fvPos + 9 ] = evenFrameLength;
+	    frameVertices[ fvPos + 10 ] = yCursor - frameLength;
+	    frameVertices[ fvPos + 11 ] = 0;
+	    frameVertices[ fvPos + 12 ] = frameLength;
+	    frameVertices[ fvPos + 13 ] = yCursor;
+	    frameVertices[ fvPos + 14 ] = 0;
+	    frameVertices[ fvPos + 15 ] = evenFrameLength;
+	    frameVertices[ fvPos + 16 ] = yCursor;
+	    frameVertices[ fvPos + 17 ] = 0;
+
+	    frameVertices[ fvPos + 18 ] = frameLength;
+	    frameVertices[ fvPos + 19 ] = yCursor;
+	    frameVertices[ fvPos + 20 ] = frameWidth;
+	    frameVertices[ fvPos + 21 ] = frameLength;
+	    frameVertices[ fvPos + 22 ] = yCursor - frameLength;
+	    frameVertices[ fvPos + 23 ] = frameWidth;
+	    frameVertices[ fvPos + 24 ] = evenFrameLength;
+	    frameVertices[ fvPos + 25 ] = yCursor - frameLength;
+	    frameVertices[ fvPos + 26 ] = frameWidth;
+
+	    frameVertices[ fvPos + 27 ] = evenFrameLength;
+	    frameVertices[ fvPos + 28 ] = yCursor - frameLength;
+	    frameVertices[ fvPos + 29 ] = frameWidth;
+	    frameVertices[ fvPos + 30 ] = evenFrameLength;
+	    frameVertices[ fvPos + 31 ] = yCursor;
+	    frameVertices[ fvPos + 32 ] = frameWidth;
+	    frameVertices[ fvPos + 33 ] = frameLength;
+	    frameVertices[ fvPos + 34 ] = yCursor;
+	    frameVertices[ fvPos + 35 ] = frameWidth;
+
+	    fvPos += 36;
+
+	    // add left frame side quad
+
+	    frameVertices[ fvPos ] = 0;
+	    frameVertices[ fvPos + 1 ] = a.h;
+	    frameVertices[ fvPos + 2 ] = 0;
+	    frameVertices[ fvPos + 3 ] = frameLength;
+	    frameVertices[ fvPos + 4 ] = 0;
+	    frameVertices[ fvPos + 5 ] = 0;
+	    frameVertices[ fvPos + 6 ] = 0;
+	    frameVertices[ fvPos + 7 ] = 0;
+	    frameVertices[ fvPos + 8 ] = 0;
+
+	    frameVertices[ fvPos + 9 ] = frameLength;
+	    frameVertices[ fvPos + 10 ] = 0;
+	    frameVertices[ fvPos + 11 ] = 0;
+	    frameVertices[ fvPos + 12 ] = 0;
+	    frameVertices[ fvPos + 13 ] = a.h;
+	    frameVertices[ fvPos + 14 ] = 0;
+	    frameVertices[ fvPos + 15 ] = frameLength;
+	    frameVertices[ fvPos + 16 ] = a.h;
+	    frameVertices[ fvPos + 17 ] = 0;
+
+	    frameVertices[ fvPos + 18 ] = 0;
+	    frameVertices[ fvPos + 19 ] = a.h;
+	    frameVertices[ fvPos + 20 ] = frameWidth;
+	    frameVertices[ fvPos + 21 ] = 0;
+	    frameVertices[ fvPos + 22 ] = 0;
+	    frameVertices[ fvPos + 23 ] = frameWidth;
+	    frameVertices[ fvPos + 24 ] = frameLength;
+	    frameVertices[ fvPos + 25 ] = 0;
+	    frameVertices[ fvPos + 26 ] = frameWidth;
+
+	    frameVertices[ fvPos + 27 ] = frameLength;
+	    frameVertices[ fvPos + 28 ] = 0;
+	    frameVertices[ fvPos + 29 ] = frameWidth;
+	    frameVertices[ fvPos + 30 ] = frameLength;
+	    frameVertices[ fvPos + 31 ] = a.h;
+	    frameVertices[ fvPos + 32 ] = frameWidth;
+	    frameVertices[ fvPos + 33 ] = 0;
+	    frameVertices[ fvPos + 34 ] = a.h;
+	    frameVertices[ fvPos + 35 ] = frameWidth;
+
+	    fvPos += 36;
+
+	    // add right frame side quad
+
+	    frameVertices[ fvPos ] = evenFrameLength;
+	    frameVertices[ fvPos + 1 ] = a.h;
+	    frameVertices[ fvPos + 2 ] = 0;
+	    frameVertices[ fvPos + 3 ] = a.l;
+	    frameVertices[ fvPos + 4 ] = 0;
+	    frameVertices[ fvPos + 5 ] = 0;
+	    frameVertices[ fvPos + 6 ] = evenFrameLength;
+	    frameVertices[ fvPos + 7 ] = 0;
+	    frameVertices[ fvPos + 8 ] = 0;
+
+	    frameVertices[ fvPos + 9 ] = a.l;
+	    frameVertices[ fvPos + 10 ] = 0;
+	    frameVertices[ fvPos + 11 ] = 0;
+	    frameVertices[ fvPos + 12 ] = evenFrameLength;
+	    frameVertices[ fvPos + 13 ] = a.h;
+	    frameVertices[ fvPos + 14 ] = 0;
+	    frameVertices[ fvPos + 15 ] = a.l;
+	    frameVertices[ fvPos + 16 ] = a.h;
+	    frameVertices[ fvPos + 17 ] = 0;
+
+	    frameVertices[ fvPos + 18 ] = evenFrameLength;
+	    frameVertices[ fvPos + 19 ] = a.h;
+	    frameVertices[ fvPos + 20 ] = frameWidth;
+	    frameVertices[ fvPos + 21 ] = evenFrameLength;
+	    frameVertices[ fvPos + 22 ] = 0;
+	    frameVertices[ fvPos + 23 ] = frameWidth;
+	    frameVertices[ fvPos + 24 ] = a.l;
+	    frameVertices[ fvPos + 25 ] = 0;
+	    frameVertices[ fvPos + 26 ] = frameWidth;
+
+	    frameVertices[ fvPos + 27 ] = a.l;
+	    frameVertices[ fvPos + 28 ] = 0;
+	    frameVertices[ fvPos + 29 ] = frameWidth;
+	    frameVertices[ fvPos + 30 ] = a.l;
+	    frameVertices[ fvPos + 31 ] = a.h;
+	    frameVertices[ fvPos + 32 ] = frameWidth;
+	    frameVertices[ fvPos + 33 ] = evenFrameLength;
+	    frameVertices[ fvPos + 34 ] = a.h;
+	    frameVertices[ fvPos + 35 ] = frameWidth;
+
+	    fvPos += 36;
+
+	    // add right outer side squad
+
+	    frameVertices[ fvPos ] = a.l;
+	    frameVertices[ fvPos + 1 ] = a.h;
+	    frameVertices[ fvPos + 2 ] = 0;
+	    frameVertices[ fvPos + 3 ] = a.l;
+	    frameVertices[ fvPos + 4 ] = 0;
+	    frameVertices[ fvPos + 5 ] = frameWidth;
+	    frameVertices[ fvPos + 6 ] = a.l;
+	    frameVertices[ fvPos + 7 ] = 0;
+	    frameVertices[ fvPos + 8 ] = 0;
+
+	    frameVertices[ fvPos + 9 ] = a.l;
+	    frameVertices[ fvPos + 10 ] = a.h;
+	    frameVertices[ fvPos + 11 ] = 0;
+	    frameVertices[ fvPos + 12 ] = a.l;
+	    frameVertices[ fvPos + 13 ] = a.h;
+	    frameVertices[ fvPos + 14 ] = frameWidth;
+	    frameVertices[ fvPos + 15 ] = a.l;
+	    frameVertices[ fvPos + 16 ] = 0;
+	    frameVertices[ fvPos + 17 ] = frameWidth;
+
+	    fvPos += 18;
+
+	    // add right outer side squad
+
+	    frameVertices[ fvPos ] = 0;
+	    frameVertices[ fvPos + 1 ] = a.h;
+	    frameVertices[ fvPos + 2 ] = 0;
+	    frameVertices[ fvPos + 3 ] = 0;
+	    frameVertices[ fvPos + 4 ] = 0;
+	    frameVertices[ fvPos + 5 ] = 0;
+	    frameVertices[ fvPos + 6 ] = 0;
+	    frameVertices[ fvPos + 7 ] = 0;
+	    frameVertices[ fvPos + 8 ] = frameWidth;
+
+	    frameVertices[ fvPos + 9 ] = 0;
+	    frameVertices[ fvPos + 10 ] = a.h;
+	    frameVertices[ fvPos + 11 ] = 0;
+	    frameVertices[ fvPos + 12 ] = 0;
+	    frameVertices[ fvPos + 13 ] = 0;
+	    frameVertices[ fvPos + 14 ] = frameWidth;
+	    frameVertices[ fvPos + 15 ] = 0;
+	    frameVertices[ fvPos + 16 ] = a.h;
+	    frameVertices[ fvPos + 17 ] = frameWidth;
+
+	    fvPos += 18;
+
+	    // add top outer side squad
+
+	    frameVertices[ fvPos ] = 0;
+	    frameVertices[ fvPos + 1 ] = a.h;
+	    frameVertices[ fvPos + 2 ] = 0;
+	    frameVertices[ fvPos + 3 ] = a.l;
+	    frameVertices[ fvPos + 4 ] = a.h;
+	    frameVertices[ fvPos + 5 ] = frameWidth;
+	    frameVertices[ fvPos + 6 ] = a.l;
+	    frameVertices[ fvPos + 7 ] = a.h;
+	    frameVertices[ fvPos + 8 ] = 0;
+
+	    frameVertices[ fvPos + 9 ] = a.l;
+	    frameVertices[ fvPos + 10 ] = a.h;
+	    frameVertices[ fvPos + 11 ] = frameWidth;
+	    frameVertices[ fvPos + 12 ] = 0;
+	    frameVertices[ fvPos + 13 ] = a.h;
+	    frameVertices[ fvPos + 14 ] = 0;
+	    frameVertices[ fvPos + 15 ] = 0;
+	    frameVertices[ fvPos + 16 ] = a.h;
+	    frameVertices[ fvPos + 17 ] = frameWidth;
+
+	    // return meshes
+	    return {
+	      frame: {
+	        positions: frameVertices,
+	        normals: getNormalsBuffer.flat(frameVertices),
+	        material: 'frame'
+	      },
+	      glass: {
+	        positions: glassVertices,
+	        normals: getNormalsBuffer.flat(glassVertices),
+	        material: 'glass'
+	      }
+	    }
+
+	  },
+
+	  materials3d: function generateMaterials3d (a) {
+	    return a.materials
+	  }
+
+	};
+
+	// dependencies
+
+	// class
+
+	var doorType = {
+
+	  params: {
+
+	    type: 'door',
+
+	    x: 0,
+	    y: 0,
+	    z: 0,
+
+	    ry: 0,
+
+	    l: 0.9,      // length
+	    w: 0.05,     // width (=thickness)
+	    h: 2,        // height
+	    v: 3,        // version
+
+	    lock: false,
+
+	    bake: true,
+	    bakeStatus: 'none', // none, pending, done
+
+	    frameLength: 0.05,
+	    frameOffset: 0,
+
+	    leafWidth: 0.03,
+	    leafOffset: 0.005,
+
+	    doorType: 'singleSwing',
+	    fixLeafRatio: 0.3,
+
+	    doorAngle: 92,
+	    hinge: 'right',
+	    side: 'back',
+	    thresholdHeight: 0.01,
+
+	    materials: {
+	      frame: {
+	        colorDiffuse: [0.95, 0.95, 0.95],
+	        colorSpecular: [0.04, 0.04, 0.04],
+	        specularCoef: 30
+	      },
+	      leaf: 'doorLeaf-flush-white',
+	      handle: 'aluminium',
+	      threshold: 'basic-floor'
+	    }
+
+	  },
+
+	  valid: {
+	    children: [],
+	    x: {
+	      step: 0.05
+	    },
+	    y: {
+	      step: 0.05
+	    },
+	    z: {
+	      lock: true
+	    },
+	    l: {
+	      min: 0.4,
+	      max: 4,
+	      step: 0.05
+	    },
+	    ry: {
+	      step: 180
+	    }
+	  },
+
+	  initialize: function(){
+
+	    // backwards compatibility
+	    if (this.a.handleMaterial) {
+	      this.a.materials.handle = this.a.handleMaterial;
+	      delete this.a.handleMaterial;
+	    }
+	    if (this.a.leafMaterial) {
+	      this.a.materials.leaf = this.a.leafMaterial;
+	      delete this.a.leafMaterial;
+	    }
+	    if (this.a.frameMaterial) {
+	      this.a.materials.frame = this.a.frameMaterial;
+	      delete this.a.frameMaterial;
+	    }
+	    // check for old doors and set their threshold parameter to false
+	    if (this.a.v < 3) {
+	      this.a.threshold = false;
+	      this.a.v = 3;
+	      this.a.materials.threshold = 'wood_parquet_oak';
+	    }
+	    // default new doors to have a threshold
+	    else if (this.a.threshold === undefined) this.a.threshold = true;
+
+	  },
+
+	  bindings: [{
+	    events: [
+	      'change:l',
+	      'change:w',
+	      'change:h',
+	      'change:frameLength',
+	      'change:leafWidth',
+	      'change:leafOffset',
+	      'change:frameOffset',
+	      'change:doorAngle',
+	      'change:hinge',
+	      'change:side',
+	      'change:doorType',
+	      'change:handleType',
+	      'change:fixLeafRatio',
+	      'change:threshold',
+	      'change:thresholdHeight',
+	      '../change:w'
+	    ],
+	    call: 'meshes3d'
+	  },{
+	    events: [
+	      'change:materials.*'
+	    ],
+	    call: 'materials3d'
+	  },{
+	    events: [
+	      'change:threshold',
+	      'change:doorType'
+	    ],
+	    call: 'contextMenu'
+	  }],
+
+	  contextMenu: function generateContextMenu () {
+	    var contextMenu = {
+	      templateId: 'generic',
+	      templateOptions: {
+	        title: 'Door'
+	      },
+	      controls: [
+	        {
+	          title: 'Height',
+	          type: 'number',
+	          param: 'h',
+	          unit: 'm',
+	          min: 1,
+	          max: 4,
+	          step: 0.05
+	        },
+	        {
+	          title: 'Length',
+	          type: 'number',
+	          param: 'l',
+	          unit: 'm',
+	          step: 0.05,
+	          round: 0.01
+	        },
+	        {
+	          title: 'Opening Angle',
+	          type: 'number',
+	          param: 'doorAngle',
+	          unit: '°',
+	          min: 0,
+	          max: 180,
+	          step: 10
+	        },
+	        {
+	          title: 'Door Type',
+	          type: 'list',
+	          param: 'doorType',
+	          list: {
+	            'Single Swing': 'singleSwing',
+	            'Double Swing': 'doubleSwing',
+	            'Swing + Fix': 'swingFix',
+	            'Fix + Swing + Fix': 'swingDoubleFix',
+	            'Fix + Double Swing + Fix': 'doubleSwingDoubleFix',
+	            'Sliding Door': 'slidingDoor',
+	            'Opening': 'opening'
+	          }
+	        },
+	        {
+	          title: 'Handle Type',
+	          type: 'list',
+	          param: 'handleType',
+	          list: {
+	            'Square Edged': 'squareEdged',
+	            'Round': 'round',
+	            'Classic': 'classic',
+	            'Knob': 'knob'
+	          }
+	        },
+	        {
+	          title: 'Hinge',
+	          type: 'list',
+	          param: 'hinge',
+	          list: {
+	            'left': 'left',
+	            'right': 'right'
+	          }
+	        },
+	        {
+	          title: 'Position',
+	          type: 'list',
+	          param: 'side',
+	          list: {
+	            'front': 'front',
+	            'back': 'back'
+	          }
+	        },
+	        {
+	          title: 'Frame Length',
+	          type: 'number',
+	          param: 'frameLength',
+	          unit: 'm',
+	          min: 0,
+	          max: 0.1,
+	          step: 0.01
+	        },
+	        {
+	          title: 'Frame Offset',
+	          type: 'number',
+	          param: 'frameOffset',
+	          unit: 'm',
+	          min: 0,
+	          max: 0.05,
+	          step: 0.01
+	        },
+	        {
+	          title: 'Fix Leaf Ratio',
+	          type: 'number',
+	          param: 'fixLeafRatio',
+	          min: 0.2,
+	          max: 0.8,
+	          step: 0.05
+	        },
+	        {
+	          title: 'Threshold',
+	          type: 'boolean',
+	          param: 'threshold'
+	        },
+	        {
+	          title: 'Lock this item',
+	          type: 'boolean',
+	          param: 'locked',
+	          subscriptions: ['pro', 'modeller', 'artist3d']
+	        },
+	        {
+	          type: 'html',
+	          display: '<h2>Materials</h2>'
+	        },
+	        {
+	          title: 'Frame',
+	          type: 'material',
+	          param: 'materials.frame',
+	          category: 'doorFrame',
+	          controls: ['colorDiffuse', 'colorSpecular', 'specularCoef']
+	        }
+	      ]
+	    };
+
+	    if (this.a.doorType !== 'opening') {
+	      contextMenu.controls.push({
+	        title: 'Leaf',
+	        type: 'material',
+	        param: 'materials.leaf',
+	        category: 'doorLeaf',
+	        collapsed: false
+	      });
+	    }
+	    if (this.a.threshold) {
+	      contextMenu.controls.splice(11, 0, {
+	        title: 'Threshold height',
+	        type: 'number',
+	        param: 'thresholdHeight',
+	        unit: 'm',
+	        min: 0,
+	        max: 0.05,
+	        step: 0.01
+	      });
+	    }
+	    if (this.a.threshold) {
+	      contextMenu.controls.push({
+	        title: 'Threshold',
+	        type: 'material',
+	        param: 'materials.threshold',
+	        category: 'floor'
+	      });
+	    }
+
+	    return contextMenu
+	  },
+
+	  loadingQueuePrefix: 'architecture',
+
+	  controls3d: 'insideWall',
+
+	  meshes3d: function generateMeshes3d(a) {
+
+	    //var a = this.attributes
+	    var wallThickness = 0.1;
+	    if (a.parent && a.parent.a) {
+	      wallThickness = a.parent.a.w;
+	    }
+
+	    // definitions
+	    var frameLength = a.frameLength,
+	      frameWidth = wallThickness,
+	      leafLength = a.l - (frameLength * 2),
+	      leafOffset = a.leafOffset,
+	      frameOffset = a.frameOffset,
+	      prevLeafs = 0,
+	      doorType = a.doorType,
+	      threshold = a.threshold,
+	      thresholdHeight = a.thresholdHeight,
+	      leaf,
+	      doorOpening = a.l - (frameLength * 2),
+	      handleHeight = 1,
+	      handleThickness = 0.018,
+	      handleLength = 0.13,
+	      handleWidth = 0.035,
+	      handleDistance = 0.06, //Dornmass
+	      handlePlateLength = 0.04,
+	      handlePlateHeight = 0.21,
+	      handlePlateWidth = 0.002,
+	      handlePlateDistance = handleDistance+handleThickness/2-handlePlateLength/ 2,
+	      leafGap = threshold && thresholdHeight ? thresholdHeight : 0.005,
+
+	      // internals
+
+	      frameFacesCount = 0,
+	      floorFacesCount = threshold ? thresholdHeight > 0 ? 6 : 2 : 0,
+	      hvPos = 0,
+	      fvPos = 0,
+	      lvPos = 0,
+	      lvUvPos = 0,
+	      xCursor = 0,
+	      zCursor, xRotate, sinAngle, cosAngle, rotationOffset, lvs, lve, hvs, hve, hvf, hvt, hvm = [],
+	      aX,aY,aZ,bY,cX,cZ,dY,eX,eZ,gX,iZ,mZ,uZ;
+
+	    a.w = frameWidth;
+
+	    // DOOR TYPE CONFIGURATIONS
+
+	    // swing default
+	    if (doorType==='singleSwing') {
+	      leaf = [{
+	        leafLength : leafLength,
+	        handle : true,
+	        angle : a.doorAngle
+	      }];
+	    } else if (doorType==='opening') {
+	      leaf = [];
+	    } else if (doorType==='doubleSwing') {
+	      leaf = [{
+	        leafLength : leafLength/2,
+	        handle : true,
+	        angle : a.doorAngle
+	      },
+	        {
+	          leafLength : leafLength/2,
+	          handle : true,
+	          angle : a.doorAngle,
+	          flipLeaf : true
+	        }];
+	    } else if (doorType==='swingFix') {
+	      leaf = [{
+	        leafLength : doorOpening * (1-a.fixLeafRatio),
+	        handle : true,
+	        angle : a.doorAngle
+	      },
+	        {
+	          leafLength : doorOpening * a.fixLeafRatio,
+	          handle : false,
+	          angle : 0
+	        }];
+	      if (a.hinge==='left') leaf.reverse();
+	    } else if (doorType==='swingDoubleFix') {
+	      leaf = [{
+	        leafLength : doorOpening * a.fixLeafRatio/2,
+	        handle : false,
+	        angle : 0
+	      },
+	        {
+	          leafLength : doorOpening * (1-a.fixLeafRatio),
+	          handle : true,
+	          angle : a.doorAngle
+	        },
+	        {
+	          leafLength : doorOpening * a.fixLeafRatio/2,
+	          handle : false,
+	          angle : 0
+	        }];
+	      if (a.hinge==='left') leaf.reverse();
+	    } else if (doorType==='doubleSwingDoubleFix') {
+	      leaf = [{
+	        leafLength : doorOpening * a.fixLeafRatio/2,
+	        handle : false,
+	        angle : 0
+	      },
+	        {
+	          leafLength : doorOpening * ((1-a.fixLeafRatio)/2),
+	          handle : true,
+	          angle : a.doorAngle
+	        },
+	        {
+	          leafLength : doorOpening * ((1-a.fixLeafRatio)/2),
+	          handle : true,
+	          angle : a.doorAngle,
+	          flipLeaf : true
+	        },
+	        {
+	          leafLength : doorOpening * a.fixLeafRatio/2,
+	          handle : false,
+	          angle : 0
+	        }];
+	    } else if (doorType==='slidingDoor') {
+	      leaf = [{
+	        leafLength : leafLength* (1-a.doorAngle/180),
+	        handle : false,
+	        angle : 0
+	      }];
+	      leafOffset = -0.1;
+	      if (a.hinge==='left') xCursor = doorOpening - leafLength* (1-a.doorAngle/180);
+	    } else {
+	      // Fallback old doors
+	      a.doorType = 'singleSwing';
+	      leaf = [{
+	        leafLength : leafLength,
+	        handle : true,
+	        angle : a.doorAngle
+	      }];
+	    }
+
+	    // FIXME Workaround for older Doors - remove Feb '16
+	    if (leafOffset>0.005) leafOffset = 0.005;
+
+	    // Set Face Count
+	    if (frameLength>0) {
+	      frameFacesCount += 18;
+	      if (frameOffset>0) frameFacesCount += 12;
+	    }
+	    var leafVertices = [], //new Float32Array(leafFacesCount * 9),
+	      handleVertices = [], //new Float32Array(handleFacesCount * 9),
+	      leafUvs = [], //new Float32Array(leafFacesCount * 6),
+	      frameVertices = new Float32Array(frameFacesCount * 9);
+
+	    // Threshold VERTICES
+	    //
+	    //   E------G
+	    //  /|     /|
+	    // A------C |
+	    // | F----|-H
+	    // |/     |/
+	    // B------D
+	    var floorVertices = new Float32Array(floorFacesCount * 9),
+	      floorUvs = new Float32Array(floorFacesCount * 6),
+	      wvPos = 0,
+	      fvUvPos = 0;
+
+	    aX = frameLength;
+	    aY = thresholdHeight;
+	    aZ = wallThickness;
+	    bY = 0;
+	    cX = a.l - frameLength;
+	    eZ = 0;
+
+	    if (threshold) {
+	      // Top
+	      //E
+	      floorVertices[wvPos] = floorVertices[wvPos + 9] = aX;
+	      floorVertices[wvPos + 1] = floorVertices[wvPos + 10] = aY;
+	      floorVertices[wvPos + 2] = floorVertices[wvPos + 11] = eZ;
+	      //A
+	      floorVertices[wvPos + 3] = aX;
+	      floorVertices[wvPos + 4] = aY;
+	      floorVertices[wvPos + 5] = aZ;
+	      //C
+	      floorVertices[wvPos + 6] = floorVertices[wvPos + 12] = cX;
+	      floorVertices[wvPos + 7] = floorVertices[wvPos + 13] = aY;
+	      floorVertices[wvPos + 8] = floorVertices[wvPos + 14] = aZ;
+	      //G
+	      floorVertices[wvPos + 15] = cX;
+	      floorVertices[wvPos + 16] = aY;
+	      floorVertices[wvPos + 17] = eZ;
+
+	      floorUvs [fvUvPos] = floorUvs [fvUvPos + 2] = floorUvs [fvUvPos + 6] = 1 - cX;
+	      floorUvs [fvUvPos + 1] = floorUvs [fvUvPos + 7] = floorUvs [fvUvPos + 11] = aZ;
+	      floorUvs [fvUvPos + 3] = floorUvs [fvUvPos + 5] = floorUvs [fvUvPos + 9] = 0;
+	      floorUvs [fvUvPos + 4] = floorUvs [fvUvPos + 8] = floorUvs [fvUvPos + 10] = 1;
+
+	      wvPos += 18;
+	      fvUvPos += 12;
+
+	      if (thresholdHeight > 0) {
+	        // Front
+	        //A
+	        floorVertices[wvPos] = floorVertices[wvPos + 9] = aX;
+	        floorVertices[wvPos + 1] = floorVertices[wvPos + 10] = aY;
+	        floorVertices[wvPos + 2] = floorVertices[wvPos + 11] = aZ;
+	        //B
+	        floorVertices[wvPos + 3] = aX;
+	        floorVertices[wvPos + 4] = bY;
+	        floorVertices[wvPos + 5] = aZ;
+	        //D
+	        floorVertices[wvPos + 6] = floorVertices[wvPos + 12] = cX;
+	        floorVertices[wvPos + 7] = floorVertices[wvPos + 13] = bY;
+	        floorVertices[wvPos + 8] = floorVertices[wvPos + 14] = aZ;
+	        //C
+	        floorVertices[wvPos + 15] = cX;
+	        floorVertices[wvPos + 16] = aY;
+	        floorVertices[wvPos + 17] = aZ;
+
+	        floorUvs [fvUvPos] = floorUvs [fvUvPos + 2] = floorUvs [fvUvPos + 6] = 1 - cX;
+	        floorUvs [fvUvPos + 1] = floorUvs [fvUvPos + 7] = floorUvs [fvUvPos + 11] = thresholdHeight;
+	        floorUvs [fvUvPos + 3] = floorUvs [fvUvPos + 5] = floorUvs [fvUvPos + 9] = 0;
+	        floorUvs [fvUvPos + 4] = floorUvs [fvUvPos + 8] = floorUvs [fvUvPos + 10] = 1;
+
+	        wvPos += 18;
+	        fvUvPos += 12;
+
+	        // Back
+	        //G
+	        floorVertices[wvPos] = floorVertices[wvPos + 9] = cX;
+	        floorVertices[wvPos + 1] = floorVertices[wvPos + 10] = aY;
+	        floorVertices[wvPos + 2] = floorVertices[wvPos + 11] = eZ;
+	        //H
+	        floorVertices[wvPos + 3] = cX;
+	        floorVertices[wvPos + 4] = bY;
+	        floorVertices[wvPos + 5] = eZ;
+	        //F
+	        floorVertices[wvPos + 6] = floorVertices[wvPos + 12] = aX;
+	        floorVertices[wvPos + 7] = floorVertices[wvPos + 13] = bY;
+	        floorVertices[wvPos + 8] = floorVertices[wvPos + 14] = eZ;
+	        //E
+	        floorVertices[wvPos + 15] = aX;
+	        floorVertices[wvPos + 16] = aY;
+	        floorVertices[wvPos + 17] = eZ;
+
+	        floorUvs [fvUvPos] = floorUvs [fvUvPos + 2] = floorUvs [fvUvPos + 6] = 1 - cX;
+	        floorUvs [fvUvPos + 1] = floorUvs [fvUvPos + 7] = floorUvs [fvUvPos + 11] = thresholdHeight;
+	        floorUvs [fvUvPos + 3] = floorUvs [fvUvPos + 5] = floorUvs [fvUvPos + 9] = 0;
+	        floorUvs [fvUvPos + 4] = floorUvs [fvUvPos + 8] = floorUvs [fvUvPos + 10] = 1;
+	      }
+	    }
+
+	    // DOOR FRAME CREATION
+	    if (frameLength>0) {
+
+	      // DOOR FRAME FRONT
+
+	      //  A/I-------H/L
+	      //   |  D---E  |
+	      //   |  |   |  |
+	      //   |  |   |  |
+	      //  B/J-C   F-G/K
+
+	      // DOOR FRAME BACK
+
+	      //  M/U-------T/X
+	      //   |  P---Q  |
+	      //   |  |   |  |
+	      //   |  |   |  |
+	      //  N/V-O   R-S/W
+
+	      aX = 0;
+	      aY = a.h;
+	      aZ = wallThickness+frameOffset;
+	      bY = 0;
+	      cX = frameLength;
+	      dY = a.h - frameLength;
+	      eX = a.l - frameLength;
+	      gX = a.l;
+	      iZ = wallThickness;
+	      mZ = -frameOffset;
+	      uZ = 0;
+
+	      // DOOR FRAME FRONT FACES
+	      // A
+	      frameVertices[fvPos] = frameVertices[fvPos + 9] = aX;
+	      frameVertices[fvPos + 1] = frameVertices[fvPos + 10] = aY;
+	      frameVertices[fvPos + 2] = frameVertices[fvPos + 11] = aZ;
+	      // B
+	      frameVertices[fvPos + 3] = aX;
+	      frameVertices[fvPos + 4] = bY;
+	      frameVertices[fvPos + 5] = aZ;
+	      // C
+	      frameVertices[fvPos + 6] = frameVertices[fvPos + 12] = cX;
+	      frameVertices[fvPos + 7] = frameVertices[fvPos + 13] = bY;
+	      frameVertices[fvPos + 8] = frameVertices[fvPos + 14] = aZ;
+	      // D
+	      frameVertices[fvPos + 15] = cX;
+	      frameVertices[fvPos + 16] = dY;
+	      frameVertices[fvPos + 17] = aZ;
+
+	      fvPos += 18;
+	      // A
+	      frameVertices[fvPos] = frameVertices[fvPos + 9] = aX;
+	      frameVertices[fvPos + 1] = frameVertices[fvPos + 10] = aY;
+	      frameVertices[fvPos + 2] = frameVertices[fvPos + 11] = aZ;
+	      // D
+	      frameVertices[fvPos + 3] = cX;
+	      frameVertices[fvPos + 4] = dY;
+	      frameVertices[fvPos + 5] = aZ;
+	      // E
+	      frameVertices[fvPos + 6] = frameVertices[fvPos + 12] = eX;
+	      frameVertices[fvPos + 7] = frameVertices[fvPos + 13] = dY;
+	      frameVertices[fvPos + 8] = frameVertices[fvPos + 14] = aZ;
+	      // H
+	      frameVertices[fvPos + 15] = gX;
+	      frameVertices[fvPos + 16] = aY;
+	      frameVertices[fvPos + 17] = aZ;
+
+	      fvPos += 18;
+	      // E
+	      frameVertices[fvPos] = frameVertices[fvPos + 9] = eX;
+	      frameVertices[fvPos + 1] = frameVertices[fvPos + 10] = dY;
+	      frameVertices[fvPos + 2] = frameVertices[fvPos + 11] = aZ;
+	      // F
+	      frameVertices[fvPos + 3] = eX;
+	      frameVertices[fvPos + 4] = bY;
+	      frameVertices[fvPos + 5] = aZ;
+	      // G
+	      frameVertices[fvPos + 6] = frameVertices[fvPos + 12] = gX;
+	      frameVertices[fvPos + 7] = frameVertices[fvPos + 13] = bY;
+	      frameVertices[fvPos + 8] = frameVertices[fvPos + 14] = aZ;
+	      // H
+	      frameVertices[fvPos + 15] = gX;
+	      frameVertices[fvPos + 16] = aY;
+	      frameVertices[fvPos + 17] = aZ;
+
+	      fvPos += 18;
+
+	      // DOOR FRAME BACK FACES
+
+	      // M
+	      frameVertices[fvPos] = frameVertices[fvPos + 9] = gX;
+	      frameVertices[fvPos + 1] = frameVertices[fvPos + 10] = aY;
+	      frameVertices[fvPos + 2] = frameVertices[fvPos + 11] = mZ;
+	      // N
+	      frameVertices[fvPos + 3] = gX;
+	      frameVertices[fvPos + 4] = bY;
+	      frameVertices[fvPos + 5] = mZ;
+	      // O
+	      frameVertices[fvPos + 6] = frameVertices[fvPos + 12] = eX;
+	      frameVertices[fvPos + 7] = frameVertices[fvPos + 13] = bY;
+	      frameVertices[fvPos + 8] = frameVertices[fvPos + 14] = mZ;
+	      // P
+	      frameVertices[fvPos + 15] = eX;
+	      frameVertices[fvPos + 16] = dY;
+	      frameVertices[fvPos + 17] = mZ;
+
+	      fvPos += 18;
+
+	      // M
+	      frameVertices[fvPos] = frameVertices[fvPos + 9] = gX;
+	      frameVertices[fvPos + 1] = frameVertices[fvPos + 10] = aY;
+	      frameVertices[fvPos + 2] = frameVertices[fvPos + 11] = mZ;
+	      // P
+	      frameVertices[fvPos + 3] = eX;
+	      frameVertices[fvPos + 4] = dY;
+	      frameVertices[fvPos + 5] = mZ;
+	      // Q
+	      frameVertices[fvPos + 6] = frameVertices[fvPos + 12] = cX;
+	      frameVertices[fvPos + 7] = frameVertices[fvPos + 13] = dY;
+	      frameVertices[fvPos + 8] = frameVertices[fvPos + 14] = mZ;
+	      // T
+	      frameVertices[fvPos + 15] = aX;
+	      frameVertices[fvPos + 16] = aY;
+	      frameVertices[fvPos + 17] = mZ;
+
+	      fvPos += 18;
+
+	      // Q
+	      frameVertices[fvPos] = frameVertices[fvPos + 9] = cX;
+	      frameVertices[fvPos + 1] = frameVertices[fvPos + 10] = dY;
+	      frameVertices[fvPos + 2] = frameVertices[fvPos + 11] = mZ;
+	      // R
+	      frameVertices[fvPos + 3] = cX;
+	      frameVertices[fvPos + 4] = bY;
+	      frameVertices[fvPos + 5] = mZ;
+	      // S
+	      frameVertices[fvPos + 6] = frameVertices[fvPos + 12] = aX;
+	      frameVertices[fvPos + 7] = frameVertices[fvPos + 13] = bY;
+	      frameVertices[fvPos + 8] = frameVertices[fvPos + 14] = mZ;
+	      // T
+	      frameVertices[fvPos + 15] = aX;
+	      frameVertices[fvPos + 16] = aY;
+	      frameVertices[fvPos + 17] = mZ;
+
+	      fvPos += 18;
+
+	      // FRAME INSIDE
+
+	      // D
+	      frameVertices[fvPos] = frameVertices[fvPos + 9] = cX;
+	      frameVertices[fvPos + 1] = frameVertices[fvPos + 10] = dY;
+	      frameVertices[fvPos + 2] = frameVertices[fvPos + 11] = aZ;
+	      // C
+	      frameVertices[fvPos + 3] = cX;
+	      frameVertices[fvPos + 4] = bY;
+	      frameVertices[fvPos + 5] = aZ;
+	      // R
+	      frameVertices[fvPos + 6] = frameVertices[fvPos + 12] = cX;
+	      frameVertices[fvPos + 7] = frameVertices[fvPos + 13] = bY;
+	      frameVertices[fvPos + 8] = frameVertices[fvPos + 14] = mZ;
+	      // Q
+	      frameVertices[fvPos + 15] = cX;
+	      frameVertices[fvPos + 16] = dY;
+	      frameVertices[fvPos + 17] = mZ;
+
+	      fvPos += 18;
+
+	      // D
+	      frameVertices[fvPos] = frameVertices[fvPos + 9] = cX;
+	      frameVertices[fvPos + 1] = frameVertices[fvPos + 10] = dY;
+	      frameVertices[fvPos + 2] = frameVertices[fvPos + 11] = aZ;
+	      // Q
+	      frameVertices[fvPos + 3] = cX;
+	      frameVertices[fvPos + 4] = dY;
+	      frameVertices[fvPos + 5] = mZ;
+	      // P
+	      frameVertices[fvPos + 6] = frameVertices[fvPos + 12] = eX;
+	      frameVertices[fvPos + 7] = frameVertices[fvPos + 13] = dY;
+	      frameVertices[fvPos + 8] = frameVertices[fvPos + 14] = mZ;
+	      // E
+	      frameVertices[fvPos + 15] = eX;
+	      frameVertices[fvPos + 16] = dY;
+	      frameVertices[fvPos + 17] = aZ;
+
+	      fvPos += 18;
+
+	      // Q
+	      frameVertices[fvPos] = frameVertices[fvPos + 9] = eX;
+	      frameVertices[fvPos + 1] = frameVertices[fvPos + 10] = dY;
+	      frameVertices[fvPos + 2] = frameVertices[fvPos + 11] = mZ;
+	      // R
+	      frameVertices[fvPos + 3] = eX;
+	      frameVertices[fvPos + 4] = bY;
+	      frameVertices[fvPos + 5] = mZ;
+	      // F
+	      frameVertices[fvPos + 6] = frameVertices[fvPos + 12] = eX;
+	      frameVertices[fvPos + 7] = frameVertices[fvPos + 13] = bY;
+	      frameVertices[fvPos + 8] = frameVertices[fvPos + 14] = aZ;
+	      // E
+	      frameVertices[fvPos + 15] = eX;
+	      frameVertices[fvPos + 16] = dY;
+	      frameVertices[fvPos + 17] = aZ;
+
+	      fvPos += 18;
+
+
+	      // FRAME OFFSET SIDE FACES
+	      if (frameOffset>0) {
+	        // FRONT
+	        // I
+	        frameVertices[ fvPos ] = frameVertices[ fvPos + 9 ] = aX;
+	        frameVertices[ fvPos + 1 ] = frameVertices[ fvPos + 10 ] = aY;
+	        frameVertices[ fvPos + 2 ] = frameVertices[ fvPos + 11 ] = iZ;
+	        // J
+	        frameVertices[ fvPos + 3 ] = aX;
+	        frameVertices[ fvPos + 4 ] = bY;
+	        frameVertices[ fvPos + 5 ] = iZ;
+	        // B
+	        frameVertices[ fvPos + 6 ] = frameVertices[ fvPos + 12 ] = aX;
+	        frameVertices[ fvPos + 7 ] = frameVertices[ fvPos + 13 ] = bY;
+	        frameVertices[ fvPos + 8 ] = frameVertices[ fvPos + 14 ] = aZ;
+	        // A
+	        frameVertices[ fvPos + 15 ] = aX;
+	        frameVertices[ fvPos + 16 ] = aY;
+	        frameVertices[ fvPos + 17 ] = aZ;
+
+	        fvPos += 18;
+
+	        // I
+	        frameVertices[ fvPos ] = frameVertices[ fvPos + 9 ] = aX;
+	        frameVertices[ fvPos + 1 ] = frameVertices[ fvPos + 10 ] = aY;
+	        frameVertices[ fvPos + 2 ] = frameVertices[ fvPos + 11 ] = iZ;
+	        // A
+	        frameVertices[ fvPos + 3 ] = aX;
+	        frameVertices[ fvPos + 4 ] = aY;
+	        frameVertices[ fvPos + 5 ] = aZ;
+	        // H
+	        frameVertices[ fvPos + 6 ] = frameVertices[ fvPos + 12 ] = gX;
+	        frameVertices[ fvPos + 7 ] = frameVertices[ fvPos + 13 ] = aY;
+	        frameVertices[ fvPos + 8 ] = frameVertices[ fvPos + 14 ] = aZ;
+	        // L
+	        frameVertices[ fvPos + 15 ] = gX;
+	        frameVertices[ fvPos + 16 ] = aY;
+	        frameVertices[ fvPos + 17 ] = iZ;
+
+	        fvPos += 18;
+
+	        // H
+	        frameVertices[ fvPos ] = frameVertices[ fvPos + 9 ] = gX;
+	        frameVertices[ fvPos + 1 ] = frameVertices[ fvPos + 10 ] = aY;
+	        frameVertices[ fvPos + 2 ] = frameVertices[ fvPos + 11 ] = aZ;
+	        // G
+	        frameVertices[ fvPos + 3 ] = gX;
+	        frameVertices[ fvPos + 4 ] = bY;
+	        frameVertices[ fvPos + 5 ] = aZ;
+	        // K
+	        frameVertices[ fvPos + 6 ] = frameVertices[ fvPos + 12 ] = gX;
+	        frameVertices[ fvPos + 7 ] = frameVertices[ fvPos + 13 ] = bY;
+	        frameVertices[ fvPos + 8 ] = frameVertices[ fvPos + 14 ] = iZ;
+	        // L
+	        frameVertices[ fvPos + 15 ] = gX;
+	        frameVertices[ fvPos + 16 ] = aY;
+	        frameVertices[ fvPos + 17 ] = iZ;
+
+	        fvPos += 18;
+
+	        // BACK
+
+	        // U
+	        frameVertices[ fvPos ] = frameVertices[ fvPos + 9 ] = gX;
+	        frameVertices[ fvPos + 1 ] = frameVertices[ fvPos + 10 ] = aY;
+	        frameVertices[ fvPos + 2 ] = frameVertices[ fvPos + 11 ] = uZ;
+	        // V
+	        frameVertices[ fvPos + 3 ] = gX;
+	        frameVertices[ fvPos + 4 ] = bY;
+	        frameVertices[ fvPos + 5 ] = uZ;
+	        // N
+	        frameVertices[ fvPos + 6 ] = frameVertices[ fvPos + 12 ] = gX;
+	        frameVertices[ fvPos + 7 ] = frameVertices[ fvPos + 13 ] = bY;
+	        frameVertices[ fvPos + 8 ] = frameVertices[ fvPos + 14 ] = mZ;
+	        // M
+	        frameVertices[ fvPos + 15 ] = gX;
+	        frameVertices[ fvPos + 16 ] = aY;
+	        frameVertices[ fvPos + 17 ] = mZ;
+
+	        fvPos += 18;
+
+	        // U
+	        frameVertices[ fvPos ] = frameVertices[ fvPos + 9 ] = gX;
+	        frameVertices[ fvPos + 1 ] = frameVertices[ fvPos + 10 ] = aY;
+	        frameVertices[ fvPos + 2 ] = frameVertices[ fvPos + 11 ] = uZ;
+	        // M
+	        frameVertices[ fvPos + 3 ] = gX;
+	        frameVertices[ fvPos + 4 ] = aY;
+	        frameVertices[ fvPos + 5 ] = mZ;
+	        // T
+	        frameVertices[ fvPos + 6 ] = frameVertices[ fvPos + 12 ] = aX;
+	        frameVertices[ fvPos + 7 ] = frameVertices[ fvPos + 13 ] = aY;
+	        frameVertices[ fvPos + 8 ] = frameVertices[ fvPos + 14 ] = mZ;
+	        // X
+	        frameVertices[ fvPos + 15 ] = aX;
+	        frameVertices[ fvPos + 16 ] = aY;
+	        frameVertices[ fvPos + 17 ] = uZ;
+
+	        fvPos += 18;
+
+	        // T
+	        frameVertices[ fvPos ] = frameVertices[ fvPos + 9 ] = aX;
+	        frameVertices[ fvPos + 1 ] = frameVertices[ fvPos + 10 ] = aY;
+	        frameVertices[ fvPos + 2 ] = frameVertices[ fvPos + 11 ] = mZ;
+	        // S
+	        frameVertices[ fvPos + 3 ] = aX;
+	        frameVertices[ fvPos + 4 ] = bY;
+	        frameVertices[ fvPos + 5 ] = mZ;
+	        // W
+	        frameVertices[ fvPos + 6 ] = frameVertices[ fvPos + 12 ] = aX;
+	        frameVertices[ fvPos + 7 ] = frameVertices[ fvPos + 13 ] = bY;
+	        frameVertices[ fvPos + 8 ] = frameVertices[ fvPos + 14 ] = uZ;
+	        // X
+	        frameVertices[ fvPos + 15 ] = aX;
+	        frameVertices[ fvPos + 16 ] = aY;
+	        frameVertices[ fvPos + 17 ] = uZ;
+
+	      }
+	    }
+
+	    // LEAF + HANDLE CREATION depending on Door Type
+	    for (var c = 0;c<leaf.length;c++){
+
+	      // set start position in leaf vertex array for current door leaf
+	      lvs = leafVertices.length;
+
+	      // set Leaf Length
+	      leafLength = leaf[c].leafLength;
+
+	      prevLeafs = 0;
+	      if ( c>1) prevLeafs = leaf[c-1].leafLength+leaf[c-2].leafLength;
+	      else if (c>0) prevLeafs = leaf[c-1].leafLength;
+
+	      // Vertex Front View
+	      // A/H____D/E
+	      //  |      |
+	      //  |      |
+	      // B/G____C/F
+
+	      aX = xCursor + frameLength;// + leafGap
+	      aY = a.h - frameLength;
+	      aZ = a.leafWidth-leafOffset-frameOffset;
+	      bY = leafGap;
+	      cX = xCursor + frameLength + leafLength;//-leafGap
+	      eZ = -leafOffset-frameOffset;
+
+	      // door leaf front ABCD
+	      leafVertices[lvPos] = leafVertices[lvPos + 3] = leafVertices[lvPos + 9] = aX;
+	      leafVertices[lvPos + 1] = leafVertices[lvPos + 10] = leafVertices[lvPos + 16] = aY;
+	      leafVertices[lvPos + 2] = leafVertices[lvPos + 5] = leafVertices[lvPos + 11] = aZ;
+	      leafVertices[lvPos + 4] = leafVertices[lvPos + 7] = leafVertices[lvPos + 13] = bY;
+	      leafVertices[lvPos + 6] = leafVertices[lvPos + 12] = leafVertices[lvPos + 15] = cX;
+	      leafVertices[lvPos + 8] = leafVertices[lvPos + 14] = leafVertices[lvPos + 17] = aZ;
+
+	      // UV Mapping depending on Door Configuration
+	      if (a.hinge==='left') leafUvs [lvUvPos] = leafUvs [lvUvPos + 2] = leafUvs [lvUvPos + 6] = xCursor/doorOpening;
+	      else leafUvs [lvUvPos] = leafUvs [lvUvPos + 2] = leafUvs [lvUvPos + 6] = -xCursor/doorOpening;
+	      leafUvs [lvUvPos + 1] = leafUvs [lvUvPos + 7] = leafUvs [lvUvPos + 11] = 1;
+	      leafUvs [lvUvPos + 3] = leafUvs [lvUvPos + 5] = leafUvs [lvUvPos + 9] = 0;
+	      if (a.hinge==='left')leafUvs [lvUvPos + 4] = leafUvs [lvUvPos + 8] = leafUvs [lvUvPos + 10] = (xCursor+leafLength)/doorOpening;
+	      else leafUvs [lvUvPos + 4] = leafUvs [lvUvPos + 8] = leafUvs [lvUvPos + 10] = -(xCursor+leafLength)/doorOpening;
+
+	      lvPos += 18;
+	      lvUvPos += 12;
+
+	      // door leaf back EFGH
+	      leafVertices[lvPos] = leafVertices[lvPos + 3] = leafVertices[lvPos + 9] = cX;
+	      leafVertices[lvPos + 1] = leafVertices[lvPos + 10] = leafVertices[lvPos + 16] = aY;
+	      leafVertices[lvPos + 2] = leafVertices[lvPos + 5] = leafVertices[lvPos + 11] = eZ;
+	      leafVertices[lvPos + 4] = leafVertices[lvPos + 7] = leafVertices[lvPos + 13] = bY;
+	      leafVertices[lvPos + 6] = leafVertices[lvPos + 12] = leafVertices[lvPos + 15] = aX;
+	      leafVertices[lvPos + 8] = leafVertices[lvPos + 14] = leafVertices[lvPos + 17] = eZ;
+
+	      // UV Mapping depending on Door Configuration
+	      if (a.hinge==='right') leafUvs [lvUvPos] = leafUvs [lvUvPos + 2] = leafUvs [lvUvPos + 6] = -xCursor/doorOpening;
+	      else leafUvs [lvUvPos] = leafUvs [lvUvPos + 2] = leafUvs [lvUvPos + 6] = xCursor/doorOpening;
+	      leafUvs [lvUvPos + 1] = leafUvs [lvUvPos + 7] = leafUvs [lvUvPos + 11] = 1;
+	      leafUvs [lvUvPos + 3] = leafUvs [lvUvPos + 5] = leafUvs [lvUvPos + 9] = 0;
+	      if (a.hinge==='right') leafUvs [lvUvPos + 4] = leafUvs [lvUvPos + 8] = leafUvs [lvUvPos + 10] = -(xCursor+leafLength)/doorOpening;
+	      else leafUvs [lvUvPos + 4] = leafUvs [lvUvPos + 8] = leafUvs [lvUvPos + 10] = (xCursor+leafLength)/doorOpening;
+
+	      lvPos += 18;
+	      lvUvPos += 12;
+
+	      // door leaf extrusion top HADE
+	      // H
+	      leafVertices[ lvPos ] = leafVertices[ lvPos + 9 ] = aX;
+	      leafVertices[ lvPos + 1 ] = leafVertices[ lvPos + 10 ] = aY;
+	      leafVertices[ lvPos + 2 ] = leafVertices[ lvPos + 11 ] = eZ;
+	      // A
+	      leafVertices[ lvPos + 3 ] = aX;
+	      leafVertices[ lvPos + 4 ] = aY;
+	      leafVertices[ lvPos + 5 ] = aZ;
+	      // D
+	      leafVertices[ lvPos + 6 ] = leafVertices[ lvPos + 12 ] = cX;
+	      leafVertices[ lvPos + 7 ] = leafVertices[ lvPos + 13 ] = aY;
+	      leafVertices[ lvPos + 8 ] = leafVertices[ lvPos + 14 ] = aZ;
+	      // E
+	      leafVertices[ lvPos + 15 ] = cX;
+	      leafVertices[ lvPos + 16 ] = aY;
+	      leafVertices[ lvPos + 17 ] = eZ;
+
+	      leafUvs [lvUvPos] = leafUvs [lvUvPos + 2] = leafUvs [lvUvPos + 6] = 0;
+	      leafUvs [lvUvPos + 1] = leafUvs [lvUvPos + 7] = leafUvs [lvUvPos + 11] = 1;
+	      leafUvs [lvUvPos + 3] = leafUvs [lvUvPos + 5] = leafUvs [lvUvPos + 9] = 0;
+	      leafUvs [lvUvPos + 4] = leafUvs [lvUvPos + 8] = leafUvs [lvUvPos + 10] = 0.05;
+
+	      lvPos += 18;
+	      lvUvPos += 12;
+
+	      // door leaf extrusion outer side DCFE
+	      // D
+	      leafVertices[ lvPos ] = leafVertices[ lvPos + 9 ] = cX;
+	      leafVertices[ lvPos + 1 ] = leafVertices[ lvPos + 10 ] = aY;
+	      leafVertices[ lvPos + 2 ] = leafVertices[ lvPos + 11 ] = aZ;
+	      // C
+	      leafVertices[ lvPos + 3 ] = cX;
+	      leafVertices[ lvPos + 4 ] = bY;
+	      leafVertices[ lvPos + 5 ] = aZ;
+	      // F
+	      leafVertices[ lvPos + 6 ] = leafVertices[ lvPos + 12 ] = cX;
+	      leafVertices[ lvPos + 7 ] = leafVertices[ lvPos + 13 ] = bY;
+	      leafVertices[ lvPos + 8 ] = leafVertices[ lvPos + 14 ] = eZ;
+	      // E
+	      leafVertices[ lvPos + 15 ] = cX;
+	      leafVertices[ lvPos + 16 ] = aY;
+	      leafVertices[ lvPos + 17 ] = eZ;
+
+	      leafUvs [lvUvPos] = leafUvs [lvUvPos + 2] = leafUvs [lvUvPos + 6] = 0;
+	      leafUvs [lvUvPos + 1] = leafUvs [lvUvPos + 7] = leafUvs [lvUvPos + 11] = 1;
+	      leafUvs [lvUvPos + 3] = leafUvs [lvUvPos + 5] = leafUvs [lvUvPos + 9] = 0;
+	      leafUvs [lvUvPos + 4] = leafUvs [lvUvPos + 8] = leafUvs [lvUvPos + 10] = 0.05;
+
+	      lvPos += 18;
+	      lvUvPos += 12;
+
+	      // door leaf extrusion inner side HGBA
+	      // H
+	      leafVertices[ lvPos ] = leafVertices[ lvPos + 9 ] = aX;
+	      leafVertices[ lvPos + 1 ] = leafVertices[ lvPos + 10 ] = aY;
+	      leafVertices[ lvPos + 2 ] = leafVertices[ lvPos + 11 ] = eZ;
+	      // G
+	      leafVertices[ lvPos + 3 ] = aX;
+	      leafVertices[ lvPos + 4 ] = bY;
+	      leafVertices[ lvPos + 5 ] = eZ;
+	      // B
+	      leafVertices[ lvPos + 6 ] = leafVertices[ lvPos + 12 ] = aX;
+	      leafVertices[ lvPos + 7 ] = leafVertices[ lvPos + 13 ] = bY;
+	      leafVertices[ lvPos + 8 ] = leafVertices[ lvPos + 14 ] = aZ;
+	      // A
+	      leafVertices[ lvPos + 15 ] = aX;
+	      leafVertices[ lvPos + 16 ] = aY;
+	      leafVertices[ lvPos + 17 ] = aZ;
+
+	      leafUvs [lvUvPos] = leafUvs [lvUvPos + 2] = leafUvs [lvUvPos + 6] = 0;
+	      leafUvs [lvUvPos + 1] = leafUvs [lvUvPos + 7] = leafUvs [lvUvPos + 11] = 1;
+	      leafUvs [lvUvPos + 3] = leafUvs [lvUvPos + 5] = leafUvs [lvUvPos + 9] = 0;
+	      leafUvs [lvUvPos + 4] = leafUvs [lvUvPos + 8] = leafUvs [lvUvPos + 10] = 0.05;
+
+	      lvPos += 18;
+	      lvUvPos += 12;
+
+	      // set end position in leaf vertex array for current door leaf
+	      lve = leafVertices.length;
+
+	      if (leaf[c].handle){
+	        // DOOR HANDLE
+	        //
+	        // Top View:
+	        //
+	        //          I/J__K/L
+	        //           |    |
+	        // E/F______G/H   |
+	        //  |             |
+	        // A/B___________C/D
+
+	        // Size Definitions
+
+	        zCursor = -leafOffset-frameOffset;
+	        aX = xCursor + frameLength + leafLength-handleDistance-handleLength;
+	        aY = handleHeight;
+	        aZ = zCursor+a.leafWidth+handleWidth+handleThickness*0.6;
+	        bY = handleHeight-handleThickness;
+	        cX = xCursor + frameLength + leafLength-handleDistance;
+	        cZ = zCursor+a.leafWidth+handleWidth+handleThickness;
+	        eZ = zCursor+a.leafWidth+handleWidth;
+	        gX = xCursor + frameLength + leafLength-handleDistance-handleThickness;
+	        iZ = zCursor+a.leafWidth;
+
+	        var l;
+	        // set start position in handle vertex array for current door leaf
+	        hvs = handleVertices.length;
+	        if (a.handleType==='knob') {
+	          handleVertices = handleVertices.concat([0.025203,-0.091811,-1.094472e-08,0.025203,-0.091811,0.007999989,0.0265,-0.1,0.007999988,0.0025,-0.099188,0.007999988,0.0025,-0.1,0.007999988,0.0265,-0.1,0.007999988,0.025203,-0.091811,-1.094472e-08,0.021439,-0.084424,-1.006412e-08,0.021439,-0.084424,0.00799999,0.015576,-0.078561,-9.365201e-09,0.015576,-0.078561,0.007999991,0.021439,-0.084424,0.00799999,0.008189,-0.074797,-8.916497e-09,0.008189,-0.074797,0.007999991,0.015576,-0.078561,0.007999991,0,-0.0735,0.007999992,0.008189,-0.074797,0.007999991,0.008189,-0.074797,-8.916497e-09,0.0025,-0.0875,0.00799999,0.0025,-0.092306,0.007999989,0.008189,-0.074797,0.007999991,-0.008189,-0.074797,-8.916497e-09,-0.008189,-0.074797,0.007999991,0,-0.0735,0.007999992,-0.015576,-0.078561,0.007999991,-0.008189,-0.074797,0.007999991,-0.008189,-0.074797,-8.916497e-09,-0.021439,-0.084424,0.00799999,-0.015576,-0.078561,0.007999991,-0.015576,-0.078561,-9.365201e-09,-0.025203,-0.091811,0.007999989,-0.021439,-0.084424,0.00799999,-0.021439,-0.084424,-1.006412e-08,-0.0025,-0.098184,0.007999988,-0.021439,-0.084424,0.00799999,-0.025203,-0.091811,0.007999989,-0.0265,-0.1,0.007999988,-0.025203,-0.091811,0.007999989,-0.025203,-0.091811,-1.094472e-08,-0.025203,-0.108189,0.007999987,-0.0265,-0.1,0.007999988,-0.0265,-0.1,-1.192093e-08,-0.021439,-0.115576,0.007999986,-0.025203,-0.108189,0.007999987,-0.025203,-0.108189,-1.289713e-08,-0.0025,-0.101816,0.007999988,-0.0025,-0.100812,0.007999988,-0.025203,-0.108189,0.007999987,-0.015576,-0.121439,0.007999985,-0.021439,-0.115576,0.007999986,-0.021439,-0.115576,-1.377773e-08,-0.008189,-0.125203,0.007999985,-0.015576,-0.121439,0.007999985,-0.015576,-0.121439,-1.447666e-08,0,-0.1265,0.007999985,-0.008189,-0.125203,0.007999985,-0.008189,-0.125203,-1.492536e-08,0.008189,-0.125203,0.007999985,0,-0.1265,0.007999985,0,-0.1265,-1.507997e-08,0.0025,-0.1125,0.007999987,0,-0.1125,0.007999987,0,-0.1265,0.007999985,0.008189,-0.125203,0.007999985,0.0025,-0.107694,0.007999987,0.0025,-0.1125,0.007999987,0.015576,-0.121439,0.007999985,0.008189,-0.125203,0.007999985,0.008189,-0.125203,-1.492536e-08,0.0025,-0.107694,0.007999987,0.008189,-0.125203,0.007999985,0.015576,-0.121439,0.007999985,0.021439,-0.115576,0.007999986,0.015576,-0.121439,0.007999985,0.015576,-0.121439,-1.447666e-08,0.025203,-0.108189,0.007999987,0.021439,-0.115576,0.007999986,0.021439,-0.115576,-1.377773e-08,0.0265,-0.1,0.007999988,0.025203,-0.108189,0.007999987,0.025203,-0.108189,-1.289713e-08,-0.021439,-0.115576,0.007999986,-0.015576,-0.121439,0.007999985,-0.0025,-0.103441,0.007999988,0.0025,-0.098184,0.007999988,0.0025,-0.099188,0.007999988,0.025203,-0.091811,0.007999989,-0.0025,-0.100812,0.007999988,-0.0025,-0.1,0.007999988,-0.0265,-0.1,0.007999988,-0.008189,-0.074797,0.007999991,-0.0025,-0.092306,0.007999989,-0.0025,-0.0875,0.00799999,-0.015576,-0.121439,0.007999985,-0.008189,-0.125203,0.007999985,-0.0025,-0.107694,0.007999987,-0.0025,-0.096559,0.007999989,-0.015576,-0.078561,0.007999991,-0.021439,-0.084424,0.00799999,-0.0265,-0.1,0.007999988,-0.0025,-0.1,0.007999988,-0.0025,-0.099188,0.007999988,-0.0025,-0.0875,0.00799999,0,-0.0875,0.00799999,0,-0.0735,0.007999992,-0.0025,-0.092306,0.007999989,-0.008189,-0.074797,0.007999991,-0.015576,-0.078561,0.007999991,-0.0025,-0.1125,0.0008419866,0.0025,-0.1125,0.0008419866,0.0025,-0.0875,0.0008419896,0,-0.1125,0.007999987,0.0025,-0.1125,0.007999987,0.0025,-0.1125,0.0008419866,0.0025,-0.101816,0.007999988,0.021439,-0.115576,0.007999986,0.025203,-0.108189,0.007999987,-0.0025,-0.1125,0.007999987,-0.0025,-0.107694,0.007999987,-0.008189,-0.125203,0.007999985,0.0025,-0.1,0.007999988,0.0025,-0.1125,0.0008419866,0.0025,-0.100812,0.007999988,-0.0025,-0.0875,0.0008419896,-0.0025,-0.098184,0.007999988,-0.0025,-0.099188,0.007999988,0.0265,-0.1,0.007999988,0.0025,-0.1,0.007999988,0.0025,-0.100812,0.007999988,0,-0.0875,0.00799999,-0.0025,-0.0875,0.00799999,-0.0025,-0.0875,0.0008419896,0,-0.1265,0.007999985,0,-0.1125,0.007999987,-0.0025,-0.1125,0.007999987,0.0025,-0.103441,0.007999988,0.015576,-0.121439,0.007999985,0.021439,-0.115576,0.007999986,0,-0.0735,0.007999992,0,-0.0875,0.00799999,0.0025,-0.0875,0.00799999,0.021439,-0.084424,0.00799999,0.015576,-0.078561,0.007999991,0.0025,-0.096559,0.007999989,0.015576,-0.078561,0.007999991,0.008189,-0.074797,0.007999991,0.0025,-0.092306,0.007999989,-0.010141,0.024483,0.033,0,0.0265,0.033,0,0.009999997,0.033,0.0265,-4.53789e-09,0.049,0.024483,-0.010141,0.049,0.024483,-0.010141,0.033,-0.010141,-0.024483,0.033,-0.018738,-0.018738,0.033,-0.007071,-0.007071002,0.033,0,-0.0265,0.033,0,-0.0265,0.049,-0.010141,-0.024483,0.049,-0.007071,-0.007071002,0.033,-0.018738,-0.018738,0.033,-0.024483,-0.010141,0.033,-0.024483,-0.010141,0.033,-0.0265,-2.630541e-09,0.033,-0.01,-2.630541e-09,0.033,0.010141,0.024483,0.033,0.018738,0.018738,0.033,0.007071,0.007070998,0.033,0,0.009999997,0.033,0,0.0265,0.033,0.010141,0.024483,0.033,0.018738,0.018738,0.04900001,0,-4.53789e-09,0.049,0.024483,0.010141,0.049,0.010141,0.024483,0.04900001,0,-4.53789e-09,0.049,0.018738,0.018738,0.04900001,0.024483,-0.010141,0.033,0.024483,-0.010141,0.049,0.018738,-0.018738,0.049,-0.024483,0.010141,0.049,-0.018738,0.018738,0.04900001,-0.018738,0.018738,0.033,-0.0265,-2.630541e-09,0.033,-0.0265,-4.53789e-09,0.049,-0.024483,0.010141,0.049,0.024483,-0.010141,0.033,0.018738,-0.018738,0.033,0.007071,-0.007071002,0.033,-0.018738,-0.018738,0.049,0,-4.53789e-09,0.049,-0.024483,-0.010141,0.049,-0.010141,-0.024483,0.049,0,-4.53789e-09,0.049,-0.018738,-0.018738,0.049,0,-0.01,0.033,0,-0.0265,0.033,-0.010141,-0.024483,0.033,0,-0.0265,0.049,0,-4.53789e-09,0.049,-0.010141,-0.024483,0.049,0.0265,-4.53789e-09,0.049,0,-4.53789e-09,0.049,0.024483,-0.010141,0.049,-0.024483,0.010141,0.033,-0.007071,0.007070998,0.033,-0.01,-2.630541e-09,0.033,0.010141,-0.024483,0.049,0,-0.0265,0.049,0,-0.0265,0.033,-0.024483,0.010141,0.033,-0.018738,0.018738,0.033,-0.007071,0.007070998,0.033,-0.010141,0.024483,0.033,0,0.009999997,0.033,-0.007071,0.007070998,0.033,0.010141,-0.024483,0.049,0,-4.53789e-09,0.049,0,-0.0265,0.049,0.024483,0.010141,0.049,0.0265,-4.53789e-09,0.049,0.0265,-2.630541e-09,0.033,0.024483,0.010141,0.049,0,-4.53789e-09,0.049,0.0265,-4.53789e-09,0.049,0.018738,-0.018738,0.049,0.010141,-0.024483,0.049,0.010141,-0.024483,0.033,0.018738,0.018738,0.033,0.018738,0.018738,0.04900001,0.024483,0.010141,0.049,0.018738,-0.018738,0.049,0,-4.53789e-09,0.049,0.010141,-0.024483,0.049,0.010141,0.024483,0.04900001,0.018738,0.018738,0.04900001,0.018738,0.018738,0.033,0,0.0265,0.04900001,0.010141,0.024483,0.04900001,0.010141,0.024483,0.033,0,0.0265,0.04900001,0,-4.53789e-09,0.049,0.010141,0.024483,0.04900001,0.024483,-0.010141,0.049,0,-4.53789e-09,0.049,0.018738,-0.018738,0.049,-0.010141,0.024483,0.04900001,0,0.0265,0.04900001,0,0.0265,0.033,-0.010141,0.024483,0.04900001,0,-4.53789e-09,0.049,0,0.0265,0.04900001,0.007071,0.007070998,0.033,0.018738,0.018738,0.033,0.024483,0.010141,0.033,-0.010141,0.024483,0.033,-0.018738,0.018738,0.033,-0.018738,0.018738,0.04900001,-0.018738,0.018738,0.04900001,0,-4.53789e-09,0.049,-0.010141,0.024483,0.04900001,0.024483,0.010141,0.033,0.0265,-2.630541e-09,0.033,0.01,-2.630541e-09,0.033,-0.024483,0.010141,0.049,0,-4.53789e-09,0.049,-0.018738,0.018738,0.04900001,0.01,-2.630541e-09,0.033,0.0265,-2.630541e-09,0.033,0.024483,-0.010141,0.033,-0.0265,-4.53789e-09,0.049,0,-4.53789e-09,0.049,-0.024483,0.010141,0.049,-0.024483,-0.010141,0.033,-0.024483,-0.010141,0.049,-0.0265,-4.53789e-09,0.049,-0.024483,-0.010141,0.049,0,-4.53789e-09,0.049,-0.0265,-4.53789e-09,0.049,0.007071,-0.007071002,0.033,0.018738,-0.018738,0.033,0.010141,-0.024483,0.033,-0.018738,-0.018738,0.049,-0.024483,-0.010141,0.049,-0.024483,-0.010141,0.033,0.010141,-0.024483,0.033,0,-0.0265,0.033,0,-0.01,0.033,-0.010141,-0.024483,0.049,-0.018738,-0.018738,0.049,-0.018738,-0.018738,0.033,0.025203,0.008188999,0.008000001,0.0265,-9.536744e-10,0.008,0.0265,0,0,0.021439,0.015576,0.008000002,0.025203,0.008188999,0.008000001,0.025203,0.008189,9.762049e-10,0.007071,0.007071001,0.008000001,0.01,-9.536744e-10,0.008,0.025203,0.008188999,0.008000001,0.015576,0.021439,0.008000003,0.021439,0.015576,0.008000002,0.021439,0.015576,1.856804e-09,0.008189,0.025203,0.008000003,0.015576,0.021439,0.008000003,0.015576,0.021439,2.555728e-09,0,0.0265,0.008000003,0.008189,0.025203,0.008000003,0.008189,0.025203,3.004432e-09,-0.008189,0.025203,0.008000003,0,0.0265,0.008000003,0,0.0265,3.159046e-09,-0.015576,0.021439,0.008000003,-0.008189,0.025203,0.008000003,-0.008189,0.025203,3.004432e-09,-0.021439,0.015576,0.008000002,-0.015576,0.021439,0.008000003,-0.015576,0.021439,2.555728e-09,-0.025203,0.008188999,0.008000001,-0.021439,0.015576,0.008000002,-0.021439,0.015576,1.856804e-09,-0.0265,0,0,-0.0265,-9.536744e-10,0.008,-0.025203,0.008188999,0.008000001,-0.025203,-0.008189001,0.007999999,-0.0265,-9.536744e-10,0.008,-0.0265,0,0,-0.021439,-0.015576,0.007999999,-0.025203,-0.008189001,0.007999999,-0.025203,-0.008189,-9.762049e-10,-0.015576,-0.021439,0.007999998,-0.021439,-0.015576,0.007999999,-0.021439,-0.015576,-1.856804e-09,-0.008189,-0.025203,0.007999998,-0.015576,-0.021439,0.007999998,-0.015576,-0.021439,-2.555728e-09,0,-0.0265,0.007999998,-0.008189,-0.025203,0.007999998,-0.008189,-0.025203,-3.004432e-09,0.008189,-0.025203,0.007999998,0,-0.0265,0.007999998,0,-0.0265,-3.159046e-09,0.015576,-0.021439,0.007999998,0.008189,-0.025203,0.007999998,0.008189,-0.025203,-3.004432e-09,0.021439,-0.015576,-1.856804e-09,0.021439,-0.015576,0.007999999,0.015576,-0.021439,0.007999998,0.025203,-0.008189001,0.007999999,0.021439,-0.015576,0.007999999,0.021439,-0.015576,-1.856804e-09,0.0265,-9.536744e-10,0.008,0.025203,-0.008189001,0.007999999,0.025203,-0.008189,-9.762049e-10,0.007071,0.007070998,0.033,0.01,-2.630541e-09,0.033,0.01,-9.536744e-10,0.008,0,0.009999997,0.033,0.007071,0.007070998,0.033,0.007071,0.007071001,0.008000001,-0.007071,0.007071,0.008,-0.007071,0.007070998,0.033,0,0.009999997,0.033,-0.01,-2.630541e-09,0.033,-0.007071,0.007070998,0.033,-0.007071,0.007071,0.008,-0.007071,-0.007071002,0.033,-0.01,-2.630541e-09,0.033,-0.01,-1.186505e-09,0.008,0,-0.01,0.007999999,0,-0.01,0.033,-0.007071,-0.007071002,0.033,0.007071,-0.007071,0.007999999,0.007071,-0.007071002,0.033,0,-0.01,0.033,0.01,-9.536744e-10,0.008,0.01,-2.630541e-09,0.033,0.007071,-0.007071002,0.033,0.0265,-9.536744e-10,0.008,0.025203,0.008188999,0.008000001,0.01,-9.536744e-10,0.008,0.021439,0.015576,0.008000002,0.015576,0.021439,0.008000003,0.007071,0.007071001,0.008000001,0.008189,0.025203,0.008000003,0,0.01,0.008000001,0.007071,0.007071001,0.008000001,0.008189,0.025203,0.008000003,0,0.0265,0.008000003,0,0.01,0.008000001,-0.008189,0.025203,0.008000003,-0.007071,0.007071,0.008,0,0.01,0.008000001,-0.008189,0.025203,0.008000003,-0.015576,0.021439,0.008000003,-0.007071,0.007071,0.008,-0.021439,0.015576,0.008000002,-0.007071,0.007071,0.008,-0.015576,0.021439,0.008000003,-0.025203,0.008188999,0.008000001,-0.01,-1.186505e-09,0.008,-0.007071,0.007071,0.008,-0.0265,-9.536744e-10,0.008,-0.01,-1.186505e-09,0.008,-0.025203,0.008188999,0.008000001,-0.025203,-0.008189001,0.007999999,-0.007071,-0.007071,0.007999999,-0.01,-1.186505e-09,0.008,-0.021439,-0.015576,0.007999999,-0.007071,-0.007071,0.007999999,-0.025203,-0.008189001,0.007999999,-0.021439,-0.015576,0.007999999,-0.015576,-0.021439,0.007999998,-0.007071,-0.007071,0.007999999,-0.008189,-0.025203,0.007999998,0,-0.01,0.007999999,-0.007071,-0.007071,0.007999999,-0.008189,-0.025203,0.007999998,0,-0.0265,0.007999998,0,-0.01,0.007999999,0.008189,-0.025203,0.007999998,0,-0.01,0.007999999,0,-0.0265,0.007999998,0.008189,-0.025203,0.007999998,0.015576,-0.021439,0.007999998,0.007071,-0.007071,0.007999999,0.021439,-0.015576,0.007999999,0.007071,-0.007071,0.007999999,0.015576,-0.021439,0.007999998,0.021439,-0.015576,0.007999999,0.025203,-0.008189001,0.007999999,0.007071,-0.007071,0.007999999,0.01,-9.536744e-10,0.008,0.007071,-0.007071,0.007999999,0.025203,-0.008189001,0.007999999,0.0265,-0.1,-1.192093e-08,0.025203,-0.091811,-1.094472e-08,0.0265,-0.1,0.007999988,0.025203,-0.091811,0.007999989,0.0025,-0.099188,0.007999988,0.0265,-0.1,0.007999988,0.025203,-0.091811,0.007999989,0.025203,-0.091811,-1.094472e-08,0.021439,-0.084424,0.00799999,0.021439,-0.084424,-1.006412e-08,0.015576,-0.078561,-9.365201e-09,0.021439,-0.084424,0.00799999,0.015576,-0.078561,-9.365201e-09,0.008189,-0.074797,-8.916497e-09,0.015576,-0.078561,0.007999991,0,-0.0735,-8.761883e-09,0,-0.0735,0.007999992,0.008189,-0.074797,-8.916497e-09,0,-0.0735,-8.761883e-09,-0.008189,-0.074797,-8.916497e-09,0,-0.0735,0.007999992,-0.015576,-0.078561,-9.365201e-09,-0.015576,-0.078561,0.007999991,-0.008189,-0.074797,-8.916497e-09,-0.021439,-0.084424,-1.006412e-08,-0.021439,-0.084424,0.00799999,-0.015576,-0.078561,-9.365201e-09,-0.025203,-0.091811,-1.094472e-08,-0.025203,-0.091811,0.007999989,-0.021439,-0.084424,-1.006412e-08,-0.0025,-0.099188,0.007999988,-0.0025,-0.098184,0.007999988,-0.025203,-0.091811,0.007999989,-0.0265,-0.1,-1.192093e-08,-0.0265,-0.1,0.007999988,-0.025203,-0.091811,-1.094472e-08,-0.025203,-0.108189,-1.289713e-08,-0.025203,-0.108189,0.007999987,-0.0265,-0.1,-1.192093e-08,-0.021439,-0.115576,-1.377773e-08,-0.021439,-0.115576,0.007999986,-0.025203,-0.108189,-1.289713e-08,-0.021439,-0.115576,0.007999986,-0.0025,-0.101816,0.007999988,-0.025203,-0.108189,0.007999987,-0.015576,-0.121439,-1.447666e-08,-0.015576,-0.121439,0.007999985,-0.021439,-0.115576,-1.377773e-08,-0.008189,-0.125203,-1.492536e-08,-0.008189,-0.125203,0.007999985,-0.015576,-0.121439,-1.447666e-08,0,-0.1265,-1.507997e-08,0,-0.1265,0.007999985,-0.008189,-0.125203,-1.492536e-08,0.008189,-0.125203,-1.492536e-08,0.008189,-0.125203,0.007999985,0,-0.1265,-1.507997e-08,0.008189,-0.125203,0.007999985,0.0025,-0.1125,0.007999987,0,-0.1265,0.007999985,0.015576,-0.121439,-1.447666e-08,0.015576,-0.121439,0.007999985,0.008189,-0.125203,-1.492536e-08,0.0025,-0.103441,0.007999988,0.0025,-0.107694,0.007999987,0.015576,-0.121439,0.007999985,0.021439,-0.115576,-1.377773e-08,0.021439,-0.115576,0.007999986,0.015576,-0.121439,-1.447666e-08,0.025203,-0.108189,-1.289713e-08,0.025203,-0.108189,0.007999987,0.021439,-0.115576,-1.377773e-08,0.0265,-0.1,-1.192093e-08,0.0265,-0.1,0.007999988,0.025203,-0.108189,-1.289713e-08,-0.0025,-0.101816,0.007999988,-0.021439,-0.115576,0.007999986,-0.0025,-0.103441,0.007999988,0.021439,-0.084424,0.00799999,0.0025,-0.098184,0.007999988,0.025203,-0.091811,0.007999989,-0.025203,-0.108189,0.007999987,-0.0025,-0.100812,0.007999988,-0.0265,-0.1,0.007999988,-0.0025,-0.103441,0.007999988,-0.015576,-0.121439,0.007999985,-0.0025,-0.107694,0.007999987,-0.0025,-0.098184,0.007999988,-0.0025,-0.096559,0.007999989,-0.021439,-0.084424,0.00799999,-0.025203,-0.091811,0.007999989,-0.0265,-0.1,0.007999988,-0.0025,-0.099188,0.007999988,-0.008189,-0.074797,0.007999991,-0.0025,-0.0875,0.00799999,0,-0.0735,0.007999992,-0.0025,-0.096559,0.007999989,-0.0025,-0.092306,0.007999989,-0.015576,-0.078561,0.007999991,-0.0025,-0.0875,0.0008419896,-0.0025,-0.1125,0.0008419866,0.0025,-0.0875,0.0008419896,-0.0025,-0.1125,0.0008419866,-0.0025,-0.1125,0.007999987,0,-0.1125,0.007999987,0,-0.1125,0.007999987,0.0025,-0.1125,0.0008419866,-0.0025,-0.1125,0.0008419866,0.0025,-0.100812,0.007999988,0.0025,-0.101816,0.007999988,0.025203,-0.108189,0.007999987,0.0025,-0.0875,0.0008419896,0.0025,-0.096559,0.007999989,0.0025,-0.092306,0.007999989,0.0025,-0.0875,0.0008419896,0.0025,-0.1,0.007999988,0.0025,-0.098184,0.007999988,0.0025,-0.1125,0.0008419866,0.0025,-0.101816,0.007999988,0.0025,-0.100812,0.007999988,0.0025,-0.1125,0.0008419866,0.0025,-0.1125,0.007999987,0.0025,-0.107694,0.007999987,0.0025,-0.1125,0.0008419866,0.0025,-0.103441,0.007999988,0.0025,-0.101816,0.007999988,0.0025,-0.092306,0.007999989,0.0025,-0.0875,0.00799999,0.0025,-0.0875,0.0008419896,0.0025,-0.0875,0.0008419896,0.0025,-0.1125,0.0008419866,0.0025,-0.1,0.007999988,0.0025,-0.098184,0.007999988,0.0025,-0.096559,0.007999989,0.0025,-0.0875,0.0008419896,0.0025,-0.103441,0.007999988,0.0025,-0.1125,0.0008419866,0.0025,-0.107694,0.007999987,-0.0025,-0.1,0.007999988,-0.0025,-0.1125,0.0008419866,-0.0025,-0.0875,0.0008419896,-0.0025,-0.1125,0.0008419866,-0.0025,-0.103441,0.007999988,-0.0025,-0.107694,0.007999987,-0.0025,-0.107694,0.007999987,-0.0025,-0.1125,0.007999987,-0.0025,-0.1125,0.0008419866,-0.0025,-0.0875,0.0008419896,-0.0025,-0.0875,0.00799999,-0.0025,-0.092306,0.007999989,-0.0025,-0.0875,0.0008419896,-0.0025,-0.096559,0.007999989,-0.0025,-0.098184,0.007999988,-0.0025,-0.0875,0.0008419896,-0.0025,-0.099188,0.007999988,-0.0025,-0.1,0.007999988,-0.0025,-0.1125,0.0008419866,-0.0025,-0.100812,0.007999988,-0.0025,-0.101816,0.007999988,-0.0025,-0.101816,0.007999988,-0.0025,-0.103441,0.007999988,-0.0025,-0.1125,0.0008419866,-0.0025,-0.0875,0.0008419896,-0.0025,-0.092306,0.007999989,-0.0025,-0.096559,0.007999989,-0.0025,-0.1125,0.0008419866,-0.0025,-0.1,0.007999988,-0.0025,-0.100812,0.007999988,0.025203,-0.108189,0.007999987,0.0265,-0.1,0.007999988,0.0025,-0.100812,0.007999988,0.0025,-0.0875,0.0008419896,0.0025,-0.0875,0.00799999,0,-0.0875,0.00799999,0,-0.0875,0.00799999,-0.0025,-0.0875,0.0008419896,0.0025,-0.0875,0.0008419896,-0.008189,-0.125203,0.007999985,0,-0.1265,0.007999985,-0.0025,-0.1125,0.007999987,0.0025,-0.101816,0.007999988,0.0025,-0.103441,0.007999988,0.021439,-0.115576,0.007999986,0.008189,-0.074797,0.007999991,0,-0.0735,0.007999992,0.0025,-0.0875,0.00799999,0.0025,-0.098184,0.007999988,0.021439,-0.084424,0.00799999,0.0025,-0.096559,0.007999989,0.0025,-0.096559,0.007999989,0.015576,-0.078561,0.007999991,0.0025,-0.092306,0.007999989,0.0265,-2.630541e-09,0.033,0.0265,-4.53789e-09,0.049,0.024483,-0.010141,0.033,-0.010141,-0.024483,0.033,0,-0.0265,0.033,-0.010141,-0.024483,0.049,-0.01,-2.630541e-09,0.033,-0.007071,-0.007071002,0.033,-0.024483,-0.010141,0.033,0.007071,0.007070998,0.033,0,0.009999997,0.033,0.010141,0.024483,0.033,0.018738,-0.018738,0.033,0.024483,-0.010141,0.033,0.018738,-0.018738,0.049,-0.024483,0.010141,0.033,-0.024483,0.010141,0.049,-0.018738,0.018738,0.033,-0.024483,0.010141,0.033,-0.0265,-2.630541e-09,0.033,-0.024483,0.010141,0.049,-0.007071,-0.007071002,0.033,0,-0.01,0.033,-0.010141,-0.024483,0.033,-0.0265,-2.630541e-09,0.033,-0.024483,0.010141,0.033,-0.01,-2.630541e-09,0.033,0.010141,-0.024483,0.033,0.010141,-0.024483,0.049,0,-0.0265,0.033,-0.018738,0.018738,0.033,-0.010141,0.024483,0.033,-0.007071,0.007070998,0.033,0.024483,0.010141,0.033,0.024483,0.010141,0.049,0.0265,-2.630541e-09,0.033,0.018738,-0.018738,0.033,0.018738,-0.018738,0.049,0.010141,-0.024483,0.033,0.024483,0.010141,0.033,0.018738,0.018738,0.033,0.024483,0.010141,0.049,0.010141,0.024483,0.033,0.010141,0.024483,0.04900001,0.018738,0.018738,0.033,0,0.0265,0.033,0,0.0265,0.04900001,0.010141,0.024483,0.033,-0.010141,0.024483,0.033,-0.010141,0.024483,0.04900001,0,0.0265,0.033,0.01,-2.630541e-09,0.033,0.007071,0.007070998,0.033,0.024483,0.010141,0.033,-0.010141,0.024483,0.04900001,-0.010141,0.024483,0.033,-0.018738,0.018738,0.04900001,0.007071,-0.007071002,0.033,0.01,-2.630541e-09,0.033,0.024483,-0.010141,0.033,-0.0265,-2.630541e-09,0.033,-0.024483,-0.010141,0.033,-0.0265,-4.53789e-09,0.049,0,-0.01,0.033,0.007071,-0.007071002,0.033,0.010141,-0.024483,0.033,-0.018738,-0.018738,0.033,-0.018738,-0.018738,0.049,-0.024483,-0.010141,0.033,-0.010141,-0.024483,0.033,-0.010141,-0.024483,0.049,-0.018738,-0.018738,0.033,0.025203,0.008189,9.762049e-10,0.025203,0.008188999,0.008000001,0.0265,0,0,0.021439,0.015576,1.856804e-09,0.021439,0.015576,0.008000002,0.025203,0.008189,9.762049e-10,0.021439,0.015576,0.008000002,0.007071,0.007071001,0.008000001,0.025203,0.008188999,0.008000001,0.015576,0.021439,2.555728e-09,0.015576,0.021439,0.008000003,0.021439,0.015576,1.856804e-09,0.008189,0.025203,3.004432e-09,0.008189,0.025203,0.008000003,0.015576,0.021439,2.555728e-09,0,0.0265,3.159046e-09,0,0.0265,0.008000003,0.008189,0.025203,3.004432e-09,-0.008189,0.025203,3.004432e-09,-0.008189,0.025203,0.008000003,0,0.0265,3.159046e-09,-0.015576,0.021439,2.555728e-09,-0.015576,0.021439,0.008000003,-0.008189,0.025203,3.004432e-09,-0.021439,0.015576,1.856804e-09,-0.021439,0.015576,0.008000002,-0.015576,0.021439,2.555728e-09,-0.025203,0.008189,9.762049e-10,-0.025203,0.008188999,0.008000001,-0.021439,0.015576,1.856804e-09,-0.025203,0.008189,9.762049e-10,-0.0265,0,0,-0.025203,0.008188999,0.008000001,-0.025203,-0.008189,-9.762049e-10,-0.025203,-0.008189001,0.007999999,-0.0265,0,0,-0.021439,-0.015576,-1.856804e-09,-0.021439,-0.015576,0.007999999,-0.025203,-0.008189,-9.762049e-10,-0.015576,-0.021439,-2.555728e-09,-0.015576,-0.021439,0.007999998,-0.021439,-0.015576,-1.856804e-09,-0.008189,-0.025203,-3.004432e-09,-0.008189,-0.025203,0.007999998,-0.015576,-0.021439,-2.555728e-09,0,-0.0265,-3.159046e-09,0,-0.0265,0.007999998,-0.008189,-0.025203,-3.004432e-09,0.008189,-0.025203,-3.004432e-09,0.008189,-0.025203,0.007999998,0,-0.0265,-3.159046e-09,0.015576,-0.021439,-2.555728e-09,0.015576,-0.021439,0.007999998,0.008189,-0.025203,-3.004432e-09,0.015576,-0.021439,-2.555728e-09,0.021439,-0.015576,-1.856804e-09,0.015576,-0.021439,0.007999998,0.025203,-0.008189,-9.762049e-10,0.025203,-0.008189001,0.007999999,0.021439,-0.015576,-1.856804e-09,0.0265,0,0,0.0265,-9.536744e-10,0.008,0.025203,-0.008189,-9.762049e-10,0.007071,0.007071001,0.008000001,0.007071,0.007070998,0.033,0.01,-9.536744e-10,0.008,0,0.01,0.008000001,0,0.009999997,0.033,0.007071,0.007071001,0.008000001,0,0.01,0.008000001,-0.007071,0.007071,0.008,0,0.009999997,0.033,-0.01,-1.186505e-09,0.008,-0.01,-2.630541e-09,0.033,-0.007071,0.007071,0.008,-0.007071,-0.007071,0.007999999,-0.007071,-0.007071002,0.033,-0.01,-1.186505e-09,0.008,-0.007071,-0.007071,0.007999999,0,-0.01,0.007999999,-0.007071,-0.007071002,0.033,0,-0.01,0.007999999,0.007071,-0.007071,0.007999999,0,-0.01,0.033,0.007071,-0.007071,0.007999999,0.01,-9.536744e-10,0.008,0.007071,-0.007071002,0.033,0.015576,0.021439,0.008000003,0.008189,0.025203,0.008000003,0.007071,0.007071001,0.008000001,0,0.0265,0.008000003,-0.008189,0.025203,0.008000003,0,0.01,0.008000001,-0.021439,0.015576,0.008000002,-0.025203,0.008188999,0.008000001,-0.007071,0.007071,0.008,-0.0265,-9.536744e-10,0.008,-0.025203,-0.008189001,0.007999999,-0.01,-1.186505e-09,0.008,-0.015576,-0.021439,0.007999998,-0.008189,-0.025203,0.007999998,-0.007071,-0.007071,0.007999999,0,-0.01,0.007999999,0.008189,-0.025203,0.007999998,0.007071,-0.007071,0.007999999,0.0265,-9.536744e-10,0.008,0.01,-9.536744e-10,0.008,0.025203,-0.008189001,0.007999999]);
+	          for (l = hvs; l < handleVertices.length - 2; l = l + 3) {
+	            handleVertices[l] += cX;
+	            handleVertices[l + 1] += aY;
+	            handleVertices[l + 2] += iZ;
+	          }
+	        } else if (a.handleType==='round') {
+	          handleVertices = handleVertices.concat([-0.12,0.005877995,0.04491,-0.12,-5.126e-09,0.043,-0.12,-6.318092e-09,0.053,-0.12,0.005877995,0.04491,-0.00809,0.005877995,0.04491,-0.01,-5.126e-09,0.043,-0.12,0.009510994,0.04991,-0.12,0.005877995,0.04491,-0.12,-6.318092e-09,0.053,-0.12,0.009510993,0.05609,-0.12,0.009510994,0.04991,-0.12,-6.318092e-09,0.053,-0.12,0.005877993,0.06109,-0.12,0.009510993,0.05609,-0.12,-6.318092e-09,0.053,-0.12,-7.510185e-09,0.063,-0.12,0.005877993,0.06109,-0.12,-6.318092e-09,0.053,-0.12,-0.005878008,0.06109,-0.12,-7.510185e-09,0.063,-0.12,-6.318092e-09,0.053,-0.12,-7.510185e-09,0.063,-0.12,-0.005878008,0.06109,0.00809,-0.005878008,0.06109,-0.12,-0.009511006,0.05609,-0.12,-0.005878008,0.06109,-0.12,-6.318092e-09,0.053,-0.12,-0.009511005,0.04991,-0.12,-0.009511006,0.05609,-0.12,-6.318092e-09,0.053,-0.12,-0.005878005,0.04491,-0.12,-0.009511005,0.04991,-0.12,-6.318092e-09,0.053,-0.12,-0.009511005,0.04991,-0.12,-0.005878005,0.04491,-0.00809,-0.005878005,0.04491,-0.12,-5.126e-09,0.043,-0.12,-0.005878005,0.04491,-0.12,-6.318092e-09,0.053,-0.12,-0.005878005,0.04491,-0.12,-5.126e-09,0.043,-0.01,-5.126e-09,0.043,0.00809,0.005878,0.008,0.00309,0.009511,0.008,0.00309,0.009510993,0.05609,0.00309,0.009511,0.008,-0.00309,0.009511,0.008,-0.00309,0.009510994,0.04991,-0.00809,0.005877995,0.04491,-0.12,0.005877995,0.04491,-0.12,0.009510994,0.04991,-0.00309,0.009510994,0.04991,-0.12,0.009510994,0.04991,-0.12,0.009510993,0.05609,0.00309,0.009510993,0.05609,-0.12,0.009510993,0.05609,-0.12,0.005877993,0.06109,0.00809,0.005877993,0.06109,-0.12,0.005877993,0.06109,-0.12,-7.510185e-09,0.063,-0.12,-0.005878008,0.06109,-0.12,-0.009511006,0.05609,0.00309,-0.009511006,0.05609,-0.12,-0.009511006,0.05609,-0.12,-0.009511005,0.04991,-0.00309,-0.009511005,0.04991,0.01,-1.390709e-10,0.007999999,0.00809,0.005878,0.008,0.00809,0.005877993,0.06109,-0.00309,0.009511,0.008,-0.00809,0.005878,0.008,-0.00809,0.005877995,0.04491,-0.00809,0.005878,0.008,-0.01,-1.390709e-10,0.007999999,-0.01,-5.126e-09,0.043,-0.00309,-0.009511005,0.04991,-0.00309,-0.009511,0.007999999,0.00309,-0.009511,0.007999999,0.025203,-0.091811,-1.094472e-08,0.025203,-0.091811,0.007999989,0.0265,-0.1,0.007999988,0.0025,-0.099188,0.007999988,0.0025,-0.1,0.007999988,0.0265,-0.1,0.007999988,0.025203,-0.091811,-1.094472e-08,0.021439,-0.084424,-1.006412e-08,0.021439,-0.084424,0.00799999,0.015576,-0.078561,-9.365201e-09,0.015576,-0.078561,0.007999991,0.021439,-0.084424,0.00799999,0.008189,-0.074797,-8.916497e-09,0.008189,-0.074797,0.007999991,0.015576,-0.078561,0.007999991,0,-0.0735,0.007999992,0.008189,-0.074797,0.007999991,0.008189,-0.074797,-8.916497e-09,0.0025,-0.0875,0.00799999,0.0025,-0.092306,0.007999989,0.008189,-0.074797,0.007999991,-0.008189,-0.074797,-8.916497e-09,-0.008189,-0.074797,0.007999991,0,-0.0735,0.007999992,-0.015576,-0.078561,0.007999991,-0.008189,-0.074797,0.007999991,-0.008189,-0.074797,-8.916497e-09,-0.021439,-0.084424,0.00799999,-0.015576,-0.078561,0.007999991,-0.015576,-0.078561,-9.365201e-09,-0.025203,-0.091811,0.007999989,-0.021439,-0.084424,0.00799999,-0.021439,-0.084424,-1.006412e-08,-0.0025,-0.098184,0.007999988,-0.021439,-0.084424,0.00799999,-0.025203,-0.091811,0.007999989,-0.0265,-0.1,0.007999988,-0.025203,-0.091811,0.007999989,-0.025203,-0.091811,-1.094472e-08,-0.025203,-0.108189,0.007999987,-0.0265,-0.1,0.007999988,-0.0265,-0.1,-1.192093e-08,-0.021439,-0.115576,0.007999986,-0.025203,-0.108189,0.007999987,-0.025203,-0.108189,-1.289713e-08,-0.0025,-0.101816,0.007999988,-0.0025,-0.100812,0.007999988,-0.025203,-0.108189,0.007999987,-0.015576,-0.121439,0.007999985,-0.021439,-0.115576,0.007999986,-0.021439,-0.115576,-1.377773e-08,-0.008189,-0.125203,0.007999985,-0.015576,-0.121439,0.007999985,-0.015576,-0.121439,-1.447666e-08,0,-0.1265,0.007999985,-0.008189,-0.125203,0.007999985,-0.008189,-0.125203,-1.492536e-08,0.008189,-0.125203,0.007999985,0,-0.1265,0.007999985,0,-0.1265,-1.507997e-08,0.0025,-0.1125,0.007999987,0,-0.1125,0.007999987,0,-0.1265,0.007999985,0.008189,-0.125203,0.007999985,0.0025,-0.107694,0.007999987,0.0025,-0.1125,0.007999987,0.015576,-0.121439,0.007999985,0.008189,-0.125203,0.007999985,0.008189,-0.125203,-1.492536e-08,0.0025,-0.107694,0.007999987,0.008189,-0.125203,0.007999985,0.015576,-0.121439,0.007999985,0.021439,-0.115576,0.007999986,0.015576,-0.121439,0.007999985,0.015576,-0.121439,-1.447666e-08,0.025203,-0.108189,0.007999987,0.021439,-0.115576,0.007999986,0.021439,-0.115576,-1.377773e-08,0.0265,-0.1,0.007999988,0.025203,-0.108189,0.007999987,0.025203,-0.108189,-1.289713e-08,-0.021439,-0.115576,0.007999986,-0.015576,-0.121439,0.007999985,-0.0025,-0.103441,0.007999988,0.0025,-0.098184,0.007999988,0.0025,-0.099188,0.007999988,0.025203,-0.091811,0.007999989,-0.0025,-0.100812,0.007999988,-0.0025,-0.1,0.007999988,-0.0265,-0.1,0.007999988,-0.008189,-0.074797,0.007999991,-0.0025,-0.092306,0.007999989,-0.0025,-0.0875,0.00799999,-0.015576,-0.121439,0.007999985,-0.008189,-0.125203,0.007999985,-0.0025,-0.107694,0.007999987,-0.0025,-0.096559,0.007999989,-0.015576,-0.078561,0.007999991,-0.021439,-0.084424,0.00799999,-0.0265,-0.1,0.007999988,-0.0025,-0.1,0.007999988,-0.0025,-0.099188,0.007999988,-0.0025,-0.0875,0.00799999,0,-0.0875,0.00799999,0,-0.0735,0.007999992,-0.0025,-0.092306,0.007999989,-0.008189,-0.074797,0.007999991,-0.015576,-0.078561,0.007999991,-0.0025,-0.1125,0.0008419866,0.0025,-0.1125,0.0008419866,0.0025,-0.0875,0.0008419896,0,-0.1125,0.007999987,0.0025,-0.1125,0.007999987,0.0025,-0.1125,0.0008419866,0.0025,-0.101816,0.007999988,0.021439,-0.115576,0.007999986,0.025203,-0.108189,0.007999987,-0.0025,-0.1125,0.007999987,-0.0025,-0.107694,0.007999987,-0.008189,-0.125203,0.007999985,0.0025,-0.1,0.007999988,0.0025,-0.1125,0.0008419866,0.0025,-0.100812,0.007999988,-0.0025,-0.0875,0.0008419896,-0.0025,-0.098184,0.007999988,-0.0025,-0.099188,0.007999988,0.0265,-0.1,0.007999988,0.0025,-0.1,0.007999988,0.0025,-0.100812,0.007999988,0,-0.0875,0.00799999,-0.0025,-0.0875,0.00799999,-0.0025,-0.0875,0.0008419896,0,-0.1265,0.007999985,0,-0.1125,0.007999987,-0.0025,-0.1125,0.007999987,0.0025,-0.103441,0.007999988,0.015576,-0.121439,0.007999985,0.021439,-0.115576,0.007999986,0,-0.0735,0.007999992,0,-0.0875,0.00799999,0.0025,-0.0875,0.00799999,0.021439,-0.084424,0.00799999,0.015576,-0.078561,0.007999991,0.0025,-0.096559,0.007999989,0.015576,-0.078561,0.007999991,0.008189,-0.074797,0.007999991,0.0025,-0.092306,0.007999989,0.025203,0.008188999,0.008000001,0.0265,-9.536744e-10,0.008,0.0265,0,0,0.021439,0.015576,0.008000002,0.025203,0.008188999,0.008000001,0.025203,0.008189,9.762049e-10,0.015576,0.021439,0.008000003,0.021439,0.015576,0.008000002,0.021439,0.015576,1.856804e-09,0.008189,0.025203,0.008000003,0.015576,0.021439,0.008000003,0.015576,0.021439,2.555728e-09,0,0.0265,0.008000003,0.008189,0.025203,0.008000003,0.008189,0.025203,3.004432e-09,-0.008189,0.025203,0.008000003,0,0.0265,0.008000003,0,0.0265,3.159046e-09,-0.015576,0.021439,0.008000003,-0.008189,0.025203,0.008000003,-0.008189,0.025203,3.004432e-09,-0.021439,0.015576,0.008000002,-0.015576,0.021439,0.008000003,-0.015576,0.021439,2.555728e-09,-0.025203,0.008188999,0.008000001,-0.021439,0.015576,0.008000002,-0.021439,0.015576,1.856804e-09,-0.0265,0,0,-0.0265,-9.536744e-10,0.008,-0.025203,0.008188999,0.008000001,-0.025203,-0.008189001,0.007999999,-0.0265,-9.536744e-10,0.008,-0.0265,0,0,-0.021439,-0.015576,0.007999999,-0.025203,-0.008189001,0.007999999,-0.025203,-0.008189,-9.762049e-10,-0.00809,-0.005878001,0.007999999,-0.009045,-0.002939001,0.008,-0.025203,-0.008189001,0.007999999,-0.015576,-0.021439,0.007999998,-0.021439,-0.015576,0.007999999,-0.021439,-0.015576,-1.856804e-09,-0.015576,-0.021439,0.007999998,-0.00559,-0.007694001,0.007999999,-0.00809,-0.005878001,0.007999999,-0.008189,-0.025203,0.007999998,-0.015576,-0.021439,0.007999998,-0.015576,-0.021439,-2.555728e-09,0,-0.0265,0.007999998,-0.008189,-0.025203,0.007999998,-0.008189,-0.025203,-3.004432e-09,0.008189,-0.025203,0.007999998,0,-0.0265,0.007999998,0,-0.0265,-3.159046e-09,0.015576,-0.021439,0.007999998,0.008189,-0.025203,0.007999998,0.008189,-0.025203,-3.004432e-09,0.021439,-0.015576,-1.856804e-09,0.021439,-0.015576,0.007999999,0.015576,-0.021439,0.007999998,0.00809,-0.005878001,0.007999999,0.00559,-0.007694001,0.007999999,0.015576,-0.021439,0.007999998,0.025203,-0.008189001,0.007999999,0.021439,-0.015576,0.007999999,0.021439,-0.015576,-1.856804e-09,0.025203,-0.008189001,0.007999999,0.009045,-0.002939001,0.008,0.00809,-0.005878001,0.007999999,0.0265,-9.536744e-10,0.008,0.025203,-0.008189001,0.007999999,0.025203,-0.008189,-9.762049e-10,-0.01,-5.126e-09,0.043,-0.01,-1.390709e-10,0.007999999,-0.00809,-0.005878001,0.007999999,-0.00809,-0.005878005,0.04491,-0.00809,-0.005878001,0.007999999,-0.00309,-0.009511,0.007999999,0.00309,-0.009511006,0.05609,0.00309,-0.009511,0.007999999,0.00809,-0.005878001,0.007999999,0.00809,-0.005878008,0.06109,0.00809,-0.005878001,0.007999999,0.01,-1.390709e-10,0.007999999,0.025203,0.008188999,0.008000001,0.009045,0.002938999,0.008,0.01,-1.390709e-10,0.007999999,0.00809,0.005878,0.008,0.009045,0.002938999,0.008,0.025203,0.008188999,0.008000001,0.015576,0.021439,0.008000003,0.00559,0.007693999,0.008000001,0.00809,0.005878,0.008,0.00309,0.009511,0.008,0.00559,0.007693999,0.008000001,0.015576,0.021439,0.008000003,0,0.0265,0.008000003,0,0.009510999,0.008000001,0.00309,0.009511,0.008,-0.00309,0.009511,0.008,0,0.009510999,0.008000001,0,0.0265,0.008000003,-0.015576,0.021439,0.008000003,-0.00559,0.007693999,0.008000001,-0.00309,0.009511,0.008,-0.00809,0.005878,0.008,-0.00559,0.007693999,0.008000001,-0.015576,0.021439,0.008000003,-0.025203,0.008188999,0.008000001,-0.009045,0.002938999,0.008,-0.00809,0.005878,0.008,-0.01,-1.390709e-10,0.007999999,-0.009045,0.002938999,0.008,-0.025203,0.008188999,0.008000001,-0.025203,-0.008189001,0.007999999,-0.009045,-0.002939001,0.008,-0.01,-1.390709e-10,0.007999999,-0.00309,-0.009511,0.007999999,-0.00559,-0.007694001,0.007999999,-0.015576,-0.021439,0.007999998,0,-0.0265,0.007999998,0,-0.009511,0.007999999,-0.00309,-0.009511,0.007999999,0.00309,-0.009511,0.007999999,0,-0.009511,0.007999999,0,-0.0265,0.007999998,0.015576,-0.021439,0.007999998,0.00559,-0.007694001,0.007999999,0.00309,-0.009511,0.007999999,0.01,-1.390709e-10,0.007999999,0.009045,-0.002939001,0.008,0.025203,-0.008189001,0.007999999,-0.12,-5.126e-09,0.043,-0.12,0.005877995,0.04491,-0.01,-5.126e-09,0.043,0.01,-7.510185e-09,0.063,-0.12,-7.510185e-09,0.063,0.00809,-0.005878008,0.06109,-0.00309,-0.009511005,0.04991,-0.12,-0.009511005,0.04991,-0.00809,-0.005878005,0.04491,-0.00809,-0.005878005,0.04491,-0.12,-0.005878005,0.04491,-0.01,-5.126e-09,0.043,0.00809,0.005877993,0.06109,0.00809,0.005878,0.008,0.00309,0.009510993,0.05609,0.00309,0.009510993,0.05609,0.00309,0.009511,0.008,-0.00309,0.009510994,0.04991,-0.00309,0.009510994,0.04991,-0.00809,0.005877995,0.04491,-0.12,0.009510994,0.04991,0.00309,0.009510993,0.05609,-0.00309,0.009510994,0.04991,-0.12,0.009510993,0.05609,0.00809,0.005877993,0.06109,0.00309,0.009510993,0.05609,-0.12,0.005877993,0.06109,0.01,-7.510185e-09,0.063,0.00809,0.005877993,0.06109,-0.12,-7.510185e-09,0.063,0.00809,-0.005878008,0.06109,-0.12,-0.005878008,0.06109,0.00309,-0.009511006,0.05609,0.00309,-0.009511006,0.05609,-0.12,-0.009511006,0.05609,-0.00309,-0.009511005,0.04991,0.01,-7.510185e-09,0.063,0.01,-1.390709e-10,0.007999999,0.00809,0.005877993,0.06109,-0.00309,0.009510994,0.04991,-0.00309,0.009511,0.008,-0.00809,0.005877995,0.04491,-0.00809,0.005877995,0.04491,-0.00809,0.005878,0.008,-0.01,-5.126e-09,0.043,0.00309,-0.009511006,0.05609,-0.00309,-0.009511005,0.04991,0.00309,-0.009511,0.007999999,0.0265,-0.1,-1.192093e-08,0.025203,-0.091811,-1.094472e-08,0.0265,-0.1,0.007999988,0.025203,-0.091811,0.007999989,0.0025,-0.099188,0.007999988,0.0265,-0.1,0.007999988,0.025203,-0.091811,0.007999989,0.025203,-0.091811,-1.094472e-08,0.021439,-0.084424,0.00799999,0.021439,-0.084424,-1.006412e-08,0.015576,-0.078561,-9.365201e-09,0.021439,-0.084424,0.00799999,0.015576,-0.078561,-9.365201e-09,0.008189,-0.074797,-8.916497e-09,0.015576,-0.078561,0.007999991,0,-0.0735,-8.761883e-09,0,-0.0735,0.007999992,0.008189,-0.074797,-8.916497e-09,0,-0.0735,-8.761883e-09,-0.008189,-0.074797,-8.916497e-09,0,-0.0735,0.007999992,-0.015576,-0.078561,-9.365201e-09,-0.015576,-0.078561,0.007999991,-0.008189,-0.074797,-8.916497e-09,-0.021439,-0.084424,-1.006412e-08,-0.021439,-0.084424,0.00799999,-0.015576,-0.078561,-9.365201e-09,-0.025203,-0.091811,-1.094472e-08,-0.025203,-0.091811,0.007999989,-0.021439,-0.084424,-1.006412e-08,-0.0025,-0.099188,0.007999988,-0.0025,-0.098184,0.007999988,-0.025203,-0.091811,0.007999989,-0.0265,-0.1,-1.192093e-08,-0.0265,-0.1,0.007999988,-0.025203,-0.091811,-1.094472e-08,-0.025203,-0.108189,-1.289713e-08,-0.025203,-0.108189,0.007999987,-0.0265,-0.1,-1.192093e-08,-0.021439,-0.115576,-1.377773e-08,-0.021439,-0.115576,0.007999986,-0.025203,-0.108189,-1.289713e-08,-0.021439,-0.115576,0.007999986,-0.0025,-0.101816,0.007999988,-0.025203,-0.108189,0.007999987,-0.015576,-0.121439,-1.447666e-08,-0.015576,-0.121439,0.007999985,-0.021439,-0.115576,-1.377773e-08,-0.008189,-0.125203,-1.492536e-08,-0.008189,-0.125203,0.007999985,-0.015576,-0.121439,-1.447666e-08,0,-0.1265,-1.507997e-08,0,-0.1265,0.007999985,-0.008189,-0.125203,-1.492536e-08,0.008189,-0.125203,-1.492536e-08,0.008189,-0.125203,0.007999985,0,-0.1265,-1.507997e-08,0.008189,-0.125203,0.007999985,0.0025,-0.1125,0.007999987,0,-0.1265,0.007999985,0.015576,-0.121439,-1.447666e-08,0.015576,-0.121439,0.007999985,0.008189,-0.125203,-1.492536e-08,0.0025,-0.103441,0.007999988,0.0025,-0.107694,0.007999987,0.015576,-0.121439,0.007999985,0.021439,-0.115576,-1.377773e-08,0.021439,-0.115576,0.007999986,0.015576,-0.121439,-1.447666e-08,0.025203,-0.108189,-1.289713e-08,0.025203,-0.108189,0.007999987,0.021439,-0.115576,-1.377773e-08,0.0265,-0.1,-1.192093e-08,0.0265,-0.1,0.007999988,0.025203,-0.108189,-1.289713e-08,-0.0025,-0.101816,0.007999988,-0.021439,-0.115576,0.007999986,-0.0025,-0.103441,0.007999988,0.021439,-0.084424,0.00799999,0.0025,-0.098184,0.007999988,0.025203,-0.091811,0.007999989,-0.025203,-0.108189,0.007999987,-0.0025,-0.100812,0.007999988,-0.0265,-0.1,0.007999988,-0.0025,-0.103441,0.007999988,-0.015576,-0.121439,0.007999985,-0.0025,-0.107694,0.007999987,-0.0025,-0.098184,0.007999988,-0.0025,-0.096559,0.007999989,-0.021439,-0.084424,0.00799999,-0.025203,-0.091811,0.007999989,-0.0265,-0.1,0.007999988,-0.0025,-0.099188,0.007999988,-0.008189,-0.074797,0.007999991,-0.0025,-0.0875,0.00799999,0,-0.0735,0.007999992,-0.0025,-0.096559,0.007999989,-0.0025,-0.092306,0.007999989,-0.015576,-0.078561,0.007999991,-0.0025,-0.0875,0.0008419896,-0.0025,-0.1125,0.0008419866,0.0025,-0.0875,0.0008419896,-0.0025,-0.1125,0.0008419866,-0.0025,-0.1125,0.007999987,0,-0.1125,0.007999987,0,-0.1125,0.007999987,0.0025,-0.1125,0.0008419866,-0.0025,-0.1125,0.0008419866,0.0025,-0.100812,0.007999988,0.0025,-0.101816,0.007999988,0.025203,-0.108189,0.007999987,0.0025,-0.0875,0.0008419896,0.0025,-0.096559,0.007999989,0.0025,-0.092306,0.007999989,0.0025,-0.0875,0.0008419896,0.0025,-0.1,0.007999988,0.0025,-0.098184,0.007999988,0.0025,-0.1125,0.0008419866,0.0025,-0.101816,0.007999988,0.0025,-0.100812,0.007999988,0.0025,-0.1125,0.0008419866,0.0025,-0.1125,0.007999987,0.0025,-0.107694,0.007999987,0.0025,-0.1125,0.0008419866,0.0025,-0.103441,0.007999988,0.0025,-0.101816,0.007999988,0.0025,-0.092306,0.007999989,0.0025,-0.0875,0.00799999,0.0025,-0.0875,0.0008419896,0.0025,-0.0875,0.0008419896,0.0025,-0.1125,0.0008419866,0.0025,-0.1,0.007999988,0.0025,-0.098184,0.007999988,0.0025,-0.096559,0.007999989,0.0025,-0.0875,0.0008419896,0.0025,-0.103441,0.007999988,0.0025,-0.1125,0.0008419866,0.0025,-0.107694,0.007999987,-0.0025,-0.1,0.007999988,-0.0025,-0.1125,0.0008419866,-0.0025,-0.0875,0.0008419896,-0.0025,-0.1125,0.0008419866,-0.0025,-0.103441,0.007999988,-0.0025,-0.107694,0.007999987,-0.0025,-0.107694,0.007999987,-0.0025,-0.1125,0.007999987,-0.0025,-0.1125,0.0008419866,-0.0025,-0.0875,0.0008419896,-0.0025,-0.0875,0.00799999,-0.0025,-0.092306,0.007999989,-0.0025,-0.0875,0.0008419896,-0.0025,-0.096559,0.007999989,-0.0025,-0.098184,0.007999988,-0.0025,-0.0875,0.0008419896,-0.0025,-0.099188,0.007999988,-0.0025,-0.1,0.007999988,-0.0025,-0.1125,0.0008419866,-0.0025,-0.100812,0.007999988,-0.0025,-0.101816,0.007999988,-0.0025,-0.101816,0.007999988,-0.0025,-0.103441,0.007999988,-0.0025,-0.1125,0.0008419866,-0.0025,-0.0875,0.0008419896,-0.0025,-0.092306,0.007999989,-0.0025,-0.096559,0.007999989,-0.0025,-0.1125,0.0008419866,-0.0025,-0.1,0.007999988,-0.0025,-0.100812,0.007999988,0.025203,-0.108189,0.007999987,0.0265,-0.1,0.007999988,0.0025,-0.100812,0.007999988,0.0025,-0.0875,0.0008419896,0.0025,-0.0875,0.00799999,0,-0.0875,0.00799999,0,-0.0875,0.00799999,-0.0025,-0.0875,0.0008419896,0.0025,-0.0875,0.0008419896,-0.008189,-0.125203,0.007999985,0,-0.1265,0.007999985,-0.0025,-0.1125,0.007999987,0.0025,-0.101816,0.007999988,0.0025,-0.103441,0.007999988,0.021439,-0.115576,0.007999986,0.008189,-0.074797,0.007999991,0,-0.0735,0.007999992,0.0025,-0.0875,0.00799999,0.0025,-0.098184,0.007999988,0.021439,-0.084424,0.00799999,0.0025,-0.096559,0.007999989,0.0025,-0.096559,0.007999989,0.015576,-0.078561,0.007999991,0.0025,-0.092306,0.007999989,0.025203,0.008189,9.762049e-10,0.025203,0.008188999,0.008000001,0.0265,0,0,0.021439,0.015576,1.856804e-09,0.021439,0.015576,0.008000002,0.025203,0.008189,9.762049e-10,0.015576,0.021439,2.555728e-09,0.015576,0.021439,0.008000003,0.021439,0.015576,1.856804e-09,0.008189,0.025203,3.004432e-09,0.008189,0.025203,0.008000003,0.015576,0.021439,2.555728e-09,0,0.0265,3.159046e-09,0,0.0265,0.008000003,0.008189,0.025203,3.004432e-09,-0.008189,0.025203,3.004432e-09,-0.008189,0.025203,0.008000003,0,0.0265,3.159046e-09,-0.015576,0.021439,2.555728e-09,-0.015576,0.021439,0.008000003,-0.008189,0.025203,3.004432e-09,-0.021439,0.015576,1.856804e-09,-0.021439,0.015576,0.008000002,-0.015576,0.021439,2.555728e-09,-0.025203,0.008189,9.762049e-10,-0.025203,0.008188999,0.008000001,-0.021439,0.015576,1.856804e-09,-0.025203,0.008189,9.762049e-10,-0.0265,0,0,-0.025203,0.008188999,0.008000001,-0.025203,-0.008189,-9.762049e-10,-0.025203,-0.008189001,0.007999999,-0.0265,0,0,-0.021439,-0.015576,-1.856804e-09,-0.021439,-0.015576,0.007999999,-0.025203,-0.008189,-9.762049e-10,-0.021439,-0.015576,0.007999999,-0.00809,-0.005878001,0.007999999,-0.025203,-0.008189001,0.007999999,-0.015576,-0.021439,-2.555728e-09,-0.015576,-0.021439,0.007999998,-0.021439,-0.015576,-1.856804e-09,-0.021439,-0.015576,0.007999999,-0.015576,-0.021439,0.007999998,-0.00809,-0.005878001,0.007999999,-0.008189,-0.025203,-3.004432e-09,-0.008189,-0.025203,0.007999998,-0.015576,-0.021439,-2.555728e-09,0,-0.0265,-3.159046e-09,0,-0.0265,0.007999998,-0.008189,-0.025203,-3.004432e-09,0.008189,-0.025203,-3.004432e-09,0.008189,-0.025203,0.007999998,0,-0.0265,-3.159046e-09,0.015576,-0.021439,-2.555728e-09,0.015576,-0.021439,0.007999998,0.008189,-0.025203,-3.004432e-09,0.015576,-0.021439,-2.555728e-09,0.021439,-0.015576,-1.856804e-09,0.015576,-0.021439,0.007999998,0.021439,-0.015576,0.007999999,0.00809,-0.005878001,0.007999999,0.015576,-0.021439,0.007999998,0.025203,-0.008189,-9.762049e-10,0.025203,-0.008189001,0.007999999,0.021439,-0.015576,-1.856804e-09,0.021439,-0.015576,0.007999999,0.025203,-0.008189001,0.007999999,0.00809,-0.005878001,0.007999999,0.0265,0,0,0.0265,-9.536744e-10,0.008,0.025203,-0.008189,-9.762049e-10,-0.00809,-0.005878005,0.04491,-0.01,-5.126e-09,0.043,-0.00809,-0.005878001,0.007999999,-0.00309,-0.009511005,0.04991,-0.00809,-0.005878005,0.04491,-0.00309,-0.009511,0.007999999,0.00809,-0.005878008,0.06109,0.00309,-0.009511006,0.05609,0.00809,-0.005878001,0.007999999,0.01,-7.510185e-09,0.063,0.00809,-0.005878008,0.06109,0.01,-1.390709e-10,0.007999999,0.0265,-9.536744e-10,0.008,0.025203,0.008188999,0.008000001,0.01,-1.390709e-10,0.007999999,0.021439,0.015576,0.008000002,0.00809,0.005878,0.008,0.025203,0.008188999,0.008000001,0.021439,0.015576,0.008000002,0.015576,0.021439,0.008000003,0.00809,0.005878,0.008,0.008189,0.025203,0.008000003,0.00309,0.009511,0.008,0.015576,0.021439,0.008000003,0.008189,0.025203,0.008000003,0,0.0265,0.008000003,0.00309,0.009511,0.008,-0.008189,0.025203,0.008000003,-0.00309,0.009511,0.008,0,0.0265,0.008000003,-0.008189,0.025203,0.008000003,-0.015576,0.021439,0.008000003,-0.00309,0.009511,0.008,-0.021439,0.015576,0.008000002,-0.00809,0.005878,0.008,-0.015576,0.021439,0.008000003,-0.021439,0.015576,0.008000002,-0.025203,0.008188999,0.008000001,-0.00809,0.005878,0.008,-0.0265,-9.536744e-10,0.008,-0.01,-1.390709e-10,0.007999999,-0.025203,0.008188999,0.008000001,-0.0265,-9.536744e-10,0.008,-0.025203,-0.008189001,0.007999999,-0.01,-1.390709e-10,0.007999999,-0.008189,-0.025203,0.007999998,-0.00309,-0.009511,0.007999999,-0.015576,-0.021439,0.007999998,-0.008189,-0.025203,0.007999998,0,-0.0265,0.007999998,-0.00309,-0.009511,0.007999999,0.008189,-0.025203,0.007999998,0.00309,-0.009511,0.007999999,0,-0.0265,0.007999998,0.008189,-0.025203,0.007999998,0.015576,-0.021439,0.007999998,0.00309,-0.009511,0.007999999,0.0265,-9.536744e-10,0.008,0.01,-1.390709e-10,0.007999999,0.025203,-0.008189001,0.007999999]);
+	          for (l = hvs; l < handleVertices.length - 2; l = l + 3) {
+	            handleVertices[l] += cX;
+	            handleVertices[l + 1] += aY;
+	            handleVertices[l + 2] += iZ;
+	          }
+	        } else if (a.handleType==='classic') {
+	          handleVertices = handleVertices.concat([-0.019075,0.060079,0.002000007,-0.02,0.06,0.002000007,-0.019047,-0.120065,0.001999986,0.016353,-0.121573,-1.449263e-08,0.016978,-0.121042,-1.442933e-08,0.016978,-0.121042,0.001999986,-0.02,-0.12,0.001999986,-0.019047,-0.120065,0.001999986,-0.02,0.06,0.002000007,0.015764,-0.122191,0.001999985,0.015764,-0.122191,-1.45663e-08,0.016353,-0.121573,-1.449263e-08,0.014929,-0.123252,-1.469278e-08,0.015764,-0.122191,-1.45663e-08,0.015764,-0.122191,0.001999985,-0.018231,0.060289,0.002000007,-0.019075,0.060079,0.002000007,0.019137,0.060079,0.002000007,0.002936,-0.134721,0.001999984,0.007464,-0.132813,0.001999984,0.008788,-0.131752,0.001999984,0.0015,-0.077781,0.001999991,0.019137,0.060079,0.002000007,-0.019075,0.060079,0.002000007,-0.018604,-0.120148,0.001999986,-0.0015,-0.097781,0.001999988,-0.0015,-0.077781,0.001999991,-0.018604,-0.120148,0.001999986,0.019149,-0.120075,0.001999986,0.0015,-0.097781,0.001999988,0.0015,-0.077781,0.001999991,0.0015,-0.097781,0.001999988,0.019149,-0.120075,0.001999986,0,-0.135,0.001999984,0.009953,-0.130562,0.001999984,-0.010391,-0.129722,0.001999985,-0.017458,0.060619,0.002000007,-0.018231,0.060289,0.002000007,0.018344,0.060288,0.002000007,0.001531,-0.134926,0.001999984,0.008788,-0.131752,0.001999984,0.009953,-0.130562,0.001999984,-0.016747,0.061058,0.002000007,-0.017458,0.060619,0.002000007,0.017614,0.060617,0.002000007,0.009953,-0.130562,0.001999984,0.014929,-0.123252,0.001999985,-0.011868,-0.127496,0.001999985,-0.016089,0.061593,0.002000008,-0.016747,0.061058,0.002000007,0.016937,0.061053,0.002000007,0.014929,-0.123252,0.001999985,0.015764,-0.122191,0.001999985,-0.014802,-0.122855,0.001999985,-0.015475,0.062214,0.002000008,-0.016089,0.061593,0.002000008,0.016304,0.061587,0.002000008,0.015764,-0.122191,0.001999985,0.016353,-0.121573,0.001999986,-0.015686,-0.121844,0.001999986,-0.014617,0.063281,0.002000008,-0.015475,0.062214,0.002000008,0.015421,0.062543,0.002000008,-0.007335,0.072848,0.002000009,-0.008209,0.072159,0.002000009,-0.004169,0.074417,0.002000009,-0.005324,0.073988,0.002000009,-0.006376,0.073461,0.002000009,-0.007335,0.072848,0.002000009,0.009953,-0.130562,-1.55642e-08,0.014929,-0.123252,-1.469278e-08,0.014929,-0.123252,0.001999985,0.016978,-0.121042,0.001999986,0.017646,-0.120607,0.001999986,-0.017021,-0.120787,0.001999986,0.016353,-0.121573,0.001999986,0.016978,-0.121042,0.001999986,-0.016327,-0.121269,0.001999986,-0.009384,0.071011,0.002000008,-0.014617,0.063281,0.002000008,0.012136,0.067516,0.002000008,0.009512,0.070979,0.002000008,0,0.075,0.002000009,-0.009384,0.071011,0.002000008,-0.008209,0.072159,0.002000009,-0.009384,0.071011,0.002000008,-0.002903,0.074736,0.002000009,-0.001517,0.074934,0.002000009,-0.002903,0.074736,0.002000009,-0.009384,0.071011,0.002000008,0.001519,0.074926,0.002000009,0,0.075,0.002000009,0.009512,0.070979,0.002000008,0.002913,0.074722,0.002000009,0.001519,0.074926,0.002000009,0.008304,0.072129,0.002000009,0.017646,-0.120607,0.001999986,0.018367,-0.120281,0.001999986,-0.017776,-0.120409,0.001999986,0.007408,0.072818,0.002000009,0.00536,0.073964,0.002000009,0.004191,0.074397,0.002000009,0.007408,0.072818,0.002000009,0.00643,0.073434,0.002000009,0.00536,0.073964,0.002000009,-0.018604,-0.120148,0.001999986,-0.017776,-0.120409,0.001999986,0.018367,-0.120281,0.001999986,0.02,0.06,0.002000007,0.019137,0.060079,0.002000007,0.019149,-0.120075,0.001999986,0.005401,-0.133961,0.001999984,0.006479,-0.13343,0.001999984,0.007464,-0.132813,0.001999984,0.008788,-0.131752,-1.570606e-08,0.009953,-0.130562,-1.55642e-08,0.009953,-0.130562,0.001999984,0.004223,-0.134395,0.001999984,0.005401,-0.133961,0.001999984,0.007464,-0.132813,0.001999984,-0.001527,-0.134934,0.001999984,0,-0.135,0.001999984,-0.009371,-0.130983,0.001999984,-0.00821,-0.132139,0.001999984,-0.004188,-0.134412,0.001999984,-0.002919,-0.134734,0.001999984,0.007464,-0.132813,-1.583254e-08,0.008788,-0.131752,-1.570606e-08,0.008788,-0.131752,0.001999984,-0.007343,-0.132832,0.001999984,-0.005342,-0.13398,0.001999984,-0.004188,-0.134412,0.001999984,0.006479,-0.13343,-1.59061e-08,0.007464,-0.132813,-1.583254e-08,0.007464,-0.132813,0.001999984,-0.007343,-0.132832,0.001999984,-0.00639,-0.13345,0.001999984,-0.005342,-0.13398,0.001999984,0.005401,-0.133961,0.001999984,0.005401,-0.133961,-1.59694e-08,0.006479,-0.13343,-1.59061e-08,0.004223,-0.134395,-1.602113e-08,0.005401,-0.133961,-1.59694e-08,0.005401,-0.133961,0.001999984,0.002936,-0.134721,-1.605999e-08,0.004223,-0.134395,-1.602113e-08,0.004223,-0.134395,0.001999984,0.001531,-0.134926,-1.608443e-08,0.002936,-0.134721,-1.605999e-08,0.002936,-0.134721,0.001999984,0,-0.135,-1.609325e-08,0.001531,-0.134926,-1.608443e-08,0.001531,-0.134926,0.001999984,-0.001527,-0.134934,-1.608539e-08,0,-0.135,-1.609325e-08,0,-0.135,0.001999984,-0.002919,-0.134734,-1.606154e-08,-0.001527,-0.134934,-1.608539e-08,-0.001527,-0.134934,0.001999984,-0.004188,-0.134412,-1.602316e-08,-0.002919,-0.134734,-1.606154e-08,-0.002919,-0.134734,0.001999984,-0.005342,-0.13398,-1.597166e-08,-0.004188,-0.134412,-1.602316e-08,-0.004188,-0.134412,0.001999984,-0.00639,-0.13345,-1.590848e-08,-0.005342,-0.13398,-1.597166e-08,-0.005342,-0.13398,0.001999984,-0.007343,-0.132832,-1.583481e-08,-0.00639,-0.13345,-1.590848e-08,-0.00639,-0.13345,0.001999984,-0.00821,-0.132139,-1.57522e-08,-0.007343,-0.132832,-1.583481e-08,-0.007343,-0.132832,0.001999984,-0.009371,-0.130983,-1.561439e-08,-0.00821,-0.132139,-1.57522e-08,-0.00821,-0.132139,0.001999984,-0.010391,-0.129722,-1.546407e-08,-0.009371,-0.130983,-1.561439e-08,-0.009371,-0.130983,0.001999984,-0.011868,-0.127496,-1.519871e-08,-0.010391,-0.129722,-1.546407e-08,-0.010391,-0.129722,0.001999985,-0.014802,-0.122855,-1.464546e-08,-0.011868,-0.127496,-1.519871e-08,-0.011868,-0.127496,0.001999985,-0.015686,-0.121844,-1.452494e-08,-0.014802,-0.122855,-1.464546e-08,-0.014802,-0.122855,0.001999985,-0.016327,-0.121269,-1.445639e-08,-0.015686,-0.121844,-1.452494e-08,-0.015686,-0.121844,0.001999986,-0.017021,-0.120787,-1.439893e-08,-0.016327,-0.121269,-1.445639e-08,-0.016327,-0.121269,0.001999986,-0.017776,-0.120409,-1.435387e-08,-0.017021,-0.120787,-1.439893e-08,-0.017021,-0.120787,0.001999986,-0.018604,-0.120148,-1.432276e-08,-0.017776,-0.120409,-1.435387e-08,-0.017776,-0.120409,0.001999986,-0.018604,-0.120148,-1.432276e-08,-0.018604,-0.120148,0.001999986,-0.019047,-0.120065,0.001999986,-0.02,-0.12,-1.430511e-08,-0.019047,-0.120065,-1.431286e-08,-0.019047,-0.120065,0.001999986,-0.02,0.06,7.152557e-09,-0.02,-0.12,-1.430511e-08,-0.02,-0.12,0.001999986,-0.019075,0.060079,7.161975e-09,-0.02,0.06,7.152557e-09,-0.02,0.06,0.002000007,-0.018231,0.060289,7.187009e-09,-0.019075,0.060079,7.161975e-09,-0.019075,0.060079,0.002000007,-0.017458,0.060619,7.226348e-09,-0.018231,0.060289,7.187009e-09,-0.018231,0.060289,0.002000007,-0.016747,0.061058,7.278681e-09,-0.017458,0.060619,7.226348e-09,-0.017458,0.060619,0.002000007,-0.016089,0.061593,7.342458e-09,-0.016747,0.061058,7.278681e-09,-0.016747,0.061058,0.002000007,-0.015475,0.062214,7.416487e-09,-0.016089,0.061593,7.342458e-09,-0.016089,0.061593,0.002000008,-0.014617,0.063281,7.543683e-09,-0.015475,0.062214,7.416487e-09,-0.015475,0.062214,0.002000008,-0.009384,0.071011,8.465171e-09,-0.014617,0.063281,7.543683e-09,-0.014617,0.063281,0.002000008,-0.008209,0.072159,8.602023e-09,-0.009384,0.071011,8.465171e-09,-0.009384,0.071011,0.002000008,-0.007335,0.072848,8.684158e-09,-0.008209,0.072159,8.602023e-09,-0.008209,0.072159,0.002000009,-0.006376,0.073461,8.757234e-09,-0.007335,0.072848,8.684158e-09,-0.007335,0.072848,0.002000009,-0.005324,0.073988,8.820057e-09,-0.006376,0.073461,8.757234e-09,-0.006376,0.073461,0.002000009,-0.004169,0.074417,8.871198e-09,-0.005324,0.073988,8.820057e-09,-0.005324,0.073988,0.002000009,-0.002903,0.074736,8.909225e-09,-0.004169,0.074417,8.871198e-09,-0.004169,0.074417,0.002000009,-0.001517,0.074934,8.932829e-09,-0.002903,0.074736,8.909225e-09,-0.002903,0.074736,0.002000009,0,0.075,8.940697e-09,-0.001517,0.074934,8.932829e-09,-0.001517,0.074934,0.002000009,0.001519,0.074926,8.931875e-09,0,0.075,8.940697e-09,0,0.075,0.002000009,0.002913,0.074722,8.907556e-09,0.001519,0.074926,8.931875e-09,0.001519,0.074926,0.002000009,0.004191,0.074397,8.868813e-09,0.002913,0.074722,8.907556e-09,0.002913,0.074722,0.002000009,0.00536,0.073964,8.817196e-09,0.004191,0.074397,8.868813e-09,0.004191,0.074397,0.002000009,0.00643,0.073434,8.754015e-09,0.00536,0.073964,8.817196e-09,0.00536,0.073964,0.002000009,0.007408,0.072818,0.002000009,0.007408,0.072818,8.680582e-09,0.00643,0.073434,8.754015e-09,0.008304,0.072129,8.598447e-09,0.007408,0.072818,8.680582e-09,0.007408,0.072818,0.002000009,0.009512,0.070979,0.002000008,0.009512,0.070979,8.461356e-09,0.008304,0.072129,8.598447e-09,0.010582,0.069727,8.312107e-09,0.009512,0.070979,8.461356e-09,0.009512,0.070979,0.002000008,0.012136,0.067516,8.048534e-09,0.010582,0.069727,8.312107e-09,0.010582,0.069727,0.002000008,0.015421,0.062543,0.002000008,0.015421,0.062543,7.455706e-09,0.012136,0.067516,8.048534e-09,0.016304,0.061587,7.341742e-09,0.015421,0.062543,7.455706e-09,0.015421,0.062543,0.002000008,0.016937,0.061053,0.002000007,0.016937,0.061053,7.278085e-09,0.016304,0.061587,7.341742e-09,0.017614,0.060617,7.226109e-09,0.016937,0.061053,7.278085e-09,0.016937,0.061053,0.002000007,0.018344,0.060288,7.18689e-09,0.017614,0.060617,7.226109e-09,0.017614,0.060617,0.002000007,0.019137,0.060079,7.161975e-09,0.018344,0.060288,7.18689e-09,0.018344,0.060288,0.002000007,0.02,0.06,7.152557e-09,0.019137,0.060079,7.161975e-09,0.019137,0.060079,0.002000007,0.02,-0.12,-1.430511e-08,0.02,0.06,7.152557e-09,0.02,0.06,0.002000007,0.019149,-0.120075,-1.431406e-08,0.02,-0.12,-1.430511e-08,0.02,-0.12,0.001999986,0.018367,-0.120281,0.001999986,0.018367,-0.120281,-1.433861e-08,0.019149,-0.120075,-1.431406e-08,0.017646,-0.120607,-1.437748e-08,0.018367,-0.120281,-1.433861e-08,0.018367,-0.120281,0.001999986,0.016978,-0.121042,-1.442933e-08,0.017646,-0.120607,-1.437748e-08,0.017646,-0.120607,0.001999986,0.0015,-0.097781,0.001999988,0.0015,-0.077781,0.001999991,0.0015,-0.077781,0.0002859907,-0.0015,-0.097781,0.0002859883,0.0015,-0.097781,0.0002859883,0.0015,-0.077781,0.0002859907,-0.0015,-0.077781,0.001999991,-0.0015,-0.097781,0.001999988,-0.0015,-0.097781,0.0002859883,0.0015,-0.077781,0.001999991,-0.0015,-0.077781,0.001999991,-0.0015,-0.077781,0.0002859907,-0.0015,-0.097781,0.001999988,0.0015,-0.097781,0.001999988,0.0015,-0.097781,0.0002859883,-0.117827,0.01488799,0.05,-0.13022,0.01067999,0.05,-0.12806,0.006308994,0.05,-0.099274,0.01439299,0.05,-0.099431,0.01943799,0.05,-0.117827,0.01488799,0.05,-0.014557,0.006875994,0.05,-0.013731,0.006550996,0.03,-0.025779,0.01158599,0.05,-0.117827,0.014888,0.03,-0.13022,0.01068,0.03,-0.13022,0.01067999,0.05,-0.084271,0.016682,0.05,-0.083361,0.02189199,0.05,-0.099431,0.01943799,0.05,-0.004666,0.011094,0.03,-0.010367,0.007194996,0.03,-0.006544,0.01007999,0.05,-0.07202,0.022593,0.05,-0.083361,0.02189199,0.05,-0.084271,0.016682,0.05,-0.001836,-0.011942,0.03,0.003453,-0.011674,0.03,0.002058,-0.01196301,0.05,-0.041427,0.017156,0.03,-0.036433,0.009406996,0.03,-0.046802,0.013694,0.03,-0.028133,0.004891996,0.03,-0.019128,-0.001211004,0.03,-0.025827,0.003515994,0.05,-0.025779,0.011586,0.03,-0.028133,0.004891996,0.03,-0.036433,0.009406996,0.03,-0.116398,0.01016199,0.05,-0.099274,0.01439299,0.05,-0.117827,0.01488799,0.05,-0.002725,-0.01174801,0.05,-0.006544,0.01007999,0.05,-0.008287,-0.009412006,0.05,-0.061504,0.017023,0.05,-0.063789,0.02212399,0.05,-0.07202,0.022593,0.05,-0.05451,0.020603,0.03,-0.066857,0.022477,0.03,-0.063789,0.02212399,0.05,-0.061504,0.017023,0.05,-0.05451,0.02060299,0.05,-0.063789,0.02212399,0.05,-0.099274,0.01439299,0.05,-0.099274,0.014393,0.03,-0.084271,0.016682,0.05,-0.041427,0.01715599,0.05,-0.05451,0.02060299,0.05,-0.048108,0.01411699,0.05,0.00138,0.012095,0.03,-0.004666,0.011094,0.03,-0.001142,0.01205599,0.05,-0.061504,0.017023,0.05,-0.048108,0.01411699,0.05,-0.05451,0.02060299,0.05,-0.084271,0.016682,0.03,-0.071009,0.017476,0.03,-0.071009,0.01747599,0.05,-0.025779,0.011586,0.03,-0.013731,0.006550996,0.03,-0.028133,0.004891996,0.03,-0.025779,0.01158599,0.05,-0.041427,0.01715599,0.05,-0.036433,0.009406994,0.05,0.008867,0.008342994,0.05,0.008705,0.008682996,0.03,0.004144,0.01134299,0.05,-0.048108,0.01411699,0.05,-0.036433,0.009406994,0.05,-0.041427,0.01715599,0.05,0.002058,-0.01196301,0.05,0.011654,-0.003769006,0.05,-0.002725,-0.01174801,0.05,-0.014557,0.006875994,0.05,-0.025779,0.01158599,0.05,-0.025827,0.003515994,0.05,-0.061504,0.017023,0.05,-0.060622,0.016912,0.03,-0.048108,0.01411699,0.05,-0.041427,0.017156,0.03,-0.025779,0.011586,0.03,-0.036433,0.009406996,0.03,-0.05451,0.020603,0.03,-0.060622,0.016912,0.03,-0.066857,0.022477,0.03,-0.010367,0.007194996,0.03,-0.013731,0.006550996,0.03,-0.011039,0.006736994,0.05,-0.025827,0.003515994,0.05,-0.011039,0.006736994,0.05,-0.014557,0.006875994,0.05,-0.099431,0.01943799,0.05,-0.099431,0.019438,0.03,-0.117827,0.01488799,0.05,-0.084271,0.016682,0.05,-0.084271,0.016682,0.03,-0.071009,0.01747599,0.05,-0.041427,0.01715599,0.05,-0.041427,0.017156,0.03,-0.05451,0.02060299,0.05,-0.05451,0.02060299,0.05,-0.05451,0.020603,0.03,-0.063789,0.02212399,0.05,0.011705,0.003085994,0.05,0.004144,0.01134299,0.05,0.011654,-0.003769006,0.05,-0.036433,0.009406994,0.05,-0.036433,0.009406996,0.03,-0.025827,0.003515994,0.05,-0.008287,-0.009412006,0.05,-0.006544,0.01007999,0.05,-0.011039,0.006736994,0.05,0.008705,0.008682996,0.03,0.00138,0.012095,0.03,0.004144,0.01134299,0.05,-0.011039,0.006736994,0.05,-0.013731,0.006550996,0.03,-0.014557,0.006875994,0.05,-0.013731,0.006550996,0.03,-0.019128,-0.001211004,0.03,-0.028133,0.004891996,0.03,0.004144,0.01134299,0.05,0.00138,0.012095,0.03,-0.001142,0.01205599,0.05,-0.099274,0.01439299,0.05,-0.084271,0.016682,0.05,-0.099431,0.01943799,0.05,-0.025827,0.003515994,0.05,-0.025779,0.01158599,0.05,-0.036433,0.009406994,0.05,-0.081659,0.022124,0.03,-0.099431,0.019438,0.03,-0.099431,0.01943799,0.05,-0.002725,-0.01174801,0.05,0.011654,-0.003769006,0.05,-0.006544,0.01007999,0.05,-0.099274,0.014393,0.03,-0.084271,0.016682,0.03,-0.084271,0.016682,0.05,-0.13022,0.01068,0.03,-0.12806,0.006308996,0.03,-0.12806,0.006308994,0.05,-0.013731,0.006550996,0.03,-0.025779,0.011586,0.03,-0.025779,0.01158599,0.05,-0.081659,0.022124,0.03,-0.084271,0.016682,0.03,-0.099431,0.019438,0.03,-0.025827,0.003515994,0.05,-0.008287,-0.009412006,0.05,-0.011039,0.006736994,0.05,-0.019128,-0.001211004,0.03,-0.007621,-0.009812004,0.03,-0.008287,-0.009412006,0.05,-0.025827,0.003515994,0.05,-0.019128,-0.001211004,0.03,-0.008287,-0.009412006,0.05,-0.071009,0.01747599,0.05,-0.07202,0.022593,0.05,-0.084271,0.016682,0.05,-0.063789,0.02212399,0.05,-0.066857,0.022477,0.03,-0.07202,0.022593,0.05,-0.07202,0.022593,0.05,-0.081659,0.022124,0.03,-0.083361,0.02189199,0.05,0.004144,0.01134299,0.05,-0.001142,0.01205599,0.05,0.011654,-0.003769006,0.05,-0.116398,0.010162,0.03,-0.099274,0.014393,0.03,-0.099274,0.01439299,0.05,-0.116398,0.01016199,0.05,-0.117827,0.01488799,0.05,-0.12806,0.006308994,0.05,-0.002725,-0.01174801,0.05,-0.001836,-0.011942,0.03,0.002058,-0.01196301,0.05,0.008867,0.008342994,0.05,0.004144,0.01134299,0.05,0.011705,0.003085994,0.05,-0.071009,0.01747599,0.05,-0.061504,0.017023,0.05,-0.07202,0.022593,0.05,-0.048108,0.01411699,0.05,-0.046802,0.013694,0.03,-0.036433,0.009406994,0.05,-0.025779,0.01158599,0.05,-0.025779,0.011586,0.03,-0.041427,0.01715599,0.05,-0.099431,0.019438,0.03,-0.117827,0.014888,0.03,-0.117827,0.01488799,0.05,-0.066857,0.022477,0.03,-0.081659,0.022124,0.03,-0.07202,0.022593,0.05,-0.099431,0.019438,0.03,-0.099274,0.014393,0.03,-0.117827,0.014888,0.03,-0.117827,0.01488799,0.05,-0.117827,0.014888,0.03,-0.13022,0.01067999,0.05,-0.116398,0.01016199,0.05,-0.116398,0.010162,0.03,-0.099274,0.01439299,0.05,-0.041427,0.017156,0.03,-0.05451,0.020603,0.03,-0.05451,0.02060299,0.05,-0.006544,0.01007999,0.05,-0.010367,0.007194996,0.03,-0.011039,0.006736994,0.05,-0.025779,0.011586,0.03,-0.041427,0.017156,0.03,-0.041427,0.01715599,0.05,-0.12806,0.006308996,0.03,-0.116398,0.010162,0.03,-0.116398,0.01016199,0.05,-0.13022,0.01067999,0.05,-0.13022,0.01068,0.03,-0.12806,0.006308994,0.05,-0.007621,-0.009812004,0.03,-0.019128,-0.001211004,0.03,-0.013731,0.006550996,0.03,-0.05451,0.020603,0.03,-0.046802,0.013694,0.03,-0.060622,0.016912,0.03,0.002058,-0.01196301,0.05,0.003453,-0.011674,0.03,0.007522,-0.009724005,0.05,-0.046802,0.013694,0.03,-0.036433,0.009406996,0.03,-0.036433,0.009406994,0.05,0.012011,0.001776996,0.03,0.008705,0.008682996,0.03,0.011705,0.003085994,0.05,-0.060622,0.016912,0.03,-0.046802,0.013694,0.03,-0.048108,0.01411699,0.05,-0.071009,0.017476,0.03,-0.060622,0.016912,0.03,-0.061504,0.017023,0.05,-0.001142,0.01205599,0.05,-0.006544,0.01007999,0.05,0.011654,-0.003769006,0.05,0.011654,-0.003769006,0.05,0.012011,0.001776996,0.03,0.011705,0.003085994,0.05,-0.008287,-0.009412006,0.05,-0.007621,-0.009812004,0.03,-0.002725,-0.01174801,0.05,-0.071009,0.01747599,0.05,-0.071009,0.017476,0.03,-0.061504,0.017023,0.05,-0.001142,0.01205599,0.05,-0.004666,0.011094,0.03,-0.006544,0.01007999,0.05,-0.05451,0.020603,0.03,-0.041427,0.017156,0.03,-0.046802,0.013694,0.03,0.011131,-0.005043004,0.03,0.012011,0.001776996,0.03,0.011654,-0.003769006,0.05,0.007522,-0.009724005,0.05,0.011654,-0.003769006,0.05,0.002058,-0.01196301,0.05,0.003453,-0.011674,0.03,0.007132,-0.009824004,0.03,0.007522,-0.009724005,0.05,-0.116398,0.010162,0.03,-0.12806,0.006308996,0.03,-0.117827,0.014888,0.03,-0.099274,0.014393,0.03,-0.116398,0.010162,0.03,-0.117827,0.014888,0.03,-0.12806,0.006308996,0.03,-0.13022,0.01068,0.03,-0.117827,0.014888,0.03,-0.084271,0.016682,0.03,-0.099274,0.014393,0.03,-0.099431,0.019438,0.03,-0.081659,0.022124,0.03,-0.071009,0.017476,0.03,-0.084271,0.016682,0.03,-0.083361,0.02189199,0.05,-0.081659,0.022124,0.03,-0.099431,0.01943799,0.05,-0.060622,0.016912,0.03,-0.071009,0.017476,0.03,-0.066857,0.022477,0.03,0.011705,0.003085994,0.05,0.008705,0.008682996,0.03,0.008867,0.008342994,0.05,0.007132,-0.009824004,0.03,0.011131,-0.005043004,0.03,0.007522,-0.009724005,0.05,-0.081659,0.022124,0.03,-0.066857,0.022477,0.03,-0.071009,0.017476,0.03,-0.036433,0.009406996,0.03,-0.028133,0.004891996,0.03,-0.025827,0.003515994,0.05,-0.12806,0.006308994,0.05,-0.12806,0.006308996,0.03,-0.116398,0.01016199,0.05,-0.007621,-0.009812004,0.03,-0.001836,-0.011942,0.03,-0.002725,-0.01174801,0.05,0.007522,-0.009724005,0.05,0.011131,-0.005043004,0.03,0.011654,-0.003769006,0.05,0.008705,0.008682996,0.03,0.006472,0.004701996,0.03,0.002472,0.007607996,0.03,0.00138,0.012095,0.03,0.002472,0.007607996,0.03,-0.002472,0.007607996,0.03,0.012011,0.001776996,0.03,0.008,-3.576279e-09,0.03,0.006472,0.004701996,0.03,0.011131,-0.005043004,0.03,0.006472,-0.004702004,0.03,0.008,-3.576279e-09,0.03,0.007132,-0.009824004,0.03,0.002472,-0.007608004,0.03,0.006472,-0.004702004,0.03,-0.002472,-0.007608004,0.03,-0.001836,-0.011942,0.03,-0.007621,-0.009812004,0.03,-0.007621,-0.009812004,0.03,-0.013731,0.006550996,0.03,-0.008,-3.576279e-09,0.03,-0.010367,0.007194996,0.03,-0.006472,0.004701996,0.03,-0.008,-3.576279e-09,0.03,-0.004666,0.011094,0.03,-0.002472,0.007607996,0.03,-0.006472,0.004701996,0.03,-0.006472,0.004701996,0.03,-0.002472,0.007607996,0.03,-0.002472,0.007608,0.002000001,0.006472,0.004701996,0.03,0.008,-3.576279e-09,0.03,0.008,-2.384186e-10,0.002,0.006472,-0.004702004,0.03,0.002472,-0.007608004,0.03,0.002472,-0.007608001,0.001999999,-0.008,-2.384186e-10,0.002,-0.008,-3.576279e-09,0.03,-0.006472,0.004701996,0.03,0.002472,0.007607996,0.03,0.006472,0.004701996,0.03,0.006472,0.004701999,0.002000001,0.002472,-0.007608004,0.03,-0.002472,-0.007608004,0.03,-0.002472,-0.007608001,0.001999999,-0.006472,-0.004702,0.002,-0.006472,-0.004702004,0.03,-0.008,-3.576279e-09,0.03,-0.002472,0.007607996,0.03,0.002472,0.007607996,0.03,0.002472,0.007608,0.002000001,0.008,-3.576279e-09,0.03,0.006472,-0.004702004,0.03,0.006472,-0.004702,0.002,-0.002472,-0.007608004,0.03,-0.006472,-0.004702004,0.03,-0.006472,-0.004702,0.002,0.002472,-0.007608004,0.03,0.003453,-0.011674,0.03,-0.001836,-0.011942,0.03,-0.018604,-0.120148,0.001999986,-0.019075,0.060079,0.002000007,-0.019047,-0.120065,0.001999986,0.016353,-0.121573,0.001999986,0.016353,-0.121573,-1.449263e-08,0.016978,-0.121042,0.001999986,0.016353,-0.121573,0.001999986,0.015764,-0.122191,0.001999985,0.016353,-0.121573,-1.449263e-08,0.014929,-0.123252,0.001999985,0.014929,-0.123252,-1.469278e-08,0.015764,-0.122191,0.001999985,0.018344,0.060288,0.002000007,-0.018231,0.060289,0.002000007,0.019137,0.060079,0.002000007,0.001531,-0.134926,0.001999984,0.002936,-0.134721,0.001999984,0.008788,-0.131752,0.001999984,-0.0015,-0.077781,0.001999991,0.0015,-0.077781,0.001999991,-0.019075,0.060079,0.002000007,-0.019075,0.060079,0.002000007,-0.018604,-0.120148,0.001999986,-0.0015,-0.077781,0.001999991,-0.0015,-0.097781,0.001999988,-0.018604,-0.120148,0.001999986,0.0015,-0.097781,0.001999988,0.019137,0.060079,0.002000007,0.0015,-0.077781,0.001999991,0.019149,-0.120075,0.001999986,-0.009371,-0.130983,0.001999984,0,-0.135,0.001999984,-0.010391,-0.129722,0.001999985,0.017614,0.060617,0.002000007,-0.017458,0.060619,0.002000007,0.018344,0.060288,0.002000007,0,-0.135,0.001999984,0.001531,-0.134926,0.001999984,0.009953,-0.130562,0.001999984,0.016937,0.061053,0.002000007,-0.016747,0.061058,0.002000007,0.017614,0.060617,0.002000007,-0.010391,-0.129722,0.001999985,0.009953,-0.130562,0.001999984,-0.011868,-0.127496,0.001999985,0.016304,0.061587,0.002000008,-0.016089,0.061593,0.002000008,0.016937,0.061053,0.002000007,-0.011868,-0.127496,0.001999985,0.014929,-0.123252,0.001999985,-0.014802,-0.122855,0.001999985,0.015421,0.062543,0.002000008,-0.015475,0.062214,0.002000008,0.016304,0.061587,0.002000008,-0.014802,-0.122855,0.001999985,0.015764,-0.122191,0.001999985,-0.015686,-0.121844,0.001999986,0.012136,0.067516,0.002000008,-0.014617,0.063281,0.002000008,0.015421,0.062543,0.002000008,-0.005324,0.073988,0.002000009,-0.007335,0.072848,0.002000009,-0.004169,0.074417,0.002000009,0.009953,-0.130562,0.001999984,0.009953,-0.130562,-1.55642e-08,0.014929,-0.123252,0.001999985,-0.016327,-0.121269,0.001999986,0.016978,-0.121042,0.001999986,-0.017021,-0.120787,0.001999986,-0.015686,-0.121844,0.001999986,0.016353,-0.121573,0.001999986,-0.016327,-0.121269,0.001999986,0.010582,0.069727,0.002000008,-0.009384,0.071011,0.002000008,0.012136,0.067516,0.002000008,0.010582,0.069727,0.002000008,0.009512,0.070979,0.002000008,-0.009384,0.071011,0.002000008,-0.004169,0.074417,0.002000009,-0.008209,0.072159,0.002000009,-0.002903,0.074736,0.002000009,0,0.075,0.002000009,-0.001517,0.074934,0.002000009,-0.009384,0.071011,0.002000008,0.008304,0.072129,0.002000009,0.001519,0.074926,0.002000009,0.009512,0.070979,0.002000008,0.004191,0.074397,0.002000009,0.002913,0.074722,0.002000009,0.008304,0.072129,0.002000009,-0.017021,-0.120787,0.001999986,0.017646,-0.120607,0.001999986,-0.017776,-0.120409,0.001999986,0.008304,0.072129,0.002000009,0.007408,0.072818,0.002000009,0.004191,0.074397,0.002000009,0.019149,-0.120075,0.001999986,-0.018604,-0.120148,0.001999986,0.018367,-0.120281,0.001999986,0.02,-0.12,0.001999986,0.02,0.06,0.002000007,0.019149,-0.120075,0.001999986,0.008788,-0.131752,0.001999984,0.008788,-0.131752,-1.570606e-08,0.009953,-0.130562,0.001999984,0.002936,-0.134721,0.001999984,0.004223,-0.134395,0.001999984,0.007464,-0.132813,0.001999984,-0.002919,-0.134734,0.001999984,-0.001527,-0.134934,0.001999984,-0.009371,-0.130983,0.001999984,-0.009371,-0.130983,0.001999984,-0.00821,-0.132139,0.001999984,-0.002919,-0.134734,0.001999984,0.007464,-0.132813,0.001999984,0.007464,-0.132813,-1.583254e-08,0.008788,-0.131752,0.001999984,-0.00821,-0.132139,0.001999984,-0.007343,-0.132832,0.001999984,-0.004188,-0.134412,0.001999984,0.006479,-0.13343,0.001999984,0.006479,-0.13343,-1.59061e-08,0.007464,-0.132813,0.001999984,0.006479,-0.13343,0.001999984,0.005401,-0.133961,0.001999984,0.006479,-0.13343,-1.59061e-08,0.004223,-0.134395,0.001999984,0.004223,-0.134395,-1.602113e-08,0.005401,-0.133961,0.001999984,0.002936,-0.134721,0.001999984,0.002936,-0.134721,-1.605999e-08,0.004223,-0.134395,0.001999984,0.001531,-0.134926,0.001999984,0.001531,-0.134926,-1.608443e-08,0.002936,-0.134721,0.001999984,0,-0.135,0.001999984,0,-0.135,-1.609325e-08,0.001531,-0.134926,0.001999984,-0.001527,-0.134934,0.001999984,-0.001527,-0.134934,-1.608539e-08,0,-0.135,0.001999984,-0.002919,-0.134734,0.001999984,-0.002919,-0.134734,-1.606154e-08,-0.001527,-0.134934,0.001999984,-0.004188,-0.134412,0.001999984,-0.004188,-0.134412,-1.602316e-08,-0.002919,-0.134734,0.001999984,-0.005342,-0.13398,0.001999984,-0.005342,-0.13398,-1.597166e-08,-0.004188,-0.134412,0.001999984,-0.00639,-0.13345,0.001999984,-0.00639,-0.13345,-1.590848e-08,-0.005342,-0.13398,0.001999984,-0.007343,-0.132832,0.001999984,-0.007343,-0.132832,-1.583481e-08,-0.00639,-0.13345,0.001999984,-0.00821,-0.132139,0.001999984,-0.00821,-0.132139,-1.57522e-08,-0.007343,-0.132832,0.001999984,-0.009371,-0.130983,0.001999984,-0.009371,-0.130983,-1.561439e-08,-0.00821,-0.132139,0.001999984,-0.010391,-0.129722,0.001999985,-0.010391,-0.129722,-1.546407e-08,-0.009371,-0.130983,0.001999984,-0.011868,-0.127496,0.001999985,-0.011868,-0.127496,-1.519871e-08,-0.010391,-0.129722,0.001999985,-0.014802,-0.122855,0.001999985,-0.014802,-0.122855,-1.464546e-08,-0.011868,-0.127496,0.001999985,-0.015686,-0.121844,0.001999986,-0.015686,-0.121844,-1.452494e-08,-0.014802,-0.122855,0.001999985,-0.016327,-0.121269,0.001999986,-0.016327,-0.121269,-1.445639e-08,-0.015686,-0.121844,0.001999986,-0.017021,-0.120787,0.001999986,-0.017021,-0.120787,-1.439893e-08,-0.016327,-0.121269,0.001999986,-0.017776,-0.120409,0.001999986,-0.017776,-0.120409,-1.435387e-08,-0.017021,-0.120787,0.001999986,-0.018604,-0.120148,0.001999986,-0.018604,-0.120148,-1.432276e-08,-0.017776,-0.120409,0.001999986,-0.019047,-0.120065,-1.431286e-08,-0.018604,-0.120148,-1.432276e-08,-0.019047,-0.120065,0.001999986,-0.02,-0.12,0.001999986,-0.02,-0.12,-1.430511e-08,-0.019047,-0.120065,0.001999986,-0.02,0.06,0.002000007,-0.02,0.06,7.152557e-09,-0.02,-0.12,0.001999986,-0.019075,0.060079,0.002000007,-0.019075,0.060079,7.161975e-09,-0.02,0.06,0.002000007,-0.018231,0.060289,0.002000007,-0.018231,0.060289,7.187009e-09,-0.019075,0.060079,0.002000007,-0.017458,0.060619,0.002000007,-0.017458,0.060619,7.226348e-09,-0.018231,0.060289,0.002000007,-0.016747,0.061058,0.002000007,-0.016747,0.061058,7.278681e-09,-0.017458,0.060619,0.002000007,-0.016089,0.061593,0.002000008,-0.016089,0.061593,7.342458e-09,-0.016747,0.061058,0.002000007,-0.015475,0.062214,0.002000008,-0.015475,0.062214,7.416487e-09,-0.016089,0.061593,0.002000008,-0.014617,0.063281,0.002000008,-0.014617,0.063281,7.543683e-09,-0.015475,0.062214,0.002000008,-0.009384,0.071011,0.002000008,-0.009384,0.071011,8.465171e-09,-0.014617,0.063281,0.002000008,-0.008209,0.072159,0.002000009,-0.008209,0.072159,8.602023e-09,-0.009384,0.071011,0.002000008,-0.007335,0.072848,0.002000009,-0.007335,0.072848,8.684158e-09,-0.008209,0.072159,0.002000009,-0.006376,0.073461,0.002000009,-0.006376,0.073461,8.757234e-09,-0.007335,0.072848,0.002000009,-0.005324,0.073988,0.002000009,-0.005324,0.073988,8.820057e-09,-0.006376,0.073461,0.002000009,-0.004169,0.074417,0.002000009,-0.004169,0.074417,8.871198e-09,-0.005324,0.073988,0.002000009,-0.002903,0.074736,0.002000009,-0.002903,0.074736,8.909225e-09,-0.004169,0.074417,0.002000009,-0.001517,0.074934,0.002000009,-0.001517,0.074934,8.932829e-09,-0.002903,0.074736,0.002000009,0,0.075,0.002000009,0,0.075,8.940697e-09,-0.001517,0.074934,0.002000009,0.001519,0.074926,0.002000009,0.001519,0.074926,8.931875e-09,0,0.075,0.002000009,0.002913,0.074722,0.002000009,0.002913,0.074722,8.907556e-09,0.001519,0.074926,0.002000009,0.004191,0.074397,0.002000009,0.004191,0.074397,8.868813e-09,0.002913,0.074722,0.002000009,0.00536,0.073964,0.002000009,0.00536,0.073964,8.817196e-09,0.004191,0.074397,0.002000009,0.00643,0.073434,0.002000009,0.00643,0.073434,8.754015e-09,0.00536,0.073964,0.002000009,0.00643,0.073434,0.002000009,0.007408,0.072818,0.002000009,0.00643,0.073434,8.754015e-09,0.008304,0.072129,0.002000009,0.008304,0.072129,8.598447e-09,0.007408,0.072818,0.002000009,0.008304,0.072129,0.002000009,0.009512,0.070979,0.002000008,0.008304,0.072129,8.598447e-09,0.010582,0.069727,0.002000008,0.010582,0.069727,8.312107e-09,0.009512,0.070979,0.002000008,0.012136,0.067516,0.002000008,0.012136,0.067516,8.048534e-09,0.010582,0.069727,0.002000008,0.012136,0.067516,0.002000008,0.015421,0.062543,0.002000008,0.012136,0.067516,8.048534e-09,0.016304,0.061587,0.002000008,0.016304,0.061587,7.341742e-09,0.015421,0.062543,0.002000008,0.016304,0.061587,0.002000008,0.016937,0.061053,0.002000007,0.016304,0.061587,7.341742e-09,0.017614,0.060617,0.002000007,0.017614,0.060617,7.226109e-09,0.016937,0.061053,0.002000007,0.018344,0.060288,0.002000007,0.018344,0.060288,7.18689e-09,0.017614,0.060617,0.002000007,0.019137,0.060079,0.002000007,0.019137,0.060079,7.161975e-09,0.018344,0.060288,0.002000007,0.02,0.06,0.002000007,0.02,0.06,7.152557e-09,0.019137,0.060079,0.002000007,0.02,-0.12,0.001999986,0.02,-0.12,-1.430511e-08,0.02,0.06,0.002000007,0.019149,-0.120075,0.001999986,0.019149,-0.120075,-1.431406e-08,0.02,-0.12,0.001999986,0.019149,-0.120075,0.001999986,0.018367,-0.120281,0.001999986,0.019149,-0.120075,-1.431406e-08,0.017646,-0.120607,0.001999986,0.017646,-0.120607,-1.437748e-08,0.018367,-0.120281,0.001999986,0.016978,-0.121042,0.001999986,0.016978,-0.121042,-1.442933e-08,0.017646,-0.120607,0.001999986,0.0015,-0.097781,0.0002859883,0.0015,-0.097781,0.001999988,0.0015,-0.077781,0.0002859907,-0.0015,-0.077781,0.0002859907,-0.0015,-0.097781,0.0002859883,0.0015,-0.077781,0.0002859907,-0.0015,-0.077781,0.0002859907,-0.0015,-0.077781,0.001999991,-0.0015,-0.097781,0.0002859883,0.0015,-0.077781,0.0002859907,0.0015,-0.077781,0.001999991,-0.0015,-0.077781,0.0002859907,-0.0015,-0.097781,0.0002859883,-0.0015,-0.097781,0.001999988,0.0015,-0.097781,0.0002859883,0.00138,0.012095,0.03,0.008705,0.008682996,0.03,0.002472,0.007607996,0.03,-0.004666,0.011094,0.03,0.00138,0.012095,0.03,-0.002472,0.007607996,0.03,0.008705,0.008682996,0.03,0.012011,0.001776996,0.03,0.006472,0.004701996,0.03,0.012011,0.001776996,0.03,0.011131,-0.005043004,0.03,0.008,-3.576279e-09,0.03,0.011131,-0.005043004,0.03,0.007132,-0.009824004,0.03,0.006472,-0.004702004,0.03,-0.006472,-0.004702004,0.03,-0.002472,-0.007608004,0.03,-0.007621,-0.009812004,0.03,-0.006472,-0.004702004,0.03,-0.007621,-0.009812004,0.03,-0.008,-3.576279e-09,0.03,-0.013731,0.006550996,0.03,-0.010367,0.007194996,0.03,-0.008,-3.576279e-09,0.03,-0.010367,0.007194996,0.03,-0.004666,0.011094,0.03,-0.006472,0.004701996,0.03,-0.006472,0.004701999,0.002000001,-0.006472,0.004701996,0.03,-0.002472,0.007608,0.002000001,0.006472,0.004701999,0.002000001,0.006472,0.004701996,0.03,0.008,-2.384186e-10,0.002,0.006472,-0.004702,0.002,0.006472,-0.004702004,0.03,0.002472,-0.007608001,0.001999999,-0.006472,0.004701999,0.002000001,-0.008,-2.384186e-10,0.002,-0.006472,0.004701996,0.03,0.002472,0.007608,0.002000001,0.002472,0.007607996,0.03,0.006472,0.004701999,0.002000001,0.002472,-0.007608001,0.001999999,0.002472,-0.007608004,0.03,-0.002472,-0.007608001,0.001999999,-0.008,-2.384186e-10,0.002,-0.006472,-0.004702,0.002,-0.008,-3.576279e-09,0.03,-0.002472,0.007608,0.002000001,-0.002472,0.007607996,0.03,0.002472,0.007608,0.002000001,0.008,-2.384186e-10,0.002,0.008,-3.576279e-09,0.03,0.006472,-0.004702,0.002,-0.002472,-0.007608001,0.001999999,-0.002472,-0.007608004,0.03,-0.006472,-0.004702,0.002,0.003453,-0.011674,0.03,0.002472,-0.007608004,0.03,0.007132,-0.009824004,0.03,0.002472,-0.007608004,0.03,-0.001836,-0.011942,0.03,-0.002472,-0.007608004,0.03]);
+	          for (l = hvs; l < handleVertices.length - 2; l = l + 3) {
+	            handleVertices[l] += cX;
+	            handleVertices[l + 1] += aY;
+	            handleVertices[l + 2] += iZ;
+	          }
+	        }
+	        else {
+	          // Face Definitions FRONT HANDLE
+	          // A
+	          handleVertices[ hvPos ] = handleVertices[ hvPos + 9 ] = aX;
+	          handleVertices[ hvPos + 1 ] = handleVertices[ hvPos + 10 ] = aY;
+	          handleVertices[ hvPos + 2 ] = handleVertices[ hvPos + 11 ] = aZ;
+	          // B
+	          handleVertices[ hvPos + 3 ] = aX;
+	          handleVertices[ hvPos + 4 ] = bY;
+	          handleVertices[ hvPos + 5 ] = aZ;
+	          // D
+	          handleVertices[ hvPos + 6 ] = handleVertices[ hvPos + 12 ] = cX;
+	          handleVertices[ hvPos + 7 ] = handleVertices[ hvPos + 13 ] = bY;
+	          handleVertices[ hvPos + 8 ] = handleVertices[ hvPos + 14 ] = cZ;
+	          // C
+	          handleVertices[ hvPos + 15 ] = cX;
+	          handleVertices[ hvPos + 16 ] = aY;
+	          handleVertices[ hvPos + 17 ] = cZ;
+
+	          hvPos += 18;
+	          // E
+	          handleVertices[ hvPos ] = handleVertices[ hvPos + 9 ] = aX;
+	          handleVertices[ hvPos + 1 ] = handleVertices[ hvPos + 10 ] = aY;
+	          handleVertices[ hvPos + 2 ] = handleVertices[ hvPos + 11 ] = eZ;
+	          // F
+	          handleVertices[ hvPos + 3 ] = aX;
+	          handleVertices[ hvPos + 4 ] = bY;
+	          handleVertices[ hvPos + 5 ] = eZ;
+	          // B
+	          handleVertices[ hvPos + 6 ] = handleVertices[ hvPos + 12 ] = aX;
+	          handleVertices[ hvPos + 7 ] = handleVertices[ hvPos + 13 ] = bY;
+	          handleVertices[ hvPos + 8 ] = handleVertices[ hvPos + 14 ] = aZ;
+	          // A
+	          handleVertices[ hvPos + 15 ] = aX;
+	          handleVertices[ hvPos + 16 ] = aY;
+	          handleVertices[ hvPos + 17 ] = aZ;
+
+	          hvPos += 18;
+	          // G
+	          handleVertices[ hvPos ] = handleVertices[ hvPos + 9 ] = gX;
+	          handleVertices[ hvPos + 1 ] = handleVertices[ hvPos + 10 ] = aY;
+	          handleVertices[ hvPos + 2 ] = handleVertices[ hvPos + 11 ] = eZ;
+	          // H
+	          handleVertices[ hvPos + 3 ] = gX;
+	          handleVertices[ hvPos + 4 ] = bY;
+	          handleVertices[ hvPos + 5 ] = eZ;
+	          // F
+	          handleVertices[ hvPos + 6 ] = handleVertices[ hvPos + 12 ] = aX;
+	          handleVertices[ hvPos + 7 ] = handleVertices[ hvPos + 13 ] = bY;
+	          handleVertices[ hvPos + 8 ] = handleVertices[ hvPos + 14 ] = eZ;
+	          // E
+	          handleVertices[ hvPos + 15 ] = aX;
+	          handleVertices[ hvPos + 16 ] = aY;
+	          handleVertices[ hvPos + 17 ] = eZ;
+
+	          hvPos += 18;
+	          // I
+	          handleVertices[ hvPos ] = handleVertices[ hvPos + 9 ] = gX;
+	          handleVertices[ hvPos + 1 ] = handleVertices[ hvPos + 10 ] = aY;
+	          handleVertices[ hvPos + 2 ] = handleVertices[ hvPos + 11 ] = iZ;
+	          // J
+	          handleVertices[ hvPos + 3 ] = gX;
+	          handleVertices[ hvPos + 4 ] = bY;
+	          handleVertices[ hvPos + 5 ] = iZ;
+	          // H
+	          handleVertices[ hvPos + 6 ] = handleVertices[ hvPos + 12 ] = gX;
+	          handleVertices[ hvPos + 7 ] = handleVertices[ hvPos + 13 ] = bY;
+	          handleVertices[ hvPos + 8 ] = handleVertices[ hvPos + 14 ] = eZ;
+	          // G
+	          handleVertices[ hvPos + 15 ] = gX;
+	          handleVertices[ hvPos + 16 ] = aY;
+	          handleVertices[ hvPos + 17 ] = eZ;
+
+	          hvPos += 18;
+	          // C
+	          handleVertices[ hvPos ] = handleVertices[ hvPos + 9 ] = cX;
+	          handleVertices[ hvPos + 1 ] = handleVertices[ hvPos + 10 ] = aY;
+	          handleVertices[ hvPos + 2 ] = handleVertices[ hvPos + 11 ] = cZ;
+	          // D
+	          handleVertices[ hvPos + 3 ] = cX;
+	          handleVertices[ hvPos + 4 ] = bY;
+	          handleVertices[ hvPos + 5 ] = cZ;
+	          // L
+	          handleVertices[ hvPos + 6 ] = handleVertices[ hvPos + 12 ] = cX;
+	          handleVertices[ hvPos + 7 ] = handleVertices[ hvPos + 13 ] = bY;
+	          handleVertices[ hvPos + 8 ] = handleVertices[ hvPos + 14 ] = iZ;
+	          // K
+	          handleVertices[ hvPos + 15 ] = cX;
+	          handleVertices[ hvPos + 16 ] = aY;
+	          handleVertices[ hvPos + 17 ] = iZ;
+
+	          hvPos += 18;
+	          // E
+	          handleVertices[ hvPos ] = handleVertices[ hvPos + 9 ] = aX;
+	          handleVertices[ hvPos + 1 ] = handleVertices[ hvPos + 10 ] = aY;
+	          handleVertices[ hvPos + 2 ] = handleVertices[ hvPos + 11 ] = eZ;
+	          // A
+	          handleVertices[ hvPos + 3 ] = aX;
+	          handleVertices[ hvPos + 4 ] = aY;
+	          handleVertices[ hvPos + 5 ] = aZ;
+	          // C
+	          handleVertices[ hvPos + 6 ] = handleVertices[ hvPos + 12 ] = cX;
+	          handleVertices[ hvPos + 7 ] = handleVertices[ hvPos + 13 ] = aY;
+	          handleVertices[ hvPos + 8 ] = handleVertices[ hvPos + 14 ] = cZ;
+	          // G
+	          handleVertices[ hvPos + 15 ] = gX;
+	          handleVertices[ hvPos + 16 ] = aY;
+	          handleVertices[ hvPos + 17 ] = eZ;
+
+	          hvPos += 18;
+	          // K
+	          handleVertices[ hvPos ] = handleVertices[ hvPos + 9 ] = cX;
+	          handleVertices[ hvPos + 1 ] = handleVertices[ hvPos + 10 ] = aY;
+	          handleVertices[ hvPos + 2 ] = handleVertices[ hvPos + 11 ] = iZ;
+	          // I
+	          handleVertices[ hvPos + 3 ] = gX;
+	          handleVertices[ hvPos + 4 ] = aY;
+	          handleVertices[ hvPos + 5 ] = iZ;
+	          // G
+	          handleVertices[ hvPos + 6 ] = handleVertices[ hvPos + 12 ] = gX;
+	          handleVertices[ hvPos + 7 ] = handleVertices[ hvPos + 13 ] = aY;
+	          handleVertices[ hvPos + 8 ] = handleVertices[ hvPos + 14 ] = eZ;
+	          // C
+	          handleVertices[ hvPos + 15 ] = cX;
+	          handleVertices[ hvPos + 16 ] = aY;
+	          handleVertices[ hvPos + 17 ] = cZ;
+
+	          hvPos += 18;
+	          // B
+	          handleVertices[ hvPos ] = handleVertices[ hvPos + 9 ] = aX;
+	          handleVertices[ hvPos + 1 ] = handleVertices[ hvPos + 10 ] = bY;
+	          handleVertices[ hvPos + 2 ] = handleVertices[ hvPos + 11 ] = aZ;
+	          // F
+	          handleVertices[ hvPos + 3 ] = aX;
+	          handleVertices[ hvPos + 4 ] = bY;
+	          handleVertices[ hvPos + 5 ] = eZ;
+	          // H
+	          handleVertices[ hvPos + 6 ] = handleVertices[ hvPos + 12 ] = gX;
+	          handleVertices[ hvPos + 7 ] = handleVertices[ hvPos + 13 ] = bY;
+	          handleVertices[ hvPos + 8 ] = handleVertices[ hvPos + 14 ] = eZ;
+	          // D
+	          handleVertices[ hvPos + 15 ] = cX;
+	          handleVertices[ hvPos + 16 ] = bY;
+	          handleVertices[ hvPos + 17 ] = cZ;
+
+	          hvPos += 18;
+	          // D
+	          handleVertices[ hvPos ] = handleVertices[ hvPos + 9 ] = cX;
+	          handleVertices[ hvPos + 1 ] = handleVertices[ hvPos + 10 ] = bY;
+	          handleVertices[ hvPos + 2 ] = handleVertices[ hvPos + 11 ] = cZ;
+	          // H
+	          handleVertices[ hvPos + 3 ] = gX;
+	          handleVertices[ hvPos + 4 ] = bY;
+	          handleVertices[ hvPos + 5 ] = eZ;
+	          // J
+	          handleVertices[ hvPos + 6 ] = handleVertices[ hvPos + 12 ] = gX;
+	          handleVertices[ hvPos + 7 ] = handleVertices[ hvPos + 13 ] = bY;
+	          handleVertices[ hvPos + 8 ] = handleVertices[ hvPos + 14 ] = iZ;
+	          // L
+	          handleVertices[ hvPos + 15 ] = cX;
+	          handleVertices[ hvPos + 16 ] = bY;
+	          handleVertices[ hvPos + 17 ] = iZ;
+
+	          hvPos += 18;
+
+	          // HANDLE PLATE
+
+	          // Vertex Front View
+	          // A/E____D/H
+	          // |      |
+	          // |      |
+	          // |      |
+	          // B/F____C/G
+
+	          aX = xCursor + frameLength + leafLength-handlePlateDistance-handlePlateLength;
+	          aY = handleHeight+0.06;
+	          aZ = zCursor+a.leafWidth+handlePlateWidth;
+	          bY = handleHeight+0.06-handlePlateHeight;
+	          cX = xCursor + frameLength + leafLength-handlePlateDistance;
+	          eZ = zCursor-handlePlateWidth;
+
+	          // A
+	          handleVertices[ hvPos ] = handleVertices[ hvPos + 9 ] = aX;
+	          handleVertices[ hvPos + 1 ] = handleVertices[ hvPos + 10 ] = aY;
+	          handleVertices[ hvPos + 2 ] = handleVertices[ hvPos + 11 ] = aZ;
+	          // B
+	          handleVertices[ hvPos + 3 ] = aX;
+	          handleVertices[ hvPos + 4 ] = bY;
+	          handleVertices[ hvPos + 5 ] = aZ;
+	          // C
+	          handleVertices[ hvPos + 6 ] = handleVertices[ hvPos + 12 ] = cX;
+	          handleVertices[ hvPos + 7 ] = handleVertices[ hvPos + 13 ] = bY;
+	          handleVertices[ hvPos + 8 ] = handleVertices[ hvPos + 14 ] = aZ;
+	          // D
+	          handleVertices[ hvPos + 15 ] = cX;
+	          handleVertices[ hvPos + 16 ] = aY;
+	          handleVertices[ hvPos + 17 ] = aZ;
+
+	          hvPos += 18;
+	        }
+	        // set position in handle vertex array for current door leaf before mirroring
+	        hve = handleVertices.length;
+	        // Duplicating Handle Vertices
+	        hvt = handleVertices.slice(hvs,hve);
+	        var t;
+	        // Mirroring Z Vertices
+	        for (t=0;t<hvt.length-2;t = t + 3){
+	          hvt[t+2] = -hvt[t+2]+ (a.leafWidth-leafOffset-frameOffset)*2-a.leafWidth;
+	        }
+	        // Changing Vertex Order > Flipping Polygons
+	        for (t=0;t<hvt.length-8;t = t + 9){
+	          hvm[1] = hvt[t+3];
+	          hvm[2] = hvt[t+4];
+	          hvm[3] = hvt[t+5];
+	          hvt[t+3] = hvt[t+6];
+	          hvt[t+4] = hvt[t+7];
+	          hvt[t+5] = hvt[t+8];
+	          hvt[t+6] = hvm[1];
+	          hvt[t+7] = hvm[2];
+	          hvt[t+8] = hvm[3];
+	        }
+	        // Push Vertices into Array
+	        handleVertices = handleVertices.concat(hvt);
+	        hvPos += hvt.length;
+
+	        // set end position in handle vertex array for current door leaf
+	        hvf = handleVertices.length;
+
+	        // Flip Handle for flipped door leafs or if hinge is left
+	        if (leaf[c].flipLeaf || (a.hinge==='left'&& (doorType!=='doubleSwing'&& doorType!=='doubleSwingDoubleFix'))) {
+	          for (i = hvs; i < hvf-2; i = i + 3) {
+	            xRotate = handleVertices[i] - frameLength - leafLength/2 - prevLeafs;
+	            handleVertices[i+2]=handleVertices[i+2]-a.leafWidth/2+leafOffset+frameOffset;
+	            handleVertices[i] = -xRotate + frameLength + leafLength/2 + prevLeafs;
+	            handleVertices[i + 2] = -handleVertices[i + 2] +a.leafWidth/2-leafOffset-frameOffset;
+	          }
+	        }
+	      }
+
+	      // rotation of leaf and handle vertices for door opening
+	      if(leaf[c].angle>0){
+
+	        // rotation setup
+	        xRotate = 0;
+	        cosAngle = Math.cos(leaf[c].angle / 180 * Math.PI);
+	        sinAngle = Math.sin(leaf[c].angle / 180 * Math.PI);
+
+	        if (leaf[c].flipLeaf || (a.hinge==='left'&& (doorType!=='doubleSwing'&& doorType!=='doubleSwingDoubleFix'))) {
+	          rotationOffset=-frameLength-leafLength-prevLeafs;
+	        } else {
+	          rotationOffset=-frameLength-prevLeafs;
+	          sinAngle=-sinAngle;
+	        }
+
+	        // rotation of leaf vertices
+	        for (i=lvs;i<lve-2; i = i + 3){
+	          xRotate=leafVertices[i]+rotationOffset;
+	          leafVertices[i+2]=leafVertices[i+2]+leafOffset+frameOffset;
+	          leafVertices[i]=xRotate*cosAngle-leafVertices[i+2]*sinAngle-rotationOffset;
+	          leafVertices[i+2]=leafVertices[i+2]*cosAngle+xRotate*sinAngle-leafOffset-frameOffset;
+	        }
+	        // rotation of handle vertices
+	        for (i=hvs;i<hvf-2; i = i + 3){
+	          xRotate=handleVertices[i]+rotationOffset;
+	          handleVertices[i+2]=handleVertices[i+2]+leafOffset+frameOffset;
+	          handleVertices[i]=xRotate*cosAngle-handleVertices[i+2]*sinAngle-rotationOffset;
+	          handleVertices[i+2]=handleVertices[i+2]*cosAngle+xRotate*sinAngle-leafOffset-frameOffset;
+	        }
+	      }
+	      xCursor += leafLength;
+	    }
+
+	    var i,
+	      ll = leafVertices.length,
+	      lh = handleVertices.length;
+
+	    // rotate everything by PI if door is set to front
+
+	    if (a.side === 'front'){
+	      for (i=0;i<ll;i=i+3) {
+	        xRotate=leafVertices[i]-frameLength-doorOpening/2;
+	        leafVertices[i+2]=leafVertices[i+2]-leafOffset/2-frameOffset/2-frameWidth/2;
+	        leafVertices[i]=-xRotate+frameLength+doorOpening/2;
+	        leafVertices[i+2]=-leafVertices[i+2]-leafOffset/2-frameOffset/2+frameWidth/2;
+	      }
+	      for (i = 0; i < lh; i = i + 3) {
+	        xRotate=handleVertices[i]-frameLength-doorOpening/2;
+	        handleVertices[i+2]=handleVertices[i+2]-leafOffset/2-frameOffset/2-frameWidth/2;
+	        handleVertices[i]=-xRotate+frameLength+doorOpening/2;
+	        handleVertices[i+2]=-handleVertices[i+2]-leafOffset/2-frameOffset/2+frameWidth/2;
+	      }
+	    }
+
+	    return {
+	      frame: {
+	        positions: frameVertices,
+	        normals: getNormalsBuffer.flat(frameVertices),
+	        material: 'frame'
+	      },
+	      handle: {
+	        positions: new Float32Array(handleVertices),
+	        normals: getNormalsBuffer.flat(handleVertices),
+	        material: 'handle'
+	      },
+	      leaf: {
+	        positions: new Float32Array(leafVertices),
+	        normals: getNormalsBuffer.flat(leafVertices),
+	        uvs: new Float32Array(leafUvs),
+	        material: 'leaf'
+	      },
+	      threshold: {
+	        positions: floorVertices,
+	        normals: getNormalsBuffer.flat(floorVertices),
+	        uvs: floorUvs,
+	        material: 'threshold'
+	      }
+	    }
+
+	  },
+
+	  materials3d: function generateMaterials3d(a) {
+	    return a.materials
+	  }
+
+	};
+
+	// fast 2d polygon tesselation
+	// can also triangulate 3D n-gons but fails very often to do so
+	// use triangulate-3d for 3D n-gons
+
+	// modified version of triangulate.js (https://github.com/mapbox/earcut)
+	// - wrapped in require module
+
+	/**
+	 * earcut.js triangulation function
+	 * Copyright (c) 2015, Mapbox
+	 */
+
+	//function earcut (data, holeIndices, dim) {
+	var triangulate2d = function (data, holeIndices, dim) {
+
+	  dim = dim || 2;
+
+	  var hasHoles = holeIndices && holeIndices.length,
+	    outerLen = hasHoles ? holeIndices[0] * dim : data.length,
+	    outerNode = filterPoints(data, linkedList(data, 0, outerLen, dim, true)),
+	    triangles = [];
+
+	  if (!outerNode) {
+	    return triangles
+	  }
+
+	  var minX, minY, maxX, maxY, x, y, size;
+
+	  if (hasHoles) {
+	    outerNode = eliminateHoles(data, holeIndices, outerNode, dim);
+	  }
+
+	  // if the shape is not too simple, we'll use z-order curve hash later; calculate polygon bbox
+	  if (data.length > 80 * dim) {
+	    minX = maxX = data[0];
+	    minY = maxY = data[1];
+
+	    for (var i = dim; i < outerLen; i += dim) {
+	      x = data[i];
+	      y = data[i + 1];
+	      if (x < minX) {
+	        minX = x;
+	      }
+	      if (y < minY) {
+	        minY = y;
+	      }
+	      if (x > maxX) {
+	        maxX = x;
+	      }
+	      if (y > maxY) {
+	        maxY = y;
+	      }
+	    }
+
+	    // minX, minY and size are later used to transform coords into integers for z-order calculation
+	    size = Math.max(maxX - minX, maxY - minY);
+	  }
+
+	  earcutLinked(data, outerNode, triangles, dim, minX, minY, size);
+
+	  return triangles
+	};
+
+	// create a circular doubly linked list from polygon points in the specified winding order
+	function linkedList (data, start, end, dim, clockwise) {
+	  var sum = 0,
+	    i, j, last;
+
+	  // calculate original winding order of a polygon ring
+	  for (i = start, j = end - dim; i < end; i += dim) {
+	    sum += (data[j] - data[i]) * (data[i + 1] + data[j + 1]);
+	    j = i;
+	  }
+
+	  // link points into circular doubly-linked list in the specified winding order
+	  if (clockwise === (sum > 0)) {
+	    for (i = start; i < end; i += dim) {
+	      last = insertNode(i, last);
+	    }
+	  } else {
+	    for (i = end - dim; i >= start; i -= dim) {
+	      last = insertNode(i, last);
+	    }
+	  }
+
+	  return last
+	}
+
+	// eliminate colinear or duplicate points
+	function filterPoints (data, start, end) {
+	  if (!end) {
+	    end = start;
+	  }
+
+	  var node = start,
+	    again;
+	  do {
+	    again = false;
+
+	    if (!node.steiner && (equals(data, node.i, node.next.i) || orient(data, node.prev.i, node.i, node.next.i) === 0)) {
+
+	      // remove node
+	      node.prev.next = node.next;
+	      node.next.prev = node.prev;
+
+	      if (node.prevZ) {
+	        node.prevZ.nextZ = node.nextZ;
+	      }
+	      if (node.nextZ) {
+	        node.nextZ.prevZ = node.prevZ;
+	      }
+
+	      node = end = node.prev;
+
+	      if (node === node.next) {
+	        return null
+	      }
+	      again = true;
+
+	    } else {
+	      node = node.next;
+	    }
+	  } while (again || node !== end)
+
+	  return end
+	}
+
+	// main ear slicing loop which triangulates a polygon (given as a linked list)
+	function earcutLinked (data, ear, triangles, dim, minX, minY, size, pass) {
+	  if (!ear) {
+	    return
+	  }
+
+	  // interlink polygon nodes in z-order
+	  if (!pass && minX !== undefined) {
+	    indexCurve(data, ear, minX, minY, size);
+	  }
+
+	  var stop = ear,
+	    prev, next;
+
+	  // iterate through ears, slicing them one by one
+	  while (ear.prev !== ear.next) {
+	    prev = ear.prev;
+	    next = ear.next;
+
+	    if (isEar(data, ear, minX, minY, size)) {
+	      // cut off the triangle
+	      triangles.push(prev.i / dim);
+	      triangles.push(ear.i / dim);
+	      triangles.push(next.i / dim);
+
+	      // remove ear node
+	      next.prev = prev;
+	      prev.next = next;
+
+	      if (ear.prevZ) {
+	        ear.prevZ.nextZ = ear.nextZ;
+	      }
+	      if (ear.nextZ) {
+	        ear.nextZ.prevZ = ear.prevZ;
+	      }
+
+	      // skipping the next vertice leads to less sliver triangles
+	      ear = next.next;
+	      stop = next.next;
+
+	      continue
+	    }
+
+	    ear = next;
+
+	    // if we looped through the whole remaining polygon and can't find any more ears
+	    if (ear === stop) {
+	      // try filtering points and slicing again
+	      if (!pass) {
+	        earcutLinked(data, filterPoints(data, ear), triangles, dim, minX, minY, size, 1);
+
+	        // if this didn't work, try curing all small self-intersections locally
+	      } else if (pass === 1) {
+	        ear = cureLocalIntersections(data, ear, triangles, dim);
+	        earcutLinked(data, ear, triangles, dim, minX, minY, size, 2);
+
+	        // as a last resort, try splitting the remaining polygon into two
+	      } else if (pass === 2) {
+	        splitEarcut(data, ear, triangles, dim, minX, minY, size);
+	      }
+
+	      break
+	    }
+	  }
+	}
+
+	// check whether a polygon node forms a valid ear with adjacent nodes
+	function isEar (data, ear, minX, minY, size) {
+
+	  var a = ear.prev.i,
+	    b = ear.i,
+	    c = ear.next.i,
+
+	    ax = data[a], ay = data[a + 1],
+	    bx = data[b], by = data[b + 1],
+	    cx = data[c], cy = data[c + 1],
+
+	    abd = ax * by - ay * bx,
+	    acd = ax * cy - ay * cx,
+	    cbd = cx * by - cy * bx,
+	    A = abd - acd - cbd;
+
+	  if (A <= 0) {
+	    return false
+	  } // reflex, can't be an ear
+
+	  // now make sure we don't have other points inside the potential ear;
+	  // the code below is a bit verbose and repetitive but this is done for performance
+
+	  var cay = cy - ay,
+	    acx = ax - cx,
+	    aby = ay - by,
+	    bax = bx - ax,
+	    i, px, py, s, t, k, node;
+
+	  // if we use z-order curve hashing, iterate through the curve
+	  if (minX !== undefined) {
+
+	    // triangle bbox; min & max are calculated like this for speed
+	    var minTX = ax < bx ? (ax < cx ? ax : cx) : (bx < cx ? bx : cx),
+	      minTY = ay < by ? (ay < cy ? ay : cy) : (by < cy ? by : cy),
+	      maxTX = ax > bx ? (ax > cx ? ax : cx) : (bx > cx ? bx : cx),
+	      maxTY = ay > by ? (ay > cy ? ay : cy) : (by > cy ? by : cy),
+
+	      // z-order range for the current triangle bbox;
+	      minZ = zOrder(minTX, minTY, minX, minY, size),
+	      maxZ = zOrder(maxTX, maxTY, minX, minY, size);
+
+	    // first look for points inside the triangle in increasing z-order
+	    node = ear.nextZ;
+
+	    while (node && node.z <= maxZ) {
+	      i = node.i;
+	      node = node.nextZ;
+	      if (i === a || i === c) {
+	        continue
+	      }
+
+	      px = data[i];
+	      py = data[i + 1];
+
+	      s = cay * px + acx * py - acd;
+	      if (s >= 0) {
+	        t = aby * px + bax * py + abd;
+	        if (t >= 0) {
+	          k = A - s - t;
+	          if ((k >= 0) && ((s && t) || (s && k) || (t && k))) {
+	            return false
+	          }
+	        }
+	      }
+	    }
+
+	    // then look for points in decreasing z-order
+	    node = ear.prevZ;
+
+	    while (node && node.z >= minZ) {
+	      i = node.i;
+	      node = node.prevZ;
+	      if (i === a || i === c) {
+	        continue
+	      }
+
+	      px = data[i];
+	      py = data[i + 1];
+
+	      s = cay * px + acx * py - acd;
+	      if (s >= 0) {
+	        t = aby * px + bax * py + abd;
+	        if (t >= 0) {
+	          k = A - s - t;
+	          if ((k >= 0) && ((s && t) || (s && k) || (t && k))) {
+	            return false
+	          }
+	        }
+	      }
+	    }
+
+	    // if we don't use z-order curve hash, simply iterate through all other points
+	  } else {
+	    node = ear.next.next;
+
+	    while (node !== ear.prev) {
+	      i = node.i;
+	      node = node.next;
+
+	      px = data[i];
+	      py = data[i + 1];
+
+	      s = cay * px + acx * py - acd;
+	      if (s >= 0) {
+	        t = aby * px + bax * py + abd;
+	        if (t >= 0) {
+	          k = A - s - t;
+	          if ((k >= 0) && ((s && t) || (s && k) || (t && k))) {
+	            return false
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  return true
+	}
+
+	// go through all polygon nodes and cure small local self-intersections
+	function cureLocalIntersections (data, start, triangles, dim) {
+	  var node = start;
+	  do {
+	    var a = node.prev,
+	      b = node.next.next;
+
+	    // a self-intersection where edge (v[i-1],v[i]) intersects (v[i+1],v[i+2])
+	    if (a.i !== b.i && intersects(data, a.i, node.i, node.next.i, b.i) &&
+	      locallyInside(data, a, b) && locallyInside(data, b, a)) {
+
+	      triangles.push(a.i / dim);
+	      triangles.push(node.i / dim);
+	      triangles.push(b.i / dim);
+
+	      // remove two nodes involved
+	      a.next = b;
+	      b.prev = a;
+
+	      var az = node.prevZ,
+	        bz = node.nextZ && node.nextZ.nextZ;
+
+	      if (az) {
+	        az.nextZ = bz;
+	      }
+	      if (bz) {
+	        bz.prevZ = az;
+	      }
+
+	      node = start = b;
+	    }
+	    node = node.next;
+	  } while (node !== start)
+
+	  return node
+	}
+
+	// try splitting polygon into two and triangulate them independently
+	function splitEarcut (data, start, triangles, dim, minX, minY, size) {
+	  // look for a valid diagonal that divides the polygon into two
+	  var a = start;
+	  do {
+	    var b = a.next.next;
+	    while (b !== a.prev) {
+	      if (a.i !== b.i && isValidDiagonal(data, a, b)) {
+	        // split the polygon in two by the diagonal
+	        var c = splitPolygon(a, b);
+
+	        // filter colinear points around the cuts
+	        a = filterPoints(data, a, a.next);
+	        c = filterPoints(data, c, c.next);
+
+	        // run earcut on each half
+	        earcutLinked(data, a, triangles, dim, minX, minY, size);
+	        earcutLinked(data, c, triangles, dim, minX, minY, size);
+	        return
+	      }
+	      b = b.next;
+	    }
+	    a = a.next;
+	  } while (a !== start)
+	}
+
+	// link every hole into the outer loop, producing a single-ring polygon without holes
+	function eliminateHoles (data, holeIndices, outerNode, dim) {
+	  var queue = [],
+	    i, len, start, end, list;
+
+	  for (i = 0, len = holeIndices.length; i < len; i++) {
+	    start = holeIndices[i] * dim;
+	    end = i < len - 1 ? holeIndices[i + 1] * dim : data.length;
+	    list = linkedList(data, start, end, dim, false);
+	    if (list === list.next) {
+	      list.steiner = true;
+	    }
+	    list = filterPoints(data, list);
+	    if (list) {
+	      queue.push(getLeftmost(data, list));
+	    }
+	  }
+
+	  queue.sort(function (a, b) {
+	    return data[a.i] - data[b.i]
+	  });
+
+	  // process holes from left to right
+	  for (i = 0; i < queue.length; i++) {
+	    eliminateHole(data, queue[i], outerNode);
+	    outerNode = filterPoints(data, outerNode, outerNode.next);
+	  }
+
+	  return outerNode
+	}
+
+	// find a bridge between vertices that connects hole with an outer ring and and link it
+	function eliminateHole (data, holeNode, outerNode) {
+	  outerNode = findHoleBridge(data, holeNode, outerNode);
+	  if (outerNode) {
+	    var b = splitPolygon(outerNode, holeNode);
+	    filterPoints(data, b, b.next);
+	  }
+	}
+
+	// David Eberly's algorithm for finding a bridge between hole and outer polygon
+	function findHoleBridge (data, holeNode, outerNode) {
+	  var node = outerNode,
+	    i = holeNode.i,
+	    px = data[i],
+	    py = data[i + 1],
+	    qMax = -Infinity,
+	    mNode, a, b;
+
+	  // find a segment intersected by a ray from the hole's leftmost point to the left;
+	  // segment's endpoint with lesser x will be potential connection point
+	  do {
+	    a = node.i;
+	    b = node.next.i;
+
+	    if (py <= data[a + 1] && py >= data[b + 1]) {
+	      var qx = data[a] + (py - data[a + 1]) * (data[b] - data[a]) / (data[b + 1] - data[a + 1]);
+	      if (qx <= px && qx > qMax) {
+	        qMax = qx;
+	        mNode = data[a] < data[b] ? node : node.next;
+	      }
+	    }
+	    node = node.next;
+	  } while (node !== outerNode)
+
+	  if (!mNode) {
+	    return null
+	  }
+
+	  // look for points strictly inside the triangle of hole point, segment intersection and endpoint;
+	  // if there are no points found, we have a valid connection;
+	  // otherwise choose the point of the minimum angle with the ray as connection point
+
+	  var bx = data[mNode.i],
+	    by = data[mNode.i + 1],
+	    pbd = px * by - py * bx,
+	    pcd = px * py - py * qMax,
+	    cpy = py - py,
+	    pcx = px - qMax,
+	    pby = py - by,
+	    bpx = bx - px,
+	    A = pbd - pcd - (qMax * by - py * bx),
+	    sign = A <= 0 ? -1 : 1,
+	    stop = mNode,
+	    tanMin = Infinity,
+	    mx, my, amx, s, t, tan;
+
+	  node = mNode.next;
+
+	  while (node !== stop) {
+
+	    mx = data[node.i];
+	    my = data[node.i + 1];
+	    amx = px - mx;
+
+	    if (amx >= 0 && mx >= bx) {
+	      s = (cpy * mx + pcx * my - pcd) * sign;
+	      if (s >= 0) {
+	        t = (pby * mx + bpx * my + pbd) * sign;
+
+	        if (t >= 0 && A * sign - s - t >= 0) {
+	          tan = Math.abs(py - my) / amx; // tangential
+	          if (tan < tanMin && locallyInside(data, node, holeNode)) {
+	            mNode = node;
+	            tanMin = tan;
+	          }
+	        }
+	      }
+	    }
+
+	    node = node.next;
+	  }
+
+	  return mNode
+	}
+
+	// interlink polygon nodes in z-order
+	function indexCurve (data, start, minX, minY, size) {
+	  var node = start;
+
+	  do {
+	    if (node.z === null) {
+	      node.z = zOrder(data[node.i], data[node.i + 1], minX, minY, size);
+	    }
+	    node.prevZ = node.prev;
+	    node.nextZ = node.next;
+	    node = node.next;
+	  } while (node !== start)
+
+	  node.prevZ.nextZ = null;
+	  node.prevZ = null;
+
+	  sortLinked(node);
+	}
+
+	// Simon Tatham's linked list merge sort algorithm
+	// http://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.html
+	function sortLinked (list) {
+	  var i, p, q, e, tail, numMerges, pSize, qSize,
+	    inSize = 1;
+
+	  do {
+	    p = list;
+	    list = null;
+	    tail = null;
+	    numMerges = 0;
+
+	    while (p) {
+	      numMerges++;
+	      q = p;
+	      pSize = 0;
+	      for (i = 0; i < inSize; i++) {
+	        pSize++;
+	        q = q.nextZ;
+	        if (!q) {
+	          break
+	        }
+	      }
+
+	      qSize = inSize;
+
+	      while (pSize > 0 || (qSize > 0 && q)) {
+
+	        if (pSize === 0) {
+	          e = q;
+	          q = q.nextZ;
+	          qSize--;
+	        } else if (qSize === 0 || !q) {
+	          e = p;
+	          p = p.nextZ;
+	          pSize--;
+	        } else if (p.z <= q.z) {
+	          e = p;
+	          p = p.nextZ;
+	          pSize--;
+	        } else {
+	          e = q;
+	          q = q.nextZ;
+	          qSize--;
+	        }
+
+	        if (tail) {
+	          tail.nextZ = e;
+	        } else {
+	          list = e;
+	        }
+
+	        e.prevZ = tail;
+	        tail = e;
+	      }
+
+	      p = q;
+	    }
+
+	    tail.nextZ = null;
+	    inSize *= 2;
+
+	  } while (numMerges > 1)
+
+	  return list
+	}
+
+	// z-order of a point given coords and size of the data bounding box
+	function zOrder (x, y, minX, minY, size) {
+	  // coords are transformed into (0..1000) integer range
+	  x = 1000 * (x - minX) / size;
+	  x = (x | (x << 8)) & 0x00FF00FF;
+	  x = (x | (x << 4)) & 0x0F0F0F0F;
+	  x = (x | (x << 2)) & 0x33333333;
+	  x = (x | (x << 1)) & 0x55555555;
+
+	  y = 1000 * (y - minY) / size;
+	  y = (y | (y << 8)) & 0x00FF00FF;
+	  y = (y | (y << 4)) & 0x0F0F0F0F;
+	  y = (y | (y << 2)) & 0x33333333;
+	  y = (y | (y << 1)) & 0x55555555;
+
+	  return x | (y << 1)
+	}
+
+	// find the leftmost node of a polygon ring
+	function getLeftmost (data, start) {
+	  var node = start,
+	    leftmost = start;
+	  do {
+	    if (data[node.i] < data[leftmost.i]) {
+	      leftmost = node;
+	    }
+	    node = node.next;
+	  } while (node !== start)
+
+	  return leftmost
+	}
+
+	// check if a diagonal between two polygon nodes is valid (lies in polygon interior)
+	function isValidDiagonal (data, a, b) {
+	  return !intersectsPolygon(data, a, a.i, b.i) &&
+	    locallyInside(data, a, b) && locallyInside(data, b, a) &&
+	    middleInside(data, a, a.i, b.i)
+	}
+
+	// winding order of triangle formed by 3 given points
+	function orient (data, p, q, r) {
+	  var o = (data[q + 1] - data[p + 1]) * (data[r] - data[q]) - (data[q] - data[p]) * (data[r + 1] - data[q + 1]);
+	  return o > 0 ? 1 : o < 0 ? -1 : 0
+	}
+
+	// check if two points are equal
+	function equals (data, p1, p2) {
+	  return data[p1] === data[p2] && data[p1 + 1] === data[p2 + 1]
+	}
+
+	// check if two segments intersect
+	function intersects (data, p1, q1, p2, q2) {
+	  return orient(data, p1, q1, p2) !== orient(data, p1, q1, q2) &&
+	    orient(data, p2, q2, p1) !== orient(data, p2, q2, q1)
+	}
+
+	// check if a polygon diagonal intersects any polygon segments
+	function intersectsPolygon (data, start, a, b) {
+	  var node = start;
+	  do {
+	    var p1 = node.i,
+	      p2 = node.next.i;
+
+	    if (p1 !== a && p2 !== a && p1 !== b && p2 !== b && intersects(data, p1, p2, a, b)) {
+	      return true
+	    }
+
+	    node = node.next;
+	  } while (node !== start)
+
+	  return false
+	}
+
+	// check if a polygon diagonal is locally inside the polygon
+	function locallyInside (data, a, b) {
+	  return orient(data, a.prev.i, a.i, a.next.i) === -1 ? orient(data, a.i, b.i, a.next.i) !== -1 && orient(data, a.i, a.prev.i, b.i) !== -1 : orient(data, a.i, b.i, a.prev.i) === -1 || orient(data, a.i, a.next.i, b.i) === -1
+	}
+
+	// check if the middle point of a polygon diagonal is inside the polygon
+	function middleInside (data, start, a, b) {
+	  var node = start,
+	    inside = false,
+	    px = (data[a] + data[b]) / 2,
+	    py = (data[a + 1] + data[b + 1]) / 2;
+	  do {
+	    var p1 = node.i,
+	      p2 = node.next.i;
+
+	    if (((data[p1 + 1] > py) !== (data[p2 + 1] > py)) &&
+	      (px < (data[p2] - data[p1]) * (py - data[p1 + 1]) / (data[p2 + 1] - data[p1 + 1]) + data[p1])) {
+	      inside = !inside;
+	    }
+
+	    node = node.next;
+	  } while (node !== start)
+
+	  return inside
+	}
+
+	// link two polygon vertices with a bridge; if the vertices belong to the same ring, it splits polygon into two;
+	// if one belongs to the outer ring and another to a hole, it merges it into a single ring
+	function splitPolygon (a, b) {
+	  var a2 = new Node(a.i),
+	    b2 = new Node(b.i),
+	    an = a.next,
+	    bp = b.prev;
+
+	  a.next = b;
+	  b.prev = a;
+
+	  a2.next = an;
+	  an.prev = a2;
+
+	  b2.next = a2;
+	  a2.prev = b2;
+
+	  bp.next = b2;
+	  b2.prev = bp;
+
+	  return b2
+	}
+
+	// create a node and optionally link it with previous one (in a circular doubly linked list)
+	function insertNode (i, last) {
+	  var node = new Node(i);
+
+	  if (!last) {
+	    node.prev = node;
+	    node.next = node;
+
+	  } else {
+	    node.next = last.next;
+	    node.prev = last;
+	    last.next.prev = node;
+	    last.next = node;
+	  }
+	  return node
+	}
+
+	function Node (i) {
+	  // vertex coordinates
+	  this.i = i;
+
+	  // previous and next vertice nodes in a polygon ring
+	  this.prev = null;
+	  this.next = null;
+
+	  // z-order curve value
+	  this.z = null;
+
+	  // previous and next nodes in z-order
+	  this.prevZ = null;
+	  this.nextZ = null;
+
+	  // indicates whether this is a steiner point
+	  this.steiner = false;
+	}
+
+	// dependencies
+
+	var generatePolygonBuffer = function(options) {
+
+	  // API
+
+	  var inputVertices = options.outline;
+	  var holes = options.holes;
+	  var uvx = options.uvx || 0;
+	  var uvz = options.uvz || 0;
+	  var y = options.y || 0;
+	  var flipSide = !!options.flipSide;
+
+	  // internals
+	  var i, l, iv, iuv;
+	  var indices;
+
+	  // triangulate
+	  if (inputVertices.length === 4 && (holes === undefined || holes.length === 0)) {
+	    // its a quad - no triangulation needed
+	    indices = [1,0,3,3,2,1];
+	  } else {
+	    // use "earcut" triangulation
+	    if ( holes && holes.length > 0 ) {
+	      // has holes
+	      var holeIndices = new Array(holes.length);
+	      for (i = 0, l = holes.length; i < l; i++) {
+	        holeIndices[i] = inputVertices.length / 2;
+	        inputVertices = inputVertices.concat(holes[i]);
+	      }
+	      indices = triangulate2d(inputVertices, holeIndices);
+	    } else {
+	      // has no holes
+	      indices = triangulate2d(inputVertices);
+	    }
+
+	  }
+
+	  var outputVertices = new Float32Array(indices.length * 3);
+	  var outputUvs = new Float32Array(indices.length * 2);
+
+	  if (flipSide) {
+
+	    for (i = 0, l = indices.length; i < l; i += 3) {
+	      iv = i * 3;
+	      iuv = i * 2;
+	      // vertices
+	      outputVertices[ iv ] = inputVertices[ indices[ i + 2 ] * 2 ];
+	      outputVertices[ iv + 1 ] = y;
+	      outputVertices[ iv + 2 ] = inputVertices[ indices[ i + 2 ] * 2 + 1 ];
+	      outputVertices[ iv + 3 ] = inputVertices[ indices[ i ] * 2 ];
+	      outputVertices[ iv + 4 ] = y;
+	      outputVertices[ iv + 5 ] = inputVertices[ indices[ i ] * 2 + 1 ];
+	      outputVertices[ iv + 6 ] = inputVertices[ indices[ i + 1 ] * 2 ];
+	      outputVertices[ iv + 7 ] = y;
+	      outputVertices[ iv + 8 ] = inputVertices[ indices[ i + 1 ] * 2 + 1 ];
+	      // uvs
+	      outputUvs[ iuv ] = inputVertices[ indices[ i + 2 ] * 2 +1 ] + uvz;
+	      outputUvs[ iuv + 1 ] = inputVertices[ indices[ i + 2 ] * 2 ] + uvx;
+	      outputUvs[ iuv + 2 ] = inputVertices[ indices[ i ] * 2+1 ] + uvz;
+	      outputUvs[ iuv + 3 ] = inputVertices[ indices[ i ] * 2 ] + uvx;
+	      outputUvs[ iuv + 4 ] = inputVertices[ indices[ i + 1 ] * 2+1 ] + uvz;
+	      outputUvs[ iuv + 5 ] = inputVertices[ indices[ i + 1 ] * 2 ] + uvx;
+	    }
+
+	  } else {
+
+	    for (i = 0, l = indices.length; i < l; i += 3) {
+	      iv = i * 3;
+	      iuv = i * 2;
+	      // vertices
+	      outputVertices[ iv ] = inputVertices[ indices[ i + 2 ] * 2 ];
+	      outputVertices[ iv + 1 ] = y;
+	      outputVertices[ iv + 2 ] = inputVertices[ indices[ i + 2 ] * 2 + 1 ];
+	      outputVertices[ iv + 3 ] = inputVertices[ indices[ i + 1 ] * 2 ];
+	      outputVertices[ iv + 4 ] = y;
+	      outputVertices[ iv + 5 ] = inputVertices[ indices[ i + 1 ] * 2 + 1 ];
+	      outputVertices[ iv + 6 ] = inputVertices[ indices[ i ] * 2 ];
+	      outputVertices[ iv + 7 ] = y;
+	      outputVertices[ iv + 8 ] = inputVertices[ indices[ i ] * 2 + 1 ];
+	      // uvs
+	      outputUvs[ iuv ] = inputVertices[ indices[ i + 2 ] * 2+1 ] + uvz;
+	      outputUvs[ iuv + 1 ] = inputVertices[ indices[ i + 2 ] * 2 ] + uvx;
+	      outputUvs[ iuv + 2 ] = inputVertices[ indices[ i + 1 ] * 2+1 ] + uvz;
+	      outputUvs[ iuv + 3 ] = inputVertices[ indices[ i + 1 ] * 2 ] + uvx;
+	      outputUvs[ iuv + 4 ] = inputVertices[ indices[ i ] * 2+1 ] + uvz;
+	      outputUvs[ iuv + 5 ] = inputVertices[ indices[ i ] * 2 ] + uvx;
+	    }
+
+	  }
+
+	  return {
+	    vertices: outputVertices,
+	    uvs: outputUvs
+	  }
+
+	};
+
+	// main
+
+	var generateExtrusionBuffer = function(options) {
+
+	  // API
+
+	  var inputVertices = options.outline;
+	  var y = options.y || 1;
+	  var flipSide = !!options.flipSide;
+	  var isOpenOutline = options.isOpenOutline || false;
+	  var inputVerticesLength = inputVertices.length;
+
+	  // side faces
+
+	  var outputVertices = new Float32Array(inputVerticesLength * 9);
+	  var outputUvs = new Float32Array(inputVerticesLength * 6);
+	  var distance;
+
+	  if (flipSide) {
+
+	    if (!isOpenOutline) {
+
+	      // first side quad is special because it has to deal with first and last point
+
+	      outputVertices[0] = inputVertices[inputVerticesLength - 2];
+	      outputVertices[1] = 0;
+	      outputVertices[2] = inputVertices[inputVerticesLength - 1];
+	      outputVertices[3] = inputVertices[inputVerticesLength - 2];
+	      outputVertices[4] = y;
+	      outputVertices[5] = inputVertices[inputVerticesLength - 1];
+	      outputVertices[6] = inputVertices[0];
+	      outputVertices[7] = 0;
+	      outputVertices[8] = inputVertices[1];
+	      outputVertices[9] = inputVertices[inputVerticesLength - 2];
+	      outputVertices[10] = y;
+	      outputVertices[11] = inputVertices[inputVerticesLength - 1];
+	      outputVertices[12] = inputVertices[0];
+	      outputVertices[13] = y;
+	      outputVertices[14] = inputVertices[1];
+	      outputVertices[15] = inputVertices[0];
+	      outputVertices[16] = 0;
+	      outputVertices[17] = inputVertices[1];
+
+	      distance = distance2d(inputVertices[inputVerticesLength - 2], inputVertices[inputVerticesLength - 1], inputVertices[0], inputVertices[1]);
+	      outputUvs[0] = 0;
+	      outputUvs[1] = 0;
+	      outputUvs[2] = 0;
+	      outputUvs[3] = y;
+	      outputUvs[4] = distance;
+	      outputUvs[5] = 0;
+	      outputUvs[6] = 0;
+	      outputUvs[7] = y;
+	      outputUvs[8] = distance;
+	      outputUvs[9] = y;
+	      outputUvs[10] = distance;
+	      outputUvs[11] = 0;
+	    }
+
+	    // other side quads
+	    for (var i = 2; i < inputVerticesLength; i += 2) {
+
+	      outputVertices[ i * 9 ] = inputVertices[ i - 2 ];
+	      outputVertices[ i * 9 + 1 ] = 0;
+	      outputVertices[ i * 9 + 2 ] = inputVertices[ i - 1 ];
+	      outputVertices[ i * 9 + 3 ] = inputVertices[ i - 2 ];
+	      outputVertices[ i * 9 + 4 ] = y;
+	      outputVertices[ i * 9 + 5 ] = inputVertices[ i - 1 ];
+	      outputVertices[ i * 9 + 6 ] = inputVertices[ i ];
+	      outputVertices[ i * 9 + 7 ] = 0;
+	      outputVertices[ i * 9 + 8 ] = inputVertices[ i + 1 ];
+	      outputVertices[ i * 9 + 9 ] = inputVertices[ i - 2 ];
+	      outputVertices[ i * 9 + 10 ] = y;
+	      outputVertices[ i * 9 + 11 ] = inputVertices[ i - 1 ];
+	      outputVertices[ i * 9 + 12 ] = inputVertices[ i ];
+	      outputVertices[ i * 9 + 13 ] = y;
+	      outputVertices[ i * 9 + 14 ] = inputVertices[ i + 1 ];
+	      outputVertices[ i * 9 + 15 ] = inputVertices[ i ];
+	      outputVertices[ i * 9 + 16 ] = 0;
+	      outputVertices[ i * 9 + 17 ] = inputVertices[ i + 1 ];
+
+	      distance = distance2d(inputVertices[ i - 2 ], inputVertices[ i - 1 ], inputVertices[ i ], inputVertices[ i + 1 ]);
+	      outputUvs[ i * 6 ] = 0;
+	      outputUvs[ i * 6 + 1 ] = 0;
+	      outputUvs[ i * 6 + 2 ] = 0;
+	      outputUvs[ i * 6 + 3 ] = y;
+	      outputUvs[ i * 6 + 4 ] = distance;
+	      outputUvs[ i * 6 + 5 ] = 0;
+	      outputUvs[ i * 6 + 6 ] = 0;
+	      outputUvs[ i * 6 + 7 ] = y;
+	      outputUvs[ i * 6 + 8 ] = distance;
+	      outputUvs[ i * 6 + 9 ] = y;
+	      outputUvs[ i * 6 + 10 ] = distance;
+	      outputUvs[ i * 6 + 11 ] = 0;
+	    }
+
+	  } else {
+
+	    if (!isOpenOutline) {
+
+	      // first side quad is special because it has to deal with first and last point
+
+	      outputVertices[0] = inputVertices[inputVerticesLength - 2];
+	      outputVertices[1] = 0;
+	      outputVertices[2] = inputVertices[inputVerticesLength - 1];
+	      outputVertices[3] = inputVertices[0];
+	      outputVertices[4] = 0;
+	      outputVertices[5] = inputVertices[1];
+	      outputVertices[6] = inputVertices[inputVerticesLength - 2];
+	      outputVertices[7] = y;
+	      outputVertices[8] = inputVertices[inputVerticesLength - 1];
+	      outputVertices[9] = inputVertices[inputVerticesLength - 2];
+	      outputVertices[10] = y;
+	      outputVertices[11] = inputVertices[inputVerticesLength - 1];
+	      outputVertices[12] = inputVertices[0];
+	      outputVertices[13] = 0;
+	      outputVertices[14] = inputVertices[1];
+	      outputVertices[15] = inputVertices[0];
+	      outputVertices[16] = y;
+	      outputVertices[17] = inputVertices[1];
+
+	      distance = distance2d(inputVertices[inputVerticesLength - 2], inputVertices[inputVerticesLength - 1], inputVertices[0], inputVertices[1]);
+	      outputUvs[0] = 0;
+	      outputUvs[1] = 0;
+	      outputUvs[2] = distance;
+	      outputUvs[3] = 0;
+	      outputUvs[4] = 0;
+	      outputUvs[5] = y;
+	      outputUvs[6] = 0;
+	      outputUvs[7] = y;
+	      outputUvs[8] = distance;
+	      outputUvs[9] = 0;
+	      outputUvs[10] = distance;
+	      outputUvs[11] = y;
+
+	    }
+
+	    // other side quads
+	    for (var i = 2; i < inputVerticesLength; i += 2) {
+
+	      outputVertices[ i * 9 ] = inputVertices[ i - 2 ];
+	      outputVertices[ i * 9 + 1 ] = 0;
+	      outputVertices[ i * 9 + 2 ] = inputVertices[ i - 1 ];
+	      outputVertices[ i * 9 + 3 ] = inputVertices[ i ];
+	      outputVertices[ i * 9 + 4 ] = 0;
+	      outputVertices[ i * 9 + 5 ] = inputVertices[ i + 1 ];
+	      outputVertices[ i * 9 + 6 ] = inputVertices[ i - 2 ];
+	      outputVertices[ i * 9 + 7 ] = y;
+	      outputVertices[ i * 9 + 8 ] = inputVertices[ i - 1 ];
+	      outputVertices[ i * 9 + 9 ] = inputVertices[ i - 2 ];
+	      outputVertices[ i * 9 + 10 ] = y;
+	      outputVertices[ i * 9 + 11 ] = inputVertices[ i - 1 ];
+	      outputVertices[ i * 9 + 12 ] = inputVertices[ i ];
+	      outputVertices[ i * 9 + 13 ] = 0;
+	      outputVertices[ i * 9 + 14 ] = inputVertices[ i + 1 ];
+	      outputVertices[ i * 9 + 15 ] = inputVertices[ i ];
+	      outputVertices[ i * 9 + 16 ] = y;
+	      outputVertices[ i * 9 + 17 ] = inputVertices[ i + 1 ];
+
+	      distance = distance2d(inputVertices[ i - 2 ], inputVertices[ i - 1 ], inputVertices[ i ], inputVertices[ i + 1 ]);
+	      outputUvs[ i * 6 ] = 0;
+	      outputUvs[ i * 6 + 1 ] = 0;
+	      outputUvs[ i * 6 + 2 ] = distance;
+	      outputUvs[ i * 6 + 3 ] = 0;
+	      outputUvs[ i * 6 + 4 ] = 0;
+	      outputUvs[ i * 6 + 5 ] = y;
+	      outputUvs[ i * 6 + 6 ] = 0;
+	      outputUvs[ i * 6 + 7 ] = y;
+	      outputUvs[ i * 6 + 8 ] = distance;
+	      outputUvs[ i * 6 + 9 ] = 0;
+	      outputUvs[ i * 6 + 10 ] = distance;
+	      outputUvs[ i * 6 + 11 ] = y;
+
+	    }
+
+	  }
+
+	  return {
+	    vertices: outputVertices,
+	    uvs: outputUvs
+	  }
+
+	};
+
+	// helpers
+
+	function distance2d (p1x, p1y, p2x, p2y) {
+	  return Math.sqrt((p2x - p1x) * (p2x - p1x) + (p2y - p1y) * (p2y - p1y))
+	}
+
+	// dependencies
+
+	// definition
+
+	var polyFloorType = {
+
+	  params: {
+
+	    type: 'polyfloor',
+
+	    x: 0,
+	    y: 0,
+	    z: 0,
+
+	    ry: 0,
+
+	    h: 0.2,
+
+	    lock: false,
+
+	    bake: true,
+	    bakeStatus: 'none', // none, pending, done
+
+	    materials: {
+	      top: 'wood_parquet_oak',
+	      side: 'basic-wall',
+	      ceiling: 'basic-ceiling'
+	    },
+
+	    hasCeiling: true,
+	    hCeiling: 2.4,
+
+	    polygon: [
+	      [ 1.5, 1.5 ],
+	      [ 1.5, -1.5 ],
+	      [ -1.5, -1.5 ],
+	      [ -1.5, 1.5 ]
+	    ],
+
+	    _afFurnishings: undefined,
+	    _afGroups: undefined,
+	    _afShuffleIndex: undefined,
+	    _afAddedGroups: undefined,
+	    _afStyle: 'generic'
+
+	  },
+
+	  valid: {
+	    children: [],
+	    x: {
+	      step: 0.05
+	    },
+	    y: {
+	      lock: true
+	    },
+	    z: {
+	      step: 0.05
+	    },
+	    ry: {
+	      lock: false
+	    }
+	  },
+
+	  initialize: function(){
+
+	    // backwards compatibility
+	    if (this.a.material) {
+	      this.a.materials.top = this.a.material;
+	      delete this.a.material;
+	    }
+	    if (this.a.ceilingMaterial) {
+	      this.a.materials.ceiling = this.a.ceilingMaterial;
+	      delete this.a.ceilingMaterial;
+	    }
+	    if (this.a.side) {
+	      this.a.materials.side = this.a.sideMaterial;
+	      delete this.a.sideMaterial;
+	    }
+	    // on the fly migration of 'old' usage combination
+	    if (this.a.usage === 'living,dining') this.a.usage = 'dining_living';
+	    if (this.a.usage === 'office') this.a.usage = 'homeOffice';
+
+	  },
+
+	  contextMenu: function gerContextMenu (){
+
+	    var contextMenu = {
+	      templateId: 'generic',
+	      templateOptions: {
+	        title: 'Polyfloor'
+	      },
+	      controls: [
+	        {
+	          title: 'Has Ceiling',
+	          type: 'boolean',
+	          param: 'hasCeiling'
+	        },
+	        {
+	          title: 'Ceiling Height',
+	          type: 'number',
+	          param: 'hCeiling',
+	          unit: 'm',
+	          step: 0.05,
+	          round: 0.01
+	        },
+	        {
+	          title: 'Vertical Position',
+	          type: 'number',
+	          param: 'y',
+	          unit: 'm',
+	          step: 0.1,
+	          round: 0.01
+	        },
+	        {
+	          title: 'Height',
+	          type: 'number',
+	          param: 'h',
+	          unit: 'm',
+	          step: 0.05,
+	          round: 0.01
+	        },
+	        {
+	          title: 'Lock this item',
+	          type: 'boolean',
+	          param: 'locked',
+	          subscriptions: [ 'pro', 'modeller', 'artist3d' ]
+	        },
+	        {
+	          display: '<h2>Materials</h2>',
+	          type: 'html'
+	        },
+	        {
+	          title: 'Floor',
+	          type: 'material',
+	          param: 'materials.top',
+	          category: 'floor'
+	        },
+	        {
+	          title: 'Side',
+	          type: 'material',
+	          param: 'materials.side',
+	          category: 'wall'
+	        }
+	      ]
+	    };
+
+
+	    if (this.params.hasCeiling) {
+	      contextMenu.controls.push({
+	        title: 'Ceiling',
+	        type: 'material',
+	        param: 'materials.ceiling',
+	        category: 'ceiling'
+	      });
+	    }
+
+	    var usageList = {
+	      'Living': 'living',
+	      'Living & Dining': 'dining_living',
+	      'Home office': 'homeOffice',
+	      'Bedroom': 'bedroom',
+	      'Dining': 'dining',
+	      'Bathroom': 'bathroom'
+	    };
+
+	    if (self.vm.user.a.isDev && !config.isProduction) {
+	      usageList['Office Working'] = 'officeWorking';
+	      usageList['Office Meeting'] = 'officeMeeting';
+	    }
+
+	    return contextMenu
+
+	  },
+
+	  bindings: [ {
+	    events: [
+	      'change:_afFurnishings',
+	      'change:hasCeiling'
+	    ],
+	    call: 'contextMenu'
+	  }, {
+	    events: [
+	      'change:x',
+	      'change:z',
+	      'change:h',
+	      'change:polygon',
+	      'change:hasCeiling',
+	      'change:hCeiling'
+	    ],
+	    call: 'meshes3d'
+	  }, {
+	    events: [
+	      'change:materials.*'
+	    ],
+	    call: 'materials3d'
+	  }],
+
+	  loadingQueuePrefix: 'architecture',
+
+	  controls3d: 'polyFloor',
+
+	  meshes3d: function generateMeshes3d (a) {
+
+	    //var a = this.a
+
+	    // a polygon can not have less than 3 points
+	    if (a.polygon.length < 3) {
+	      if (this.model) {
+	        this.model.a.parent.remove(this.model);
+	      }
+	      return Promise.resolve({
+	        meshes: {}
+	      })
+	    }
+
+	    // prepare format
+	    var vertices = [];
+	    for (var i = 0, l = a.polygon.length; i < l; i++) {
+	      vertices[ i * 2 ] = a.polygon[ i ][ 0 ];
+	      vertices[ i * 2 + 1 ] = a.polygon[ i ][ 1 ];
+	    }
+
+	    // top polygon
+	    var topPolygon = generatePolygonBuffer({
+	      outline: vertices,
+	      y: 0,
+	      uvx: a.x,
+	      uvz: a.z
+	    });
+
+	    // ceiling polygon
+	    var ceilingPolygon;
+	    if (a.hasCeiling) {
+	      ceilingPolygon = generatePolygonBuffer({
+	        outline: vertices,
+	        y: a.hCeiling,
+	        uvx: a.x,
+	        uvz: a.z,
+	        flipSide: true
+	      });
+	    } else {
+	      ceilingPolygon = {
+	        vertices: new Float32Array(0),
+	        uvs: new Float32Array(0)
+	      };
+	    }
+
+	    // sides
+	    var sides = generateExtrusionBuffer({
+	      outline: vertices,
+	      y: -a.h,
+	      flipSide: true
+	    });
+
+	    // return meshes
+	    return {
+	      top: {
+	        positions: topPolygon.vertices,
+	        normals: getNormalsBuffer.flat(topPolygon.vertices),
+	        uvs: topPolygon.uvs,
+	        material: 'top'
+	      },
+	      sides: {
+	        positions: sides.vertices,
+	        normals: getNormalsBuffer.flat(sides.vertices),
+	        uvs: sides.uvs,
+	        material: 'side'
+	      },
+	      ceiling: {
+	        positions: ceilingPolygon.vertices,
+	        normals: getNormalsBuffer.flat(ceilingPolygon.vertices),
+	        uvs: ceilingPolygon.uvs,
+	        material: 'ceiling'
+	      }
+	    }
+
+	  },
+
+	  materials3d: function generateMaterials3d(a) {
+	    return a.materials
+	  }
+
+	};
+
+	/** Used to compose bitmasks for cloning. */
+	var CLONE_DEEP_FLAG$3 = 1;
+	var CLONE_SYMBOLS_FLAG$2 = 4;
+
+	/**
+	 * This method is like `_.clone` except that it recursively clones `value`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 1.0.0
+	 * @category Lang
+	 * @param {*} value The value to recursively clone.
+	 * @returns {*} Returns the deep cloned value.
+	 * @see _.clone
+	 * @example
+	 *
+	 * var objects = [{ 'a': 1 }, { 'b': 2 }];
+	 *
+	 * var deep = _.cloneDeep(objects);
+	 * console.log(deep[0] === objects[0]);
+	 * // => false
+	 */
+	function cloneDeep(value) {
+	  return _baseClone(value, CLONE_DEEP_FLAG$3 | CLONE_SYMBOLS_FLAG$2);
+	}
+
+	var cloneDeep_1 = cloneDeep;
+
+	var materialDefinitions = {
+	  "basic-floor": {
+	    "meta": {
+	      "displayName": "Basic floor",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorDiffuse": [0.278,0.278,0.278],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 40,
+	      "mapNormal": "archilogic/tex/f4bee6370d34d5616e4693aa39287efd.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/22dacd7e3ed1e454bddb88f321fd1315.hi-res.gz.dds",
+	      "mapNormalSource": "archilogic/tex/f4bee6370d34d5616e4693aa39287efd.source.png",
+	      "mapNormalPreview": "archilogic/tex/f4bee6370d34d5616e4693aa39287efd.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/22dacd7e3ed1e454bddb88f321fd1315.source.png",
+	      "mapSpecularPreview": "archilogic/tex/22dacd7e3ed1e454bddb88f321fd1315.lo-res.jpg",
+	      "receiveRealTimeShadows": true
+	    }
+	  },
+	  "basic-balcony": {
+	    "meta": {
+	      "displayName": "Basic balcony",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "colorDiffuse": [0.5,0.5,0.5],
+	      "colorSpecular": [0.125,0.125,0.125],
+	      "specularCoef": 10,
+	      "receiveRealTimeShadows": true
+	    }
+	  },
+	  "basic-wall": {
+	    "meta": {
+	      "displayName": "Basic wall",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "colorDiffuse": [0.839,0.839,0.839],
+	      "colorSpecular": [0.098,0.098,0.098],
+	      "specularCoef": 2
+	    }
+	  },
+	  "basic-ceiling": {
+	    "meta": {
+	      "displayName": "Basic ceiling",
+	      "category": "ceiling",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "colorDiffuse": [0.878,0.878,0.878],
+	      "colorSpecular": [0.125,0.125,0.125],
+	      "specularCoef": 10
+	    }
+	  },
+	  "wood_parquet_oak": {
+	    "meta": {
+	      "displayName": "Parquet Oak",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "colorDiffuse": [0.89,0.82,0.69],
+	      "colorSpecular": [0.667,0.667,0.667],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/c659ad823689f7502699105e6b8974f1.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/c659ad823689f7502699105e6b8974f1.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/c659ad823689f7502699105e6b8974f1.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.source.jpg"
+	    }
+	  },
+	  "wood_parquet_4": {
+	    "meta": {
+	      "displayName": "Parquet Stained Oak",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "colorSpecular": [0.45,0.45,0.45],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/c659ad823689f7502699105e6b8974f1.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/c659ad823689f7502699105e6b8974f1.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/c659ad823689f7502699105e6b8974f1.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.source.jpg"
+	    }
+	  },
+	  "wood_parquet_oak_stained": {
+	    "meta": {
+	      "displayName": "Parquet Stained Oak",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "colorDiffuse": [ 0.906, 0.91,0.89],
+	      "colorSpecular": [0.667,0.667,0.667],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/c659ad823689f7502699105e6b8974f1.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/c659ad823689f7502699105e6b8974f1.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/c659ad823689f7502699105e6b8974f1.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.source.jpg"
+	    }
+	  },
+	  "wood_parquet_oak_dark": {
+	    "meta": {
+	      "displayName": "Parquet Oak Dark",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "colorDiffuse": [ 0.463,0.412, 0.337],
+	      "colorSpecular": [0.667,0.667,0.667],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/c659ad823689f7502699105e6b8974f1.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/c659ad823689f7502699105e6b8974f1.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/c659ad823689f7502699105e6b8974f1.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.source.jpg"
+	    }
+	  },
+	  "wood_parquet_oak_black": {
+	    "meta": {
+	      "displayName": "Parquet Oak Black",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "colorDiffuse": [0.204,0.176,0.137],
+	      "colorSpecular": [0.667,0.667,0.667],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/c659ad823689f7502699105e6b8974f1.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/c659ad823689f7502699105e6b8974f1.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/c659ad823689f7502699105e6b8974f1.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.source.jpg"
+	    }
+	  },
+	  "floor_oak_parquet": {
+	    "meta": {
+	      "displayName": "Parquet Herringbone",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [3.3,3.5],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/b63633f00674bd2317c40c90b7ec30b9.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/b63633f00674bd2317c40c90b7ec30b9.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/b63633f00674bd2317c40c90b7ec30b9.source.jpg"
+	    }
+	  },
+	  "parquet_heringbone_oak": {
+	    "meta": {
+	      "displayName": "Parquet Herringbone Oak",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "colorSpecular": [0.188,0.188,0.188],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/87e4c3ef437932b07adfc132b2b58d00.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/9e3128f1785cc3355b178702816024b1.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/82b49d5fedede1707f8015b2987bd0b8.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/87e4c3ef437932b07adfc132b2b58d00.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/87e4c3ef437932b07adfc132b2b58d00.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/82b49d5fedede1707f8015b2987bd0b8.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/82b49d5fedede1707f8015b2987bd0b8.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/9e3128f1785cc3355b178702816024b1.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/9e3128f1785cc3355b178702816024b1.source.jpg"
+	    }
+	  },
+	  "parquet_tiles_01": {
+	    "meta": {
+	      "displayName": "Parquet Tiles",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1.5,1.5],
+	      "colorSpecular": [0.376,0.376,0.376],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/3727a4b6bae77be55d2ce2b2de033a5b.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/dc9143fbf3e7df6c5ff67d9b12bdc2e7.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/e3fc1d6cdf6bfd30f805c25b72fcea65.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/3727a4b6bae77be55d2ce2b2de033a5b.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/3727a4b6bae77be55d2ce2b2de033a5b.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/e3fc1d6cdf6bfd30f805c25b72fcea65.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/e3fc1d6cdf6bfd30f805c25b72fcea65.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/dc9143fbf3e7df6c5ff67d9b12bdc2e7.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/dc9143fbf3e7df6c5ff67d9b12bdc2e7.source.jpg"
+	    }
+	  },
+	  "wood_parquet": {
+	    "meta": {
+	      "displayName": "Parquet 2",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "colorSpecular": [0.376,0.376,0.376],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/23fecde666551205efd5469b10dbcc57.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/7339da972d8f15d586f849ff7b7ca455.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/076bf25a31aac947867fc15afdfa4a6c.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/23fecde666551205efd5469b10dbcc57.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/23fecde666551205efd5469b10dbcc57.source.png",
+	      "mapSpecularPreview": "archilogic/tex/076bf25a31aac947867fc15afdfa4a6c.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/076bf25a31aac947867fc15afdfa4a6c.source.png",
+	      "mapNormalPreview": "archilogic/tex/7339da972d8f15d586f849ff7b7ca455.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/7339da972d8f15d586f849ff7b7ca455.source.png"
+	    }
+	  },
+	  "wood_parquet_3": {
+	    "meta": {
+	      "displayName": "Parquet 3",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.667,0.667,0.667],
+	      "mapDiffuse": "archilogic/tex/47204e093a6ac04f6ac3467fb78efc46.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/f4bee6370d34d5616e4693aa39287efd.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/22dacd7e3ed1e454bddb88f321fd1315.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/47204e093a6ac04f6ac3467fb78efc46.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/47204e093a6ac04f6ac3467fb78efc46.source.png",
+	      "mapSpecularPreview": "archilogic/tex/22dacd7e3ed1e454bddb88f321fd1315.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/22dacd7e3ed1e454bddb88f321fd1315.source.png",
+	      "mapNormalPreview": "archilogic/tex/f4bee6370d34d5616e4693aa39287efd.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/f4bee6370d34d5616e4693aa39287efd.source.png"
+	    }
+	  },
+	  "parquet_dark_01": {
+	    "meta": {
+	      "displayName": "Parquet Dark",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/c5a58ec7d86d3641cf77c661c0fdf500.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/f4bee6370d34d5616e4693aa39287efd.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/22dacd7e3ed1e454bddb88f321fd1315.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/c5a58ec7d86d3641cf77c661c0fdf500.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/c5a58ec7d86d3641cf77c661c0fdf500.source.png",
+	      "mapSpecularPreview": "archilogic/tex/22dacd7e3ed1e454bddb88f321fd1315.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/22dacd7e3ed1e454bddb88f321fd1315.source.png",
+	      "mapNormalPreview": "archilogic/tex/f4bee6370d34d5616e4693aa39287efd.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/f4bee6370d34d5616e4693aa39287efd.source.png"
+	    }
+	  },
+	  "fitted_carpet_light_grey": {
+	    "meta": {
+	      "displayName": "Fitted Carpet Light Grey",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.6,0.6,0.6],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/acdcd29e06d541f25ab8e60d3d3f9a85.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/7d425fc857c256bfa8a06ac48208078f.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/2d373be23d2925ecab0d809e14734c5a.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/acdcd29e06d541f25ab8e60d3d3f9a85.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/acdcd29e06d541f25ab8e60d3d3f9a85.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/2d373be23d2925ecab0d809e14734c5a.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/2d373be23d2925ecab0d809e14734c5a.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/7d425fc857c256bfa8a06ac48208078f.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/7d425fc857c256bfa8a06ac48208078f.source.jpg"
+	    }
+	  },
+	  "floor_concrete_001": {
+	    "meta": {
+	      "displayName": "Floor Concrete 001",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [4,4],
+	      "colorSpecular": [0.063,0.063,0.063],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/3fdde165b96f531f1f4ff81ccd7b38c4.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/3fdde165b96f531f1f4ff81ccd7b38c4.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/3fdde165b96f531f1f4ff81ccd7b38c4.source.jpg"
+	    }
+	  },
+	  "floor_concrete_001_ceiling": {
+	    "meta": {
+	      "displayName": "Floor Concrete 001",
+	      "category": "ceiling",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [4,4],
+	      "colorSpecular": [0.063,0.063,0.063],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/3fdde165b96f531f1f4ff81ccd7b38c4.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/3fdde165b96f531f1f4ff81ccd7b38c4.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/3fdde165b96f531f1f4ff81ccd7b38c4.source.jpg"
+	    }
+	  },
+	  "concrete_fluid": {
+	    "meta": {
+	      "displayName": "Concrete Natural",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorDiffuse": [0.867,0.867,0.867],
+	      "colorSpecular": [0.537,0.537,0.537],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/7af78308b190531d128c71e3482e21ea.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/f544850902a92746d30d0b80bda43c62.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/7af78308b190531d128c71e3482e21ea.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/7af78308b190531d128c71e3482e21ea.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/f544850902a92746d30d0b80bda43c62.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/f544850902a92746d30d0b80bda43c62.source.jpg"
+	    }
+	  },
+	  "concrete_beige": {
+	    "meta": {
+	      "displayName": "Concrete Beige",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.537,0.537,0.537],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/5b293c62b59fd9a56122244d7d4ce13d.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/f544850902a92746d30d0b80bda43c62.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/5b293c62b59fd9a56122244d7d4ce13d.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/5b293c62b59fd9a56122244d7d4ce13d.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/f544850902a92746d30d0b80bda43c62.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/f544850902a92746d30d0b80bda43c62.source.jpg"
+	    }
+	  },
+	  "concrete_beige_ceiling": {
+	    "meta": {
+	      "displayName": "Concrete Beige",
+	      "category": "ceiling",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.537,0.537,0.537],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/5b293c62b59fd9a56122244d7d4ce13d.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/f544850902a92746d30d0b80bda43c62.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/5b293c62b59fd9a56122244d7d4ce13d.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/5b293c62b59fd9a56122244d7d4ce13d.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/f544850902a92746d30d0b80bda43c62.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/f544850902a92746d30d0b80bda43c62.source.jpg"
+	    }
+	  },
+	  "concrete_dark": {
+	    "meta": {
+	      "displayName": "Concrete Dark",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.537,0.537,0.537],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/e533a34333f62a4999a50e4ddf00a898.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/f544850902a92746d30d0b80bda43c62.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/e533a34333f62a4999a50e4ddf00a898.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/e533a34333f62a4999a50e4ddf00a898.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/f544850902a92746d30d0b80bda43c62.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/f544850902a92746d30d0b80bda43c62.source.jpg"
+	    }
+	  },
+	  "concrete_dark_ceiling": {
+	    "meta": {
+	      "displayName": "Concrete Dark",
+	      "category": "ceiling",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.537,0.537,0.537],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/e533a34333f62a4999a50e4ddf00a898.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/f544850902a92746d30d0b80bda43c62.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/e533a34333f62a4999a50e4ddf00a898.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/e533a34333f62a4999a50e4ddf00a898.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/f544850902a92746d30d0b80bda43c62.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/f544850902a92746d30d0b80bda43c62.source.jpg"
+	    }
+	  },
+	  "concrete_black": {
+	    "meta": {
+	      "displayName": "Concrete Black",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.537,0.537,0.537],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/7304a447edb67785758a328b5e9770c8.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/f544850902a92746d30d0b80bda43c62.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/7304a447edb67785758a328b5e9770c8.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/7304a447edb67785758a328b5e9770c8.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/f544850902a92746d30d0b80bda43c62.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/f544850902a92746d30d0b80bda43c62.source.jpg"
+	    }
+	  },
+	  "concrete_black_ceiling": {
+	    "meta": {
+	      "displayName": "Concrete Black",
+	      "category": "ceiling",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.537,0.537,0.537],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/7304a447edb67785758a328b5e9770c8.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/f544850902a92746d30d0b80bda43c62.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/7304a447edb67785758a328b5e9770c8.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/7304a447edb67785758a328b5e9770c8.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/f544850902a92746d30d0b80bda43c62.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/f544850902a92746d30d0b80bda43c62.source.jpg"
+	    }
+	  },
+	  "default_plaster_001": {
+	    "meta": {
+	      "displayName": "Plaster Rough",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.5,0.5],
+	      "specularCoef": 20,
+	      "mapDiffuse": "archilogic/tex/278b6dee7782d3ca882d8dd8b0dcd85c.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/278b6dee7782d3ca882d8dd8b0dcd85c.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/278b6dee7782d3ca882d8dd8b0dcd85c.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.source.jpg"
+	    }
+	  },
+	  "default_plaster_001_ceiling": {
+	    "meta": {
+	      "displayName": "Plaster Rough",
+	      "category": "ceiling",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.5,0.5],
+	      "specularCoef": 20,
+	      "mapDiffuse": "archilogic/tex/278b6dee7782d3ca882d8dd8b0dcd85c.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/278b6dee7782d3ca882d8dd8b0dcd85c.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/278b6dee7782d3ca882d8dd8b0dcd85c.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.source.jpg"
+	    }
+	  },
+	  "plaster_smooth": {
+	    "meta": {
+	      "displayName": "Plaster Smooth",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.3,0.3],
+	      "specularCoef": 20,
+	      "mapDiffuse": "archilogic/tex/1c6397e5715169b6b024c8645cf2efdc.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/1c6397e5715169b6b024c8645cf2efdc.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/1c6397e5715169b6b024c8645cf2efdc.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.source.jpg"
+	    }
+	  },
+	  "plaster_smooth_ceiling": {
+	    "meta": {
+	      "displayName": "Plaster Smooth",
+	      "category": "ceiling",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.3,0.3],
+	      "specularCoef": 20,
+	      "mapDiffuse": "archilogic/tex/1c6397e5715169b6b024c8645cf2efdc.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/1c6397e5715169b6b024c8645cf2efdc.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/1c6397e5715169b6b024c8645cf2efdc.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.source.jpg"
+	    }
+	  },
+	  "tiles-white-large": {
+	    "meta": {
+	      "displayName": "Tiles Square White",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.976,0.976,0.976],
+	      "colorSpecular": [0.251,0.251,0.251],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/0b4ecca17b840beb219e32bceb21ffc3.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/627ac2ca3cab7e2790b36c97cd58e243.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/bd83b5c8611c3bbe71d61f9b2c57b45f.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/0b4ecca17b840beb219e32bceb21ffc3.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/0b4ecca17b840beb219e32bceb21ffc3.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/bd83b5c8611c3bbe71d61f9b2c57b45f.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/bd83b5c8611c3bbe71d61f9b2c57b45f.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/627ac2ca3cab7e2790b36c97cd58e243.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/627ac2ca3cab7e2790b36c97cd58e243.source.jpg"
+	    }
+	  },
+	  "tiles-dark-large": {
+	    "meta": {
+	      "displayName": "Tiles Square Anthrazit",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/8aa2417d8bc9c6bb1d80db87bc409c9f.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/dcc25defadefce42ac0dde87d6060150.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/14398cecb6ce505232a7c7ed5644b07a.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/8aa2417d8bc9c6bb1d80db87bc409c9f.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/8aa2417d8bc9c6bb1d80db87bc409c9f.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/14398cecb6ce505232a7c7ed5644b07a.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/14398cecb6ce505232a7c7ed5644b07a.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/dcc25defadefce42ac0dde87d6060150.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/dcc25defadefce42ac0dde87d6060150.source.jpg"
+	    }
+	  },
+	  "tiles_large_rect_white": {
+	    "meta": {
+	      "displayName": "Tiles Rectangle White",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.025,0.025,0.025],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/d8572227e2a76395a528e0462cf5b895.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/d8572227e2a76395a528e0462cf5b895.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/d8572227e2a76395a528e0462cf5b895.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.source.jpg"
+	    }
+	  },
+	  "tiles_large_rect_white_floor": {
+	    "meta": {
+	      "displayName": "Tiles Rectangle White",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.025,0.025,0.025],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/d8572227e2a76395a528e0462cf5b895.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/d8572227e2a76395a528e0462cf5b895.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/d8572227e2a76395a528e0462cf5b895.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.source.jpg"
+	    }
+	  },
+	  "tiles_large_rect_grey": {
+	    "meta": {
+	      "displayName": "Tiles Rectangle Grey",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.03,0.03,0.03],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/0921c5463ce717013b12f45418f8a81f.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/0921c5463ce717013b12f45418f8a81f.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/0921c5463ce717013b12f45418f8a81f.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.source.jpg"
+	    }
+	  },
+	  "tiles_large_rect_grey_floor": {
+	    "meta": {
+	      "displayName": "Tiles Rectangle Grey",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.03,0.03,0.03],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/0921c5463ce717013b12f45418f8a81f.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/0921c5463ce717013b12f45418f8a81f.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/0921c5463ce717013b12f45418f8a81f.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.source.jpg"
+	    }
+	  },
+	  "tiles_large_shifted_sand": {
+	    "meta": {
+	      "displayName": "Tiles Shifted Sand",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.25,0.25,0.25],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/f0d0f3f85673051179bf44bfce706efd.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/6d3096b1dbb5c9ae16f9cae41c08c86f.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/8e1e6a287c1930134639a7b4236bd552.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/f0d0f3f85673051179bf44bfce706efd.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/f0d0f3f85673051179bf44bfce706efd.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/8e1e6a287c1930134639a7b4236bd552.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/8e1e6a287c1930134639a7b4236bd552.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/6d3096b1dbb5c9ae16f9cae41c08c86f.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/6d3096b1dbb5c9ae16f9cae41c08c86f.source.jpg"
+	    }
+	  },
+	  "tiles_large_shifted_sand_floor": {
+	    "meta": {
+	      "displayName": "Tiles Shifted Sand",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.25,0.25,0.25],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/f0d0f3f85673051179bf44bfce706efd.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/6d3096b1dbb5c9ae16f9cae41c08c86f.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/8e1e6a287c1930134639a7b4236bd552.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/f0d0f3f85673051179bf44bfce706efd.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/f0d0f3f85673051179bf44bfce706efd.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/8e1e6a287c1930134639a7b4236bd552.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/8e1e6a287c1930134639a7b4236bd552.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/6d3096b1dbb5c9ae16f9cae41c08c86f.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/6d3096b1dbb5c9ae16f9cae41c08c86f.source.jpg"
+	    }
+	  },
+	  "black_white_tiles": {
+	    "meta": {
+	      "displayName": "Tiles Checkerboard Black/White",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.537,0.537,0.537],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/6516dbd748a176400f878fa8e9c99ba3.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/a72b2b7a876446fc0266c483eec1e1c5.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/98b4993fcad50697c3387edff1df4414.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/6516dbd748a176400f878fa8e9c99ba3.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/6516dbd748a176400f878fa8e9c99ba3.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/98b4993fcad50697c3387edff1df4414.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/98b4993fcad50697c3387edff1df4414.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/a72b2b7a876446fc0266c483eec1e1c5.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/a72b2b7a876446fc0266c483eec1e1c5.source.jpg"
+	    }
+	  },
+	  "floor_tiles_002": {
+	    "meta": {
+	      "displayName": "Floor Tiles 002",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/033cf06fbf6b93c7bd0fb3691fa72f17.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/033cf06fbf6b93c7bd0fb3691fa72f17.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/033cf06fbf6b93c7bd0fb3691fa72f17.source.jpg"
+	    }
+	  },
+	  "floor_tiles_003": {
+	    "meta": {
+	      "displayName": "Floor Tiles 003",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/09716599ae75e4f4fc559b8dc37c7671.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/09716599ae75e4f4fc559b8dc37c7671.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/09716599ae75e4f4fc559b8dc37c7671.source.jpg"
+	    }
+	  },
+	  "white_tiles": {
+	    "meta": {
+	      "displayName": "Tiles Mosaic White Big",
+	      "category": "wall",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.125,0.125,0.125],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/3df033cc051926797d49509f766af355.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/02aab5d4adaf4690c49ba55cfaa6b80f.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/0a2a5927b4f16b67adef3af0f1f5826d.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/3df033cc051926797d49509f766af355.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/3df033cc051926797d49509f766af355.source.png",
+	      "mapSpecularPreview": "archilogic/tex/0a2a5927b4f16b67adef3af0f1f5826d.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/0a2a5927b4f16b67adef3af0f1f5826d.source.png",
+	      "mapNormalPreview": "archilogic/tex/02aab5d4adaf4690c49ba55cfaa6b80f.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/02aab5d4adaf4690c49ba55cfaa6b80f.source.png"
+	    }
+	  },
+	  "white_tiles_floor": {
+	    "meta": {
+	      "displayName": "Tiles Mosaic White Big",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.125,0.125,0.125],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/3df033cc051926797d49509f766af355.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/02aab5d4adaf4690c49ba55cfaa6b80f.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/0a2a5927b4f16b67adef3af0f1f5826d.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/3df033cc051926797d49509f766af355.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/3df033cc051926797d49509f766af355.source.png",
+	      "mapSpecularPreview": "archilogic/tex/0a2a5927b4f16b67adef3af0f1f5826d.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/0a2a5927b4f16b67adef3af0f1f5826d.source.png",
+	      "mapNormalPreview": "archilogic/tex/02aab5d4adaf4690c49ba55cfaa6b80f.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/02aab5d4adaf4690c49ba55cfaa6b80f.source.png"
+	    }
+	  },
+	  "white_tiles_small": {
+	    "meta": {
+	      "displayName": "Tiles Mosaic White",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.125,0.125,0.125],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/3416ceb5e5625b1214d778e71413e138.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/e5f0d1e90c2b0fdd1f88fa48157dc68c.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/044e5fcdc243b61f90b8a92f1355b9be.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/3416ceb5e5625b1214d778e71413e138.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/3416ceb5e5625b1214d778e71413e138.source.png",
+	      "mapSpecularPreview": "archilogic/tex/044e5fcdc243b61f90b8a92f1355b9be.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/044e5fcdc243b61f90b8a92f1355b9be.source.png",
+	      "mapNormalPreview": "archilogic/tex/e5f0d1e90c2b0fdd1f88fa48157dc68c.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/e5f0d1e90c2b0fdd1f88fa48157dc68c.source.png"
+	    }
+	  },
+	  "white_tiles_small_floor": {
+	    "meta": {
+	      "displayName": "Tiles Mosaic White",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.125,0.125,0.125],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/3416ceb5e5625b1214d778e71413e138.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/e5f0d1e90c2b0fdd1f88fa48157dc68c.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/044e5fcdc243b61f90b8a92f1355b9be.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/3416ceb5e5625b1214d778e71413e138.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/3416ceb5e5625b1214d778e71413e138.source.png",
+	      "mapSpecularPreview": "archilogic/tex/044e5fcdc243b61f90b8a92f1355b9be.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/044e5fcdc243b61f90b8a92f1355b9be.source.png",
+	      "mapNormalPreview": "archilogic/tex/e5f0d1e90c2b0fdd1f88fa48157dc68c.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/e5f0d1e90c2b0fdd1f88fa48157dc68c.source.png"
+	    }
+	  },
+	  "tiles_mosaic_brown": {
+	    "meta": {
+	      "displayName": "Tiles Mosaic Brown",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.5,0.5],
+	      "colorSpecular": [0.15,0.15,0.15],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/739ac1c99b22d62693314fb55c8b847a.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/739ac1c99b22d62693314fb55c8b847a.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/739ac1c99b22d62693314fb55c8b847a.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.source.jpg"
+	    }
+	  },
+	  "tiles_mosaic_brown_floor": {
+	    "meta": {
+	      "displayName": "Tiles Mosaic Brown",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.5,0.5],
+	      "colorSpecular": [0.15,0.15,0.15],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/739ac1c99b22d62693314fb55c8b847a.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/739ac1c99b22d62693314fb55c8b847a.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/739ac1c99b22d62693314fb55c8b847a.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.source.jpg"
+	    }
+	  },
+	  "tiles_mosaic_green": {
+	    "meta": {
+	      "displayName": "Tiles Mosaic Green",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.5,0.5],
+	      "colorSpecular": [0.1,0.1,0.1],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/cf01041b30b308d8c1d5797490eefb3d.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/cf01041b30b308d8c1d5797490eefb3d.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/cf01041b30b308d8c1d5797490eefb3d.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.source.jpg"
+	    }
+	  },
+	  "tiles_mosaic_green_floor": {
+	    "meta": {
+	      "displayName": "Tiles Mosaic Green",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.5,0.5],
+	      "colorSpecular": [0.1,0.1,0.1],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/cf01041b30b308d8c1d5797490eefb3d.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/cf01041b30b308d8c1d5797490eefb3d.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/cf01041b30b308d8c1d5797490eefb3d.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.source.jpg"
+	    }
+	  },
+	  "dark_tiles": {
+	    "meta": {
+	      "displayName": "Brown Tiles",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.486,0.486,0.486],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/6b0b81b4cdbaca9628eb0d78ed092f0f.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/02aab5d4adaf4690c49ba55cfaa6b80f.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/0a2a5927b4f16b67adef3af0f1f5826d.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/6b0b81b4cdbaca9628eb0d78ed092f0f.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/6b0b81b4cdbaca9628eb0d78ed092f0f.source.png",
+	      "mapSpecularPreview": "archilogic/tex/0a2a5927b4f16b67adef3af0f1f5826d.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/0a2a5927b4f16b67adef3af0f1f5826d.source.png",
+	      "mapNormalPreview": "archilogic/tex/02aab5d4adaf4690c49ba55cfaa6b80f.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/02aab5d4adaf4690c49ba55cfaa6b80f.source.png"
+	    }
+	  },
+	  "dark_tiles_small": {
+	    "meta": {
+	      "displayName": "Brown Tiles Small",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.486,0.486,0.486],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/186699961b8afaf24d3a21eb07aadd6d.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/e5f0d1e90c2b0fdd1f88fa48157dc68c.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/044e5fcdc243b61f90b8a92f1355b9be.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/186699961b8afaf24d3a21eb07aadd6d.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/186699961b8afaf24d3a21eb07aadd6d.source.png",
+	      "mapSpecularPreview": "archilogic/tex/044e5fcdc243b61f90b8a92f1355b9be.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/044e5fcdc243b61f90b8a92f1355b9be.source.png",
+	      "mapNormalPreview": "archilogic/tex/e5f0d1e90c2b0fdd1f88fa48157dc68c.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/e5f0d1e90c2b0fdd1f88fa48157dc68c.source.png"
+	    }
+	  },
+	  "floor_tiles_001": {
+	    "meta": {
+	      "displayName": "Tiles Slate",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1.5,1.5],
+	      "colorSpecular": [0.584,0.584,0.584],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/2d6e29a6701b30f14a9fd4ff5611821c.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/0cbeaa8fae8ac9c017f3e54a0d0f2b7a.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/cf02b31506b385e6dd0a1cade7e22cc7.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/2d6e29a6701b30f14a9fd4ff5611821c.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/2d6e29a6701b30f14a9fd4ff5611821c.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/cf02b31506b385e6dd0a1cade7e22cc7.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/cf02b31506b385e6dd0a1cade7e22cc7.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/0cbeaa8fae8ac9c017f3e54a0d0f2b7a.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/0cbeaa8fae8ac9c017f3e54a0d0f2b7a.source.jpg"
+	    }
+	  },
+	  "terrazzo_tiles": {
+	    "meta": {
+	      "displayName": "Tiles Terrazzo",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.584,0.584,0.584],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/25694889b08b343b90c3e4c7261d86e8.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/57e26201a21d93254c4bb45ed2d2aa19.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/6702ac5458148d80116088ba2c7d2c42.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/25694889b08b343b90c3e4c7261d86e8.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/25694889b08b343b90c3e4c7261d86e8.source.png",
+	      "mapSpecularPreview": "archilogic/tex/6702ac5458148d80116088ba2c7d2c42.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/6702ac5458148d80116088ba2c7d2c42.source.png",
+	      "mapNormalPreview": "archilogic/tex/57e26201a21d93254c4bb45ed2d2aa19.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/57e26201a21d93254c4bb45ed2d2aa19.source.png"
+	    }
+	  },
+	  "tiles_white_marble": {
+	    "meta": {
+	      "displayName": "Tiles Marble White",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 25,
+	      "mapDiffuse": "archilogic/tex/0b2c734dd939a01faaa867ec65e0ef4c.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/69bba4d9620c0c37fa9f0997156e693a.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/8fc3f68d9193efa80002bd940ad93be4.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/0b2c734dd939a01faaa867ec65e0ef4c.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/0b2c734dd939a01faaa867ec65e0ef4c.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/8fc3f68d9193efa80002bd940ad93be4.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/8fc3f68d9193efa80002bd940ad93be4.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/69bba4d9620c0c37fa9f0997156e693a.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/69bba4d9620c0c37fa9f0997156e693a.source.jpg"
+	    }
+	  },
+	  "tiles_white_marble_floor": {
+	    "meta": {
+	      "displayName": "Tiles Marble White",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 25,
+	      "mapDiffuse": "archilogic/tex/0b2c734dd939a01faaa867ec65e0ef4c.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/69bba4d9620c0c37fa9f0997156e693a.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/8fc3f68d9193efa80002bd940ad93be4.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/0b2c734dd939a01faaa867ec65e0ef4c.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/0b2c734dd939a01faaa867ec65e0ef4c.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/8fc3f68d9193efa80002bd940ad93be4.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/8fc3f68d9193efa80002bd940ad93be4.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/69bba4d9620c0c37fa9f0997156e693a.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/69bba4d9620c0c37fa9f0997156e693a.source.jpg"
+	    }
+	  },
+	  "stone-travertin": {
+	    "meta": {
+	      "displayName": "Tiles Travertin",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.424,0.424,0.424],
+	      "specularCoef": 25,
+	      "mapDiffuse": "archilogic/tex/82a80f62139d16b46c21188d6bf65383.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/3c34372d7adc7d0cfb6241818e7bdd33.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/77a50e96fcb72da716a1fa5ff59a6405.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/82a80f62139d16b46c21188d6bf65383.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/82a80f62139d16b46c21188d6bf65383.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/77a50e96fcb72da716a1fa5ff59a6405.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/77a50e96fcb72da716a1fa5ff59a6405.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/3c34372d7adc7d0cfb6241818e7bdd33.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/3c34372d7adc7d0cfb6241818e7bdd33.source.jpg"
+	    }
+	  },
+	  "stone-travertin-floor": {
+	    "meta": {
+	      "displayName": "Tiles Travertin",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.424,0.424,0.424],
+	      "specularCoef": 25,
+	      "mapDiffuse": "archilogic/tex/82a80f62139d16b46c21188d6bf65383.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/3c34372d7adc7d0cfb6241818e7bdd33.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/77a50e96fcb72da716a1fa5ff59a6405.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/82a80f62139d16b46c21188d6bf65383.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/82a80f62139d16b46c21188d6bf65383.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/77a50e96fcb72da716a1fa5ff59a6405.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/77a50e96fcb72da716a1fa5ff59a6405.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/3c34372d7adc7d0cfb6241818e7bdd33.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/3c34372d7adc7d0cfb6241818e7bdd33.source.jpg"
+	    }
+	  },
+	  "terrazzo": {
+	    "meta": {
+	      "displayName": "Terrazzo",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.8,0.8],
+	      "colorSpecular": [0.125,0.125,0.125],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/b6669597fae40407427303941f738325.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/550eb2c4d601fe57c9ea74d9b1987eea.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/a0a56174d016a466f6bb465c1fb8a55e.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/b6669597fae40407427303941f738325.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/b6669597fae40407427303941f738325.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/a0a56174d016a466f6bb465c1fb8a55e.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/a0a56174d016a466f6bb465c1fb8a55e.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/550eb2c4d601fe57c9ea74d9b1987eea.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/550eb2c4d601fe57c9ea74d9b1987eea.source.jpg"
+	    }
+	  },
+	  "terrazzo_ceiling": {
+	    "meta": {
+	      "displayName": "Terrazzo",
+	      "category": "ceiling",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.8,0.8],
+	      "colorSpecular": [0.125,0.125,0.125],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/b6669597fae40407427303941f738325.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/550eb2c4d601fe57c9ea74d9b1987eea.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/a0a56174d016a466f6bb465c1fb8a55e.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/b6669597fae40407427303941f738325.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/b6669597fae40407427303941f738325.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/a0a56174d016a466f6bb465c1fb8a55e.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/a0a56174d016a466f6bb465c1fb8a55e.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/550eb2c4d601fe57c9ea74d9b1987eea.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/550eb2c4d601fe57c9ea74d9b1987eea.source.jpg"
+	    }
+	  },
+	  "bricks_clean_red": {
+	    "meta": {
+	      "displayName": "Bricks Clean Red",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1.2,1.2],
+	      "colorSpecular": [0.08,0.08,0.08],
+	      "specularCoef": 50,
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/d399b0bf607e60e545c0ceb060b7982c.hi-res.gz.dds",
+	      "mapNormal": "/535e624259ee6b0200000484/textures/uploads/7a6112cd3134c623afacd882e2cb4585.hi-res.gz.dds",
+	      "mapSpecular": "/535e624259ee6b0200000484/textures/uploads/06fd5ee205b44156205c4180a21e815a.hi-res.gz.dds",
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/d399b0bf607e60e545c0ceb060b7982c.lo-res.jpg",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/d399b0bf607e60e545c0ceb060b7982c.source.jpg",
+	      "mapSpecularPreview": "/535e624259ee6b0200000484/textures/uploads/06fd5ee205b44156205c4180a21e815a.lo-res.jpg",
+	      "mapSpecularSource": "/535e624259ee6b0200000484/textures/uploads/06fd5ee205b44156205c4180a21e815a.source.jpg",
+	      "mapNormalPreview": "/535e624259ee6b0200000484/textures/uploads/7a6112cd3134c623afacd882e2cb4585.lo-res.jpg",
+	      "mapNormalSource": "/535e624259ee6b0200000484/textures/uploads/7a6112cd3134c623afacd882e2cb4585.source.jpg"
+	    }
+	  },
+	  "bricks_clean_orange": {
+	    "meta": {
+	      "displayName": "Bricks Clean Orange",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1.2,1.2],
+	      "colorSpecular": [0.08,0.08,0.08],
+	      "specularCoef": 50,
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/d981f439a0d62b0e1d68c5c91daad674.hi-res.gz.dds",
+	      "mapNormal": "/535e624259ee6b0200000484/textures/uploads/7a6112cd3134c623afacd882e2cb4585.hi-res.gz.dds",
+	      "mapSpecular": "/535e624259ee6b0200000484/textures/uploads/06fd5ee205b44156205c4180a21e815a.hi-res.gz.dds",
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/d981f439a0d62b0e1d68c5c91daad674.lo-res.jpg",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/d981f439a0d62b0e1d68c5c91daad674.source.jpg",
+	      "mapSpecularPreview": "/535e624259ee6b0200000484/textures/uploads/06fd5ee205b44156205c4180a21e815a.lo-res.jpg",
+	      "mapSpecularSource": "/535e624259ee6b0200000484/textures/uploads/06fd5ee205b44156205c4180a21e815a.source.jpg",
+	      "mapNormalPreview": "/535e624259ee6b0200000484/textures/uploads/7a6112cd3134c623afacd882e2cb4585.lo-res.jpg",
+	      "mapNormalSource": "/535e624259ee6b0200000484/textures/uploads/7a6112cd3134c623afacd882e2cb4585.source.jpg"
+	    }
+	  },
+	  "bricks_clean_white": {
+	    "meta": {
+	      "displayName": "Bricks Clean White",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1.2,1.2],
+	      "colorSpecular": [0.08,0.08,0.08],
+	      "specularCoef": 50,
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/e167b3c467c84e496fdf5feb34e3a978.hi-res.gz.dds",
+	      "mapNormal": "/535e624259ee6b0200000484/textures/uploads/7a6112cd3134c623afacd882e2cb4585.hi-res.gz.dds",
+	      "mapSpecular": "/535e624259ee6b0200000484/textures/uploads/06fd5ee205b44156205c4180a21e815a.hi-res.gz.dds",
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/e167b3c467c84e496fdf5feb34e3a978.lo-res.jpg",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/e167b3c467c84e496fdf5feb34e3a978.source.jpg",
+	      "mapSpecularPreview": "/535e624259ee6b0200000484/textures/uploads/06fd5ee205b44156205c4180a21e815a.lo-res.jpg",
+	      "mapSpecularSource": "/535e624259ee6b0200000484/textures/uploads/06fd5ee205b44156205c4180a21e815a.source.jpg",
+	      "mapNormalPreview": "/535e624259ee6b0200000484/textures/uploads/7a6112cd3134c623afacd882e2cb4585.lo-res.jpg",
+	      "mapNormalSource": "/535e624259ee6b0200000484/textures/uploads/7a6112cd3134c623afacd882e2cb4585.source.jpg"
+	    }
+	  },
+	  "bricks_red": {
+	    "meta": {
+	      "displayName": "Bricks Red",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.08,0.08,0.08],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/e4946d35b80274163c6b6477e68e2b00.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/545119d25a25288d358632490643ddc2.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/0e83232f013132b11b4b2b194717fbc5.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/e4946d35b80274163c6b6477e68e2b00.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/e4946d35b80274163c6b6477e68e2b00.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/0e83232f013132b11b4b2b194717fbc5.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/0e83232f013132b11b4b2b194717fbc5.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/545119d25a25288d358632490643ddc2.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/545119d25a25288d358632490643ddc2.source.jpg"
+	    }
+	  },
+	  "bricks_yellow": {
+	    "meta": {
+	      "displayName": "Bricks Yellow",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.05,0.05,0.05],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/d287580522c79c80aea849747b9ab914.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/545119d25a25288d358632490643ddc2.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/0e83232f013132b11b4b2b194717fbc5.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/d287580522c79c80aea849747b9ab914.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/d287580522c79c80aea849747b9ab914.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/0e83232f013132b11b4b2b194717fbc5.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/0e83232f013132b11b4b2b194717fbc5.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/545119d25a25288d358632490643ddc2.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/545119d25a25288d358632490643ddc2.source.jpg"
+	    }
+	  },
+	  "bricks_white": {
+	    "meta": {
+	      "displayName": "Bricks White",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.05,0.05,0.05],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/7c5134a614d03c79d008c5c1a7cf5f54.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/545119d25a25288d358632490643ddc2.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/0e83232f013132b11b4b2b194717fbc5.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/7c5134a614d03c79d008c5c1a7cf5f54.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/7c5134a614d03c79d008c5c1a7cf5f54.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/0e83232f013132b11b4b2b194717fbc5.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/0e83232f013132b11b4b2b194717fbc5.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/545119d25a25288d358632490643ddc2.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/545119d25a25288d358632490643ddc2.source.jpg"
+	    }
+	  },
+	  "concrete_board": {
+	    "meta": {
+	      "displayName": "Concrete Raw Board",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2.4,2.4],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/fea909bb96aa0fcea514647d97875be5.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/b9f04ce9f2742488128ea450d465963b.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/ae044508902f2bf472542a6afc0db6f8.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/fea909bb96aa0fcea514647d97875be5.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/fea909bb96aa0fcea514647d97875be5.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/ae044508902f2bf472542a6afc0db6f8.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/ae044508902f2bf472542a6afc0db6f8.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/b9f04ce9f2742488128ea450d465963b.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/b9f04ce9f2742488128ea450d465963b.source.jpg"
+	    }
+	  },
+	  "concrete_board_ceiling": {
+	    "meta": {
+	      "displayName": "Concrete Raw Board",
+	      "category": "ceiling",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2.4,2.4],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/fea909bb96aa0fcea514647d97875be5.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/b9f04ce9f2742488128ea450d465963b.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/ae044508902f2bf472542a6afc0db6f8.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/fea909bb96aa0fcea514647d97875be5.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/fea909bb96aa0fcea514647d97875be5.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/ae044508902f2bf472542a6afc0db6f8.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/ae044508902f2bf472542a6afc0db6f8.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/b9f04ce9f2742488128ea450d465963b.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/b9f04ce9f2742488128ea450d465963b.source.jpg"
+	    }
+	  },
+	  "wall_top": {
+	    "meta": {
+	      "displayName": "Stone Wall Natural",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "colorDiffuse": [0.2,0.2,0.2],
+	      "addLightmap": false,
+	      "useInBaking": true,
+	      "hideAfterBaking": false
+	    }
+	  },
+	  "stone_wall": {
+	    "meta": {
+	      "displayName": "Stone Wall Natural",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.424,0.424,0.424],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/5b9bed2afa0dff30e14bfbc0344c90e7.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/0f2f5fcd5532a2acfbe1b62e93b1e2da.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/d562e8020049d2d6e4b3583e4e624522.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/5b9bed2afa0dff30e14bfbc0344c90e7.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/5b9bed2afa0dff30e14bfbc0344c90e7.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/d562e8020049d2d6e4b3583e4e624522.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/d562e8020049d2d6e4b3583e4e624522.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/0f2f5fcd5532a2acfbe1b62e93b1e2da.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/0f2f5fcd5532a2acfbe1b62e93b1e2da.source.jpg"
+	    }
+	  },
+	  "floor_vintage_timber_2": {
+	    "meta": {
+	      "displayName": "Planks Stained",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3.4,3.4],
+	      "colorSpecular": [0.031,0.031,0.031],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/dc17b74b6569a8fc02c51369bcc20b9b.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/dc17b74b6569a8fc02c51369bcc20b9b.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/dc17b74b6569a8fc02c51369bcc20b9b.source.jpg"
+	    }
+	  },
+	  "ceiling_vintage_timber_2": {
+	    "meta": {
+	      "displayName": "Planks Stained",
+	      "category": "ceiling",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3.4,3.4],
+	      "colorSpecular": [0.031,0.031,0.031],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/dc17b74b6569a8fc02c51369bcc20b9b.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/dc17b74b6569a8fc02c51369bcc20b9b.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/dc17b74b6569a8fc02c51369bcc20b9b.source.jpg"
+	    }
+	  },
+	  "wall_vintage_timber_2": {
+	    "meta": {
+	      "displayName": "Planks Stained",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3.4,3.4],
+	      "colorSpecular": [0.031,0.031,0.031],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/dc17b74b6569a8fc02c51369bcc20b9b.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/dc17b74b6569a8fc02c51369bcc20b9b.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/dc17b74b6569a8fc02c51369bcc20b9b.source.jpg"
+	    }
+	  },
+	  "truss_wood": {
+	    "meta": {
+	      "displayName": "Truss Wood",
+	      "category": "other",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.667,0.667,0.667],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/22327ea017e8c358402d1130c5a74ba7.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/2ccf45239f3760043910d7729a7c0b30.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/e96e36ae77a7b6929ff62d6e70b18d8b.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/22327ea017e8c358402d1130c5a74ba7.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/22327ea017e8c358402d1130c5a74ba7.source.png",
+	      "mapSpecularPreview": "archilogic/tex/e96e36ae77a7b6929ff62d6e70b18d8b.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/e96e36ae77a7b6929ff62d6e70b18d8b.source.png",
+	      "mapNormalPreview": "archilogic/tex/2ccf45239f3760043910d7729a7c0b30.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/2ccf45239f3760043910d7729a7c0b30.source.png"
+	    }
+	  },
+	  "brushed_chrome": {
+	    "meta": {
+	      "displayName": "Brushed Chrome",
+	      "category": "counter",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.855,0.855,0.855],
+	      "specularCoef": 80
+	    }
+	  },
+	  "concrete_tiles_vertical": {
+	    "meta": {
+	      "displayName": "Concrete Tiles Vertical",
+	      "category": "wall",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [2.4,2.4],
+	      "colorSpecular": [0.486,0.486,0.486],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/ea24f67d1cfba1caa593e621e937bc37.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/391452dc766083a8a6fce340b2d2af44.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/55d5ac9d2cd7c1ed99514fd92175e5bc.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/ea24f67d1cfba1caa593e621e937bc37.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/ea24f67d1cfba1caa593e621e937bc37.source.png",
+	      "mapSpecularPreview": "archilogic/tex/55d5ac9d2cd7c1ed99514fd92175e5bc.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/55d5ac9d2cd7c1ed99514fd92175e5bc.source.png",
+	      "mapNormalPreview": "archilogic/tex/391452dc766083a8a6fce340b2d2af44.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/391452dc766083a8a6fce340b2d2af44.source.png"
+	    }
+	  },
+	  "glass_old": {
+	    "meta": {
+	      "displayName": "Glass (Old)",
+	      "category": "glass",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "colorDiffuse": [1,1,1],
+	      "specularCoef": 40,
+	      "opacity": 0.3,
+	      "addLightmap": false,
+	      "useInBaking": false
+	    }
+	  },
+	  "glass": {
+	    "meta": {
+	      "displayName": "Glass",
+	      "category": "glass",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "colorDiffuse": [0.949,1,0.988],
+	      "colorSpecular": [0,1,0.769],
+	      "specularCoef": 100,
+	      "opacity": 0.14,
+	      "addLightmap": false,
+	      "useInBaking": false
+	    }
+	  },
+	  "glass-wall": {
+	    "meta": {
+	      "displayName": "Glass",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "colorDiffuse": [0.949,1,0.988],
+	      "colorSpecular": [0,1,0.769],
+	      "specularCoef": 100,
+	      "opacity": 0.14,
+	      "addLightmap": false,
+	      "useInBaking": false
+	    }
+	  },
+	  "wallTop": {
+	    "meta": {
+	      "displayName": "Wall Top"
+	    },
+	    "attributes": {
+	      "colorDiffuse": [0.188,0.188,0.188],
+	      "specularCoef": 0.1
+	    }
+	  },
+	  "grass-01": {
+	    "meta": {
+	      "displayName": "Grass",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [4,4],
+	      "specularCoef": 20,
+	      "mapDiffuse": "archilogic/tex/8463d96062b98f018edb34af61642f50.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/626edbfd34ba34c19fb92dad87fade82.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/12fd170deef977469cb810a8759aa3eb.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/8463d96062b98f018edb34af61642f50.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/8463d96062b98f018edb34af61642f50.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/12fd170deef977469cb810a8759aa3eb.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/12fd170deef977469cb810a8759aa3eb.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/626edbfd34ba34c19fb92dad87fade82.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/626edbfd34ba34c19fb92dad87fade82.source.jpg"
+	    }
+	  },
+	  "gravel-01": {
+	    "meta": {
+	      "displayName": "Gravel",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "specularCoef": 20,
+	      "mapDiffuse": "archilogic/tex/9fbf5f70818f431ddf28b6a828b68af7.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/0f83e844962e6c10ca9ca56d0ae02cfd.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/367a4374a0d049aa0886ef68b76054f4.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/9fbf5f70818f431ddf28b6a828b68af7.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/9fbf5f70818f431ddf28b6a828b68af7.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/367a4374a0d049aa0886ef68b76054f4.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/367a4374a0d049aa0886ef68b76054f4.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/0f83e844962e6c10ca9ca56d0ae02cfd.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/0f83e844962e6c10ca9ca56d0ae02cfd.source.jpg"
+	    }
+	  },
+	  "floor_grass": {
+	    "meta": {
+	      "displayName": "Grass",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [1,1,1],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/828dfb1aae222e7e4bf563cfb65fc26a.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/828dfb1aae222e7e4bf563cfb65fc26a.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/828dfb1aae222e7e4bf563cfb65fc26a.source.jpg"
+	    }
+	  },
+	  "concrete-wall": {
+	    "meta": {
+	      "displayName": "Concrete Formwork",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [3.6,3.6],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/e529f05d7e3b1ad95c94752098c6ee8e.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/e529f05d7e3b1ad95c94752098c6ee8e.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/e529f05d7e3b1ad95c94752098c6ee8e.source.jpg"
+	    }
+	  },
+	  "floor_wood": {
+	    "meta": {
+	      "displayName": "Floor Wood",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [7,7],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/4433d7b5ed780022d4ad9be94a457961.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/4433d7b5ed780022d4ad9be94a457961.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/4433d7b5ed780022d4ad9be94a457961.source.jpg"
+	    }
+	  },
+	  "floor_ahorn": {
+	    "meta": {
+	      "displayName": "Floor Ahorn",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/73fc859500c231c1f67346dd40ace8dc.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/73fc859500c231c1f67346dd40ace8dc.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/73fc859500c231c1f67346dd40ace8dc.source.jpg"
+	    }
+	  },
+	  "floor_ebenholz": {
+	    "meta": {
+	      "displayName": "Floor Ebenholz",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/d6f9e525372773289d3721cdad924fb9.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/d6f9e525372773289d3721cdad924fb9.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/d6f9e525372773289d3721cdad924fb9.source.jpg"
+	    }
+	  },
+	  "floor_vintage_timber_1": {
+	    "meta": {
+	      "displayName": "Floor Vintage Timber 1",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/26601a09792802ffd9ebdd66d418a1b1.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/26601a09792802ffd9ebdd66d418a1b1.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/26601a09792802ffd9ebdd66d418a1b1.source.jpg"
+	    }
+	  },
+	  "wood_parquet_2": {
+	    "meta": {
+	      "displayName": "Wood Parquet 2",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.667,0.667,0.667],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/22327ea017e8c358402d1130c5a74ba7.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/2ccf45239f3760043910d7729a7c0b30.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/e96e36ae77a7b6929ff62d6e70b18d8b.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/22327ea017e8c358402d1130c5a74ba7.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/22327ea017e8c358402d1130c5a74ba7.source.png",
+	      "mapSpecularPreview": "archilogic/tex/e96e36ae77a7b6929ff62d6e70b18d8b.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/e96e36ae77a7b6929ff62d6e70b18d8b.source.png",
+	      "mapNormalPreview": "archilogic/tex/2ccf45239f3760043910d7729a7c0b30.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/2ccf45239f3760043910d7729a7c0b30.source.png"
+	    }
+	  },
+	  "floor_vintage_timber_3": {
+	    "meta": {
+	      "displayName": "Floor Vintage Timber 3",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [3.2,3.2],
+	      "colorSpecular": [0.102,0.102,0.102],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/c659ad823689f7502699105e6b8974f1.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/c659ad823689f7502699105e6b8974f1.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/c659ad823689f7502699105e6b8974f1.source.jpg"
+	    }
+	  },
+	  "floor_vintage_timber_4": {
+	    "meta": {
+	      "displayName": "Floor Vintage Timber 4",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/e4ce6e72837661fa4555fb4cb9da7b1b.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/e4ce6e72837661fa4555fb4cb9da7b1b.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/e4ce6e72837661fa4555fb4cb9da7b1b.source.jpg"
+	    }
+	  },
+	  "floor_vintage_timber_5": {
+	    "meta": {
+	      "displayName": "Floor Vintage Timber 5",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [3.6,3.6],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/04e192e36ae01ff961c9a882682a19ff.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/04e192e36ae01ff961c9a882682a19ff.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/04e192e36ae01ff961c9a882682a19ff.source.jpg"
+	    }
+	  },
+	  "floor_vintage_timber_6": {
+	    "meta": {
+	      "displayName": "Floor Vintage Timber 6",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/82ca0b741e0ef051e55d0d5b7a46cd54.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/82ca0b741e0ef051e55d0d5b7a46cd54.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/82ca0b741e0ef051e55d0d5b7a46cd54.source.jpg"
+	    }
+	  },
+	  "doorLeaf-flush-white": {
+	    "meta": {
+	      "displayName": "Door Flush White",
+	      "category": "doorLeaf",
+	      "showInMenu": true,
+	      "thumb": "/archilogic/texture/doors/thumbs/door-flush-white-thumb.jpg"
+	    },
+	    "attributes": {
+	      "colorDiffuse": [0.95,0.95,0.95],
+	      "colorSpecular": [0.04,0.04,0.04],
+	      "specularCoef": 30
+	    }
+	  },
+	  "doorLeaf-4-panels-white": {
+	    "meta": {
+	      "displayName": "Door 4 Panels White",
+	      "category": "doorLeaf",
+	      "showInMenu": true,
+	      "thumb": "/archilogic/texture/doors/thumbs/door-panel-white-thumb.jpg"
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.95,0.95,0.95],
+	      "colorSpecular": [0.04,0.04,0.04],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/dd1814c45fe19b59a01d389dbf9d2ab1.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/b42162adaa029e5d56958027b066eb1c.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/dd1814c45fe19b59a01d389dbf9d2ab1.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/dd1814c45fe19b59a01d389dbf9d2ab1.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/b42162adaa029e5d56958027b066eb1c.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/b42162adaa029e5d56958027b066eb1c.source.jpg"
+	    }
+	  },
+	  "doorFrame-flush-white": {
+	    "meta": {
+	      "displayName": "Door Flush White",
+	      "category": "doorFrame",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.95,0.95,0.95],
+	      "colorSpecular": [0.04,0.04,0.04],
+	      "specularCoef": 30
+	    }
+	  },
+	  "aluminium": {
+	    "meta": {
+	      "displayName": "Aluminium",
+	      "category": "doorHandle",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.5,0.5,0.5],
+	      "colorSpecular": [0.34,0.34,0.34],
+	      "specularCoef": 40
+	    }
+	  },
+	  "doorLeaf-whitewood": {
+	    "meta": {
+	      "displayName": "Whitewood Panels",
+	      "category": "doorLeaf",
+	      "showInMenu": true,
+	      "thumb": "/archilogic/texture/doors/thumbs/door-panel-whitewood-thumb.jpg"
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.19,0.19,0.19],
+	      "specularCoef": 20,
+	      "mapDiffuse": "archilogic/tex/072bd60b99f5a92cdde5bd5098dc9284.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/7f51acb6c6eb3d81aa866f9eed5dc3d6.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/b42162adaa029e5d56958027b066eb1c.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/072bd60b99f5a92cdde5bd5098dc9284.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/072bd60b99f5a92cdde5bd5098dc9284.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/7f51acb6c6eb3d81aa866f9eed5dc3d6.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/7f51acb6c6eb3d81aa866f9eed5dc3d6.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/b42162adaa029e5d56958027b066eb1c.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/b42162adaa029e5d56958027b066eb1c.source.jpg"
+	    }
+	  },
+	  "doorLeaf-glass": {
+	    "meta": {
+	      "displayName": "Glass",
+	      "category": "doorLeaf",
+	      "showInMenu": true,
+	      "thumb": "/archilogic/texture/doors/thumbs/door-glass-thumb.jpg"
+	    },
+	    "attributes": {
+	      "colorDiffuse": [0.949,1,0.988],
+	      "colorSpecular": [0,1,0.769],
+	      "specularCoef": 100,
+	      "opacity": 0.24,
+	      "addLightmap": false
+	    }
+	  },
+	  "chrome": {
+	    "meta": {
+	      "displayName": "Aluminium",
+	      "category": "metal",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.5,0.5,0.5],
+	      "colorSpecular": [0.34,0.34,0.34],
+	      "specularCoef": 50
+	    }
+	  },
+	  "cabinet_paint_white": {
+	    "meta": {
+	      "displayName": "Paint White",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.9,0.9,0.9],
+	      "colorSpecular": [0.1,0.1,0.1],
+	      "specularCoef": 10
+	    }
+	  },
+	  "cabinet_paint_creme": {
+	    "meta": {
+	      "displayName": "Paint Creme",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.8,0.78,0.73],
+	      "colorSpecular": [0.2,0.2,0.2],
+	      "specularCoef": 10
+	    }
+	  },
+	  "cabinet_paint_grey": {
+	    "meta": {
+	      "displayName": "Paint Light Grey",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.7,0.7,0.7],
+	      "colorSpecular": [0.2,0.2,0.2],
+	      "specularCoef": 10
+	    }
+	  },
+	  "cabinet_paint_beige": {
+	    "meta": {
+	      "displayName": "Paint Beige",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.57,0.53,0.48],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 10
+	    }
+	  },
+	  "cabinet_paint_green": {
+	    "meta": {
+	      "displayName": "Paint Green",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.455, 0.502, 0.357],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 10
+	    }
+	  },
+	  "cabinet_paint_blue": {
+	    "meta": {
+	      "displayName": "Paint Blue",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse":[0.357,0.447,0.502],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 10
+	    }
+	  },
+	  "cabinet_paint_brick": {
+	    "meta": {
+	      "displayName": "Paint Brick",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.651, 0.357, 0.247],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 10
+	    }
+	  },
+	  "cabinet_paint_anthrazit": {
+	    "meta": {
+	      "displayName": "Paint Anthrazit",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.3,0.3,0.3],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 10
+	    }
+	  },
+	  "cabinet_paint_black": {
+	    "meta": {
+	      "displayName": "Paint Black",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.05,0.05,0.05],
+	      "colorSpecular": [0.5,0.5,0.5],
+	      "specularCoef": 10
+	    }
+	  },
+	  "cabinet_wood_fir": {
+	    "meta": {
+	      "displayName": "Wood Fir mtex_12756",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2.4,2.4],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.2,0.2,0.2],
+	      "specularCoef": 15,
+	      "mapDiffuse": "archilogic/tex/e0ad17dc344e514eb91d98b365d4e1c0.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/e0ad17dc344e514eb91d98b365d4e1c0.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/e0ad17dc344e514eb91d98b365d4e1c0.source.jpg"
+	    }
+	  },
+	  "cabinet_cherry_veneer": {
+	    "meta": {
+	      "displayName": "Wood Cherry Veneer",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1.2, 1.2 ],
+	      "colorDiffuse": [1, 1, 1],
+	      "colorSpecular": [0.322, 0.318,0.318],
+	      "specularCoef": 26,
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/7239eb736d6877a34e8ebe2e5e9c8a57.lo-res.jpg",
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/7239eb736d6877a34e8ebe2e5e9c8a57.hi-res.gz.dds",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/7239eb736d6877a34e8ebe2e5e9c8a57.source.jpg",
+	      "mapSpecularPreview": "/535e624259ee6b0200000484/textures/uploads/58301ccaa8ed2be78e00c9ecdf5ab7af.lo-res.jpg",
+	      "mapSpecular": "/535e624259ee6b0200000484/textures/uploads/58301ccaa8ed2be78e00c9ecdf5ab7af.hi-res.gz.dds",
+	      "mapSpecularSource": "/535e624259ee6b0200000484/textures/uploads/58301ccaa8ed2be78e00c9ecdf5ab7af.source.jpg",
+	      "mapNormalPreview": "/535e624259ee6b0200000484/textures/uploads/ff30448e22c5e2131991e25c219d2c2c.lo-res.jpg",
+	      "mapNormal": "/535e624259ee6b0200000484/textures/uploads/ff30448e22c5e2131991e25c219d2c2c.hi-res.gz.dds",
+	      "mapNormalSource": "/535e624259ee6b0200000484/textures/uploads/ff30448e22c5e2131991e25c219d2c2c.source.jpg"
+	    }
+	  },
+	  "cabinet_beech_veneer": {
+	    "meta": {
+	      "displayName": "Wood Beech Veneer",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1, 1],
+	      "colorDiffuse": [1, 1, 1],
+	      "colorSpecular": [0.212, 0.212, 0.212],
+	      "specularCoef": 24,
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/96487b8905d72f171b84400f5f1759d8.lo-res.jpg",
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/96487b8905d72f171b84400f5f1759d8.hi-res.gz.dds",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/96487b8905d72f171b84400f5f1759d8.source.jpg",
+	      "mapNormalPreview": "/535e624259ee6b0200000484/textures/uploads/62b61216bf12d6c1a1a26938fbb454f7.lo-res.jpg",
+	      "mapNormal": "/535e624259ee6b0200000484/textures/uploads/62b61216bf12d6c1a1a26938fbb454f7.hi-res.gz.dds",
+	      "mapNormalSource": "/535e624259ee6b0200000484/textures/uploads/62b61216bf12d6c1a1a26938fbb454f7.source.jpg",
+	      "mapSpecularPreview": "/535e624259ee6b0200000484/textures/uploads/9f974ddee94d5c2a49b99d5ec32da287.lo-res.jpg",
+	      "mapSpecular": "/535e624259ee6b0200000484/textures/uploads/9f974ddee94d5c2a49b99d5ec32da287.hi-res.gz.dds",
+	      "mapSpecularSource": "/535e624259ee6b0200000484/textures/uploads/9f974ddee94d5c2a49b99d5ec32da287.source.jpg"
+	    }
+	  },
+	  "cabinet_chalked_veneer": {
+	    "meta": {
+	      "displayName": "Wood Chalked Veneer",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1, 1],
+	      "colorDiffuse": [1, 1, 1],
+	      "colorSpecular": [0.14, 0.14, 0.14],
+	      "specularCoef": 24,
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/a08fb76c0fc9ece60f60262b730c7e59.lo-res.jpg",
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/a08fb76c0fc9ece60f60262b730c7e59.hi-res.gz.dds",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/a08fb76c0fc9ece60f60262b730c7e59.source.jpg",
+	      "mapNormalPreview": "/535e624259ee6b0200000484/textures/uploads/62b61216bf12d6c1a1a26938fbb454f7.lo-res.jpg",
+	      "mapNormal": "/535e624259ee6b0200000484/textures/uploads/62b61216bf12d6c1a1a26938fbb454f7.hi-res.gz.dds",
+	      "mapNormalSource": "/535e624259ee6b0200000484/textures/uploads/62b61216bf12d6c1a1a26938fbb454f7.source.jpg",
+	      "mapSpecularPreview": "/535e624259ee6b0200000484/textures/uploads/9f974ddee94d5c2a49b99d5ec32da287.lo-res.jpg",
+	      "mapSpecular": "/535e624259ee6b0200000484/textures/uploads/9f974ddee94d5c2a49b99d5ec32da287.hi-res.gz.dds",
+	      "mapSpecularSource": "/535e624259ee6b0200000484/textures/uploads/9f974ddee94d5c2a49b99d5ec32da287.source.jpg"
+	    }
+	  },
+	  "cabinet_wood_fir_wall": {
+	    "meta": {
+	      "displayName": "Wood Fir mtex_12756",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2.4,2.4],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.2,0.2,0.2],
+	      "specularCoef": 15,
+	      "mapDiffuse": "archilogic/tex/e0ad17dc344e514eb91d98b365d4e1c0.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/e0ad17dc344e514eb91d98b365d4e1c0.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/e0ad17dc344e514eb91d98b365d4e1c0.source.jpg"
+	    }
+	  },
+	  "counter_chrome_brushed": {
+	    "meta": {
+	      "displayName": "Chrome Brushed",
+	      "category": "counter",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.2,0.7],
+	      "colorDiffuse": [0.5,0.5,0.5],
+	      "colorSpecular": [0.34,0.34,0.34],
+	      "specularCoef": 50,
+	      "mapNormal": "archilogic/tex/03305e054dbd97bb57de94531ebcde49.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/fe502e29ec739e20e25e0a26090f8200.hi-res.gz.dds",
+	      "mapSpecularPreview": "archilogic/tex/fe502e29ec739e20e25e0a26090f8200.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/fe502e29ec739e20e25e0a26090f8200.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/03305e054dbd97bb57de94531ebcde49.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/03305e054dbd97bb57de94531ebcde49.source.jpg"
+	    }
+	  },
+	  "counter_stone_white": {
+	    "meta": {
+	      "displayName": "Stone White",
+	      "category": "counter",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.5,0.5],
+	      "colorDiffuse": [0.9,0.9,0.9],
+	      "colorSpecular": [0.3,0.3,0.3],
+	      "specularCoef": 15,
+	      "mapDiffuse": "archilogic/tex/61019e9b8e7f4542eb7a013e7dfae30b.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/cfe24afab1a720ee1525af2b6821f1e7.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/5ec4dfae5d8545d38177a6f76147fd26.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/61019e9b8e7f4542eb7a013e7dfae30b.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/61019e9b8e7f4542eb7a013e7dfae30b.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/5ec4dfae5d8545d38177a6f76147fd26.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/5ec4dfae5d8545d38177a6f76147fd26.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/cfe24afab1a720ee1525af2b6821f1e7.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/cfe24afab1a720ee1525af2b6821f1e7.source.jpg"
+	    }
+	  },
+	  "counter_granite_light": {
+	    "meta": {
+	      "displayName": "Granite Light mtex_11181",
+	      "category": "counter",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.5,0.5],
+	      "colorDiffuse": [0.9,0.9,0.9],
+	      "colorSpecular": [0.3,0.3,0.3],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/ded6f1d9a706119919bbc7c96d8ed6b2.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/cfe24afab1a720ee1525af2b6821f1e7.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/976e94355e5bda592304f280d1d02d48.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/ded6f1d9a706119919bbc7c96d8ed6b2.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/ded6f1d9a706119919bbc7c96d8ed6b2.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/976e94355e5bda592304f280d1d02d48.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/976e94355e5bda592304f280d1d02d48.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/cfe24afab1a720ee1525af2b6821f1e7.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/cfe24afab1a720ee1525af2b6821f1e7.source.jpg"
+	    }
+	  },
+	  "counter_granite_black": {
+	    "meta": {
+	      "displayName": "Granite Black mtex_11180",
+	      "category": "counter",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.5,0.5],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/975742bddd8326ef574878ca9132b4ed.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/19cc02e1993bd5b118e03c169ee0ef33.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/7fe0c88fc1c03881949652c8c3d55aaa.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/975742bddd8326ef574878ca9132b4ed.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/975742bddd8326ef574878ca9132b4ed.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/7fe0c88fc1c03881949652c8c3d55aaa.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/7fe0c88fc1c03881949652c8c3d55aaa.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/19cc02e1993bd5b118e03c169ee0ef33.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/19cc02e1993bd5b118e03c169ee0ef33.source.jpg"
+	    }
+	  },
+	  "counter_concrete_fluid": {
+	    "meta": {
+	      "displayName": "Concrete Natural",
+	      "category": "counter",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.5,0.5],
+	      "colorDiffuse": [0.867,0.867,0.867],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/7af78308b190531d128c71e3482e21ea.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/f544850902a92746d30d0b80bda43c62.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/7af78308b190531d128c71e3482e21ea.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/7af78308b190531d128c71e3482e21ea.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/f544850902a92746d30d0b80bda43c62.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/f544850902a92746d30d0b80bda43c62.source.jpg"
+	    }
+	  },
+	  "cooktop_westinghouse_60": {
+	    "meta": {
+	      "displayName": "Cooktop Westinghouse 60",
+	      "category": "cooktop60",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.3,0.3,0.3],
+	      "specularCoef": 50,
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/03796b53a0776136c919ef7e9dc6c96b.hi-res.gz.dds",
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/03796b53a0776136c919ef7e9dc6c96b.lo-res.jpg",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/03796b53a0776136c919ef7e9dc6c96b.source.jpg"
+	    }
+	  },
+	  "cooktop_westinghouse_90": {
+	    "meta": {
+	      "displayName": "Cooktop Westinghouse 90",
+	      "category": "cooktop90",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.3,0.3,0.3],
+	      "specularCoef": 50,
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/8aa7c25cd74007e497b782f0fbfea187.hi-res.gz.dds",
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/8aa7c25cd74007e497b782f0fbfea187.lo-res.jpg",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/8aa7c25cd74007e497b782f0fbfea187.source.jpg"
+	    }
+	  },
+	  "oven_miele_60-60": {
+	    "meta": {
+	      "displayName": "Oven Miele 60x60",
+	      "category": "oven60",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.3,0.3,0.3],
+	      "specularCoef": 50,
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/53ce86d2ae02d701c70c9488e681d54e.hi-res.gz.dds",
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/53ce86d2ae02d701c70c9488e681d54e.lo-res.jpg",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/53ce86d2ae02d701c70c9488e681d54e.source.jpg"
+	    }
+	  },
+	  "oven_miele_90-48": {
+	    "meta": {
+	      "displayName": "Oven Miele 90x48",
+	      "category": "oven90",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.3,0.3,0.3],
+	      "specularCoef": 50,
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/22e8dd6c7d90cf88e6d0d5c89403753d.hi-res.gz.dds",
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/22e8dd6c7d90cf88e6d0d5c89403753d.lo-res.jpg",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/22e8dd6c7d90cf88e6d0d5c89403753d.source.jpg"
+	    }
+	  },
+	  "microwave_samsung": {
+	    "meta": {
+	      "displayName": "Microwave Samsung",
+	      "category": "microwave",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.3,0.3,0.3],
+	      "specularCoef": 50,
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/e3959871393650ae83389cd69f377c25.hi-res.gz.dds",
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/e3959871393650ae83389cd69f377c25.lo-res.jpg",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/e3959871393650ae83389cd69f377c25.source.jpg"
+	    }
+	  },
+	  "oven_vzug": {
+	    "meta": {
+	      "displayName": "Oven VZug",
+	      "category": "oven",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.3,0.3,0.3],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/d67fb5b3b852f44aa95f12b9f6f9e721.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/18168af2d7c5d21845d67424b9f42fee.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/d67fb5b3b852f44aa95f12b9f6f9e721.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/d67fb5b3b852f44aa95f12b9f6f9e721.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/18168af2d7c5d21845d67424b9f42fee.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/18168af2d7c5d21845d67424b9f42fee.source.jpg"
+	    }
+	  },
+	  "oven_miele": {
+	    "meta": {
+	      "displayName": "Oven VZug",
+	      "category": "oven",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.3,0.3,0.3],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/1fc90bca228862d77d943a3a0fc0c22a.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/b6c63f108ef511dd768663c334123496.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/1fc90bca228862d77d943a3a0fc0c22a.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/1fc90bca228862d77d943a3a0fc0c22a.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/b6c63f108ef511dd768663c334123496.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/b6c63f108ef511dd768663c334123496.source.jpg"
+	    }
+	  }
+	};
+
+	function getElementComponent(type) {
+	  return {
+	    schema: {
+	      l: {
+	        type: 'float',
+	        default: null
+	      },
+	      h: {
+	        type: 'float',
+	        default: null
+	      },
+	      w: {
+	        type: 'float',
+	        default: null
+	      },
+	      materials: {
+	        type: 'string',
+	        default: ''
+	      },
+	      polygon: {
+	        type: 'string',
+	        default: ''
+	      }
+	    },
+
+	    init: function () {
+	    },
+
+	    update: function () {
+	      var this_ = this;
+	      var el = this.el;
+	      var data = this.data;
+	      var l = data.l;
+	      var h = data.h;
+	      var w = data.w;
+	      var materials = data.materials;
+	      var polygon = data.polygon;
+
+	      // check el3d types
+	      var validTypes = ['box', 'closet', 'curtain', 'polyfloor', 'stairs', 'wall', 'window', 'door'];
+	      if (validTypes.indexOf(type) < 0) return
+
+	      // map el3d modules
+	      var types = {
+	        // 'box': boxType,
+	        // 'closet': closetType,
+	        // 'curtain': curtainType,
+	        'door': doorType,
+	        'polyfloor': polyFloorType,
+	        // 'stairs': stairsType,
+	        'wall': wallType,
+	        'window': windowType
+	      };
+
+	      var a, el3d, meshes, materials, data3d;
+
+	      el3d = types[type];
+	      if (!el3d) return
+
+	      if (materials && materials !== '') materials = parseMats(materials);
+	      if (type === 'polyfloor' && polygon && polygon !== '') {
+	        polygon = parsePolygon(polygon);
+	        console.log('polygon', polygon);
+	      }
+
+	      // get default values
+	      a = el3d.params;
+	      // apply entity values
+	      a = mapAttributes(a, {l, h, w, polygon});
+
+	      if (materials !== '') {
+	        console.log(a.type, materials);
+	        Object.keys(materials).forEach(key => {
+	          a.materials[key] = materials[key];
+	        });
+	      }
+
+	      // get children for walls
+	      if (type === 'wall') {
+	        var children = this_.el.children;
+	        var _children = [];
+	        if (children && children.length > 0) {
+	          for (var i = 0; i < children.length; i++) {
+	            var c = children[i].getAttribute('io3d-window') || children[i].getAttribute('io3d-door');
+	            if (c) {
+	              if (children[i].getAttribute('io3d-window')) c.type = 'window';
+	              else if (children[i].getAttribute('io3d-door')) c.type = 'door';
+	              var pos = children[i].getAttribute('position');
+	              Object.keys(pos).forEach(p => {
+	                c[p] = pos[p];
+	              });
+	              _children.push(c);
+	            } else console.log('invalid child');
+	          }
+
+	          // apply defaults and map attributes
+	          _children = _children.map(c => mapAttributes(cloneDeep_1(types[c.type].params), c));
+	          // console.log('children', _children)
+	          a.children = _children;
+	        }
+	      }
+
+	      // console.log(a.type, cloneDeep(a.materials))
+
+	      // get meshes and materials from el3d modules
+	      meshes = el3d.meshes3d(a);
+	      materials = el3d.materials3d(cloneDeep_1(a));
+
+	      // fetch materials from mat library
+	      Object.keys(materials).forEach(mat => {
+	        materials[mat] = getMaterial(materials[mat]);
+	      }
+	    );
+
+	      // construct data3d object
+	      data3d = {
+	        meshes: meshes,
+	        materials: materials
+	      };
+
+	      // remove old mesh
+	      this_.remove();
+
+	      // create new one
+	      this_.mesh = new THREE.Object3D();
+	      this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
+
+	      // update view
+	      this_.data3dView.set(data3d);
+	      this_.el.setObject3D('mesh', this_.mesh);
+	      // emit event
+	      this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
+	    },
+
+	    remove: function () {
+	      if (this.data3dView) {
+	        this.data3dView.destroy();
+	        this.data3dView = null;
+	      }
+	      if (this.mesh) {
+	        this.el.removeObject3D('mesh');
+	        this.mesh = null;
+	      }
+	    }
+	  }
+	}
+
+	function getMaterial(material) {
+	  var mat = materialDefinitions[material];
+	  if (!mat) return material
+	  var attr = cloneDeep_1(mat.attributes);
+	  Object.keys(attr).forEach(a => {
+	    // get textures
+	    if (a.indexOf('map') > -1 ) {
+	    // fix to prevent double slash
+	    if (attr[a][0] === '/') attr[a] = attr[a].substring(1);
+	    // get full texture path
+	    attr[a] = 'https://storage.3d.io/' + attr[a];
+	  }
+	});
+	  return attr
+	}
+
+	function mapAttributes(a, args) {
+	  // set custom attributes
+	  var validProps = {
+	    box: ['h', 'l', 'w'],
+	    closet: ['h', 'l', 'w'],
+	    curtain: ['h', 'l', 'w'],
+	    door: ['h', 'l', 'w', 'x', 'y'],
+	    polyfloor: ['h', 'polygon'],
+	    stairs: ['h', 'l', 'w'],
+	    wall: ['h', 'l', 'w'],
+	    window: ['h', 'l', 'w', 'x', 'y']
+	  };
+	  var _type = a.type;
+	  Object.keys(args).forEach(prop => {
+	    if (validProps[_type].indexOf(prop) > -1 && (args[prop] || args[prop] === 0)) a[prop] = args[prop];
+	  });
+	  return a
+	}
+
+	function parseMats(mats) {
+	  var _mats = mats.split(',');
+	  var matObj = {};
+	  _mats.forEach(m => {
+	    var key = m.split('=')[0];
+	    var val = m.split('=')[1];
+	    matObj[key] = val;
+	  });
+	  return matObj
+	}
+
+	function parsePolygon(p) {
+	  var _p = p.split(',');
+	  var polygon = [];
+	  for (var i = 0; i < _p.length - 1; i+=2 ) {
+	    polygon.push([_p[i],_p[i+1]]);
+	  }
+	  return polygon
 	}
 
 	// internals
@@ -20345,9 +27836,9 @@
 	  return loadingTexturesPromise
 	}
 
-	var fragmentShader$1 = {"text":"uniform vec3 color;\r\nuniform vec3 emissive;\r\nuniform vec3 specular;\r\nuniform float shininess;\r\nuniform float opacity;\r\n\r\n#include <common>\r\n#include <packing>\r\n#include <uv_pars_fragment>\r\n#include <uv2_pars_fragment>\r\n#include <map_pars_fragment>\r\n#include <alphamap_pars_fragment>\r\n\r\n// Replaces <lightmap_pars_fragment>;\r\n\r\n#ifdef USE_LIGHTMAP\r\n\tuniform sampler2D lightMap;\r\n\tuniform float lightMapIntensity;\r\n\tuniform float lightMapExposure;\r\n\tuniform float lightMapFalloff;\r\n#endif\r\n\r\n#include <normalmap_pars_fragment>\r\n#include <specularmap_pars_fragment>\r\n\r\n#include <bsdfs>\r\n#include <lights_pars>\r\n#include <lights_phong_pars_fragment>\r\n#include <shadowmap_pars_fragment>\r\n\r\n\r\nvoid main() {\r\n\r\n    vec4 diffuseColor = vec4( color, opacity );\r\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\r\n\r\n    vec3 totalEmissiveRadiance = emissive;\r\n\r\n    #include <map_fragment>\r\n    #include <alphamap_fragment>\r\n    #include <alphatest_fragment>\r\n    #include <specularmap_fragment>\r\n\r\n    // Start of <normal_fragment> replace block\r\n    #ifdef FLAT_SHADED\r\n\r\n      // Workaround for Adreno/Nexus5 not able able to do dFdx( vViewPosition ) ...\r\n\r\n      vec3 fdx = vec3( dFdx( vViewPosition.x ), dFdx( vViewPosition.y ), dFdx( vViewPosition.z ) );\r\n      vec3 fdy = vec3( dFdy( vViewPosition.x ), dFdy( vViewPosition.y ), dFdy( vViewPosition.z ) );\r\n      vec3 normal = normalize( cross( fdx, fdy ) );\r\n\r\n    #else\r\n\r\n      vec3 normal = normalize( vNormal );\r\n\r\n      #ifdef DOUBLE_SIDED\r\n\r\n        normal = normal * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\r\n\r\n      #endif\r\n\r\n    #endif\r\n\r\n    #ifdef USE_NORMALMAP\r\n\r\n      normal = perturbNormal2Arb( -vViewPosition, normal );\r\n\r\n    #elif defined( USE_BUMPMAP )\r\n\r\n      normal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );\r\n\r\n    #endif\r\n    // End of <normal_fragment> replace block\r\n\r\n    // accumulation\r\n    #include <lights_phong_fragment>\r\n\r\n    // Start of <light-template> replace block\r\n    GeometricContext geometry;\r\n\r\n    geometry.position = - vViewPosition;\r\n    geometry.normal = normal;\r\n    geometry.viewDir = normalize( vViewPosition );\r\n\r\n    IncidentLight directLight;\r\n\r\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        PointLight pointLight;\r\n\r\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\r\n\r\n            pointLight = pointLights[ i ];\r\n\r\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        SpotLight spotLight;\r\n\r\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\r\n\r\n            spotLight = spotLights[ i ];\r\n\r\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        DirectionalLight directionalLight;\r\n\r\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\r\n\r\n            directionalLight = directionalLights[ i ];\r\n\r\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\r\n\r\n        RectAreaLight rectAreaLight;\r\n\r\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\r\n\r\n            rectAreaLight = rectAreaLights[ i ];\r\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if defined( RE_IndirectDiffuse )\r\n\r\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\r\n\r\n        #ifdef USE_LIGHTMAP\r\n\r\n            // compute the light value\r\n            vec3 unit = vec3(1.0);\r\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\r\n            // compute the light intensity modifier\r\n            vec3 modifier = -lightMapFalloff * light * light + unit;\r\n            // apply light\r\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\r\n\r\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\r\n\r\n                lightMapIrradiance *= PI; // factor of PI should not be present; included here to prevent breakage\r\n\r\n            #endif\r\n\r\n            irradiance += lightMapIrradiance;\r\n\r\n        #endif\r\n\r\n        #if ( NUM_HEMI_LIGHTS > 0 )\r\n\r\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\r\n\r\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\r\n\r\n            }\r\n\r\n        #endif\r\n\r\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\r\n\r\n    #endif\r\n    // End of <light-template> replace block\r\n\r\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\r\n\r\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\r\n\r\n}","base64":"data:text/plain;base64,dW5pZm9ybSB2ZWMzIGNvbG9yOw0KdW5pZm9ybSB2ZWMzIGVtaXNzaXZlOw0KdW5pZm9ybSB2ZWMzIHNwZWN1bGFyOw0KdW5pZm9ybSBmbG9hdCBzaGluaW5lc3M7DQp1bmlmb3JtIGZsb2F0IG9wYWNpdHk7DQoNCiNpbmNsdWRlIDxjb21tb24+DQojaW5jbHVkZSA8cGFja2luZz4NCiNpbmNsdWRlIDx1dl9wYXJzX2ZyYWdtZW50Pg0KI2luY2x1ZGUgPHV2Ml9wYXJzX2ZyYWdtZW50Pg0KI2luY2x1ZGUgPG1hcF9wYXJzX2ZyYWdtZW50Pg0KI2luY2x1ZGUgPGFscGhhbWFwX3BhcnNfZnJhZ21lbnQ+DQoNCi8vIFJlcGxhY2VzIDxsaWdodG1hcF9wYXJzX2ZyYWdtZW50PjsNCg0KI2lmZGVmIFVTRV9MSUdIVE1BUA0KCXVuaWZvcm0gc2FtcGxlcjJEIGxpZ2h0TWFwOw0KCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBJbnRlbnNpdHk7DQoJdW5pZm9ybSBmbG9hdCBsaWdodE1hcEV4cG9zdXJlOw0KCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBGYWxsb2ZmOw0KI2VuZGlmDQoNCiNpbmNsdWRlIDxub3JtYWxtYXBfcGFyc19mcmFnbWVudD4NCiNpbmNsdWRlIDxzcGVjdWxhcm1hcF9wYXJzX2ZyYWdtZW50Pg0KDQojaW5jbHVkZSA8YnNkZnM+DQojaW5jbHVkZSA8bGlnaHRzX3BhcnM+DQojaW5jbHVkZSA8bGlnaHRzX3Bob25nX3BhcnNfZnJhZ21lbnQ+DQojaW5jbHVkZSA8c2hhZG93bWFwX3BhcnNfZnJhZ21lbnQ+DQoNCg0Kdm9pZCBtYWluKCkgew0KDQogICAgdmVjNCBkaWZmdXNlQ29sb3IgPSB2ZWM0KCBjb2xvciwgb3BhY2l0eSApOw0KICAgIFJlZmxlY3RlZExpZ2h0IHJlZmxlY3RlZExpZ2h0ID0gUmVmbGVjdGVkTGlnaHQoIHZlYzMoIDAuMCApLCB2ZWMzKCAwLjAgKSwgdmVjMyggMC4wICksIHZlYzMoIDAuMCApICk7DQoNCiAgICB2ZWMzIHRvdGFsRW1pc3NpdmVSYWRpYW5jZSA9IGVtaXNzaXZlOw0KDQogICAgI2luY2x1ZGUgPG1hcF9mcmFnbWVudD4NCiAgICAjaW5jbHVkZSA8YWxwaGFtYXBfZnJhZ21lbnQ+DQogICAgI2luY2x1ZGUgPGFscGhhdGVzdF9mcmFnbWVudD4NCiAgICAjaW5jbHVkZSA8c3BlY3VsYXJtYXBfZnJhZ21lbnQ+DQoNCiAgICAvLyBTdGFydCBvZiA8bm9ybWFsX2ZyYWdtZW50PiByZXBsYWNlIGJsb2NrDQogICAgI2lmZGVmIEZMQVRfU0hBREVEDQoNCiAgICAgIC8vIFdvcmthcm91bmQgZm9yIEFkcmVuby9OZXh1czUgbm90IGFibGUgYWJsZSB0byBkbyBkRmR4KCB2Vmlld1Bvc2l0aW9uICkgLi4uDQoNCiAgICAgIHZlYzMgZmR4ID0gdmVjMyggZEZkeCggdlZpZXdQb3NpdGlvbi54ICksIGRGZHgoIHZWaWV3UG9zaXRpb24ueSApLCBkRmR4KCB2Vmlld1Bvc2l0aW9uLnogKSApOw0KICAgICAgdmVjMyBmZHkgPSB2ZWMzKCBkRmR5KCB2Vmlld1Bvc2l0aW9uLnggKSwgZEZkeSggdlZpZXdQb3NpdGlvbi55ICksIGRGZHkoIHZWaWV3UG9zaXRpb24ueiApICk7DQogICAgICB2ZWMzIG5vcm1hbCA9IG5vcm1hbGl6ZSggY3Jvc3MoIGZkeCwgZmR5ICkgKTsNCg0KICAgICNlbHNlDQoNCiAgICAgIHZlYzMgbm9ybWFsID0gbm9ybWFsaXplKCB2Tm9ybWFsICk7DQoNCiAgICAgICNpZmRlZiBET1VCTEVfU0lERUQNCg0KICAgICAgICBub3JtYWwgPSBub3JtYWwgKiAoIGZsb2F0KCBnbF9Gcm9udEZhY2luZyApICogMi4wIC0gMS4wICk7DQoNCiAgICAgICNlbmRpZg0KDQogICAgI2VuZGlmDQoNCiAgICAjaWZkZWYgVVNFX05PUk1BTE1BUA0KDQogICAgICBub3JtYWwgPSBwZXJ0dXJiTm9ybWFsMkFyYiggLXZWaWV3UG9zaXRpb24sIG5vcm1hbCApOw0KDQogICAgI2VsaWYgZGVmaW5lZCggVVNFX0JVTVBNQVAgKQ0KDQogICAgICBub3JtYWwgPSBwZXJ0dXJiTm9ybWFsQXJiKCAtdlZpZXdQb3NpdGlvbiwgbm9ybWFsLCBkSGR4eV9md2QoKSApOw0KDQogICAgI2VuZGlmDQogICAgLy8gRW5kIG9mIDxub3JtYWxfZnJhZ21lbnQ+IHJlcGxhY2UgYmxvY2sNCg0KICAgIC8vIGFjY3VtdWxhdGlvbg0KICAgICNpbmNsdWRlIDxsaWdodHNfcGhvbmdfZnJhZ21lbnQ+DQoNCiAgICAvLyBTdGFydCBvZiA8bGlnaHQtdGVtcGxhdGU+IHJlcGxhY2UgYmxvY2sNCiAgICBHZW9tZXRyaWNDb250ZXh0IGdlb21ldHJ5Ow0KDQogICAgZ2VvbWV0cnkucG9zaXRpb24gPSAtIHZWaWV3UG9zaXRpb247DQogICAgZ2VvbWV0cnkubm9ybWFsID0gbm9ybWFsOw0KICAgIGdlb21ldHJ5LnZpZXdEaXIgPSBub3JtYWxpemUoIHZWaWV3UG9zaXRpb24gKTsNCg0KICAgIEluY2lkZW50TGlnaHQgZGlyZWN0TGlnaHQ7DQoNCiAgICAjaWYgKCBOVU1fUE9JTlRfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdCApDQoNCiAgICAgICAgUG9pbnRMaWdodCBwb2ludExpZ2h0Ow0KDQogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9QT0lOVF9MSUdIVFM7IGkgKysgKSB7DQoNCiAgICAgICAgICAgIHBvaW50TGlnaHQgPSBwb2ludExpZ2h0c1sgaSBdOw0KDQogICAgICAgICAgICBnZXRQb2ludERpcmVjdExpZ2h0SXJyYWRpYW5jZSggcG9pbnRMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7DQoNCiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQDQogICAgICAgICAgICBkaXJlY3RMaWdodC5jb2xvciAqPSBhbGwoIGJ2ZWMyKCBwb2ludExpZ2h0LnNoYWRvdywgZGlyZWN0TGlnaHQudmlzaWJsZSApICkgPyBnZXRQb2ludFNoYWRvdyggcG9pbnRTaGFkb3dNYXBbIGkgXSwgcG9pbnRMaWdodC5zaGFkb3dNYXBTaXplLCBwb2ludExpZ2h0LnNoYWRvd0JpYXMsIHBvaW50TGlnaHQuc2hhZG93UmFkaXVzLCB2UG9pbnRTaGFkb3dDb29yZFsgaSBdICkgOiAxLjA7DQogICAgICAgICAgICAjZW5kaWYNCg0KICAgICAgICAgICAgUkVfRGlyZWN0KCBkaXJlY3RMaWdodCwgZ2VvbWV0cnksIG1hdGVyaWFsLCByZWZsZWN0ZWRMaWdodCApOw0KDQogICAgICAgIH0NCg0KICAgICNlbmRpZg0KDQogICAgI2lmICggTlVNX1NQT1RfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdCApDQoNCiAgICAgICAgU3BvdExpZ2h0IHNwb3RMaWdodDsNCg0KICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fU1BPVF9MSUdIVFM7IGkgKysgKSB7DQoNCiAgICAgICAgICAgIHNwb3RMaWdodCA9IHNwb3RMaWdodHNbIGkgXTsNCg0KICAgICAgICAgICAgZ2V0U3BvdERpcmVjdExpZ2h0SXJyYWRpYW5jZSggc3BvdExpZ2h0LCBnZW9tZXRyeSwgZGlyZWN0TGlnaHQgKTsNCg0KICAgICAgICAgICAgI2lmZGVmIFVTRV9TSEFET1dNQVANCiAgICAgICAgICAgIGRpcmVjdExpZ2h0LmNvbG9yICo9IGFsbCggYnZlYzIoIHNwb3RMaWdodC5zaGFkb3csIGRpcmVjdExpZ2h0LnZpc2libGUgKSApID8gZ2V0U2hhZG93KCBzcG90U2hhZG93TWFwWyBpIF0sIHNwb3RMaWdodC5zaGFkb3dNYXBTaXplLCBzcG90TGlnaHQuc2hhZG93Qmlhcywgc3BvdExpZ2h0LnNoYWRvd1JhZGl1cywgdlNwb3RTaGFkb3dDb29yZFsgaSBdICkgOiAxLjA7DQogICAgICAgICAgICAjZW5kaWYNCg0KICAgICAgICAgICAgUkVfRGlyZWN0KCBkaXJlY3RMaWdodCwgZ2VvbWV0cnksIG1hdGVyaWFsLCByZWZsZWN0ZWRMaWdodCApOw0KDQogICAgICAgIH0NCg0KICAgICNlbmRpZg0KDQogICAgI2lmICggTlVNX0RJUl9MSUdIVFMgPiAwICkgJiYgZGVmaW5lZCggUkVfRGlyZWN0ICkNCg0KICAgICAgICBEaXJlY3Rpb25hbExpZ2h0IGRpcmVjdGlvbmFsTGlnaHQ7DQoNCiAgICAgICAgZm9yICggaW50IGkgPSAwOyBpIDwgTlVNX0RJUl9MSUdIVFM7IGkgKysgKSB7DQoNCiAgICAgICAgICAgIGRpcmVjdGlvbmFsTGlnaHQgPSBkaXJlY3Rpb25hbExpZ2h0c1sgaSBdOw0KDQogICAgICAgICAgICBnZXREaXJlY3Rpb25hbERpcmVjdExpZ2h0SXJyYWRpYW5jZSggZGlyZWN0aW9uYWxMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7DQoNCiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQDQogICAgICAgICAgICBkaXJlY3RMaWdodC5jb2xvciAqPSBhbGwoIGJ2ZWMyKCBkaXJlY3Rpb25hbExpZ2h0LnNoYWRvdywgZGlyZWN0TGlnaHQudmlzaWJsZSApICkgPyBnZXRTaGFkb3coIGRpcmVjdGlvbmFsU2hhZG93TWFwWyBpIF0sIGRpcmVjdGlvbmFsTGlnaHQuc2hhZG93TWFwU2l6ZSwgZGlyZWN0aW9uYWxMaWdodC5zaGFkb3dCaWFzLCBkaXJlY3Rpb25hbExpZ2h0LnNoYWRvd1JhZGl1cywgdkRpcmVjdGlvbmFsU2hhZG93Q29vcmRbIGkgXSApIDogMS4wOw0KICAgICAgICAgICAgI2VuZGlmDQoNCiAgICAgICAgICAgIFJFX0RpcmVjdCggZGlyZWN0TGlnaHQsIGdlb21ldHJ5LCBtYXRlcmlhbCwgcmVmbGVjdGVkTGlnaHQgKTsNCg0KICAgICAgICB9DQoNCiAgICAjZW5kaWYNCg0KICAgICNpZiAoIE5VTV9SRUNUX0FSRUFfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdF9SZWN0QXJlYSApDQoNCiAgICAgICAgUmVjdEFyZWFMaWdodCByZWN0QXJlYUxpZ2h0Ow0KDQogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9SRUNUX0FSRUFfTElHSFRTOyBpICsrICkgew0KDQogICAgICAgICAgICByZWN0QXJlYUxpZ2h0ID0gcmVjdEFyZWFMaWdodHNbIGkgXTsNCiAgICAgICAgICAgIFJFX0RpcmVjdF9SZWN0QXJlYSggcmVjdEFyZWFMaWdodCwgZ2VvbWV0cnksIG1hdGVyaWFsLCByZWZsZWN0ZWRMaWdodCApOw0KDQogICAgICAgIH0NCg0KICAgICNlbmRpZg0KDQogICAgI2lmIGRlZmluZWQoIFJFX0luZGlyZWN0RGlmZnVzZSApDQoNCiAgICAgICAgdmVjMyBpcnJhZGlhbmNlID0gZ2V0QW1iaWVudExpZ2h0SXJyYWRpYW5jZSggYW1iaWVudExpZ2h0Q29sb3IgKTsNCg0KICAgICAgICAjaWZkZWYgVVNFX0xJR0hUTUFQDQoNCiAgICAgICAgICAgIC8vIGNvbXB1dGUgdGhlIGxpZ2h0IHZhbHVlDQogICAgICAgICAgICB2ZWMzIHVuaXQgPSB2ZWMzKDEuMCk7DQogICAgICAgICAgICB2ZWMzIGxpZ2h0ID0gMi4wICogKHRleHR1cmUyRCggbGlnaHRNYXAsIHZVdjIgKS54eXogLSBsaWdodE1hcEV4cG9zdXJlICogdW5pdCk7DQogICAgICAgICAgICAvLyBjb21wdXRlIHRoZSBsaWdodCBpbnRlbnNpdHkgbW9kaWZpZXINCiAgICAgICAgICAgIHZlYzMgbW9kaWZpZXIgPSAtbGlnaHRNYXBGYWxsb2ZmICogbGlnaHQgKiBsaWdodCArIHVuaXQ7DQogICAgICAgICAgICAvLyBhcHBseSBsaWdodA0KICAgICAgICAgICAgdmVjMyBsaWdodE1hcElycmFkaWFuY2UgPSBsaWdodCAqIG1vZGlmaWVyICogbGlnaHRNYXBJbnRlbnNpdHk7DQoNCiAgICAgICAgICAgICNpZm5kZWYgUEhZU0lDQUxMWV9DT1JSRUNUX0xJR0hUUw0KDQogICAgICAgICAgICAgICAgbGlnaHRNYXBJcnJhZGlhbmNlICo9IFBJOyAvLyBmYWN0b3Igb2YgUEkgc2hvdWxkIG5vdCBiZSBwcmVzZW50OyBpbmNsdWRlZCBoZXJlIHRvIHByZXZlbnQgYnJlYWthZ2UNCg0KICAgICAgICAgICAgI2VuZGlmDQoNCiAgICAgICAgICAgIGlycmFkaWFuY2UgKz0gbGlnaHRNYXBJcnJhZGlhbmNlOw0KDQogICAgICAgICNlbmRpZg0KDQogICAgICAgICNpZiAoIE5VTV9IRU1JX0xJR0hUUyA+IDAgKQ0KDQogICAgICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fSEVNSV9MSUdIVFM7IGkgKysgKSB7DQoNCiAgICAgICAgICAgICAgICBpcnJhZGlhbmNlICs9IGdldEhlbWlzcGhlcmVMaWdodElycmFkaWFuY2UoIGhlbWlzcGhlcmVMaWdodHNbIGkgXSwgZ2VvbWV0cnkgKTsNCg0KICAgICAgICAgICAgfQ0KDQogICAgICAgICNlbmRpZg0KDQogICAgICAgIFJFX0luZGlyZWN0RGlmZnVzZSggaXJyYWRpYW5jZSwgZ2VvbWV0cnksIG1hdGVyaWFsLCByZWZsZWN0ZWRMaWdodCApOw0KDQogICAgI2VuZGlmDQogICAgLy8gRW5kIG9mIDxsaWdodC10ZW1wbGF0ZT4gcmVwbGFjZSBibG9jaw0KDQogICAgdmVjMyBvdXRnb2luZ0xpZ2h0ID0gcmVmbGVjdGVkTGlnaHQuZGlyZWN0RGlmZnVzZSArIHJlZmxlY3RlZExpZ2h0LmluZGlyZWN0RGlmZnVzZSArIHJlZmxlY3RlZExpZ2h0LmRpcmVjdFNwZWN1bGFyICsgcmVmbGVjdGVkTGlnaHQuaW5kaXJlY3RTcGVjdWxhciArIHRvdGFsRW1pc3NpdmVSYWRpYW5jZTsNCg0KICAgIGdsX0ZyYWdDb2xvciA9IHZlYzQoIG91dGdvaW5nTGlnaHQsIGRpZmZ1c2VDb2xvci5hICk7DQoNCn0="};
+	var fragmentShader$1 = {"text":"uniform vec3 color;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapExposure;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\n#include <shadowmap_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( color, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #ifdef FLAT_SHADED\n      vec3 fdx = vec3( dFdx( vViewPosition.x ), dFdx( vViewPosition.y ), dFdx( vViewPosition.z ) );\n      vec3 fdy = vec3( dFdy( vViewPosition.x ), dFdy( vViewPosition.y ), dFdy( vViewPosition.z ) );\n      vec3 normal = normalize( cross( fdx, fdy ) );\n    #else\n      vec3 normal = normalize( vNormal );\n      #ifdef DOUBLE_SIDED\n        normal = normal * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n      #endif\n    #endif\n    #ifdef USE_NORMALMAP\n      normal = perturbNormal2Arb( -vViewPosition, normal );\n    #elif defined( USE_BUMPMAP )\n      normal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );\n    #endif\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}","base64":"data:text/plain;base64,dW5pZm9ybSB2ZWMzIGNvbG9yOwp1bmlmb3JtIHZlYzMgZW1pc3NpdmU7CnVuaWZvcm0gdmVjMyBzcGVjdWxhcjsKdW5pZm9ybSBmbG9hdCBzaGluaW5lc3M7CnVuaWZvcm0gZmxvYXQgb3BhY2l0eTsKI2luY2x1ZGUgPGNvbW1vbj4KI2luY2x1ZGUgPHBhY2tpbmc+CiNpbmNsdWRlIDx1dl9wYXJzX2ZyYWdtZW50PgojaW5jbHVkZSA8dXYyX3BhcnNfZnJhZ21lbnQ+CiNpbmNsdWRlIDxtYXBfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPGFscGhhbWFwX3BhcnNfZnJhZ21lbnQ+CiNpZmRlZiBVU0VfTElHSFRNQVAKCXVuaWZvcm0gc2FtcGxlcjJEIGxpZ2h0TWFwOwoJdW5pZm9ybSBmbG9hdCBsaWdodE1hcEludGVuc2l0eTsKCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBFeHBvc3VyZTsKCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBGYWxsb2ZmOwojZW5kaWYKI2luY2x1ZGUgPG5vcm1hbG1hcF9wYXJzX2ZyYWdtZW50PgojaW5jbHVkZSA8c3BlY3VsYXJtYXBfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPGJzZGZzPgojaW5jbHVkZSA8bGlnaHRzX3BhcnM+CiNpbmNsdWRlIDxsaWdodHNfcGhvbmdfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPHNoYWRvd21hcF9wYXJzX2ZyYWdtZW50Pgp2b2lkIG1haW4oKSB7CiAgICB2ZWM0IGRpZmZ1c2VDb2xvciA9IHZlYzQoIGNvbG9yLCBvcGFjaXR5ICk7CiAgICBSZWZsZWN0ZWRMaWdodCByZWZsZWN0ZWRMaWdodCA9IFJlZmxlY3RlZExpZ2h0KCB2ZWMzKCAwLjAgKSwgdmVjMyggMC4wICksIHZlYzMoIDAuMCApLCB2ZWMzKCAwLjAgKSApOwogICAgdmVjMyB0b3RhbEVtaXNzaXZlUmFkaWFuY2UgPSBlbWlzc2l2ZTsKICAgICNpbmNsdWRlIDxtYXBfZnJhZ21lbnQ+CiAgICAjaW5jbHVkZSA8YWxwaGFtYXBfZnJhZ21lbnQ+CiAgICAjaW5jbHVkZSA8YWxwaGF0ZXN0X2ZyYWdtZW50PgogICAgI2luY2x1ZGUgPHNwZWN1bGFybWFwX2ZyYWdtZW50PgogICAgI2lmZGVmIEZMQVRfU0hBREVECiAgICAgIHZlYzMgZmR4ID0gdmVjMyggZEZkeCggdlZpZXdQb3NpdGlvbi54ICksIGRGZHgoIHZWaWV3UG9zaXRpb24ueSApLCBkRmR4KCB2Vmlld1Bvc2l0aW9uLnogKSApOwogICAgICB2ZWMzIGZkeSA9IHZlYzMoIGRGZHkoIHZWaWV3UG9zaXRpb24ueCApLCBkRmR5KCB2Vmlld1Bvc2l0aW9uLnkgKSwgZEZkeSggdlZpZXdQb3NpdGlvbi56ICkgKTsKICAgICAgdmVjMyBub3JtYWwgPSBub3JtYWxpemUoIGNyb3NzKCBmZHgsIGZkeSApICk7CiAgICAjZWxzZQogICAgICB2ZWMzIG5vcm1hbCA9IG5vcm1hbGl6ZSggdk5vcm1hbCApOwogICAgICAjaWZkZWYgRE9VQkxFX1NJREVECiAgICAgICAgbm9ybWFsID0gbm9ybWFsICogKCBmbG9hdCggZ2xfRnJvbnRGYWNpbmcgKSAqIDIuMCAtIDEuMCApOwogICAgICAjZW5kaWYKICAgICNlbmRpZgogICAgI2lmZGVmIFVTRV9OT1JNQUxNQVAKICAgICAgbm9ybWFsID0gcGVydHVyYk5vcm1hbDJBcmIoIC12Vmlld1Bvc2l0aW9uLCBub3JtYWwgKTsKICAgICNlbGlmIGRlZmluZWQoIFVTRV9CVU1QTUFQICkKICAgICAgbm9ybWFsID0gcGVydHVyYk5vcm1hbEFyYiggLXZWaWV3UG9zaXRpb24sIG5vcm1hbCwgZEhkeHlfZndkKCkgKTsKICAgICNlbmRpZgogICAgI2luY2x1ZGUgPGxpZ2h0c19waG9uZ19mcmFnbWVudD4KICAgIEdlb21ldHJpY0NvbnRleHQgZ2VvbWV0cnk7CiAgICBnZW9tZXRyeS5wb3NpdGlvbiA9IC0gdlZpZXdQb3NpdGlvbjsKICAgIGdlb21ldHJ5Lm5vcm1hbCA9IG5vcm1hbDsKICAgIGdlb21ldHJ5LnZpZXdEaXIgPSBub3JtYWxpemUoIHZWaWV3UG9zaXRpb24gKTsKICAgIEluY2lkZW50TGlnaHQgZGlyZWN0TGlnaHQ7CiAgICAjaWYgKCBOVU1fUE9JTlRfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdCApCiAgICAgICAgUG9pbnRMaWdodCBwb2ludExpZ2h0OwogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9QT0lOVF9MSUdIVFM7IGkgKysgKSB7CiAgICAgICAgICAgIHBvaW50TGlnaHQgPSBwb2ludExpZ2h0c1sgaSBdOwogICAgICAgICAgICBnZXRQb2ludERpcmVjdExpZ2h0SXJyYWRpYW5jZSggcG9pbnRMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7CiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQCiAgICAgICAgICAgIGRpcmVjdExpZ2h0LmNvbG9yICo9IGFsbCggYnZlYzIoIHBvaW50TGlnaHQuc2hhZG93LCBkaXJlY3RMaWdodC52aXNpYmxlICkgKSA/IGdldFBvaW50U2hhZG93KCBwb2ludFNoYWRvd01hcFsgaSBdLCBwb2ludExpZ2h0LnNoYWRvd01hcFNpemUsIHBvaW50TGlnaHQuc2hhZG93QmlhcywgcG9pbnRMaWdodC5zaGFkb3dSYWRpdXMsIHZQb2ludFNoYWRvd0Nvb3JkWyBpIF0gKSA6IDEuMDsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIFJFX0RpcmVjdCggZGlyZWN0TGlnaHQsIGdlb21ldHJ5LCBtYXRlcmlhbCwgcmVmbGVjdGVkTGlnaHQgKTsKICAgICAgICB9CiAgICAjZW5kaWYKICAgICNpZiAoIE5VTV9TUE9UX0xJR0hUUyA+IDAgKSAmJiBkZWZpbmVkKCBSRV9EaXJlY3QgKQogICAgICAgIFNwb3RMaWdodCBzcG90TGlnaHQ7CiAgICAgICAgZm9yICggaW50IGkgPSAwOyBpIDwgTlVNX1NQT1RfTElHSFRTOyBpICsrICkgewogICAgICAgICAgICBzcG90TGlnaHQgPSBzcG90TGlnaHRzWyBpIF07CiAgICAgICAgICAgIGdldFNwb3REaXJlY3RMaWdodElycmFkaWFuY2UoIHNwb3RMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7CiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQCiAgICAgICAgICAgIGRpcmVjdExpZ2h0LmNvbG9yICo9IGFsbCggYnZlYzIoIHNwb3RMaWdodC5zaGFkb3csIGRpcmVjdExpZ2h0LnZpc2libGUgKSApID8gZ2V0U2hhZG93KCBzcG90U2hhZG93TWFwWyBpIF0sIHNwb3RMaWdodC5zaGFkb3dNYXBTaXplLCBzcG90TGlnaHQuc2hhZG93Qmlhcywgc3BvdExpZ2h0LnNoYWRvd1JhZGl1cywgdlNwb3RTaGFkb3dDb29yZFsgaSBdICkgOiAxLjA7CiAgICAgICAgICAgICNlbmRpZgogICAgICAgICAgICBSRV9EaXJlY3QoIGRpcmVjdExpZ2h0LCBnZW9tZXRyeSwgbWF0ZXJpYWwsIHJlZmxlY3RlZExpZ2h0ICk7CiAgICAgICAgfQogICAgI2VuZGlmCiAgICAjaWYgKCBOVU1fRElSX0xJR0hUUyA+IDAgKSAmJiBkZWZpbmVkKCBSRV9EaXJlY3QgKQogICAgICAgIERpcmVjdGlvbmFsTGlnaHQgZGlyZWN0aW9uYWxMaWdodDsKICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fRElSX0xJR0hUUzsgaSArKyApIHsKICAgICAgICAgICAgZGlyZWN0aW9uYWxMaWdodCA9IGRpcmVjdGlvbmFsTGlnaHRzWyBpIF07CiAgICAgICAgICAgIGdldERpcmVjdGlvbmFsRGlyZWN0TGlnaHRJcnJhZGlhbmNlKCBkaXJlY3Rpb25hbExpZ2h0LCBnZW9tZXRyeSwgZGlyZWN0TGlnaHQgKTsKICAgICAgICAgICAgI2lmZGVmIFVTRV9TSEFET1dNQVAKICAgICAgICAgICAgZGlyZWN0TGlnaHQuY29sb3IgKj0gYWxsKCBidmVjMiggZGlyZWN0aW9uYWxMaWdodC5zaGFkb3csIGRpcmVjdExpZ2h0LnZpc2libGUgKSApID8gZ2V0U2hhZG93KCBkaXJlY3Rpb25hbFNoYWRvd01hcFsgaSBdLCBkaXJlY3Rpb25hbExpZ2h0LnNoYWRvd01hcFNpemUsIGRpcmVjdGlvbmFsTGlnaHQuc2hhZG93QmlhcywgZGlyZWN0aW9uYWxMaWdodC5zaGFkb3dSYWRpdXMsIHZEaXJlY3Rpb25hbFNoYWRvd0Nvb3JkWyBpIF0gKSA6IDEuMDsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIFJFX0RpcmVjdCggZGlyZWN0TGlnaHQsIGdlb21ldHJ5LCBtYXRlcmlhbCwgcmVmbGVjdGVkTGlnaHQgKTsKICAgICAgICB9CiAgICAjZW5kaWYKICAgICNpZiAoIE5VTV9SRUNUX0FSRUFfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdF9SZWN0QXJlYSApCiAgICAgICAgUmVjdEFyZWFMaWdodCByZWN0QXJlYUxpZ2h0OwogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9SRUNUX0FSRUFfTElHSFRTOyBpICsrICkgewogICAgICAgICAgICByZWN0QXJlYUxpZ2h0ID0gcmVjdEFyZWFMaWdodHNbIGkgXTsKICAgICAgICAgICAgUkVfRGlyZWN0X1JlY3RBcmVhKCByZWN0QXJlYUxpZ2h0LCBnZW9tZXRyeSwgbWF0ZXJpYWwsIHJlZmxlY3RlZExpZ2h0ICk7CiAgICAgICAgfQogICAgI2VuZGlmCiAgICAjaWYgZGVmaW5lZCggUkVfSW5kaXJlY3REaWZmdXNlICkKICAgICAgICB2ZWMzIGlycmFkaWFuY2UgPSBnZXRBbWJpZW50TGlnaHRJcnJhZGlhbmNlKCBhbWJpZW50TGlnaHRDb2xvciApOwogICAgICAgICNpZmRlZiBVU0VfTElHSFRNQVAKICAgICAgICAgICAgdmVjMyB1bml0ID0gdmVjMygxLjApOwogICAgICAgICAgICB2ZWMzIGxpZ2h0ID0gMi4wICogKHRleHR1cmUyRCggbGlnaHRNYXAsIHZVdjIgKS54eXogLSBsaWdodE1hcEV4cG9zdXJlICogdW5pdCk7CiAgICAgICAgICAgIHZlYzMgbW9kaWZpZXIgPSAtbGlnaHRNYXBGYWxsb2ZmICogbGlnaHQgKiBsaWdodCArIHVuaXQ7CiAgICAgICAgICAgIHZlYzMgbGlnaHRNYXBJcnJhZGlhbmNlID0gbGlnaHQgKiBtb2RpZmllciAqIGxpZ2h0TWFwSW50ZW5zaXR5OwogICAgICAgICAgICAjaWZuZGVmIFBIWVNJQ0FMTFlfQ09SUkVDVF9MSUdIVFMKICAgICAgICAgICAgICAgIGxpZ2h0TWFwSXJyYWRpYW5jZSAqPSBQSTsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIGlycmFkaWFuY2UgKz0gbGlnaHRNYXBJcnJhZGlhbmNlOwogICAgICAgICNlbmRpZgogICAgICAgICNpZiAoIE5VTV9IRU1JX0xJR0hUUyA+IDAgKQogICAgICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fSEVNSV9MSUdIVFM7IGkgKysgKSB7CiAgICAgICAgICAgICAgICBpcnJhZGlhbmNlICs9IGdldEhlbWlzcGhlcmVMaWdodElycmFkaWFuY2UoIGhlbWlzcGhlcmVMaWdodHNbIGkgXSwgZ2VvbWV0cnkgKTsKICAgICAgICAgICAgfQogICAgICAgICNlbmRpZgogICAgICAgIFJFX0luZGlyZWN0RGlmZnVzZSggaXJyYWRpYW5jZSwgZ2VvbWV0cnksIG1hdGVyaWFsLCByZWZsZWN0ZWRMaWdodCApOwogICAgI2VuZGlmCiAgICB2ZWMzIG91dGdvaW5nTGlnaHQgPSByZWZsZWN0ZWRMaWdodC5kaXJlY3REaWZmdXNlICsgcmVmbGVjdGVkTGlnaHQuaW5kaXJlY3REaWZmdXNlICsgcmVmbGVjdGVkTGlnaHQuZGlyZWN0U3BlY3VsYXIgKyByZWZsZWN0ZWRMaWdodC5pbmRpcmVjdFNwZWN1bGFyICsgdG90YWxFbWlzc2l2ZVJhZGlhbmNlOwogICAgZ2xfRnJhZ0NvbG9yID0gdmVjNCggb3V0Z29pbmdMaWdodCwgZGlmZnVzZUNvbG9yLmEgKTsKfQ=="};
 
-	var vertexShader$1 = {"text":"varying vec3 vViewPosition;\r\n\r\n#ifndef FLAT_SHADED\r\n\tvarying vec3 vNormal;\r\n#endif\r\n\r\n#include <uv_pars_vertex>\r\n#include <uv2_pars_vertex>\r\n#include <shadowmap_pars_vertex>\r\n\r\nvoid main()\r\n{\r\n//  vUv = uv;\r\n  #include <uv_vertex>\r\n  #include <uv2_vertex>\r\n\r\n  #include <beginnormal_vertex>\r\n  #include <defaultnormal_vertex>\r\n\r\n  #ifndef FLAT_SHADED\r\n    // Normal computed with derivatives when FLAT_SHADED\r\n  \tvNormal = normalize( transformedNormal );\r\n  #endif\r\n\r\n  #include <begin_vertex>\r\n  #include <project_vertex>\r\n\r\n  vViewPosition = - mvPosition.xyz;\r\n\r\n  #include <worldpos_vertex>\r\n  #include <shadowmap_vertex>\r\n\r\n}","base64":"data:text/plain;base64,dmFyeWluZyB2ZWMzIHZWaWV3UG9zaXRpb247DQoNCiNpZm5kZWYgRkxBVF9TSEFERUQNCgl2YXJ5aW5nIHZlYzMgdk5vcm1hbDsNCiNlbmRpZg0KDQojaW5jbHVkZSA8dXZfcGFyc192ZXJ0ZXg+DQojaW5jbHVkZSA8dXYyX3BhcnNfdmVydGV4Pg0KI2luY2x1ZGUgPHNoYWRvd21hcF9wYXJzX3ZlcnRleD4NCg0Kdm9pZCBtYWluKCkNCnsNCi8vICB2VXYgPSB1djsNCiAgI2luY2x1ZGUgPHV2X3ZlcnRleD4NCiAgI2luY2x1ZGUgPHV2Ml92ZXJ0ZXg+DQoNCiAgI2luY2x1ZGUgPGJlZ2lubm9ybWFsX3ZlcnRleD4NCiAgI2luY2x1ZGUgPGRlZmF1bHRub3JtYWxfdmVydGV4Pg0KDQogICNpZm5kZWYgRkxBVF9TSEFERUQNCiAgICAvLyBOb3JtYWwgY29tcHV0ZWQgd2l0aCBkZXJpdmF0aXZlcyB3aGVuIEZMQVRfU0hBREVEDQogIAl2Tm9ybWFsID0gbm9ybWFsaXplKCB0cmFuc2Zvcm1lZE5vcm1hbCApOw0KICAjZW5kaWYNCg0KICAjaW5jbHVkZSA8YmVnaW5fdmVydGV4Pg0KICAjaW5jbHVkZSA8cHJvamVjdF92ZXJ0ZXg+DQoNCiAgdlZpZXdQb3NpdGlvbiA9IC0gbXZQb3NpdGlvbi54eXo7DQoNCiAgI2luY2x1ZGUgPHdvcmxkcG9zX3ZlcnRleD4NCiAgI2luY2x1ZGUgPHNoYWRvd21hcF92ZXJ0ZXg+DQoNCn0="};
+	var vertexShader$1 = {"text":"varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}","base64":"data:text/plain;base64,dmFyeWluZyB2ZWMzIHZWaWV3UG9zaXRpb247CiNpZm5kZWYgRkxBVF9TSEFERUQKCXZhcnlpbmcgdmVjMyB2Tm9ybWFsOwojZW5kaWYKI2luY2x1ZGUgPHV2X3BhcnNfdmVydGV4PgojaW5jbHVkZSA8dXYyX3BhcnNfdmVydGV4PgojaW5jbHVkZSA8c2hhZG93bWFwX3BhcnNfdmVydGV4Pgp2b2lkIG1haW4oKQp7CiAgI2luY2x1ZGUgPHV2X3ZlcnRleD4KICAjaW5jbHVkZSA8dXYyX3ZlcnRleD4KICAjaW5jbHVkZSA8YmVnaW5ub3JtYWxfdmVydGV4PgogICNpbmNsdWRlIDxkZWZhdWx0bm9ybWFsX3ZlcnRleD4KICAjaWZuZGVmIEZMQVRfU0hBREVECiAgCXZOb3JtYWwgPSBub3JtYWxpemUoIHRyYW5zZm9ybWVkTm9ybWFsICk7CiAgI2VuZGlmCiAgI2luY2x1ZGUgPGJlZ2luX3ZlcnRleD4KICAjaW5jbHVkZSA8cHJvamVjdF92ZXJ0ZXg+CiAgdlZpZXdQb3NpdGlvbiA9IC0gbXZQb3NpdGlvbi54eXo7CiAgI2luY2x1ZGUgPHdvcmxkcG9zX3ZlcnRleD4KICAjaW5jbHVkZSA8c2hhZG93bWFwX3ZlcnRleD4KfQ=="};
 
 	var Io3dMaterial = checkDependencies ({
 	  three: true,
@@ -20999,6 +28490,7 @@
 	});
 
 	// components
+	// dynamic entities
 	// other
 	// dependency check (for node.js compatibility)
 
@@ -21011,12 +28503,21 @@
 	  }
 	}, function registerComponents () {
 
-	  // register components
+	  // get dynamic entities
+	  var wallComponent = getElementComponent('wall');
+	  var windowComponent = getElementComponent('window');
+	  var doorComponent = getElementComponent('door');
+	  var polyFloorComponent = getElementComponent('polyfloor');
 
+	  // register components
 	  AFRAME.registerComponent('io3d-data3d', data3dComponent);
 	  AFRAME.registerComponent('io3d-furniture', furnitureComponent);
 	  AFRAME.registerComponent('tour', tourComponent);
 	  AFRAME.registerComponent('io3d-lighting', lightingComponent);
+	  AFRAME.registerComponent('io3d-wall', wallComponent);
+	  AFRAME.registerComponent('io3d-window', windowComponent);
+	  AFRAME.registerComponent('io3d-door', doorComponent);
+	  AFRAME.registerComponent('io3d-polyfloor', polyFloorComponent);
 	  // check if gblock component has already been registered
 	  if (AFRAME.components.gblock) {
 	    // legacy warning in case gblock has been registered using https://github.com/archilogic-com/aframe-gblock/
@@ -23255,7 +30756,7 @@
 	    })
 	}
 
-	var config = {
+	var config$1 = {
 	  'default_margin': 0.1,
 	  'default_search': 'isPublished:true -generic',
 	  'tag_black_list': [
@@ -23294,7 +30795,7 @@
 
 	  this.userQuery = options.query || null;
 	  this.searchCount = 0;
-	  this.margin = config['default_margin'];
+	  this.margin = config$1['default_margin'];
 	  this.furnitureInfo = null;
 
 	  var self = this;
@@ -23346,16 +30847,16 @@
 	};
 
 	getAlternatives.prototype.getQuery = function(info) {
-	  var query = config['default_search'];
+	  var query = config$1['default_search'];
 	  var tags = this.searchCount < 6 ? info.tags.concat(info.categories) : info.tags;
 	  tags = tags.filter(function(tag) {
 	    // removes blacklisted tags as well as 1P, 2P, ...
-	    return config['tag_black_list'].indexOf(tag) < 0 && !/^\d+P$/.test(tag)
+	    return config$1['tag_black_list'].indexOf(tag) < 0 && !/^\d+P$/.test(tag)
 	  });
 	  // remove secondary tags from query when increasing dimensions didn't work
 	  if (this.searchCount > 2) {
 	    tags = tags.filter(function(tag) {
-	      return config['tag_white_list'].indexOf(tag) > -1
+	      return config$1['tag_white_list'].indexOf(tag) > -1
 	    });
 	  }
 
@@ -23388,7 +30889,7 @@
 	// get offset based on bounding boxes
 	function getOffset(a, b) {
 	  // for elements that are aligned at the wall we want to compute the offset accordingly
-	  var edgeAligned = config.edgeAligned;
+	  var edgeAligned = config$1.edgeAligned;
 
 	  var tags = a.tags;
 	  a = a.boundingPoints;
@@ -23565,7 +31066,11 @@
 	  'group',
 	  'level',
 	  'plan',
-	  'object'
+	  'object',
+	  'wall',
+	  'door',
+	  'window',
+	  'polyfloor'
 	];
 
 	function toAframeElements(sceneStructure, options) {
@@ -23652,9 +31157,23 @@
 	      attributes['io3d-data3d'] = 'key: ' + element3d.object;
 	      attributes['shadow'] = 'cast: true; receive: true';
 	    break
+	    case 'wall':
+	      attributes['io3d-wall'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h;
+	    break
+	    case 'window':
+	      attributes['io3d-window'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h;
+	    break
+	    case 'door':
+	      attributes['io3d-door'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h;
+	    break
+	    case 'polyfloor':
+	      attributes['io3d-polyfloor'] = 'h: ' + element3d.h + '; polygon: ' + element3d.polygon.map(function(p) { return p.join(',')}).join(',');
+	    break
 	  }
 
 	  // and generic attributes that apply for all nodes
+	  // toggle visibility
+	  if (element3d.bake && element3d.bakeStatus === 'done') attributes.visible = false;
 	  // stringify location objects
 	  attributes.position = element3d.x + ' ' + element3d.y + ' ' + element3d.z;
 	  attributes.rotation = (element3d.rx || 0) + ' ' + element3d.ry + ' 0';
@@ -24762,211 +32281,6 @@
 
 	  })(data3d, callback);
 
-	};
-
-	// methods
-
-	function projectAxisY (v) {
-
-	  var uvs = new Float32Array(v.length / 1.5);
-	  var uvPos = 0;
-
-	  var i, l;
-	  for (i = 0, l = v.length; i < l; i += 9) {
-
-	    uvs[uvPos] = v[i + 2];
-	    uvs[uvPos + 1] = v[i];
-	    uvs[uvPos + 2] = v[i + 5];
-	    uvs[uvPos + 3] = v[i + 3];
-	    uvs[uvPos + 4] = v[i + 8];
-	    uvs[uvPos + 5] = v[i + 6];
-	    uvPos += 6;
-
-	  }
-
-	  return uvs
-
-	}
-	projectAxisY.title = 'Project Top Down';
-
-	function architectural (v) {
-
-	  var uvs = new Float32Array(v.length / 1.5);
-	  var uvPos = 0;
-
-	  var i, l, n, components;
-	  for (i = 0, l = v.length; i < l; i += 9) {
-
-	    // calculate face normal
-	    // cross product (a-b) x (c-b)
-	    n = [
-	      (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]),
-	      (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]),
-	      (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3])
-	    ];
-
-	    // normals should be absolute
-	    if (n[0] < 0) {
-	      n[0] *= -1;
-	    }
-	    if (n[1] < 0) {
-	      n[1] *= -1;
-	    }
-	    if (n[2] < 0) {
-	      n[2] *= -1;
-	    }
-
-	    // highest first?
-	    components = [1, 0, 2].sort(function (a, b) {
-	      return n[a] - n[b]
-	    });
-
-	    uvs[uvPos] = v[i + components[1]];
-	    uvs[uvPos + 1] = v[i + components[0]];
-	    uvs[uvPos + 2] = v[i + 3 + components[1]];
-	    uvs[uvPos + 3] = v[i + 3 + components[0]];
-	    uvs[uvPos + 4] = v[i + 6 + components[1]];
-	    uvs[uvPos + 5] = v[i + 6 + components[0]];
-	    uvPos += 6;
-
-	  }
-
-	  return uvs
-
-	}
-	architectural.title = 'Architectural';
-
-	// API
-
-	var getUvsBuffer = {
-	  architectural: architectural,
-	  projectAxisY: projectAxisY
-	};
-
-	var DEBUG = true;
-
-	// methods
-
-	function flat (v) {
-	  // calculate normals for flat shading
-	  var n = new Float32Array(v.length);
-	  var i, l, crx, cry, crz, invScalar;
-	  var hasFaultyTrigons = false;
-	  for (i = 0, l = v.length; i < l; i += 9) {
-	    // cross product (a-b) x (c-b)
-	    crx = (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]);
-	    cry = (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]);
-	    crz = (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3]);
-	    // normalize
-	    invScalar = 1 / Math.sqrt(crx * crx + cry * cry + crz * crz);
-	    // Fallback for trigons that don't span an area
-	    if (invScalar === Infinity) {
-	      invScalar = 0;
-	      hasFaultyTrigons = true;
-	    }
-	    // set normals
-	    n[i] = n[i + 3] = n[i + 6] = crx * invScalar;
-	    n[i + 1] = n[i + 4] = n[i + 7] = cry * invScalar;
-	    n[i + 2] = n[i + 5] = n[i + 8] = crz * invScalar;
-
-	  }
-	  if (DEBUG && hasFaultyTrigons) console.error('Geometry contains trigons that don\'t span an area.');
-	  return n
-	}
-	flat.title = 'Flat';
-
-	function smooth (v) {
-
-	  // output
-
-	  var normals = new Float32Array(v.length);
-
-	  // internals
-
-	  var hash, hashes = [], vertexRelatedNormals = {}, faceNormals, averageNormal;
-	  var n;
-	  var crx, cry, crz, invScalar;
-	  var hasFaultyTrigons = false;
-	  var i, l, i2, l2;
-
-	  ////////// 1. connect vertices to faces
-
-	  // go face by face
-	  for (i = 0, l = v.length; i < l; i += 9) {
-
-	    // calculate face normal
-	    // cross product (a-b) x (c-b)
-	    crx = (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]);
-	    cry = (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]);
-	    crz = (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3]);
-	    // normalize
-	    invScalar = 1 / Math.sqrt(crx * crx + cry * cry + crz * crz);
-	    if (invScalar === Infinity) {
-	      hasFaultyTrigons = true;
-	      invScalar = 0;
-	    }
-	    // set normals
-	    n = [crx * invScalar, cry * invScalar, crz * invScalar];
-
-	    for (i2 = 0, l2 = 9; i2 < l2; i2 += 3) {
-	      hash = v[i + i2] + '_' + v[i + i2 + 1] + '_' + v[i + i2 + 2];
-	      if (!vertexRelatedNormals[hash]) {
-	        vertexRelatedNormals[hash] = {
-	          faceNormals: [n]
-	        };
-	        hashes[hashes.length] = hash;
-	      } else {
-	        vertexRelatedNormals[hash].faceNormals.push(n);
-	      }
-	    }
-	  }
-
-	  ////////// 2. calculate average normals from related face normals
-
-	  var avx, avy, avz;
-	  for (i = 0, l = hashes.length; i < l; i++) {
-	    hash = hashes[i];
-	    faceNormals = vertexRelatedNormals[hash].faceNormals;
-	    avx = 0;
-	    avy = 0;
-	    avz = 0;
-	    for (i2 = 0, l2 = faceNormals.length; i2 < l2; i2++) {
-	      avx += faceNormals[i2][0];
-	      avy += faceNormals[i2][1];
-	      avz += faceNormals[i2][2];
-	    }
-	    // normalize
-	    invScalar = 1 / Math.sqrt(avx * avx + avy * avy + avz * avz);
-	    if (invScalar === Infinity) {
-	      hasFaultyTrigons = true;
-	      invScalar = 0;
-	    }
-	    // set average normal
-	    vertexRelatedNormals[hash].averageNormal = [avx * invScalar, avy * invScalar, avz * invScalar];
-	  }
-
-	  ////////// 3. apply average normals to vertices
-
-	  for (i = 0, l = v.length; i < l; i += 3) {
-	    hash = v[i] + '_' + v[i + 1] + '_' + v[i + 2];
-	    averageNormal = vertexRelatedNormals[hash].averageNormal;
-	    normals[i] = averageNormal[0];
-	    normals[i + 1] = averageNormal[1];
-	    normals[i + 2] = averageNormal[2];
-	  }
-
-	  // return
-	  if (DEBUG && hasFaultyTrigons) console.error('Shade Smooth: Geometry contains trigons that don\'t span an area.');
-	  return normals
-
-	}
-	smooth.title = 'Smooth';
-
-	// API
-
-	var getNormalsBuffer = {
-	  flat: flat,
-	  smooth: smooth,
 	};
 
 	// placeholder
