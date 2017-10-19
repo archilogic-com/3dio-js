@@ -9,6 +9,7 @@ io3d.config({
 var toolButtons = document.querySelectorAll('.btn-tool')
 var styleButtons = document.querySelectorAll('.btn-style')
 var btnFurnishEl = document.querySelector('#furnish');
+var btnBuildEl = document.querySelector('#build');
 var controlsEl = document.querySelector('.controls');
 var toolsEl = document.querySelector('#tools');
 var stylesEl = document.querySelector('#styles');
@@ -19,6 +20,7 @@ var sceneEl = document.querySelector('a-scene');
 var camEl = document.querySelector('a-camera');
 var planeEl = document.querySelector('a-plane');
 var furnishingEl = document.querySelector('#furnishings');
+var structureEl = document.querySelector('#structure');
 var drawingEl = document.querySelector('#drawing');
 var canvasEl
 
@@ -54,6 +56,7 @@ styleButtons.forEach(btn => {
 })
 rayCasterEl.addEventListener('click', addPoint)
 btnFurnishEl.addEventListener('click', getFurnishing)
+btnBuildEl.addEventListener('click', buildStructure)
 
 // workaround to get the initial plane position
 function initTracking() {
@@ -170,15 +173,15 @@ function getSceneStructure() {
   walls.forEach(w => {
     let data = getData(w)
     if (data.type === 'wall') {
-    data.children = []
-    let children = w.childNodes
-    children.forEach(c => {
-      data.children.push(getData(c))
+      data.children = []
+      let children = w.childNodes
+      children.forEach(c => {
+        data.children.push(getData(c))
+      })
+      sceneStructure.push(data)
+    }
   })
-    sceneStructure.push(data)
-  }
-})
-  // get polyfloors
+  // get polygonal floor
   return io3d.utils.services.call('Recognizer.recognizeFloors', {
     walls: sceneStructure
   }).then(floors => {
@@ -186,8 +189,20 @@ function getSceneStructure() {
       io3d.utils.ui.message.error('walls are not closed - try again', { expire: 2000 })
       return Promise.reject(new Error('walls are not closed'))
     }
-  return sceneStructure.concat(floors)
-})
+    return sceneStructure.concat(floors)
+  })
+}
+
+function buildStructure() {
+  getSceneStructure()
+  // normalize scene structure ( add default values and uuids )
+    .then(io3d.scene.normalizeSceneStructure)
+    .then(result => {
+      const elements = io3d.scene.getAframeElementsFromSceneStructure(result)
+      elements.forEach(el => {
+        structureEl.appendChild(el)
+      })
+    })
 }
 
 function getData(el) {
@@ -262,6 +277,7 @@ function getPosFromHit(hits) {
 
   planeEl.setAttribute('position', AFRAME.utils.coordinates.stringify(tempPos))
   furnishingEl.setAttribute('position', `0 ${tempPos.y} 0`)
+  structureEl.setAttribute('position', `0 ${tempPos.y} 0`)
   canvasEl.removeEventListener('touchstart', hitTest, false);
   initMsg.close()
   io3d.utils.ui.message.success('floor detected - start', { expire: 1000 })
