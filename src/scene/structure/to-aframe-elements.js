@@ -133,6 +133,8 @@ function getAttributes(element3d) {
   }
 
   // and generic attributes that apply for all nodes
+  // check for custom scale
+  if (element3d.sourceScale && element3d.sourceScale !== 1) attributes.scale = element3d.sourceScale + ' ' + element3d.sourceScale + ' ' + element3d.sourceScale
   // toggle visibility
   if (element3d.bake && element3d.bakeStatus === 'done') attributes.visible = false
   if (element3d.visible && !element3d.visible.bird && !element3d.visible.person && !element3d.visible.floorplan) attributes.visible = false
