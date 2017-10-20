@@ -298,9 +298,8 @@ export default {
 
   controls3d: 'insideWall',
 
-  meshes3d: function generateMeshes3d(a) {
-
-    //var a = this.attributes
+  meshes3d: function generateMeshes3d() {
+    var a = this.a
     var wallThickness = 0.1
     if (a.parent && a.parent.a) {
       wallThickness = a.parent.a.w
@@ -1387,8 +1386,8 @@ export default {
 
   },
 
-  materials3d: function generateMaterials3d(a) {
-    return a.materials
+  materials3d: function generateMaterials3d() {
+    return this.a.materials
   }
 
 }

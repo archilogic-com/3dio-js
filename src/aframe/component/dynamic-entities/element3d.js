@@ -1,34 +1,11 @@
-import closetType from './by-type/closet'
-import doorType from './by-type/door'
-import floorType from './by-type/floor'
-import kitchenType from './by-type/kitchen'
-import polyFloorType from './by-type/polyfloor'
-import windowType from './by-type/window'
-import wallType from './by-type/wall'
-
 import cloneDeep from 'lodash/cloneDeep'
 import materialDefinitions from './material-definitions/mat-lib.js'
+import getType from './get-type.js'
+import getSchema from './get-schema.js'
 
 function getElementComponent(type) {
   return {
-    schema: {
-      l: {
-        type: 'float',
-        default: null
-      },
-      h: {
-        type: 'float',
-        default: null
-      },
-      w: {
-        type: 'float',
-        default: null
-      },
-      materials: {
-        type: 'string',
-        default: ''
-      }
-    },
+    schema: getSchema.get(type),
 
     init: function () {
     },
@@ -38,36 +15,23 @@ function getElementComponent(type) {
       var el = this.el
       var data = this.data
       var materials = data.materials
-
-      // map el3d modules
-      var types = {
-        // 'box': boxType,
-        'closet': closetType,
-        // 'curtain': curtainType,
-        'door': doorType,
-        'floor': floorType,
-        'kitchen': kitchenType,
-        'polyfloor': polyFloorType,
-        // 'stairs': stairsType,
-        'wall': wallType,
-        'window': windowType
-      }
-
-      if (Object.keys(types).indexOf(type) < 0) return
+      var initEl3d = getType.init
 
       var a, el3d, meshes, materials, data3d
 
-      el3d = types[type]
-      if (!el3d) return
-
-      if (materials && materials !== '') materials = parseMats(materials)
-
       // get default values
-      a = el3d.params
+      var elType = getType.get(type)
+      if (!elType) {
+        console.log('invalid type', type)
+        return
+      }
+
+      var a = elType.params
       // apply entity values
       a = mapAttributes(a, data)
 
-      if (materials !== '') {
+      if (materials && materials !== '') {
+        materials = parseMats(materials)
         console.log(a.type, materials)
         Object.keys(materials).forEach(key => {
           a.materials[key] = materials[key]
@@ -93,23 +57,26 @@ function getElementComponent(type) {
           }
 
           // apply defaults and map attributes
-          _children = _children.map(c => mapAttributes(cloneDeep(types[c.type].params), c))
+          _children = _children.map(c => mapAttributes(cloneDeep(getType.get(c.type).params), c))
           // console.log('children', _children)
           a.children = _children
-        }
+        } else a.children = []
       }
 
-      // console.log(a.type, cloneDeep(a.materials))
+      initEl3d.prototype.meshes3d = elType.meshes3d
+      initEl3d.prototype.materials3d = elType.materials3d
+
+      // get new instance
+      el3d = new initEl3d(a)
 
       // get meshes and materials from el3d modules
-      meshes = el3d.meshes3d(a)
-      materials = el3d.materials3d(cloneDeep(a))
+      var meshes = el3d.meshes3d()
+      var materials = el3d.materials3d()
 
       // fetch materials from mat library
       Object.keys(materials).forEach(mat => {
         materials[mat] = getMaterial(materials[mat])
-      }
-    )
+      })
 
       // construct data3d object
       data3d = {
@@ -164,26 +131,11 @@ function getMaterial(material) {
 
 function mapAttributes(a, args) {
   // set custom attributes
-  var validProps = {
-    box: ['h', 'l', 'w'],
-    closet: ['h', 'l', 'w'],
-    curtain: ['h', 'l', 'w'],
-    door: ['h', 'l', 'w', 'x', 'y', 'hinge', 'side', 'doorType'],
-    floor: ['h', 'l', 'w'],
-    kitchen: ['h', 'l', 'w', 'highCabinetLeft', 'highCabinetRight', 'wallCabinet'],
-    polyfloor: ['h', 'polygon'],
-    stairs: ['h', 'l', 'w'],
-    wall: ['h', 'l', 'w'],
-    window: ['h', 'l', 'x', 'y']
-  }
+  var validProps = getSchema.validProps
   var _type = a.type
   Object.keys(args).forEach(prop => {
     if (validProps[_type].indexOf(prop) > -1 && (args[prop] || args[prop] === 0)) {
       if (prop === 'polygon') a[prop] = parsePolygon(args[prop])
-      // TODO: add proper type checking
-      else if (prop === 'highCabinetLeft') a[prop] = parseInt(args[prop])
-      else if (prop === 'highCabinetRight') a[prop] = parseInt(args[prop])
-      else if (prop === 'wallCabinet') a[prop] = args[prop] === 'true'
       else a[prop] = args[prop]
     }
   })

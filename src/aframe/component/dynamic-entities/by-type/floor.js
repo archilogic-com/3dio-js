@@ -182,9 +182,9 @@ export default {
 
   controls3d: 'floor',
 
-  meshes3d: function generateMeshes3d (a) {
+  meshes3d: function generateMeshes3d () {
 
-    //var a = this.a
+    var a = this.a
 
     // 2d polygon vertices
     var vertices = [ 0, 0, 0, a.w, a.l, a.w, a.l, 0 ]
@@ -245,8 +245,8 @@ export default {
 
   },
 
-  materials3d: function generateMaterials3d(a) {
-    return a.materials
+  materials3d: function generateMaterials3d() {
+    return this.a.materials
   }
 
 }

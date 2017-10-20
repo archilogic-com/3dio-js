@@ -205,9 +205,9 @@ export default {
 
   controls3d: 'polyFloor',
 
-  meshes3d: function generateMeshes3d (a) {
+  meshes3d: function generateMeshes3d () {
 
-    //var a = this.a
+    var a = this.a
 
     // a polygon can not have less than 3 points
     if (a.polygon.length < 3) {
@@ -282,8 +282,8 @@ export default {
 
   },
 
-  materials3d: function generateMaterials3d(a) {
-    return a.materials
+  materials3d: function generateMaterials3d() {
+    return this.a.materials
   }
 
 }

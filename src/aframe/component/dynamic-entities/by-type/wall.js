@@ -204,10 +204,8 @@ export default {
 
   controls3d: 'wall',
 
-  meshes3d: function generateMeshes3d(a) {
-
-    //var a = this.attributes
-
+  meshes3d: function generateMeshes3d() {
+    var a = this.a
     // get children
     var children = a.children //.models
     children = sortBy(children, function (model) {
@@ -1271,8 +1269,8 @@ export default {
 
   },
 
-  materials3d: function generateMaterials3d(a) {
-    return a.materials
+  materials3d: function generateMaterials3d() {
+    return this.a.materials
   }
 
 }

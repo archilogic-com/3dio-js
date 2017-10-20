@@ -236,9 +236,9 @@ export default {
 
   controls3d: 'insideWall',
 
-  meshes3d: function (a) {
+  meshes3d: function () {
 
-    //var a = this.attributes
+    var a = this.a
 
     var rowRatios = a.rowRatios
     var columnRatios = a.columnRatios
@@ -762,8 +762,8 @@ export default {
 
   },
 
-  materials3d: function generateMaterials3d (a) {
-    return a.materials
+  materials3d: function generateMaterials3d () {
+    return this.a.materials
   }
 
 }

@@ -505,9 +505,9 @@ export default {
 
   controls3d: 'twoPoints',
 
-  meshes3d: function (a) {
+  meshes3d: function () {
 
-    //var a = this.attributes
+    var a = this.a
 
     // internals
     var
@@ -2392,8 +2392,8 @@ export default {
 
   },
 
-  materials3d: function generateMaterials3d(a) {
-    var materials = a.materials
+  materials3d: function generateMaterials3d() {
+    var materials = this.a.materials
     materials.chrome = 'chrome'
     materials['black_metal']= {
       "specularCoef": 24,

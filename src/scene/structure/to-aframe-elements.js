@@ -135,6 +135,7 @@ function getAttributes(element3d) {
   // and generic attributes that apply for all nodes
   // toggle visibility
   if (element3d.bake && element3d.bakeStatus === 'done') attributes.visible = false
+  if (element3d.visible && !element3d.visible.bird && !element3d.visible.person && !element3d.visible.floorplan) attributes.visible = false
   // stringify location objects
   attributes.position = element3d.x + ' ' + element3d.y + ' ' + element3d.z
   attributes.rotation = (element3d.rx || 0) + ' ' + element3d.ry + ' 0'
