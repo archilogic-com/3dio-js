@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.5
- * @date 2017/10/18 21:30
+ * @date 2017/10/20 10:56
  * @branch dynamic-entities
- * @commit e8b17adb026edcbcb40c46ffd94a4d81cc6341b8
+ * @commit 85e17d8495d5d5f5d038e73180b94ec22c560262
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/10/18 21:30', GIT_BRANCH = 'dynamic-entities', GIT_COMMIT = 'e8b17adb026edcbcb40c46ffd94a4d81cc6341b8'
+	var BUILD_DATE='2017/10/20 10:56', GIT_BRANCH = 'dynamic-entities', GIT_COMMIT = '85e17d8495d5d5f5d038e73180b94ec22c560262'
 
 	var name = "3dio";
 	var version = "1.0.5";
@@ -821,44 +821,6 @@
 
 	});
 
-	/* tslint:disable:no-empty */
-	function noop() { }
-	var noop_2 = noop;
-
-
-	var noop_1 = {
-		noop: noop_2
-	};
-
-	/* tslint:enable:max-line-length */
-	function pipe() {
-	    var fns = [];
-	    for (var _i = 0; _i < arguments.length; _i++) {
-	        fns[_i - 0] = arguments[_i];
-	    }
-	    return pipeFromArray(fns);
-	}
-	var pipe_2 = pipe;
-	/* @internal */
-	function pipeFromArray(fns) {
-	    if (!fns) {
-	        return noop_1.noop;
-	    }
-	    if (fns.length === 1) {
-	        return fns[0];
-	    }
-	    return function piped(input) {
-	        return fns.reduce(function (prev, fn) { return fn(prev); }, input);
-	    };
-	}
-	var pipeFromArray_1 = pipeFromArray;
-
-
-	var pipe_1 = {
-		pipe: pipe_2,
-		pipeFromArray: pipeFromArray_1
-	};
-
 	/**
 	 * A representation of any set of values over any amount of time. This is the most basic building block
 	 * of RxJS.
@@ -1093,54 +1055,6 @@
 	     */
 	    Observable.prototype[observable.observable] = function () {
 	        return this;
-	    };
-	    /* tslint:enable:max-line-length */
-	    /**
-	     * Used to stitch together functional operators into a chain.
-	     * @method pipe
-	     * @return {Observable} the Observable result of all of the operators having
-	     * been called in the order they were passed in.
-	     *
-	     * @example
-	     *
-	     * import { map, filter, scan } from 'rxjs/operators';
-	     *
-	     * Rx.Observable.interval(1000)
-	     *   .pipe(
-	     *     filter(x => x % 2 === 0),
-	     *     map(x => x + x),
-	     *     scan((acc, x) => acc + x)
-	     *   )
-	     *   .subscribe(x => console.log(x))
-	     */
-	    Observable.prototype.pipe = function () {
-	        var operations = [];
-	        for (var _i = 0; _i < arguments.length; _i++) {
-	            operations[_i - 0] = arguments[_i];
-	        }
-	        if (operations.length === 0) {
-	            return this;
-	        }
-	        return pipe_1.pipeFromArray(operations)(this);
-	    };
-	    /* tslint:enable:max-line-length */
-	    Observable.prototype.toPromise = function (PromiseCtor) {
-	        var _this = this;
-	        if (!PromiseCtor) {
-	            if (root.root.Rx && root.root.Rx.config && root.root.Rx.config.Promise) {
-	                PromiseCtor = root.root.Rx.config.Promise;
-	            }
-	            else if (root.root.Promise) {
-	                PromiseCtor = root.root.Promise;
-	            }
-	        }
-	        if (!PromiseCtor) {
-	            throw new Error('no Promise impl found');
-	        }
-	        return new PromiseCtor(function (resolve, reject) {
-	            var value;
-	            _this.subscribe(function (x) { return value = x; }, function (err) { return reject(err); }, function () { return resolve(value); });
-	        });
 	    };
 	    // HACK: Since TypeScript inherits static properties too, we have to
 	    // fight against TypeScript here so Subject can have a different static create signature
@@ -30139,6 +30053,10 @@
 	  for (var i = 0; i < _p.length - 1; i+=2 ) {
 	    polygon.push([_p[i],_p[i+1]]);
 	  }
+	  // polygons might have duplicate points ( start, end )
+	  // better to remove that to prevent errors
+	  var duplicatePoint = polygon[0][0] === polygon[polygon.length - 1][0] && polygon[0][1] === polygon[polygon.length - 1][1];
+	  if (duplicatePoint) polygon.splice(-1, 1);
 	  return polygon
 	}
 

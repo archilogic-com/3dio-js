@@ -207,5 +207,9 @@ function parsePolygon(p) {
   for (var i = 0; i < _p.length - 1; i+=2 ) {
     polygon.push([_p[i],_p[i+1]])
   }
+  // polygons might have duplicate points ( start, end )
+  // better to remove that to prevent errors
+  var duplicatePoint = polygon[0][0] === polygon[polygon.length - 1][0] && polygon[0][1] === polygon[polygon.length - 1][1]
+  if (duplicatePoint) polygon.splice(-1, 1)
   return polygon
 }
