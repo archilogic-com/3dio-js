@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.5
- * @date 2017/10/20 22:23
+ * @date 2017/10/21 10:54
  * @branch dynamic-entities
- * @commit 5a8160d3ddb1461ec30420c06a264168b8054101
+ * @commit 2e5c24a35439e4118947fa44d286d7f5016ca2d2
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/10/20 22:23', GIT_BRANCH = 'dynamic-entities', GIT_COMMIT = '5a8160d3ddb1461ec30420c06a264168b8054101'
+	var BUILD_DATE='2017/10/21 10:54', GIT_BRANCH = 'dynamic-entities', GIT_COMMIT = '2e5c24a35439e4118947fa44d286d7f5016ca2d2'
 
 	var name = "3dio";
 	var version = "1.0.5";
@@ -30019,6 +30019,15 @@
 	      var meshes = el3d.meshes3d();
 	      var materials = el3d.materials3d();
 
+	      // clean up empty meshes to prevent errors
+	      var meshKeys = Object.keys(meshes);
+	      meshKeys.forEach(key => {
+	        if (!meshes[key].positions || !meshes[key].positions.length) {
+	          // console.warn('no vertices for mesh', key)
+	          delete meshes[key];
+	        }
+	      });
+
 	      // fetch materials from mat library
 	      Object.keys(materials).forEach(mat => {
 	        materials[mat] = getMaterial(materials[mat]);
@@ -34630,6 +34639,8 @@
 	  }
 
 	  // and generic attributes that apply for all nodes
+	  // check for custom scale
+	  if (element3d.sourceScale && element3d.sourceScale !== 1) attributes.scale = element3d.sourceScale + ' ' + element3d.sourceScale + ' ' + element3d.sourceScale;
 	  // toggle visibility
 	  if (element3d.bake && element3d.bakeStatus === 'done') attributes.visible = false;
 	  if (element3d.visible && !element3d.visible.bird && !element3d.visible.person && !element3d.visible.floorplan) attributes.visible = false;
