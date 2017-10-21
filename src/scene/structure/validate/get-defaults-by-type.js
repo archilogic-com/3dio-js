@@ -23,7 +23,7 @@ import window from './by-type/window.js'
 
 import defaults from 'lodash/defaults'
 
-export default function getDefaultsByType() {
+export default function getDefaultsByType (type) {
   var types = {
     box: box,
     'camera-bookmark': cameraBookmark,
@@ -47,16 +47,22 @@ export default function getDefaultsByType() {
     window: window
   }
 
-  var typeSpecificValidations = {}
-
-  Object.keys(types).forEach(function(key) {
-    typeSpecificValidations[key] = {
-      params: defaults({}, generic.params, types[key].params),
-      possibleChildrenTypes: types[key].possibleChildrenTypes
+  if (type && types[type]) {
+    return {
+      params: defaults({}, generic.params, types[type].params),
+      possibleChildrenTypes: types[type].possibleChildrenTypes
     }
-  })
+  } else {
+    var typeSpecificValidations = {}
 
-  return typeSpecificValidations
+    Object.keys(types).forEach(function (key) {
+      typeSpecificValidations[key] = {
+        params: defaults({}, generic.params, types[key].params),
+        possibleChildrenTypes: types[key].possibleChildrenTypes
+      }
+    })
+    return typeSpecificValidations
+  }
 }
 
 

@@ -1,6 +1,7 @@
 import runtime from '../../core/runtime.js'
 import poll from '../../utils/poll.js'
 import getFromStorage from '../../storage/get.js'
+import getDefaultsByType from './validate/get-defaults-by-type'
 
 var validTypes = [
   'closet',
@@ -49,6 +50,7 @@ export default function toAframeElements(sceneStructure, options) {
 function getAframeElementsFromSceneStructure(sceneStructure, parent) {
   var collection = parent ? null : [] // use collection or parent
   sceneStructure.forEach(function(element3d) {
+    // check if type is supported in aframe
     if (validTypes.indexOf(element3d.type) > -1) {
       // get html attributes from element3d objects
       var el = addEntity({
@@ -74,20 +76,18 @@ function getAttributes(element3d) {
 
   // map type specific attributes
   // camera-bookmarks and bakedModel are handled separately
+  var type = element3d.type
+  var validParams = getDefaultsByType(type).params
+  var paramKeys = Object.keys(validParams)
+  attributes['io3d-' + type] = ''
+  paramKeys.forEach(function(param) {
+    if(element3d[param] && !validParams[param].skipInAframe) {
+      // polygons have to be serialized
+      if (param === 'polygon') attributes['io3d-' + type] += param + ': ' + element3d.polygon.map(function(p) { return p.join(',')}).join(',') + '; '
+      else attributes['io3d-' + type] += param + ': ' + element3d[param] + '; '
+    }
+  })
   switch (element3d.type) {
-    case 'closet':
-      attributes['io3d-closet'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h
-      break
-    case 'door':
-      var doorParams = ['hinge', 'side', 'doorType']
-      attributes['io3d-door'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h
-      doorParams.forEach(function(param) {
-        if(element3d[param]) attributes['io3d-door'] += '; ' + param + ': ' + element3d[param]
-      })
-      break
-    case 'floor':
-      attributes['io3d-floor'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h
-      break
     case 'interior':
       attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1)
       // apply custom material settings for furniture items
@@ -110,25 +110,9 @@ function getAttributes(element3d) {
       }
       attributes['shadow'] = 'cast: true; receive: false'
       break
-    case 'kitchen':
-      var kitchenParams = ['highCabinetLeft', 'highCabinetRight', 'wallCabinet']
-      attributes['io3d-kitchen'] = 'l: ' + element3d.l + '; h: ' + element3d.h
-      kitchenParams.forEach(function(param) {
-        if(element3d[param] !== undefined ) attributes['io3d-kitchen'] += '; ' + param + ': ' + element3d[param]
-      })
-      break
     case 'object':
       attributes['io3d-data3d'] = 'key: ' + element3d.object
       attributes['shadow'] = 'cast: true; receive: true'
-      break
-    case 'polyfloor':
-      attributes['io3d-polyfloor'] = 'h: ' + element3d.h + '; polygon: ' + element3d.polygon.map(function(p) { return p.join(',')}).join(',')
-      break
-    case 'wall':
-      attributes['io3d-wall'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h
-      break
-    case 'window':
-      attributes['io3d-window'] = 'l: ' + element3d.l + '; h: ' + element3d.h
       break
   }
 

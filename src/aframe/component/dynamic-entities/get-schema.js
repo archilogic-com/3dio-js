@@ -1,71 +1,21 @@
+import getDefaultsByType from '../../../scene/structure/validate/get-defaults-by-type'
 
-function getSchema(type) {
-  let args = {}
-  validProps[type].forEach(function(prop) {
-    if (props[prop]) args[prop] = props[prop]
+function getSchema (type) {
+  // get valid params and default values for each type
+  var validProps = getDefaultsByType(type)
+  let schema = {}
+  var params = validProps.params
+  var propKeys = Object.keys(params)
+  propKeys.forEach(function (key) {
+    // skip location, children, and id params
+    if (params[key].skipInAframe) return
+    // map defaults to aframe schema convention
+    var paramType = params[key].aframeType || params[key].type
+    schema[key] = {type: paramType}
+    if (params[key].defaultValue) schema[key].default = params[key].defaultValue
+    if (params[key].possibleValues) schema[key].oneOf = params[key].possibleValues
   })
-  return args
-}
-var validProps = {
-  box: ['h', 'l', 'w'],
-  closet: ['h', 'l', 'w'],
-  curtain: ['h', 'l', 'w'],
-  door: ['h', 'l', 'w', 'x', 'y', 'hinge', 'side', 'doorType'],
-  floor: ['h', 'l', 'w'],
-  kitchen: ['h', 'l', 'w', 'highCabinetLeft', 'highCabinetRight', 'wallCabinet'],
-  polyfloor: ['h', 'polygon'],
-  stairs: ['h', 'l', 'w'],
-  wall: ['h', 'l', 'w'],
-  window: ['h', 'l', 'x', 'y']
-}
-var props = {
-  l: {
-    type: 'float',
-    default: null
-  },
-  h: {
-    type: 'float',
-    default: null
-  },
-  w: {
-    type: 'float',
-    default: null
-  },
-  materials: {
-    type: 'string',
-    default: ''
-  },
-  polygon: {
-    type: 'string',
-    default: ''
-  },
-  hinge: {
-    type: 'string',
-    default: 'right'
-  },
-  side: {
-    type: 'string',
-    default: 'back'
-  },
-  doorType: {
-    type: 'string',
-    default: 'singleSwing'
-  },
-  highCabinetLeft: {
-    type: 'number',
-    default: 2
-  },
-  highCabinetRight: {
-    type: 'number',
-    default: 0
-  },
-  wallCabinet: {
-    type: 'boolean',
-    default: true
-  }
+  return schema
 }
 
-export default {
-  get: getSchema,
-  validProps: validProps
-}
+export default getSchema

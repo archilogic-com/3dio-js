@@ -28,32 +28,38 @@ export default {
     x: { // x position in meters
       type: 'number',
       defaultValue: 0,
-      optional: true
+      optional: true,
+      skipInAframe: true
     },
     y: { // y position in meters
       type: 'number',
       defaultValue: 0,
-      optional: true
+      optional: true,
+      skipInAframe: true
     },
     z: { // z position in meters
       type: 'number',
       defaultValue: 0,
-      optional: true
+      optional: true,
+      skipInAframe: true
     },
     ry: { // y rotation in angle degrees
       type: 'number',
       defaultValue: 0,
-      optional: true
+      optional: true,
+      skipInAframe: true
     },
     children: {
       //type: 'array-with-objects',
       type: 'array',
       defaultValue: [],
-      optional: true
+      optional: true,
+      skipInAframe: true
     },
     id: {
       type: 'string',
-      optional: true
+      optional: true,
+      skipInAframe: true
     }
   }
 }

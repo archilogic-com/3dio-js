@@ -2,7 +2,8 @@ export default {
   params: {
     src: {
       type: 'string',
-      optional: false
+      optional: false,
+      skipInAframe: true
     }
   },
   possibleChildrenTypes: ['interior', 'object', 'tag']

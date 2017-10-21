@@ -2,11 +2,13 @@ export default {
   params: {
     object: {
       type: 'string',
-      optional: false
+      optional: false,
+      skipInAframe: true
     },
     sourceScale: {
       type: 'number',
-      optional: true
+      optional: true,
+      skipInAframe: true
     }
   },
   possibleChildrenTypes: ['interior']

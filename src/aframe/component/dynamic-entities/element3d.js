@@ -2,10 +2,11 @@ import cloneDeep from 'lodash/cloneDeep'
 import materialDefinitions from './material-definitions/mat-lib.js'
 import getType from './get-type.js'
 import getSchema from './get-schema.js'
+import getDefaultsByType from '../../../scene/structure/validate/get-defaults-by-type'
 
 function getElementComponent(type) {
   return {
-    schema: getSchema.get(type),
+    schema: getSchema(type),
 
     init: function () {
     },
@@ -139,12 +140,16 @@ function getMaterial(material) {
 }
 
 function mapAttributes(a, args) {
-  // set custom attributes
-  var validProps = getSchema.validProps
   var _type = a.type
+  // get valid params for each type
+  var validProps = getDefaultsByType(_type)
+  var validKeys = Object.keys(validProps.params)
   Object.keys(args).forEach(prop => {
-    if (validProps[_type].indexOf(prop) > -1 && (args[prop] || args[prop] === 0)) {
-      if (prop === 'polygon') a[prop] = parsePolygon(args[prop])
+    // check if param is valid
+    if (validKeys.indexOf(prop) > -1 && (args[prop] || args[prop] === 0)) {
+      if (prop === 'polygon') {
+        a[prop] = parsePolygon(args[prop])
+      }
       else a[prop] = args[prop]
     }
   })

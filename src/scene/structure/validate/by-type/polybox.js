@@ -9,6 +9,7 @@ export default  {
     polygon: {
       //type: 'array-with-arrays-with-numbers',
       type: 'array',
+      aframeType: 'string',
       optional: false
     }
   },

@@ -1,4 +1,4 @@
-export default  {
+export default {
   params: {
     h: { // height in meters
       type: 'number',
@@ -9,6 +9,7 @@ export default  {
     polygon: {
       //type: 'array-with-arrays-with-numbers',
       type: 'array',
+      aframeType: 'string',
       optional: false
     },
     hasCeiling: { // in meters

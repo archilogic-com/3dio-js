@@ -17,6 +17,21 @@ export default {
       defaultValue: 1.8,
       optional: false,
       min: 0.01
+    },
+    highCabinetLeft: {
+      type: 'number',
+      defaultValue: 2,
+      optional: true
+    },
+    highCabinetRight: {
+      type: 'number',
+      defaultValue: 0,
+      optional: true
+    },
+    wallCabinet: {
+      type: 'boolean',
+      defaultValue: true,
+      optional: true
     }
     // TODO: add all the default values
   },
