@@ -73,6 +73,15 @@ function getElementComponent(type) {
       var meshes = el3d.meshes3d()
       var materials = el3d.materials3d()
 
+      // clean up empty meshes to prevent errors
+      var meshKeys = Object.keys(meshes)
+      meshKeys.forEach(key => {
+        if (!meshes[key].positions || !meshes[key].positions.length) {
+          // console.warn('no vertices for mesh', key)
+          delete meshes[key]
+        }
+      })
+
       // fetch materials from mat library
       Object.keys(materials).forEach(mat => {
         materials[mat] = getMaterial(materials[mat])
