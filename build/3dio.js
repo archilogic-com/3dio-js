@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.5
- * @date 2017/10/21 10:54
+ * @date 2017/10/21 15:25
  * @branch dynamic-entities
- * @commit 2e5c24a35439e4118947fa44d286d7f5016ca2d2
+ * @commit d24e6a892ded6c30248b5081bf13548236fc031c
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/10/21 10:54', GIT_BRANCH = 'dynamic-entities', GIT_COMMIT = '2e5c24a35439e4118947fa44d286d7f5016ca2d2'
+	var BUILD_DATE='2017/10/21 15:25', GIT_BRANCH = 'dynamic-entities', GIT_COMMIT = 'd24e6a892ded6c30248b5081bf13548236fc031c'
 
 	var name = "3dio";
 	var version = "1.0.5";
@@ -16890,7 +16890,7 @@
 	  return _apply(assignInWith_1, undefined, args);
 	});
 
-	var defaults_1 = defaults$1;
+	var defaults_1$1 = defaults$1;
 
 	var tourComponent = {
 	  schema: {
@@ -16989,8 +16989,8 @@
 
 	    this._isPlaying = false;
 	    // apply changes to current camera position
-	    var pos = defaults_1({}, posChange, clone_1(this.el.getAttribute('position')));
-	    var rot = defaults_1({}, rotChange, clone_1(this.el.getAttribute('rotation')));
+	    var pos = defaults_1$1({}, posChange, clone_1(this.el.getAttribute('position')));
+	    var rot = defaults_1$1({}, rotChange, clone_1(this.el.getAttribute('rotation')));
 
 	    var target = {
 	      position: pos,
@@ -29878,80 +29878,688 @@
 	  }
 	};
 
-	function getSchema(type) {
-	  let args = {};
-	  validProps[type].forEach(function(prop) {
-	    if (props$2[prop]) args[prop] = props$2[prop];
-	  });
-	  return args
-	}
-	var validProps = {
-	  box: ['h', 'l', 'w'],
-	  closet: ['h', 'l', 'w'],
-	  curtain: ['h', 'l', 'w'],
-	  door: ['h', 'l', 'w', 'x', 'y', 'hinge', 'side', 'doorType'],
-	  floor: ['h', 'l', 'w'],
-	  kitchen: ['h', 'l', 'w', 'highCabinetLeft', 'highCabinetRight', 'wallCabinet'],
-	  polyfloor: ['h', 'polygon'],
-	  stairs: ['h', 'l', 'w'],
-	  wall: ['h', 'l', 'w'],
-	  window: ['h', 'l', 'x', 'y']
-	};
-	var props$2 = {
-	  l: {
-	    type: 'float',
-	    default: null
-	  },
-	  h: {
-	    type: 'float',
-	    default: null
-	  },
-	  w: {
-	    type: 'float',
-	    default: null
-	  },
-	  materials: {
-	    type: 'string',
-	    default: ''
-	  },
-	  polygon: {
-	    type: 'string',
-	    default: ''
-	  },
-	  hinge: {
-	    type: 'string',
-	    default: 'right'
-	  },
-	  side: {
-	    type: 'string',
-	    default: 'back'
-	  },
-	  doorType: {
-	    type: 'string',
-	    default: 'singleSwing'
-	  },
-	  highCabinetLeft: {
-	    type: 'number',
-	    default: 2
-	  },
-	  highCabinetRight: {
-	    type: 'number',
-	    default: 0
-	  },
-	  wallCabinet: {
-	    type: 'boolean',
-	    default: true
+	var generic = {
+	  params: {
+	    type: {
+	      type: 'string',
+	      possibleValues: [
+	        'box',
+	        'camera-bookmark',
+	        'closet',
+	        'curtain',
+	        'door',
+	        'floor',
+	        'floorplan',
+	        'group',
+	        'interior',
+	        'kitchen',
+	        'level',
+	        'plan',
+	        'polybox',
+	        'polyfloor',
+	        'railing',
+	        'stairs',
+	        'tag',
+	        'wall',
+	        'window',
+	      ],
+	      optional: false
+	    },
+	    x: { // x position in meters
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      skipInAframe: true
+	    },
+	    y: { // y position in meters
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      skipInAframe: true
+	    },
+	    z: { // z position in meters
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      skipInAframe: true
+	    },
+	    ry: { // y rotation in angle degrees
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      skipInAframe: true
+	    },
+	    children: {
+	      //type: 'array-with-objects',
+	      type: 'array',
+	      defaultValue: [],
+	      optional: true,
+	      skipInAframe: true
+	    },
+	    id: {
+	      type: 'string',
+	      optional: true,
+	      skipInAframe: true
+	    }
 	  }
 	};
 
-	var getSchema$1 = {
-	  get: getSchema,
-	  validProps: validProps
+	var box = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01
+	    }
+	  },
+	  possibleChildrenTypes: []
 	};
+
+	var cameraBookmark = {
+	  params: {
+	    distance: {
+	      type: 'number'
+	    }
+	  }
+	};
+
+	var closet = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 0.6,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 1.8,
+	      optional: false,
+	      min: 0.01
+	    },
+	    baseboard: {
+	      type: 'number',
+	      defaultValue: 0.1,
+	      optional: true,
+	      min: 0.01
+	    },
+	    doorWidth: {
+	      type: 'number',
+	      defaultValue: 0.02,
+	      optional: true,
+	      min: 0.01
+	    },
+	    handleLength: {
+	      type: 'number',
+	      defaultValue: 0.02,
+	      optional: true,
+	      min: 0.01
+	    },
+	    handleWidth: {
+	      type: 'number',
+	      defaultValue: 0.02,
+	      optional: true,
+	      min: 0.01
+	    },
+	    handleHeight: {
+	      type: 'number',
+	      defaultValue: 0.3,
+	      optional: true,
+	      min: 0.01
+	    }
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var curtain = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 0.2,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 1.8,
+	      optional: false,
+	      min: 0.01
+	    },
+	    folds: {
+	      type: 'number',
+	      defaultValue: 14,
+	      optional: true,
+	      min: 0.01
+	    }
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var door = {
+	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 3,
+	      possibleValues: [3],
+	      optional: false
+	    },
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 0.05,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 0.9,
+	      optional: false,
+	      min: 0.01
+	    },
+	    frameLength: { // in meters
+	      type: 'number',
+	      defaultValue: 0.05,
+	      optional: true,
+	      min: 0.01
+	    },
+	    frameOffset: { // in meters
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true
+	    },
+	    leafWidth: { // in meters
+	      type: 'number',
+	      defaultValue: 0.03,
+	      optional: true
+	    },
+	    leafOffset: { // in meters
+	      type: 'number',
+	      defaultValue: 0.005,
+	      optional: true
+	    },
+	    doorType: {
+	      type: 'string',
+	      defaultValue: 'singleSwing',
+	      optional: false,
+	      possibleValues: ['singleSwing', 'doubleSwing', 'swingFix', 'swingDoubleFix', 'doubleSwingDoubleFix', 'slidingDoor', 'opening']
+	    },
+	    fixLeafRatio: { // in meters
+	      type: 'number',
+	      defaultValue: 0.3,
+	      optional: true
+	    },
+	    doorAngle: { // in angle degrees
+	      type: 'number',
+	      defaultValue: 92,
+	      optional: true
+	    },
+	    hinge: {
+	      type: 'string',
+	      defaultValue: 'right',
+	      optional: false,
+	      possibleValues: ['right', 'left']
+	    },
+	    side: {
+	      type: 'string',
+	      defaultValue: 'back',
+	      optional: false,
+	      possibleValues: ['front', 'back']
+	    },
+	    thresholdHeight: {
+	      type: 'number',
+	      defaultValue: 0.01,
+	      optional: true
+	    }
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var floor = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01
+	    },
+	    hasCeiling: { // in meters
+	      type: 'boolean',
+	      optional: false
+	    },
+	    hCeiling: { // in meters
+	      type: 'number',
+	      optional: false
+	    }
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var floorplan = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01
+	    },
+	    file: {
+	      type: 'string',
+	      optional: false
+	    }
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var group = {
+	  params: {
+	    src: {
+	      type: 'string',
+	      optional: true,
+	      skipInAframe: true
+	    }
+	  },
+	  possibleChildrenTypes: ['interior', 'object', 'wall', 'box', 'group', 'polybox']
+	};
+
+	var interior = {
+	  params: {
+	    src: {
+	      type: 'string',
+	      optional: false,
+	      skipInAframe: true
+	    }
+	  },
+	  possibleChildrenTypes: ['interior', 'object', 'tag']
+	};
+
+	var kitchen = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 0.6,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 1.8,
+	      optional: false,
+	      min: 0.01
+	    },
+	    highCabinetLeft: {
+	      type: 'number',
+	      defaultValue: 2,
+	      optional: true
+	    },
+	    highCabinetRight: {
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true
+	    },
+	    wallCabinet: {
+	      type: 'boolean',
+	      defaultValue: true,
+	      optional: true
+	    }
+	    // TODO: add all the default values
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var level$1 = {
+	  params: {},
+	  possibleChildrenTypes: [
+	    'box',
+	    'closet',
+	    'curtain',
+	    'floor',
+	    'floorplan',
+	    'group',
+	    'interior',
+	    'kitchen',
+	    'object',
+	    'polybox',
+	    'polyfloor',
+	    'railing',
+	    'stairs',
+	    'tag',
+	    'wall'
+	  ]
+	};
+
+	var object = {
+	  params: {
+	    object: {
+	      type: 'string',
+	      optional: false,
+	      skipInAframe: true
+	    },
+	    sourceScale: {
+	      type: 'number',
+	      optional: true,
+	      skipInAframe: true
+	    }
+	  },
+	  possibleChildrenTypes: ['interior']
+	};
+
+	var plan = {
+	  params: {
+	    modelDisplayName: {
+	      type: 'string',
+	      optional: false,
+	      skipInAframe: true
+	    },
+	    v: {
+	      type: 'number',
+	      possibleValues: [1],
+	      optional: false,
+	      skipInAframe: true
+	    }
+	  },
+	  possibleChildrenTypes: ['level', 'camera-bookmark']
+	};
+
+	var polybox = {
+	  params: {
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    polygon: {
+	      //type: 'array-with-arrays-with-numbers',
+	      type: 'array',
+	      aframeType: 'string',
+	      optional: false
+	    }
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var polyfloor = {
+	  params: {
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 0.2,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    polygon: {
+	      //type: 'array-with-arrays-with-numbers',
+	      type: 'array',
+	      aframeType: 'string',
+	      optional: false
+	    },
+	    hasCeiling: { // in meters
+	      type: 'boolean',
+	      optional: false
+	    },
+	    hCeiling: { // in meters
+	      type: 'number',
+	      optional: false
+	    },
+	    usage: { // in meters
+	      type: 'string',
+	      optional: true
+	    }
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var railing = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01
+	    },
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var stairs = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 1.2,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 4,
+	      optional: false,
+	      min: 0.01
+	    },
+	    stepWidth: {
+	      type: 'number',
+	      defaultValue: 1.2,
+	      optional: true,
+	      min: 0.01
+	    },
+	    stairType: {
+	      type: 'string',
+	      defaultValue: 'straight',
+	      optional: true,
+	      min: 0.01
+	    }
+	    // TODO: add all default values
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var tag = {
+	  params: {
+	    title: {
+	      type: 'string',
+	      optional: false
+	    },
+	    notes: {
+	      type: 'string',
+	      optional: true
+	    },
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	var wall = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 0.15,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01
+	    },
+	    baseHeight: {type: 'number', optional: true, defaultValue: 0},
+	    frontHasBase: {type: 'boolean', optional: true, defaultValue: false},
+	    backHasBase: {type: 'boolean', optional: true, defaultValue: false}
+	  },
+	  possibleChildrenTypes: ['window', 'door']
+	};
+
+	var window$1 = {
+	  params: {
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 1.5,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01
+	    },
+	    rowRatios: { // in meters
+	      //type: 'array-with-numbers',
+	      type: 'array',
+	      optional: true
+	    },
+	    columnRatios: { // in meters
+	      //type: 'array-with-arrays-with-numbers',
+	      type: 'array',
+	      optional: true
+	    },
+	    frameLength: { // in meters
+	      type: 'number',
+	      optional: true,
+	      min: 0.01
+	    },
+	    frameWidth: { // in meters
+	      type: 'number',
+	      optional: true,
+	      min: 0.01
+	    },
+	    y: {
+	      defaultValue: 0.9,
+	    }
+	  },
+	  possibleChildrenTypes: []
+	};
+
+	// import sceneStructure types
+	function getDefaultsByType (type) {
+	  var types = {
+	    box: box,
+	    'camera-bookmark': cameraBookmark,
+	    closet: closet,
+	    curtain: curtain,
+	    door: door,
+	    floor: floor,
+	    floorplan: floorplan,
+	    group: group,
+	    interior: interior,
+	    kitchen: kitchen,
+	    level: level$1,
+	    object: object,
+	    plan: plan,
+	    polybox: polybox,
+	    polyfloor: polyfloor,
+	    railing: railing,
+	    stairs: stairs,
+	    tag: tag,
+	    wall: wall,
+	    window: window$1
+	  };
+
+	  if (type && types[type]) {
+	    return {
+	      params: defaults_1$1({}, generic.params, types[type].params),
+	      possibleChildrenTypes: types[type].possibleChildrenTypes
+	    }
+	  } else {
+	    var typeSpecificValidations = {};
+
+	    Object.keys(types).forEach(function (key) {
+	      typeSpecificValidations[key] = {
+	        params: defaults_1$1({}, generic.params, types[key].params),
+	        possibleChildrenTypes: types[key].possibleChildrenTypes
+	      };
+	    });
+	    return typeSpecificValidations
+	  }
+	}
+
+	function getSchema (type) {
+	  // get valid params and default values for each type
+	  var validProps = getDefaultsByType(type);
+	  let schema = {};
+	  var params = validProps.params;
+	  var propKeys = Object.keys(params);
+	  propKeys.forEach(function (key) {
+	    // skip location, children, and id params
+	    if (params[key].skipInAframe) return
+	    // map defaults to aframe schema convention
+	    var paramType = params[key].aframeType || params[key].type;
+	    schema[key] = {type: paramType};
+	    if (params[key].defaultValue) schema[key].default = params[key].defaultValue;
+	    if (params[key].possibleValues) schema[key].oneOf = params[key].possibleValues;
+	  });
+	  return schema
+	}
 
 	function getElementComponent(type) {
 	  return {
-	    schema: getSchema$1.get(type),
+	    schema: getSchema(type),
 
 	    init: function () {
 	    },
@@ -30083,12 +30691,16 @@
 	}
 
 	function mapAttributes(a, args) {
-	  // set custom attributes
-	  var validProps = getSchema$1.validProps;
 	  var _type = a.type;
+	  // get valid params for each type
+	  var validProps = getDefaultsByType(_type);
+	  var validKeys = Object.keys(validProps.params);
 	  Object.keys(args).forEach(prop => {
-	    if (validProps[_type].indexOf(prop) > -1 && (args[prop] || args[prop] === 0)) {
-	      if (prop === 'polygon') a[prop] = parsePolygon(args[prop]);
+	    // check if param is valid
+	    if (validKeys.indexOf(prop) > -1 && (args[prop] || args[prop] === 0)) {
+	      if (prop === 'polygon') {
+	        a[prop] = parsePolygon(args[prop]);
+	      }
 	      else a[prop] = args[prop];
 	    }
 	  });
@@ -33407,632 +34019,6 @@
 	  getData3dStorageId: getFurnitureData3dStorageId
 	};
 
-	var generic = {
-	  params: {
-	    type: {
-	      type: 'string',
-	      possibleValues: [
-	        'box',
-	        'camera-bookmark',
-	        'closet',
-	        'curtain',
-	        'door',
-	        'floor',
-	        'floorplan',
-	        'group',
-	        'interior',
-	        'kitchen',
-	        'level',
-	        'plan',
-	        'polybox',
-	        'polyfloor',
-	        'railing',
-	        'stairs',
-	        'tag',
-	        'wall',
-	        'window',
-	      ],
-	      optional: false
-	    },
-	    x: { // x position in meters
-	      type: 'number',
-	      defaultValue: 0,
-	      optional: true
-	    },
-	    y: { // y position in meters
-	      type: 'number',
-	      defaultValue: 0,
-	      optional: true
-	    },
-	    z: { // z position in meters
-	      type: 'number',
-	      defaultValue: 0,
-	      optional: true
-	    },
-	    ry: { // y rotation in angle degrees
-	      type: 'number',
-	      defaultValue: 0,
-	      optional: true
-	    },
-	    children: {
-	      //type: 'array-with-objects',
-	      type: 'array',
-	      defaultValue: [],
-	      optional: true
-	    },
-	    id: {
-	      type: 'string',
-	      optional: true
-	    }
-	  }
-	};
-
-	var box = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      defaultValue: 1,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 1,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      defaultValue: 1,
-	      optional: false,
-	      min: 0.01
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var cameraBookmark = {
-	  params: {
-	    distance: {
-	      type: 'number'
-	    }
-	  }
-	};
-
-	var closet = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      defaultValue: 0.6,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 2.4,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      defaultValue: 1.8,
-	      optional: false,
-	      min: 0.01
-	    },
-	    baseboard: {
-	      type: 'number',
-	      defaultValue: 0.1,
-	      optional: true,
-	      min: 0.01
-	    },
-	    doorWidth: {
-	      type: 'number',
-	      defaultValue: 0.02,
-	      optional: true,
-	      min: 0.01
-	    },
-	    handleLength: {
-	      type: 'number',
-	      defaultValue: 0.02,
-	      optional: true,
-	      min: 0.01
-	    },
-	    handleWidth: {
-	      type: 'number',
-	      defaultValue: 0.02,
-	      optional: true,
-	      min: 0.01
-	    },
-	    handleHeight: {
-	      type: 'number',
-	      defaultValue: 0.3,
-	      optional: true,
-	      min: 0.01
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var curtain = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      defaultValue: 0.2,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 2.4,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      defaultValue: 1.8,
-	      optional: false,
-	      min: 0.01
-	    },
-	    folds: {
-	      type: 'number',
-	      defaultValue: 14,
-	      optional: true,
-	      min: 0.01
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var door = {
-	  params: {
-	    v: {
-	      type: 'number',
-	      defaultValue: 3,
-	      possibleValues: [3],
-	      optional: false
-	    },
-	    w: { // width in meters
-	      type: 'number',
-	      defaultValue: 0.05,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 2,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      defaultValue: 0.9,
-	      optional: false,
-	      min: 0.01
-	    },
-	    frameLength: { // in meters
-	      type: 'number',
-	      defaultValue: 0.05,
-	      optional: true,
-	      min: 0.01
-	    },
-	    frameOffset: { // in meters
-	      type: 'number',
-	      defaultValue: 0,
-	      optional: true
-	    },
-	    leafWidth: { // in meters
-	      type: 'number',
-	      defaultValue: 0.03,
-	      optional: true
-	    },
-	    leafOffset: { // in meters
-	      type: 'number',
-	      defaultValue: 0.005,
-	      optional: true
-	    },
-	    doorType: {
-	      type: 'string',
-	      defaultValue: 'singleSwing',
-	      optional: false,
-	      possibleValues: ['singleSwing', 'doubleSwing', 'swingFix', 'swingDoubleFix', 'doubleSwingDoubleFix', 'slidingDoor', 'opening']
-	    },
-	    fixLeafRatio: { // in meters
-	      type: 'number',
-	      defaultValue: 0.3,
-	      optional: true
-	    },
-	    doorAngle: { // in angle degrees
-	      type: 'number',
-	      defaultValue: 92,
-	      optional: true
-	    },
-	    hinge: {
-	      type: 'string',
-	      defaultValue: 'right',
-	      optional: false,
-	      possibleValues: ['right', 'left']
-	    },
-	    side: {
-	      type: 'string',
-	      defaultValue: 'back',
-	      optional: false,
-	      possibleValues: ['front', 'back']
-	    },
-	    thresholdHeight: {
-	      type: 'number',
-	      defaultValue: 0.01,
-	      optional: true
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var floor = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01
-	    },
-	    hasCeiling: { // in meters
-	      type: 'boolean',
-	      optional: false
-	    },
-	    hCeiling: { // in meters
-	      type: 'number',
-	      optional: false
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var floorplan = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01
-	    },
-	    file: {
-	      type: 'string',
-	      optional: false
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var group = {
-	  params: {
-	    src: {
-	      type: 'string',
-	      optional: true
-	    }
-	  },
-	  possibleChildrenTypes: ['interior', 'object', 'wall', 'box', 'group', 'polybox']
-	};
-
-	var interior = {
-	  params: {
-	    src: {
-	      type: 'string',
-	      optional: false
-	    }
-	  },
-	  possibleChildrenTypes: ['interior', 'object', 'tag']
-	};
-
-	var kitchen = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      defaultValue: 0.6,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 2.4,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      defaultValue: 1.8,
-	      optional: false,
-	      min: 0.01
-	    }
-	    // TODO: add all the default values
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var level$1 = {
-	  params: {},
-	  possibleChildrenTypes: [
-	    'box',
-	    'closet',
-	    'curtain',
-	    'floor',
-	    'floorplan',
-	    'group',
-	    'interior',
-	    'kitchen',
-	    'object',
-	    'polybox',
-	    'polyfloor',
-	    'railing',
-	    'stairs',
-	    'tag',
-	    'wall'
-	  ]
-	};
-
-	var object = {
-	  params: {
-	    object: {
-	      type: 'string',
-	      optional: false
-	    },
-	    sourceScale: {
-	      type: 'number',
-	      optional: true
-	    }
-	  },
-	  possibleChildrenTypes: ['interior']
-	};
-
-	var plan = {
-	  params: {
-	    modelDisplayName: {
-	      type: 'string',
-	      optional: false
-	    },
-	    v: {
-	      type: 'number',
-	      possibleValues: [1],
-	      optional: false
-	    }
-	  },
-	  possibleChildrenTypes: ['level', 'camera-bookmark']
-	};
-
-	var polybox = {
-	  params: {
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 1,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    polygon: {
-	      //type: 'array-with-arrays-with-numbers',
-	      type: 'array',
-	      optional: false
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var polyfloor = {
-	  params: {
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 0.2,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    polygon: {
-	      //type: 'array-with-arrays-with-numbers',
-	      type: 'array',
-	      optional: false
-	    },
-	    hasCeiling: { // in meters
-	      type: 'boolean',
-	      optional: false
-	    },
-	    hCeiling: { // in meters
-	      type: 'number',
-	      optional: false
-	    },
-	    usage: { // in meters
-	      type: 'string',
-	      optional: true
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var railing = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01
-	    },
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var stairs = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      defaultValue: 1.2,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 2.4,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      defaultValue: 4,
-	      optional: false,
-	      min: 0.01
-	    },
-	    stepWidth: {
-	      type: 'number',
-	      defaultValue: 1.2,
-	      optional: true,
-	      min: 0.01
-	    },
-	    stairType: {
-	      type: 'string',
-	      defaultValue: 'straight',
-	      optional: true,
-	      min: 0.01
-	    }
-	    // TODO: add all default values
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var tag = {
-	  params: {
-	    title: {
-	      type: 'string',
-	      optional: false
-	    },
-	    notes: {
-	      type: 'string',
-	      optional: true
-	    },
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var wall = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      defaultValue: 0.15,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 2.4,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      defaultValue: 1,
-	      optional: false,
-	      min: 0.01
-	    },
-	    baseHeight: {type: 'number', optional: true, defaultValue: 0},
-	    frontHasBase: {type: 'boolean', optional: true, defaultValue: false},
-	    backHasBase: {type: 'boolean', optional: true, defaultValue: false}
-	  },
-	  possibleChildrenTypes: ['window', 'door']
-	};
-
-	var window$1 = {
-	  params: {
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 1.5,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01
-	    },
-	    rowRatios: { // in meters
-	      //type: 'array-with-numbers',
-	      type: 'array',
-	      optional: true
-	    },
-	    columnRatios: { // in meters
-	      //type: 'array-with-arrays-with-numbers',
-	      type: 'array',
-	      optional: true
-	    },
-	    frameLength: { // in meters
-	      type: 'number',
-	      optional: true,
-	      min: 0.01
-	    },
-	    frameWidth: { // in meters
-	      type: 'number',
-	      optional: true,
-	      min: 0.01
-	    },
-	    y: {
-	      defaultValue: 0.9,
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	// import sceneStructure types
-	function getDefaultsByType() {
-	  var types = {
-	    box: box,
-	    'camera-bookmark': cameraBookmark,
-	    closet: closet,
-	    curtain: curtain,
-	    door: door,
-	    floor: floor,
-	    floorplan: floorplan,
-	    group: group,
-	    interior: interior,
-	    kitchen: kitchen,
-	    level: level$1,
-	    object: object,
-	    plan: plan,
-	    polybox: polybox,
-	    polyfloor: polyfloor,
-	    railing: railing,
-	    stairs: stairs,
-	    tag: tag,
-	    wall: wall,
-	    window: window$1
-	  };
-
-	  var typeSpecificValidations = {};
-
-	  Object.keys(types).forEach(function(key) {
-	    typeSpecificValidations[key] = {
-	      params: defaults_1({}, generic.params, types[key].params),
-	      possibleChildrenTypes: types[key].possibleChildrenTypes
-	    };
-	  });
-
-	  return typeSpecificValidations
-	}
-
 	function applyDefaults(element3d) {
 	  if (!element3d || !element3d.type) return
 
@@ -34198,7 +34184,7 @@
 	      // get sceneStructure from Furniture API -> info on type and possible children
 	      var sceneStructure = JSON.parse(furniture.modelStructure);
 	      // combine data from both API calls to turn result into full sceneStructure
-	      sceneStructure = defaults_1({}, group, sceneStructure);
+	      sceneStructure = defaults_1$1({}, group, sceneStructure);
 	      return bluebird_1.resolve(sceneStructure)
 	    })
 	}
@@ -34555,6 +34541,7 @@
 	function getAframeElementsFromSceneStructure(sceneStructure, parent) {
 	  var collection = parent ? null : []; // use collection or parent
 	  sceneStructure.forEach(function(element3d) {
+	    // check if type is supported in aframe
 	    if (validTypes.indexOf(element3d.type) > -1) {
 	      // get html attributes from element3d objects
 	      var el = addEntity({
@@ -34580,20 +34567,18 @@
 
 	  // map type specific attributes
 	  // camera-bookmarks and bakedModel are handled separately
+	  var type = element3d.type;
+	  var validParams = getDefaultsByType(type).params;
+	  var paramKeys = Object.keys(validParams);
+	  attributes['io3d-' + type] = '';
+	  paramKeys.forEach(function(param) {
+	    if(element3d[param] && !validParams[param].skipInAframe) {
+	      // polygons have to be serialized
+	      if (param === 'polygon') attributes['io3d-' + type] += param + ': ' + element3d.polygon.map(function(p) { return p.join(',')}).join(',') + '; ';
+	      else attributes['io3d-' + type] += param + ': ' + element3d[param] + '; ';
+	    }
+	  });
 	  switch (element3d.type) {
-	    case 'closet':
-	      attributes['io3d-closet'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h;
-	      break
-	    case 'door':
-	      var doorParams = ['hinge', 'side', 'doorType'];
-	      attributes['io3d-door'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h;
-	      doorParams.forEach(function(param) {
-	        if(element3d[param]) attributes['io3d-door'] += '; ' + param + ': ' + element3d[param];
-	      });
-	      break
-	    case 'floor':
-	      attributes['io3d-floor'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h;
-	      break
 	    case 'interior':
 	      attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1);
 	      // apply custom material settings for furniture items
@@ -34616,25 +34601,9 @@
 	      }
 	      attributes['shadow'] = 'cast: true; receive: false';
 	      break
-	    case 'kitchen':
-	      var kitchenParams = ['highCabinetLeft', 'highCabinetRight', 'wallCabinet'];
-	      attributes['io3d-kitchen'] = 'l: ' + element3d.l + '; h: ' + element3d.h;
-	      kitchenParams.forEach(function(param) {
-	        if(element3d[param] !== undefined ) attributes['io3d-kitchen'] += '; ' + param + ': ' + element3d[param];
-	      });
-	      break
 	    case 'object':
 	      attributes['io3d-data3d'] = 'key: ' + element3d.object;
 	      attributes['shadow'] = 'cast: true; receive: true';
-	      break
-	    case 'polyfloor':
-	      attributes['io3d-polyfloor'] = 'h: ' + element3d.h + '; polygon: ' + element3d.polygon.map(function(p) { return p.join(',')}).join(',');
-	      break
-	    case 'wall':
-	      attributes['io3d-wall'] = 'l: ' + element3d.l + '; w: ' + element3d.w + '; h: ' + element3d.h;
-	      break
-	    case 'window':
-	      attributes['io3d-window'] = 'l: ' + element3d.l + '; h: ' + element3d.h;
 	      break
 	  }
 
@@ -34898,7 +34867,7 @@
 	    if (element3d.type === 'interior' && element3d.src && typeof element3d.src === 'string') collection[element3d.src.substring(1)] = true;
 	    // recursively search through scene structure
 	    if (element3d.children && element3d.children.length) {
-	      collection = defaults_1({}, collection, getIdsFromSceneStructure (element3d.children));
+	      collection = defaults_1$1({}, collection, getIdsFromSceneStructure (element3d.children));
 	    }
 	  });
 	  return collection
@@ -37730,6 +37699,320 @@
 	  }
 	}
 
+	function snapWalls(walls) {
+
+	  // config
+	  var maxWallWidth = 0.4;
+	  var minWallDimRatio = 1.2;
+
+	  // find all walls in level
+	  var wallData = [];
+	  var snappedWalls = [];
+
+	  // compute points and vectors for each wall
+	  for (var i = 0; i < walls.length; i++) {
+	    wallData.push({
+	      wall: walls[i],
+	      data: getWallData(walls[i])
+	    });
+	  }
+
+	  var basePoint, endPoint, connectedWalls = 0;
+	  var maxDistance = 0.2, isWithinMaxDistance = false;
+
+	  // main loop to cycle through all walls and do the snapping
+	  for (var i = 0; i < wallData.length; i++) {
+
+	    // get maximum snapping distance from wall width
+	    maxDistance = wallData[i].wall.w <= 0.5 ? wallData[i].wall.w : 0.2;//* 0.5
+	    // avoid to short walls
+	    if ((wallData[i].wall.l / wallData[i].wall.w) < minWallDimRatio) continue
+	    // avoid weird snapping with thick walls
+	    if (wallData[i].wall.w >= maxWallWidth) continue
+	    // map wall 1 end points
+	    basePoint = wallData[i].data.p1;
+	    endPoint = wallData[i].data.p2;
+
+	    // find walls to snap with
+	    for (var j = i + 1; j < wallData.length; j++) {
+	      // avoid weird snapping with thick walls
+	      if (wallData[j].wall.w >= maxWallWidth) continue
+	      // skip same wall
+	      if (i === j) continue
+
+	      if (distance(basePoint, wallData[j].data.p1) <= maxDistance) isWithinMaxDistance = true;
+	      else if (distance(basePoint, wallData[j].data.p2) <= maxDistance) isWithinMaxDistance = true;
+	      else if (distance(endPoint, wallData[j].data.p1) <= maxDistance) isWithinMaxDistance = true;
+	      else if (distance(endPoint, wallData[j].data.p2) <= maxDistance) isWithinMaxDistance = true;
+
+	      if (isWithinMaxDistance) {
+	        // do the wall snapping
+	        snappedWalls = connectWall(wallData[i], wallData[j]);
+	        // update the computed wall data
+	        wallData[i].wall = snappedWalls ? snappedWalls[0] : wallData[i].wall;
+	        wallData[j].wall = snappedWalls ? snappedWalls[1] : wallData[j].wall;
+
+	        wallData[i].data = getWallData(wallData[i].wall);
+	        wallData[j].data = getWallData(wallData[j].wall);
+	        connectedWalls += 1;
+	      }
+	      isWithinMaxDistance = false;
+	    }
+	  }
+
+	  // get snapped walls
+	  snappedWalls = [];
+	  for (var i = 0; i < wallData.length; i++) {
+	    snappedWalls.push(wallData[i].wall);
+	  }
+
+	  return snappedWalls
+
+	  function connectWall (firstWall, secondWall) {
+
+	    // get Walls
+	    var walls = [firstWall.wall, secondWall.wall];
+	    var data = [firstWall.data, secondWall.data];
+
+	    var angle0 = walls[0].ry <= 180 ? walls[0].ry : walls[0].ry - 180,
+	      angle1 = walls[1].ry <= 180 ? walls[1].ry : walls[1].ry - 180,
+	      angleDiff = Math.abs(parseInt(angle0) - parseInt(angle1));
+
+	    // stop for quasi parallel walls
+	    if (angleDiff < 1) return
+
+	    var count = 2;
+
+	    // map points and vectors
+	    var p1 = [data[0].p1, data[1].p1],
+	      p2 = [data[0].p2, data[1].p2],
+	      p3 = [data[0].p3, data[1].p3],
+	      p4 = [data[0].p4, data[1].p4],
+	      v = [data[0].v, data[1].v],
+	      u = [],
+	      w = [data[0].w, data[1].w];
+
+	    var pA, pB0, pB0S, pB1, pB1S, pC, pC0, pC1, dA1, dA2, dA = [], dC = [], base = [], pBase = [], pSnap, far = [];
+	    var alpha, beta, i;
+
+	    // compute Intersection candidates
+
+	    // Base Line Intersection
+	    pA = intersection(p1[0], p2[0], p1[1], p2[1]);
+
+	    // Basel Line 0, Support Line 1 Intersection
+	    pB0 = intersection(p1[0], p2[0], p3[1], p4[1]);
+	    // projection to wall 1
+	    pB0S = subtract(pB0, w[1]);
+	    // Support Line 0, Basel Line 1 Intersection
+	    pB1 = intersection(p3[0], p4[0], p1[1], p2[1]);
+	    // projection to wall 0
+	    pB1S = subtract(pB1, w[0]);
+	    // Support Line Intersection
+	    pC = intersection(p3[0], p4[0], p3[1], p4[1]);
+	    pC0 = subtract(pC, w[0]);
+	    pC1 = subtract(pC, w[1]);
+
+	    for (i = 0; i < count; i++) {
+
+	      dA1 = distance(p1[i], pA);
+	      dA2 = distance(p2[i], pA);
+
+	      // check if base point is next to intersection or opposite
+	      if (dA2 > dA1) {
+	        dA[i] = dA2;
+	        pBase[i] = {
+	          x: p2[i].x,
+	          z: p2[i].z
+	        };
+	        // base point is next to intersection
+	        base[i] = false;
+	        far[i] = dA1 > 20;
+	      } else {
+	        dA[i] = dA1;
+	        pBase[i] = {
+	          x: p1[i].x,
+	          z: p1[i].z
+	        };
+	        // base point is opposite to intersection
+	        base[i] = true;
+	        far[i] = dA2 > 20;
+	      }
+
+	      u[i] = {
+	        x: (pBase[i].x - pA.x) / dA[i],
+	        z: (pBase[i].z - pA.z) / dA[i]
+	      };
+	      dC[i] = i < 1 ? distance(pBase[i], pC0) : distance(pBase[i], pC1);
+	    }
+
+	    if (far[0] && far[1]) {
+	      console.log('intersection too far away');
+	      return
+	    }
+
+	    // relative angle between wall vectors
+	    alpha = angle(v[0], v[1]);
+	    // relative angle between direction corrected wall vectors
+	    beta = angle(u[0], u[1]);
+
+	    if (beta < 10) {
+	      console.log('angle too small');
+	      return
+	    }
+
+	    //if (singleConnect) count = 1
+
+	    for (i = 0; i < count; i++) {
+	      // choose proper intersection points
+	      if (Math.round(alpha) >= 88 && Math.round(alpha) <= 92) {
+
+	        // choose intersection by base point orientation
+	        if (base[0] === base[1]) {
+	          if (dC[0] < dA[0]) {
+	            if (alpha > 90) {
+	              pSnap = i < 1 ? pB0 : pC1;
+	            } else {
+	              pSnap = i < 1 ? pC0 : pC1;
+	            }
+	          } else {
+	            if (alpha > 90) {
+	              pSnap = i < 1 ? pB1S : pA;
+	            } else {
+	              pSnap = pA;
+	            }
+	          }
+	        }
+	        else {
+	          if (dC[0] < dA[0]) {
+	            pSnap = i < 1 ? pB0 : pB0S;
+	          } else {
+	            pSnap = i < 1 ? pB1S : pB1;
+	          }
+	        }
+	      }
+	      else if (alpha < 90) {
+	        if (beta <= 90) {
+	          pSnap = pA;
+	        } else if (dC[0] < dA[0]) {
+	          pSnap = pA;
+	        } else if (dC[0] > dA[0]) {
+	          pSnap = i < 1 ? pC0 : pC1;
+	        }
+	      } else {
+	        if (beta <= 90) {
+	          pSnap = i < 1 ? pB0 : pB0S;
+	        } else if (dC[0] < dA[0]) {
+	          pSnap = i < 1 ? pB1S : pB1;
+	        } else if (dC[0] > dA[0]) {
+	          pSnap = i < 1 ? pB0 : pB0S;
+	        }
+
+	      }
+
+	      var oldLength = walls[i].l;
+	      if (!pSnap) {
+	        console.log('pSnap failed');
+	        return
+	      }
+	      var newLength = distance(pBase[i], pSnap);
+
+	      // check and prevent irregular wall length changes
+	      if (Math.abs(newLength - oldLength) > 0.5) {
+	        console.log('delta', rnd(newLength - oldLength), 'new', rnd(newLength), 'old', rnd(oldLength));
+	        return
+	      }
+
+	      // if basePoint is opposite to intersection adjust length
+	      if (base[i]) {
+	        walls[i].l = newLength;
+
+	        // if basePoint is next to intersection adjust length and shift wall
+	      } else {
+	        walls[i].x = pSnap.x;
+	        walls[i].z = pSnap.z;
+	        walls[i].l = newLength;
+	        var c = walls[i].children;
+
+	        if (c.length > 0) {
+	          for (var t = 0; t < c.length; t++) {
+	            var newPos = c[t].x - oldLength + newLength;
+	            c[t].x = newPos;
+	          }
+	        }
+	      }
+
+	    }
+	    return walls
+	  }
+
+	  ////////////////
+	  // helpers
+	  ////////////////
+
+	  // get wall points
+	  function getWallData (wall) {
+	    var wallAngle, p1, p2, p3, p4, v, w;
+	    wallAngle = wall.ry / 180 * Math.PI,
+	      // width vector
+	      w = {
+	        x: -wall.w * Math.cos(wallAngle + Math.PI / 2),
+	        z: wall.w * Math.sin(wallAngle + Math.PI / 2)
+	      },
+	      // Base Line Points
+	      p1 = {
+	        x: wall.x,
+	        z: wall.z
+	      },
+	      p2 = {
+	        x: wall.x + wall.l * Math.cos(wallAngle),
+	        z: wall.z - wall.l * Math.sin(wallAngle)
+	      },
+	      // Support Line Points
+	      p3 = {
+	        x: wall.x + w.x,
+	        z: wall.z + w.z
+	      },
+	      p4 = {
+	        x: p2.x + w.x,
+	        z: p2.z + w.z
+	      },
+	      // normalized wall vector
+	      v = {
+	        x: (p2.x - p1.x) / wall.l,
+	        z: (p2.z - p1.z) / wall.l
+	      };
+	    return {wallAngle: wallAngle, p1: p1, p2: p2, w: w, p3: p3, p4: p4, v: v}
+	  }
+
+	  // angle between vector v and u
+	  function angle (v, u) {
+	    return Math.round(((Math.acos(v.x * u.x + v.z * u.z)) * 180 / Math.PI) * 10) / 10
+	  }
+
+	  // intersections line p and q
+	  function intersection (p1, p2, q1, q2) {
+	    return {
+	      x: ((q2.x - q1.x) * (p2.x * p1.z - p1.x * p2.z) - (p2.x - p1.x) * (q2.x * q1.z - q1.x * q2.z)) / ((q2.z - q1.z) * (p2.x - p1.x) - (p2.z - p1.z) * (q2.x - q1.x)),
+	      z: ((p1.z - p2.z) * (q2.x * q1.z - q1.x * q2.z) - (q1.z - q2.z) * (p2.x * p1.z - p1.x * p2.z)) / ((q2.z - q1.z) * (p2.x - p1.x) - (p2.z - p1.z) * (q2.x - q1.x)),
+	    }
+	  }
+
+	  // distance between points
+	  function distance (p, q) {
+	    return Math.sqrt(Math.pow((p.x - q.x), 2) + Math.pow((p.z - q.z), 2))
+	  }
+
+	  // subtract two vectors
+	  function subtract (p, q) {
+	    return {x: p.x - q.x, z: p.z - q.z}
+	  }
+
+	  function rnd (a) {
+	    return Math.round(a * 100) / 100
+	  }
+	}
+
 	var scene = {
 	  getStructure: getSceneStructure,
 	  getHtml: getHtml,
@@ -37738,7 +38021,8 @@
 	  validateSceneStructure: validateSceneStructure,
 	  normalizeSceneStructure: normalizeSceneStructure,
 	  getHtmlFromSceneStructure: getHtmlFromSceneStructure,
-	  getAframeElementsFromSceneStructure: toAframeElements
+	  getAframeElementsFromSceneStructure: toAframeElements,
+	  snapWalls: snapWalls
 	};
 
 	function getHtml() {

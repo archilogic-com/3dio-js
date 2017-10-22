@@ -4,6 +4,7 @@ import getViewerUrl from './scene/get-viewer-url.js'
 import validateSceneStructure from './scene/structure/validate.js'
 import normalizeSceneStructure from './scene/structure/normalize.js'
 import getAframeElementsFromSceneStructure from './scene/structure/to-aframe-elements.js'
+import snapWalls from './scene/structure/utils/snap-walls.js'
 
 var scene = {
   getStructure: getStructure,
@@ -13,7 +14,8 @@ var scene = {
   validateSceneStructure: validateSceneStructure,
   normalizeSceneStructure: normalizeSceneStructure,
   getHtmlFromSceneStructure: getHtmlFromSceneStructure,
-  getAframeElementsFromSceneStructure: getAframeElementsFromSceneStructure
+  getAframeElementsFromSceneStructure: getAframeElementsFromSceneStructure,
+  snapWalls: snapWalls
 }
 
 function getHtml() {
