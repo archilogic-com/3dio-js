@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.5
- * @date 2017/10/21 15:25
+ * @date 2017/10/26 01:34
  * @branch dynamic-entities
- * @commit d24e6a892ded6c30248b5081bf13548236fc031c
+ * @commit 7d51f1e73606e50dd6eae084d54684a83eed8d0a
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/10/21 15:25', GIT_BRANCH = 'dynamic-entities', GIT_COMMIT = 'd24e6a892ded6c30248b5081bf13548236fc031c'
+	var BUILD_DATE='2017/10/26 01:34', GIT_BRANCH = 'dynamic-entities', GIT_COMMIT = '7d51f1e73606e50dd6eae084d54684a83eed8d0a'
 
 	var name = "3dio";
 	var version = "1.0.5";
@@ -821,6 +821,44 @@
 
 	});
 
+	/* tslint:disable:no-empty */
+	function noop() { }
+	var noop_2 = noop;
+
+
+	var noop_1 = {
+		noop: noop_2
+	};
+
+	/* tslint:enable:max-line-length */
+	function pipe() {
+	    var fns = [];
+	    for (var _i = 0; _i < arguments.length; _i++) {
+	        fns[_i - 0] = arguments[_i];
+	    }
+	    return pipeFromArray(fns);
+	}
+	var pipe_2 = pipe;
+	/* @internal */
+	function pipeFromArray(fns) {
+	    if (!fns) {
+	        return noop_1.noop;
+	    }
+	    if (fns.length === 1) {
+	        return fns[0];
+	    }
+	    return function piped(input) {
+	        return fns.reduce(function (prev, fn) { return fn(prev); }, input);
+	    };
+	}
+	var pipeFromArray_1 = pipeFromArray;
+
+
+	var pipe_1 = {
+		pipe: pipe_2,
+		pipeFromArray: pipeFromArray_1
+	};
+
 	/**
 	 * A representation of any set of values over any amount of time. This is the most basic building block
 	 * of RxJS.
@@ -1055,6 +1093,54 @@
 	     */
 	    Observable.prototype[observable.observable] = function () {
 	        return this;
+	    };
+	    /* tslint:enable:max-line-length */
+	    /**
+	     * Used to stitch together functional operators into a chain.
+	     * @method pipe
+	     * @return {Observable} the Observable result of all of the operators having
+	     * been called in the order they were passed in.
+	     *
+	     * @example
+	     *
+	     * import { map, filter, scan } from 'rxjs/operators';
+	     *
+	     * Rx.Observable.interval(1000)
+	     *   .pipe(
+	     *     filter(x => x % 2 === 0),
+	     *     map(x => x + x),
+	     *     scan((acc, x) => acc + x)
+	     *   )
+	     *   .subscribe(x => console.log(x))
+	     */
+	    Observable.prototype.pipe = function () {
+	        var operations = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            operations[_i - 0] = arguments[_i];
+	        }
+	        if (operations.length === 0) {
+	            return this;
+	        }
+	        return pipe_1.pipeFromArray(operations)(this);
+	    };
+	    /* tslint:enable:max-line-length */
+	    Observable.prototype.toPromise = function (PromiseCtor) {
+	        var _this = this;
+	        if (!PromiseCtor) {
+	            if (root.root.Rx && root.root.Rx.config && root.root.Rx.config.Promise) {
+	                PromiseCtor = root.root.Rx.config.Promise;
+	            }
+	            else if (root.root.Promise) {
+	                PromiseCtor = root.root.Promise;
+	            }
+	        }
+	        if (!PromiseCtor) {
+	            throw new Error('no Promise impl found');
+	        }
+	        return new PromiseCtor(function (resolve, reject) {
+	            var value;
+	            _this.subscribe(function (x) { return value = x; }, function (err) { return reject(err); }, function () { return resolve(value); });
+	        });
 	    };
 	    // HACK: Since TypeScript inherits static properties too, we have to
 	    // fight against TypeScript here so Subject can have a different static create signature
@@ -29940,6 +30026,10 @@
 	      type: 'string',
 	      optional: true,
 	      skipInAframe: true
+	    },
+	    materials: {
+	      type: 'object',
+	      optional: true
 	    }
 	  }
 	};
@@ -30249,6 +30339,31 @@
 	      type: 'boolean',
 	      defaultValue: true,
 	      optional: true
+	    },
+	    cabinetType: {
+	      type: 'string',
+	      defaultValue: 'flat',
+	      optional: true
+	    },
+	    sinkType: {
+	      type: 'string',
+	      defaultValue: 'none',
+	      optional: true
+	    },
+	    extractorType: {
+	      type: 'string',
+	      defaultValue: 'none',
+	      optional: true
+	    },
+	    ovenType: {
+	      type: 'string',
+	      defaultValue: 'none',
+	      optional: true
+	    },
+	    cooktopType: {
+	      type: 'string',
+	      defaultValue: 'none',
+	      optional: true
 	    }
 	    // TODO: add all the default values
 	  },
@@ -30339,14 +30454,17 @@
 	      //type: 'array-with-arrays-with-numbers',
 	      type: 'array',
 	      aframeType: 'string',
+	      defaultValue: '1.5,1.5,1.5,-1.5,-1.5,-1.5,-1.5,1.5',
 	      optional: false
 	    },
 	    hasCeiling: { // in meters
 	      type: 'boolean',
+	      defaultValue: true,
 	      optional: false
 	    },
 	    hCeiling: { // in meters
 	      type: 'number',
+	      defaultValue: 2.4,
 	      optional: false
 	    },
 	    usage: { // in meters
@@ -30546,8 +30664,8 @@
 	  var params = validProps.params;
 	  var propKeys = Object.keys(params);
 	  propKeys.forEach(function (key) {
-	    // skip location, children, and id params
-	    if (params[key].skipInAframe) return
+	    // skip location, children, material and id params
+	    if (params[key].skipInAframe || key === 'materials') return
 	    // map defaults to aframe schema convention
 	    var paramType = params[key].aframeType || params[key].type;
 	    schema[key] = {type: paramType};
@@ -30561,16 +30679,12 @@
 	  return {
 	    schema: getSchema(type),
 
-	    init: function () {
-	    },
+	    init: function () {},
 
 	    update: function () {
 	      var this_ = this;
-	      var el = this.el;
 	      var data = this.data;
-	      var materials = data.materials;
 	      var initEl3d = getType.init;
-
 	      var a, el3d, meshes, materials, data3d;
 
 	      // get default values
@@ -30580,18 +30694,20 @@
 	        return
 	      }
 
-	      var a = elType.params;
+	      // set defaults
+	      a = cloneDeep_1(elType.params);
 	      // apply entity values
 	      a = mapAttributes(a, data);
 
-	      if (materials && materials !== '') {
-	        materials = parseMats(materials);
-	        console.log(a.type, materials);
-	        Object.keys(materials).forEach(key => {
-	          a.materials[key] = materials[key];
-	        });
-	      }
-
+	      // check for adapted materials
+	      var materialKeys = Object.keys(data).filter(function(key) {
+	        return key.indexOf('material_') > -1
+	      });
+	      // add materials to instance
+	      materialKeys.forEach(function(key) {
+	        var mesh = key.replace('material_', '');
+	        a.materials[mesh] = data[key];
+	      });
 	      // get children for walls
 	      if (type === 'wall') {
 	        var children = this_.el.children;
@@ -30624,8 +30740,8 @@
 	      el3d = new initEl3d(a);
 
 	      // get meshes and materials from el3d modules
-	      var meshes = el3d.meshes3d();
-	      var materials = el3d.materials3d();
+	      meshes = el3d.meshes3d();
+	      materials = el3d.materials3d();
 
 	      // clean up empty meshes to prevent errors
 	      var meshKeys = Object.keys(meshes);
@@ -30697,7 +30813,7 @@
 	  var validKeys = Object.keys(validProps.params);
 	  Object.keys(args).forEach(prop => {
 	    // check if param is valid
-	    if (validKeys.indexOf(prop) > -1 && (args[prop] || args[prop] === 0)) {
+	    if (validKeys.indexOf(prop) > -1 && args[prop] !== undefined) {
 	      if (prop === 'polygon') {
 	        a[prop] = parsePolygon(args[prop]);
 	      }
@@ -30705,17 +30821,6 @@
 	    }
 	  });
 	  return a
-	}
-
-	function parseMats(mats) {
-	  var _mats = mats.split(',');
-	  var matObj = {};
-	  _mats.forEach(m => {
-	    var key = m.split('=')[0];
-	    var val = m.split('=')[1];
-	    matObj[key] = val;
-	  });
-	  return matObj
 	}
 
 	function parsePolygon(p) {
@@ -34569,12 +34674,30 @@
 	  // camera-bookmarks and bakedModel are handled separately
 	  var type = element3d.type;
 	  var validParams = getDefaultsByType(type).params;
+	  // support for old material definitions
+	  // TODO: this should be cleaned up in the database
+	  var elKeys = Object.keys(element3d);
+	  elKeys.forEach(function(key) {
+	    if (key.indexOf('Material') > -1) {
+	      if (!element3d.materials) element3d.materials = {};
+	      element3d.materials[key.replace('Material', '')] = element3d[key];
+	      delete element3d[key];
+	    }
+	    else if (key === 'material' && type === 'floor') {
+	      if (!element3d.materials) element3d.materials = {};
+	      element3d.materials.top = element3d[key];
+	    }
+	  });
+
 	  var paramKeys = Object.keys(validParams);
 	  attributes['io3d-' + type] = '';
+
 	  paramKeys.forEach(function(param) {
-	    if(element3d[param] && !validParams[param].skipInAframe) {
+	    if (element3d[param] !== undefined && !validParams[param].skipInAframe) {
+	      // materials have to be serialized
+	      if (param === 'materials') attributes['io3d-' + type] += stringifyMaterials(element3d.materials);
 	      // polygons have to be serialized
-	      if (param === 'polygon') attributes['io3d-' + type] += param + ': ' + element3d.polygon.map(function(p) { return p.join(',')}).join(',') + '; ';
+	      else if (param === 'polygon') attributes['io3d-' + type] += param + ': ' + element3d.polygon.map(function(p) { return p.join(',')}).join(',') + '; ';
 	      else attributes['io3d-' + type] += param + ': ' + element3d[param] + '; ';
 	    }
 	  });
@@ -34806,6 +34929,20 @@
 	    });
 	  }
 	  return result
+	}
+
+	function stringifyMaterials (materials) {
+	  var matStr = '';
+	  var matKeys = Object.keys(materials);
+	  matKeys.forEach(function (key) {
+	    // currently only library materials are supported
+	    if (typeof materials[key] === 'string') {
+	      matStr += 'material_' + key + ':' + materials[key] + '; ';
+	    } else if (typeof materials[key] === 'object' && materials[key].mesh && materials[key].material) {
+	      matStr += 'material_' + materials[key].mesh + ':' + materials[key].material + '; ';
+	    }
+	  });
+	  return matStr
 	}
 
 	// consumes sceneStructure or DOM elements
