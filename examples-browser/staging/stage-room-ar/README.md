@@ -32,4 +32,4 @@ Get started here to install WebARonARCore / WebARonARKit Browser:
 npm run dev-browser
 ```
 Navigate your phone ( using WebAR enabled browser ) to
-<local ip>:8080/examples-browser/staging/stage-room-ar/
+`<local ip>:8080/examples-browser/staging/stage-room-ar/`
