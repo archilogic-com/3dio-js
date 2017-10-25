@@ -60,6 +60,10 @@ export default {
       type: 'string',
       optional: true,
       skipInAframe: true
+    },
+    materials: {
+      type: 'object',
+      optional: true
     }
   }
 }

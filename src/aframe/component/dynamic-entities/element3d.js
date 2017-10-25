@@ -8,16 +8,12 @@ function getElementComponent(type) {
   return {
     schema: getSchema(type),
 
-    init: function () {
-    },
+    init: function () {},
 
     update: function () {
       var this_ = this
-      var el = this.el
       var data = this.data
-      var materials = data.materials
       var initEl3d = getType.init
-
       var a, el3d, meshes, materials, data3d
 
       // get default values
@@ -27,18 +23,20 @@ function getElementComponent(type) {
         return
       }
 
-      var a = elType.params
+      // set defaults
+      a = cloneDeep(elType.params)
       // apply entity values
       a = mapAttributes(a, data)
 
-      if (materials && materials !== '') {
-        materials = parseMats(materials)
-        console.log(a.type, materials)
-        Object.keys(materials).forEach(key => {
-          a.materials[key] = materials[key]
-        })
-      }
-
+      // check for adapted materials
+      var materialKeys = Object.keys(data).filter(function(key) {
+        return key.indexOf('material_') > -1
+      })
+      // add materials to instance
+      materialKeys.forEach(function(key) {
+        var mesh = key.replace('material_', '')
+        a.materials[mesh] = data[key]
+      })
       // get children for walls
       if (type === 'wall') {
         var children = this_.el.children
@@ -71,8 +69,8 @@ function getElementComponent(type) {
       el3d = new initEl3d(a)
 
       // get meshes and materials from el3d modules
-      var meshes = el3d.meshes3d()
-      var materials = el3d.materials3d()
+      meshes = el3d.meshes3d()
+      materials = el3d.materials3d()
 
       // clean up empty meshes to prevent errors
       var meshKeys = Object.keys(meshes)
@@ -146,7 +144,7 @@ function mapAttributes(a, args) {
   var validKeys = Object.keys(validProps.params)
   Object.keys(args).forEach(prop => {
     // check if param is valid
-    if (validKeys.indexOf(prop) > -1 && (args[prop] || args[prop] === 0)) {
+    if (validKeys.indexOf(prop) > -1 && args[prop] !== undefined) {
       if (prop === 'polygon') {
         a[prop] = parsePolygon(args[prop])
       }
@@ -154,17 +152,6 @@ function mapAttributes(a, args) {
     }
   })
   return a
-}
-
-function parseMats(mats) {
-  var _mats = mats.split(',')
-  var matObj = {}
-  _mats.forEach(m => {
-    var key = m.split('=')[0]
-    var val = m.split('=')[1]
-    matObj[key] = val
-  })
-  return matObj
 }
 
 function parsePolygon(p) {

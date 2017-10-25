@@ -20,11 +20,14 @@
        note: realtime shadows require at least one light source that casts shadows
        note: fallback to material attribute from data3d file if not set
   -->
+  <a-entity io3d-wall="l:3; w:0.12; h:1.2; material_front:bricks_clean_red; material_back:bricks_clean_red" position="3 0 -3" rotation="0 -90 0" shadow="receive: true"></a-entity>
   <a-entity io3d-wall="l:3; w:0.12; h:2.4;" position="0 0 0" shadow="receive: true">
     <a-entity io3d-window="h:1.2; l:1.6" position="1.2 1 0"></a-entity>
     <a-entity io3d-door="l:0.8" position="0.2 0 0"></a-entity>
   </a-entity>
-  <a-entity io3d-polyfloor="polygon:-2.5,0,2.0,4.0,5.5,3.5,5.5,-10.5,-1.5,-9.5" position="0.2 0 0"></a-entity>
+  <a-entity io3d-polyfloor="material_top: wood_parquet_oak" position="0 0 0"></a-entity>
+  <a-entity io3d-polyfloor="material_top: wood_parquet_oak_stained" position="3 0 0"></a-entity>
+  <a-entity io3d-polyfloor position="3 0 -3"></a-entity>
   <!-- Camera -->
   <a-entity id="camera" camera="userHeight: 1.6" position="-1.2 0 -5.5" rotation="0 210 0" wasd-controls="acceleration:8;easing:5;" look-controls ></a-entity>
 </a-scene>

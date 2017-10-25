@@ -32,6 +32,31 @@ export default {
       type: 'boolean',
       defaultValue: true,
       optional: true
+    },
+    cabinetType: {
+      type: 'string',
+      defaultValue: 'flat',
+      optional: true
+    },
+    sinkType: {
+      type: 'string',
+      defaultValue: 'none',
+      optional: true
+    },
+    extractorType: {
+      type: 'string',
+      defaultValue: 'none',
+      optional: true
+    },
+    ovenType: {
+      type: 'string',
+      defaultValue: 'none',
+      optional: true
+    },
+    cooktopType: {
+      type: 'string',
+      defaultValue: 'none',
+      optional: true
     }
     // TODO: add all the default values
   },

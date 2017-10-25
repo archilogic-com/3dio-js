@@ -78,12 +78,30 @@ function getAttributes(element3d) {
   // camera-bookmarks and bakedModel are handled separately
   var type = element3d.type
   var validParams = getDefaultsByType(type).params
+  // support for old material definitions
+  // TODO: this should be cleaned up in the database
+  var elKeys = Object.keys(element3d)
+  elKeys.forEach(function(key) {
+    if (key.indexOf('Material') > -1) {
+      if (!element3d.materials) element3d.materials = {}
+      element3d.materials[key.replace('Material', '')] = element3d[key]
+      delete element3d[key]
+    }
+    else if (key === 'material' && type === 'floor') {
+      if (!element3d.materials) element3d.materials = {}
+      element3d.materials.top = element3d[key]
+    }
+  })
+
   var paramKeys = Object.keys(validParams)
   attributes['io3d-' + type] = ''
+
   paramKeys.forEach(function(param) {
-    if(element3d[param] && !validParams[param].skipInAframe) {
+    if (element3d[param] !== undefined && !validParams[param].skipInAframe) {
+      // materials have to be serialized
+      if (param === 'materials') attributes['io3d-' + type] += stringifyMaterials(element3d.materials)
       // polygons have to be serialized
-      if (param === 'polygon') attributes['io3d-' + type] += param + ': ' + element3d.polygon.map(function(p) { return p.join(',')}).join(',') + '; '
+      else if (param === 'polygon') attributes['io3d-' + type] += param + ': ' + element3d.polygon.map(function(p) { return p.join(',')}).join(',') + '; '
       else attributes['io3d-' + type] += param + ': ' + element3d[param] + '; '
     }
   })
@@ -315,6 +333,20 @@ function flattenSceneStructure(sceneStructure, parent) {
     })
   }
   return result
+}
+
+function stringifyMaterials (materials) {
+  var matStr = ''
+  var matKeys = Object.keys(materials)
+  matKeys.forEach(function (key) {
+    // currently only library materials are supported
+    if (typeof materials[key] === 'string') {
+      matStr += 'material_' + key + ':' + materials[key] + '; '
+    } else if (typeof materials[key] === 'object' && materials[key].mesh && materials[key].material) {
+      matStr += 'material_' + materials[key].mesh + ':' + materials[key].material + '; '
+    }
+  })
+  return matStr
 }
 
 function deg2rad(x) { return x * (Math.PI / 180) }

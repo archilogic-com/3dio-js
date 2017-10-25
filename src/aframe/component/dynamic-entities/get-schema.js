@@ -7,8 +7,8 @@ function getSchema (type) {
   var params = validProps.params
   var propKeys = Object.keys(params)
   propKeys.forEach(function (key) {
-    // skip location, children, and id params
-    if (params[key].skipInAframe) return
+    // skip location, children, material and id params
+    if (params[key].skipInAframe || key === 'materials') return
     // map defaults to aframe schema convention
     var paramType = params[key].aframeType || params[key].type
     schema[key] = {type: paramType}
