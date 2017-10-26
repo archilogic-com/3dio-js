@@ -7,8 +7,6 @@ function getModifier(modifier) {
     // API
     options = options || {}
 
-    // TODO modifySettings from options
-
     var modifyParams = {
       method: 'modify'.concat('.', modifier),
       params: {
