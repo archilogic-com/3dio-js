@@ -152,10 +152,10 @@ function translateIndexedBufferGeometry (data3d, threeObject3D, getMeshId, getMa
     var uvIn = threeGeometry.attributes.uv.array
     var uvOut = new Float32Array(l * 2)
     for (i = 0; i < l; i++) {
-      nOut[i * 2] = nIn[index[i] * 2]
-      nOut[i * 2 + 1] = nIn[index[i] * 2 + 1]
+      uvOut[i * 2] = uvIn[index[i] * 2]
+      uvOut[i * 2 + 1] = uvIn[index[i] * 2 + 1]
     }
-    data3dMesh.normals = nOut
+    data3dMesh.normals = uvOut
   }
 
   // material
