@@ -88,13 +88,10 @@ function getLoResCanvas (sourceCanvas) {
 function requestDdsConversion (sourceStorageId) {
   sourceStorageId = sourceStorageId.substring(1)
   return callServices('Processing.task.enqueue', {
-    method: 'convertImage',
+    method: 'convertImage.dds',
     params: {
       inputFileKey: sourceStorageId,
-      options: {
-        outputFormat: 'dds',
-        outputDirectory: pathUtil.parse(sourceStorageId).dir
-      }
+      outputDirectory: pathUtil.parse(sourceStorageId).dir
     }
   })
 }
