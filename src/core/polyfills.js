@@ -11,7 +11,7 @@ if (!console.time || !console.timeEnd) {
   console.time = function(key) {
     timers[key] = new Date().getTime()
   }
-  console.timeEnd = function(id) {
+  console.timeEnd = function(key) {
     if (!timers[key]) return
     console.log(key + ': ' + (new Date().getTime() - timers[key]) + 'ms')
     delete timers[key]
