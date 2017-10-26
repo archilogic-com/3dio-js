@@ -2,6 +2,7 @@ import traverseData3d from './traverse.js'
 import cloneData3d from './clone.js'
 import uuid from '../uuid.js'
 import shortId from '../short-id.js'
+import hexToRgb from '../color/hex-to-rgb.js'
 import generateUvs from './buffer/get-uvs.js'
 import generateNormals from './buffer/get-normals.js'
 
