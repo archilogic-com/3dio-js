@@ -107,26 +107,28 @@ function getAttributes(element3d) {
   })
   switch (element3d.type) {
     case 'interior':
-      attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1)
-      // apply custom material settings for furniture items
-      if (element3d.materials) {
-        var mats = element3d.materials
-        // materials can be saved as arrays
-        if (Array.isArray(mats)) {
-          var matObj = {}
-          mats.forEach(function (mat) {
-            if (mat.mesh && mat.material) matObj[mat.mesh] = mat.material
-          })
-          mats = matObj
+      if (element3d.src) {
+        attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1)
+        // apply custom material settings for furniture items
+        if (element3d.materials) {
+          var mats = element3d.materials
+          // materials can be saved as arrays
+          if (Array.isArray(mats)) {
+            var matObj = {}
+            mats.forEach(function (mat) {
+              if (mat.mesh && mat.material) matObj[mat.mesh] = mat.material
+            })
+            mats = matObj
+          }
+          // apply alternative material setting to io3d-furniture attribute
+          if (typeof mats === 'object') {
+            Object.keys(mats).forEach(function (mesh) {
+              if (mesh && mats[mesh]) attributes['io3d-furniture'] += '; material_' + mesh.replace(/\s/g, '_') + ':' + mats[mesh]
+            })
+          }
         }
-        // apply alternative material setting to io3d-furniture attribute
-        if (typeof mats === 'object') {
-          Object.keys(mats).forEach(function (mesh) {
-            if (mesh && mats[mesh]) attributes['io3d-furniture'] += '; material_' + mesh.replace(/\s/g, '_') + ':' + mats[mesh]
-          })
-        }
-      }
-      attributes['shadow'] = 'cast: true; receive: false'
+        attributes['shadow'] = 'cast: true; receive: false'
+      } else console.warn('unsupported interior type')
       break
     case 'object':
       attributes['io3d-data3d'] = 'key: ' + element3d.object

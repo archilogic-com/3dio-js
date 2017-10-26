@@ -2308,6 +2308,9 @@ export default {
       counterVertices[cvPos + 17] = eZ
 
     }
+    // get external meshes
+    /*
+     TODO: get external mesh loading to work
 
     // collect meshes that need to be loaded
     var meshesToGet = {}
@@ -2315,9 +2318,6 @@ export default {
     if (a.fridge) meshesToGet.fridge = meshes.fridge
     if (a.cooktopType === 'gas60' || a.cooktopType === 'gas90') meshesToGet.cooktop = meshes[a.cooktopType]
 
-    // get external meshes
-    /*
-    TODO: get external mesh loading to work
     return loadData3d(meshesToGet)
       .then(function(result) {
         console.log(result)
