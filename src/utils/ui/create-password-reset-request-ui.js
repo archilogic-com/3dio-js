@@ -49,7 +49,7 @@ export default function createResetPasswordUi (credentials, options) {
     if (email) emailEl.val(email)
     emailEl.focus()
     function onEmailElKeyDown (e) {
-      if (e.which === 13) passwordEl.focus()
+      if (e.which === 13) onConfirm()
     }
     emailEl.addEventListener('keydown', onEmailElKeyDown)
     emailEl.addEventListener('input', updateGoButton)
@@ -134,6 +134,7 @@ export default function createResetPasswordUi (credentials, options) {
     updateGoButton()
 
     function onConfirm () {
+      //FIXME: check email field not empty
       // show loading screen
       emailTabEl.hide()
       loadingTabEl.show()
