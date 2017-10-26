@@ -259,8 +259,15 @@ function consolidateMaterials(_materials){
         }
       } else {
         // is global id: get attributes from registry
-        promiseKeys[ promiseKeys.length ] = materialKey
-        promises[ promises.length ] = api.call('Material.get', materials[ materialKey ])
+        // FIXME: decide how to deal with legacy matrials defined as global material IDs
+        // (see issue https://github.com/archilogic-com/3dio-js/issues/94)
+        //promiseKeys[ promiseKeys.length ] = materialKey
+        //promises[ promises.length ] = api.call('Material.get', materials[ materialKey ])
+        console.warn('Global material IDs are not being supported yet: https://github.com/archilogic-com/3dio-js/issues/94')
+        // replace global material ID with placeholder material
+        materials[ materialKey ] = {
+          colorDiffuse: [0.9, 0.9, 0.9]
+        }
       }
     }
 
