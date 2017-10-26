@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.5
- * @date 2017/10/26 01:34
+ * @date 2017/10/26 02:13
  * @branch dynamic-entities
- * @commit 7d51f1e73606e50dd6eae084d54684a83eed8d0a
+ * @commit 3f1da63f2ec2433ce15b060cfa18c26f38fe7246
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/10/26 01:34', GIT_BRANCH = 'dynamic-entities', GIT_COMMIT = '7d51f1e73606e50dd6eae084d54684a83eed8d0a'
+	var BUILD_DATE='2017/10/26 02:13', GIT_BRANCH = 'dynamic-entities', GIT_COMMIT = '3f1da63f2ec2433ce15b060cfa18c26f38fe7246'
 
 	var name = "3dio";
 	var version = "1.0.5";
@@ -27474,16 +27474,16 @@
 	      counterVertices[cvPos + 17] = eZ;
 
 	    }
-
-	    // collect meshes that need to be loaded
-	    var meshesToGet = {};
-	    if (a.sinkType !== 'none') meshesToGet.sink = a.sinkType === 'single' ? meshes.singleSink : meshes.doubleSink;
-	    if (a.fridge) meshesToGet.fridge = meshes.fridge;
-	    if (a.cooktopType === 'gas60' || a.cooktopType === 'gas90') meshesToGet.cooktop = meshes[a.cooktopType];
-
 	    // get external meshes
 	    /*
-	    TODO: get external mesh loading to work
+	     TODO: get external mesh loading to work
+
+	    // collect meshes that need to be loaded
+	    var meshesToGet = {}
+	    if (a.sinkType !== 'none') meshesToGet.sink = a.sinkType === 'single' ? meshes.singleSink : meshes.doubleSink
+	    if (a.fridge) meshesToGet.fridge = meshes.fridge
+	    if (a.cooktopType === 'gas60' || a.cooktopType === 'gas90') meshesToGet.cooktop = meshes[a.cooktopType]
+
 	    return loadData3d(meshesToGet)
 	      .then(function(result) {
 	        console.log(result)
@@ -34703,26 +34703,28 @@
 	  });
 	  switch (element3d.type) {
 	    case 'interior':
-	      attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1);
-	      // apply custom material settings for furniture items
-	      if (element3d.materials) {
-	        var mats = element3d.materials;
-	        // materials can be saved as arrays
-	        if (Array.isArray(mats)) {
-	          var matObj = {};
-	          mats.forEach(function (mat) {
-	            if (mat.mesh && mat.material) matObj[mat.mesh] = mat.material;
-	          });
-	          mats = matObj;
+	      if (element3d.src) {
+	        attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1);
+	        // apply custom material settings for furniture items
+	        if (element3d.materials) {
+	          var mats = element3d.materials;
+	          // materials can be saved as arrays
+	          if (Array.isArray(mats)) {
+	            var matObj = {};
+	            mats.forEach(function (mat) {
+	              if (mat.mesh && mat.material) matObj[mat.mesh] = mat.material;
+	            });
+	            mats = matObj;
+	          }
+	          // apply alternative material setting to io3d-furniture attribute
+	          if (typeof mats === 'object') {
+	            Object.keys(mats).forEach(function (mesh) {
+	              if (mesh && mats[mesh]) attributes['io3d-furniture'] += '; material_' + mesh.replace(/\s/g, '_') + ':' + mats[mesh];
+	            });
+	          }
 	        }
-	        // apply alternative material setting to io3d-furniture attribute
-	        if (typeof mats === 'object') {
-	          Object.keys(mats).forEach(function (mesh) {
-	            if (mesh && mats[mesh]) attributes['io3d-furniture'] += '; material_' + mesh.replace(/\s/g, '_') + ':' + mats[mesh];
-	          });
-	        }
-	      }
-	      attributes['shadow'] = 'cast: true; receive: false';
+	        attributes['shadow'] = 'cast: true; receive: false';
+	      } else console.warn('unsupported interior type');
 	      break
 	    case 'object':
 	      attributes['io3d-data3d'] = 'key: ' + element3d.object;
