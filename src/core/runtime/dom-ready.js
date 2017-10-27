@@ -3,10 +3,6 @@
  * Available via the MIT or new BSD license.
  * see: http://github.com/requirejs/domReady for details
  */
-/*jslint */
-/*global require: false, define: false, requirejs: false,
- window: false, clearInterval: false, document: false,
- self: false, setInterval: false */
 
 var isTop, testDiv, scrollIntervalId,
   isBrowser = typeof window !== "undefined" && window.document,
