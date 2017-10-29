@@ -22,6 +22,7 @@ function getModifier(modifier) {
 // expose api
 
 export default {
-  origami: getModifier('origami'),
-  consolidateFaceSides: getModifier('consolidateFaceSides')
+  collisionObject: getModifier('collisionObject'),
+  consolidateFaceSides: getModifier('consolidateFaceSides'),
+  origami: getModifier('origami')
 }

@@ -1,8 +1,9 @@
 import modifyModel from './modify/modify-model.js'
 
 var modify = {
-  origami: modifyModel.origami,
-  consolidateFaceSides: modifyModel.consolidateFaceSides
+  collisionObject: modifyModel.collisionObject,
+  consolidateFaceSides: modifyModel.consolidateFaceSides,
+  origami: modifyModel.origami
 }
 
 export default modify
