@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.5
- * @date 2017/10/26 02:13
+ * @date 2017/10/30 13:31
  * @branch dynamic-entities
- * @commit 3f1da63f2ec2433ce15b060cfa18c26f38fe7246
+ * @commit ffd0bdfe228a1bd131e472cb19cb3717178f55d4
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/10/26 02:13', GIT_BRANCH = 'dynamic-entities', GIT_COMMIT = '3f1da63f2ec2433ce15b060cfa18c26f38fe7246'
+	var BUILD_DATE='2017/10/30 13:31', GIT_BRANCH = 'dynamic-entities', GIT_COMMIT = 'ffd0bdfe228a1bd131e472cb19cb3717178f55d4'
 
 	var name = "3dio";
 	var version = "1.0.5";
@@ -821,44 +821,6 @@
 
 	});
 
-	/* tslint:disable:no-empty */
-	function noop() { }
-	var noop_2 = noop;
-
-
-	var noop_1 = {
-		noop: noop_2
-	};
-
-	/* tslint:enable:max-line-length */
-	function pipe() {
-	    var fns = [];
-	    for (var _i = 0; _i < arguments.length; _i++) {
-	        fns[_i - 0] = arguments[_i];
-	    }
-	    return pipeFromArray(fns);
-	}
-	var pipe_2 = pipe;
-	/* @internal */
-	function pipeFromArray(fns) {
-	    if (!fns) {
-	        return noop_1.noop;
-	    }
-	    if (fns.length === 1) {
-	        return fns[0];
-	    }
-	    return function piped(input) {
-	        return fns.reduce(function (prev, fn) { return fn(prev); }, input);
-	    };
-	}
-	var pipeFromArray_1 = pipeFromArray;
-
-
-	var pipe_1 = {
-		pipe: pipe_2,
-		pipeFromArray: pipeFromArray_1
-	};
-
 	/**
 	 * A representation of any set of values over any amount of time. This is the most basic building block
 	 * of RxJS.
@@ -1093,54 +1055,6 @@
 	     */
 	    Observable.prototype[observable.observable] = function () {
 	        return this;
-	    };
-	    /* tslint:enable:max-line-length */
-	    /**
-	     * Used to stitch together functional operators into a chain.
-	     * @method pipe
-	     * @return {Observable} the Observable result of all of the operators having
-	     * been called in the order they were passed in.
-	     *
-	     * @example
-	     *
-	     * import { map, filter, scan } from 'rxjs/operators';
-	     *
-	     * Rx.Observable.interval(1000)
-	     *   .pipe(
-	     *     filter(x => x % 2 === 0),
-	     *     map(x => x + x),
-	     *     scan((acc, x) => acc + x)
-	     *   )
-	     *   .subscribe(x => console.log(x))
-	     */
-	    Observable.prototype.pipe = function () {
-	        var operations = [];
-	        for (var _i = 0; _i < arguments.length; _i++) {
-	            operations[_i - 0] = arguments[_i];
-	        }
-	        if (operations.length === 0) {
-	            return this;
-	        }
-	        return pipe_1.pipeFromArray(operations)(this);
-	    };
-	    /* tslint:enable:max-line-length */
-	    Observable.prototype.toPromise = function (PromiseCtor) {
-	        var _this = this;
-	        if (!PromiseCtor) {
-	            if (root.root.Rx && root.root.Rx.config && root.root.Rx.config.Promise) {
-	                PromiseCtor = root.root.Rx.config.Promise;
-	            }
-	            else if (root.root.Promise) {
-	                PromiseCtor = root.root.Promise;
-	            }
-	        }
-	        if (!PromiseCtor) {
-	            throw new Error('no Promise impl found');
-	        }
-	        return new PromiseCtor(function (resolve, reject) {
-	            var value;
-	            _this.subscribe(function (x) { return value = x; }, function (err) { return reject(err); }, function () { return resolve(value); });
-	        });
 	    };
 	    // HACK: Since TypeScript inherits static properties too, we have to
 	    // fight against TypeScript here so Subject can have a different static create signature
@@ -30590,20 +30504,24 @@
 	    rowRatios: { // in meters
 	      //type: 'array-with-numbers',
 	      type: 'array',
+	      skipInAframe: true,
 	      optional: true
 	    },
 	    columnRatios: { // in meters
 	      //type: 'array-with-arrays-with-numbers',
 	      type: 'array',
+	      skipInAframe: true,
 	      optional: true
 	    },
 	    frameLength: { // in meters
 	      type: 'number',
+	      defaultValue: 0.04,
 	      optional: true,
 	      min: 0.01
 	    },
 	    frameWidth: { // in meters
 	      type: 'number',
+	      defaultValue: 0.06,
 	      optional: true,
 	      min: 0.01
 	    },
