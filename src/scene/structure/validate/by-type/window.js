@@ -14,20 +14,24 @@ export default {
     rowRatios: { // in meters
       //type: 'array-with-numbers',
       type: 'array',
+      skipInAframe: true,
       optional: true
     },
     columnRatios: { // in meters
       //type: 'array-with-arrays-with-numbers',
       type: 'array',
+      skipInAframe: true,
       optional: true
     },
     frameLength: { // in meters
       type: 'number',
+      defaultValue: 0.04,
       optional: true,
       min: 0.01
     },
     frameWidth: { // in meters
       type: 'number',
+      defaultValue: 0.06,
       optional: true,
       min: 0.01
     },
