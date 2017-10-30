@@ -23,7 +23,8 @@ export default {
         'wall',
         'window',
       ],
-      optional: false
+      optional: false,
+      skipInAframe: true
     },
     x: { // x position in meters
       type: 'number',

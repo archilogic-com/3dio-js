@@ -8,13 +8,33 @@ function getElementComponent(type) {
   return {
     schema: getSchema(type),
 
-    init: function () {},
-
-    update: function () {
+    init: function () {
       var this_ = this
-      var data = this.data
+
+      // listen for changes in child nodes ( windows, doors )
+      var children = this.el.childNodes
+      children.forEach(function(c) {
+        console.log(c)
+        c.addEventListener('componentchanged', function() {
+          console.log('child updated')
+          this_.updateElement()
+        })
+      })
+
+      this.updateElement()
+    },
+
+    update: function (oldData) {
+      if (!oldData || Object.keys(oldData).length === 0) return
+      console.log('update')
+
+      this.updateElement()
+    },
+
+    updateElement: function() {
+      var this_ = this
+      var data = this_.data
       var initEl3d = getType.init
-      var a, el3d, meshes, materials, data3d
 
       // get default values
       var elType = getType.get(type)
@@ -23,10 +43,18 @@ function getElementComponent(type) {
         return
       }
 
-      // set defaults
-      a = cloneDeep(elType.params)
+      initEl3d.prototype.meshes3d = elType.meshes3d
+      initEl3d.prototype.materials3d = elType.materials3d
+
+      // get new instance
+      this.el3d = new initEl3d()
+
+      // remove old mesh
+      this.remove()
+
+      // get defaults and
       // apply entity values
-      a = mapAttributes(a, data)
+      var a = mapAttributes(cloneDeep(elType.params), data)
 
       // check for adapted materials
       var materialKeys = Object.keys(data).filter(function(key) {
@@ -37,40 +65,31 @@ function getElementComponent(type) {
         var mesh = key.replace('material_', '')
         a.materials[mesh] = data[key]
       })
+
       // get children for walls
       if (type === 'wall') {
         var children = this_.el.children
-        var _children = []
-        if (children && children.length > 0) {
-          for (var i = 0; i < children.length; i++) {
-            var c = children[i].getAttribute('io3d-window') || children[i].getAttribute('io3d-door')
-            if (c) {
-              if (children[i].getAttribute('io3d-window')) c.type = 'window'
-              else if (children[i].getAttribute('io3d-door')) c.type = 'door'
-              var pos = children[i].getAttribute('position')
-              Object.keys(pos).forEach(p => {
-                c[p] = pos[p]
-              })
-              _children.push(c)
-            } else console.log('invalid child')
-          }
-
-          // apply defaults and map attributes
-          _children = _children.map(c => mapAttributes(cloneDeep(getType.get(c.type).params), c))
-          // console.log('children', _children)
-          a.children = _children
-        } else a.children = []
+        a.children = []
+        for (var i = 0; i < children.length; i++) {
+          var c = children[i].getAttribute('io3d-window') || children[i].getAttribute('io3d-door')
+          if (c) {
+            if (children[i].getAttribute('io3d-window')) c.type = 'window'
+            else if (children[i].getAttribute('io3d-door')) c.type = 'door'
+            var pos = children[i].getAttribute('position')
+            Object.keys(pos).forEach(p => {
+              c[p] = pos[p]
+            })
+            a.children.push(c)
+          } else console.log('invalid child')
+        }
+        a.children = a.children.map(c => mapAttributes(cloneDeep(getType.get(c.type).params), c))
       }
-
-      initEl3d.prototype.meshes3d = elType.meshes3d
-      initEl3d.prototype.materials3d = elType.materials3d
-
-      // get new instance
-      el3d = new initEl3d(a)
+      // set attributes
+      this.el3d.a = a
 
       // get meshes and materials from el3d modules
-      meshes = el3d.meshes3d()
-      materials = el3d.materials3d()
+      var meshes = this.el3d.meshes3d()
+      var materials = this.el3d.materials3d()
 
       // clean up empty meshes to prevent errors
       var meshKeys = Object.keys(meshes)
@@ -87,13 +106,10 @@ function getElementComponent(type) {
       })
 
       // construct data3d object
-      data3d = {
+      var data3d = {
         meshes: meshes,
         materials: materials
       }
-
-      // remove old mesh
-      this_.remove()
 
       // create new one
       this_.mesh = new THREE.Object3D()
@@ -103,7 +119,7 @@ function getElementComponent(type) {
       this_.data3dView.set(data3d)
       this_.el.setObject3D('mesh', this_.mesh)
       // emit event
-      this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
+      this_.el.emit('mesh-updated');
     },
 
     remove: function () {
@@ -155,10 +171,9 @@ function mapAttributes(a, args) {
 }
 
 function parsePolygon(p) {
-  var _p = p.split(',')
   var polygon = []
-  for (var i = 0; i < _p.length - 1; i+=2 ) {
-    polygon.push([_p[i],_p[i+1]])
+  for (var i = 0; i < p.length - 1; i+=2 ) {
+    polygon.push([p[i],p[i+1]])
   }
   // polygons might have duplicate points ( start, end )
   // better to remove that to prevent errors

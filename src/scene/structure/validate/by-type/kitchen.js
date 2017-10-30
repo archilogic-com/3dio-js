@@ -19,12 +19,12 @@ export default {
       min: 0.01
     },
     highCabinetLeft: {
-      type: 'number',
+      type: 'int',
       defaultValue: 2,
       optional: true
     },
     highCabinetRight: {
-      type: 'number',
+      type: 'int',
       defaultValue: 0,
       optional: true
     },
@@ -36,27 +36,32 @@ export default {
     cabinetType: {
       type: 'string',
       defaultValue: 'flat',
-      optional: true
+      optional: true,
+      possibleValues: ['flat', 'style1', 'style2']
     },
     sinkType: {
       type: 'string',
       defaultValue: 'none',
-      optional: true
+      optional: true,
+      possibleValues: ['single', 'double', 'none']
     },
     extractorType: {
       type: 'string',
       defaultValue: 'none',
-      optional: true
+      optional: true,
+      possibleValues: ['box', 'pyramid', 'integrated', 'none']
     },
     ovenType: {
       type: 'string',
       defaultValue: 'none',
-      optional: true
+      optional: true,
+      possibleValues: ['single', 'double', 'none']
     },
     cooktopType: {
       type: 'string',
       defaultValue: 'none',
-      optional: true
+      optional: true,
+      possibleValues: ['electro60', 'electro90', 'none']
     }
     // TODO: add all the default values
   },
