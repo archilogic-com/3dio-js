@@ -10,7 +10,7 @@ export default {
       //type: 'array-with-arrays-with-numbers',
       type: 'array',
       // aframeType: 'string',
-      defaultValue: '1.5,1.5,1.5,-1.5,-1.5,-1.5,-1.5,1.5',
+      defaultValue: [ 1.5,1.5,1.5,-1.5,-1.5,-1.5,-1.5,1.5 ],
       optional: false
     },
     hasCeiling: { // in meters
