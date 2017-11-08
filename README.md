@@ -68,9 +68,17 @@ https://3d.io/#use-cases
 
 Install local dev environment:
 
-1. Clone repository: `git clone https://github.com/archilogic-com/3dio-js.git ; cd ./3dio-js`
-2. Install global packages: `npm install rollup -g ; npm install lite-server -g`
-3. Install local packages: `npm install`
-4. Run local dev server: `npm start`
+1. Clone repository: 
 
-[Contributing guidelines](CONTRIBUTING.md)
+    `git clone https://github.com/archilogic-com/3dio-js.git ; cd ./3dio-js`
+2. Install global packages: 
+
+    `npm install rollup -g ; npm install lite-server -g`
+3. Install local packages: 
+
+    `npm install`
+4. Run local dev server: 
+
+    `npm start`
+
+Please follow our [Contribution guidelines](CONTRIBUTING.md)

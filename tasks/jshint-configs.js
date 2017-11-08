@@ -1,5 +1,8 @@
-// https://github.com/jshint/jshint/blob/master/src/messages.js
+// current configs guide lines:
 // https://github.com/archilogic-com/3dio-js/issues/64
+// docs:
+// https://github.com/jshint/jshint/blob/master/src/messages.js
+// https://gist.github.com/haschek/2595796
 
 module.exports = {
   esversion: 6,
@@ -33,6 +36,7 @@ module.exports = {
   devel: true,
   validthis: true,
   globals: {
+    'escape': true,
     'THREE': true,
     'AFRAME': true,
     'io3d': true,

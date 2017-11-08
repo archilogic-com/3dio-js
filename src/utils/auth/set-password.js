@@ -25,7 +25,7 @@ export default function setPassword (args) {
     return callServices('User.changePassword', {
       token: credentials.token,
       oldPassword: null,
-      newPassword: password
+      newPassword: credentials.password
     })
 
   }).then(function onSuccess(result) {

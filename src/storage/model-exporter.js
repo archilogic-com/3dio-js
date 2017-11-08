@@ -1,4 +1,4 @@
-import getConvertableTextureIds from '../utils/processing/get-convertable-texture-ids.js'
+import getConvertibleTextureIds from '../utils/processing/get-convertible-texture-ids.js'
 import callServices from '../utils/services/call.js'
 
 function getExporter(format) {
@@ -6,27 +6,57 @@ function getExporter(format) {
 
     // API
     options = options || {}
-    var filename = options.filename !== undefined ? options.filename : null
 
-    return getConvertableTextureIds(storageId).then(function(textureIds) {
+    return getConvertibleTextureIds(storageId).then(function(textureIds) {
 
-      var params = {
-        method: 'convert',
+      var convertParams = {
+        method: 'convert'.concat('.', format),
         params: {
           inputFileKey: storageId,
-          options: {
-            inputAssetKeys: textureIds,
-            outputFormat: format,
-            outputFilename: filename
-          }
+          inputAssetKeys: textureIds
         }
       }
 
-      return callServices('Processing.task.enqueue', params)
+      // Optional convert parameters for API call
+      if (options.filename) {
+        convertParams.params.settings = JSON.stringify( { outputFileName: options.filename } )
+      }
+
+      return callServices('Processing.task.enqueue', convertParams)
 
     })
   }
 }
+
+function exportDxf(storageId, options) {
+    // API
+    options = options || {}
+
+    var dxfParams = {
+      method: 'convert.dxf',
+      params: {
+        inputFileKey: storageId
+      }
+    }
+
+    // Optional convert parameters for API call
+    if (options.filename || options.projection) {
+      var dxfSettings = {}
+        if (options.filename) {
+         dxfSettings.outputFileName = options.filename
+        }
+        if (options.projection) {
+          dxfSettings.projection = options.projection
+        }
+
+      dxfParams.params.settings = JSON.stringify(dxfSettings)
+
+    }
+
+
+    return callServices('Processing.task.enqueue', dxfParams)
+}
+
 
 // expose API
 
@@ -35,5 +65,6 @@ export default {
   exportBlend: getExporter('blend'),
   exportDae: getExporter('dae'),
   exportFbx: getExporter('fbx'),
-  exportObj: getExporter('obj')
+  exportObj: getExporter('obj'),
+  exportDxf
 }

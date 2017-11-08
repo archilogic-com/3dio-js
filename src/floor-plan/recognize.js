@@ -27,7 +27,6 @@ export default function recognize (args) {
   }
 
   var args = {
-    colorCoded: false,
     floorPlanUrl: url,
     pixelsPerMeter: pixelsPerMeter,
     colorCoded: true

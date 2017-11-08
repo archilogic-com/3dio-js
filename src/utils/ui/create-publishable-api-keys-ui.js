@@ -148,7 +148,7 @@ export default function createPublishableApiKeysUi (a, b) {
             createPromptUi({
               width: 550,
               title: 'Generate Publishable Api Key',
-              message: 'Please specify allowed domains separated by empty space.<br>Example: "localhost *.3d.io mypage.com"',
+              message: 'Please specify allowed domains separated by empty space.<br>Example: localhost *.3d.io mypage.com',
               bottom: el('<a>', {
                 html: 'Read more about allowed domains',
                 href: 'https://3d.io/docs/api/1/authentication.html',

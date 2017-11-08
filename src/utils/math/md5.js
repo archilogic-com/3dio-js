@@ -4,6 +4,11 @@
  http://stackoverflow.com/questions/1655769/fastest-md5-implementation-in-javascript
  **/
 
+// special case: allow function declaration inside if block (line 185)
+// see https://github.com/jamesallardice/jslint-error-explanations/blob/master/message-articles/function-in-block.md
+/* jshint -W082 */
+
+
 function md5cycle(x, k) {
   var a = x[0], b = x[1], c = x[2], d = x[3];
 
