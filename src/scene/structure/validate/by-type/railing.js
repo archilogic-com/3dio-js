@@ -16,5 +16,8 @@ export default {
       min: 0.01
     },
   },
-  possibleChildrenTypes: []
+  possibleChildrenTypes: [],
+  aframeComponent: {
+    name: 'io3d-railing'
+  }
 }

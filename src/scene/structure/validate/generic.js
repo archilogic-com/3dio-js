@@ -29,26 +29,27 @@ export default {
     x: { // x position in meters
       type: 'number',
       defaultValue: 0,
-      optional: true,
+      optional: false,
       skipInAframe: true
     },
     y: { // y position in meters
       type: 'number',
       defaultValue: 0,
-      optional: true,
+      optional: false,
       skipInAframe: true
     },
     z: { // z position in meters
       type: 'number',
       defaultValue: 0,
-      optional: true,
+      optional: false,
       skipInAframe: true
     },
     ry: { // y rotation in angle degrees
       type: 'number',
       defaultValue: 0,
-      optional: true,
-      skipInAframe: true
+      optional: false,
+      skipInAframe: true,
+      description: 'rotation around y axis'
     },
     children: {
       //type: 'array-with-objects',
@@ -60,7 +61,8 @@ export default {
     id: {
       type: 'string',
       optional: true,
-      skipInAframe: true
+      skipInAframe: true,
+      description: 'unique identifier'
     },
     materials: {
       type: 'object',

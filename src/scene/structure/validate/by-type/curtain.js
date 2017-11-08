@@ -1,28 +1,32 @@
 export default {
   params: {
+    l: { // length in meters
+      type: 'number',
+      defaultValue: 1.8,
+      optional: false,
+      min: 0.01,
+      description: 'length'
+    },
     w: { // width in meters
       type: 'number',
       defaultValue: 0.2,
       optional: false,
-      min: 0.01 // 1cm
+      min: 0.01,
+      description: 'thickness'
     },
     h: { // height in meters
       type: 'number',
       defaultValue: 2.4,
       optional: false,
-      min: 0.01 // 1cm
-    },
-    l: { // length in meters
-      type: 'number',
-      defaultValue: 1.8,
-      optional: false,
-      min: 0.01
+      min: 0.01,
+      description: 'height'
     },
     folds: {
       type: 'number',
       defaultValue: 14,
       optional: true,
-      min: 0.01
+      min: 0.01,
+      description: 'number of folds'
     }
   },
   possibleChildrenTypes: []

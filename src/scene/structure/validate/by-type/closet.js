@@ -1,53 +1,64 @@
 export default {
   params: {
+    l: { // length in meters
+      type: 'number',
+      defaultValue: 1.8,
+      optional: false,
+      min: 0.01,
+      description: 'length'
+    },
     w: { // width in meters
       type: 'number',
       defaultValue: 0.6,
       optional: false,
-      min: 0.01 // 1cm
+      min: 0.01,
+      description: 'width'
     },
     h: { // height in meters
       type: 'number',
       defaultValue: 2.4,
       optional: false,
-      min: 0.01 // 1cm
-    },
-    l: { // length in meters
-      type: 'number',
-      defaultValue: 1.8,
-      optional: false,
-      min: 0.01
+      min: 0.01,
+      description: 'height'
     },
     baseboard: {
       type: 'number',
       defaultValue: 0.1,
       optional: true,
-      min: 0.01
+      min: 0.01,
+      description: 'height of baseboard'
     },
     doorWidth: {
       type: 'number',
       defaultValue: 0.02,
       optional: true,
-      min: 0.01
+      min: 0.01,
+      description: 'thickness of closet door'
     },
     handleLength: {
       type: 'number',
       defaultValue: 0.02,
       optional: true,
-      min: 0.01
+      min: 0.01,
+      description: 'length of closet door handle'
     },
     handleWidth: {
       type: 'number',
       defaultValue: 0.02,
       optional: true,
-      min: 0.01
+      min: 0.01,
+      description: 'thickness of closet door handle'
     },
     handleHeight: {
       type: 'number',
       defaultValue: 0.3,
       optional: true,
-      min: 0.01
+      min: 0.01,
+      description: 'height of closet door handle'
     }
   },
-  possibleChildrenTypes: []
+  possibleChildrenTypes: [],
+  aframeComponent: {
+    name: 'io3d-closet'
+  }
 }

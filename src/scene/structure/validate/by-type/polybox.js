@@ -13,5 +13,8 @@ export default  {
       optional: false
     }
   },
-  possibleChildrenTypes: []
+  possibleChildrenTypes: [],
+  aframeComponent: {
+    name: 'io3d-polybox'
+  }
 }

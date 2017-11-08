@@ -1,5 +1,8 @@
 export default {
   params: {
+    y: {
+      defaultValue: 0.8,
+    },
     h: { // height in meters
       type: 'number',
       defaultValue: 1.5,
@@ -8,6 +11,7 @@ export default {
     },
     l: { // length in meters
       type: 'number',
+      defaultValue: 1.6,
       optional: false,
       min: 0.01
     },
@@ -34,10 +38,10 @@ export default {
       defaultValue: 0.06,
       optional: true,
       min: 0.01
-    },
-    y: {
-      defaultValue: 0.9,
     }
   },
-  possibleChildrenTypes: []
+  possibleChildrenTypes: [],
+  aframeComponent: {
+    name: 'io3d-window'
+  }
 }
