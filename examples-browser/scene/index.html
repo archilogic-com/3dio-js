@@ -78,10 +78,19 @@
             sceneEl.removeAttribute('io3d-lighting')
             sceneEl.setAttribute('io3d-lighting', true)
             updateWaypoints ()
+            addMinimap(id)
           })
           .catch(error => {
             console.log(error)
           })
+      }
+
+      function addMinimap(id) {
+        let minimapEl = document.querySelector('[io3d-minimap]')
+        if (minimapEl) minimapEl.parentNode.removeChild(minimapEl)
+        minimapEl = document.createElement('a-entity')
+        minimapEl.setAttribute('io3d-minimap', {sceneId:id, width:250, position: 'right'})
+        sceneEl.appendChild(minimapEl)
       }
 
       function moveToFirstWaypoint() {

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- boilerplate libs -->
+  <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+  <!-- 3dio lib -->
+  <script src="../../build/3dio.js"></script>
+</head>
+<body>
+
+<!-- 3D -->
+<a-scene>
+  <a-entity io3d-data3d="key:/3f995099-d624-4c8e-ab6b-1fd5e3799173/170420-1105-7yb890/8db476b3-7eb7-45a7-a09b-03e965f12685.gz.data3d.buffer" position="0 0 0"></a-entity>
+  <a-entity position="-21 0 -7.6" look-controls wasd-controls camera="userHeight:1.6"></a-entity>
+</a-scene>
+
+<!-- 2D -->
+<div style="z-index: 2; position: absolute; top: 5px; left: 5px; padding: 0.3em; background: white;">
+  <button id="save">Save for offline use</button>
+  <button id="delete" hidden>Delete saved data</button>
+  <span></span>
+</div>
+
+<script>
+  // Any URL to a data3d file will work
+  var DATA3D_URL = 'https://storage.3d.io/3f995099-d624-4c8e-ab6b-1fd5e3799173/170420-1105-7yb890/8db476b3-7eb7-45a7-a09b-03e965f12685.gz.data3d.buffer'
+  // You can pick an arbitrary name for the cache, but it has to match the name used in sw.js
+  var CACHE_NAME = 'offline-data'
+
+  // UI elements
+
+  var statusText = document.querySelector('span')
+  var saveButton = document.querySelector('button#save')
+  var deleteButton = document.querySelector('button#delete')
+
+  // Event handlers
+
+  saveButton.addEventListener('click', function () {
+    statusText.textContent = 'Saving ...'
+    io3d.utils.data3d.storeInCache(DATA3D_URL, CACHE_NAME)
+    .then(function onSaved() {
+      saveButton.setAttribute('hidden', '')
+      deleteButton.removeAttribute('hidden')
+      statusText.textContent = 'Model saved successfully'
+    }, function onFailed() {
+      statusText.textContent = 'Saving not available :('
+    })
+  })
+
+  deleteButton.addEventListener('click', function () {
+    statusText.textContent = 'Deleting...'
+    io3d.utils.data3d.removeFromCache(DATA3D_URL, CACHE_NAME)
+    .then(function onRemoved() {
+      saveButton.removeAttribute('hidden')
+      deleteButton.setAttribute('hidden', '')
+      statusText.textContent = 'Local copy deleted successfully'
+    }, function onFailed() {
+      statusText.textContent = 'Stored data not available :('
+    })
+  })
+
+  // Setting up the service worker
+  if (navigator.serviceWorker) {
+    navigator.serviceWorker.register('sw.js')
+    // check cache & update UI
+    checkIfCacheContains(DATA3D_URL).then(function resultFromCache(result) {
+      // the file was in the cache
+      if (result) {
+        saveButton.setAttribute('hidden', '')
+        deleteButton.removeAttribute('hidden')
+      }
+    })
+  } else {
+    saveButton.setAttribute('hidden')
+    statusText.textContent = 'Your browser does not support Service Workers :('
+  }
+
+  // Helpers
+
+  function checkIfCacheContains (url) {
+    // checking if the cache already contains our files
+    if (typeof caches === undefined) {
+      return Promise.reject()
+    }
+
+    return caches.open(CACHE_NAME)
+      .then(function onCacheReady (cache) {
+        return cache.match(url)
+      })
+  }
+</script>
+</body>
+</html>
+

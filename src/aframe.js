@@ -6,6 +6,7 @@ import furnitureComponent from './aframe/component/furniture.js'
 import tourComponent from './aframe/component/tour.js'
 import gBlockComponent from './aframe/component/gblock.js'
 import lightingComponent from './aframe/component/lighting.js'
+import minimapComponent from './aframe/component/minimap.js'
 // dynamic entities
 import getElementComponent from './aframe/component/dynamic-entities/element3d.js'
 // other
@@ -37,6 +38,7 @@ checkDependencies({
   AFRAME.registerComponent('io3d-furniture', furnitureComponent)
   AFRAME.registerComponent('tour', tourComponent)
   AFRAME.registerComponent('io3d-lighting', lightingComponent)
+  AFRAME.registerComponent('io3d-minimap', minimapComponent)
   // dynamic entities
   AFRAME.registerComponent('io3d-closet', closetComponent)
   AFRAME.registerComponent('io3d-door', doorComponent)
