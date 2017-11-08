@@ -1,6 +1,6 @@
 export default  {
   params: {},
-  possibleChildrenTypes: [
+  childrenTypes: [
     'box',
     'closet',
     'curtain',
@@ -16,5 +16,6 @@ export default  {
     'stairs',
     'tag',
     'wall'
-  ]
+  ],
+  parentTypes: ['plan']
 }

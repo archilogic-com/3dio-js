@@ -50,15 +50,16 @@ export default function getDefaultsByType (type) {
   if (type && types[type]) {
     return {
       params: defaults({}, generic.params, types[type].params),
-      possibleChildrenTypes: types[type].possibleChildrenTypes
+      childrenTypes: types[type].childrenTypes
     }
   } else {
     var typeSpecificValidations = {}
 
     Object.keys(types).forEach(function (key) {
+      generic.type = key
       typeSpecificValidations[key] = {
         params: defaults({}, generic.params, types[key].params),
-        possibleChildrenTypes: types[key].possibleChildrenTypes
+        childrenTypes: types[key].childrenTypes
       }
     })
     return typeSpecificValidations

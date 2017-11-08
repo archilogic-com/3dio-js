@@ -62,7 +62,7 @@ export default {
       type: 'string',
       optional: true,
       skipInAframe: true,
-      description: 'unique identifier'
+      description: 'unique identifier: UUID v4'
     },
     materials: {
       type: 'object',

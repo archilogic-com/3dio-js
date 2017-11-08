@@ -34,7 +34,8 @@ export default  {
       description: 'ceiling height'
     }
   },
-  possibleChildrenTypes: [],
+  childrenTypes: [],
+  parentTypes: ['level'],
   aframeComponent: {
     name: 'io3d-floor'
   }

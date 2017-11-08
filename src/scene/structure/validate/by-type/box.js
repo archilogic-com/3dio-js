@@ -22,7 +22,8 @@ export default {
       description: 'height'
     }
   },
-  possibleChildrenTypes: [],
+  childrenTypes: [],
+  parentTypes: ['level'],
   aframeComponent: {
     name: 'io3d-box'
   }

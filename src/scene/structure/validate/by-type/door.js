@@ -90,7 +90,8 @@ export default {
       optional: true
     }
   },
-  possibleChildrenTypes: [],
+  childrenTypes: [],
+  parentTypes: ['wall'],
   aframeComponent: {
     name: 'io3d-door'
   }

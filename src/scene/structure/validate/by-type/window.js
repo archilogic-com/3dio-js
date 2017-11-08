@@ -40,7 +40,8 @@ export default {
       min: 0.01
     }
   },
-  possibleChildrenTypes: [],
+  childrenTypes: [],
+  parentTypes: ['wall'],
   aframeComponent: {
     name: 'io3d-window'
   }

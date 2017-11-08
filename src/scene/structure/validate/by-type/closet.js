@@ -57,7 +57,8 @@ export default {
       description: 'height of closet door handle'
     }
   },
-  possibleChildrenTypes: [],
+  childrenTypes: [],
+  parentTypes: ['level'],
   aframeComponent: {
     name: 'io3d-closet'
   }

@@ -22,7 +22,8 @@ export default {
     frontHasBase: {type: 'boolean', optional: true, defaultValue: false},
     backHasBase: {type: 'boolean', optional: true, defaultValue: false}
   },
-  possibleChildrenTypes: ['window', 'door'],
+  childrenTypes: ['window', 'door'],
+  parentTypes: ['level', 'group'],
   aframeComponent: {
     name: 'io3d-wall'
   }

@@ -12,5 +12,6 @@ export default  {
       skipInAframe: true
     }
   },
-  possibleChildrenTypes: ['level', 'camera-bookmark']
+  childrenTypes: ['level', 'camera-bookmark'],
+  parentTypes: []
 }

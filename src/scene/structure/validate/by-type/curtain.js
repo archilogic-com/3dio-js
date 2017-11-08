@@ -29,5 +29,6 @@ export default {
       description: 'number of folds'
     }
   },
-  possibleChildrenTypes: []
+  childrenTypes: [],
+  parentTypes: ['level']
 }

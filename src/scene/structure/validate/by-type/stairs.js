@@ -32,7 +32,8 @@ export default {
     }
     // TODO: add all default values
   },
-  possibleChildrenTypes: [],
+  childrenTypes: [],
+  parentTypes: ['level'],
   aframeComponent: {
     name: 'io3d-stairs'
   }

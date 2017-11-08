@@ -9,5 +9,6 @@ export default {
       optional: true
     },
   },
-  possibleChildrenTypes: []
+  childrenTypes: [],
+  parentTypes: ['level', 'interior']
 }

@@ -65,7 +65,8 @@ export default {
     }
     // TODO: add all the default values
   },
-  possibleChildrenTypes: [],
+  childrenTypes: [],
+  parentTypes: ['level'],
   aframeComponent: {
     name: 'io3d-kitchen'
   }

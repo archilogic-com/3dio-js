@@ -6,7 +6,8 @@ export default {
       skipInAframe: true
     }
   },
-  possibleChildrenTypes: ['interior', 'object', 'tag'],
+  childrenTypes: ['interior', 'object', 'tag'],
+  parentTypes: ['level', 'group', 'interior'],
   aframeComponent: {
     name: 'io3d-furniture'
   }

@@ -3,5 +3,6 @@ export default {
     distance: {
       type: 'number'
     }
-  }
+  },
+  parentTypes: ['plan']
 }

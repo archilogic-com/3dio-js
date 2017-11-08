@@ -38,7 +38,8 @@ export default {
       optional: true
     }
   },
-  possibleChildrenTypes: [],
+  childrenTypes: [],
+  parentTypes: ['level'],
   aframeComponent: {
     name: 'io3d-polyfloor'
   }

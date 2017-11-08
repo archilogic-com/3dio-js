@@ -11,7 +11,8 @@ export default {
       skipInAframe: true
     }
   },
-  possibleChildrenTypes: ['interior'],
+  childrenTypes: ['interior'],
+  parentTypes: ['level'],
   aframeComponent: {
     name: 'io3d-data3d'
   }

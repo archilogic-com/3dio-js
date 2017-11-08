@@ -15,5 +15,6 @@ export default  {
       optional: false
     }
   },
-  possibleChildrenTypes: []
+  childrenTypes: [],
+  parentTypes: ['level']
 }

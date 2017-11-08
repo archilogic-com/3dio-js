@@ -43,7 +43,7 @@ function validateElements3d (result, sourceElements3d, parentType) {
 
     // validate if children types are correct
     if (parentType) {
-      var validChild = typeSpecificValidations[parentType].possibleChildrenTypes.indexOf(sourceElement3d.type) > -1
+      var validChild = typeSpecificValidations[parentType].childrenTypes.indexOf(sourceElement3d.type) > -1
       if (!validChild)  {
         result.isValid = false
         var message = '"' + sourceElement3d.type + '" is invalid child for "' + parentType + '"'
