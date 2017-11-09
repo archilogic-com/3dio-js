@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.5
- * @date 2017/10/30 23:21
+ * @version 1.0.6
+ * @date 2017/11/09 18:38
  * @branch dynamic-entities
- * @commit 3a3b44e7c09d5901448b745b2633e2ad0d77e339
+ * @commit 5cd5aff3ff16125165e80b61d004703a3fa3069e
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/10/30 23:21', GIT_BRANCH = 'dynamic-entities', GIT_COMMIT = '3a3b44e7c09d5901448b745b2633e2ad0d77e339'
+	var BUILD_DATE='2017/11/09 18:38', GIT_BRANCH = 'dynamic-entities', GIT_COMMIT = '5cd5aff3ff16125165e80b61d004703a3fa3069e'
 
 	var name = "3dio";
-	var version = "1.0.5";
+	var version = "1.0.6";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -7297,7 +7297,7 @@
 	  console.time = function(key) {
 	    timers[key] = new Date().getTime();
 	  };
-	  console.timeEnd = function(id) {
+	  console.timeEnd = function(key) {
 	    if (!timers[key]) return
 	    console.log(key + ': ' + (new Date().getTime() - timers[key]) + 'ms');
 	    delete timers[key];
@@ -19188,6 +19188,993 @@
 	  parent.appendChild(el);
 	}
 
+	var minimapComponent = {
+	  schema: {
+	    sceneId: {
+	      type: 'string'
+	    },
+	    rotation: {
+	      type: 'number',
+	      default: 0
+	    },
+	    width: {
+	      type: 'number',
+	      default: 150
+	    },
+	    position: {
+	      type: 'string',
+	      default: 'left',
+	      oneOf: ['left', 'right']
+	    }
+	  },
+	  init: function () {
+	    var data = this.data;
+	    var cameras = document.querySelectorAll('[camera]');
+	    this.camera = cameras.length > 1 ? cameras[1] : cameras[0];
+	    console.log('loading minimap', data);
+	    console.log('loading minimap', cameras, this.camera.getAttribute('position'));
+	    // create html container for minimap
+	    var container = document.createElement('div');
+	    container.id = 'minimap-container';
+	    container.setAttribute('style', `position:absolute; z-index: 1000; top:10px; ${data.position}:10px`);
+	    container.innerHTML = `<svg width="${data.width}"></svg>`;
+	    // put container as first child in body
+	    var body = document.querySelector('body');
+	    body.insertBefore(container, body.firstChild);
+	    // bind svg element with component
+	    this.svgEl = container.querySelector('svg');
+	    this.svgEl.setAttribute('style', `transform: rotate(${data.rotation}deg);`);
+
+	    // get scene structure
+	    io3d.scene.getStructure(data.sceneId)
+	      .then(result => {
+	        //this.sceneStructure = result
+	        if (!Array.isArray(result)) result = [result];
+	        // find all spaces in the model
+	        let spaces = getSpaces(result);
+	        // apply plan rotation / position
+
+	        spaces = spaces.map(space => {
+	          let location = applyLocation(space, result[0]);
+	          Object.keys(location).forEach(prop => {
+	            space[prop] = location[prop];
+	          });
+	        //console.log(' ' + space.ry)
+	        return space
+	      });
+
+	      // generate a clickable plan
+	      generatePlan(spaces, this.svgEl);
+	    })
+	    .catch(console.error);
+
+	    // generate a pictogram of the floor plan
+	    function generatePlan (spaces, svgEl) {
+	      // empty svg element to fill
+	      var min = [Infinity, Infinity];
+	      var max = [-Infinity, -Infinity];
+	      var polygonStr = '';
+
+	      const style1 = 'fill:rgba(248, 248, 250, 0.8); stroke:rgba(48, 48, 50, 0.8); stroke-width:0.5;';
+	      const style2 = 'fill:rgba(255, 127, 80, 0.8);';
+
+	      spaces.forEach(space => {
+	        var polygon = document.createElement('polygon');
+	        var pointStr = '';
+	        // get the polygon data for each space
+	        space.polygon.forEach(point => {
+	          // get absolute coordinates and map z to y
+	          // polygon points are relative to the polygon position
+	          var location = applyLocation({x: point[0], z: point[1]}, space);
+	          var x = Math.round(location.x * 20);
+	          var y = Math.round(location.z * 20);
+	          // get min and max values for the overall boundingbox
+	          if (x < min[0]) min[0] = x;
+	          else if (x > max[0]) max[0] = x;
+	          if (y < min[1]) min[1] = y;
+	          else if (y > max[1]) max[1] = y;
+	          pointStr += x + ',' + y + ' ';
+	        });
+	        polygonStr += `<polygon points="${pointStr}" style="${style1}" space-id="${space.id}"/>`;
+	      });
+	      // populate the svg
+	      svgEl.innerHTML = polygonStr;
+	      // match the svg viewbox with the bouningbox of the polygons
+	      svgEl.setAttribute('viewBox', `${min[0]} ${min[1]} ${max[0] - min[0]} ${max[1] - min[1]}`);
+	    }
+
+	    function applyLocation (element, parent) {
+
+	      // Rotate look-at point on the XZ plane around parent's center
+	      var angleY = -parent.ry * Math.PI / 180;
+
+	      var rotatedX = element.x * Math.cos(angleY) - element.z * Math.sin(angleY);
+	      var rotatedZ = element.z * Math.cos(angleY) + element.x * Math.sin(angleY);
+
+	      // Get world space coordinates for our look-at point
+	      var location = {};
+	      location.x = parent.x + rotatedX;
+	      if (element.y !== undefined) location.y = parent.y + element.y;
+	      location.z = parent.z + rotatedZ;
+	      if (element.ry !== undefined) location.ry = parent.ry + element.ry;
+	      return location
+	    }
+
+	    function getSpaces (sceneStructure) {
+	      var spaces = [];
+	      sceneStructure.forEach(element3d => {
+	        if (element3d.type === 'polyfloor') spaces.push(element3d);
+	        if (element3d.children && element3d.children.length) {
+	          spaces = spaces.concat(getSpaces(element3d.children));
+	        }
+	      });
+	      return spaces
+	    }
+	  },
+	  remove: function() {
+	    var minimapEl = document.querySelector('#minimap-container');
+	    minimapEl.parentNode.removeChild(minimapEl);
+	  },
+	  tick: function (time, timeDiff) {
+	    // update dot every 100 ms
+	    if (time % 100 < timeDiff + 5) {
+	      let cameraDot = this.svgEl.querySelector('#camera-dot');
+	      const cameraPos = this.camera.getAttribute('position');
+	      const cameraRot = this.camera.getAttribute('rotation');
+	      // console.log(cameraPos)
+	      if (!cameraDot) {
+	        console.log('create dot');
+	        this.svgEl.innerHTML +=
+	          `<g id="camera-dot" transform="translate(30,30) rotate(80)">
+	<circle cx="0" cy="0"	r="5" fill="CadetBlue"/>
+	<polygon points="0,0 50,-40 50,40" fill="url(#Gradient)" />
+</g>
+<defs>
+  <linearGradient id="Gradient" x1="0" x2="1" y1="0" y2="0">
+     <stop offset="0%" stop-color="CadetBlue"/>
+     <stop offset="100%" stop-color="CadetBlue" stop-opacity="0"/>
+  </linearGradient>
+</defs>`;
+	        // circle cx="150" cy="50" r="40"
+	      } else {
+	        cameraDot.setAttribute('transform', `translate(${cameraPos.x * 20},${cameraPos.z * 20}) rotate(${-cameraRot.y - 90})`);
+	      }
+	    }
+	  }
+	};
+
+	var generic = {
+	  params: {
+	    type: {
+	      type: 'string',
+	      possibleValues: [
+	        'box',
+	        'camera-bookmark',
+	        'closet',
+	        'curtain',
+	        'door',
+	        'floor',
+	        'floorplan',
+	        'group',
+	        'interior',
+	        'kitchen',
+	        'level',
+	        'plan',
+	        'polybox',
+	        'polyfloor',
+	        'railing',
+	        'stairs',
+	        'tag',
+	        'wall',
+	        'window',
+	      ],
+	      optional: false,
+	      skipInAframe: true
+	    },
+	    x: { // x position in meters
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: false,
+	      skipInAframe: true
+	    },
+	    y: { // y position in meters
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: false,
+	      skipInAframe: true
+	    },
+	    z: { // z position in meters
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: false,
+	      skipInAframe: true
+	    },
+	    ry: { // y rotation in angle degrees
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: false,
+	      skipInAframe: true,
+	      description: 'rotation around y axis'
+	    },
+	    children: {
+	      //type: 'array-with-objects',
+	      type: 'array',
+	      defaultValue: [],
+	      optional: true,
+	      skipInAframe: true
+	    },
+	    id: {
+	      type: 'string',
+	      optional: true,
+	      skipInAframe: true,
+	      description: 'unique identifier: UUID v4'
+	    },
+	    materials: {
+	      type: 'object',
+	      optional: true
+	    }
+	  }
+	};
+
+	var box = {
+	  params: {
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01,
+	      description: 'length'
+	    },
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01, // 1cm
+	      description: 'width'
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01, // 1cm
+	      description: 'height'
+	    }
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level'],
+	  aframeComponent: {
+	    name: 'io3d-box'
+	  }
+	};
+
+	var cameraBookmark = {
+	  params: {
+	    distance: {
+	      type: 'number'
+	    }
+	  },
+	  parentTypes: ['plan']
+	};
+
+	var closet = {
+	  params: {
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 1.8,
+	      optional: false,
+	      min: 0.01,
+	      description: 'length'
+	    },
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 0.6,
+	      optional: false,
+	      min: 0.01,
+	      description: 'width'
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      min: 0.01,
+	      description: 'height'
+	    },
+	    baseboard: {
+	      type: 'number',
+	      defaultValue: 0.1,
+	      optional: true,
+	      min: 0.01,
+	      description: 'height of baseboard'
+	    },
+	    doorWidth: {
+	      type: 'number',
+	      defaultValue: 0.02,
+	      optional: true,
+	      min: 0.01,
+	      description: 'thickness of closet door'
+	    },
+	    handleLength: {
+	      type: 'number',
+	      defaultValue: 0.02,
+	      optional: true,
+	      min: 0.01,
+	      description: 'length of closet door handle'
+	    },
+	    handleWidth: {
+	      type: 'number',
+	      defaultValue: 0.02,
+	      optional: true,
+	      min: 0.01,
+	      description: 'thickness of closet door handle'
+	    },
+	    handleHeight: {
+	      type: 'number',
+	      defaultValue: 0.3,
+	      optional: true,
+	      min: 0.01,
+	      description: 'height of closet door handle'
+	    }
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level'],
+	  aframeComponent: {
+	    name: 'io3d-closet'
+	  }
+	};
+
+	var curtain = {
+	  params: {
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 1.8,
+	      optional: false,
+	      min: 0.01,
+	      description: 'length'
+	    },
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 0.2,
+	      optional: false,
+	      min: 0.01,
+	      description: 'thickness'
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      min: 0.01,
+	      description: 'height'
+	    },
+	    folds: {
+	      type: 'number',
+	      defaultValue: 14,
+	      optional: true,
+	      min: 0.01,
+	      description: 'number of folds'
+	    }
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level']
+	};
+
+	var door = {
+	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 3,
+	      possibleValues: [3],
+	      optional: false
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 0.9,
+	      optional: false,
+	      min: 0.01,
+	      description: 'length'
+	    },
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 0.05,
+	      optional: false,
+	      min: 0.01,
+	      description: 'width'
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2,
+	      optional: false,
+	      min: 0.01,
+	      description: 'height'
+	    },
+	    frameLength: { // in meters
+	      type: 'number',
+	      defaultValue: 0.05,
+	      optional: true,
+	      min: 0.01,
+	      description: 'thickness of frame'
+	    },
+	    frameOffset: { // in meters
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      description: 'frame thicker than wall'
+	    },
+	    leafWidth: { // in meters
+	      type: 'number',
+	      defaultValue: 0.03,
+	      optional: true,
+	      description: 'thickness of door leaf'
+	    },
+	    leafOffset: { // in meters
+	      type: 'number',
+	      defaultValue: 0.005,
+	      optional: true,
+	      description: 'z offset of door leaf'
+	    },
+	    doorType: {
+	      type: 'string',
+	      defaultValue: 'singleSwing',
+	      optional: false,
+	      possibleValues: ['singleSwing', 'doubleSwing', 'swingFix', 'swingDoubleFix', 'doubleSwingDoubleFix', 'slidingDoor', 'opening'],
+	      description: 'defines opening type'
+	    },
+	    hinge: {
+	      type: 'string',
+	      defaultValue: 'right',
+	      optional: false,
+	      possibleValues: ['right', 'left'],
+	      description: 'door leaf opening direction'
+	    },
+	    side: {
+	      type: 'string',
+	      defaultValue: 'back',
+	      optional: false,
+	      possibleValues: ['front', 'back'],
+	      description: 'door leaf opening to the front or back of the wall'
+	    },
+	    doorAngle: { // in angle degrees
+	      type: 'number',
+	      defaultValue: 92,
+	      optional: true,
+	      description: 'door leaf opening anlge'
+	    },
+	    fixLeafRatio: { // in meters
+	      type: 'number',
+	      defaultValue: 0.3,
+	      optional: true
+	    },
+	    thresholdHeight: {
+	      type: 'number',
+	      defaultValue: 0.01,
+	      optional: true
+	    }
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['wall'],
+	  aframeComponent: {
+	    name: 'io3d-door'
+	  }
+	};
+
+	var floor = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 4,
+	      optional: false,
+	      min: 0.01, // 1cm
+	      description: 'width'
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 0.2,
+	      optional: false,
+	      min: 0.01, // 1cm
+	      description: 'height'
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 4,
+	      optional: false,
+	      min: 0.01,
+	      description: 'length'
+	    },
+	    hasCeiling: { // in meters
+	      type: 'boolean',
+	      defaultValue: true,
+	      optional: false,
+	      description: 'toggle ceiling'
+	    },
+	    hCeiling: { // in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      description: 'ceiling height'
+	    }
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level'],
+	  aframeComponent: {
+	    name: 'io3d-floor'
+	  }
+	};
+
+	var floorplan = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01
+	    },
+	    file: {
+	      type: 'string',
+	      optional: false
+	    }
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level']
+	};
+
+	var group = {
+	  params: {
+	    src: {
+	      type: 'string',
+	      optional: true,
+	      skipInAframe: true
+	    }
+	  },
+	  childrenTypes: ['interior', 'object', 'wall', 'box', 'group', 'polybox'],
+	  parentTypes: ['level', 'group']
+	};
+
+	var interior = {
+	  params: {
+	    src: {
+	      type: 'string',
+	      optional: false,
+	      skipInAframe: true
+	    }
+	  },
+	  childrenTypes: ['interior', 'object', 'tag'],
+	  parentTypes: ['level', 'group', 'interior'],
+	  aframeComponent: {
+	    name: 'io3d-furniture'
+	  }
+	};
+
+	var kitchen = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 0.6,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 1.8,
+	      optional: false,
+	      min: 0.01
+	    },
+	    highCabinetLeft: {
+	      type: 'int',
+	      defaultValue: 2,
+	      optional: true
+	    },
+	    highCabinetRight: {
+	      type: 'int',
+	      defaultValue: 0,
+	      optional: true
+	    },
+	    wallCabinet: {
+	      type: 'boolean',
+	      defaultValue: true,
+	      optional: true
+	    },
+	    cabinetType: {
+	      type: 'string',
+	      defaultValue: 'flat',
+	      optional: true,
+	      possibleValues: ['flat', 'style1', 'style2']
+	    },
+	    sinkType: {
+	      type: 'string',
+	      defaultValue: 'none',
+	      optional: true,
+	      possibleValues: ['single', 'double', 'none']
+	    },
+	    extractorType: {
+	      type: 'string',
+	      defaultValue: 'none',
+	      optional: true,
+	      possibleValues: ['box', 'pyramid', 'integrated', 'none']
+	    },
+	    ovenType: {
+	      type: 'string',
+	      defaultValue: 'none',
+	      optional: true,
+	      possibleValues: ['single', 'double', 'none']
+	    },
+	    cooktopType: {
+	      type: 'string',
+	      defaultValue: 'none',
+	      optional: true,
+	      possibleValues: ['electro60', 'electro90', 'none']
+	    }
+	    // TODO: add all the default values
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level'],
+	  aframeComponent: {
+	    name: 'io3d-kitchen'
+	  }
+	};
+
+	var level$1 = {
+	  params: {},
+	  childrenTypes: [
+	    'box',
+	    'closet',
+	    'curtain',
+	    'floor',
+	    'floorplan',
+	    'group',
+	    'interior',
+	    'kitchen',
+	    'object',
+	    'polybox',
+	    'polyfloor',
+	    'railing',
+	    'stairs',
+	    'tag',
+	    'wall'
+	  ],
+	  parentTypes: ['plan']
+	};
+
+	var object = {
+	  params: {
+	    object: {
+	      type: 'string',
+	      optional: false,
+	      skipInAframe: true
+	    },
+	    sourceScale: {
+	      type: 'number',
+	      optional: true,
+	      skipInAframe: true
+	    }
+	  },
+	  childrenTypes: ['interior'],
+	  parentTypes: ['level'],
+	  aframeComponent: {
+	    name: 'io3d-data3d'
+	  }
+	};
+
+	var plan = {
+	  params: {
+	    modelDisplayName: {
+	      type: 'string',
+	      optional: false,
+	      skipInAframe: true
+	    },
+	    v: {
+	      type: 'number',
+	      possibleValues: [1],
+	      optional: false,
+	      skipInAframe: true
+	    }
+	  },
+	  childrenTypes: ['level', 'camera-bookmark'],
+	  parentTypes: []
+	};
+
+	var polybox = {
+	  params: {
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    polygon: {
+	      //type: 'array-with-arrays-with-numbers',
+	      type: 'array',
+	      aframeType: 'string',
+	      optional: false
+	    }
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level'],
+	  aframeComponent: {
+	    name: 'io3d-polybox'
+	  }
+	};
+
+	var polyfloor = {
+	  params: {
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 0.2,
+	      optional: false,
+	      min: 0.01, // 1cm
+	      description: 'height'
+	    },
+	    polygon: {
+	      //type: 'array-with-arrays-with-numbers',
+	      type: 'array',
+	      // aframeType: 'string',
+	      defaultValue: [[1.5,1.5], [1.5,-1.5], [-1.5,-1.5], [-1.5,1.5]],
+	      aframeDefault: [ 1.5,1.5,1.5,-1.5,-1.5,-1.5,-1.5,1.5 ],
+	      optional: false,
+	      description: 'outer polygon'
+	    },
+	    polygonHoles: {
+	      type: 'array',
+	      optional: true,
+	      description: 'polygon holes'
+	    },
+	    hasCeiling: { // in meters
+	      type: 'boolean',
+	      defaultValue: true,
+	      optional: false,
+	      description: 'toggle ceiling'
+	    },
+	    hCeiling: { // in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      description: 'ceiling height'
+	    },
+	    usage: { // in meters
+	      type: 'string',
+	      optional: true
+	    }
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level'],
+	  aframeComponent: {
+	    name: 'io3d-polyfloor'
+	  }
+	};
+
+	var railing = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01
+	    },
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level'],
+	  aframeComponent: {
+	    name: 'io3d-railing'
+	  }
+	};
+
+	var stairs = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 1.2,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 4,
+	      optional: false,
+	      min: 0.01
+	    },
+	    stepWidth: {
+	      type: 'number',
+	      defaultValue: 1.2,
+	      optional: true,
+	      min: 0.01
+	    },
+	    stairType: {
+	      type: 'string',
+	      defaultValue: 'straight',
+	      optional: true,
+	      min: 0.01
+	    }
+	    // TODO: add all default values
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level'],
+	  aframeComponent: {
+	    name: 'io3d-stairs'
+	  }
+	};
+
+	var tag = {
+	  params: {
+	    title: {
+	      type: 'string',
+	      optional: false
+	    },
+	    notes: {
+	      type: 'string',
+	      optional: true
+	    },
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level', 'interior']
+	};
+
+	var wall = {
+	  params: {
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 0.15,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01
+	    },
+	    baseHeight: {type: 'number', optional: true, defaultValue: 0},
+	    frontHasBase: {type: 'boolean', optional: true, defaultValue: false},
+	    backHasBase: {type: 'boolean', optional: true, defaultValue: false}
+	  },
+	  childrenTypes: ['window', 'door'],
+	  parentTypes: ['level', 'group'],
+	  aframeComponent: {
+	    name: 'io3d-wall'
+	  }
+	};
+
+	var window$1 = {
+	  params: {
+	    y: {
+	      defaultValue: 0.8,
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 1.5,
+	      optional: false,
+	      min: 0.01 // 1cm
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 1.6,
+	      optional: false,
+	      min: 0.01
+	    },
+	    rowRatios: { // in meters
+	      //type: 'array-with-numbers',
+	      type: 'array',
+	      defaultValue: [ 1 ],
+	      // skipInAframe: true,
+	      optional: true
+	    },
+	    columnRatios: { // in meters
+	      //type: 'array-with-arrays-with-numbers',
+	      type: 'array',
+	      defaultValue: [ [ 1 ] ],
+	      // skipInAframe: true,
+	      optional: true
+	    },
+	    frameLength: { // in meters
+	      type: 'number',
+	      defaultValue: 0.04,
+	      optional: true,
+	      min: 0.01
+	    },
+	    frameWidth: { // in meters
+	      type: 'number',
+	      defaultValue: 0.06,
+	      optional: true,
+	      min: 0.01
+	    }
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['wall'],
+	  aframeComponent: {
+	    name: 'io3d-window'
+	  }
+	};
+
+	// import sceneStructure types
+	function getDefaultsByType (type) {
+	  var types = {
+	    box: box,
+	    'camera-bookmark': cameraBookmark,
+	    closet: closet,
+	    curtain: curtain,
+	    door: door,
+	    floor: floor,
+	    floorplan: floorplan,
+	    group: group,
+	    interior: interior,
+	    kitchen: kitchen,
+	    level: level$1,
+	    object: object,
+	    plan: plan,
+	    polybox: polybox,
+	    polyfloor: polyfloor,
+	    railing: railing,
+	    stairs: stairs,
+	    tag: tag,
+	    wall: wall,
+	    window: window$1
+	  };
+
+	  if (type && types[type]) {
+	    return {
+	      params: defaults_1$1({}, generic.params, types[type].params),
+	      childrenTypes: types[type].childrenTypes
+	    }
+	  } else {
+	    var typeSpecificValidations = {};
+
+	    Object.keys(types).forEach(function (key) {
+	      generic.type = key;
+	      typeSpecificValidations[key] = {
+	        params: defaults_1$1({}, generic.params, types[key].params),
+	        childrenTypes: types[key].childrenTypes
+	      };
+	    });
+	    return typeSpecificValidations
+	  }
+	}
+
+	function getSchema (type) {
+	  // get valid params and default values for each type
+	  var validProps = getDefaultsByType(type);
+	  let schema = {};
+	  var params = validProps.params;
+	  var propKeys = Object.keys(params);
+	  propKeys.forEach(function (key) {
+	    // skip location, children, material and id params
+	    if (params[key].skipInAframe || key === 'materials') return
+	    // map defaults to aframe schema convention
+	    var paramType = params[key].aframeType || params[key].type;
+	    schema[key] = {type: paramType};
+	    if (params[key].defaultValue) schema[key].default = params[key].aframeDefault || params[key].defaultValue;
+	    if (params[key].possibleValues) schema[key].oneOf = params[key].possibleValues;
+	  });
+	  return schema
+	}
+
 	/** Used to compose bitmasks for cloning. */
 	var CLONE_DEEP_FLAG$3 = 1;
 	var CLONE_SYMBOLS_FLAG$2 = 4;
@@ -19216,7 +20203,7 @@
 
 	var cloneDeep_1 = cloneDeep;
 
-	var materialDefinitions = {
+	var materialLibrary = {
 	  "basic-floor": {
 	    "meta": {
 	      "displayName": "Basic floor",
@@ -21536,6 +22523,25 @@
 	  }
 	};
 
+	function getMaterial(material) {
+	  var STORAGE_URL = 'https://storage.3d.io/';
+	  var mat = materialLibrary[material];
+
+	  if (!mat) return material
+
+	  var attr = cloneDeep_1(mat.attributes);
+	  Object.keys(attr).forEach(a => {
+	    // get textures
+	    if (a.indexOf('map') > -1 ) {
+	      // fix to prevent double slash
+	      if (attr[a][0] === '/') attr[a] = attr[a].substring(1);
+	      // get full texture path
+	      attr[a] = STORAGE_URL + attr[a];
+	    }
+	  });
+	  return attr
+	}
+
 	var DEBUG = true;
 
 	// methods
@@ -21741,160 +22747,86 @@
 	  projectAxisY: projectAxisY
 	};
 
-	// dependencies
+	var closetComponent = {
 
-	// class
+	  schema: getSchema('closet'),
 
-	var closetType = {
+	  init: function () {},
 
-	  params: {
+	  update: function (oldData) {
+	    var this_ = this;
+	    var data = this_.data;
 
-	    type: 'closet',
-	    v: 1,        // version
+	    // remove old mesh
+	    this.remove();
 
-	    x: 0,
-	    y: 0,
-	    z: 0,
+	    // get defaults and
+	    this.attributes = cloneDeep_1(data);
 
-	    ry: 0,
+	    // get meshes and materials from el3d modules
+	    var meshes = this.generateMeshes3d();
 
-	    lock: false,
-
-	    bake: true,
-	    bakeStatus: 'none', // none, pending, done
-
-	    // geometry params
-	    l: 1.8,      // length
-	    w: 0.6,      // width (=thickness)
-	    h: 2.4,      // height
-	    baseboard: 0.1,
-	    doorWidth: 0.02,
-	    handleLength: 0.02,
-	    handleWidth: 0.02,
-	    handleHeight: 0.3,
-
-	    //stepColor: 0x00609f,
-
-	    materials: {
-	      closet: 'cabinet_paint_white'
-	    }
-
-	  },
-
-	  valid: {
-	    children: [],
-	    x: {
-	      step: 0.05
-	    },
-	    y: {
-	      step: 0.05
-	    },
-	    z: {
-	      step: 0.05
-	    },
-	    ry: {
-	      snap: 45
-	    },
-	    l: {
-	      min: 0.6,
-	      //max: 4,
-	      step: 0.05
-	    }
-	  },
-
-	  initialize: function(){
-
-	    // backwards compatibility
-	    if (this.a.closetMaterial) {
-	      this.a.materials.closet = this.a.closetMaterial;
-	      delete this.a.closetMaterial;
-	    }
-
-	  },
-
-	  bindings: [{
-	    events: [
-	      'change:l',
-	      'change:w',
-	      'change:h',
-	      'change:baseboard',
-	      'change:doorWidth',
-	      'change:handleLength',
-	      'change:handleWidth',
-	      'change:handleHeight'
-	    ],
-	    call: 'meshes3d'
-	  },{
-	    events: [
-	      'change:materials.*'
-	    ],
-	    call: 'materials3d'
-	  }],
-
-	  contextMenu: {
-	    templateId: 'generic',
-	    templateOptions: {
-	      title: 'Closet'
-	    },
-	    controls: [
-	      {
-	        title: 'Height',
-	        type: 'number',
-	        param: 'h',
-	        unit: 'm',
-	        min: 1,
-	        max: 4,
-	        step: 0.05,
-	        round: 0.01
-	      },
-	      {
-	        title: 'Length',
-	        type: 'number',
-	        param: 'l',
-	        unit: 'm',
-	        step: 0.05,
-	        round: 0.01
-	      },
-	      {
-	        title: 'Width',
-	        type: 'number',
-	        param: 'w',
-	        unit: 'm',
-	        min: 0.1,
-	        max: 0.8,
-	        step: 0.05,
-	        round: 0.01
-	      },
-	      {
-	        title: 'Vertical Position',
-	        type: 'number',
-	        param: 'y',
-	        unit: 'm',
-	        step: 0.1,
-	        round: 0.01
-	      },
-	      {
-	        title: 'Lock this item',
-	        type: 'boolean',
-	        param: 'locked',
-	        subscriptions: ['pro', 'modeller', 'artist3d']
-	      },
-	      {
-	        title: 'Material',
-	        type: 'material',
-	        param: 'materials.closet',
-	        category: 'cabinet'
+	    // clean up empty meshes to prevent errors
+	    var meshKeys = Object.keys(meshes);
+	    meshKeys.forEach(key => {
+	      if (!meshes[key].positions || !meshes[key].positions.length) {
+	        // console.warn('no vertices for mesh', key)
+	        delete meshes[key];
 	      }
-	    ]
+	    });
+
+	    // setup materials
+	    // defaults
+	    var materials = {
+	      closet: 'cabinet_paint_white'
+	    };
+
+	    // check for adapted materials
+	    var materialKeys = Object.keys(data).filter(function(key) {
+	      return key.indexOf('material_') > -1
+	    });
+	    // add materials to instance
+	    materialKeys.forEach(function(key) {
+	      var mesh = key.replace('material_', '');
+	      materials[mesh] = data[key];
+	    });
+
+	    // fetch materials from mat library
+	    Object.keys(materials).forEach(mat => {
+	      materials[mat] = getMaterial(materials[mat]);
+	    });
+
+	    // construct data3d object
+	    var data3d = {
+	      meshes: meshes,
+	      materials: materials
+	    };
+
+	    // create new one
+	    this_.mesh = new THREE.Object3D();
+	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
+
+	    // update view
+	    this_.data3dView.set(data3d);
+	    this_.el.setObject3D('mesh', this_.mesh);
+	    // emit event
+	    this_.el.emit('mesh-updated');
 	  },
 
-	  loadingQueuePrefix: 'architecture',
+	  remove: function () {
+	    if (this.data3dView) {
+	      this.data3dView.destroy();
+	      this.data3dView = null;
+	    }
+	    if (this.mesh) {
+	      this.el.removeObject3D('mesh');
+	      this.mesh = null;
+	    }
+	  },
 
-	  controls3d: 'twoPoints',
+	  generateMeshes3d: function () {
+	    var a = this.attributes;
 
-	  meshes3d: function generateMeshes3d() {
-
-	    var a = this.a;
 	    var wallThickness = 10;
 	    if (a.parent && a.parent.a) {
 	      wallThickness = a.parent.a.w;
@@ -22387,56 +23319,42 @@
 	        material: 'closet'
 	      }
 	    }
-
-	  },
-
-	  materials3d: function generateMaterials3d() {
-	    return this.a.materials
 	  }
-
 	};
 
 	// dependencies
 
-	// class
+	var doorComponent = {
 
-	var doorType = {
+	  schema: getSchema('door'),
 
-	  params: {
+	  init: function () {},
 
-	    type: 'door',
+	  update: function (oldData) {
+	    var this_ = this;
+	    var data = this_.data;
 
-	    x: 0,
-	    y: 0,
-	    z: 0,
+	    // remove old mesh
+	    this.remove();
 
-	    ry: 0,
+	    // get defaults and
+	    this.attributes = cloneDeep_1(data);
 
-	    l: 0.9,      // length
-	    w: 0.05,     // width (=thickness)
-	    h: 2,        // height
-	    v: 3,        // version
+	    // get meshes and materials from el3d modules
+	    var meshes = this.generateMeshes3d();
 
-	    lock: false,
+	    // clean up empty meshes to prevent errors
+	    var meshKeys = Object.keys(meshes);
+	    meshKeys.forEach(key => {
+	      if (!meshes[key].positions || !meshes[key].positions.length) {
+	        // console.warn('no vertices for mesh', key)
+	        delete meshes[key];
+	      }
+	    });
 
-	    bake: true,
-	    bakeStatus: 'none', // none, pending, done
-
-	    frameLength: 0.05,
-	    frameOffset: 0,
-
-	    leafWidth: 0.03,
-	    leafOffset: 0.005,
-
-	    doorType: 'singleSwing',
-	    fixLeafRatio: 0.3,
-
-	    doorAngle: 92,
-	    hinge: 'right',
-	    side: 'back',
-	    thresholdHeight: 0.01,
-
-	    materials: {
+	    // setup materials
+	    // defaults
+	    var materials = {
 	      frame: {
 	        colorDiffuse: [0.95, 0.95, 0.95],
 	        colorSpecular: [0.04, 0.04, 0.04],
@@ -22445,255 +23363,54 @@
 	      leaf: 'doorLeaf-flush-white',
 	      handle: 'aluminium',
 	      threshold: 'basic-floor'
-	    }
-
-	  },
-
-	  valid: {
-	    children: [],
-	    x: {
-	      step: 0.05
-	    },
-	    y: {
-	      step: 0.05
-	    },
-	    z: {
-	      lock: true
-	    },
-	    l: {
-	      min: 0.4,
-	      max: 4,
-	      step: 0.05
-	    },
-	    ry: {
-	      step: 180
-	    }
-	  },
-
-	  initialize: function(){
-
-	    // backwards compatibility
-	    if (this.a.handleMaterial) {
-	      this.a.materials.handle = this.a.handleMaterial;
-	      delete this.a.handleMaterial;
-	    }
-	    if (this.a.leafMaterial) {
-	      this.a.materials.leaf = this.a.leafMaterial;
-	      delete this.a.leafMaterial;
-	    }
-	    if (this.a.frameMaterial) {
-	      this.a.materials.frame = this.a.frameMaterial;
-	      delete this.a.frameMaterial;
-	    }
-	    // check for old doors and set their threshold parameter to false
-	    if (this.a.v < 3) {
-	      this.a.threshold = false;
-	      this.a.v = 3;
-	      this.a.materials.threshold = 'wood_parquet_oak';
-	    }
-	    // default new doors to have a threshold
-	    else if (this.a.threshold === undefined) this.a.threshold = true;
-
-	  },
-
-	  bindings: [{
-	    events: [
-	      'change:l',
-	      'change:w',
-	      'change:h',
-	      'change:frameLength',
-	      'change:leafWidth',
-	      'change:leafOffset',
-	      'change:frameOffset',
-	      'change:doorAngle',
-	      'change:hinge',
-	      'change:side',
-	      'change:doorType',
-	      'change:handleType',
-	      'change:fixLeafRatio',
-	      'change:threshold',
-	      'change:thresholdHeight',
-	      '../change:w'
-	    ],
-	    call: 'meshes3d'
-	  },{
-	    events: [
-	      'change:materials.*'
-	    ],
-	    call: 'materials3d'
-	  },{
-	    events: [
-	      'change:threshold',
-	      'change:doorType'
-	    ],
-	    call: 'contextMenu'
-	  }],
-
-	  contextMenu: function generateContextMenu () {
-	    var contextMenu = {
-	      templateId: 'generic',
-	      templateOptions: {
-	        title: 'Door'
-	      },
-	      controls: [
-	        {
-	          title: 'Height',
-	          type: 'number',
-	          param: 'h',
-	          unit: 'm',
-	          min: 1,
-	          max: 4,
-	          step: 0.05
-	        },
-	        {
-	          title: 'Length',
-	          type: 'number',
-	          param: 'l',
-	          unit: 'm',
-	          step: 0.05,
-	          round: 0.01
-	        },
-	        {
-	          title: 'Opening Angle',
-	          type: 'number',
-	          param: 'doorAngle',
-	          unit: '°',
-	          min: 0,
-	          max: 180,
-	          step: 10
-	        },
-	        {
-	          title: 'Door Type',
-	          type: 'list',
-	          param: 'doorType',
-	          list: {
-	            'Single Swing': 'singleSwing',
-	            'Double Swing': 'doubleSwing',
-	            'Swing + Fix': 'swingFix',
-	            'Fix + Swing + Fix': 'swingDoubleFix',
-	            'Fix + Double Swing + Fix': 'doubleSwingDoubleFix',
-	            'Sliding Door': 'slidingDoor',
-	            'Opening': 'opening'
-	          }
-	        },
-	        {
-	          title: 'Handle Type',
-	          type: 'list',
-	          param: 'handleType',
-	          list: {
-	            'Square Edged': 'squareEdged',
-	            'Round': 'round',
-	            'Classic': 'classic',
-	            'Knob': 'knob'
-	          }
-	        },
-	        {
-	          title: 'Hinge',
-	          type: 'list',
-	          param: 'hinge',
-	          list: {
-	            'left': 'left',
-	            'right': 'right'
-	          }
-	        },
-	        {
-	          title: 'Position',
-	          type: 'list',
-	          param: 'side',
-	          list: {
-	            'front': 'front',
-	            'back': 'back'
-	          }
-	        },
-	        {
-	          title: 'Frame Length',
-	          type: 'number',
-	          param: 'frameLength',
-	          unit: 'm',
-	          min: 0,
-	          max: 0.1,
-	          step: 0.01
-	        },
-	        {
-	          title: 'Frame Offset',
-	          type: 'number',
-	          param: 'frameOffset',
-	          unit: 'm',
-	          min: 0,
-	          max: 0.05,
-	          step: 0.01
-	        },
-	        {
-	          title: 'Fix Leaf Ratio',
-	          type: 'number',
-	          param: 'fixLeafRatio',
-	          min: 0.2,
-	          max: 0.8,
-	          step: 0.05
-	        },
-	        {
-	          title: 'Threshold',
-	          type: 'boolean',
-	          param: 'threshold'
-	        },
-	        {
-	          title: 'Lock this item',
-	          type: 'boolean',
-	          param: 'locked',
-	          subscriptions: ['pro', 'modeller', 'artist3d']
-	        },
-	        {
-	          type: 'html',
-	          display: '<h2>Materials</h2>'
-	        },
-	        {
-	          title: 'Frame',
-	          type: 'material',
-	          param: 'materials.frame',
-	          category: 'doorFrame',
-	          controls: ['colorDiffuse', 'colorSpecular', 'specularCoef']
-	        }
-	      ]
 	    };
 
-	    if (this.a.doorType !== 'opening') {
-	      contextMenu.controls.push({
-	        title: 'Leaf',
-	        type: 'material',
-	        param: 'materials.leaf',
-	        category: 'doorLeaf',
-	        collapsed: false
-	      });
-	    }
-	    if (this.a.threshold) {
-	      contextMenu.controls.splice(11, 0, {
-	        title: 'Threshold height',
-	        type: 'number',
-	        param: 'thresholdHeight',
-	        unit: 'm',
-	        min: 0,
-	        max: 0.05,
-	        step: 0.01
-	      });
-	    }
-	    if (this.a.threshold) {
-	      contextMenu.controls.push({
-	        title: 'Threshold',
-	        type: 'material',
-	        param: 'materials.threshold',
-	        category: 'floor'
-	      });
-	    }
+	    // check for adapted materials
+	    var materialKeys = Object.keys(data).filter(function(key) {
+	      return key.indexOf('material_') > -1
+	    });
+	    // add materials to instance
+	    materialKeys.forEach(function(key) {
+	      var mesh = key.replace('material_', '');
+	      materials[mesh] = data[key];
+	    });
 
-	    return contextMenu
+	    // fetch materials from mat library
+	    Object.keys(materials).forEach(mat => {
+	      materials[mat] = getMaterial(materials[mat]);
+	    });
+
+	    // construct data3d object
+	    var data3d = {
+	      meshes: meshes,
+	      materials: materials
+	    };
+
+	    // create new one
+	    this_.mesh = new THREE.Object3D();
+	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
+
+	    // update view
+	    this_.data3dView.set(data3d);
+	    this_.el.setObject3D('mesh', this_.mesh);
+	    // emit event
+	    this_.el.emit('mesh-updated');
 	  },
 
-	  loadingQueuePrefix: 'architecture',
+	  remove: function () {
+	    if (this.data3dView) {
+	      this.data3dView.destroy();
+	      this.data3dView = null;
+	    }
+	    if (this.mesh) {
+	      this.el.removeObject3D('mesh');
+	      this.mesh = null;
+	    }
+	  },
 
-	  controls3d: 'insideWall',
+	  generateMeshes3d: function () {
+	    var a = this.attributes;
 
-	  meshes3d: function generateMeshes3d() {
-	    var a = this.a;
 	    var wallThickness = 0.1;
 	    if (a.parent && a.parent.a) {
 	      wallThickness = a.parent.a.w;
@@ -22836,9 +23553,9 @@
 	      frameFacesCount += 18;
 	      if (frameOffset>0) frameFacesCount += 12;
 	    }
-	    var leafVertices = [], //new Float32Array(leafFacesCount * 9),
-	      handleVertices = [], //new Float32Array(handleFacesCount * 9),
-	      leafUvs = [], //new Float32Array(leafFacesCount * 6),
+	    var leafVertices = [],
+	      handleVertices = [],
+	      leafUvs = [],
 	      frameVertices = new Float32Array(frameFacesCount * 9);
 
 	    // Threshold VERTICES
@@ -23777,13 +24494,7 @@
 	        material: 'threshold'
 	      }
 	    }
-
-	  },
-
-	  materials3d: function generateMaterials3d() {
-	    return this.a.materials
 	  }
-
 	};
 
 	// fast 2d polygon tesselation
@@ -24810,185 +25521,87 @@
 
 	// dependencies
 
-	// definition
+	var floorComponent = {
 
-	var floorType = {
+	  schema: getSchema('floor'),
 
-	  params: {
+	  init: function () {},
 
-	    type: 'floor',
+	  update: function (oldData) {
+	    var this_ = this;
+	    var data = this_.data;
 
-	    x: 0,
-	    y: 0,
-	    z: 0,
+	    // remove old mesh
+	    this.remove();
 
-	    ry: 0,
+	    // get defaults and
+	    this.attributes = cloneDeep_1(data);
 
-	    l: 4,
-	    w: 4,
-	    h: 0.2,
+	    // get meshes and materials from el3d modules
+	    var meshes = this.generateMeshes3d();
 
-	    lock: false,
+	    // clean up empty meshes to prevent errors
+	    var meshKeys = Object.keys(meshes);
+	    meshKeys.forEach(key => {
+	      if (!meshes[key].positions || !meshes[key].positions.length) {
+	        // console.warn('no vertices for mesh', key)
+	        delete meshes[key];
+	      }
+	    });
 
-	    bake: true,
-	    bakeStatus: 'none', // none, pending, done
-
-	    materials: {
+	    // setup materials
+	    // defaults
+	    var materials = {
 	      top: 'basic-floor',
 	      side: 'basic-wall',
 	      ceiling: 'basic-ceiling'
-	    },
-
-	    hasCeiling: true,
-	    hCeiling: 2.4
-
-	  },
-
-	  valid: {
-	    children: [],
-	    x: {
-	      step: 0.05
-	    },
-	    y: {
-	      lock: true
-	    },
-	    z: {
-	      step: 0.05
-	    },
-	    ry: {
-	      lock: false
-	    },
-	    l: {
-	      step: 0.05
-	    },
-	    w: {
-	      step: 0.05
-	    }
-	  },
-
-	  initialize: function(){
-
-	    // backwards compatibility
-	    if (this.a.material) {
-	      this.a.materials.top = this.a.material;
-	      delete this.a.material;
-	    }
-	    if (this.a.ceilingMaterial) {
-	      this.a.materials.ceiling = this.a.ceilingMaterial;
-	      delete this.a.ceilingMaterial;
-	    }
-	    if (this.a.side) {
-	      this.a.materials.side = this.a.sideMaterial;
-	      delete this.a.sideMaterial;
-	    }
-
-	  },
-
-	  bindings: [{
-	    events: [
-	      'change:hasCeiling'
-	    ],
-	    call: 'contextMenu'
-	  },{
-	    events: [
-	      'change:x',
-	      'change:z',
-	      'change:l',
-	      'change:w',
-	      'change:h',
-	      'change:hasCeiling',
-	      'change:hCeiling'
-	    ],
-	    call: 'meshes3d'
-	  },{
-	    events: [
-	      'change:materials.*'
-	    ],
-	    call: 'materials3d'
-	  }],
-
-	  contextMenu: function generateContectMenu () {
-
-	    var contextMenu = {
-	      templateId: 'generic',
-	      templateOptions: {
-	        title: 'Floor'
-	      },
-	      controls: [
-	        {
-	          title: 'Has Ceiling',
-	          type: 'boolean',
-	          param: 'hasCeiling'
-	        },
-	        {
-	          title: 'Ceiling Height',
-	          type: 'number',
-	          param: 'hCeiling',
-	          unit: 'm',
-	          step: 0.05,
-	          round: 0.01
-	        },
-	        {
-	          title: 'Vertical Position',
-	          type: 'number',
-	          param: 'y',
-	          unit: 'm',
-	          step: 0.1,
-	          round: 0.01
-	        },
-	        {
-	          title: 'Height',
-	          type: 'number',
-	          param: 'h',
-	          unit: 'm',
-	          step: 0.05,
-	          round: 0.01
-	        },
-	        {
-	          title: 'Lock this item',
-	          type: 'boolean',
-	          param: 'locked',
-	          subscriptions: ['pro', 'modeller', 'artist3d']
-	        },
-	        {
-	          type: 'html',
-	          display: '<h2>Materials<h2>'
-	        },
-	        {
-	          title: 'Floor',
-	          type: 'material',
-	          param: 'materials.top',
-	          category: 'floor'
-	        },
-	        {
-	          title: 'Side',
-	          type: 'material',
-	          param: 'materials.side',
-	          category: 'wall'
-	        }
-	      ]
 	    };
 
-	    if (this.params.hasCeiling) {
-	      contextMenu.controls.push({
-	        title: 'Ceiling',
-	        type: 'material',
-	        param: 'materials.ceiling',
-	        category: 'ceiling'
-	      });
-	    }
+	    // check for adapted materials
+	    var materialKeys = Object.keys(data).filter(function(key) {
+	      return key.indexOf('material_') > -1
+	    });
+	    // add materials to instance
+	    materialKeys.forEach(function(key) {
+	      var mesh = key.replace('material_', '');
+	      materials[mesh] = data[key];
+	    });
 
-	    return contextMenu
+	    // fetch materials from mat library
+	    Object.keys(materials).forEach(mat => {
+	      materials[mat] = getMaterial(materials[mat]);
+	    });
 
+	    // construct data3d object
+	    var data3d = {
+	      meshes: meshes,
+	      materials: materials
+	    };
+
+	    // create new one
+	    this_.mesh = new THREE.Object3D();
+	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
+
+	    // update view
+	    this_.data3dView.set(data3d);
+	    this_.el.setObject3D('mesh', this_.mesh);
+	    // emit event
+	    this_.el.emit('mesh-updated');
 	  },
 
-	  loadingQueuePrefix: 'architecture',
+	  remove: function () {
+	    if (this.data3dView) {
+	      this.data3dView.destroy();
+	      this.data3dView = null;
+	    }
+	    if (this.mesh) {
+	      this.el.removeObject3D('mesh');
+	      this.mesh = null;
+	    }
+	  },
 
-	  controls3d: 'floor',
-
-	  meshes3d: function generateMeshes3d () {
-
-	    var a = this.a;
+	  generateMeshes3d: function () {
+	    var a = this.attributes;
 
 	    // 2d polygon vertices
 	    var vertices = [ 0, 0, 0, a.w, a.l, a.w, a.l, 0 ];
@@ -25046,13 +25659,7 @@
 	        material: 'ceiling'
 	      }
 	    }
-
-	  },
-
-	  materials3d: function generateMaterials3d() {
-	    return this.a.materials
 	  }
-
 	};
 
 	/** `Object#toString` result references. */
@@ -25084,511 +25691,94 @@
 
 	// dependencies
 
-	/*
-	import loadData3d from '../../../../utils/data3d/load'
+	var kitchenComponent = {
 
-	TODO: add external asset loading
+	  schema: getSchema('kitchen'),
 
-	var s3 = require('s3')
-	var _ = require('underscore')
-	var resolve = require('_utils/data3d/resolve')
-	var flatten = require('_utils/data3d/flatten')
-	var round = require('round')
+	  init: function () {},
 
-	var meshes = {
-	  singleSink: '/535e624259ee6b0200000484/170429-0355-60hukz/bf4e4a56-ed95-4b58-a214-4b1a0a84ae0e.gz.data3d.buffer',
-	  doubleSink: '/535e624259ee6b0200000484/170429-2156-7ufbnv/df481313-8fb4-48da-bc28-0369b08a2c6a.gz.data3d.buffer',
-	  gas60: '/535e624259ee6b0200000484/170428-2318-1ayck9/ece0ead0-d27f-4cf9-b137-2021f25ad4ee.gz.data3d.buffer',
-	  gas90: '/535e624259ee6b0200000484/170429-0114-jxswhr/523bb9dc-0103-4c93-aba8-ad0882123550.gz.data3d.buffer',
-	  fridge: '/535e624259ee6b0200000484/170429-1020-5zimgz/4cec6215-9d5c-4f38-b714-e62fdab6d892.gz.data3d.buffer'
-	}
-	*/
-	var elements = [];
-	var remainder;
-	var elementNum;
+	  update: function (oldData) {
+	    var this_ = this;
+	    var data = this_.data;
 
-	// class
+	    // remove old mesh
+	    this.remove();
 
-	var kitchenType = {
+	    // get defaults and
+	    this.attributes = cloneDeep_1(data);
 
-	  params: {
+	    // get meshes and materials from el3d modules
+	    var meshes = this.generateMeshes3d();
 
-	    type: 'kitchen',
-	    v: 2,        // version
+	    // clean up empty meshes to prevent errors
+	    var meshKeys = Object.keys(meshes);
+	    meshKeys.forEach(key => {
+	      if (!meshes[key].positions || !meshes[key].positions.length) {
+	        // console.warn('no vertices for mesh', key)
+	        delete meshes[key];
+	      }
+	    });
 
-	    x: 0,
-	    y: 0,
-	    z: 0,
-	    ry: 0,
-
-	    lock: false,
-
-	    bake: true,
-	    bakeStatus: 'none', // none, pending, done
-
-	    // Geometry params
-	    l: 4.2,      // length
-	    w: 0.6,      // width (=thickness)
-	    h: 2.4,      // height
-	    baseBoard: 0.1,
-	    doorWidth: 0.02,
-	    counterHeight: 0.9,
-	    wallCabinetHeight: 1.5,
-	    wallCabinetWidth: 0.45,
-	    counterThickness: 0.03,
-	    barCounter: false,
-	    highCabinetLeft: 2,
-	    highCabinetRight: 0,
-	    elementLength: 0.6,
-	    cooktopType: 'none',
-	    fridge: false,
-	    fridgePos: 1,
-	    microwave: false,
-	    microwavePos: 1,
-	    sinkType: 'none',
-	    extractorType: 'none',
-	    ovenType: 'none',
-	    cabinetType: 'flat',
-	    cooktopPos: 6,
-	    ovenPos: 6,
-	    sinkPos: 4,
-	    wallCabinet: true,
-
-	    // materials
-	    materials: {
+	    // setup materials
+	    // defaults
+	    var materials = {
 	      kitchen: 'cabinet_paint_white',
 	      counter: 'cabinet_paint_white',
 	      tab: 'chrome',
 	      oven: 'oven_miele_60-60',
 	      cooktop: 'cooktop_westinghouse_60',
 	      microwave: 'microwave_samsung'
-	    }
-	  },
-
-	  valid: {
-	    children: [],
-	    x: {
-	      step: 0.05
-	    },
-	    y: {
-	      step: 0.05
-	    },
-	    z: {
-	      step: 0.05
-	    },
-	    ry: {
-	      snap: 45
-	    },
-	    l: {
-	      min: 0.6,
-	      //max: 4,
-	      step: 0.05
-	    }
-	  },
-
-	  initialize: function(){
-	    // backwards compatibility
-	    if (this.a.kitchenMaterial) {
-	      this.a.materials.kitchen = this.a.kitchenMaterial;
-	      delete this.a.kitchenMaterial;
-	    }
-	    if (this.a.counterMaterial) {
-	      this.a.materials.counter = this.a.counterMaterial;
-	      delete this.a.counterMaterial;
-	    }
-	    if (this.a.tabMaterial) {
-	      this.a.materials.tab = this.a.tabMaterial;
-	      delete this.a.tabMaterial;
-	    }
-	    if (this.a.ovenMaterial) {
-	      this.a.materials.oven = this.a.ovenMaterial;
-	      delete this.a.ovenMaterial;
-	    }
-
-	    // on the fly migration for version one kitchens
-
-	    if (!this.a.v || this.a.v === 1) {
-	      try {
-	        // new parameters
-	        this.a.cooktopType = this.a.cooktop ? 'electro60' : 'none';
-	        delete this.a.cooktop;
-	        this.a.sinkType = this.a.sink ? 'single' : 'none';
-	        delete this.a.sink;
-	        this.a.ovenType = !this.a.oven ? 'none' : this.a.ovenNum === 1 ? 'single' : 'double';
-	        delete this.a.oven;
-	        delete this.a.ovenNum;
-	        this.a.extractorType = this.a.extractor ? 'integrated' : 'none';
-	        delete this.a.extractor;
-	        this.a.fridge = false;
-	        this.a.cabinetType = this.a.cabinetFrame ? 'style1' : 'flat';
-	        delete this.a.cabinetFrame;
-	      } catch(err) { console.warn(err); }
-
-	      if (this.a.sinkPos === this.a.cooktopPos) this.a.sinkType = 'none';
-
-	      var oldElCount = Math.round(this.a.l / this.a.elementLength);
-	      if (this.a.ovenPos <= 0 || this.a.ovenPos > oldElCount) this.a.ovenType = 'none';
-	      if (this.a.sinkPos <= this.a.highCabinetLeft || this.a.sinkPos > oldElCount - this.a.highCabinetRight) this.a.sinkType = 'none';
-	      if (this.a.cooktopPos <= this.a.highCabinetLeft || this.a.cooktopPos > oldElCount - this.a.highCabinetRight) this.a.cooktopType = 'none';
-
-	      // new materials
-	      this.a.materials.oven = 'oven_miele_60-60';
-	      this.a.materials.cooktop = 'cooktop_westinghouse_60';
-	      this.a.materials.microwave = 'microwave_samsung';
-
-	      // set new version
-	      this.a.v = 2;
-	    }
-
-	  },
-
-	  bindings: [{
-	    events: [
-	      'change:l',
-	      'change:w',
-	      'change:h',
-	      'change:baseBoard',
-	      'change:doorWidth',
-	      'change:highCabinetLeft',
-	      'change:highCabinetRight',
-	      'change:ovenPos',
-	      'change:ovenType',
-	      'change:sinkPos',
-	      'change:sinkType',
-	      'change:cooktopPos',
-	      'change:cooktopType',
-	      'change:fridge',
-	      'change:fridgePos',
-	      'change:microwave',
-	      'change:microwavePos',
-	      'change:wallCabinet',
-	      'change:counterThickness',
-	      'change:barCounter',
-	      'change:tabMaterial',
-	      'change:ovenMaterial',
-	      'change:counterMaterial',
-	      'change:kitchenMaterial',
-	      'change:cabinetType',
-	      'change:extractorType'
-	    ],
-	    call: 'meshes3d'
-	  },{
-	    events: [
-	      'change:l',
-	      'change:w',
-	      'change:h',
-	      'change:highCabinetLeft',
-	      'change:highCabinetRight',
-	      'change:ovenPos',
-	      'change:ovenType',
-	      'change:sinkPos',
-	      'change:sinkType',
-	      'change:cooktopPos',
-	      'change:cooktopType',
-	      'change:fridge',
-	      'change:fridgePos',
-	      'change:microwave',
-	      'change:microwavePos',
-	      'change:wallCabinet',
-	    ],
-	    call: 'contextMenu'
-	  },{
-	    events: ['change:materials.*'],
-	    call: 'materials3d'
-	  }],
-
-	  contextMenu: function generateContextMenu () {
-	    var contextMenu = {
-	      templateId: 'generic',
-	      templateOptions: {
-	        title: 'Kitchen'
-	      },
-	      controls: [
-	        {
-	          type: 'html',
-	          display: '<h2>Dimensions<h2>'
-	        },
-	        {
-	          title: 'Height',
-	          type: 'number',
-	          param: 'h',
-	          unit: 'm',
-	          min: 1,
-	          max: 4.5,
-	          step: 0.05,
-	          round: 0.01,
-	        },
-	        {
-	          title: 'Length',
-	          type: 'number',
-	          param: 'l',
-	          unit: 'm',
-	          step: 0.05,
-	          round: 0.01
-	        },
-	        {
-	          title: 'Width',
-	          type: 'number',
-	          param: 'w',
-	          unit: 'm',
-	          min: 0.35,
-	          max: 1.0,
-	          step: 0.05,
-	          round: 0.01
-	        },
-	        {
-	          title: 'Vertical Position',
-	          type: 'number',
-	          param: 'y',
-	          unit: 'm',
-	          step: 0.1,
-	          round: 0.01
-	        },
-	        {
-	          type: 'html',
-	          display: '<h2>Cabinets & Counter<h2>'
-	        },
-	        {
-	          title: 'High Cabinet Left',
-	          type: 'number',
-	          param: 'highCabinetLeft',
-	          min: 0,
-	          max: 3,
-	          step: 1
-	        },
-	        {
-	          title: 'High Cabinet Right',
-	          type: 'number',
-	          param: 'highCabinetRight',
-	          min: 0,
-	          max: 3,
-	          step: 1
-	        },
-	        {
-	          title: 'Wall Cabinet',
-	          type: 'boolean',
-	          param: 'wallCabinet',
-	        },
-	        {
-	          title: 'Cabinet',
-	          type: 'list',
-	          param: 'cabinetType',
-	          list: {
-	            'Flat': 'flat',
-	            'Style 1': 'style1',
-	            'Style 2': 'style2'
-	          }
-	        },
-	        {
-	          title: 'Counter Thickness',
-	          type: 'number',
-	          param: 'counterThickness',
-	          unit: 'm',
-	          min: 0.01,
-	          max: 0.06,
-	          step: 0.01,
-	          round: 0.001
-	        },
-	        {
-	          type: 'html',
-	          display: '<h2>Configuration<h2>'
-	        },
-	        {
-	          title: 'Cooktop',
-	          type: 'list',
-	          param: 'cooktopType',
-	          list: {
-	            'Electronic 60': 'electro60',
-	            'Electronic 90': 'electro90',
-	            'Gas 60': 'gas60',
-	            'Gas 90': 'gas90',
-	            'None': 'none'
-	          }
-	        },
-	        {
-	          title: 'Oven',
-	          type: 'list',
-	          param: 'ovenType',
-	          list: {
-	            'Single': 'single',
-	            'Double': 'double',
-	            'None': 'none'
-	          }
-	        },
-	        {
-	          title: 'Sink',
-	          type: 'list',
-	          param: 'sinkType',
-	          list: {
-	            'Single': 'single',
-	            'Double': 'double',
-	            'None': 'none'
-	          }
-	        },
-	        {
-	          title: 'Large fridge',
-	          type: 'boolean',
-	          param: 'fridge',
-	        },
-	        {
-	          title: 'Microwave',
-	          type: 'boolean',
-	          param: 'microwave'
-	        },
-	        {
-	          title: 'Lock this item',
-	          type: 'boolean',
-	          param: 'locked',
-	          subscriptions: ['pro', 'modeller', 'artist3d']
-	        },
-	        {
-	          type: 'html',
-	          display: '<h2>Materials<h2>'
-	        },
-	        {
-	          title: 'Cabinet',
-	          type: 'material',
-	          param: 'materials.kitchen',
-	          category: 'cabinet'
-	        },
-	        {
-	          title: 'Counter',
-	          type: 'material',
-	          param: 'materials.counter',
-	          category: 'counter'
-	        }
-	      ]
 	    };
-	    var self = this;
 
-	    elementNum = getElCount(this.a).elementNum;
-	    remainder = getElCount(this.a).remainder;
-	    elements = updatePositions(this.a, {elementNum: elementNum, remainder: remainder});
+	    // check for adapted materials
+	    var materialKeys = Object.keys(data).filter(function(key) {
+	      return key.indexOf('material_') > -1
+	    });
+	    // add materials to instance
+	    materialKeys.forEach(function(key) {
+	      var mesh = key.replace('material_', '');
+	      materials[mesh] = data[key];
+	    });
 
-	    var
-	      cLeft = this.a.highCabinetLeft,
-	      cRight = elementNum - this.a.highCabinetRight,
-	      visible = {
-	        sink: this.a.sinkType !== 'none',
-	        oven: this.a.ovenType !== 'none',
-	        cooktop: this.a.cooktopType !== 'none',
-	        fridge: this.a.fridge
-	      },
-	      pos;
+	    // fetch materials from mat library
+	    Object.keys(materials).forEach(mat => {
+	      materials[mat] = getMaterial(materials[mat]);
+	    });
 
-	    if (!this.a.highCabinetLeft && !this.a.highCabinetLeft) {
-	      pos = findParam('counterThickness');
-	      contextMenu.controls.splice(pos + 1, 0,
-	        {
-	          title: 'Bar counter',
-	          type: 'boolean',
-	          param: 'barCounter'
-	        });
-	    }
-	    if (this.a.cooktopType !== 'none') {
-	      pos = findParam('cooktopType');
-	      genKitchenMenu('Cooktop', 'cooktopPos', 'sink', false, true, pos);
-	      contextMenu.controls.splice(pos + elements.length + 2, 0,
-	        {
-	          title: 'Extractor',
-	          type: 'list',
-	          param: 'extractorType',
-	          list: {
-	            'Box': 'box',
-	            'Pyramid': 'pyramid',
-	            'Integrated': 'integrated',
-	            'None': 'none'
-	          }
-	        });
-	    }
-	    if (this.a.ovenType !== 'none') {
-	      pos = findParam('ovenType');
-	      genKitchenMenu('Oven', 'ovenPos', 'sink', true, true, pos);
-	    }
-	    if (this.a.sinkType !== 'none') {
-	      pos = findParam('sinkType');
-	      genKitchenMenu('Sink', 'sinkPos', 'cooktop', false, true, pos);
-	    }
-	    if (this.a.fridge) {
-	      pos = findParam('fridge');
-	      genKitchenMenu('Fridge', 'fridgePos', false, true, false, pos);
-	    }
-	    if (this.a.microwave) {
-	      pos = findParam('microwave');
-	      genKitchenMenu('Microwave', 'microwavePos', 'fridge', true, true, pos);
-	    }
-	    /*
-	    var largeCooktop = this.a.cooktopType !== 'none' && this.a.cooktopType.slice(-2) === '90'
-	    if (this.a.oven !== 'none') {
-	      contextMenu.controls.push(
-	        {
-	          title: 'Oven',
-	          type: 'material',
-	          param: 'materials.oven',
-	          category: 'oven' + (largeCooktop ? '90' : '60')
-	        })
-	    }
-	    if (this.a.cooktopType.indexOf('electro') > -1) {
-	      contextMenu.controls.push(
-	        {
-	          title: 'Cooktop',
-	          type: 'material',
-	          param: 'materials.cooktop',
-	          category: 'cooktop' + (largeCooktop ? '90' : '60')
-	        })
-	    }
-	    */
+	    // construct data3d object
+	    var data3d = {
+	      meshes: meshes,
+	      materials: materials
+	    };
 
-	    function genKitchenMenu(name, el, conflict, high, low, pos, key) {
-	      contextMenu.controls.splice(pos + 1, 0, {
-	        type: 'html',
-	        display: '<div>' + name + ' Position:</div>',
-	        style: 'margin: 5px 0; display: inline-block; width: 50%; vertical-align: top;',
+	    console.log(data3d);
 
-	      });
-	      elements.forEach(function(key, index) {
-	        var inValidPos;
-	        if (high && low) inValidPos = false;
-	        else if (high) inValidPos = index > cLeft - 1 && index < cRight;
-	        else if (low) inValidPos = index <= cLeft - 1 || index >= cRight;
-	        var conflictPos = conflict ? visible[conflict] && self.a[conflict + 'Pos'] === index + 1 : false;
-	        var minWidth = key < (name === 'Fridge' ? 0.52 : 0.6 );
-	        var inValid = conflictPos || minWidth || inValidPos;
-	        var color = self.a[el] === index + 1 ? 'background-color: #5bb3d0': inValid ? 'background-color: #ccc' : '';
-	        contextMenu.controls.splice(pos + 2 + index, 0, {
-	          type: 'button',
-	          display: '<div></div>',
-	          style: 'margin: 5px 0 0 0; display: inline-block; width: '+ (key * 30) + 'px; border: 1px solid ' + (self.a[el] === index + 1?'#489':'#ccc') + '; height: ' + (index <= cLeft - 1 || index >= cRight ? 0.9 * 30 : 0.6 * 30) + 'px; ' + color,
-	          onInput: function() {
-	            console.log(index + 1, conflictPos, inValidPos, minWidth, el);
-	            var change = {};
-	            change[el] = index + 1;
-	            //if (!inValid) self.set(change)
-	            self.set(change);
-	          }
-	        });
-	      });
-	    }
+	    // create new one
+	    this_.mesh = new THREE.Object3D();
+	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
 
-	    function findParam(param) {
-	      var pos;
-	      contextMenu.controls.forEach(function(control, i) {
-	        if (control.param === param ) pos = i;
-	      });
-	      return pos
-	    }
-
-	    return contextMenu
+	    // update view
+	    this_.data3dView.set(data3d);
+	    this_.el.setObject3D('mesh', this_.mesh);
+	    // emit event
+	    this_.el.emit('mesh-updated');
 	  },
 
-	  loadingQueuePrefix: 'interior',
+	  remove: function () {
+	    if (this.data3dView) {
+	      this.data3dView.destroy();
+	      this.data3dView = null;
+	    }
+	    if (this.mesh) {
+	      this.el.removeObject3D('mesh');
+	      this.mesh = null;
+	    }
+	  },
 
-	  controls3d: 'twoPoints',
+	  generateMeshes3d: function () {
+	    var a = this.attributes;
 
-	  meshes3d: function () {
-
-	    var a = this.a;
-
+	    console.log('kitchen', a);
 	    // internals
 	    var
 	      fridgeHeight = 1.95,
@@ -25655,7 +25845,7 @@
 	    if (!a.wallCabinet && a.extractorType === 'integrated') a.extractorType = 'box';
 
 	    elementNum = getElCount(a).elementNum;
-	    remainder = getElCount(a).remainder;
+	    var remainder = getElCount(a).remainder;
 
 	    // check if fridge fits
 	    if (a.fridge && a.highCabinetLeft < a.fridgePos + 1) {
@@ -27429,60 +27619,48 @@
 	          if (mat.slice(-2) === '_1') data3d.meshes[key].material = mat.substring(0, mat.length - 2)
 	        })
 	        */
-	        var meshes3d = {}; //data3d.meshes
-	        // add internal meshes
-	        meshes3d.kitchen = {
-	          positions: new Float32Array(kitchenVertices),
-	          normals: getNormalsBuffer.flat(kitchenVertices),
-	          uvs: getUvsBuffer.architectural(kitchenVertices),
-	          material: 'kitchen'
-	        };
-	        meshes3d.counter = {
-	          positions: new Float32Array(counterVertices),
-	          normals: getNormalsBuffer.flat(counterVertices),
-	          uvs: getUvsBuffer.architectural(counterVertices),
-	          material: 'counter'
-	        };
-	        meshes3d.oven = {
-	          positions: new Float32Array(ovenVertices),
-	          normals: getNormalsBuffer.flat(ovenVertices),
-	          uvs: new Float32Array(ovenUvs),
-	          material: 'oven'
-	        };
-	        meshes3d.cooktop = {
-	          positions: new Float32Array(cooktopVertices),
-	          normals: getNormalsBuffer.flat(cooktopVertices),
-	          uvs: new Float32Array(cooktopUvs),
-	          material: 'cooktop'
-	        };
-	        meshes3d.extractor = {
-	          positions: new Float32Array(extractorVertices),
-	          normals: getNormalsBuffer.flat(extractorVertices),
-	          material: 'tab'
-	        };
-	        meshes3d.microwave = {
-	          positions: new Float32Array(mwVertices),
-	          normals: getNormalsBuffer.flat(mwVertices),
-	          uvs: new Float32Array(mwUvs),
-	          material: 'microwave'
-	        };
-
-	        return meshes3d
-	      //})
-
-	  },
-
-	  materials3d: function generateMaterials3d() {
-	    var materials = this.a.materials;
-	    materials.chrome = 'chrome';
-	    materials['black_metal']= {
-	      "specularCoef": 24,
-	      "colorDiffuse": [0.02, 0.02, 0.02],
-	      "colorSpecular": [0.7, 0.7, 0.7]
-	    };
-	    return materials
+	    // var meshes3d = {} //data3d.meshes
+	    // add internal meshes
+	    console.log(kitchenVertices);
+	    return {
+	      kitchen: {
+	        positions: new Float32Array(kitchenVertices),
+	        normals: getNormalsBuffer.flat(kitchenVertices),
+	        uvs: getUvsBuffer.architectural(kitchenVertices),
+	        material: 'kitchen'
+	      },
+	      counter: {
+	        positions: new Float32Array(counterVertices),
+	        normals: getNormalsBuffer.flat(counterVertices),
+	        uvs: getUvsBuffer.architectural(counterVertices),
+	        material: 'counter'
+	      },
+	      oven: {
+	        positions: new Float32Array(ovenVertices),
+	        normals: getNormalsBuffer.flat(ovenVertices),
+	        uvs: new Float32Array(ovenUvs),
+	        material: 'oven'
+	      },
+	      cooktop: {
+	        positions: new Float32Array(cooktopVertices),
+	        normals: getNormalsBuffer.flat(cooktopVertices),
+	        uvs: new Float32Array(cooktopUvs),
+	        material: 'cooktop'
+	      },
+	      extractor: {
+	        positions: new Float32Array(extractorVertices),
+	        normals: getNormalsBuffer.flat(extractorVertices),
+	        material: 'tab'
+	      },
+	      microwave: {
+	        positions: new Float32Array(mwVertices),
+	        normals: getNormalsBuffer.flat(mwVertices),
+	        uvs: new Float32Array(mwUvs),
+	        material: 'microwave'
+	      }
+	    }
+	    //})
 	  }
-
 	};
 
 	// helper
@@ -27535,209 +27713,89 @@
 
 	// dependencies
 
-	// definition
+	var polyFloorComponent = {
 
-	var polyFloorType = {
+	  schema: getSchema('polyfloor'),
 
-	  params: {
+	  init: function () {},
 
-	    type: 'polyfloor',
+	  update: function (oldData) {
+	    var this_ = this;
+	    var data = this_.data;
 
-	    x: 0,
-	    y: 0,
-	    z: 0,
+	    // remove old mesh
+	    this.remove();
 
-	    ry: 0,
+	    // get defaults and
+	    this.attributes = cloneDeep_1(data);
 
-	    h: 0.2,
+	    // get meshes and materials from el3d modules
+	    var meshes = this.generateMeshes3d();
 
-	    lock: false,
+	    // clean up empty meshes to prevent errors
+	    var meshKeys = Object.keys(meshes);
+	    meshKeys.forEach(key => {
+	      if (!meshes[key].positions || !meshes[key].positions.length) {
+	        // console.warn('no vertices for mesh', key)
+	        delete meshes[key];
+	      }
+	    });
 
-	    bake: true,
-	    bakeStatus: 'none', // none, pending, done
-
-	    materials: {
+	    // setup materials
+	    // defaults
+	    var materials = {
 	      top: 'basic-floor',
 	      side: 'basic-wall',
 	      ceiling: 'basic-ceiling'
-	    },
-
-	    hasCeiling: true,
-	    hCeiling: 2.4,
-
-	    polygon: [
-	      [ 1.5, 1.5 ],
-	      [ 1.5, -1.5 ],
-	      [ -1.5, -1.5 ],
-	      [ -1.5, 1.5 ]
-	    ],
-
-	    _afFurnishings: undefined,
-	    _afGroups: undefined,
-	    _afShuffleIndex: undefined,
-	    _afAddedGroups: undefined,
-	    _afStyle: 'generic'
-
-	  },
-
-	  valid: {
-	    children: [],
-	    x: {
-	      step: 0.05
-	    },
-	    y: {
-	      lock: true
-	    },
-	    z: {
-	      step: 0.05
-	    },
-	    ry: {
-	      lock: false
-	    }
-	  },
-
-	  initialize: function(){
-
-	    // backwards compatibility
-	    if (this.a.material) {
-	      this.a.materials.top = this.a.material;
-	      delete this.a.material;
-	    }
-	    if (this.a.ceilingMaterial) {
-	      this.a.materials.ceiling = this.a.ceilingMaterial;
-	      delete this.a.ceilingMaterial;
-	    }
-	    if (this.a.side) {
-	      this.a.materials.side = this.a.sideMaterial;
-	      delete this.a.sideMaterial;
-	    }
-	    // on the fly migration of 'old' usage combination
-	    if (this.a.usage === 'living,dining') this.a.usage = 'dining_living';
-	    if (this.a.usage === 'office') this.a.usage = 'homeOffice';
-
-	  },
-
-	  contextMenu: function gerContextMenu (){
-
-	    var contextMenu = {
-	      templateId: 'generic',
-	      templateOptions: {
-	        title: 'Polyfloor'
-	      },
-	      controls: [
-	        {
-	          title: 'Has Ceiling',
-	          type: 'boolean',
-	          param: 'hasCeiling'
-	        },
-	        {
-	          title: 'Ceiling Height',
-	          type: 'number',
-	          param: 'hCeiling',
-	          unit: 'm',
-	          step: 0.05,
-	          round: 0.01
-	        },
-	        {
-	          title: 'Vertical Position',
-	          type: 'number',
-	          param: 'y',
-	          unit: 'm',
-	          step: 0.1,
-	          round: 0.01
-	        },
-	        {
-	          title: 'Height',
-	          type: 'number',
-	          param: 'h',
-	          unit: 'm',
-	          step: 0.05,
-	          round: 0.01
-	        },
-	        {
-	          title: 'Lock this item',
-	          type: 'boolean',
-	          param: 'locked',
-	          subscriptions: [ 'pro', 'modeller', 'artist3d' ]
-	        },
-	        {
-	          display: '<h2>Materials</h2>',
-	          type: 'html'
-	        },
-	        {
-	          title: 'Floor',
-	          type: 'material',
-	          param: 'materials.top',
-	          category: 'floor'
-	        },
-	        {
-	          title: 'Side',
-	          type: 'material',
-	          param: 'materials.side',
-	          category: 'wall'
-	        }
-	      ]
 	    };
 
+	    // check for adapted materials
+	    var materialKeys = Object.keys(data).filter(function(key) {
+	      return key.indexOf('material_') > -1
+	    });
+	    // add materials to instance
+	    materialKeys.forEach(function(key) {
+	      var mesh = key.replace('material_', '');
+	      materials[mesh] = data[key];
+	    });
 
-	    if (this.params.hasCeiling) {
-	      contextMenu.controls.push({
-	        title: 'Ceiling',
-	        type: 'material',
-	        param: 'materials.ceiling',
-	        category: 'ceiling'
-	      });
-	    }
+	    // fetch materials from mat library
+	    Object.keys(materials).forEach(mat => {
+	      materials[mat] = getMaterial(materials[mat]);
+	    });
 
-	    var usageList = {
-	      'Living': 'living',
-	      'Living & Dining': 'dining_living',
-	      'Home office': 'homeOffice',
-	      'Bedroom': 'bedroom',
-	      'Dining': 'dining',
-	      'Bathroom': 'bathroom'
+	    // construct data3d object
+	    var data3d = {
+	      meshes: meshes,
+	      materials: materials
 	    };
 
-	    if (self.vm.user.a.isDev && !config.isProduction) {
-	      usageList['Office Working'] = 'officeWorking';
-	      usageList['Office Meeting'] = 'officeMeeting';
-	    }
+	    // create new one
+	    this_.mesh = new THREE.Object3D();
+	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
 
-	    return contextMenu
-
+	    // update view
+	    this_.data3dView.set(data3d);
+	    this_.el.setObject3D('mesh', this_.mesh);
+	    // emit event
+	    this_.el.emit('mesh-updated');
 	  },
 
-	  bindings: [ {
-	    events: [
-	      'change:_afFurnishings',
-	      'change:hasCeiling'
-	    ],
-	    call: 'contextMenu'
-	  }, {
-	    events: [
-	      'change:x',
-	      'change:z',
-	      'change:h',
-	      'change:polygon',
-	      'change:hasCeiling',
-	      'change:hCeiling'
-	    ],
-	    call: 'meshes3d'
-	  }, {
-	    events: [
-	      'change:materials.*'
-	    ],
-	    call: 'materials3d'
-	  }],
+	  remove: function () {
+	    if (this.data3dView) {
+	      this.data3dView.destroy();
+	      this.data3dView = null;
+	    }
+	    if (this.mesh) {
+	      this.el.removeObject3D('mesh');
+	      this.mesh = null;
+	    }
+	  },
 
-	  loadingQueuePrefix: 'architecture',
+	  generateMeshes3d: function () {
+	    var a = this.attributes;
 
-	  controls3d: 'polyFloor',
-
-	  meshes3d: function generateMeshes3d () {
-
-	    var a = this.a;
-
+	    console.log('polyfloor', a.polygon);
 	    // a polygon can not have less than 3 points
 	    if (a.polygon.length < 3) {
 	      if (this.model) {
@@ -27749,11 +27807,11 @@
 	    }
 
 	    // prepare format
-	    var vertices = [];
-	    for (var i = 0, l = a.polygon.length; i < l; i++) {
-	      vertices[ i * 2 ] = a.polygon[ i ][ 0 ];
-	      vertices[ i * 2 + 1 ] = a.polygon[ i ][ 1 ];
-	    }
+	    var vertices = a.polygon; //[]
+	    // for (var i = 0, l = a.polygon.length; i < l; i++) {
+	    //   vertices[ i * 2 ] = a.polygon[ i ][ 0 ]
+	    //   vertices[ i * 2 + 1 ] = a.polygon[ i ][ 1 ]
+	    // }
 
 	    // top polygon
 	    var topPolygon = generatePolygonBuffer({
@@ -27808,983 +27866,113 @@
 	        material: 'ceiling'
 	      }
 	    }
-
-	  },
-
-	  materials3d: function generateMaterials3d() {
-	    return this.a.materials
 	  }
-
 	};
 
 	// dependencies
 
-	// class
+	var wallComponent = {
 
-	var windowType = {
+	  schema: getSchema('wall'),
 
-	  params: {
-	    type: 'window',
-	    x: 0,
-	    y: 0.8,
-	    z: 0,
-	    ry: 0,
-	    l: 1.6,        // length
-	    h: 1.5,        // height
-	    lock: false,
+	  init: function () {},
 
-	    bake: true,
-	    bakeStatus: 'none', // none, pending, done
+	  update: function (oldData) {
+	    var this_ = this;
+	    var data = this_.data;
 
-	    rowRatios: [ 1 ],
-	    columnRatios: [ [ 1 ] ],
+	    // remove old mesh
+	    this.remove();
 
-	    frameLength: 0.04,
-	    frameWidth: 0.06,
+	    // get defaults and
+	    this.attributes = cloneDeep_1(data);
 
-	    materials: {
-	      frame: {
-	        colorDiffuse: [0.85, 0.85, 0.85]
-	      },
-	      glass: 'glass'
+	    // get children for walls
+	    var children = this_.el.children;
+	    this.attributes.children = [];
+	    for (var i = 0; i < children.length; i++) {
+	      var c = children[i].getAttribute('io3d-window') || children[i].getAttribute('io3d-door');
+	      if (c) {
+	        if (children[i].getAttribute('io3d-window')) c.type = 'window';
+	        else if (children[i].getAttribute('io3d-door')) c.type = 'door';
+	        var pos = children[i].getAttribute('position');
+	        Object.keys(pos).forEach(p => {
+	          c[p] = pos[p];
+	        });
+	        this.attributes.children.push(c);
+	      } else console.log('invalid child');
 	    }
+	    // this.attributes.children = this.attributes.children.map(c => mapAttributes(cloneDeep(getType.get(c.type).params), c))
 
-	  },
+	    // get meshes and materials from el3d modules
+	    var meshes = this.generateMeshes3d();
 
-	  valid: {
-	    children: [],
-	    x: {
-	      step: 0.05
-	    },
-	    z: {
-	      lock: true
-	    },
-	    ry: {
-	      step: 180
-	    },
-	    l: {
-	      min: 0.3,
-	      step: 0.05
-	    }
-	  },
-
-	  initialize: function(){
-
-	    // backwards compatibility
-	    if (this.a.frameMaterial) {
-	      this.a.materials.frame = this.a.frameMaterial;
-	      delete this.a.frameMaterial;
-	    }
-	    if (this.a.glassMaterial) {
-	      this.a.materials.glass = this.a.glassMaterial;
-	      delete this.a.glassMaterial;
-	    }
-	    if (this.a.materials && this.a.materials.frame && this.a.materials.frame.length === 3) {
-	      // deprecated color format
-	      this.a.materials.frame = { colorDiffuse: this.a.materials.frame };
-	    }
-
-	  },
-
-	  bindings: [{
-	    events: [
-	      'change:l',
-	      'change:w',
-	      'change:h',
-	      'change:rowRatios',
-	      'change:columnRatios',
-	      'change:frameLength',
-	      'change:frameWidth'
-	    ],
-	    call: 'meshes3d'
-	  },{
-	    events: [
-	      'change:materials.*'
-	    ],
-	    call: 'materials3d'
-	  }],
-
-	  _setRatios: function (args) {
-	    var rowRatios = args.rows || this.a.rowRatios;
-	    var columnRatios = args.columns || this.a.columnRatios;
-	    if (!args.rows) {
-	      // adapt rows
-	      var _rowRatios = [];
-	      for (var i = 0, l = columnRatios.length; i < l; i++) {
-	        if (rowRatios[ i ]) {
-	          _rowRatios[ i ] = rowRatios[ i ];
-	        } else {
-	          _rowRatios[ i ] = 1;
-	        }
+	    // clean up empty meshes to prevent errors
+	    var meshKeys = Object.keys(meshes);
+	    meshKeys.forEach(key => {
+	      if (!meshes[key].positions || !meshes[key].positions.length) {
+	        // console.warn('no vertices for mesh', key)
+	        delete meshes[key];
 	      }
-	      rowRatios = _rowRatios;
-	    } else {
-	      // adapt columns
-	      var _columnRatios = [];
-	      for (var i = 0, l = rowRatios.length; i < l; i++) {
-	        if (columnRatios[ i ]) {
-	          _columnRatios[ i ] = columnRatios[ i ];
-	        } else {
-	          _columnRatios[ i ] = [ 1 ];
-	        }
-	      }
-	      columnRatios = _columnRatios;
-	    }
-	    this.set({
-	      rowRatios: rowRatios,
-	      columnRatios: columnRatios
 	    });
-	  },
 
-	  contextMenu: function generateContextMenu (){
-	    var self = this;
-	    return {
-	      templateId: 'generic',
-	      templateOptions: {
-	        title: 'Window'
-	      },
-	      controls: [
-	        {
-	          title: 'Height',
-	          type: 'number',
-	          param: 'h',
-	          unit: 'm',
-	          step: 0.05,
-	          round: 0.01
-	        },{
-	          title: 'Length',
-	          type: 'number',
-	          param: 'l',
-	          unit: 'm',
-	          step: 0.05,
-	          round: 0.01
-	        },{
-	          title: 'Vertical Position',
-	          type: 'number',
-	          param: 'y',
-	          unit: 'm',
-	          step: 0.1,
-	          round: 0.01
-	        },{
-	          title: 'Border Length',
-	          type: 'number',
-	          param: 'frameLength',
-	          unit: 'm',
-	          min: 0.02,
-	          max: 0.2,
-	          step: 0.01,
-	          round: 0.01
-	        },{
-	          title: 'Border Width',
-	          type: 'number',
-	          param: 'frameWidth',
-	          unit: 'm',
-	          min: 0.02,
-	          max: 0.2,
-	          step: 0.05,
-	          round: 0.01
-	        },
-	        {
-	          title: 'Row Ratios',
-	          type: 'text',
-	          display: function(){
-	            // encode
-	            return self.a.rowRatios.join(':')
-	          },
-	          onInput: function(value){
-	            // decode
-	            var rows = [];
-	            value.split(':').forEach(function(_value, i){
-	              rows[ i ] = window.Number(_value);
-	            });
-	            self._setRatios({ rows: rows });
-	          },
-	          bindings: ['change:rowRatios', 'change:columnRatios'],
-	          realtimeInput: false,
-	          subscriptions: ['pro', 'modeller', 'artist3d']
-	        },
-	        {
-	          title: 'Column Ratios',
-	          type: 'text',
-	          display: function(){
-	            // encode
-	            var columns = [];
-	            self.a.columnRatios.forEach(function(row, i){
-	              columns[ i ] = row.join(':');
-	            });
-	            return columns.join('\n')
-	          },
-	          onInput: function(value){
-	            // decode
-	            var columns = [];
-	            value.split('\n').forEach(function(row, i){
-	              columns[ i ] = [];
-	              row.split(':').forEach(function(_value, j){
-	                columns[ i ][ j ] = window.Number(_value);
-	              });
-	            });
-	            self._setRatios({ columns: columns });
-	          },
-	          bindings: ['change:rowRatios', 'change:columnRatios'],
-	          realtimeInput: false,
-	          multiLine: true,
-	          subscriptions: ['pro', 'modeller', 'artist3d']
-	        },
-	        {
-	          title: 'Lock this item',
-	          type: 'boolean',
-	          param: 'locked',
-	          subscriptions: ['pro', 'modeller', 'artist3d']
-	        },
-	        {
-	          title: 'Border Material',
-	          type: 'material',
-	          param: 'materials.frame',
-	          mode: 'custom',
-	          controls: [ 'colorDiffuse', 'colorSpecular', 'specularCoef' ]
-	        }
-	      ]
-	    }
-	  },
-
-	  loadingQueuePrefix: 'architecture',
-
-	  controls3d: 'insideWall',
-
-	  meshes3d: function () {
-
-	    var a = this.a;
-
-	    var rowRatios = a.rowRatios;
-	    var columnRatios = a.columnRatios;
-	    var frameLength = a.frameLength;
-	    var frameWidth = a.frameWidth;
-
-	    // internals
-
-	    // initial cursor positions (yCursor at the top, xCursor at the left)
-	    var yCursor = a.h;
-	    var xCursor = 0;
-
-	    var evenFrameHeight = a.h - frameLength;
-	    var evenFrameLength = a.l - frameLength;
-
-	    var rLen = rowRatios.length;
-	    var cLen;
-
-	    var rowSegments = 0;
-	    var columnSegments = [];
-
-	    var frameFacesCount = rLen * 4 + 18;
-	    var glassFacesCount = 0;
-
-	    for (var r = 0; r < rLen; r++) {
-	      rowSegments += rowRatios[ r ];
-	      columnSegments[ r ] = 0;
-	      cLen = columnRatios[ r ].length;
-	      frameFacesCount += (cLen - 1) * 4 + cLen * 8;
-	      glassFacesCount += cLen * 4;
-	      for (var c = 0; c < cLen; c++) {
-	        columnSegments[ r ] += columnRatios[ r ][ c ];
-	      }
-	    }
-
-	    var segmentLength;
-	    var segmentHeight = evenFrameHeight / rowSegments;
-
-	    var frameVertices = new Float32Array(frameFacesCount * 9);
-	    var fvPos = 0;
-
-	    var glassVertices = new Float32Array(glassFacesCount * 9);
-	    var gvPos = 0;
-
-	    // iterate
-	    for (var r = 0; r < rLen; r++) {
-
-	      cLen = columnRatios[ r ].length;
-	      segmentLength = evenFrameLength / columnSegments[ r ];
-
-	      // horizontal bar quad
-
-	      frameVertices[ fvPos ] = frameLength;
-	      frameVertices[ fvPos + 1 ] = yCursor;
-	      frameVertices[ fvPos + 2 ] = 0;
-	      frameVertices[ fvPos + 3 ] = evenFrameLength;
-	      frameVertices[ fvPos + 4 ] = yCursor - frameLength;
-	      frameVertices[ fvPos + 5 ] = 0;
-	      frameVertices[ fvPos + 6 ] = frameLength;
-	      frameVertices[ fvPos + 7 ] = yCursor - frameLength;
-	      frameVertices[ fvPos + 8 ] = 0;
-
-	      frameVertices[ fvPos + 9 ] = evenFrameLength;
-	      frameVertices[ fvPos + 10 ] = yCursor - frameLength;
-	      frameVertices[ fvPos + 11 ] = 0;
-	      frameVertices[ fvPos + 12 ] = frameLength;
-	      frameVertices[ fvPos + 13 ] = yCursor;
-	      frameVertices[ fvPos + 14 ] = 0;
-	      frameVertices[ fvPos + 15 ] = evenFrameLength;
-	      frameVertices[ fvPos + 16 ] = yCursor;
-	      frameVertices[ fvPos + 17 ] = 0;
-
-	      frameVertices[ fvPos + 18 ] = frameLength;
-	      frameVertices[ fvPos + 19 ] = yCursor;
-	      frameVertices[ fvPos + 20 ] = frameWidth;
-	      frameVertices[ fvPos + 21 ] = frameLength;
-	      frameVertices[ fvPos + 22 ] = yCursor - frameLength;
-	      frameVertices[ fvPos + 23 ] = frameWidth;
-	      frameVertices[ fvPos + 24 ] = evenFrameLength;
-	      frameVertices[ fvPos + 25 ] = yCursor - frameLength;
-	      frameVertices[ fvPos + 26 ] = frameWidth;
-
-	      frameVertices[ fvPos + 27 ] = evenFrameLength;
-	      frameVertices[ fvPos + 28 ] = yCursor - frameLength;
-	      frameVertices[ fvPos + 29 ] = frameWidth;
-	      frameVertices[ fvPos + 30 ] = evenFrameLength;
-	      frameVertices[ fvPos + 31 ] = yCursor;
-	      frameVertices[ fvPos + 32 ] = frameWidth;
-	      frameVertices[ fvPos + 33 ] = frameLength;
-	      frameVertices[ fvPos + 34 ] = yCursor;
-	      frameVertices[ fvPos + 35 ] = frameWidth;
-
-	      fvPos += 36;
-	      yCursor -= frameLength;
-
-	      // vertical bars
-
-	      for (var c = 0; c < cLen - 1; c++) {
-
-	        // move xCursor to the right
-	        xCursor += segmentLength * columnRatios[ r ][ c ];
-
-	        // vertical bar quad
-
-	        frameVertices[ fvPos ] = xCursor;
-	        frameVertices[ fvPos + 1 ] = yCursor;
-	        frameVertices[ fvPos + 2 ] = 0;
-	        frameVertices[ fvPos + 3 ] = xCursor + frameLength;
-	        frameVertices[ fvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        frameVertices[ fvPos + 5 ] = 0;
-	        frameVertices[ fvPos + 6 ] = xCursor;
-	        frameVertices[ fvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        frameVertices[ fvPos + 8 ] = 0;
-
-	        frameVertices[ fvPos + 9 ] = xCursor + frameLength;
-	        frameVertices[ fvPos + 10 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        frameVertices[ fvPos + 11 ] = 0;
-	        frameVertices[ fvPos + 12 ] = xCursor;
-	        frameVertices[ fvPos + 13 ] = yCursor;
-	        frameVertices[ fvPos + 14 ] = 0;
-	        frameVertices[ fvPos + 15 ] = xCursor + frameLength;
-	        frameVertices[ fvPos + 16 ] = yCursor;
-	        frameVertices[ fvPos + 17 ] = 0;
-
-	        frameVertices[ fvPos + 18 ] = xCursor;
-	        frameVertices[ fvPos + 19 ] = yCursor;
-	        frameVertices[ fvPos + 20 ] = frameWidth;
-	        frameVertices[ fvPos + 21 ] = xCursor;
-	        frameVertices[ fvPos + 22 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        frameVertices[ fvPos + 23 ] = frameWidth;
-	        frameVertices[ fvPos + 24 ] = xCursor + frameLength;
-	        frameVertices[ fvPos + 25 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        frameVertices[ fvPos + 26 ] = frameWidth;
-
-	        frameVertices[ fvPos + 27 ] = xCursor + frameLength;
-	        frameVertices[ fvPos + 28 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        frameVertices[ fvPos + 29 ] = frameWidth;
-	        frameVertices[ fvPos + 30 ] = xCursor + frameLength;
-	        frameVertices[ fvPos + 31 ] = yCursor;
-	        frameVertices[ fvPos + 32 ] = frameWidth;
-	        frameVertices[ fvPos + 33 ] = xCursor;
-	        frameVertices[ fvPos + 34 ] = yCursor;
-	        frameVertices[ fvPos + 35 ] = frameWidth;
-
-	        fvPos += 36;
-
-	      }
-
-	      // glass & extrusions
-	      xCursor = 0;
-	      for (var c = 0; c < cLen; c++) {
-
-	        // glass quad
-
-	        glassVertices[ gvPos ] = xCursor + frameLength;
-	        glassVertices[ gvPos + 1 ] = yCursor;
-	        glassVertices[ gvPos + 2 ] = 0;
-	        glassVertices[ gvPos + 3 ] = xCursor + frameLength;
-	        glassVertices[ gvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        glassVertices[ gvPos + 5 ] = 0;
-	        glassVertices[ gvPos + 6 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
-	        glassVertices[ gvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        glassVertices[ gvPos + 8 ] = 0;
-
-	        glassVertices[ gvPos + 9 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
-	        glassVertices[ gvPos + 10 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        glassVertices[ gvPos + 11 ] = 0;
-	        glassVertices[ gvPos + 12 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
-	        glassVertices[ gvPos + 13 ] = yCursor;
-	        glassVertices[ gvPos + 14 ] = 0;
-	        glassVertices[ gvPos + 15 ] = xCursor + frameLength;
-	        glassVertices[ gvPos + 16 ] = yCursor;
-	        glassVertices[ gvPos + 17 ] = 0;
-
-	        gvPos += 18;
-
-	        glassVertices[ gvPos ] = xCursor + frameLength;
-	        glassVertices[ gvPos + 1 ] = yCursor;
-	        glassVertices[ gvPos + 2 ] = 0;
-	        glassVertices[ gvPos + 3 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
-	        glassVertices[ gvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        glassVertices[ gvPos + 5 ] = 0;
-	        glassVertices[ gvPos + 6 ] = xCursor + frameLength;
-	        glassVertices[ gvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        glassVertices[ gvPos + 8 ] = 0;
-
-	        glassVertices[ gvPos + 9 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
-	        glassVertices[ gvPos + 10 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        glassVertices[ gvPos + 11 ] = 0;
-	        glassVertices[ gvPos + 12 ] = xCursor + frameLength;
-	        glassVertices[ gvPos + 13 ] = yCursor;
-	        glassVertices[ gvPos + 14 ] = 0;
-	        glassVertices[ gvPos + 15 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
-	        glassVertices[ gvPos + 16 ] = yCursor;
-	        glassVertices[ gvPos + 17 ] = 0;
-
-	        gvPos += 18;
-
-	        // left side extrusion
-
-	        frameVertices[ fvPos ] = xCursor + frameLength;
-	        frameVertices[ fvPos + 1 ] = yCursor;
-	        frameVertices[ fvPos + 2 ] = 0;
-	        frameVertices[ fvPos + 3 ] = xCursor + frameLength;
-	        frameVertices[ fvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        frameVertices[ fvPos + 5 ] = frameWidth;
-	        frameVertices[ fvPos + 6 ] = xCursor + frameLength;
-	        frameVertices[ fvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        frameVertices[ fvPos + 8 ] = 0;
-
-	        frameVertices[ fvPos + 9 ] = xCursor + frameLength;
-	        frameVertices[ fvPos + 10 ] = yCursor;
-	        frameVertices[ fvPos + 11 ] = 0;
-	        frameVertices[ fvPos + 12 ] = xCursor + frameLength;
-	        frameVertices[ fvPos + 13 ] = yCursor;
-	        frameVertices[ fvPos + 14 ] = frameWidth;
-	        frameVertices[ fvPos + 15 ] = xCursor + frameLength;
-	        frameVertices[ fvPos + 16 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        frameVertices[ fvPos + 17 ] = frameWidth;
-
-	        fvPos += 18;
-
-	        // bottom side extrusion
-
-	        frameVertices[ fvPos ] = xCursor + frameLength;
-	        frameVertices[ fvPos + 1 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        frameVertices[ fvPos + 2 ] = 0;
-	        frameVertices[ fvPos + 3 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
-	        frameVertices[ fvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        frameVertices[ fvPos + 5 ] = frameWidth;
-	        frameVertices[ fvPos + 6 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
-	        frameVertices[ fvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        frameVertices[ fvPos + 8 ] = 0;
-
-	        frameVertices[ fvPos + 9 ] = xCursor + frameLength;
-	        frameVertices[ fvPos + 10 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        frameVertices[ fvPos + 11 ] = 0;
-	        frameVertices[ fvPos + 12 ] = xCursor + frameLength;
-	        frameVertices[ fvPos + 13 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        frameVertices[ fvPos + 14 ] = frameWidth;
-	        frameVertices[ fvPos + 15 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
-	        frameVertices[ fvPos + 16 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        frameVertices[ fvPos + 17 ] = frameWidth;
-
-	        fvPos += 18;
-
-	        // top side extrusion
-
-	        frameVertices[ fvPos ] = xCursor + frameLength;
-	        frameVertices[ fvPos + 1 ] = yCursor;
-	        frameVertices[ fvPos + 2 ] = 0;
-	        frameVertices[ fvPos + 3 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
-	        frameVertices[ fvPos + 4 ] = yCursor;
-	        frameVertices[ fvPos + 5 ] = 0;
-	        frameVertices[ fvPos + 6 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
-	        frameVertices[ fvPos + 7 ] = yCursor;
-	        frameVertices[ fvPos + 8 ] = frameWidth;
-
-	        frameVertices[ fvPos + 9 ] = xCursor + frameLength;
-	        frameVertices[ fvPos + 10 ] = yCursor;
-	        frameVertices[ fvPos + 11 ] = 0;
-	        frameVertices[ fvPos + 12 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
-	        frameVertices[ fvPos + 13 ] = yCursor;
-	        frameVertices[ fvPos + 14 ] = frameWidth;
-	        frameVertices[ fvPos + 15 ] = xCursor + frameLength;
-	        frameVertices[ fvPos + 16 ] = yCursor;
-	        frameVertices[ fvPos + 17 ] = frameWidth;
-
-	        fvPos += 18;
-
-	        // move xCursor to the right
-	        xCursor += segmentLength * columnRatios[ r ][ c ];
-
-	        // right side extrusion
-
-	        frameVertices[ fvPos ] = xCursor;
-	        frameVertices[ fvPos + 1 ] = yCursor;
-	        frameVertices[ fvPos + 2 ] = 0;
-	        frameVertices[ fvPos + 3 ] = xCursor;
-	        frameVertices[ fvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        frameVertices[ fvPos + 5 ] = 0;
-	        frameVertices[ fvPos + 6 ] = xCursor;
-	        frameVertices[ fvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        frameVertices[ fvPos + 8 ] = frameWidth;
-
-	        frameVertices[ fvPos + 9 ] = xCursor;
-	        frameVertices[ fvPos + 10 ] = yCursor;
-	        frameVertices[ fvPos + 11 ] = 0;
-	        frameVertices[ fvPos + 12 ] = xCursor;
-	        frameVertices[ fvPos + 13 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
-	        frameVertices[ fvPos + 14 ] = frameWidth;
-	        frameVertices[ fvPos + 15 ] = xCursor;
-	        frameVertices[ fvPos + 16 ] = yCursor;
-	        frameVertices[ fvPos + 17 ] = frameWidth;
-
-	        fvPos += 18;
-
-	      }
-
-	      // reset xCursor, move yCursor downwards
-	      xCursor = 0;
-	      yCursor -= segmentHeight * rowRatios[ r ] - frameLength;
-
-	    }
-
-	    // add last horizontal frame bar quad
-
-	    frameVertices[ fvPos ] = frameLength;
-	    frameVertices[ fvPos + 1 ] = yCursor;
-	    frameVertices[ fvPos + 2 ] = 0;
-	    frameVertices[ fvPos + 3 ] = evenFrameLength;
-	    frameVertices[ fvPos + 4 ] = yCursor - frameLength;
-	    frameVertices[ fvPos + 5 ] = 0;
-	    frameVertices[ fvPos + 6 ] = frameLength;
-	    frameVertices[ fvPos + 7 ] = yCursor - frameLength;
-	    frameVertices[ fvPos + 8 ] = 0;
-
-	    frameVertices[ fvPos + 9 ] = evenFrameLength;
-	    frameVertices[ fvPos + 10 ] = yCursor - frameLength;
-	    frameVertices[ fvPos + 11 ] = 0;
-	    frameVertices[ fvPos + 12 ] = frameLength;
-	    frameVertices[ fvPos + 13 ] = yCursor;
-	    frameVertices[ fvPos + 14 ] = 0;
-	    frameVertices[ fvPos + 15 ] = evenFrameLength;
-	    frameVertices[ fvPos + 16 ] = yCursor;
-	    frameVertices[ fvPos + 17 ] = 0;
-
-	    frameVertices[ fvPos + 18 ] = frameLength;
-	    frameVertices[ fvPos + 19 ] = yCursor;
-	    frameVertices[ fvPos + 20 ] = frameWidth;
-	    frameVertices[ fvPos + 21 ] = frameLength;
-	    frameVertices[ fvPos + 22 ] = yCursor - frameLength;
-	    frameVertices[ fvPos + 23 ] = frameWidth;
-	    frameVertices[ fvPos + 24 ] = evenFrameLength;
-	    frameVertices[ fvPos + 25 ] = yCursor - frameLength;
-	    frameVertices[ fvPos + 26 ] = frameWidth;
-
-	    frameVertices[ fvPos + 27 ] = evenFrameLength;
-	    frameVertices[ fvPos + 28 ] = yCursor - frameLength;
-	    frameVertices[ fvPos + 29 ] = frameWidth;
-	    frameVertices[ fvPos + 30 ] = evenFrameLength;
-	    frameVertices[ fvPos + 31 ] = yCursor;
-	    frameVertices[ fvPos + 32 ] = frameWidth;
-	    frameVertices[ fvPos + 33 ] = frameLength;
-	    frameVertices[ fvPos + 34 ] = yCursor;
-	    frameVertices[ fvPos + 35 ] = frameWidth;
-
-	    fvPos += 36;
-
-	    // add left frame side quad
-
-	    frameVertices[ fvPos ] = 0;
-	    frameVertices[ fvPos + 1 ] = a.h;
-	    frameVertices[ fvPos + 2 ] = 0;
-	    frameVertices[ fvPos + 3 ] = frameLength;
-	    frameVertices[ fvPos + 4 ] = 0;
-	    frameVertices[ fvPos + 5 ] = 0;
-	    frameVertices[ fvPos + 6 ] = 0;
-	    frameVertices[ fvPos + 7 ] = 0;
-	    frameVertices[ fvPos + 8 ] = 0;
-
-	    frameVertices[ fvPos + 9 ] = frameLength;
-	    frameVertices[ fvPos + 10 ] = 0;
-	    frameVertices[ fvPos + 11 ] = 0;
-	    frameVertices[ fvPos + 12 ] = 0;
-	    frameVertices[ fvPos + 13 ] = a.h;
-	    frameVertices[ fvPos + 14 ] = 0;
-	    frameVertices[ fvPos + 15 ] = frameLength;
-	    frameVertices[ fvPos + 16 ] = a.h;
-	    frameVertices[ fvPos + 17 ] = 0;
-
-	    frameVertices[ fvPos + 18 ] = 0;
-	    frameVertices[ fvPos + 19 ] = a.h;
-	    frameVertices[ fvPos + 20 ] = frameWidth;
-	    frameVertices[ fvPos + 21 ] = 0;
-	    frameVertices[ fvPos + 22 ] = 0;
-	    frameVertices[ fvPos + 23 ] = frameWidth;
-	    frameVertices[ fvPos + 24 ] = frameLength;
-	    frameVertices[ fvPos + 25 ] = 0;
-	    frameVertices[ fvPos + 26 ] = frameWidth;
-
-	    frameVertices[ fvPos + 27 ] = frameLength;
-	    frameVertices[ fvPos + 28 ] = 0;
-	    frameVertices[ fvPos + 29 ] = frameWidth;
-	    frameVertices[ fvPos + 30 ] = frameLength;
-	    frameVertices[ fvPos + 31 ] = a.h;
-	    frameVertices[ fvPos + 32 ] = frameWidth;
-	    frameVertices[ fvPos + 33 ] = 0;
-	    frameVertices[ fvPos + 34 ] = a.h;
-	    frameVertices[ fvPos + 35 ] = frameWidth;
-
-	    fvPos += 36;
-
-	    // add right frame side quad
-
-	    frameVertices[ fvPos ] = evenFrameLength;
-	    frameVertices[ fvPos + 1 ] = a.h;
-	    frameVertices[ fvPos + 2 ] = 0;
-	    frameVertices[ fvPos + 3 ] = a.l;
-	    frameVertices[ fvPos + 4 ] = 0;
-	    frameVertices[ fvPos + 5 ] = 0;
-	    frameVertices[ fvPos + 6 ] = evenFrameLength;
-	    frameVertices[ fvPos + 7 ] = 0;
-	    frameVertices[ fvPos + 8 ] = 0;
-
-	    frameVertices[ fvPos + 9 ] = a.l;
-	    frameVertices[ fvPos + 10 ] = 0;
-	    frameVertices[ fvPos + 11 ] = 0;
-	    frameVertices[ fvPos + 12 ] = evenFrameLength;
-	    frameVertices[ fvPos + 13 ] = a.h;
-	    frameVertices[ fvPos + 14 ] = 0;
-	    frameVertices[ fvPos + 15 ] = a.l;
-	    frameVertices[ fvPos + 16 ] = a.h;
-	    frameVertices[ fvPos + 17 ] = 0;
-
-	    frameVertices[ fvPos + 18 ] = evenFrameLength;
-	    frameVertices[ fvPos + 19 ] = a.h;
-	    frameVertices[ fvPos + 20 ] = frameWidth;
-	    frameVertices[ fvPos + 21 ] = evenFrameLength;
-	    frameVertices[ fvPos + 22 ] = 0;
-	    frameVertices[ fvPos + 23 ] = frameWidth;
-	    frameVertices[ fvPos + 24 ] = a.l;
-	    frameVertices[ fvPos + 25 ] = 0;
-	    frameVertices[ fvPos + 26 ] = frameWidth;
-
-	    frameVertices[ fvPos + 27 ] = a.l;
-	    frameVertices[ fvPos + 28 ] = 0;
-	    frameVertices[ fvPos + 29 ] = frameWidth;
-	    frameVertices[ fvPos + 30 ] = a.l;
-	    frameVertices[ fvPos + 31 ] = a.h;
-	    frameVertices[ fvPos + 32 ] = frameWidth;
-	    frameVertices[ fvPos + 33 ] = evenFrameLength;
-	    frameVertices[ fvPos + 34 ] = a.h;
-	    frameVertices[ fvPos + 35 ] = frameWidth;
-
-	    fvPos += 36;
-
-	    // add right outer side squad
-
-	    frameVertices[ fvPos ] = a.l;
-	    frameVertices[ fvPos + 1 ] = a.h;
-	    frameVertices[ fvPos + 2 ] = 0;
-	    frameVertices[ fvPos + 3 ] = a.l;
-	    frameVertices[ fvPos + 4 ] = 0;
-	    frameVertices[ fvPos + 5 ] = frameWidth;
-	    frameVertices[ fvPos + 6 ] = a.l;
-	    frameVertices[ fvPos + 7 ] = 0;
-	    frameVertices[ fvPos + 8 ] = 0;
-
-	    frameVertices[ fvPos + 9 ] = a.l;
-	    frameVertices[ fvPos + 10 ] = a.h;
-	    frameVertices[ fvPos + 11 ] = 0;
-	    frameVertices[ fvPos + 12 ] = a.l;
-	    frameVertices[ fvPos + 13 ] = a.h;
-	    frameVertices[ fvPos + 14 ] = frameWidth;
-	    frameVertices[ fvPos + 15 ] = a.l;
-	    frameVertices[ fvPos + 16 ] = 0;
-	    frameVertices[ fvPos + 17 ] = frameWidth;
-
-	    fvPos += 18;
-
-	    // add right outer side squad
-
-	    frameVertices[ fvPos ] = 0;
-	    frameVertices[ fvPos + 1 ] = a.h;
-	    frameVertices[ fvPos + 2 ] = 0;
-	    frameVertices[ fvPos + 3 ] = 0;
-	    frameVertices[ fvPos + 4 ] = 0;
-	    frameVertices[ fvPos + 5 ] = 0;
-	    frameVertices[ fvPos + 6 ] = 0;
-	    frameVertices[ fvPos + 7 ] = 0;
-	    frameVertices[ fvPos + 8 ] = frameWidth;
-
-	    frameVertices[ fvPos + 9 ] = 0;
-	    frameVertices[ fvPos + 10 ] = a.h;
-	    frameVertices[ fvPos + 11 ] = 0;
-	    frameVertices[ fvPos + 12 ] = 0;
-	    frameVertices[ fvPos + 13 ] = 0;
-	    frameVertices[ fvPos + 14 ] = frameWidth;
-	    frameVertices[ fvPos + 15 ] = 0;
-	    frameVertices[ fvPos + 16 ] = a.h;
-	    frameVertices[ fvPos + 17 ] = frameWidth;
-
-	    fvPos += 18;
-
-	    // add top outer side squad
-
-	    frameVertices[ fvPos ] = 0;
-	    frameVertices[ fvPos + 1 ] = a.h;
-	    frameVertices[ fvPos + 2 ] = 0;
-	    frameVertices[ fvPos + 3 ] = a.l;
-	    frameVertices[ fvPos + 4 ] = a.h;
-	    frameVertices[ fvPos + 5 ] = frameWidth;
-	    frameVertices[ fvPos + 6 ] = a.l;
-	    frameVertices[ fvPos + 7 ] = a.h;
-	    frameVertices[ fvPos + 8 ] = 0;
-
-	    frameVertices[ fvPos + 9 ] = a.l;
-	    frameVertices[ fvPos + 10 ] = a.h;
-	    frameVertices[ fvPos + 11 ] = frameWidth;
-	    frameVertices[ fvPos + 12 ] = 0;
-	    frameVertices[ fvPos + 13 ] = a.h;
-	    frameVertices[ fvPos + 14 ] = 0;
-	    frameVertices[ fvPos + 15 ] = 0;
-	    frameVertices[ fvPos + 16 ] = a.h;
-	    frameVertices[ fvPos + 17 ] = frameWidth;
-
-	    // return meshes
-	    return {
-	      frame: {
-	        positions: frameVertices,
-	        normals: getNormalsBuffer.flat(frameVertices),
-	        material: 'frame'
-	      },
-	      glass: {
-	        positions: glassVertices,
-	        normals: getNormalsBuffer.flat(glassVertices),
-	        material: 'glass'
-	      }
-	    }
-
-	  },
-
-	  materials3d: function generateMaterials3d () {
-	    return this.a.materials
-	  }
-
-	};
-
-	// dependencies
-
-	// helpers
-
-	function round$1 (x) {
-	  return Math.round(x * 1000000) / 1000000
-	}
-
-	// class
-
-	var wallType = {
-
-	  params: {
-
-	    type: 'wall',
-
-	    x: 0,
-	    y: 0,
-	    z: 0,
-
-	    ry: 0,       // rotation angle (deg)
-
-	    l: 1,        // length
-	    w: 0.15,     // width (=thickness)
-	    h: 2.4,      // height (! use apartment height)
-
-	    lock: false,
-
-	    bake: true,
-	    bakeStatus: 'none', // none, pending, done
-
-	    materials: {
+	    // setup materials
+	    // defaults
+	    var materials = {
 	      front: 'default_plaster_001', //'basic-wall',
 	      back: 'default_plaster_001', //'basic-wall',
 	      base: {
 	        colorDiffuse: [ 0.95, 0.95, 0.95 ]
 	      },
 	      top: 'wall_top'
-	    },
+	    };
 
-	    baseHeight: 0,
-	    frontHasBase: true,
-	    backHasBase: true
+	    // check for adapted materials
+	    var materialKeys = Object.keys(data).filter(function(key) {
+	      return key.indexOf('material_') > -1
+	    });
+	    // add materials to instance
+	    materialKeys.forEach(function(key) {
+	      var mesh = key.replace('material_', '');
+	      materials[mesh] = data[key];
+	    });
 
+	    // fetch materials from mat library
+	    Object.keys(materials).forEach(mat => {
+	      materials[mat] = getMaterial(materials[mat]);
+	    });
+
+	    // construct data3d object
+	    var data3d = {
+	      meshes: meshes,
+	      materials: materials
+	    };
+
+	    // create new one
+	    this_.mesh = new THREE.Object3D();
+	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
+
+	    // update view
+	    this_.data3dView.set(data3d);
+	    this_.el.setObject3D('mesh', this_.mesh);
+	    // emit event
+	    this_.el.emit('mesh-updated');
 	  },
 
-	  valid: {
-	    children: [ 'door', 'window' ],
-	    x: {
-	      step: 0.05
-	    },
-	    z: {
-	      step: 0.05
-	    },
-	    ry: {
-	      //step: 45
-	      snap: 45
-	    },
-	    l: {
-	      step: 0.05
+	  remove: function () {
+	    if (this.data3dView) {
+	      this.data3dView.destroy();
+	      this.data3dView = null;
+	    }
+	    if (this.mesh) {
+	      this.el.removeObject3D('mesh');
+	      this.mesh = null;
 	    }
 	  },
 
-	  initialize: function(){
+	  generateMeshes3d: function () {
+	    var a = this.attributes;
 
-	    // backwards compatibility
-	    if (this.a.frontMaterial) {
-	      this.a.materials.front = this.a.frontMaterial;
-	      delete this.a.frontMaterial;
-	    }
-	    if (this.a.backMaterial) {
-	      this.a.materials.back = this.a.backMaterial;
-	      delete this.a.backMaterial;
-	    }
-	    if (this.a.baseMaterial) {
-	      this.a.materials.base = this.a.baseMaterial;
-	      delete this.a.baseMaterial;
-	    }
-
-	  },
-
-	  contextMenu: {
-	    templateId: 'generic',
-	    templateOptions: {
-	      title: 'Wall'
-	    },
-	    controls: [
-	      {
-	        title: 'Height',
-	        type: 'number',
-	        param: 'h',
-	        unit: 'm',
-	        min: 0.05,
-	        step: 0.05,
-	        round: 0.01
-	      },
-	      {
-	        title: 'Length',
-	        type: 'number',
-	        param: 'l',
-	        unit: 'm',
-	        step: 0.05,
-	        round: 0.01
-	      },
-	      {
-	        title: 'Width',
-	        type: 'number',
-	        param: 'w',
-	        unit: 'm',
-	        min: 0.05,
-	        max: 1,
-	        step: 0.05,
-	        round: 0.01
-	      },
-	      {
-	        title: 'Vertical Position',
-	        type: 'number',
-	        param: 'y',
-	        unit: 'm',
-	        step: 0.1,
-	        round: 0.01
-	      },
-	      {
-	        title: 'Baseboard on Front',
-	        type: 'boolean',
-	        param: 'frontHasBase'
-	      },
-	      {
-	        title: 'Baseboard on Back',
-	        type: 'boolean',
-	        param: 'backHasBase'
-	      },
-	      {
-	        title: 'Baseboard Height',
-	        type: 'number',
-	        param: 'baseHeight',
-	        unit: 'm',
-	        step: 0.05,
-	        round: 0.01
-	      },
-	      {
-	        title: 'Lock this item',
-	        type: 'boolean',
-	        param: 'locked',
-	        subscriptions: ['pro', 'modeller', 'artist3d']
-	      },
-	      {
-	        display: '<h2>Materials</h2>',
-	        type: 'html'
-	      },
-	      {
-	        title: 'Front',
-	        type: 'material',
-	        param: 'materials.front',
-	        category: 'wall'
-	      },
-	      {
-	        title: 'Back',
-	        type: 'material',
-	        param: 'materials.back',
-	        category: 'wall'
-	      },
-	      {
-	        title: 'Baseboard',
-	        type: 'material',
-	        param: 'materials.base',
-	        category: 'wall'
-	      }
-	    ]
-	  },
-
-	  bindings: [{
-	    events: [
-	      'change:h',
-	      'change:l',
-	      'change:w',
-	      'change:baseHeight',
-	      'change:frontHasBase',
-	      'change:backHasBase',
-	      '*/add',
-	      '*/remove',
-	      '*/change:x',
-	      '*/change:y',
-	      '*/change:z',
-	      '*/change:ry',
-	      '*/change:l',
-	      '*/change:h'
-	    ],
-	    call: 'meshes3d'
-	  },{
-	    events: [
-	      'change:materials.*'
-	    ],
-	    call: 'materials3d'
-	  }],
-
-	  loadingQueuePrefix: 'architecture',
-
-	  controls3d: 'wall',
-
-	  meshes3d: function generateMeshes3d() {
-	    var a = this.a;
 	    // get children
 	    var children = a.children; //.models
 	    children = sortBy_1(children, function (model) {
@@ -29845,935 +29033,621 @@
 	        material: 'base'
 	      }
 	    }
-
-	  },
-
-	  materials3d: function generateMaterials3d() {
-	    return this.a.materials
-	  }
-
-	};
-
-	// map el3d modules
-	var types = {
-	  // 'box': boxType,
-	  'closet': closetType,
-	  // 'curtain': curtainType,
-	  'door': doorType,
-	  'floor': floorType,
-	  'kitchen': kitchenType,
-	  'polyfloor': polyFloorType,
-	  // 'stairs': stairsType,
-	  'wall': wallType,
-	  'window': windowType
-	};
-
-	var getType = {
-	  init: function (attributes) {
-	    attributes = attributes || {};
-	    this.a = attributes;
-	  },
-	  get: function (type) {
-	    return types[type]
 	  }
 	};
 
-	var generic = {
-	  params: {
-	    type: {
-	      type: 'string',
-	      possibleValues: [
-	        'box',
-	        'camera-bookmark',
-	        'closet',
-	        'curtain',
-	        'door',
-	        'floor',
-	        'floorplan',
-	        'group',
-	        'interior',
-	        'kitchen',
-	        'level',
-	        'plan',
-	        'polybox',
-	        'polyfloor',
-	        'railing',
-	        'stairs',
-	        'tag',
-	        'wall',
-	        'window',
-	      ],
-	      optional: false,
-	      skipInAframe: true
-	    },
-	    x: { // x position in meters
-	      type: 'number',
-	      defaultValue: 0,
-	      optional: true,
-	      skipInAframe: true
-	    },
-	    y: { // y position in meters
-	      type: 'number',
-	      defaultValue: 0,
-	      optional: true,
-	      skipInAframe: true
-	    },
-	    z: { // z position in meters
-	      type: 'number',
-	      defaultValue: 0,
-	      optional: true,
-	      skipInAframe: true
-	    },
-	    ry: { // y rotation in angle degrees
-	      type: 'number',
-	      defaultValue: 0,
-	      optional: true,
-	      skipInAframe: true
-	    },
-	    children: {
-	      //type: 'array-with-objects',
-	      type: 'array',
-	      defaultValue: [],
-	      optional: true,
-	      skipInAframe: true
-	    },
-	    id: {
-	      type: 'string',
-	      optional: true,
-	      skipInAframe: true
-	    },
-	    materials: {
-	      type: 'object',
-	      optional: true
-	    }
-	  }
-	};
+	// helpers
 
-	var box = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      defaultValue: 1,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 1,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      defaultValue: 1,
-	      optional: false,
-	      min: 0.01
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
+	function round$1 (x) {
+	  return Math.round(x * 1000000) / 1000000
+	}
 
-	var cameraBookmark = {
-	  params: {
-	    distance: {
-	      type: 'number'
-	    }
-	  }
-	};
+	// dependencies
 
-	var closet = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      defaultValue: 0.6,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 2.4,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      defaultValue: 1.8,
-	      optional: false,
-	      min: 0.01
-	    },
-	    baseboard: {
-	      type: 'number',
-	      defaultValue: 0.1,
-	      optional: true,
-	      min: 0.01
-	    },
-	    doorWidth: {
-	      type: 'number',
-	      defaultValue: 0.02,
-	      optional: true,
-	      min: 0.01
-	    },
-	    handleLength: {
-	      type: 'number',
-	      defaultValue: 0.02,
-	      optional: true,
-	      min: 0.01
-	    },
-	    handleWidth: {
-	      type: 'number',
-	      defaultValue: 0.02,
-	      optional: true,
-	      min: 0.01
-	    },
-	    handleHeight: {
-	      type: 'number',
-	      defaultValue: 0.3,
-	      optional: true,
-	      min: 0.01
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
+	var windowComponent = {
 
-	var curtain = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      defaultValue: 0.2,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 2.4,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      defaultValue: 1.8,
-	      optional: false,
-	      min: 0.01
-	    },
-	    folds: {
-	      type: 'number',
-	      defaultValue: 14,
-	      optional: true,
-	      min: 0.01
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
+	  schema: getSchema('window'),
 
-	var door = {
-	  params: {
-	    v: {
-	      type: 'number',
-	      defaultValue: 3,
-	      possibleValues: [3],
-	      optional: false
-	    },
-	    w: { // width in meters
-	      type: 'number',
-	      defaultValue: 0.05,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 2,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      defaultValue: 0.9,
-	      optional: false,
-	      min: 0.01
-	    },
-	    frameLength: { // in meters
-	      type: 'number',
-	      defaultValue: 0.05,
-	      optional: true,
-	      min: 0.01
-	    },
-	    frameOffset: { // in meters
-	      type: 'number',
-	      defaultValue: 0,
-	      optional: true
-	    },
-	    leafWidth: { // in meters
-	      type: 'number',
-	      defaultValue: 0.03,
-	      optional: true
-	    },
-	    leafOffset: { // in meters
-	      type: 'number',
-	      defaultValue: 0.005,
-	      optional: true
-	    },
-	    doorType: {
-	      type: 'string',
-	      defaultValue: 'singleSwing',
-	      optional: false,
-	      possibleValues: ['singleSwing', 'doubleSwing', 'swingFix', 'swingDoubleFix', 'doubleSwingDoubleFix', 'slidingDoor', 'opening']
-	    },
-	    fixLeafRatio: { // in meters
-	      type: 'number',
-	      defaultValue: 0.3,
-	      optional: true
-	    },
-	    doorAngle: { // in angle degrees
-	      type: 'number',
-	      defaultValue: 92,
-	      optional: true
-	    },
-	    hinge: {
-	      type: 'string',
-	      defaultValue: 'right',
-	      optional: false,
-	      possibleValues: ['right', 'left']
-	    },
-	    side: {
-	      type: 'string',
-	      defaultValue: 'back',
-	      optional: false,
-	      possibleValues: ['front', 'back']
-	    },
-	    thresholdHeight: {
-	      type: 'number',
-	      defaultValue: 0.01,
-	      optional: true
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
+	  init: function () {},
 
-	var floor = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01
-	    },
-	    hasCeiling: { // in meters
-	      type: 'boolean',
-	      optional: false
-	    },
-	    hCeiling: { // in meters
-	      type: 'number',
-	      optional: false
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
+	  update: function (oldData) {
+	    var this_ = this;
+	    var data = this_.data;
 
-	var floorplan = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01
-	    },
-	    file: {
-	      type: 'string',
-	      optional: false
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
+	    // remove old mesh
+	    this.remove();
 
-	var group = {
-	  params: {
-	    src: {
-	      type: 'string',
-	      optional: true,
-	      skipInAframe: true
-	    }
-	  },
-	  possibleChildrenTypes: ['interior', 'object', 'wall', 'box', 'group', 'polybox']
-	};
+	    // get defaults and
+	    this.attributes = cloneDeep_1(data);
 
-	var interior = {
-	  params: {
-	    src: {
-	      type: 'string',
-	      optional: false,
-	      skipInAframe: true
-	    }
-	  },
-	  possibleChildrenTypes: ['interior', 'object', 'tag']
-	};
+	    // get meshes and materials from el3d modules
+	    var meshes = this.generateMeshes3d();
 
-	var kitchen = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      defaultValue: 0.6,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 2.4,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      defaultValue: 1.8,
-	      optional: false,
-	      min: 0.01
-	    },
-	    highCabinetLeft: {
-	      type: 'int',
-	      defaultValue: 2,
-	      optional: true
-	    },
-	    highCabinetRight: {
-	      type: 'int',
-	      defaultValue: 0,
-	      optional: true
-	    },
-	    wallCabinet: {
-	      type: 'boolean',
-	      defaultValue: true,
-	      optional: true
-	    },
-	    cabinetType: {
-	      type: 'string',
-	      defaultValue: 'flat',
-	      optional: true,
-	      possibleValues: ['flat', 'style1', 'style2']
-	    },
-	    sinkType: {
-	      type: 'string',
-	      defaultValue: 'none',
-	      optional: true,
-	      possibleValues: ['single', 'double', 'none']
-	    },
-	    extractorType: {
-	      type: 'string',
-	      defaultValue: 'none',
-	      optional: true,
-	      possibleValues: ['box', 'pyramid', 'integrated', 'none']
-	    },
-	    ovenType: {
-	      type: 'string',
-	      defaultValue: 'none',
-	      optional: true,
-	      possibleValues: ['single', 'double', 'none']
-	    },
-	    cooktopType: {
-	      type: 'string',
-	      defaultValue: 'none',
-	      optional: true,
-	      possibleValues: ['electro60', 'electro90', 'none']
-	    }
-	    // TODO: add all the default values
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var level$1 = {
-	  params: {},
-	  possibleChildrenTypes: [
-	    'box',
-	    'closet',
-	    'curtain',
-	    'floor',
-	    'floorplan',
-	    'group',
-	    'interior',
-	    'kitchen',
-	    'object',
-	    'polybox',
-	    'polyfloor',
-	    'railing',
-	    'stairs',
-	    'tag',
-	    'wall'
-	  ]
-	};
-
-	var object = {
-	  params: {
-	    object: {
-	      type: 'string',
-	      optional: false,
-	      skipInAframe: true
-	    },
-	    sourceScale: {
-	      type: 'number',
-	      optional: true,
-	      skipInAframe: true
-	    }
-	  },
-	  possibleChildrenTypes: ['interior']
-	};
-
-	var plan = {
-	  params: {
-	    modelDisplayName: {
-	      type: 'string',
-	      optional: false,
-	      skipInAframe: true
-	    },
-	    v: {
-	      type: 'number',
-	      possibleValues: [1],
-	      optional: false,
-	      skipInAframe: true
-	    }
-	  },
-	  possibleChildrenTypes: ['level', 'camera-bookmark']
-	};
-
-	var polybox = {
-	  params: {
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 1,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    polygon: {
-	      //type: 'array-with-arrays-with-numbers',
-	      type: 'array',
-	      aframeType: 'string',
-	      optional: false
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var polyfloor = {
-	  params: {
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 0.2,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    polygon: {
-	      //type: 'array-with-arrays-with-numbers',
-	      type: 'array',
-	      // aframeType: 'string',
-	      defaultValue: '1.5,1.5,1.5,-1.5,-1.5,-1.5,-1.5,1.5',
-	      optional: false
-	    },
-	    hasCeiling: { // in meters
-	      type: 'boolean',
-	      defaultValue: true,
-	      optional: false
-	    },
-	    hCeiling: { // in meters
-	      type: 'number',
-	      defaultValue: 2.4,
-	      optional: false
-	    },
-	    usage: { // in meters
-	      type: 'string',
-	      optional: true
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var railing = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01
-	    },
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var stairs = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      defaultValue: 1.2,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 2.4,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      defaultValue: 4,
-	      optional: false,
-	      min: 0.01
-	    },
-	    stepWidth: {
-	      type: 'number',
-	      defaultValue: 1.2,
-	      optional: true,
-	      min: 0.01
-	    },
-	    stairType: {
-	      type: 'string',
-	      defaultValue: 'straight',
-	      optional: true,
-	      min: 0.01
-	    }
-	    // TODO: add all default values
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var tag = {
-	  params: {
-	    title: {
-	      type: 'string',
-	      optional: false
-	    },
-	    notes: {
-	      type: 'string',
-	      optional: true
-	    },
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var wall = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      defaultValue: 0.15,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 2.4,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      defaultValue: 1,
-	      optional: false,
-	      min: 0.01
-	    },
-	    baseHeight: {type: 'number', optional: true, defaultValue: 0},
-	    frontHasBase: {type: 'boolean', optional: true, defaultValue: false},
-	    backHasBase: {type: 'boolean', optional: true, defaultValue: false}
-	  },
-	  possibleChildrenTypes: ['window', 'door']
-	};
-
-	var window$1 = {
-	  params: {
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 1.5,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01
-	    },
-	    rowRatios: { // in meters
-	      //type: 'array-with-numbers',
-	      type: 'array',
-	      skipInAframe: true,
-	      optional: true
-	    },
-	    columnRatios: { // in meters
-	      //type: 'array-with-arrays-with-numbers',
-	      type: 'array',
-	      skipInAframe: true,
-	      optional: true
-	    },
-	    frameLength: { // in meters
-	      type: 'number',
-	      defaultValue: 0.04,
-	      optional: true,
-	      min: 0.01
-	    },
-	    frameWidth: { // in meters
-	      type: 'number',
-	      defaultValue: 0.06,
-	      optional: true,
-	      min: 0.01
-	    },
-	    y: {
-	      defaultValue: 0.9,
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	// import sceneStructure types
-	function getDefaultsByType (type) {
-	  var types = {
-	    box: box,
-	    'camera-bookmark': cameraBookmark,
-	    closet: closet,
-	    curtain: curtain,
-	    door: door,
-	    floor: floor,
-	    floorplan: floorplan,
-	    group: group,
-	    interior: interior,
-	    kitchen: kitchen,
-	    level: level$1,
-	    object: object,
-	    plan: plan,
-	    polybox: polybox,
-	    polyfloor: polyfloor,
-	    railing: railing,
-	    stairs: stairs,
-	    tag: tag,
-	    wall: wall,
-	    window: window$1
-	  };
-
-	  if (type && types[type]) {
-	    return {
-	      params: defaults_1$1({}, generic.params, types[type].params),
-	      possibleChildrenTypes: types[type].possibleChildrenTypes
-	    }
-	  } else {
-	    var typeSpecificValidations = {};
-
-	    Object.keys(types).forEach(function (key) {
-	      typeSpecificValidations[key] = {
-	        params: defaults_1$1({}, generic.params, types[key].params),
-	        possibleChildrenTypes: types[key].possibleChildrenTypes
-	      };
+	    // clean up empty meshes to prevent errors
+	    var meshKeys = Object.keys(meshes);
+	    meshKeys.forEach(key => {
+	      if (!meshes[key].positions || !meshes[key].positions.length) {
+	        // console.warn('no vertices for mesh', key)
+	        delete meshes[key];
+	      }
 	    });
-	    return typeSpecificValidations
-	  }
-	}
 
-	function getSchema (type) {
-	  // get valid params and default values for each type
-	  var validProps = getDefaultsByType(type);
-	  let schema = {};
-	  var params = validProps.params;
-	  var propKeys = Object.keys(params);
-	  propKeys.forEach(function (key) {
-	    // skip location, children, material and id params
-	    if (params[key].skipInAframe || key === 'materials') return
-	    // map defaults to aframe schema convention
-	    var paramType = params[key].aframeType || params[key].type;
-	    schema[key] = {type: paramType};
-	    if (params[key].defaultValue) schema[key].default = params[key].defaultValue;
-	    if (params[key].possibleValues) schema[key].oneOf = params[key].possibleValues;
-	  });
-	  return schema
-	}
+	    // setup materials
+	    // defaults
+	    var materials = {
+	      frame: {
+	        colorDiffuse: [0.85, 0.85, 0.85]
+	      },
+	      glass: 'glass'
+	    };
 
-	function getElementComponent(type) {
-	  return {
-	    schema: getSchema(type),
+	    // check for adapted materials
+	    var materialKeys = Object.keys(data).filter(function(key) {
+	      return key.indexOf('material_') > -1
+	    });
+	    // add materials to instance
+	    materialKeys.forEach(function(key) {
+	      var mesh = key.replace('material_', '');
+	      materials[mesh] = data[key];
+	    });
 
-	    init: function () {
-	      var this_ = this;
+	    // fetch materials from mat library
+	    Object.keys(materials).forEach(mat => {
+	      materials[mat] = getMaterial(materials[mat]);
+	    });
 
-	      // listen for changes in child nodes ( windows, doors )
-	      var children = this.el.childNodes;
-	      children.forEach(function(c) {
-	        console.log(c);
-	        c.addEventListener('componentchanged', function() {
-	          console.log('child updated');
-	          this_.updateElement();
-	        });
-	      });
+	    // construct data3d object
+	    var data3d = {
+	      meshes: meshes,
+	      materials: materials
+	    };
 
-	      this.updateElement();
-	    },
+	    // create new one
+	    this_.mesh = new THREE.Object3D();
+	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
 
-	    update: function (oldData) {
-	      if (!oldData || Object.keys(oldData).length === 0) return
-	      console.log('update');
+	    // update view
+	    this_.data3dView.set(data3d);
+	    this_.el.setObject3D('mesh', this_.mesh);
+	    // emit event
+	    this_.el.emit('mesh-updated');
+	  },
 
-	      this.updateElement();
-	    },
+	  remove: function () {
+	    if (this.data3dView) {
+	      this.data3dView.destroy();
+	      this.data3dView = null;
+	    }
+	    if (this.mesh) {
+	      this.el.removeObject3D('mesh');
+	      this.mesh = null;
+	    }
+	  },
 
-	    updateElement: function() {
-	      var this_ = this;
-	      var data = this_.data;
-	      var initEl3d = getType.init;
+	  generateMeshes3d: function () {
+	    var a = this.attributes;
 
-	      // get default values
-	      var elType = getType.get(type);
-	      if (!elType) {
-	        console.log('invalid type', type);
-	        return
+	    var rowRatios = a.rowRatios;
+	    var columnRatios = a.columnRatios;
+	    var frameLength = a.frameLength;
+	    var frameWidth = a.frameWidth;
+
+	    // internals
+
+	    // initial cursor positions (yCursor at the top, xCursor at the left)
+	    var yCursor = a.h;
+	    var xCursor = 0;
+
+	    var evenFrameHeight = a.h - frameLength;
+	    var evenFrameLength = a.l - frameLength;
+
+	    var rLen = rowRatios.length;
+	    var cLen;
+
+	    var rowSegments = 0;
+	    var columnSegments = [];
+
+	    var frameFacesCount = rLen * 4 + 18;
+	    var glassFacesCount = 0;
+
+	    for (var r = 0; r < rLen; r++) {
+	      rowSegments += rowRatios[ r ];
+	      columnSegments[ r ] = 0;
+	      cLen = columnRatios[ r ].length;
+	      frameFacesCount += (cLen - 1) * 4 + cLen * 8;
+	      glassFacesCount += cLen * 4;
+	      for (var c = 0; c < cLen; c++) {
+	        columnSegments[ r ] += columnRatios[ r ][ c ];
+	      }
+	    }
+
+	    var segmentLength;
+	    var segmentHeight = evenFrameHeight / rowSegments;
+
+	    var frameVertices = new Float32Array(frameFacesCount * 9);
+	    var fvPos = 0;
+
+	    var glassVertices = new Float32Array(glassFacesCount * 9);
+	    var gvPos = 0;
+
+	    // iterate
+	    for (var r = 0; r < rLen; r++) {
+
+	      cLen = columnRatios[ r ].length;
+	      segmentLength = evenFrameLength / columnSegments[ r ];
+
+	      // horizontal bar quad
+
+	      frameVertices[ fvPos ] = frameLength;
+	      frameVertices[ fvPos + 1 ] = yCursor;
+	      frameVertices[ fvPos + 2 ] = 0;
+	      frameVertices[ fvPos + 3 ] = evenFrameLength;
+	      frameVertices[ fvPos + 4 ] = yCursor - frameLength;
+	      frameVertices[ fvPos + 5 ] = 0;
+	      frameVertices[ fvPos + 6 ] = frameLength;
+	      frameVertices[ fvPos + 7 ] = yCursor - frameLength;
+	      frameVertices[ fvPos + 8 ] = 0;
+
+	      frameVertices[ fvPos + 9 ] = evenFrameLength;
+	      frameVertices[ fvPos + 10 ] = yCursor - frameLength;
+	      frameVertices[ fvPos + 11 ] = 0;
+	      frameVertices[ fvPos + 12 ] = frameLength;
+	      frameVertices[ fvPos + 13 ] = yCursor;
+	      frameVertices[ fvPos + 14 ] = 0;
+	      frameVertices[ fvPos + 15 ] = evenFrameLength;
+	      frameVertices[ fvPos + 16 ] = yCursor;
+	      frameVertices[ fvPos + 17 ] = 0;
+
+	      frameVertices[ fvPos + 18 ] = frameLength;
+	      frameVertices[ fvPos + 19 ] = yCursor;
+	      frameVertices[ fvPos + 20 ] = frameWidth;
+	      frameVertices[ fvPos + 21 ] = frameLength;
+	      frameVertices[ fvPos + 22 ] = yCursor - frameLength;
+	      frameVertices[ fvPos + 23 ] = frameWidth;
+	      frameVertices[ fvPos + 24 ] = evenFrameLength;
+	      frameVertices[ fvPos + 25 ] = yCursor - frameLength;
+	      frameVertices[ fvPos + 26 ] = frameWidth;
+
+	      frameVertices[ fvPos + 27 ] = evenFrameLength;
+	      frameVertices[ fvPos + 28 ] = yCursor - frameLength;
+	      frameVertices[ fvPos + 29 ] = frameWidth;
+	      frameVertices[ fvPos + 30 ] = evenFrameLength;
+	      frameVertices[ fvPos + 31 ] = yCursor;
+	      frameVertices[ fvPos + 32 ] = frameWidth;
+	      frameVertices[ fvPos + 33 ] = frameLength;
+	      frameVertices[ fvPos + 34 ] = yCursor;
+	      frameVertices[ fvPos + 35 ] = frameWidth;
+
+	      fvPos += 36;
+	      yCursor -= frameLength;
+
+	      // vertical bars
+
+	      for (var c = 0; c < cLen - 1; c++) {
+
+	        // move xCursor to the right
+	        xCursor += segmentLength * columnRatios[ r ][ c ];
+
+	        // vertical bar quad
+
+	        frameVertices[ fvPos ] = xCursor;
+	        frameVertices[ fvPos + 1 ] = yCursor;
+	        frameVertices[ fvPos + 2 ] = 0;
+	        frameVertices[ fvPos + 3 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 5 ] = 0;
+	        frameVertices[ fvPos + 6 ] = xCursor;
+	        frameVertices[ fvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 8 ] = 0;
+
+	        frameVertices[ fvPos + 9 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 10 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 11 ] = 0;
+	        frameVertices[ fvPos + 12 ] = xCursor;
+	        frameVertices[ fvPos + 13 ] = yCursor;
+	        frameVertices[ fvPos + 14 ] = 0;
+	        frameVertices[ fvPos + 15 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 16 ] = yCursor;
+	        frameVertices[ fvPos + 17 ] = 0;
+
+	        frameVertices[ fvPos + 18 ] = xCursor;
+	        frameVertices[ fvPos + 19 ] = yCursor;
+	        frameVertices[ fvPos + 20 ] = frameWidth;
+	        frameVertices[ fvPos + 21 ] = xCursor;
+	        frameVertices[ fvPos + 22 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 23 ] = frameWidth;
+	        frameVertices[ fvPos + 24 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 25 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 26 ] = frameWidth;
+
+	        frameVertices[ fvPos + 27 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 28 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 29 ] = frameWidth;
+	        frameVertices[ fvPos + 30 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 31 ] = yCursor;
+	        frameVertices[ fvPos + 32 ] = frameWidth;
+	        frameVertices[ fvPos + 33 ] = xCursor;
+	        frameVertices[ fvPos + 34 ] = yCursor;
+	        frameVertices[ fvPos + 35 ] = frameWidth;
+
+	        fvPos += 36;
+
 	      }
 
-	      initEl3d.prototype.meshes3d = elType.meshes3d;
-	      initEl3d.prototype.materials3d = elType.materials3d;
+	      // glass & extrusions
+	      xCursor = 0;
+	      for (var c = 0; c < cLen; c++) {
 
-	      // get new instance
-	      this.el3d = new initEl3d();
+	        // glass quad
 
-	      // remove old mesh
-	      this.remove();
+	        glassVertices[ gvPos ] = xCursor + frameLength;
+	        glassVertices[ gvPos + 1 ] = yCursor;
+	        glassVertices[ gvPos + 2 ] = 0;
+	        glassVertices[ gvPos + 3 ] = xCursor + frameLength;
+	        glassVertices[ gvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        glassVertices[ gvPos + 5 ] = 0;
+	        glassVertices[ gvPos + 6 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        glassVertices[ gvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        glassVertices[ gvPos + 8 ] = 0;
 
-	      // get defaults and
-	      // apply entity values
-	      var a = mapAttributes(cloneDeep_1(elType.params), data);
+	        glassVertices[ gvPos + 9 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        glassVertices[ gvPos + 10 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        glassVertices[ gvPos + 11 ] = 0;
+	        glassVertices[ gvPos + 12 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        glassVertices[ gvPos + 13 ] = yCursor;
+	        glassVertices[ gvPos + 14 ] = 0;
+	        glassVertices[ gvPos + 15 ] = xCursor + frameLength;
+	        glassVertices[ gvPos + 16 ] = yCursor;
+	        glassVertices[ gvPos + 17 ] = 0;
 
-	      // check for adapted materials
-	      var materialKeys = Object.keys(data).filter(function(key) {
-	        return key.indexOf('material_') > -1
-	      });
-	      // add materials to instance
-	      materialKeys.forEach(function(key) {
-	        var mesh = key.replace('material_', '');
-	        a.materials[mesh] = data[key];
-	      });
+	        gvPos += 18;
 
-	      // get children for walls
-	      if (type === 'wall') {
-	        var children = this_.el.children;
-	        a.children = [];
-	        for (var i = 0; i < children.length; i++) {
-	          var c = children[i].getAttribute('io3d-window') || children[i].getAttribute('io3d-door');
-	          if (c) {
-	            if (children[i].getAttribute('io3d-window')) c.type = 'window';
-	            else if (children[i].getAttribute('io3d-door')) c.type = 'door';
-	            var pos = children[i].getAttribute('position');
-	            Object.keys(pos).forEach(p => {
-	              c[p] = pos[p];
-	            });
-	            a.children.push(c);
-	          } else console.log('invalid child');
-	        }
-	        a.children = a.children.map(c => mapAttributes(cloneDeep_1(getType.get(c.type).params), c));
+	        glassVertices[ gvPos ] = xCursor + frameLength;
+	        glassVertices[ gvPos + 1 ] = yCursor;
+	        glassVertices[ gvPos + 2 ] = 0;
+	        glassVertices[ gvPos + 3 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        glassVertices[ gvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        glassVertices[ gvPos + 5 ] = 0;
+	        glassVertices[ gvPos + 6 ] = xCursor + frameLength;
+	        glassVertices[ gvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        glassVertices[ gvPos + 8 ] = 0;
+
+	        glassVertices[ gvPos + 9 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        glassVertices[ gvPos + 10 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        glassVertices[ gvPos + 11 ] = 0;
+	        glassVertices[ gvPos + 12 ] = xCursor + frameLength;
+	        glassVertices[ gvPos + 13 ] = yCursor;
+	        glassVertices[ gvPos + 14 ] = 0;
+	        glassVertices[ gvPos + 15 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        glassVertices[ gvPos + 16 ] = yCursor;
+	        glassVertices[ gvPos + 17 ] = 0;
+
+	        gvPos += 18;
+
+	        // left side extrusion
+
+	        frameVertices[ fvPos ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 1 ] = yCursor;
+	        frameVertices[ fvPos + 2 ] = 0;
+	        frameVertices[ fvPos + 3 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 5 ] = frameWidth;
+	        frameVertices[ fvPos + 6 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 8 ] = 0;
+
+	        frameVertices[ fvPos + 9 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 10 ] = yCursor;
+	        frameVertices[ fvPos + 11 ] = 0;
+	        frameVertices[ fvPos + 12 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 13 ] = yCursor;
+	        frameVertices[ fvPos + 14 ] = frameWidth;
+	        frameVertices[ fvPos + 15 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 16 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 17 ] = frameWidth;
+
+	        fvPos += 18;
+
+	        // bottom side extrusion
+
+	        frameVertices[ fvPos ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 1 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 2 ] = 0;
+	        frameVertices[ fvPos + 3 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        frameVertices[ fvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 5 ] = frameWidth;
+	        frameVertices[ fvPos + 6 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        frameVertices[ fvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 8 ] = 0;
+
+	        frameVertices[ fvPos + 9 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 10 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 11 ] = 0;
+	        frameVertices[ fvPos + 12 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 13 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 14 ] = frameWidth;
+	        frameVertices[ fvPos + 15 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        frameVertices[ fvPos + 16 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 17 ] = frameWidth;
+
+	        fvPos += 18;
+
+	        // top side extrusion
+
+	        frameVertices[ fvPos ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 1 ] = yCursor;
+	        frameVertices[ fvPos + 2 ] = 0;
+	        frameVertices[ fvPos + 3 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        frameVertices[ fvPos + 4 ] = yCursor;
+	        frameVertices[ fvPos + 5 ] = 0;
+	        frameVertices[ fvPos + 6 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        frameVertices[ fvPos + 7 ] = yCursor;
+	        frameVertices[ fvPos + 8 ] = frameWidth;
+
+	        frameVertices[ fvPos + 9 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 10 ] = yCursor;
+	        frameVertices[ fvPos + 11 ] = 0;
+	        frameVertices[ fvPos + 12 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        frameVertices[ fvPos + 13 ] = yCursor;
+	        frameVertices[ fvPos + 14 ] = frameWidth;
+	        frameVertices[ fvPos + 15 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 16 ] = yCursor;
+	        frameVertices[ fvPos + 17 ] = frameWidth;
+
+	        fvPos += 18;
+
+	        // move xCursor to the right
+	        xCursor += segmentLength * columnRatios[ r ][ c ];
+
+	        // right side extrusion
+
+	        frameVertices[ fvPos ] = xCursor;
+	        frameVertices[ fvPos + 1 ] = yCursor;
+	        frameVertices[ fvPos + 2 ] = 0;
+	        frameVertices[ fvPos + 3 ] = xCursor;
+	        frameVertices[ fvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 5 ] = 0;
+	        frameVertices[ fvPos + 6 ] = xCursor;
+	        frameVertices[ fvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 8 ] = frameWidth;
+
+	        frameVertices[ fvPos + 9 ] = xCursor;
+	        frameVertices[ fvPos + 10 ] = yCursor;
+	        frameVertices[ fvPos + 11 ] = 0;
+	        frameVertices[ fvPos + 12 ] = xCursor;
+	        frameVertices[ fvPos + 13 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 14 ] = frameWidth;
+	        frameVertices[ fvPos + 15 ] = xCursor;
+	        frameVertices[ fvPos + 16 ] = yCursor;
+	        frameVertices[ fvPos + 17 ] = frameWidth;
+
+	        fvPos += 18;
+
 	      }
-	      // set attributes
-	      this.el3d.a = a;
 
-	      // get meshes and materials from el3d modules
-	      var meshes = this.el3d.meshes3d();
-	      var materials = this.el3d.materials3d();
+	      // reset xCursor, move yCursor downwards
+	      xCursor = 0;
+	      yCursor -= segmentHeight * rowRatios[ r ] - frameLength;
 
-	      // clean up empty meshes to prevent errors
-	      var meshKeys = Object.keys(meshes);
-	      meshKeys.forEach(key => {
-	        if (!meshes[key].positions || !meshes[key].positions.length) {
-	          // console.warn('no vertices for mesh', key)
-	          delete meshes[key];
-	        }
-	      });
+	    }
 
-	      // fetch materials from mat library
-	      Object.keys(materials).forEach(mat => {
-	        materials[mat] = getMaterial(materials[mat]);
-	      });
+	    // add last horizontal frame bar quad
 
-	      // construct data3d object
-	      var data3d = {
-	        meshes: meshes,
-	        materials: materials
-	      };
+	    frameVertices[ fvPos ] = frameLength;
+	    frameVertices[ fvPos + 1 ] = yCursor;
+	    frameVertices[ fvPos + 2 ] = 0;
+	    frameVertices[ fvPos + 3 ] = evenFrameLength;
+	    frameVertices[ fvPos + 4 ] = yCursor - frameLength;
+	    frameVertices[ fvPos + 5 ] = 0;
+	    frameVertices[ fvPos + 6 ] = frameLength;
+	    frameVertices[ fvPos + 7 ] = yCursor - frameLength;
+	    frameVertices[ fvPos + 8 ] = 0;
 
-	      // create new one
-	      this_.mesh = new THREE.Object3D();
-	      this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
+	    frameVertices[ fvPos + 9 ] = evenFrameLength;
+	    frameVertices[ fvPos + 10 ] = yCursor - frameLength;
+	    frameVertices[ fvPos + 11 ] = 0;
+	    frameVertices[ fvPos + 12 ] = frameLength;
+	    frameVertices[ fvPos + 13 ] = yCursor;
+	    frameVertices[ fvPos + 14 ] = 0;
+	    frameVertices[ fvPos + 15 ] = evenFrameLength;
+	    frameVertices[ fvPos + 16 ] = yCursor;
+	    frameVertices[ fvPos + 17 ] = 0;
 
-	      // update view
-	      this_.data3dView.set(data3d);
-	      this_.el.setObject3D('mesh', this_.mesh);
-	      // emit event
-	      this_.el.emit('mesh-updated');
-	    },
+	    frameVertices[ fvPos + 18 ] = frameLength;
+	    frameVertices[ fvPos + 19 ] = yCursor;
+	    frameVertices[ fvPos + 20 ] = frameWidth;
+	    frameVertices[ fvPos + 21 ] = frameLength;
+	    frameVertices[ fvPos + 22 ] = yCursor - frameLength;
+	    frameVertices[ fvPos + 23 ] = frameWidth;
+	    frameVertices[ fvPos + 24 ] = evenFrameLength;
+	    frameVertices[ fvPos + 25 ] = yCursor - frameLength;
+	    frameVertices[ fvPos + 26 ] = frameWidth;
 
-	    remove: function () {
-	      if (this.data3dView) {
-	        this.data3dView.destroy();
-	        this.data3dView = null;
-	      }
-	      if (this.mesh) {
-	        this.el.removeObject3D('mesh');
-	        this.mesh = null;
+	    frameVertices[ fvPos + 27 ] = evenFrameLength;
+	    frameVertices[ fvPos + 28 ] = yCursor - frameLength;
+	    frameVertices[ fvPos + 29 ] = frameWidth;
+	    frameVertices[ fvPos + 30 ] = evenFrameLength;
+	    frameVertices[ fvPos + 31 ] = yCursor;
+	    frameVertices[ fvPos + 32 ] = frameWidth;
+	    frameVertices[ fvPos + 33 ] = frameLength;
+	    frameVertices[ fvPos + 34 ] = yCursor;
+	    frameVertices[ fvPos + 35 ] = frameWidth;
+
+	    fvPos += 36;
+
+	    // add left frame side quad
+
+	    frameVertices[ fvPos ] = 0;
+	    frameVertices[ fvPos + 1 ] = a.h;
+	    frameVertices[ fvPos + 2 ] = 0;
+	    frameVertices[ fvPos + 3 ] = frameLength;
+	    frameVertices[ fvPos + 4 ] = 0;
+	    frameVertices[ fvPos + 5 ] = 0;
+	    frameVertices[ fvPos + 6 ] = 0;
+	    frameVertices[ fvPos + 7 ] = 0;
+	    frameVertices[ fvPos + 8 ] = 0;
+
+	    frameVertices[ fvPos + 9 ] = frameLength;
+	    frameVertices[ fvPos + 10 ] = 0;
+	    frameVertices[ fvPos + 11 ] = 0;
+	    frameVertices[ fvPos + 12 ] = 0;
+	    frameVertices[ fvPos + 13 ] = a.h;
+	    frameVertices[ fvPos + 14 ] = 0;
+	    frameVertices[ fvPos + 15 ] = frameLength;
+	    frameVertices[ fvPos + 16 ] = a.h;
+	    frameVertices[ fvPos + 17 ] = 0;
+
+	    frameVertices[ fvPos + 18 ] = 0;
+	    frameVertices[ fvPos + 19 ] = a.h;
+	    frameVertices[ fvPos + 20 ] = frameWidth;
+	    frameVertices[ fvPos + 21 ] = 0;
+	    frameVertices[ fvPos + 22 ] = 0;
+	    frameVertices[ fvPos + 23 ] = frameWidth;
+	    frameVertices[ fvPos + 24 ] = frameLength;
+	    frameVertices[ fvPos + 25 ] = 0;
+	    frameVertices[ fvPos + 26 ] = frameWidth;
+
+	    frameVertices[ fvPos + 27 ] = frameLength;
+	    frameVertices[ fvPos + 28 ] = 0;
+	    frameVertices[ fvPos + 29 ] = frameWidth;
+	    frameVertices[ fvPos + 30 ] = frameLength;
+	    frameVertices[ fvPos + 31 ] = a.h;
+	    frameVertices[ fvPos + 32 ] = frameWidth;
+	    frameVertices[ fvPos + 33 ] = 0;
+	    frameVertices[ fvPos + 34 ] = a.h;
+	    frameVertices[ fvPos + 35 ] = frameWidth;
+
+	    fvPos += 36;
+
+	    // add right frame side quad
+
+	    frameVertices[ fvPos ] = evenFrameLength;
+	    frameVertices[ fvPos + 1 ] = a.h;
+	    frameVertices[ fvPos + 2 ] = 0;
+	    frameVertices[ fvPos + 3 ] = a.l;
+	    frameVertices[ fvPos + 4 ] = 0;
+	    frameVertices[ fvPos + 5 ] = 0;
+	    frameVertices[ fvPos + 6 ] = evenFrameLength;
+	    frameVertices[ fvPos + 7 ] = 0;
+	    frameVertices[ fvPos + 8 ] = 0;
+
+	    frameVertices[ fvPos + 9 ] = a.l;
+	    frameVertices[ fvPos + 10 ] = 0;
+	    frameVertices[ fvPos + 11 ] = 0;
+	    frameVertices[ fvPos + 12 ] = evenFrameLength;
+	    frameVertices[ fvPos + 13 ] = a.h;
+	    frameVertices[ fvPos + 14 ] = 0;
+	    frameVertices[ fvPos + 15 ] = a.l;
+	    frameVertices[ fvPos + 16 ] = a.h;
+	    frameVertices[ fvPos + 17 ] = 0;
+
+	    frameVertices[ fvPos + 18 ] = evenFrameLength;
+	    frameVertices[ fvPos + 19 ] = a.h;
+	    frameVertices[ fvPos + 20 ] = frameWidth;
+	    frameVertices[ fvPos + 21 ] = evenFrameLength;
+	    frameVertices[ fvPos + 22 ] = 0;
+	    frameVertices[ fvPos + 23 ] = frameWidth;
+	    frameVertices[ fvPos + 24 ] = a.l;
+	    frameVertices[ fvPos + 25 ] = 0;
+	    frameVertices[ fvPos + 26 ] = frameWidth;
+
+	    frameVertices[ fvPos + 27 ] = a.l;
+	    frameVertices[ fvPos + 28 ] = 0;
+	    frameVertices[ fvPos + 29 ] = frameWidth;
+	    frameVertices[ fvPos + 30 ] = a.l;
+	    frameVertices[ fvPos + 31 ] = a.h;
+	    frameVertices[ fvPos + 32 ] = frameWidth;
+	    frameVertices[ fvPos + 33 ] = evenFrameLength;
+	    frameVertices[ fvPos + 34 ] = a.h;
+	    frameVertices[ fvPos + 35 ] = frameWidth;
+
+	    fvPos += 36;
+
+	    // add right outer side squad
+
+	    frameVertices[ fvPos ] = a.l;
+	    frameVertices[ fvPos + 1 ] = a.h;
+	    frameVertices[ fvPos + 2 ] = 0;
+	    frameVertices[ fvPos + 3 ] = a.l;
+	    frameVertices[ fvPos + 4 ] = 0;
+	    frameVertices[ fvPos + 5 ] = frameWidth;
+	    frameVertices[ fvPos + 6 ] = a.l;
+	    frameVertices[ fvPos + 7 ] = 0;
+	    frameVertices[ fvPos + 8 ] = 0;
+
+	    frameVertices[ fvPos + 9 ] = a.l;
+	    frameVertices[ fvPos + 10 ] = a.h;
+	    frameVertices[ fvPos + 11 ] = 0;
+	    frameVertices[ fvPos + 12 ] = a.l;
+	    frameVertices[ fvPos + 13 ] = a.h;
+	    frameVertices[ fvPos + 14 ] = frameWidth;
+	    frameVertices[ fvPos + 15 ] = a.l;
+	    frameVertices[ fvPos + 16 ] = 0;
+	    frameVertices[ fvPos + 17 ] = frameWidth;
+
+	    fvPos += 18;
+
+	    // add right outer side squad
+
+	    frameVertices[ fvPos ] = 0;
+	    frameVertices[ fvPos + 1 ] = a.h;
+	    frameVertices[ fvPos + 2 ] = 0;
+	    frameVertices[ fvPos + 3 ] = 0;
+	    frameVertices[ fvPos + 4 ] = 0;
+	    frameVertices[ fvPos + 5 ] = 0;
+	    frameVertices[ fvPos + 6 ] = 0;
+	    frameVertices[ fvPos + 7 ] = 0;
+	    frameVertices[ fvPos + 8 ] = frameWidth;
+
+	    frameVertices[ fvPos + 9 ] = 0;
+	    frameVertices[ fvPos + 10 ] = a.h;
+	    frameVertices[ fvPos + 11 ] = 0;
+	    frameVertices[ fvPos + 12 ] = 0;
+	    frameVertices[ fvPos + 13 ] = 0;
+	    frameVertices[ fvPos + 14 ] = frameWidth;
+	    frameVertices[ fvPos + 15 ] = 0;
+	    frameVertices[ fvPos + 16 ] = a.h;
+	    frameVertices[ fvPos + 17 ] = frameWidth;
+
+	    fvPos += 18;
+
+	    // add top outer side squad
+
+	    frameVertices[ fvPos ] = 0;
+	    frameVertices[ fvPos + 1 ] = a.h;
+	    frameVertices[ fvPos + 2 ] = 0;
+	    frameVertices[ fvPos + 3 ] = a.l;
+	    frameVertices[ fvPos + 4 ] = a.h;
+	    frameVertices[ fvPos + 5 ] = frameWidth;
+	    frameVertices[ fvPos + 6 ] = a.l;
+	    frameVertices[ fvPos + 7 ] = a.h;
+	    frameVertices[ fvPos + 8 ] = 0;
+
+	    frameVertices[ fvPos + 9 ] = a.l;
+	    frameVertices[ fvPos + 10 ] = a.h;
+	    frameVertices[ fvPos + 11 ] = frameWidth;
+	    frameVertices[ fvPos + 12 ] = 0;
+	    frameVertices[ fvPos + 13 ] = a.h;
+	    frameVertices[ fvPos + 14 ] = 0;
+	    frameVertices[ fvPos + 15 ] = 0;
+	    frameVertices[ fvPos + 16 ] = a.h;
+	    frameVertices[ fvPos + 17 ] = frameWidth;
+
+	    // return meshes
+	    return {
+	      frame: {
+	        positions: frameVertices,
+	        normals: getNormalsBuffer.flat(frameVertices),
+	        material: 'frame'
+	      },
+	      glass: {
+	        positions: glassVertices,
+	        normals: getNormalsBuffer.flat(glassVertices),
+	        material: 'glass'
 	      }
 	    }
 	  }
-	}
-
-	function getMaterial(material) {
-	  var mat = materialDefinitions[material];
-	  if (!mat) return material
-	  var attr = cloneDeep_1(mat.attributes);
-	  Object.keys(attr).forEach(a => {
-	    // get textures
-	    if (a.indexOf('map') > -1 ) {
-	    // fix to prevent double slash
-	    if (attr[a][0] === '/') attr[a] = attr[a].substring(1);
-	    // get full texture path
-	    attr[a] = 'https://storage.3d.io/' + attr[a];
-	  }
-	});
-	  return attr
-	}
-
-	function mapAttributes(a, args) {
-	  var _type = a.type;
-	  // get valid params for each type
-	  var validProps = getDefaultsByType(_type);
-	  var validKeys = Object.keys(validProps.params);
-	  Object.keys(args).forEach(prop => {
-	    // check if param is valid
-	    if (validKeys.indexOf(prop) > -1 && args[prop] !== undefined) {
-	      if (prop === 'polygon') {
-	        a[prop] = parsePolygon(args[prop]);
-	      }
-	      else a[prop] = args[prop];
-	    }
-	  });
-	  return a
-	}
-
-	function parsePolygon(p) {
-	  var polygon = [];
-	  for (var i = 0; i < p.length - 1; i+=2 ) {
-	    polygon.push([p[i],p[i+1]]);
-	  }
-	  // polygons might have duplicate points ( start, end )
-	  // better to remove that to prevent errors
-	  var duplicatePoint = polygon[0][0] === polygon[polygon.length - 1][0] && polygon[0][1] === polygon[polygon.length - 1][1];
-	  if (duplicatePoint) polygon.splice(-1, 1);
-	  return polygon
-	}
+	};
 
 	// internals
 
@@ -32586,7 +31460,7 @@
 	});
 
 	// components
-	// dynamic entities
+	// architectural tookit
 	// other
 	// dependency check (for node.js compatibility)
 
@@ -32599,21 +31473,13 @@
 	  }
 	}, function registerComponents () {
 
-	  // get dynamic entities
-	  var closetComponent = getElementComponent('closet');
-	  var doorComponent = getElementComponent('door');
-	  var floorComponent = getElementComponent('floor');
-	  var kitchenComponent = getElementComponent('kitchen');
-	  var polyFloorComponent = getElementComponent('polyfloor');
-	  var wallComponent = getElementComponent('wall');
-	  var windowComponent = getElementComponent('window');
-
 	  // register components
 	  AFRAME.registerComponent('io3d-data3d', data3dComponent);
 	  AFRAME.registerComponent('io3d-furniture', furnitureComponent);
 	  AFRAME.registerComponent('tour', tourComponent);
 	  AFRAME.registerComponent('io3d-lighting', lightingComponent);
-	  // dynamic entities
+	  AFRAME.registerComponent('io3d-minimap', minimapComponent);
+	  // architectural tookit
 	  AFRAME.registerComponent('io3d-closet', closetComponent);
 	  AFRAME.registerComponent('io3d-door', doorComponent);
 	  AFRAME.registerComponent('io3d-floor', floorComponent);
@@ -34086,7 +32952,7 @@
 	  if (!knownParameters[element3d.type]) return
 
 	  var params = knownParameters[element3d.type].params;
-	  var possibleChildren = knownParameters[element3d.type].possibleChildrenTypes;
+	  var possibleChildren = knownParameters[element3d.type].childrenTypes;
 	  // remove invalid params
 	  Object.keys(element3d).forEach(function(key) {
 	    if (!params[key]) {
@@ -34233,7 +33099,7 @@
 	    })
 	}
 
-	var config$1 = {
+	var config = {
 	  'default_margin': 0.1,
 	  'default_search': 'isPublished:true -generic',
 	  'tag_black_list': [
@@ -34272,7 +33138,7 @@
 
 	  this.userQuery = options.query || null;
 	  this.searchCount = 0;
-	  this.margin = config$1['default_margin'];
+	  this.margin = config['default_margin'];
 	  this.furnitureInfo = null;
 
 	  var self = this;
@@ -34324,16 +33190,16 @@
 	};
 
 	getAlternatives.prototype.getQuery = function(info) {
-	  var query = config$1['default_search'];
+	  var query = config['default_search'];
 	  var tags = this.searchCount < 6 ? info.tags.concat(info.categories) : info.tags;
 	  tags = tags.filter(function(tag) {
 	    // removes blacklisted tags as well as 1P, 2P, ...
-	    return config$1['tag_black_list'].indexOf(tag) < 0 && !/^\d+P$/.test(tag)
+	    return config['tag_black_list'].indexOf(tag) < 0 && !/^\d+P$/.test(tag)
 	  });
 	  // remove secondary tags from query when increasing dimensions didn't work
 	  if (this.searchCount > 2) {
 	    tags = tags.filter(function(tag) {
-	      return config$1['tag_white_list'].indexOf(tag) > -1
+	      return config['tag_white_list'].indexOf(tag) > -1
 	    });
 	  }
 
@@ -34366,7 +33232,7 @@
 	// get offset based on bounding boxes
 	function getOffset(a, b) {
 	  // for elements that are aligned at the wall we want to compute the offset accordingly
-	  var edgeAligned = config$1.edgeAligned;
+	  var edgeAligned = config.edgeAligned;
 
 	  var tags = a.tags;
 	  a = a.boundingPoints;
@@ -35166,7 +34032,7 @@
 	    return callService('User.changePassword', {
 	      token: credentials.token,
 	      oldPassword: null,
-	      newPassword: password
+	      newPassword: credentials.password
 	    })
 
 	  }).then(function onSuccess(result) {
@@ -35758,13 +34624,13 @@
 	// methods
 
 	traverseData3d$1.materials = function traverseMaterials (data3d, callback) {
-	  
+
 	  (function traverseMaterials_(data3d, callback) {
 
 	    var material;
-	    var materialKeys = data3d.materialKeys || Object.keys(data3d.materials || {});
+	    var materialKeys = data3d.materialKeys || Object.keys(data3d.materials || {});
 	    for (var i = 0; i < materialKeys.length; i++) {
-	      material = data3d.materials[ materialKeys[ i ] ];
+	      material = data3d.materials[ materialKeys[ i ] ];
 	      callback(material, data3d);
 	    }
 
@@ -35783,9 +34649,9 @@
 	  (function traverseMeshes_(data3d, callback) {
 
 	    var mesh, material;
-	    var meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
+	    var meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
 	    for (var i = 0; i < meshKeys.length; i++) {
-	      mesh = data3d.meshes[ meshKeys[ i ] ];
+	      mesh = data3d.meshes[ meshKeys[ i ] ];
 	      material = data3d.materials[ mesh.material ];
 	      callback(mesh, material, data3d);
 	    }
@@ -35799,6 +34665,24 @@
 	  })(data3d, callback);
 
 	};
+
+	function hexToRgb(hex) {
+	  // TODO: check whether input is string (html style) or number (threejs style)
+	  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	  return result ? [
+	    round$2( parseInt(result[1],16)/255, 0.001 ),
+	    round$2( parseInt(result[2],16)/255, 0.001 ),
+	    round$2( parseInt(result[3],16)/255, 0.001 )
+	  ] : null
+	}
+
+	// helpers
+
+	function round$2(value, step) {
+	  step || (step = 1.0);
+	  var inv = 1.0 / step;
+	  return Math.round(value * inv) / inv
+	}
 
 	// placeholder
 	function normalizeMaterials(x) { return x; }
@@ -36051,8 +34935,15 @@
 	        };
 	      } else {
 	        // is global id: get attributes from registry
-	        promiseKeys[ promiseKeys.length ] = materialKey;
-	        promises[ promises.length ] = api.call('Material.get', materials[ materialKey ]);
+	        // FIXME: decide how to deal with legacy matrials defined as global material IDs
+	        // (see issue https://github.com/archilogic-com/3dio-js/issues/94)
+	        //promiseKeys[ promiseKeys.length ] = materialKey
+	        //promises[ promises.length ] = api.call('Material.get', materials[ materialKey ])
+	        console.warn('Global material IDs are not being supported yet: https://github.com/archilogic-com/3dio-js/issues/94');
+	        // replace global material ID with placeholder material
+	        materials[ materialKey ] = {
+	          colorDiffuse: [0.9, 0.9, 0.9]
+	        };
 	      }
 	    }
 
@@ -36689,13 +35580,10 @@
 	function requestDdsConversion (sourceStorageId) {
 	  sourceStorageId = sourceStorageId.substring(1);
 	  return callService('Processing.task.enqueue', {
-	    method: 'convertImage',
+	    method: 'convertImage.dds',
 	    params: {
 	      inputFileKey: sourceStorageId,
-	      options: {
-	        outputFormat: 'dds',
-	        outputDirectory: path.parse(sourceStorageId).dir
-	      }
+	      outputDirectory: path.parse(sourceStorageId).dir
 	    }
 	  })
 	}
@@ -36847,10 +35735,10 @@
 	    var uvIn = threeGeometry.attributes.uv.array;
 	    var uvOut = new Float32Array(l * 2);
 	    for (i = 0; i < l; i++) {
-	      nOut[i * 2] = nIn[index[i] * 2];
-	      nOut[i * 2 + 1] = nIn[index[i] * 2 + 1];
+	      uvOut[i * 2] = uvIn[index[i] * 2];
+	      uvOut[i * 2 + 1] = uvIn[index[i] * 2 + 1];
 	    }
-	    data3dMesh.normals = nOut;
+	    data3dMesh.normals = uvOut;
 	  }
 
 	  // material
@@ -37517,7 +36405,7 @@
 
 	}
 
-	function getConvertableTextureKeys(storageId) {
+	function getConvertibleTextureKeys(storageId) {
 
 	  var url = getUrlFromStorageId(storageId);
 
@@ -37534,27 +36422,57 @@
 
 	    // API
 	    options = options || {};
-	    var filename = options.filename !== undefined ? options.filename : null;
 
-	    return getConvertableTextureKeys(storageId).then(function(textureIds) {
+	    return getConvertibleTextureKeys(storageId).then(function(textureIds) {
 
-	      var params = {
-	        method: 'convert',
+	      var convertParams = {
+	        method: 'convert'.concat('.', format),
 	        params: {
 	          inputFileKey: storageId,
-	          options: {
-	            inputAssetKeys: textureIds,
-	            outputFormat: format,
-	            outputFilename: filename
-	          }
+	          inputAssetKeys: textureIds
 	        }
 	      };
 
-	      return callService('Processing.task.enqueue', params)
+	      // Optional convert parameters for API call
+	      if (options.filename) {
+	        convertParams.params.settings = JSON.stringify( { outputFileName: options.filename } );
+	      }
+
+	      return callService('Processing.task.enqueue', convertParams)
 
 	    })
 	  }
 	}
+
+	function exportDxf(storageId, options) {
+	    // API
+	    options = options || {};
+
+	    var dxfParams = {
+	      method: 'convert.dxf',
+	      params: {
+	        inputFileKey: storageId
+	      }
+	    };
+
+	    // Optional convert parameters for API call
+	    if (options.filename || options.projection) {
+	      var dxfSettings = {};
+	        if (options.filename) {
+	         dxfSettings.outputFileName = options.filename;
+	        }
+	        if (options.projection) {
+	          dxfSettings.projection = options.projection;
+	        }
+
+	      dxfParams.params.settings = JSON.stringify(dxfSettings);
+
+	    }
+
+
+	    return callService('Processing.task.enqueue', dxfParams)
+	}
+
 
 	// expose API
 
@@ -37563,7 +36481,8 @@
 	  exportBlend: getExporter('blend'),
 	  exportDae: getExporter('dae'),
 	  exportFbx: getExporter('fbx'),
-	  exportObj: getExporter('obj')
+	  exportObj: getExporter('obj'),
+	  exportDxf
 	};
 
 	var storage = {
@@ -37579,6 +36498,7 @@
 	  exportDae: modelExporter.exportDae,
 	  exportFbx: modelExporter.exportFbx,
 	  exportObj: modelExporter.exportObj,
+	  exportDxf: modelExporter.exportDxf,
 	  // helpers
 	  getUrlFromStorageId: getUrlFromStorageId,
 	  getNoCdnUrlFromStorageId: getNoCdnUrlFromStorageId,
@@ -37651,7 +36571,7 @@
 
 	    // validate if children types are correct
 	    if (parentType) {
-	      var validChild = typeSpecificValidations[parentType].possibleChildrenTypes.indexOf(sourceElement3d.type) > -1;
+	      var validChild = typeSpecificValidations[parentType].childrenTypes.indexOf(sourceElement3d.type) > -1;
 	      if (!validChild)  {
 	        result.isValid = false;
 	        var message = '"' + sourceElement3d.type + '" is invalid child for "' + parentType + '"';
@@ -38178,7 +37098,6 @@
 	  }
 
 	  var args = {
-	    colorCoded: false,
 	    floorPlanUrl: url,
 	    pixelsPerMeter: pixelsPerMeter,
 	    colorCoded: true
@@ -38239,41 +37158,164 @@
 	}
 
 	// main
+	function bakeStage(stage) {
+	  return function bake(storageId, options) {
+	    // API
+	    options = options || {};
 
-	function bake(storageId, options) {
-	  // API
-	  options = options || {};
-	  var sunDirection = sunDirection || [
-	    0.7487416646324341,
-	    -0.47789104947352223,
-	    -0.45935396425474223
-	  ];
+	    // Optional bake parameters for API call
+	    var bakeSettings = { sunDirection: options.sunDirection || [ 0.75, -0.48, -0.46 ] };
+	    if (options.lightMapCount) bakeSettings.lightMapCount = options.lightMapCount;
+	    if (options.samples) bakeSettings.samples = options.samples;
 
-	  // internals
-	  var assetStorageIds = [];
-	  // TODO: reimplement caching mechanism on server side
-	  var cacheKey = null;
+	    // internals
+	    // TODO: reimplement send "exportable" textures to bake
+	    var assetStorageIds = [];
+	    // TODO: reimplement caching mechanism on server side
+	    var cacheKey = null;
 
-	  return callService('Processing.task.enqueue', {
-	    method: 'bakePreview',
-	    params: {
-	      inputFileKey: storageId,
-	      options: {
+	    var bakeParams = {
+	      method: 'bake'.concat('.', stage),
+	      params: {
+	        inputFileKey: storageId,
 	        inputAssetKeys: assetStorageIds,
-	        sunDirection: sunDirection,
-	        cacheKey: cacheKey
+	        settings: JSON.stringify(bakeSettings)
 	      }
-	    }
-	  })
+	    };
+
+	    if (cacheKey) bakeParams.params.cacheKey = cacheKey;
+	    if (assetStorageIds.length > 0) bakeParams.params.inputAssetKeys = assetStorageIds;
+
+	    return callService('Processing.task.enqueue', bakeParams)
+	  }
 	}
 
+	// expose API
+
+	var bake = {
+	  bakePreview: bakeStage('preview'),
+	  bakeRegular: bakeStage('regular')
+	};
+
 	var light = {
-	  bake: bake
+	  bake: bake.bakePreview,
+	  bakeLoRes: bake.bakePreview,
+	  bakeHiRes: bake.bakeRegular
+	};
+
+	// main
+	function getModifier(modifier) {
+	  return function modifyModel(storageId, options) {
+
+	    // API
+	    options = options || {};
+
+	    var modifyParams = {
+	      method: 'modify'.concat('.', modifier),
+	      params: {
+	        inputFileKey: storageId
+	      }
+	    };
+
+	    return callService('Processing.task.enqueue', modifyParams)
+
+	  }
+	}
+
+	// expose api
+
+	var modifyModel = {
+	  collisionObject: getModifier('collisionObject'),
+	  consolidateFaceSides: getModifier('consolidateFaceSides'),
+	  origami: getModifier('origami')
+	};
+
+	var modify = {
+	  collisionObject: modifyModel.collisionObject,
+	  consolidateFaceSides: modifyModel.consolidateFaceSides,
+	  origami: modifyModel.origami
 	};
 
 	function getData3dInspectorUrl (storageId) {
 	  // TODO: replace spaces SDK with mini app to inspect data3d files
 	  return 'https://spaces.archilogic.com/3d/?mode=sdk&file='+storageId
+	}
+
+	function getTextureUrls (data3d) {
+	  var materialUrls = [];
+	  Object.keys(data3d.materials).forEach(function cacheMaterial(materialKey) {
+	    var material = data3d.materials[materialKey];
+	    if (material.mapDiffuse) materialUrls.push(material.mapDiffuse);
+	    if (material.mapDiffusePreview) materialUrls.push(material.mapDiffusePreview);
+
+	    if (material.mapNormal) materialUrls.push(material.mapNormal);
+	    if (material.mapNormalPreview) materialUrls.push(material.mapNormalPreview);
+
+	    if (material.mapSpecular) materialUrls.push(material.mapSpecular);
+	    if (material.mapSpecularPreview) materialUrls.push(material.mapSpecularPreview);
+
+	    if (material.mapAlpha) materialUrls.push(material.mapAlpha);
+	    if (material.mapAlphaPreview) materialUrls.push(material.mapAlphaPreview);
+
+	    if (material.mapLight) materialUrls.push(material.mapLight);
+	    if (material.mapLightPreview) materialUrls.push(material.mapLightPreview);
+	  });
+
+	  return materialUrls
+	}
+
+	function storeInCache (url, cacheName) {
+	  if (!isCacheAvailable()) return Promise.reject()
+
+	  return window.caches.open(cacheName || '3dio-data3d').then(function onCacheReady(cache) {
+	    return loadData3d(url).then(function onData3dReady(data3d) {
+	      var cacheUrls = new Array(url).concat(getTextureUrls(data3d));
+	      return cache.addAll(cacheUrls)
+	    })
+	  })
+	}
+
+	// helpers
+
+	function isCacheAvailable () {
+	  if (!runtime.isBrowser) {
+	    console.warn('The offline cache is only available in the browser');
+	    return false
+	  }
+
+	  if (typeof window.caches === 'undefined') {
+	    console.warn('Your browser does not support offline cache storage');
+	    return false
+	  }
+
+	  return true
+	}
+
+	function removeFromCache (url, cacheName) {
+	  if (!isCacheAvailable$1()) return Promise.reject()
+
+	  return window.caches.open(cacheName || '3dio-data3d').then(function onCacheReady(cache) {
+	    return loadData3d(url).then(function onData3dReady(data3d) {
+	      var cacheUrls = new Array(url).concat(getTextureUrls(data3d));
+	      return Promise.all(cacheUrls.map(function removeItem(url) { return cache.delete(url) }))
+	    })
+	  })
+	}
+
+	// helpers
+
+	function isCacheAvailable$1 () {
+	  if (!runtime.isBrowser) {
+	    console.warn('The offline cache is only available in the browser');
+	    return false
+	  }
+
+	  if (typeof window.caches === 'undefined') {
+	    console.warn('Your browser does not support offline cache storage');
+	    return false
+	  }
+
+	  return true
 	}
 
 	var css = ".io3d-message-list {\n  z-index: 100001;\n  position: fixed;\n  top: 0;\n  left: 50%;\n  margin-left: -200px;\n  width: 400px;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: normal;\n  letter-spacing: 1px;\n  line-height: 1.3;\n  text-align: center;\n}\n.io3d-message-list .message {\n  display: block;\n  opacity: 0;\n}\n.io3d-message-list .message .spacer {\n  display: block;\n  height: 10px;\n}\n.io3d-message-list .message .text {\n  display: inline-block;\n  padding: 10px 12px 10px 12px;\n  border-radius: 3px;\n  color: white;\n  font-size: 18px;\n}\n.io3d-message-list .message .text a {\n  color: white;\n  text-decoration: none;\n  padding-bottom: 0px;\n  border-bottom: 2px solid white;\n}\n.io3d-message-list .message .neutral {\n  background: rgba(0, 0, 0, 0.9);\n}\n.io3d-message-list .message .success {\n  background: linear-gradient(50deg, rgba(35, 165, 9, 0.93), rgba(102, 194, 10, 0.93));\n}\n.io3d-message-list .message .warning {\n  background: linear-gradient(50deg, rgba(165, 113, 9, 0.93), rgba(194, 169, 10, 0.93));\n}\n.io3d-message-list .message .error {\n  background: linear-gradient(50deg, rgba(165, 9, 22, 0.93), rgba(194, 56, 10, 0.93));\n}\n.io3d-overlay {\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  z-index: 100000;\n  position: fixed;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  height: 100%;\n  width: 100%;\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-weight: 200;\n  font-size: 18px;\n  letter-spacing: 1px;\n  color: white;\n  text-align: center;\n  line-height: 1.3;\n  background: linear-gradient(70deg, rgba(20, 17, 34, 0.96), rgba(51, 68, 77, 0.96));\n}\n@-webkit-keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@keyframes overlay-fade-in {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n@-webkit-keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n@keyframes overlay-fade-out {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n.io3d-overlay .centered-content {\n  display: inline-block;\n  position: relative;\n  top: 50%;\n  text-align: left;\n}\n.io3d-overlay .centered-content .button {\n  margin-right: 4px;\n  margin-top: 1.5em;\n}\n.io3d-overlay .bottom-container {\n  width: 100%;\n  display: block;\n  position: absolute;\n  bottom: 1em;\n}\n.io3d-overlay .bottom-container .bottom-content {\n  display: inline-block;\n  position: relative;\n  margin-left: auto;\n  margin-right: auto;\n  text-align: left;\n  color: rgba(255, 255, 255, 0.35);\n}\n.io3d-overlay .bottom-container .bottom-content .clickable {\n  cursor: pointer;\n  -webkit-transition: color 500ms;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-container .bottom-content .clickable:hover {\n  color: white;\n}\n.io3d-overlay .bottom-container .bottom-content a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  -webkit-transition: color 500ms;\n  transition: color 500ms;\n}\n.io3d-overlay .bottom-container .bottom-content a:hover {\n  color: white;\n}\n@-webkit-keyframes content-slide-in {\n  0% {\n    -webkit-transform: translateY(-40%);\n  }\n  100% {\n    -webkit-transform: translateY(-50%);\n  }\n}\n@keyframes content-slide-in {\n  0% {\n    transform: translateY(-40%);\n  }\n  100% {\n    transform: translateY(-50%);\n  }\n}\n@-webkit-keyframes content-slide-out {\n  0% {\n    -webkit-transform: translateY(-50%);\n  }\n  100% {\n    -webkit-transform: translateY(-40%);\n  }\n}\n@keyframes content-slide-out {\n  0% {\n    transform: translateY(-50%);\n  }\n  100% {\n    transform: translateY(-40%);\n  }\n}\n.io3d-overlay h1 {\n  margin: 0 0 0.5em 0;\n  font-size: 42px;\n  font-weight: 200;\n  color: white;\n}\n.io3d-overlay p {\n  margin: 1em 0 0 0;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint {\n  position: relative;\n  margin: 1em 0 0 0;\n  color: rgba(255, 255, 255, 0.35);\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay .hint a {\n  color: rgba(255, 255, 255, 0.35);\n  text-decoration: none;\n  -webkit-transition: color 600ms;\n  transition: color 600ms;\n}\n.io3d-overlay .hint a:hover {\n  color: white;\n}\n.io3d-overlay .button {\n  cursor: pointer;\n  display: inline-block;\n  color: rgba(255, 255, 255, 0.35);\n  width: 40px;\n  height: 40px;\n  line-height: 32px;\n  border: 2px solid rgba(255, 255, 255, 0.35);\n  border-radius: 50%;\n  text-align: center;\n  font-size: 18px;\n  font-weight: 200;\n  -webkit-transition: opacity 300ms, color 300ms;\n  transition: opacity 300ms, color 300ms;\n}\n.io3d-overlay .button:hover {\n  background-color: rgba(255, 255, 255, 0.1);\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .button-highlighted {\n  color: white;\n  border: 2px solid white;\n}\n.io3d-overlay .close-button {\n  display: block;\n  position: absolute;\n  top: 20px;\n  right: 20px;\n  font-size: 18px;\n  font-weight: 200;\n}\n.io3d-overlay input,\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay textarea {\n  font-family: Gill Sans, Gill Sans MT, Calibri, sans-serif;\n  font-size: 24px;\n  font-weight: normal;\n  letter-spacing: 1px;\n  outline: none;\n  margin: 0 0 0 0;\n  color: white;\n}\n.io3d-overlay select,\n.io3d-overlay option,\n.io3d-overlay input:not([type='checkbox']):not([type='range']) {\n  padding: 0.2em 0 0.4em 0;\n  width: 100%;\n  line-height: 20px;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  border-radius: 0px;\n  border: 0px;\n  background: transparent;\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n  -webkit-transition: border-color 1s;\n  transition: border-color 1s;\n}\n.io3d-overlay select:focus,\n.io3d-overlay option:focus,\n.io3d-overlay input:not([type='checkbox']):not([type='range']):focus {\n  border-color: white;\n}\n.io3d-overlay textarea {\n  display: box;\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  padding: 0.2em 0 0.4em 0;\n  min-width: 100%;\n  max-width: 100%;\n  line-height: 26px;\n  border: 0px;\n  background: rgba(255, 255, 255, 0.08);\n  border-bottom: 2px solid rgba(255, 255, 255, 0.3);\n}\n.io3d-overlay input[type='checkbox'] {\n  position: relative;\n  height: 20px;\n  vertical-align: bottom;\n  margin: 0;\n}\n.io3d-overlay .reveal-api-key-button {\n  cursor: pointer;\n  position: absolute;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 2px;\n  bottom: 0.7em;\n  padding: 0.1em 0.2em 0.2em 0.2em;\n  line-height: 20px;\n  -webkit-transition: color 600ms;\n  transition: color 600ms;\n}\n.io3d-overlay .reveal-api-key-button:hover {\n  color: white;\n}\n.io3d-overlay a {\n  color: white;\n  text-decoration: none;\n}\n.io3d-overlay .key-menu {\n  position: relative;\n  margin: 3em 0 0 0;\n}\n.io3d-overlay .key-menu .key-image {\n  width: 172px;\n  height: 127px;\n}\n.io3d-overlay .key-menu .key-button {\n  position: absolute;\n  left: 156px;\n  height: 36px;\n  line-height: 36px;\n  background: rgba(255, 255, 255, 0.1);\n  cursor: pointer;\n  padding: 0 14px 0 14px;\n  border-radius: 2px;\n  -webkit-transition: background 300ms linear;\n  transition: background 300ms linear;\n}\n.io3d-overlay .key-menu .key-button:hover {\n  background: rgba(255, 255, 255, 0.3);\n}\n.io3d-overlay .key-menu .go-to-publishable-api-key-ui {\n  top: 11px;\n}\n.io3d-overlay .key-menu .go-to-secret-api-key-ui {\n  bottom: 11px;\n}\n.io3d-overlay .regegenerate-secret-key-button {\n  cursor: pointer;\n}\n.io3d-overlay .publishable-api-keys .list {\n  max-height: 50vh;\n  overflow: auto;\n  padding: 0 15px 0 0;\n}\n.io3d-overlay .publishable-api-keys .list .key-item {\n  position: relative;\n  background: rgba(255, 255, 255, 0.1);\n  border-radius: 3px;\n  margin-bottom: 12px;\n  padding: 4px 5px 3px 8px;\n}\n.io3d-overlay .publishable-api-keys .list .key {\n  font-weight: 200 !important;\n  border-bottom: 0 !important;\n  margin-bottom: 0 !important;\n  padding: 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .domains {\n  margin: 0 0 0 0 !important;\n}\n.io3d-overlay .publishable-api-keys .list .button {\n  position: absolute !important;\n  margin: 0 !important;\n  background-repeat: no-repeat;\n  background-position: center;\n  color: white;\n  opacity: 0.5;\n}\n.io3d-overlay .publishable-api-keys .list .button:hover {\n  opacity: 1;\n}\n.io3d-overlay .publishable-api-keys .list .delete-key-button {\n  right: 8px;\n  top: 9px;\n}\n.io3d-overlay .publishable-api-keys .list .edit-domains-button {\n  positions: absolute;\n  right: 56px;\n  top: 9px;\n  background-size: 75%;\n  padding: 5px;\n}\n.io3d-overlay .publishable-api-keys .generate-new-key-button {\n  margin: 1.5em 0 0 0;\n  display: inline-block;\n  cursor: pointer;\n}\n";
@@ -38971,7 +38013,7 @@
 	    if (email) emailEl.val(email);
 	    emailEl.focus();
 	    function onEmailElKeyDown (e) {
-	      if (e.which === 13) passwordEl.focus();
+	      if (e.which === 13) onConfirm();
 	    }
 	    emailEl.addEventListener('keydown', onEmailElKeyDown);
 	    emailEl.addEventListener('input', updateGoButton);
@@ -39056,6 +38098,7 @@
 	    updateGoButton();
 
 	    function onConfirm () {
+	      //FIXME: check email field not empty
 	      // show loading screen
 	      emailTabEl.hide();
 	      loadingTabEl.show();
@@ -39757,7 +38800,7 @@
 	            createPromptUi({
 	              width: 550,
 	              title: 'Generate Publishable Api Key',
-	              message: 'Please specify allowed domains separated by empty space.<br>Example: "localhost *.3d.io mypage.com"',
+	              message: 'Please specify allowed domains separated by empty space.<br>Example: localhost *.3d.io mypage.com',
 	              bottom: el('<a>', {
 	                html: 'Read more about allowed domains',
 	                href: 'https://3d.io/docs/api/1/authentication.html',
@@ -40126,6 +39169,11 @@
 	 http://stackoverflow.com/questions/1655769/fastest-md5-implementation-in-javascript
 	 **/
 
+	// special case: allow function declaration inside if block (line 185)
+	// see https://github.com/jamesallardice/jslint-error-explanations/blob/master/message-articles/function-in-block.md
+	/* jshint -W082 */
+
+
 	function md5cycle(x, k) {
 	  var a = x[0], b = x[1], c = x[2], d = x[3];
 
@@ -40485,7 +39533,9 @@
 	    fromThreeJs: getData3dFromThreeJs,
 	    clone: clone,
 	    traverse: traverseData3d$1,
-	    getInspectorUrl: getData3dInspectorUrl
+	    getInspectorUrl: getData3dInspectorUrl,
+	    storeInCache: storeInCache,
+	    removeFromCache: removeFromCache
 	  },
 	  ui: ui,
 	  auth: auth,
@@ -40536,6 +39586,7 @@
 	  scene: scene,
 	  floorPlan: floorPlan,
 	  light: light,
+	  modify: modify,
 
 	  // utils
 	  auth: utils.auth,
