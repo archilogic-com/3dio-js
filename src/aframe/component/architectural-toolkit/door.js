@@ -2,47 +2,42 @@
 
 // dependencies
 
-import generateNormals from '../../../../utils/data3d/buffer/get-normals'
-
-// class
+import getSchema from './common/get-schema.js'
+import getMaterial from './common/get-material.js'
+import generateNormals from '../../../utils/data3d/buffer/get-normals'
+import cloneDeep from 'lodash/cloneDeep'
 
 export default {
 
-  params: {
+  schema: getSchema('door'),
 
-    type: 'door',
+  init: function () {},
 
-    x: 0,
-    y: 0,
-    z: 0,
+  update: function (oldData) {
+    var this_ = this
+    var data = this_.data
 
-    ry: 0,
+    // remove old mesh
+    this.remove()
 
-    l: 0.9,      // length
-    w: 0.05,     // width (=thickness)
-    h: 2,        // height
-    v: 3,        // version
+    // get defaults and
+    this.attributes = cloneDeep(data)
 
-    lock: false,
+    // get meshes and materials from el3d modules
+    var meshes = this.generateMeshes3d()
 
-    bake: true,
-    bakeStatus: 'none', // none, pending, done
+    // clean up empty meshes to prevent errors
+    var meshKeys = Object.keys(meshes)
+    meshKeys.forEach(key => {
+      if (!meshes[key].positions || !meshes[key].positions.length) {
+        // console.warn('no vertices for mesh', key)
+        delete meshes[key]
+      }
+    })
 
-    frameLength: 0.05,
-    frameOffset: 0,
-
-    leafWidth: 0.03,
-    leafOffset: 0.005,
-
-    doorType: 'singleSwing',
-    fixLeafRatio: 0.3,
-
-    doorAngle: 92,
-    hinge: 'right',
-    side: 'back',
-    thresholdHeight: 0.01,
-
-    materials: {
+    // setup materials
+    // defaults
+    var materials = {
       frame: {
         colorDiffuse: [0.95, 0.95, 0.95],
         colorSpecular: [0.04, 0.04, 0.04],
@@ -53,253 +48,52 @@ export default {
       threshold: 'basic-floor'
     }
 
+    // check for adapted materials
+    var materialKeys = Object.keys(data).filter(function(key) {
+      return key.indexOf('material_') > -1
+    })
+    // add materials to instance
+    materialKeys.forEach(function(key) {
+      var mesh = key.replace('material_', '')
+      materials[mesh] = data[key]
+    })
+
+    // fetch materials from mat library
+    Object.keys(materials).forEach(mat => {
+      materials[mat] = getMaterial(materials[mat])
+    })
+
+    // construct data3d object
+    var data3d = {
+      meshes: meshes,
+      materials: materials
+    }
+
+    // create new one
+    this_.mesh = new THREE.Object3D()
+    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh})
+
+    // update view
+    this_.data3dView.set(data3d)
+    this_.el.setObject3D('mesh', this_.mesh)
+    // emit event
+    this_.el.emit('mesh-updated');
   },
 
-  valid: {
-    children: [],
-    x: {
-      step: 0.05
-    },
-    y: {
-      step: 0.05
-    },
-    z: {
-      lock: true
-    },
-    l: {
-      min: 0.4,
-      max: 4,
-      step: 0.05
-    },
-    ry: {
-      step: 180
+  remove: function () {
+    if (this.data3dView) {
+      this.data3dView.destroy()
+      this.data3dView = null
+    }
+    if (this.mesh) {
+      this.el.removeObject3D('mesh')
+      this.mesh = null
     }
   },
 
-  initialize: function(){
+  generateMeshes3d: function () {
+    var a = this.attributes
 
-    // backwards compatibility
-    if (this.a.handleMaterial) {
-      this.a.materials.handle = this.a.handleMaterial
-      delete this.a.handleMaterial
-    }
-    if (this.a.leafMaterial) {
-      this.a.materials.leaf = this.a.leafMaterial
-      delete this.a.leafMaterial
-    }
-    if (this.a.frameMaterial) {
-      this.a.materials.frame = this.a.frameMaterial
-      delete this.a.frameMaterial
-    }
-    // check for old doors and set their threshold parameter to false
-    if (this.a.v < 3) {
-      this.a.threshold = false
-      this.a.v = 3
-      this.a.materials.threshold = 'wood_parquet_oak'
-    }
-    // default new doors to have a threshold
-    else if (this.a.threshold === undefined) this.a.threshold = true
-
-  },
-
-  bindings: [{
-    events: [
-      'change:l',
-      'change:w',
-      'change:h',
-      'change:frameLength',
-      'change:leafWidth',
-      'change:leafOffset',
-      'change:frameOffset',
-      'change:doorAngle',
-      'change:hinge',
-      'change:side',
-      'change:doorType',
-      'change:handleType',
-      'change:fixLeafRatio',
-      'change:threshold',
-      'change:thresholdHeight',
-      '../change:w'
-    ],
-    call: 'meshes3d'
-  },{
-    events: [
-      'change:materials.*'
-    ],
-    call: 'materials3d'
-  },{
-    events: [
-      'change:threshold',
-      'change:doorType'
-    ],
-    call: 'contextMenu'
-  }],
-
-  contextMenu: function generateContextMenu () {
-    var contextMenu = {
-      templateId: 'generic',
-      templateOptions: {
-        title: 'Door'
-      },
-      controls: [
-        {
-          title: 'Height',
-          type: 'number',
-          param: 'h',
-          unit: 'm',
-          min: 1,
-          max: 4,
-          step: 0.05
-        },
-        {
-          title: 'Length',
-          type: 'number',
-          param: 'l',
-          unit: 'm',
-          step: 0.05,
-          round: 0.01
-        },
-        {
-          title: 'Opening Angle',
-          type: 'number',
-          param: 'doorAngle',
-          unit: '°',
-          min: 0,
-          max: 180,
-          step: 10
-        },
-        {
-          title: 'Door Type',
-          type: 'list',
-          param: 'doorType',
-          list: {
-            'Single Swing': 'singleSwing',
-            'Double Swing': 'doubleSwing',
-            'Swing + Fix': 'swingFix',
-            'Fix + Swing + Fix': 'swingDoubleFix',
-            'Fix + Double Swing + Fix': 'doubleSwingDoubleFix',
-            'Sliding Door': 'slidingDoor',
-            'Opening': 'opening'
-          }
-        },
-        {
-          title: 'Handle Type',
-          type: 'list',
-          param: 'handleType',
-          list: {
-            'Square Edged': 'squareEdged',
-            'Round': 'round',
-            'Classic': 'classic',
-            'Knob': 'knob'
-          }
-        },
-        {
-          title: 'Hinge',
-          type: 'list',
-          param: 'hinge',
-          list: {
-            'left': 'left',
-            'right': 'right'
-          }
-        },
-        {
-          title: 'Position',
-          type: 'list',
-          param: 'side',
-          list: {
-            'front': 'front',
-            'back': 'back'
-          }
-        },
-        {
-          title: 'Frame Length',
-          type: 'number',
-          param: 'frameLength',
-          unit: 'm',
-          min: 0,
-          max: 0.1,
-          step: 0.01
-        },
-        {
-          title: 'Frame Offset',
-          type: 'number',
-          param: 'frameOffset',
-          unit: 'm',
-          min: 0,
-          max: 0.05,
-          step: 0.01
-        },
-        {
-          title: 'Fix Leaf Ratio',
-          type: 'number',
-          param: 'fixLeafRatio',
-          min: 0.2,
-          max: 0.8,
-          step: 0.05
-        },
-        {
-          title: 'Threshold',
-          type: 'boolean',
-          param: 'threshold'
-        },
-        {
-          title: 'Lock this item',
-          type: 'boolean',
-          param: 'locked',
-          subscriptions: ['pro', 'modeller', 'artist3d']
-        },
-        {
-          type: 'html',
-          display: '<h2>Materials</h2>'
-        },
-        {
-          title: 'Frame',
-          type: 'material',
-          param: 'materials.frame',
-          category: 'doorFrame',
-          controls: ['colorDiffuse', 'colorSpecular', 'specularCoef']
-        }
-      ]
-    }
-
-    if (this.a.doorType !== 'opening') {
-      contextMenu.controls.push({
-        title: 'Leaf',
-        type: 'material',
-        param: 'materials.leaf',
-        category: 'doorLeaf',
-        collapsed: false
-      })
-    }
-    if (this.a.threshold) {
-      contextMenu.controls.splice(11, 0, {
-        title: 'Threshold height',
-        type: 'number',
-        param: 'thresholdHeight',
-        unit: 'm',
-        min: 0,
-        max: 0.05,
-        step: 0.01
-      })
-    }
-    if (this.a.threshold) {
-      contextMenu.controls.push({
-        title: 'Threshold',
-        type: 'material',
-        param: 'materials.threshold',
-        category: 'floor'
-      })
-    }
-
-    return contextMenu
-  },
-
-  loadingQueuePrefix: 'architecture',
-
-  controls3d: 'insideWall',
-
-  meshes3d: function generateMeshes3d() {
-    var a = this.a
     var wallThickness = 0.1
     if (a.parent && a.parent.a) {
       wallThickness = a.parent.a.w
@@ -442,9 +236,9 @@ export default {
       frameFacesCount += 18
       if (frameOffset>0) frameFacesCount += 12
     }
-    var leafVertices = [], //new Float32Array(leafFacesCount * 9),
-      handleVertices = [], //new Float32Array(handleFacesCount * 9),
-      leafUvs = [], //new Float32Array(leafFacesCount * 6),
+    var leafVertices = [],
+      handleVertices = [],
+      leafUvs = [],
       frameVertices = new Float32Array(frameFacesCount * 9)
 
     // Threshold VERTICES
@@ -1383,11 +1177,5 @@ export default {
         material: 'threshold'
       }
     }
-
-  },
-
-  materials3d: function generateMaterials3d() {
-    return this.a.materials
   }
-
 }

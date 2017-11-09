@@ -18,13 +18,15 @@ export default {
     rowRatios: { // in meters
       //type: 'array-with-numbers',
       type: 'array',
-      skipInAframe: true,
+      defaultValue: [ 1 ],
+      // skipInAframe: true,
       optional: true
     },
     columnRatios: { // in meters
       //type: 'array-with-arrays-with-numbers',
       type: 'array',
-      skipInAframe: true,
+      defaultValue: [ [ 1 ] ],
+      // skipInAframe: true,
       optional: true
     },
     frameLength: { // in meters

@@ -1,4 +1,4 @@
-import getDefaultsByType from '../../../scene/structure/validate/get-defaults-by-type'
+import getDefaultsByType from '../../../../scene/structure/validate/get-defaults-by-type'
 
 function getSchema (type) {
   // get valid params and default values for each type
@@ -12,7 +12,7 @@ function getSchema (type) {
     // map defaults to aframe schema convention
     var paramType = params[key].aframeType || params[key].type
     schema[key] = {type: paramType}
-    if (params[key].defaultValue) schema[key].default = params[key].defaultValue
+    if (params[key].defaultValue) schema[key].default = params[key].aframeDefault || params[key].defaultValue
     if (params[key].possibleValues) schema[key].oneOf = params[key].possibleValues
   })
   return schema

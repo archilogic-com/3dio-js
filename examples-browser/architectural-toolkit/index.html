@@ -25,9 +25,11 @@
     <a-entity id="window" io3d-window="h:1.2; l:1.6" position="1.2 1 0"></a-entity>
     <a-entity id="door" io3d-door="l:0.8" position="0.2 0 0"></a-entity>
   </a-entity>
-  <a-entity io3d-polyfloor="material_top: wood_parquet_oak" position="0 0 0"></a-entity>
+  <a-entity id="closet" io3d-closet="l:3" position="0 0 2" rotation="0 180 0"></a-entity>
+  <a-entity id="kitchen" io3d-kitchen="l:3" position="1 0 2" rotation="0 180 0"></a-entity>
+  <a-entity io3d-polyfloor="material_top: wood_parquet_oak; polygon: 1.5,1.5,1.5,-1.5,-1.5,-1.5,-3.5,2.6" position="0 0 0"></a-entity>
   <a-entity io3d-polyfloor="material_top: wood_parquet_oak_stained" position="3 0 0"></a-entity>
-  <a-entity io3d-polyfloor position="3 0 -3"></a-entity>
+  <a-entity io3d-floor position="3 0 -3"></a-entity>
   <!-- Camera -->
   <a-entity id="camera" camera="userHeight: 1.6" position="-1.2 0 -5.5" rotation="0 210 0" wasd-controls="acceleration:8;easing:5;" look-controls ></a-entity>
 </a-scene>

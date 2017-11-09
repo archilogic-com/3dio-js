@@ -1,163 +1,89 @@
-
-'use strict';
-
-// dependencies
-
-import generateNormals from '../../../../utils/data3d/buffer/get-normals'
-import generateUvs from '../../../../utils/data3d/buffer/get-uvs'
-
-// class
+import getSchema from './common/get-schema.js'
+import getMaterial from './common/get-material.js'
+import generateNormals from '../../../utils/data3d/buffer/get-normals'
+import generateUvs from '../../../utils/data3d/buffer/get-uvs'
+import cloneDeep from 'lodash/cloneDeep'
 
 export default {
 
-  params: {
+  schema: getSchema('closet'),
 
-    type: 'closet',
-    v: 1,        // version
+  init: function () {},
 
-    x: 0,
-    y: 0,
-    z: 0,
+  update: function (oldData) {
+    var this_ = this
+    var data = this_.data
 
-    ry: 0,
+    // remove old mesh
+    this.remove()
 
-    lock: false,
+    // get defaults and
+    this.attributes = cloneDeep(data)
 
-    bake: true,
-    bakeStatus: 'none', // none, pending, done
+    // get meshes and materials from el3d modules
+    var meshes = this.generateMeshes3d()
 
-    // geometry params
-    l: 1.8,      // length
-    w: 0.6,      // width (=thickness)
-    h: 2.4,      // height
-    baseboard: 0.1,
-    doorWidth: 0.02,
-    handleLength: 0.02,
-    handleWidth: 0.02,
-    handleHeight: 0.3,
+    // clean up empty meshes to prevent errors
+    var meshKeys = Object.keys(meshes)
+    meshKeys.forEach(key => {
+      if (!meshes[key].positions || !meshes[key].positions.length) {
+        // console.warn('no vertices for mesh', key)
+        delete meshes[key]
+      }
+    })
 
-    //stepColor: 0x00609f,
-
-    materials: {
+    // setup materials
+    // defaults
+    var materials = {
       closet: 'cabinet_paint_white'
     }
 
+    // check for adapted materials
+    var materialKeys = Object.keys(data).filter(function(key) {
+      return key.indexOf('material_') > -1
+    })
+    // add materials to instance
+    materialKeys.forEach(function(key) {
+      var mesh = key.replace('material_', '')
+      materials[mesh] = data[key]
+    })
+
+    // fetch materials from mat library
+    Object.keys(materials).forEach(mat => {
+      materials[mat] = getMaterial(materials[mat])
+    })
+
+    // construct data3d object
+    var data3d = {
+      meshes: meshes,
+      materials: materials
+    }
+
+    // create new one
+    this_.mesh = new THREE.Object3D()
+    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh})
+
+    // update view
+    this_.data3dView.set(data3d)
+    this_.el.setObject3D('mesh', this_.mesh)
+    // emit event
+    this_.el.emit('mesh-updated');
   },
 
-  valid: {
-    children: [],
-    x: {
-      step: 0.05
-    },
-    y: {
-      step: 0.05
-    },
-    z: {
-      step: 0.05
-    },
-    ry: {
-      snap: 45
-    },
-    l: {
-      min: 0.6,
-      //max: 4,
-      step: 0.05
+  remove: function () {
+    if (this.data3dView) {
+      this.data3dView.destroy()
+      this.data3dView = null
+    }
+    if (this.mesh) {
+      this.el.removeObject3D('mesh')
+      this.mesh = null
     }
   },
 
-  initialize: function(){
+  generateMeshes3d: function () {
+    var a = this.attributes
 
-    // backwards compatibility
-    if (this.a.closetMaterial) {
-      this.a.materials.closet = this.a.closetMaterial
-      delete this.a.closetMaterial
-    }
-
-  },
-
-  bindings: [{
-    events: [
-      'change:l',
-      'change:w',
-      'change:h',
-      'change:baseboard',
-      'change:doorWidth',
-      'change:handleLength',
-      'change:handleWidth',
-      'change:handleHeight'
-    ],
-    call: 'meshes3d'
-  },{
-    events: [
-      'change:materials.*'
-    ],
-    call: 'materials3d'
-  }],
-
-  contextMenu: {
-    templateId: 'generic',
-    templateOptions: {
-      title: 'Closet'
-    },
-    controls: [
-      {
-        title: 'Height',
-        type: 'number',
-        param: 'h',
-        unit: 'm',
-        min: 1,
-        max: 4,
-        step: 0.05,
-        round: 0.01
-      },
-      {
-        title: 'Length',
-        type: 'number',
-        param: 'l',
-        unit: 'm',
-        step: 0.05,
-        round: 0.01
-      },
-      {
-        title: 'Width',
-        type: 'number',
-        param: 'w',
-        unit: 'm',
-        min: 0.1,
-        max: 0.8,
-        step: 0.05,
-        round: 0.01
-      },
-      {
-        title: 'Vertical Position',
-        type: 'number',
-        param: 'y',
-        unit: 'm',
-        step: 0.1,
-        round: 0.01
-      },
-      {
-        title: 'Lock this item',
-        type: 'boolean',
-        param: 'locked',
-        subscriptions: ['pro', 'modeller', 'artist3d']
-      },
-      {
-        title: 'Material',
-        type: 'material',
-        param: 'materials.closet',
-        category: 'cabinet'
-      }
-    ]
-  },
-
-  loadingQueuePrefix: 'architecture',
-
-  controls3d: 'twoPoints',
-
-  meshes3d: function generateMeshes3d() {
-
-    var a = this.a
     var wallThickness = 10
     if (a.parent && a.parent.a) {
       wallThickness = a.parent.a.w
@@ -650,11 +576,5 @@ export default {
         material: 'closet'
       }
     }
-
-  },
-
-  materials3d: function generateMaterials3d() {
-    return this.a.materials
   }
-
 }

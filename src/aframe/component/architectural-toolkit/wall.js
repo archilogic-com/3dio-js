@@ -2,210 +2,115 @@
 
 // dependencies
 
+import getSchema from './common/get-schema.js'
+import getMaterial from './common/get-material.js'
+import generateNormals from '../../../utils/data3d/buffer/get-normals'
+import generateUvs from '../../../utils/data3d/buffer/get-uvs'
+import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy'
-import generateNormals from '../../../../utils/data3d/buffer/get-normals'
-import generateUvs from '../../../../utils/data3d/buffer/get-uvs'
-
-// helpers
-
-function round (x) {
-  return Math.round(x * 1000000) / 1000000
-}
-
-// class
 
 export default {
 
-  params: {
+  schema: getSchema('wall'),
 
-    type: 'wall',
+  init: function () {},
 
-    x: 0,
-    y: 0,
-    z: 0,
+  update: function (oldData) {
+    var this_ = this
+    var data = this_.data
 
-    ry: 0,       // rotation angle (deg)
+    // remove old mesh
+    this.remove()
 
-    l: 1,        // length
-    w: 0.15,     // width (=thickness)
-    h: 2.4,      // height (! use apartment height)
+    // get defaults and
+    this.attributes = cloneDeep(data)
 
-    lock: false,
+    // get children for walls
+    var children = this_.el.children
+    this.attributes.children = []
+    for (var i = 0; i < children.length; i++) {
+      var c = children[i].getAttribute('io3d-window') || children[i].getAttribute('io3d-door')
+      if (c) {
+        if (children[i].getAttribute('io3d-window')) c.type = 'window'
+        else if (children[i].getAttribute('io3d-door')) c.type = 'door'
+        var pos = children[i].getAttribute('position')
+        Object.keys(pos).forEach(p => {
+          c[p] = pos[p]
+        })
+        this.attributes.children.push(c)
+      } else console.log('invalid child')
+    }
+    // this.attributes.children = this.attributes.children.map(c => mapAttributes(cloneDeep(getType.get(c.type).params), c))
 
-    bake: true,
-    bakeStatus: 'none', // none, pending, done
+    // get meshes and materials from el3d modules
+    var meshes = this.generateMeshes3d()
 
-    materials: {
+    // clean up empty meshes to prevent errors
+    var meshKeys = Object.keys(meshes)
+    meshKeys.forEach(key => {
+      if (!meshes[key].positions || !meshes[key].positions.length) {
+        // console.warn('no vertices for mesh', key)
+        delete meshes[key]
+      }
+    })
+
+    // setup materials
+    // defaults
+    var materials = {
       front: 'default_plaster_001', //'basic-wall',
       back: 'default_plaster_001', //'basic-wall',
       base: {
         colorDiffuse: [ 0.95, 0.95, 0.95 ]
       },
       top: 'wall_top'
-    },
+    }
 
-    baseHeight: 0,
-    frontHasBase: true,
-    backHasBase: true
+    // check for adapted materials
+    var materialKeys = Object.keys(data).filter(function(key) {
+      return key.indexOf('material_') > -1
+    })
+    // add materials to instance
+    materialKeys.forEach(function(key) {
+      var mesh = key.replace('material_', '')
+      materials[mesh] = data[key]
+    })
 
+    // fetch materials from mat library
+    Object.keys(materials).forEach(mat => {
+      materials[mat] = getMaterial(materials[mat])
+    })
+
+    // construct data3d object
+    var data3d = {
+      meshes: meshes,
+      materials: materials
+    }
+
+    // create new one
+    this_.mesh = new THREE.Object3D()
+    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh})
+
+    // update view
+    this_.data3dView.set(data3d)
+    this_.el.setObject3D('mesh', this_.mesh)
+    // emit event
+    this_.el.emit('mesh-updated');
   },
 
-  valid: {
-    children: [ 'door', 'window' ],
-    x: {
-      step: 0.05
-    },
-    z: {
-      step: 0.05
-    },
-    ry: {
-      //step: 45
-      snap: 45
-    },
-    l: {
-      step: 0.05
+  remove: function () {
+    if (this.data3dView) {
+      this.data3dView.destroy()
+      this.data3dView = null
+    }
+    if (this.mesh) {
+      this.el.removeObject3D('mesh')
+      this.mesh = null
     }
   },
 
-  initialize: function(){
+  generateMeshes3d: function () {
+    var a = this.attributes
 
-    // backwards compatibility
-    if (this.a.frontMaterial) {
-      this.a.materials.front = this.a.frontMaterial
-      delete this.a.frontMaterial
-    }
-    if (this.a.backMaterial) {
-      this.a.materials.back = this.a.backMaterial
-      delete this.a.backMaterial
-    }
-    if (this.a.baseMaterial) {
-      this.a.materials.base = this.a.baseMaterial
-      delete this.a.baseMaterial
-    }
-
-  },
-
-  contextMenu: {
-    templateId: 'generic',
-    templateOptions: {
-      title: 'Wall'
-    },
-    controls: [
-      {
-        title: 'Height',
-        type: 'number',
-        param: 'h',
-        unit: 'm',
-        min: 0.05,
-        step: 0.05,
-        round: 0.01
-      },
-      {
-        title: 'Length',
-        type: 'number',
-        param: 'l',
-        unit: 'm',
-        step: 0.05,
-        round: 0.01
-      },
-      {
-        title: 'Width',
-        type: 'number',
-        param: 'w',
-        unit: 'm',
-        min: 0.05,
-        max: 1,
-        step: 0.05,
-        round: 0.01
-      },
-      {
-        title: 'Vertical Position',
-        type: 'number',
-        param: 'y',
-        unit: 'm',
-        step: 0.1,
-        round: 0.01
-      },
-      {
-        title: 'Baseboard on Front',
-        type: 'boolean',
-        param: 'frontHasBase'
-      },
-      {
-        title: 'Baseboard on Back',
-        type: 'boolean',
-        param: 'backHasBase'
-      },
-      {
-        title: 'Baseboard Height',
-        type: 'number',
-        param: 'baseHeight',
-        unit: 'm',
-        step: 0.05,
-        round: 0.01
-      },
-      {
-        title: 'Lock this item',
-        type: 'boolean',
-        param: 'locked',
-        subscriptions: ['pro', 'modeller', 'artist3d']
-      },
-      {
-        display: '<h2>Materials</h2>',
-        type: 'html'
-      },
-      {
-        title: 'Front',
-        type: 'material',
-        param: 'materials.front',
-        category: 'wall'
-      },
-      {
-        title: 'Back',
-        type: 'material',
-        param: 'materials.back',
-        category: 'wall'
-      },
-      {
-        title: 'Baseboard',
-        type: 'material',
-        param: 'materials.base',
-        category: 'wall'
-      }
-    ]
-  },
-
-  bindings: [{
-    events: [
-      'change:h',
-      'change:l',
-      'change:w',
-      'change:baseHeight',
-      'change:frontHasBase',
-      'change:backHasBase',
-      '*/add',
-      '*/remove',
-      '*/change:x',
-      '*/change:y',
-      '*/change:z',
-      '*/change:ry',
-      '*/change:l',
-      '*/change:h'
-    ],
-    call: 'meshes3d'
-  },{
-    events: [
-      'change:materials.*'
-    ],
-    call: 'materials3d'
-  }],
-
-  loadingQueuePrefix: 'architecture',
-
-  controls3d: 'wall',
-
-  meshes3d: function generateMeshes3d() {
-    var a = this.a
     // get children
     var children = a.children //.models
     children = sortBy(children, function (model) {
@@ -1266,11 +1171,11 @@ export default {
         material: 'base'
       }
     }
-
-  },
-
-  materials3d: function generateMaterials3d() {
-    return this.a.materials
   }
+}
 
+// helpers
+
+function round (x) {
+  return Math.round(x * 1000000) / 1000000
 }

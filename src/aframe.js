@@ -7,8 +7,14 @@ import tourComponent from './aframe/component/tour.js'
 import gBlockComponent from './aframe/component/gblock.js'
 import lightingComponent from './aframe/component/lighting.js'
 import minimapComponent from './aframe/component/minimap.js'
-// dynamic entities
-import getElementComponent from './aframe/component/dynamic-entities/element3d.js'
+// architectural tookit
+import closetComponent from './aframe/component/architectural-toolkit/closet.js'
+import doorComponent from './aframe/component/architectural-toolkit/door.js'
+import floorComponent from './aframe/component/architectural-toolkit/floor.js'
+import kitchenComponent from './aframe/component/architectural-toolkit/kitchen.js'
+import polyFloorComponent from './aframe/component/architectural-toolkit/polyfloor.js'
+import wallComponent from './aframe/component/architectural-toolkit/wall.js'
+import windowComponent from './aframe/component/architectural-toolkit/window.js'
 // other
 import inspectorPluginsLauncher from './aframe/inspector-plugins-launcher.js'
 import Data3dView from './aframe/three/data3d-view.js'
@@ -24,22 +30,13 @@ checkDependencies({
   }
 }, function registerComponents () {
 
-  // get dynamic entities
-  var closetComponent = getElementComponent('closet')
-  var doorComponent = getElementComponent('door')
-  var floorComponent = getElementComponent('floor')
-  var kitchenComponent = getElementComponent('kitchen')
-  var polyFloorComponent = getElementComponent('polyfloor')
-  var wallComponent = getElementComponent('wall')
-  var windowComponent = getElementComponent('window')
-
   // register components
   AFRAME.registerComponent('io3d-data3d', data3dComponent)
   AFRAME.registerComponent('io3d-furniture', furnitureComponent)
   AFRAME.registerComponent('tour', tourComponent)
   AFRAME.registerComponent('io3d-lighting', lightingComponent)
   AFRAME.registerComponent('io3d-minimap', minimapComponent)
-  // dynamic entities
+  // architectural tookit
   AFRAME.registerComponent('io3d-closet', closetComponent)
   AFRAME.registerComponent('io3d-door', doorComponent)
   AFRAME.registerComponent('io3d-floor', floorComponent)

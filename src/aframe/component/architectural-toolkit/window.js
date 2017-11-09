@@ -2,243 +2,93 @@
 
 // dependencies
 
-import generateNormals from '../../../../utils/data3d/buffer/get-normals'
-
-// class
+import getSchema from './common/get-schema.js'
+import getMaterial from './common/get-material.js'
+import generateNormals from '../../../utils/data3d/buffer/get-normals'
+import cloneDeep from 'lodash/cloneDeep'
 
 export default {
 
-  params: {
-    type: 'window',
-    x: 0,
-    y: 0.8,
-    z: 0,
-    ry: 0,
-    l: 1.6,        // length
-    h: 1.5,        // height
-    lock: false,
+  schema: getSchema('window'),
 
-    bake: true,
-    bakeStatus: 'none', // none, pending, done
+  init: function () {},
 
-    rowRatios: [ 1 ],
-    columnRatios: [ [ 1 ] ],
+  update: function (oldData) {
+    var this_ = this
+    var data = this_.data
 
-    frameLength: 0.04,
-    frameWidth: 0.06,
+    // remove old mesh
+    this.remove()
 
-    materials: {
+    // get defaults and
+    this.attributes = cloneDeep(data)
+
+    // get meshes and materials from el3d modules
+    var meshes = this.generateMeshes3d()
+
+    // clean up empty meshes to prevent errors
+    var meshKeys = Object.keys(meshes)
+    meshKeys.forEach(key => {
+      if (!meshes[key].positions || !meshes[key].positions.length) {
+        // console.warn('no vertices for mesh', key)
+        delete meshes[key]
+      }
+    })
+
+    // setup materials
+    // defaults
+    var materials = {
       frame: {
         colorDiffuse: [0.85, 0.85, 0.85]
       },
       glass: 'glass'
     }
 
-  },
-
-  valid: {
-    children: [],
-    x: {
-      step: 0.05
-    },
-    z: {
-      lock: true
-    },
-    ry: {
-      step: 180
-    },
-    l: {
-      min: 0.3,
-      step: 0.05
-    }
-  },
-
-  initialize: function(){
-
-    // backwards compatibility
-    if (this.a.frameMaterial) {
-      this.a.materials.frame = this.a.frameMaterial
-      delete this.a.frameMaterial
-    }
-    if (this.a.glassMaterial) {
-      this.a.materials.glass = this.a.glassMaterial
-      delete this.a.glassMaterial
-    }
-    if (this.a.materials && this.a.materials.frame && this.a.materials.frame.length === 3) {
-      // deprecated color format
-      this.a.materials.frame = { colorDiffuse: this.a.materials.frame }
-    }
-
-  },
-
-  bindings: [{
-    events: [
-      'change:l',
-      'change:w',
-      'change:h',
-      'change:rowRatios',
-      'change:columnRatios',
-      'change:frameLength',
-      'change:frameWidth'
-    ],
-    call: 'meshes3d'
-  },{
-    events: [
-      'change:materials.*'
-    ],
-    call: 'materials3d'
-  }],
-
-  _setRatios: function (args) {
-    var rowRatios = args.rows || this.a.rowRatios
-    var columnRatios = args.columns || this.a.columnRatios
-    if (!args.rows) {
-      // adapt rows
-      var _rowRatios = []
-      for (var i = 0, l = columnRatios.length; i < l; i++) {
-        if (rowRatios[ i ]) {
-          _rowRatios[ i ] = rowRatios[ i ]
-        } else {
-          _rowRatios[ i ] = 1
-        }
-      }
-      rowRatios = _rowRatios
-    } else {
-      // adapt columns
-      var _columnRatios = []
-      for (var i = 0, l = rowRatios.length; i < l; i++) {
-        if (columnRatios[ i ]) {
-          _columnRatios[ i ] = columnRatios[ i ]
-        } else {
-          _columnRatios[ i ] = [ 1 ]
-        }
-      }
-      columnRatios = _columnRatios
-    }
-    this.set({
-      rowRatios: rowRatios,
-      columnRatios: columnRatios
+    // check for adapted materials
+    var materialKeys = Object.keys(data).filter(function(key) {
+      return key.indexOf('material_') > -1
     })
+    // add materials to instance
+    materialKeys.forEach(function(key) {
+      var mesh = key.replace('material_', '')
+      materials[mesh] = data[key]
+    })
+
+    // fetch materials from mat library
+    Object.keys(materials).forEach(mat => {
+      materials[mat] = getMaterial(materials[mat])
+    })
+
+    // construct data3d object
+    var data3d = {
+      meshes: meshes,
+      materials: materials
+    }
+
+    // create new one
+    this_.mesh = new THREE.Object3D()
+    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh})
+
+    // update view
+    this_.data3dView.set(data3d)
+    this_.el.setObject3D('mesh', this_.mesh)
+    // emit event
+    this_.el.emit('mesh-updated');
   },
 
-  contextMenu: function generateContextMenu (){
-    var self = this
-    return {
-      templateId: 'generic',
-      templateOptions: {
-        title: 'Window'
-      },
-      controls: [
-        {
-          title: 'Height',
-          type: 'number',
-          param: 'h',
-          unit: 'm',
-          step: 0.05,
-          round: 0.01
-        },{
-          title: 'Length',
-          type: 'number',
-          param: 'l',
-          unit: 'm',
-          step: 0.05,
-          round: 0.01
-        },{
-          title: 'Vertical Position',
-          type: 'number',
-          param: 'y',
-          unit: 'm',
-          step: 0.1,
-          round: 0.01
-        },{
-          title: 'Border Length',
-          type: 'number',
-          param: 'frameLength',
-          unit: 'm',
-          min: 0.02,
-          max: 0.2,
-          step: 0.01,
-          round: 0.01
-        },{
-          title: 'Border Width',
-          type: 'number',
-          param: 'frameWidth',
-          unit: 'm',
-          min: 0.02,
-          max: 0.2,
-          step: 0.05,
-          round: 0.01
-        },
-        {
-          title: 'Row Ratios',
-          type: 'text',
-          display: function(){
-            // encode
-            return self.a.rowRatios.join(':')
-          },
-          onInput: function(value){
-            // decode
-            var rows = []
-            value.split(':').forEach(function(_value, i){
-              rows[ i ] = window.Number(_value)
-            })
-            self._setRatios({ rows: rows })
-          },
-          bindings: ['change:rowRatios', 'change:columnRatios'],
-          realtimeInput: false,
-          subscriptions: ['pro', 'modeller', 'artist3d']
-        },
-        {
-          title: 'Column Ratios',
-          type: 'text',
-          display: function(){
-            // encode
-            var columns = []
-            self.a.columnRatios.forEach(function(row, i){
-              columns[ i ] = row.join(':')
-            })
-            return columns.join('\n')
-          },
-          onInput: function(value){
-            // decode
-            var columns = []
-            value.split('\n').forEach(function(row, i){
-              columns[ i ] = []
-              row.split(':').forEach(function(_value, j){
-                columns[ i ][ j ] = window.Number(_value)
-              })
-            })
-            self._setRatios({ columns: columns })
-          },
-          bindings: ['change:rowRatios', 'change:columnRatios'],
-          realtimeInput: false,
-          multiLine: true,
-          subscriptions: ['pro', 'modeller', 'artist3d']
-        },
-        {
-          title: 'Lock this item',
-          type: 'boolean',
-          param: 'locked',
-          subscriptions: ['pro', 'modeller', 'artist3d']
-        },
-        {
-          title: 'Border Material',
-          type: 'material',
-          param: 'materials.frame',
-          mode: 'custom',
-          controls: [ 'colorDiffuse', 'colorSpecular', 'specularCoef' ]
-        }
-      ]
+  remove: function () {
+    if (this.data3dView) {
+      this.data3dView.destroy()
+      this.data3dView = null
+    }
+    if (this.mesh) {
+      this.el.removeObject3D('mesh')
+      this.mesh = null
     }
   },
 
-  loadingQueuePrefix: 'architecture',
-
-  controls3d: 'insideWall',
-
-  meshes3d: function () {
-
-    var a = this.a
+  generateMeshes3d: function () {
+    var a = this.attributes
 
     var rowRatios = a.rowRatios
     var columnRatios = a.columnRatios
@@ -759,11 +609,5 @@ export default {
         material: 'glass'
       }
     }
-
-  },
-
-  materials3d: function generateMaterials3d () {
-    return this.a.materials
   }
-
 }
