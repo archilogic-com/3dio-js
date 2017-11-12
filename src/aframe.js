@@ -13,6 +13,7 @@ import doorComponent from './aframe/component/architectural-toolkit/door.js'
 import floorComponent from './aframe/component/architectural-toolkit/floor.js'
 import kitchenComponent from './aframe/component/architectural-toolkit/kitchen.js'
 import polyFloorComponent from './aframe/component/architectural-toolkit/polyfloor.js'
+import stairsComponent from './aframe/component/architectural-toolkit/stairs.js'
 import wallComponent from './aframe/component/architectural-toolkit/wall.js'
 import windowComponent from './aframe/component/architectural-toolkit/window.js'
 // other
@@ -42,6 +43,7 @@ checkDependencies({
   AFRAME.registerComponent('io3d-floor', floorComponent)
   AFRAME.registerComponent('io3d-kitchen', kitchenComponent)
   AFRAME.registerComponent('io3d-polyfloor', polyFloorComponent)
+  AFRAME.registerComponent('io3d-stairs', stairsComponent)
   AFRAME.registerComponent('io3d-wall', wallComponent)
   AFRAME.registerComponent('io3d-window', windowComponent)
   // check if gblock component has already been registered

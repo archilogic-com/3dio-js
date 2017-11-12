@@ -21,14 +21,36 @@ export default {
     stepWidth: {
       type: 'number',
       defaultValue: 1.2,
-      optional: true,
+      optional: false,
       min: 0.01
     },
     stairType: {
       type: 'string',
       defaultValue: 'straight',
-      optional: true,
-      min: 0.01
+      optional: false,
+      possibleValues: ['straight', 'straightLanding', 'lShaped', 'halfLanding', '2QuarterLanding', 'winder', 'doubleWinder', 'spiral']
+    },
+    treadHeight: {
+      type: 'number',
+      defaultValue: 0.02,
+      optional: false
+    },
+    stepThickness: {
+      type: 'number',
+      defaultValue: 0.17,
+      optional: false
+    },
+    railing: {
+      type: 'string',
+      defaultValue: 'right',
+      optional: false,
+      possibleValues: ['none', 'left', 'right', 'both']
+    },
+    railingType: {
+      type: 'string',
+      defaultValue: 'verticalBars',
+      optional: false,
+      possibleValues: ['verticalBars']
     }
     // TODO: add all default values
   },
