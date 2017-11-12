@@ -1,3 +1,7 @@
+'use strict';
+
+// dependencies
+
 import getSchema from './common/get-schema.js'
 import getMaterial from './common/get-material.js'
 import generateNormals from '../../../utils/data3d/buffer/get-normals'

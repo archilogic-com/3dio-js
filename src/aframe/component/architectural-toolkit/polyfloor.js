@@ -40,7 +40,7 @@ export default {
     // setup materials
     // defaults
     var materials = {
-      top: 'basic-floor',
+      top: 'wood_parquet_oak',
       side: 'basic-wall',
       ceiling: 'basic-ceiling'
     }
