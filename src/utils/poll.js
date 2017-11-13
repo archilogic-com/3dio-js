@@ -37,6 +37,6 @@ function recursivePoll(callback, fulfill, reject, interval, maxInterval, interva
     setTimeout(function(){
       recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags)
     }, interval)
-  })ato
+  })
 
 }
