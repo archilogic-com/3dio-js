@@ -14,6 +14,10 @@ function getModifier(modifier) {
       }
     }
 
+    if (options.subdivisions) {
+      modifyParams.params.settings = JSON.stringify( { subdivisions: options.subdivisions } )
+    }
+
     return callServices('Processing.task.enqueue', modifyParams)
 
   }
