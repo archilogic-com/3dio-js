@@ -12,7 +12,8 @@
       <input id="inpt-id" placeholder="enter id" style="width: 200px;"/>
       <input id="inpt-filter" placeholder="filter results" style="width: 100px;"/>
     </div>
-    <a-scene antialias="true" shadow="type: pcfsoft">
+    <div id="panel" style="position:absolute; overflow: auto; white-space: nowrap; padding:10px; vertical-align:top; bottom: 0; width: 100%; height: 120px; z-index: 1000; background: white"></div>
+    <a-scene antialias="true" shadow="type: pcfsoft" vr-mode-ui="enabled: false" embedded style="height: calc(100vh - 120px)">
       <a-entity light="type:directional; castShadow: true; intensity:0.3; shadowMapHeight:1024; shadowMapWidth:1024;" position="4 3 3"></a-entity>
       <a-entity light="type:ambient; color:#bbb" position="0 5 3"></a-entity>
       <a-entity id="furniture" io3d-furniture position="0 0 -3" rotation="0 0 0" shadow="cast:true; receive:false;">
@@ -30,14 +31,18 @@
       <a-camera></a-camera>
     </a-scene>
     <script>
-      furnitureId = 'edd99bfc-a597-4fb4-bf92-04916e6d5dfc'
       const furnitureEl = document.querySelector('a-entity#furniture')
       const rndBtn = document.querySelector('#rnd-btn')
       const idInput = document.querySelector('input#inpt-id')
       const queryInput = document.querySelector('input#inpt-filter')
       const changeBtn = document.querySelector('#change-btn')
+      const panelEl = document.querySelector('#panel')
+
+      let alternatives = []
       // preset id input
       idInput.value = furniture.getAttribute('io3d-furniture').id
+
+      getAlternatives(idInput.value)
 
       idInput.addEventListener('input', function() {
         var furnitureId = idInput.value
@@ -52,6 +57,8 @@
           furniture.setAttribute('io3d-furniture', {'id': furnitureInfo.id})
           furniture.setAttribute('position', '0 0 -3')
           idInput.value = furnitureInfo.id
+          // find alternative items
+          getAlternatives(furnitureInfo.id)
         })
       })
       changeBtn.addEventListener('click', function() {
@@ -61,21 +68,57 @@
           .then(result => {
             if (!result) return
 
-            //var elements = io3d.scene.getHtmlFromSceneStructure(result)
             console.log(result)
 
             // apply values from result
             furnitureEl.setAttribute('position', result.components.position.attrValue)
             furnitureEl.setAttribute('io3d-furniture', result.components['io3d-furniture'].attrValue)
-
-            // alternative: replace node with new node
-            // furnitureEl.parentNode.replaceChild(elements[0], furnitureEl)
+            // find alternative items
+            getAlternatives(result.components['io3d-furniture'].attrValue.id)
           })
       })
+
+      function replaceFurniture(el) {
+        let newPos = getNewPosition(furnitureEl, el.offset)
+        furnitureEl.setAttribute('position', newPos)
+        furnitureEl.setAttribute('io3d-furniture', {id: el.furniture.id})
+        getAlternatives(el.furniture.id)
+      }
+
+      function getAlternatives(id) {
+        io3d.staging.getFurnitureAlternatives(id)
+          .then(result => {
+            console.log(result.length, 'elements found')
+            if (result) {
+              alternatives = result
+              let images = result.map(item => item.furniture.thumb)
+              let imgStr = ''
+              images.forEach((img, i) => {
+                imgStr += `<img height="100" onclick="replaceFurniture(alternatives[${i}])" style="display:inline-block;     max-width: 180px;; margin-right: 10px;" src="${img}"></img>`
+              })
+              panelEl.innerHTML = imgStr
+            } else panelEl.innerHTML = 'nothing found =('
+
+          })
+      }
 
       function validateUuid (str) {
         if (!str || typeof str !== "string") return false
         return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(str)
+      }
+
+      // compute new position based on bounding boxes
+      function getNewPosition(el, offset) {
+        let element3d = el.getAttribute('position')
+        element3d.ry = el.getAttribute('rotation').y
+        var s = Math.sin(element3d.ry / 180 * Math.PI)
+        var c = Math.cos(element3d.ry / 180 * Math.PI)
+        var newPosition = {
+          x: element3d.x + offset.x * c + offset.z * s,
+          y: element3d.y + offset.y,
+          z: element3d.z - offset.x * s + offset.z * c
+        }
+        return newPosition
       }
     </script>
   </body>
