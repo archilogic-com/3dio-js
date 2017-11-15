@@ -68,7 +68,6 @@ export default function getAlternatives(id, options) {
 
 function verifyResult(result, id, params) {
   var info = params.info
-
   if (params.searchCount > 10) {
     return Promise.reject(new Error('No furniture was found'))
   }
@@ -82,7 +81,7 @@ function verifyResult(result, id, params) {
 
   if (rawResult.length < 1) {
     if (params.searchCount >= 3) params.margin += 0.1
-    var searchQuery = getQuery(info, params)
+    var searchQuery = getQuery(params)
     params.searchCount += 1
     return search(searchQuery)
       .then(function(result) {
@@ -125,7 +124,6 @@ function getQuery(params) {
   if (params.userQuery && tags.indexOf('TV') < 0)
     queries = queries.concat(params.userQuery)
   var searchQuery = { query: queries.join(' ') }
-
   // add dimension search params if source provides dimensions
   var dim = info.boundingBox
   if (dim) {
