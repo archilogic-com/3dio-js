@@ -9,8 +9,8 @@
     <div class="controls">
       <button id="rnd-btn">pick random</button>
       <button id="change-btn">replace with similar furniture</button><br>
-      <input id="inpt-id" placeholder="enter id" style="width: 200px;"/>
-      <input id="inpt-filter" placeholder="filter results" style="width: 100px;"/>
+      <input id="inpt-id" placeholder="enter id" style="width: 250px;"/>
+      <input id="inpt-filter" placeholder="filter results" style="width: 150px;"/>
     </div>
     <div id="panel" style="position:absolute; overflow: auto; white-space: nowrap; padding:10px; vertical-align:top; bottom: 0; width: 100%; height: 120px; z-index: 1000; background: white"></div>
     <a-scene antialias="true" shadow="type: pcfsoft" vr-mode-ui="enabled: false" embedded style="height: calc(100vh - 120px)">
@@ -31,6 +31,7 @@
       <a-camera></a-camera>
     </a-scene>
     <script>
+      // 38e0fe6d-2a95-49f9-94fd-7fddc7db1b5d
       const furnitureEl = document.querySelector('a-entity#furniture')
       const rndBtn = document.querySelector('#rnd-btn')
       const idInput = document.querySelector('input#inpt-id')
@@ -42,11 +43,15 @@
       // preset id input
       idInput.value = furniture.getAttribute('io3d-furniture').id
 
-      getAlternatives(idInput.value)
+      getAlternatives(idInput.value, {query: queryInput.value})
 
       idInput.addEventListener('input', function() {
         var furnitureId = idInput.value
-        if (validateUuid(furnitureId)) furniture.setAttribute('io3d-furniture', {'id': furnitureId})
+        if (validateUuid(furnitureId)) {
+          furniture.setAttribute('io3d-furniture', {'id': furnitureId})
+          // find alternative items
+          getAlternatives(furnitureId, {query: queryInput.value})
+        }
         else io3d.ui.message('no valid id', 4000, 'warning')
       })
       rndBtn.addEventListener('click', function() {
@@ -58,7 +63,7 @@
           furniture.setAttribute('position', '0 0 -3')
           idInput.value = furnitureInfo.id
           // find alternative items
-          getAlternatives(furnitureInfo.id)
+          getAlternatives(furnitureInfo.id, {query: queryInput.value})
         })
       })
       changeBtn.addEventListener('click', function() {
@@ -74,7 +79,7 @@
             furnitureEl.setAttribute('position', result.components.position.attrValue)
             furnitureEl.setAttribute('io3d-furniture', result.components['io3d-furniture'].attrValue)
             // find alternative items
-            getAlternatives(result.components['io3d-furniture'].attrValue.id)
+            getAlternatives(result.components['io3d-furniture'].attrValue.id, {query: queryInput.value})
           })
       })
 
@@ -82,7 +87,7 @@
         let newPos = getNewPosition(furnitureEl, el.offset)
         furnitureEl.setAttribute('position', newPos)
         furnitureEl.setAttribute('io3d-furniture', {id: el.furniture.id})
-        getAlternatives(el.furniture.id)
+        getAlternatives(el.furniture.id, {query: queryInput.value})
       }
 
       function getAlternatives(id) {
@@ -100,6 +105,7 @@
             } else panelEl.innerHTML = 'nothing found =('
 
           })
+          .catch(console.error)
       }
 
       function validateUuid (str) {
