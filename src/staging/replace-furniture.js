@@ -42,11 +42,8 @@ export default function replaceFurniture(input, options) {
       })
 
       // replace params in furniture elements
-      var sceneStructure = updateSceneStructureWithResult(
-        input,
-        alternatives,
-        random
-      )
+      var sceneStructure = updateSceneStructureWithResult( input, alternatives, random)
+
       if (isDomElement) {
         return getAframeElementsFromSceneStructure(sceneStructure)
       } else return sceneStructure
@@ -72,11 +69,7 @@ function getIdsFromSceneStructure(sceneStructure) {
       collection[element3d.src.substring(1)] = true
     // recursively search through scene structure
     if (element3d.children && element3d.children.length) {
-      collection = defaults(
-        {},
-        collection,
-        getIdsFromSceneStructure(element3d.children)
-      )
+      collection = defaults({}, collection, getIdsFromSceneStructure (element3d.children))
     }
   })
   return collection

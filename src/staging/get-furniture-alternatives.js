@@ -61,7 +61,9 @@ export default function getAlternatives(id, options) {
     .then(function(result) {
       return verifyResult(result, id, params)
     })
-    .catch(function(error) {})
+    .catch(function(error) {
+      console.error()
+    })
 }
 
 function verifyResult(result, id, params) {
@@ -104,7 +106,6 @@ function verifyResult(result, id, params) {
 function getQuery(params) {
   var info = params.info
   var queries = [config['default_search']]
-  var dimensions = ['length', 'height', 'width']
   var includeCategories = params.searchCount < 6
   var tags = includeCategories ? info.tags.concat(info.categories) : info.tags
 
@@ -128,12 +129,10 @@ function getQuery(params) {
   // add dimension search params if source provides dimensions
   var dim = info.boundingBox
   if (dim) {
-    ;['length', 'height', 'width'].forEach(function(d) {
+    ['length', 'height', 'width'].forEach(function(d) {
       if (dim[d] - params.margin > 0) {
-        searchQuery[d + 'Min'] =
-          Math.round((dim[d] - params.margin) * 1e2) / 1e2
-        searchQuery[d + 'Max'] =
-          Math.round((dim[d] + params.margin) * 1e2) / 1e2
+        searchQuery[d + 'Min'] = Math.round((dim[d] - params.margin) * 1e2) / 1e2
+        searchQuery[d + 'Max'] = Math.round((dim[d] + params.margin) * 1e2) / 1e2
       }
     })
   }
