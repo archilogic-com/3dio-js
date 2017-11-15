@@ -62,7 +62,7 @@ export default function getAlternatives(id, options) {
       return verifyResult(result, id, params)
     })
     .catch(function(error) {
-      console.error()
+      console.error(error)
     })
 }
 
