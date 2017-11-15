@@ -8,7 +8,8 @@ import Promise from 'bluebird'
 // consumes sceneStructure or DOM elements
 // replaces furniture Ids and adjusts positioning
 // outputs input type
-export default function replaceFurniture(input, options) {
+export default function replaceFurniture (input, options) {
+
   options = options || {}
   var query = options.query
   // defaults to pick a random item from alternatives
@@ -26,13 +27,13 @@ export default function replaceFurniture(input, options) {
     .then(function(sceneStructure) {
       furnitureIds = getIdsFromSceneStructure(sceneStructure)
 
-      if (Object.keys(furnitureIds).length === 0)
-        return Promise.reject('No valid furniture elements were found')
+      if (Object.keys(furnitureIds).length === 0) return Promise.reject('No valid furniture elements were found')
 
       var promises = []
       Object.keys(furnitureIds).forEach(function(id) {
         promises.push(getFurnitureAlternatives(id, options))
       })
+
       return Promise.all(promises)
     })
     .then(function(result) {
@@ -42,8 +43,7 @@ export default function replaceFurniture(input, options) {
       })
 
       // replace params in furniture elements
-      var sceneStructure = updateSceneStructureWithResult( input, alternatives, random)
-
+      var sceneStructure = updateSceneStructureWithResult(input, alternatives, random)
       if (isDomElement) {
         return getAframeElementsFromSceneStructure(sceneStructure)
       } else return sceneStructure
@@ -61,12 +61,7 @@ function getIdsFromSceneStructure(sceneStructure) {
   var collection = {}
   sceneStructure.forEach(function(element3d) {
     // get all furniture elements = type: 'interior'
-    if (
-      element3d.type === 'interior' &&
-      element3d.src &&
-      typeof element3d.src === 'string'
-    )
-      collection[element3d.src.substring(1)] = true
+    if (element3d.type === 'interior' && element3d.src && typeof element3d.src === 'string') collection[element3d.src.substring(1)] = true
     // recursively search through scene structure
     if (element3d.children && element3d.children.length) {
       collection = defaults({}, collection, getIdsFromSceneStructure (element3d.children))
@@ -77,22 +72,21 @@ function getIdsFromSceneStructure(sceneStructure) {
 
 // Returns true if it is a DOM element
 // https://stackoverflow.com/a/384380/2835973
-function isElement(o) {
-  return typeof HTMLElement === 'object'
-    ? o instanceof HTMLElement //DOM2
-    : o &&
-      typeof o === 'object' &&
-      o !== null &&
-      o.nodeType === 1 &&
-      typeof o.nodeName === 'string'
+function isElement(o){
+  return (
+    typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
+      o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string"
+  );
 }
 
 function updateSceneStructureWithResult(input, alternatives, random) {
-  var sceneStructure = input,
+  var
+    sceneStructure = input,
     replacement,
     index = 0
 
   Object.keys(alternatives).forEach(function(id) {
+
     if (!alternatives[id] || !alternatives[id].length) return
     // we the pick a random item or take the first one
     if (random) index = Math.floor(Math.random() * alternatives[id].length)
@@ -111,11 +105,7 @@ function updateElementsById(sceneStructure, id, replacement) {
 
   sceneStructure = sceneStructure.map(function(element3d) {
     // furniture id is stored in src param
-    if (
-      element3d.type === 'interior' &&
-      element3d.src.substring(1) === id &&
-      replacement.furniture
-    ) {
+    if (element3d.type === 'interior' && element3d.src.substring(1) === id && replacement.furniture) {
       // apply new id
       element3d.src = '!' + replacement.furniture.id
       // compute new position for items that differ in size and mesh origin
@@ -127,11 +117,7 @@ function updateElementsById(sceneStructure, id, replacement) {
     }
     // recursivley search tree
     if (element3d.children && element3d.children.length) {
-      element3d.children = updateElementsById(
-        element3d.children,
-        id,
-        replacement
-      )
+      element3d.children = updateElementsById(element3d.children, id, replacement)
     }
     return element3d
   })
@@ -141,6 +127,7 @@ function updateElementsById(sceneStructure, id, replacement) {
 
 // compute new position based on bounding boxes
 function getNewPosition(element3d, offset) {
+
   var s = Math.sin(element3d.ry / 180 * Math.PI)
   var c = Math.cos(element3d.ry / 180 * Math.PI)
   var newPosition = {
