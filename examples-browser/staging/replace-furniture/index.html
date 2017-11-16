@@ -12,8 +12,8 @@
       <input id="inpt-id" placeholder="enter id" style="width: 250px;"/>
       <input id="inpt-filter" placeholder="filter results" style="width: 150px;"/>
     </div>
-    <div id="panel" style="position:absolute; overflow: auto; white-space: nowrap; padding:10px; vertical-align:top; bottom: 0; width: 100%; height: 120px; z-index: 1000; background: white"></div>
-    <a-scene antialias="true" shadow="type: pcfsoft" vr-mode-ui="enabled: false" embedded style="height: calc(100vh - 120px)">
+    <div id="panel" style="position:absolute; overflow: auto; white-space: nowrap; padding:15px; vertical-align:top; bottom: 0; width: 100%; height: 150px; z-index: 1000; background: white"></div>
+    <a-scene antialias="true" shadow="type: pcfsoft" vr-mode-ui="enabled: false" embedded style="height: calc(100vh - 150px)">
       <a-entity light="type:directional; castShadow: true; intensity:0.3; shadowMapHeight:1024; shadowMapWidth:1024;" position="4 3 3"></a-entity>
       <a-entity light="type:ambient; color:#bbb" position="0 5 3"></a-entity>
       <a-entity id="furniture" io3d-furniture position="0 0 -3" rotation="0 0 0" shadow="cast:true; receive:false;">
@@ -32,6 +32,7 @@
     </a-scene>
     <script>
       // 38e0fe6d-2a95-49f9-94fd-7fddc7db1b5d
+//      bf209a61-c34a-4f72-9bf5-2610a99e6572
       const furnitureEl = document.querySelector('a-entity#furniture')
       const rndBtn = document.querySelector('#rnd-btn')
       const idInput = document.querySelector('input#inpt-id')
@@ -93,8 +94,8 @@
       function getAlternatives(id) {
         io3d.staging.getFurnitureAlternatives(id)
           .then(result => {
-            console.log(result.length, 'elements found')
             if (result) {
+              console.log(result.length, 'elements found')
               alternatives = result
               let images = result.map(item => item.furniture.thumb)
               let imgStr = ''

@@ -3,7 +3,7 @@ import callService from '../utils/services/call.js'
 import normalizeFurnitureInfo from '../furniture/common/normalize-furniture-info.js'
 
 var config = {
-  default_margin: 0.1,
+  default_margin: 0.05,
   default_search: 'isPublished:true -generic',
   tag_black_list: [
     'simplygon',
@@ -18,18 +18,27 @@ var config = {
     'shelf',
     'armchair',
     'sofa',
+    'chair',
     'plant',
     'sideboard',
     'coffee table',
     'dining table',
+    'bed',
     'round',
-    'TV',
+    'tv',
+    'washing machine',
     'lamps',
     'free standing lamp',
     'living',
-    'dining',
+    //'dining',
     'relaxing',
-    'picture'
+    'picture',
+    'bathroom',
+    'storage',
+    'tables',
+    'seating',
+    'L shaped left',
+    'L shaped right'
   ],
   edgeAligned: [
     'sofa',
@@ -56,6 +65,10 @@ export default function getAlternatives(id, options) {
   return getFurnitureInfo(id)
     .then(function(info) {
       params.info = info
+      // check for tables to ( they should change in size too much )
+      var isTable = params.info.categories.indexOf('tables') > -1
+      // set max search Count ( each one is increasing size margin )
+      params.maxSearchCount = isTable ? 4 : 8
       return search(getQuery(params))
     })
     .then(function(result) {
@@ -69,18 +82,19 @@ export default function getAlternatives(id, options) {
 function verifyResult(result, id, params) {
   var info = params.info
   if (params.searchCount > 10) {
-    return Promise.reject(new Error('No furniture was found'))
+    return Promise.reject('No furniture was found')
   }
 
   var rawResult = result.filter(function(el) {
     return el.productResourceId !== id
   })
 
-  // if we didn't find anything in the first place
+  // if we didn't find enough in the first place
   // let's increase dimensions a bit
+  var continueSearching = rawResult.length < 8 && params.searchCount < params.maxSearchCount
+  if (continueSearching) {
+    if (params.searchCount >= 1) params.margin += 0.05
 
-  if (rawResult.length < 1) {
-    if (params.searchCount >= 3) params.margin += 0.1
     var searchQuery = getQuery(params)
     params.searchCount += 1
     return search(searchQuery)
@@ -88,10 +102,9 @@ function verifyResult(result, id, params) {
         return verifyResult(result, id, params)
       })
       .catch(function(error) {
-        console.error('catch', searchQuery.query, error)
         return Promise.reject('No alternatives were found')
       })
-  } else {
+  } else if (rawResult.length) {
     var cleanResult = rawResult.map(normalizeFurnitureInfo).map(function(res) {
       return {
         furniture: res,
@@ -99,29 +112,30 @@ function verifyResult(result, id, params) {
       }
     })
     return Promise.resolve(cleanResult)
-  }
+  } else Promise.reject('No alternatives were found')
 }
 
 function getQuery(params) {
   var info = params.info
   var queries = [config['default_search']]
-  var includeCategories = params.searchCount < 6
-  var tags = includeCategories ? info.tags.concat(info.categories) : info.tags
+  var tags = info.tags.concat(info.categories)
 
   tags = tags.filter(function(tag) {
     // removes blacklisted tags as well as 1P, 2P, ...
-    return config['tag_black_list'].indexOf(tag) < 0 && !/^\d+P$/.test(tag)
+    config['tag_black_list'] = config['tag_black_list'].map(tag => tag.toLowerCase())
+    return config['tag_black_list'].indexOf(tag.toLowerCase()) < 0 && !/^\d+P$/.test(tag)
   })
 
-  // remove secondary tags from query when increasing dimensions didn't work
+  // remove secondary tags after the second search
   if (params.searchCount > 2) {
     tags = tags.filter(function(tag) {
-      return config['tag_white_list'].indexOf(tag) > -1
+      config['tag_white_list'] = config['tag_white_list'].map(tag => tag.toLowerCase())
+      return config['tag_white_list'].indexOf(tag.toLowerCase()) > -1
     })
   }
 
   queries = queries.concat(tags)
-  if (params.userQuery && tags.indexOf('TV') < 0)
+  if (params.userQuery && tags.indexOf('tv') < 0)
     queries = queries.concat(params.userQuery)
   var searchQuery = { query: queries.join(' ') }
   // add dimension search params if source provides dimensions
