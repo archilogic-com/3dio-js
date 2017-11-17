@@ -12,12 +12,14 @@ export default {
   init: function () {
   },
 
-  update: function () {
+  update: function (oldData) {
     var this_ = this
     var el = this.el
     var data = this.data
     var furnitureId = data.id
-
+    // check if the furniture id has changed
+    var idHasChanged = false
+    if ((oldData && oldData.id) && oldData.id !== data.id ) idHasChanged = true
     // check params
     if (!furnitureId || furnitureId === '') return
 
@@ -52,8 +54,9 @@ export default {
         // get material name from inspector
         var materialPropName = 'material_' + meshId.replace(/\s/g, '_')
         // get materialId from aframe attribute or from furniture API scene structure preset
-        var newMaterialId =  data[materialPropName] || (materialPreset ? materialPreset[meshId] : null)
-
+        var newMaterialId = data[materialPropName] || materialPreset && materialPreset[meshId]
+        // if we're loading a new furniture piece make sure to load it's material preset
+        if (idHasChanged && materialPreset) newMaterialId = materialPreset[meshId]
         // update view with custom material (if available)
         if (newMaterialId) {
           // update material
