@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.6
- * @date 2017/10/26 15:33
+ * @version 1.0.7
+ * @date 2017/11/17 12:20
  * @branch master
- * @commit 043c96203ad000c88c6531d7dd06861ba5d12ca2
+ * @commit aba6b53212b7ca923f09e234be80a5af8dce4b4f
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/10/26 15:33', GIT_BRANCH = 'master', GIT_COMMIT = '043c96203ad000c88c6531d7dd06861ba5d12ca2'
+	var BUILD_DATE='2017/11/17 12:20', GIT_BRANCH = 'master', GIT_COMMIT = 'aba6b53212b7ca923f09e234be80a5af8dce4b4f'
 
 	var name = "3dio";
-	var version = "1.0.6";
+	var version = "1.0.7";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d", "aframe", "cardboard", "components", "oculus", "vive", "rift", "vr", "WebVR", "WegGL", "three", "three.js", "3D model", "api", "visualization", "furniture", "real estate", "interior", "building", "architecture", "3d.io"];
 	var homepage = "https://3d.io";
@@ -829,6 +829,47 @@
 	    
 	});
 
+	/* tslint:disable:no-empty */
+
+	function noop() {}
+	var noop_2 = noop;
+
+
+	var noop_1 = {
+		noop: noop_2
+	};
+
+	/* tslint:enable:max-line-length */
+	function pipe() {
+	    var fns = [];
+	    for (var _i = 0; _i < arguments.length; _i++) {
+	        fns[_i - 0] = arguments[_i];
+	    }
+	    return pipeFromArray(fns);
+	}
+	var pipe_2 = pipe;
+	/* @internal */
+	function pipeFromArray(fns) {
+	    if (!fns) {
+	        return noop_1.noop;
+	    }
+	    if (fns.length === 1) {
+	        return fns[0];
+	    }
+	    return function piped(input) {
+	        return fns.reduce(function (prev, fn) {
+	            return fn(prev);
+	        }, input);
+	    };
+	}
+	var pipeFromArray_1 = pipeFromArray;
+
+
+	var pipe_1 = {
+	    pipe: pipe_2,
+	    pipeFromArray: pipeFromArray_1
+	};
+
 	/**
 	 * A representation of any set of values over any amount of time. This is the most basic building block
 	 * of RxJS.
@@ -1058,6 +1099,59 @@
 	     */
 	    Observable.prototype[observable.observable] = function () {
 	        return this;
+	    };
+	    /* tslint:enable:max-line-length */
+	    /**
+	     * Used to stitch together functional operators into a chain.
+	     * @method pipe
+	     * @return {Observable} the Observable result of all of the operators having
+	     * been called in the order they were passed in.
+	     *
+	     * @example
+	     *
+	     * import { map, filter, scan } from 'rxjs/operators';
+	     *
+	     * Rx.Observable.interval(1000)
+	     *   .pipe(
+	     *     filter(x => x % 2 === 0),
+	     *     map(x => x + x),
+	     *     scan((acc, x) => acc + x)
+	     *   )
+	     *   .subscribe(x => console.log(x))
+	     */
+	    Observable.prototype.pipe = function () {
+	        var operations = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            operations[_i - 0] = arguments[_i];
+	        }
+	        if (operations.length === 0) {
+	            return this;
+	        }
+	        return pipe_1.pipeFromArray(operations)(this);
+	    };
+	    /* tslint:enable:max-line-length */
+	    Observable.prototype.toPromise = function (PromiseCtor) {
+	        var _this = this;
+	        if (!PromiseCtor) {
+	            if (root.root.Rx && root.root.Rx.config && root.root.Rx.config.Promise) {
+	                PromiseCtor = root.root.Rx.config.Promise;
+	            } else if (root.root.Promise) {
+	                PromiseCtor = root.root.Promise;
+	            }
+	        }
+	        if (!PromiseCtor) {
+	            throw new Error('no Promise impl found');
+	        }
+	        return new PromiseCtor(function (resolve, reject) {
+	            var value;
+	            _this.subscribe(function (x) {
+	                return value = x;
+	            }, function (err) {
+	                return reject(err);
+	            }, function () {
+	                return resolve(value);
+	            });
+	        });
 	    };
 	    // HACK: Since TypeScript inherits static properties too, we have to
 	    // fight against TypeScript here so Subject can have a different static create signature
@@ -13312,12 +13406,14 @@
 
 	  init: function init() {},
 
-	  update: function update() {
+	  update: function update(oldData) {
 	    var this_ = this;
 	    var el = this.el;
 	    var data = this.data;
 	    var furnitureId = data.id;
-
+	    // check if the furniture id has changed
+	    var idHasChanged = false;
+	    if (oldData && oldData.id && oldData.id !== data.id) idHasChanged = true;
 	    // check params
 	    if (!furnitureId || furnitureId === '') return;
 
@@ -13352,8 +13448,9 @@
 	        // get material name from inspector
 	        var materialPropName = 'material_' + meshId.replace(/\s/g, '_');
 	        // get materialId from aframe attribute or from furniture API scene structure preset
-	        var newMaterialId = data[materialPropName] || (materialPreset ? materialPreset[meshId] : null);
-
+	        var newMaterialId = data[materialPropName] || materialPreset && materialPreset[meshId];
+	        // if we're loading a new furniture piece make sure to load it's material preset
+	        if (idHasChanged && materialPreset) newMaterialId = materialPreset[meshId];
 	        // update view with custom material (if available)
 	        if (newMaterialId) {
 	          // update material
@@ -18093,9 +18190,9 @@
 	  }
 	}
 
-	var fragmentShader = { "text": "uniform vec3 u_color;\r\nuniform float u_metallic;\r\nuniform float u_roughness;\r\nuniform vec3 u_light0Pos;\r\nuniform vec3 u_light0Color;\r\nuniform vec3 u_light1Pos;\r\nuniform vec3 u_light1Color;\r\nuniform mat4 u_modelMatrix;\r\nuniform sampler2D u_reflectionCube;\r\nuniform sampler2D u_reflectionCubeBlur;", "base64": "data:text/plain;base64,dW5pZm9ybSB2ZWMzIHVfY29sb3I7DQp1bmlmb3JtIGZsb2F0IHVfbWV0YWxsaWM7DQp1bmlmb3JtIGZsb2F0IHVfcm91Z2huZXNzOw0KdW5pZm9ybSB2ZWMzIHVfbGlnaHQwUG9zOw0KdW5pZm9ybSB2ZWMzIHVfbGlnaHQwQ29sb3I7DQp1bmlmb3JtIHZlYzMgdV9saWdodDFQb3M7DQp1bmlmb3JtIHZlYzMgdV9saWdodDFDb2xvcjsNCnVuaWZvcm0gbWF0NCB1X21vZGVsTWF0cml4Ow0KdW5pZm9ybSBzYW1wbGVyMkQgdV9yZWZsZWN0aW9uQ3ViZTsNCnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmVCbHVyOw==" };
+	var fragmentShader = { "text": "uniform vec3 u_color;\nuniform float u_metallic;\nuniform float u_roughness;\nuniform vec3 u_light0Pos;\nuniform vec3 u_light0Color;\nuniform vec3 u_light1Pos;\nuniform vec3 u_light1Color;\nuniform mat4 u_modelMatrix;\nuniform sampler2D u_reflectionCube;\nuniform sampler2D u_reflectionCubeBlur;", "base64": "data:text/plain;base64,dW5pZm9ybSB2ZWMzIHVfY29sb3I7CnVuaWZvcm0gZmxvYXQgdV9tZXRhbGxpYzsKdW5pZm9ybSBmbG9hdCB1X3JvdWdobmVzczsKdW5pZm9ybSB2ZWMzIHVfbGlnaHQwUG9zOwp1bmlmb3JtIHZlYzMgdV9saWdodDBDb2xvcjsKdW5pZm9ybSB2ZWMzIHVfbGlnaHQxUG9zOwp1bmlmb3JtIHZlYzMgdV9saWdodDFDb2xvcjsKdW5pZm9ybSBtYXQ0IHVfbW9kZWxNYXRyaXg7CnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmU7CnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmVCbHVyOw==" };
 
-	var vertexShader = { "text": "varying vec3 v_normal;\r\nvarying vec3 v_position;\r\nvarying vec3 v_binormal;\r\nvarying vec3 v_tangent;\r\n", "base64": "data:text/plain;base64,dmFyeWluZyB2ZWMzIHZfbm9ybWFsOw0KdmFyeWluZyB2ZWMzIHZfcG9zaXRpb247DQp2YXJ5aW5nIHZlYzMgdl9iaW5vcm1hbDsNCnZhcnlpbmcgdmVjMyB2X3RhbmdlbnQ7DQo=" };
+	var vertexShader = { "text": "varying vec3 v_normal;\nvarying vec3 v_position;\nvarying vec3 v_binormal;\nvarying vec3 v_tangent;\n", "base64": "data:text/plain;base64,dmFyeWluZyB2ZWMzIHZfbm9ybWFsOwp2YXJ5aW5nIHZlYzMgdl9wb3NpdGlvbjsKdmFyeWluZyB2ZWMzIHZfYmlub3JtYWw7CnZhcnlpbmcgdmVjMyB2X3RhbmdlbnQ7Cg==" };
 
 	// TODO: Replace placeholder shaders by original ones (requires fixing projection matrix)
 	// configs
@@ -19528,9 +19625,9 @@
 	  return loadingTexturesPromise;
 	}
 
-	var fragmentShader$1 = { "text": "uniform vec3 color;\r\nuniform vec3 emissive;\r\nuniform vec3 specular;\r\nuniform float shininess;\r\nuniform float opacity;\r\n\r\n#include <common>\r\n#include <packing>\r\n#include <uv_pars_fragment>\r\n#include <uv2_pars_fragment>\r\n#include <map_pars_fragment>\r\n#include <alphamap_pars_fragment>\r\n\r\n// Replaces <lightmap_pars_fragment>;\r\n\r\n#ifdef USE_LIGHTMAP\r\n\tuniform sampler2D lightMap;\r\n\tuniform float lightMapIntensity;\r\n\tuniform float lightMapExposure;\r\n\tuniform float lightMapFalloff;\r\n#endif\r\n\r\n#include <normalmap_pars_fragment>\r\n#include <specularmap_pars_fragment>\r\n\r\n#include <bsdfs>\r\n#include <lights_pars>\r\n#include <lights_phong_pars_fragment>\r\n#include <shadowmap_pars_fragment>\r\n\r\n\r\nvoid main() {\r\n\r\n    vec4 diffuseColor = vec4( color, opacity );\r\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\r\n\r\n    vec3 totalEmissiveRadiance = emissive;\r\n\r\n    #include <map_fragment>\r\n    #include <alphamap_fragment>\r\n    #include <alphatest_fragment>\r\n    #include <specularmap_fragment>\r\n\r\n    // Start of <normal_fragment> replace block\r\n    #ifdef FLAT_SHADED\r\n\r\n      // Workaround for Adreno/Nexus5 not able able to do dFdx( vViewPosition ) ...\r\n\r\n      vec3 fdx = vec3( dFdx( vViewPosition.x ), dFdx( vViewPosition.y ), dFdx( vViewPosition.z ) );\r\n      vec3 fdy = vec3( dFdy( vViewPosition.x ), dFdy( vViewPosition.y ), dFdy( vViewPosition.z ) );\r\n      vec3 normal = normalize( cross( fdx, fdy ) );\r\n\r\n    #else\r\n\r\n      vec3 normal = normalize( vNormal );\r\n\r\n      #ifdef DOUBLE_SIDED\r\n\r\n        normal = normal * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\r\n\r\n      #endif\r\n\r\n    #endif\r\n\r\n    #ifdef USE_NORMALMAP\r\n\r\n      normal = perturbNormal2Arb( -vViewPosition, normal );\r\n\r\n    #elif defined( USE_BUMPMAP )\r\n\r\n      normal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );\r\n\r\n    #endif\r\n    // End of <normal_fragment> replace block\r\n\r\n    // accumulation\r\n    #include <lights_phong_fragment>\r\n\r\n    // Start of <light-template> replace block\r\n    GeometricContext geometry;\r\n\r\n    geometry.position = - vViewPosition;\r\n    geometry.normal = normal;\r\n    geometry.viewDir = normalize( vViewPosition );\r\n\r\n    IncidentLight directLight;\r\n\r\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        PointLight pointLight;\r\n\r\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\r\n\r\n            pointLight = pointLights[ i ];\r\n\r\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        SpotLight spotLight;\r\n\r\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\r\n\r\n            spotLight = spotLights[ i ];\r\n\r\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\r\n\r\n        DirectionalLight directionalLight;\r\n\r\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\r\n\r\n            directionalLight = directionalLights[ i ];\r\n\r\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\r\n\r\n            #ifdef USE_SHADOWMAP\r\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\r\n            #endif\r\n\r\n            RE_Direct( directLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\r\n\r\n        RectAreaLight rectAreaLight;\r\n\r\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\r\n\r\n            rectAreaLight = rectAreaLights[ i ];\r\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\r\n\r\n        }\r\n\r\n    #endif\r\n\r\n    #if defined( RE_IndirectDiffuse )\r\n\r\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\r\n\r\n        #ifdef USE_LIGHTMAP\r\n\r\n            // compute the light value\r\n            vec3 unit = vec3(1.0);\r\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\r\n            // compute the light intensity modifier\r\n            vec3 modifier = -lightMapFalloff * light * light + unit;\r\n            // apply light\r\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\r\n\r\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\r\n\r\n                lightMapIrradiance *= PI; // factor of PI should not be present; included here to prevent breakage\r\n\r\n            #endif\r\n\r\n            irradiance += lightMapIrradiance;\r\n\r\n        #endif\r\n\r\n        #if ( NUM_HEMI_LIGHTS > 0 )\r\n\r\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\r\n\r\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\r\n\r\n            }\r\n\r\n        #endif\r\n\r\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\r\n\r\n    #endif\r\n    // End of <light-template> replace block\r\n\r\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\r\n\r\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\r\n\r\n}", "base64": "data:text/plain;base64,dW5pZm9ybSB2ZWMzIGNvbG9yOw0KdW5pZm9ybSB2ZWMzIGVtaXNzaXZlOw0KdW5pZm9ybSB2ZWMzIHNwZWN1bGFyOw0KdW5pZm9ybSBmbG9hdCBzaGluaW5lc3M7DQp1bmlmb3JtIGZsb2F0IG9wYWNpdHk7DQoNCiNpbmNsdWRlIDxjb21tb24+DQojaW5jbHVkZSA8cGFja2luZz4NCiNpbmNsdWRlIDx1dl9wYXJzX2ZyYWdtZW50Pg0KI2luY2x1ZGUgPHV2Ml9wYXJzX2ZyYWdtZW50Pg0KI2luY2x1ZGUgPG1hcF9wYXJzX2ZyYWdtZW50Pg0KI2luY2x1ZGUgPGFscGhhbWFwX3BhcnNfZnJhZ21lbnQ+DQoNCi8vIFJlcGxhY2VzIDxsaWdodG1hcF9wYXJzX2ZyYWdtZW50PjsNCg0KI2lmZGVmIFVTRV9MSUdIVE1BUA0KCXVuaWZvcm0gc2FtcGxlcjJEIGxpZ2h0TWFwOw0KCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBJbnRlbnNpdHk7DQoJdW5pZm9ybSBmbG9hdCBsaWdodE1hcEV4cG9zdXJlOw0KCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBGYWxsb2ZmOw0KI2VuZGlmDQoNCiNpbmNsdWRlIDxub3JtYWxtYXBfcGFyc19mcmFnbWVudD4NCiNpbmNsdWRlIDxzcGVjdWxhcm1hcF9wYXJzX2ZyYWdtZW50Pg0KDQojaW5jbHVkZSA8YnNkZnM+DQojaW5jbHVkZSA8bGlnaHRzX3BhcnM+DQojaW5jbHVkZSA8bGlnaHRzX3Bob25nX3BhcnNfZnJhZ21lbnQ+DQojaW5jbHVkZSA8c2hhZG93bWFwX3BhcnNfZnJhZ21lbnQ+DQoNCg0Kdm9pZCBtYWluKCkgew0KDQogICAgdmVjNCBkaWZmdXNlQ29sb3IgPSB2ZWM0KCBjb2xvciwgb3BhY2l0eSApOw0KICAgIFJlZmxlY3RlZExpZ2h0IHJlZmxlY3RlZExpZ2h0ID0gUmVmbGVjdGVkTGlnaHQoIHZlYzMoIDAuMCApLCB2ZWMzKCAwLjAgKSwgdmVjMyggMC4wICksIHZlYzMoIDAuMCApICk7DQoNCiAgICB2ZWMzIHRvdGFsRW1pc3NpdmVSYWRpYW5jZSA9IGVtaXNzaXZlOw0KDQogICAgI2luY2x1ZGUgPG1hcF9mcmFnbWVudD4NCiAgICAjaW5jbHVkZSA8YWxwaGFtYXBfZnJhZ21lbnQ+DQogICAgI2luY2x1ZGUgPGFscGhhdGVzdF9mcmFnbWVudD4NCiAgICAjaW5jbHVkZSA8c3BlY3VsYXJtYXBfZnJhZ21lbnQ+DQoNCiAgICAvLyBTdGFydCBvZiA8bm9ybWFsX2ZyYWdtZW50PiByZXBsYWNlIGJsb2NrDQogICAgI2lmZGVmIEZMQVRfU0hBREVEDQoNCiAgICAgIC8vIFdvcmthcm91bmQgZm9yIEFkcmVuby9OZXh1czUgbm90IGFibGUgYWJsZSB0byBkbyBkRmR4KCB2Vmlld1Bvc2l0aW9uICkgLi4uDQoNCiAgICAgIHZlYzMgZmR4ID0gdmVjMyggZEZkeCggdlZpZXdQb3NpdGlvbi54ICksIGRGZHgoIHZWaWV3UG9zaXRpb24ueSApLCBkRmR4KCB2Vmlld1Bvc2l0aW9uLnogKSApOw0KICAgICAgdmVjMyBmZHkgPSB2ZWMzKCBkRmR5KCB2Vmlld1Bvc2l0aW9uLnggKSwgZEZkeSggdlZpZXdQb3NpdGlvbi55ICksIGRGZHkoIHZWaWV3UG9zaXRpb24ueiApICk7DQogICAgICB2ZWMzIG5vcm1hbCA9IG5vcm1hbGl6ZSggY3Jvc3MoIGZkeCwgZmR5ICkgKTsNCg0KICAgICNlbHNlDQoNCiAgICAgIHZlYzMgbm9ybWFsID0gbm9ybWFsaXplKCB2Tm9ybWFsICk7DQoNCiAgICAgICNpZmRlZiBET1VCTEVfU0lERUQNCg0KICAgICAgICBub3JtYWwgPSBub3JtYWwgKiAoIGZsb2F0KCBnbF9Gcm9udEZhY2luZyApICogMi4wIC0gMS4wICk7DQoNCiAgICAgICNlbmRpZg0KDQogICAgI2VuZGlmDQoNCiAgICAjaWZkZWYgVVNFX05PUk1BTE1BUA0KDQogICAgICBub3JtYWwgPSBwZXJ0dXJiTm9ybWFsMkFyYiggLXZWaWV3UG9zaXRpb24sIG5vcm1hbCApOw0KDQogICAgI2VsaWYgZGVmaW5lZCggVVNFX0JVTVBNQVAgKQ0KDQogICAgICBub3JtYWwgPSBwZXJ0dXJiTm9ybWFsQXJiKCAtdlZpZXdQb3NpdGlvbiwgbm9ybWFsLCBkSGR4eV9md2QoKSApOw0KDQogICAgI2VuZGlmDQogICAgLy8gRW5kIG9mIDxub3JtYWxfZnJhZ21lbnQ+IHJlcGxhY2UgYmxvY2sNCg0KICAgIC8vIGFjY3VtdWxhdGlvbg0KICAgICNpbmNsdWRlIDxsaWdodHNfcGhvbmdfZnJhZ21lbnQ+DQoNCiAgICAvLyBTdGFydCBvZiA8bGlnaHQtdGVtcGxhdGU+IHJlcGxhY2UgYmxvY2sNCiAgICBHZW9tZXRyaWNDb250ZXh0IGdlb21ldHJ5Ow0KDQogICAgZ2VvbWV0cnkucG9zaXRpb24gPSAtIHZWaWV3UG9zaXRpb247DQogICAgZ2VvbWV0cnkubm9ybWFsID0gbm9ybWFsOw0KICAgIGdlb21ldHJ5LnZpZXdEaXIgPSBub3JtYWxpemUoIHZWaWV3UG9zaXRpb24gKTsNCg0KICAgIEluY2lkZW50TGlnaHQgZGlyZWN0TGlnaHQ7DQoNCiAgICAjaWYgKCBOVU1fUE9JTlRfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdCApDQoNCiAgICAgICAgUG9pbnRMaWdodCBwb2ludExpZ2h0Ow0KDQogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9QT0lOVF9MSUdIVFM7IGkgKysgKSB7DQoNCiAgICAgICAgICAgIHBvaW50TGlnaHQgPSBwb2ludExpZ2h0c1sgaSBdOw0KDQogICAgICAgICAgICBnZXRQb2ludERpcmVjdExpZ2h0SXJyYWRpYW5jZSggcG9pbnRMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7DQoNCiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQDQogICAgICAgICAgICBkaXJlY3RMaWdodC5jb2xvciAqPSBhbGwoIGJ2ZWMyKCBwb2ludExpZ2h0LnNoYWRvdywgZGlyZWN0TGlnaHQudmlzaWJsZSApICkgPyBnZXRQb2ludFNoYWRvdyggcG9pbnRTaGFkb3dNYXBbIGkgXSwgcG9pbnRMaWdodC5zaGFkb3dNYXBTaXplLCBwb2ludExpZ2h0LnNoYWRvd0JpYXMsIHBvaW50TGlnaHQuc2hhZG93UmFkaXVzLCB2UG9pbnRTaGFkb3dDb29yZFsgaSBdICkgOiAxLjA7DQogICAgICAgICAgICAjZW5kaWYNCg0KICAgICAgICAgICAgUkVfRGlyZWN0KCBkaXJlY3RMaWdodCwgZ2VvbWV0cnksIG1hdGVyaWFsLCByZWZsZWN0ZWRMaWdodCApOw0KDQogICAgICAgIH0NCg0KICAgICNlbmRpZg0KDQogICAgI2lmICggTlVNX1NQT1RfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdCApDQoNCiAgICAgICAgU3BvdExpZ2h0IHNwb3RMaWdodDsNCg0KICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fU1BPVF9MSUdIVFM7IGkgKysgKSB7DQoNCiAgICAgICAgICAgIHNwb3RMaWdodCA9IHNwb3RMaWdodHNbIGkgXTsNCg0KICAgICAgICAgICAgZ2V0U3BvdERpcmVjdExpZ2h0SXJyYWRpYW5jZSggc3BvdExpZ2h0LCBnZW9tZXRyeSwgZGlyZWN0TGlnaHQgKTsNCg0KICAgICAgICAgICAgI2lmZGVmIFVTRV9TSEFET1dNQVANCiAgICAgICAgICAgIGRpcmVjdExpZ2h0LmNvbG9yICo9IGFsbCggYnZlYzIoIHNwb3RMaWdodC5zaGFkb3csIGRpcmVjdExpZ2h0LnZpc2libGUgKSApID8gZ2V0U2hhZG93KCBzcG90U2hhZG93TWFwWyBpIF0sIHNwb3RMaWdodC5zaGFkb3dNYXBTaXplLCBzcG90TGlnaHQuc2hhZG93Qmlhcywgc3BvdExpZ2h0LnNoYWRvd1JhZGl1cywgdlNwb3RTaGFkb3dDb29yZFsgaSBdICkgOiAxLjA7DQogICAgICAgICAgICAjZW5kaWYNCg0KICAgICAgICAgICAgUkVfRGlyZWN0KCBkaXJlY3RMaWdodCwgZ2VvbWV0cnksIG1hdGVyaWFsLCByZWZsZWN0ZWRMaWdodCApOw0KDQogICAgICAgIH0NCg0KICAgICNlbmRpZg0KDQogICAgI2lmICggTlVNX0RJUl9MSUdIVFMgPiAwICkgJiYgZGVmaW5lZCggUkVfRGlyZWN0ICkNCg0KICAgICAgICBEaXJlY3Rpb25hbExpZ2h0IGRpcmVjdGlvbmFsTGlnaHQ7DQoNCiAgICAgICAgZm9yICggaW50IGkgPSAwOyBpIDwgTlVNX0RJUl9MSUdIVFM7IGkgKysgKSB7DQoNCiAgICAgICAgICAgIGRpcmVjdGlvbmFsTGlnaHQgPSBkaXJlY3Rpb25hbExpZ2h0c1sgaSBdOw0KDQogICAgICAgICAgICBnZXREaXJlY3Rpb25hbERpcmVjdExpZ2h0SXJyYWRpYW5jZSggZGlyZWN0aW9uYWxMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7DQoNCiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQDQogICAgICAgICAgICBkaXJlY3RMaWdodC5jb2xvciAqPSBhbGwoIGJ2ZWMyKCBkaXJlY3Rpb25hbExpZ2h0LnNoYWRvdywgZGlyZWN0TGlnaHQudmlzaWJsZSApICkgPyBnZXRTaGFkb3coIGRpcmVjdGlvbmFsU2hhZG93TWFwWyBpIF0sIGRpcmVjdGlvbmFsTGlnaHQuc2hhZG93TWFwU2l6ZSwgZGlyZWN0aW9uYWxMaWdodC5zaGFkb3dCaWFzLCBkaXJlY3Rpb25hbExpZ2h0LnNoYWRvd1JhZGl1cywgdkRpcmVjdGlvbmFsU2hhZG93Q29vcmRbIGkgXSApIDogMS4wOw0KICAgICAgICAgICAgI2VuZGlmDQoNCiAgICAgICAgICAgIFJFX0RpcmVjdCggZGlyZWN0TGlnaHQsIGdlb21ldHJ5LCBtYXRlcmlhbCwgcmVmbGVjdGVkTGlnaHQgKTsNCg0KICAgICAgICB9DQoNCiAgICAjZW5kaWYNCg0KICAgICNpZiAoIE5VTV9SRUNUX0FSRUFfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdF9SZWN0QXJlYSApDQoNCiAgICAgICAgUmVjdEFyZWFMaWdodCByZWN0QXJlYUxpZ2h0Ow0KDQogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9SRUNUX0FSRUFfTElHSFRTOyBpICsrICkgew0KDQogICAgICAgICAgICByZWN0QXJlYUxpZ2h0ID0gcmVjdEFyZWFMaWdodHNbIGkgXTsNCiAgICAgICAgICAgIFJFX0RpcmVjdF9SZWN0QXJlYSggcmVjdEFyZWFMaWdodCwgZ2VvbWV0cnksIG1hdGVyaWFsLCByZWZsZWN0ZWRMaWdodCApOw0KDQogICAgICAgIH0NCg0KICAgICNlbmRpZg0KDQogICAgI2lmIGRlZmluZWQoIFJFX0luZGlyZWN0RGlmZnVzZSApDQoNCiAgICAgICAgdmVjMyBpcnJhZGlhbmNlID0gZ2V0QW1iaWVudExpZ2h0SXJyYWRpYW5jZSggYW1iaWVudExpZ2h0Q29sb3IgKTsNCg0KICAgICAgICAjaWZkZWYgVVNFX0xJR0hUTUFQDQoNCiAgICAgICAgICAgIC8vIGNvbXB1dGUgdGhlIGxpZ2h0IHZhbHVlDQogICAgICAgICAgICB2ZWMzIHVuaXQgPSB2ZWMzKDEuMCk7DQogICAgICAgICAgICB2ZWMzIGxpZ2h0ID0gMi4wICogKHRleHR1cmUyRCggbGlnaHRNYXAsIHZVdjIgKS54eXogLSBsaWdodE1hcEV4cG9zdXJlICogdW5pdCk7DQogICAgICAgICAgICAvLyBjb21wdXRlIHRoZSBsaWdodCBpbnRlbnNpdHkgbW9kaWZpZXINCiAgICAgICAgICAgIHZlYzMgbW9kaWZpZXIgPSAtbGlnaHRNYXBGYWxsb2ZmICogbGlnaHQgKiBsaWdodCArIHVuaXQ7DQogICAgICAgICAgICAvLyBhcHBseSBsaWdodA0KICAgICAgICAgICAgdmVjMyBsaWdodE1hcElycmFkaWFuY2UgPSBsaWdodCAqIG1vZGlmaWVyICogbGlnaHRNYXBJbnRlbnNpdHk7DQoNCiAgICAgICAgICAgICNpZm5kZWYgUEhZU0lDQUxMWV9DT1JSRUNUX0xJR0hUUw0KDQogICAgICAgICAgICAgICAgbGlnaHRNYXBJcnJhZGlhbmNlICo9IFBJOyAvLyBmYWN0b3Igb2YgUEkgc2hvdWxkIG5vdCBiZSBwcmVzZW50OyBpbmNsdWRlZCBoZXJlIHRvIHByZXZlbnQgYnJlYWthZ2UNCg0KICAgICAgICAgICAgI2VuZGlmDQoNCiAgICAgICAgICAgIGlycmFkaWFuY2UgKz0gbGlnaHRNYXBJcnJhZGlhbmNlOw0KDQogICAgICAgICNlbmRpZg0KDQogICAgICAgICNpZiAoIE5VTV9IRU1JX0xJR0hUUyA+IDAgKQ0KDQogICAgICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fSEVNSV9MSUdIVFM7IGkgKysgKSB7DQoNCiAgICAgICAgICAgICAgICBpcnJhZGlhbmNlICs9IGdldEhlbWlzcGhlcmVMaWdodElycmFkaWFuY2UoIGhlbWlzcGhlcmVMaWdodHNbIGkgXSwgZ2VvbWV0cnkgKTsNCg0KICAgICAgICAgICAgfQ0KDQogICAgICAgICNlbmRpZg0KDQogICAgICAgIFJFX0luZGlyZWN0RGlmZnVzZSggaXJyYWRpYW5jZSwgZ2VvbWV0cnksIG1hdGVyaWFsLCByZWZsZWN0ZWRMaWdodCApOw0KDQogICAgI2VuZGlmDQogICAgLy8gRW5kIG9mIDxsaWdodC10ZW1wbGF0ZT4gcmVwbGFjZSBibG9jaw0KDQogICAgdmVjMyBvdXRnb2luZ0xpZ2h0ID0gcmVmbGVjdGVkTGlnaHQuZGlyZWN0RGlmZnVzZSArIHJlZmxlY3RlZExpZ2h0LmluZGlyZWN0RGlmZnVzZSArIHJlZmxlY3RlZExpZ2h0LmRpcmVjdFNwZWN1bGFyICsgcmVmbGVjdGVkTGlnaHQuaW5kaXJlY3RTcGVjdWxhciArIHRvdGFsRW1pc3NpdmVSYWRpYW5jZTsNCg0KICAgIGdsX0ZyYWdDb2xvciA9IHZlYzQoIG91dGdvaW5nTGlnaHQsIGRpZmZ1c2VDb2xvci5hICk7DQoNCn0=" };
+	var fragmentShader$1 = { "text": "uniform vec3 color;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapExposure;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\n#include <shadowmap_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( color, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #ifdef FLAT_SHADED\n      vec3 fdx = vec3( dFdx( vViewPosition.x ), dFdx( vViewPosition.y ), dFdx( vViewPosition.z ) );\n      vec3 fdy = vec3( dFdy( vViewPosition.x ), dFdy( vViewPosition.y ), dFdy( vViewPosition.z ) );\n      vec3 normal = normalize( cross( fdx, fdy ) );\n    #else\n      vec3 normal = normalize( vNormal );\n      #ifdef DOUBLE_SIDED\n        normal = normal * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n      #endif\n    #endif\n    #ifdef USE_NORMALMAP\n      normal = perturbNormal2Arb( -vViewPosition, normal );\n    #elif defined( USE_BUMPMAP )\n      normal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );\n    #endif\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}", "base64": "data:text/plain;base64,dW5pZm9ybSB2ZWMzIGNvbG9yOwp1bmlmb3JtIHZlYzMgZW1pc3NpdmU7CnVuaWZvcm0gdmVjMyBzcGVjdWxhcjsKdW5pZm9ybSBmbG9hdCBzaGluaW5lc3M7CnVuaWZvcm0gZmxvYXQgb3BhY2l0eTsKI2luY2x1ZGUgPGNvbW1vbj4KI2luY2x1ZGUgPHBhY2tpbmc+CiNpbmNsdWRlIDx1dl9wYXJzX2ZyYWdtZW50PgojaW5jbHVkZSA8dXYyX3BhcnNfZnJhZ21lbnQ+CiNpbmNsdWRlIDxtYXBfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPGFscGhhbWFwX3BhcnNfZnJhZ21lbnQ+CiNpZmRlZiBVU0VfTElHSFRNQVAKCXVuaWZvcm0gc2FtcGxlcjJEIGxpZ2h0TWFwOwoJdW5pZm9ybSBmbG9hdCBsaWdodE1hcEludGVuc2l0eTsKCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBFeHBvc3VyZTsKCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBGYWxsb2ZmOwojZW5kaWYKI2luY2x1ZGUgPG5vcm1hbG1hcF9wYXJzX2ZyYWdtZW50PgojaW5jbHVkZSA8c3BlY3VsYXJtYXBfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPGJzZGZzPgojaW5jbHVkZSA8bGlnaHRzX3BhcnM+CiNpbmNsdWRlIDxsaWdodHNfcGhvbmdfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPHNoYWRvd21hcF9wYXJzX2ZyYWdtZW50Pgp2b2lkIG1haW4oKSB7CiAgICB2ZWM0IGRpZmZ1c2VDb2xvciA9IHZlYzQoIGNvbG9yLCBvcGFjaXR5ICk7CiAgICBSZWZsZWN0ZWRMaWdodCByZWZsZWN0ZWRMaWdodCA9IFJlZmxlY3RlZExpZ2h0KCB2ZWMzKCAwLjAgKSwgdmVjMyggMC4wICksIHZlYzMoIDAuMCApLCB2ZWMzKCAwLjAgKSApOwogICAgdmVjMyB0b3RhbEVtaXNzaXZlUmFkaWFuY2UgPSBlbWlzc2l2ZTsKICAgICNpbmNsdWRlIDxtYXBfZnJhZ21lbnQ+CiAgICAjaW5jbHVkZSA8YWxwaGFtYXBfZnJhZ21lbnQ+CiAgICAjaW5jbHVkZSA8YWxwaGF0ZXN0X2ZyYWdtZW50PgogICAgI2luY2x1ZGUgPHNwZWN1bGFybWFwX2ZyYWdtZW50PgogICAgI2lmZGVmIEZMQVRfU0hBREVECiAgICAgIHZlYzMgZmR4ID0gdmVjMyggZEZkeCggdlZpZXdQb3NpdGlvbi54ICksIGRGZHgoIHZWaWV3UG9zaXRpb24ueSApLCBkRmR4KCB2Vmlld1Bvc2l0aW9uLnogKSApOwogICAgICB2ZWMzIGZkeSA9IHZlYzMoIGRGZHkoIHZWaWV3UG9zaXRpb24ueCApLCBkRmR5KCB2Vmlld1Bvc2l0aW9uLnkgKSwgZEZkeSggdlZpZXdQb3NpdGlvbi56ICkgKTsKICAgICAgdmVjMyBub3JtYWwgPSBub3JtYWxpemUoIGNyb3NzKCBmZHgsIGZkeSApICk7CiAgICAjZWxzZQogICAgICB2ZWMzIG5vcm1hbCA9IG5vcm1hbGl6ZSggdk5vcm1hbCApOwogICAgICAjaWZkZWYgRE9VQkxFX1NJREVECiAgICAgICAgbm9ybWFsID0gbm9ybWFsICogKCBmbG9hdCggZ2xfRnJvbnRGYWNpbmcgKSAqIDIuMCAtIDEuMCApOwogICAgICAjZW5kaWYKICAgICNlbmRpZgogICAgI2lmZGVmIFVTRV9OT1JNQUxNQVAKICAgICAgbm9ybWFsID0gcGVydHVyYk5vcm1hbDJBcmIoIC12Vmlld1Bvc2l0aW9uLCBub3JtYWwgKTsKICAgICNlbGlmIGRlZmluZWQoIFVTRV9CVU1QTUFQICkKICAgICAgbm9ybWFsID0gcGVydHVyYk5vcm1hbEFyYiggLXZWaWV3UG9zaXRpb24sIG5vcm1hbCwgZEhkeHlfZndkKCkgKTsKICAgICNlbmRpZgogICAgI2luY2x1ZGUgPGxpZ2h0c19waG9uZ19mcmFnbWVudD4KICAgIEdlb21ldHJpY0NvbnRleHQgZ2VvbWV0cnk7CiAgICBnZW9tZXRyeS5wb3NpdGlvbiA9IC0gdlZpZXdQb3NpdGlvbjsKICAgIGdlb21ldHJ5Lm5vcm1hbCA9IG5vcm1hbDsKICAgIGdlb21ldHJ5LnZpZXdEaXIgPSBub3JtYWxpemUoIHZWaWV3UG9zaXRpb24gKTsKICAgIEluY2lkZW50TGlnaHQgZGlyZWN0TGlnaHQ7CiAgICAjaWYgKCBOVU1fUE9JTlRfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdCApCiAgICAgICAgUG9pbnRMaWdodCBwb2ludExpZ2h0OwogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9QT0lOVF9MSUdIVFM7IGkgKysgKSB7CiAgICAgICAgICAgIHBvaW50TGlnaHQgPSBwb2ludExpZ2h0c1sgaSBdOwogICAgICAgICAgICBnZXRQb2ludERpcmVjdExpZ2h0SXJyYWRpYW5jZSggcG9pbnRMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7CiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQCiAgICAgICAgICAgIGRpcmVjdExpZ2h0LmNvbG9yICo9IGFsbCggYnZlYzIoIHBvaW50TGlnaHQuc2hhZG93LCBkaXJlY3RMaWdodC52aXNpYmxlICkgKSA/IGdldFBvaW50U2hhZG93KCBwb2ludFNoYWRvd01hcFsgaSBdLCBwb2ludExpZ2h0LnNoYWRvd01hcFNpemUsIHBvaW50TGlnaHQuc2hhZG93QmlhcywgcG9pbnRMaWdodC5zaGFkb3dSYWRpdXMsIHZQb2ludFNoYWRvd0Nvb3JkWyBpIF0gKSA6IDEuMDsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIFJFX0RpcmVjdCggZGlyZWN0TGlnaHQsIGdlb21ldHJ5LCBtYXRlcmlhbCwgcmVmbGVjdGVkTGlnaHQgKTsKICAgICAgICB9CiAgICAjZW5kaWYKICAgICNpZiAoIE5VTV9TUE9UX0xJR0hUUyA+IDAgKSAmJiBkZWZpbmVkKCBSRV9EaXJlY3QgKQogICAgICAgIFNwb3RMaWdodCBzcG90TGlnaHQ7CiAgICAgICAgZm9yICggaW50IGkgPSAwOyBpIDwgTlVNX1NQT1RfTElHSFRTOyBpICsrICkgewogICAgICAgICAgICBzcG90TGlnaHQgPSBzcG90TGlnaHRzWyBpIF07CiAgICAgICAgICAgIGdldFNwb3REaXJlY3RMaWdodElycmFkaWFuY2UoIHNwb3RMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7CiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQCiAgICAgICAgICAgIGRpcmVjdExpZ2h0LmNvbG9yICo9IGFsbCggYnZlYzIoIHNwb3RMaWdodC5zaGFkb3csIGRpcmVjdExpZ2h0LnZpc2libGUgKSApID8gZ2V0U2hhZG93KCBzcG90U2hhZG93TWFwWyBpIF0sIHNwb3RMaWdodC5zaGFkb3dNYXBTaXplLCBzcG90TGlnaHQuc2hhZG93Qmlhcywgc3BvdExpZ2h0LnNoYWRvd1JhZGl1cywgdlNwb3RTaGFkb3dDb29yZFsgaSBdICkgOiAxLjA7CiAgICAgICAgICAgICNlbmRpZgogICAgICAgICAgICBSRV9EaXJlY3QoIGRpcmVjdExpZ2h0LCBnZW9tZXRyeSwgbWF0ZXJpYWwsIHJlZmxlY3RlZExpZ2h0ICk7CiAgICAgICAgfQogICAgI2VuZGlmCiAgICAjaWYgKCBOVU1fRElSX0xJR0hUUyA+IDAgKSAmJiBkZWZpbmVkKCBSRV9EaXJlY3QgKQogICAgICAgIERpcmVjdGlvbmFsTGlnaHQgZGlyZWN0aW9uYWxMaWdodDsKICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fRElSX0xJR0hUUzsgaSArKyApIHsKICAgICAgICAgICAgZGlyZWN0aW9uYWxMaWdodCA9IGRpcmVjdGlvbmFsTGlnaHRzWyBpIF07CiAgICAgICAgICAgIGdldERpcmVjdGlvbmFsRGlyZWN0TGlnaHRJcnJhZGlhbmNlKCBkaXJlY3Rpb25hbExpZ2h0LCBnZW9tZXRyeSwgZGlyZWN0TGlnaHQgKTsKICAgICAgICAgICAgI2lmZGVmIFVTRV9TSEFET1dNQVAKICAgICAgICAgICAgZGlyZWN0TGlnaHQuY29sb3IgKj0gYWxsKCBidmVjMiggZGlyZWN0aW9uYWxMaWdodC5zaGFkb3csIGRpcmVjdExpZ2h0LnZpc2libGUgKSApID8gZ2V0U2hhZG93KCBkaXJlY3Rpb25hbFNoYWRvd01hcFsgaSBdLCBkaXJlY3Rpb25hbExpZ2h0LnNoYWRvd01hcFNpemUsIGRpcmVjdGlvbmFsTGlnaHQuc2hhZG93QmlhcywgZGlyZWN0aW9uYWxMaWdodC5zaGFkb3dSYWRpdXMsIHZEaXJlY3Rpb25hbFNoYWRvd0Nvb3JkWyBpIF0gKSA6IDEuMDsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIFJFX0RpcmVjdCggZGlyZWN0TGlnaHQsIGdlb21ldHJ5LCBtYXRlcmlhbCwgcmVmbGVjdGVkTGlnaHQgKTsKICAgICAgICB9CiAgICAjZW5kaWYKICAgICNpZiAoIE5VTV9SRUNUX0FSRUFfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdF9SZWN0QXJlYSApCiAgICAgICAgUmVjdEFyZWFMaWdodCByZWN0QXJlYUxpZ2h0OwogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9SRUNUX0FSRUFfTElHSFRTOyBpICsrICkgewogICAgICAgICAgICByZWN0QXJlYUxpZ2h0ID0gcmVjdEFyZWFMaWdodHNbIGkgXTsKICAgICAgICAgICAgUkVfRGlyZWN0X1JlY3RBcmVhKCByZWN0QXJlYUxpZ2h0LCBnZW9tZXRyeSwgbWF0ZXJpYWwsIHJlZmxlY3RlZExpZ2h0ICk7CiAgICAgICAgfQogICAgI2VuZGlmCiAgICAjaWYgZGVmaW5lZCggUkVfSW5kaXJlY3REaWZmdXNlICkKICAgICAgICB2ZWMzIGlycmFkaWFuY2UgPSBnZXRBbWJpZW50TGlnaHRJcnJhZGlhbmNlKCBhbWJpZW50TGlnaHRDb2xvciApOwogICAgICAgICNpZmRlZiBVU0VfTElHSFRNQVAKICAgICAgICAgICAgdmVjMyB1bml0ID0gdmVjMygxLjApOwogICAgICAgICAgICB2ZWMzIGxpZ2h0ID0gMi4wICogKHRleHR1cmUyRCggbGlnaHRNYXAsIHZVdjIgKS54eXogLSBsaWdodE1hcEV4cG9zdXJlICogdW5pdCk7CiAgICAgICAgICAgIHZlYzMgbW9kaWZpZXIgPSAtbGlnaHRNYXBGYWxsb2ZmICogbGlnaHQgKiBsaWdodCArIHVuaXQ7CiAgICAgICAgICAgIHZlYzMgbGlnaHRNYXBJcnJhZGlhbmNlID0gbGlnaHQgKiBtb2RpZmllciAqIGxpZ2h0TWFwSW50ZW5zaXR5OwogICAgICAgICAgICAjaWZuZGVmIFBIWVNJQ0FMTFlfQ09SUkVDVF9MSUdIVFMKICAgICAgICAgICAgICAgIGxpZ2h0TWFwSXJyYWRpYW5jZSAqPSBQSTsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIGlycmFkaWFuY2UgKz0gbGlnaHRNYXBJcnJhZGlhbmNlOwogICAgICAgICNlbmRpZgogICAgICAgICNpZiAoIE5VTV9IRU1JX0xJR0hUUyA+IDAgKQogICAgICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fSEVNSV9MSUdIVFM7IGkgKysgKSB7CiAgICAgICAgICAgICAgICBpcnJhZGlhbmNlICs9IGdldEhlbWlzcGhlcmVMaWdodElycmFkaWFuY2UoIGhlbWlzcGhlcmVMaWdodHNbIGkgXSwgZ2VvbWV0cnkgKTsKICAgICAgICAgICAgfQogICAgICAgICNlbmRpZgogICAgICAgIFJFX0luZGlyZWN0RGlmZnVzZSggaXJyYWRpYW5jZSwgZ2VvbWV0cnksIG1hdGVyaWFsLCByZWZsZWN0ZWRMaWdodCApOwogICAgI2VuZGlmCiAgICB2ZWMzIG91dGdvaW5nTGlnaHQgPSByZWZsZWN0ZWRMaWdodC5kaXJlY3REaWZmdXNlICsgcmVmbGVjdGVkTGlnaHQuaW5kaXJlY3REaWZmdXNlICsgcmVmbGVjdGVkTGlnaHQuZGlyZWN0U3BlY3VsYXIgKyByZWZsZWN0ZWRMaWdodC5pbmRpcmVjdFNwZWN1bGFyICsgdG90YWxFbWlzc2l2ZVJhZGlhbmNlOwogICAgZ2xfRnJhZ0NvbG9yID0gdmVjNCggb3V0Z29pbmdMaWdodCwgZGlmZnVzZUNvbG9yLmEgKTsKfQ==" };
 
-	var vertexShader$1 = { "text": "varying vec3 vViewPosition;\r\n\r\n#ifndef FLAT_SHADED\r\n\tvarying vec3 vNormal;\r\n#endif\r\n\r\n#include <uv_pars_vertex>\r\n#include <uv2_pars_vertex>\r\n#include <shadowmap_pars_vertex>\r\n\r\nvoid main()\r\n{\r\n//  vUv = uv;\r\n  #include <uv_vertex>\r\n  #include <uv2_vertex>\r\n\r\n  #include <beginnormal_vertex>\r\n  #include <defaultnormal_vertex>\r\n\r\n  #ifndef FLAT_SHADED\r\n    // Normal computed with derivatives when FLAT_SHADED\r\n  \tvNormal = normalize( transformedNormal );\r\n  #endif\r\n\r\n  #include <begin_vertex>\r\n  #include <project_vertex>\r\n\r\n  vViewPosition = - mvPosition.xyz;\r\n\r\n  #include <worldpos_vertex>\r\n  #include <shadowmap_vertex>\r\n\r\n}", "base64": "data:text/plain;base64,dmFyeWluZyB2ZWMzIHZWaWV3UG9zaXRpb247DQoNCiNpZm5kZWYgRkxBVF9TSEFERUQNCgl2YXJ5aW5nIHZlYzMgdk5vcm1hbDsNCiNlbmRpZg0KDQojaW5jbHVkZSA8dXZfcGFyc192ZXJ0ZXg+DQojaW5jbHVkZSA8dXYyX3BhcnNfdmVydGV4Pg0KI2luY2x1ZGUgPHNoYWRvd21hcF9wYXJzX3ZlcnRleD4NCg0Kdm9pZCBtYWluKCkNCnsNCi8vICB2VXYgPSB1djsNCiAgI2luY2x1ZGUgPHV2X3ZlcnRleD4NCiAgI2luY2x1ZGUgPHV2Ml92ZXJ0ZXg+DQoNCiAgI2luY2x1ZGUgPGJlZ2lubm9ybWFsX3ZlcnRleD4NCiAgI2luY2x1ZGUgPGRlZmF1bHRub3JtYWxfdmVydGV4Pg0KDQogICNpZm5kZWYgRkxBVF9TSEFERUQNCiAgICAvLyBOb3JtYWwgY29tcHV0ZWQgd2l0aCBkZXJpdmF0aXZlcyB3aGVuIEZMQVRfU0hBREVEDQogIAl2Tm9ybWFsID0gbm9ybWFsaXplKCB0cmFuc2Zvcm1lZE5vcm1hbCApOw0KICAjZW5kaWYNCg0KICAjaW5jbHVkZSA8YmVnaW5fdmVydGV4Pg0KICAjaW5jbHVkZSA8cHJvamVjdF92ZXJ0ZXg+DQoNCiAgdlZpZXdQb3NpdGlvbiA9IC0gbXZQb3NpdGlvbi54eXo7DQoNCiAgI2luY2x1ZGUgPHdvcmxkcG9zX3ZlcnRleD4NCiAgI2luY2x1ZGUgPHNoYWRvd21hcF92ZXJ0ZXg+DQoNCn0=" };
+	var vertexShader$1 = { "text": "varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}", "base64": "data:text/plain;base64,dmFyeWluZyB2ZWMzIHZWaWV3UG9zaXRpb247CiNpZm5kZWYgRkxBVF9TSEFERUQKCXZhcnlpbmcgdmVjMyB2Tm9ybWFsOwojZW5kaWYKI2luY2x1ZGUgPHV2X3BhcnNfdmVydGV4PgojaW5jbHVkZSA8dXYyX3BhcnNfdmVydGV4PgojaW5jbHVkZSA8c2hhZG93bWFwX3BhcnNfdmVydGV4Pgp2b2lkIG1haW4oKQp7CiAgI2luY2x1ZGUgPHV2X3ZlcnRleD4KICAjaW5jbHVkZSA8dXYyX3ZlcnRleD4KICAjaW5jbHVkZSA8YmVnaW5ub3JtYWxfdmVydGV4PgogICNpbmNsdWRlIDxkZWZhdWx0bm9ybWFsX3ZlcnRleD4KICAjaWZuZGVmIEZMQVRfU0hBREVECiAgCXZOb3JtYWwgPSBub3JtYWxpemUoIHRyYW5zZm9ybWVkTm9ybWFsICk7CiAgI2VuZGlmCiAgI2luY2x1ZGUgPGJlZ2luX3ZlcnRleD4KICAjaW5jbHVkZSA8cHJvamVjdF92ZXJ0ZXg+CiAgdlZpZXdQb3NpdGlvbiA9IC0gbXZQb3NpdGlvbi54eXo7CiAgI2luY2x1ZGUgPHdvcmxkcG9zX3ZlcnRleD4KICAjaW5jbHVkZSA8c2hhZG93bWFwX3ZlcnRleD4KfQ==" };
 
 	var Io3dMaterial = checkDependencies({
 	  three: true,
@@ -21505,15 +21602,15 @@
 	}
 
 	function getFurnitureData3dStorageId(furnitureId) {
-	    return callService('Product.read', { resourceId: furnitureId }).then(function (rawInfo) {
+	  return callService('Product.read', { resourceId: furnitureId }).then(function (rawInfo) {
 
-	        var info = normalizeFurnitureInfo(rawInfo);
+	    var info = normalizeFurnitureInfo(rawInfo);
 
-	        // some furniture might not have a storage id (i.e. groups)
-	        var storageId = info && info.data3dStorageId ? info.data3dStorageId : null;
+	    // some furniture might not have a storage id (i.e. groups)
+	    var storageId = info && info.data3dStorageId ? info.data3dStorageId : null;
 
-	        return storageId ? storageId : Promise.reject('This furniture has no own Storage ID (i.e. is a group of furniture objects)');
-	    });
+	    return storageId ? storageId : Promise.reject('This furniture has no own Storage ID (i.e. is a group of furniture objects)');
+	  });
 	}
 
 	var furniture = {
@@ -22275,99 +22372,112 @@
 	}
 
 	var config = {
-	  'default_margin': 0.1,
-	  'default_search': 'isPublished:true -generic',
-	  'tag_black_list': ['simplygon', 'hasChangeableMaterials', 'autofurnish', 'wallAttached', '2 seater', '3 seater', '4 seater'],
-	  'tag_white_list': ['shelf', 'armchair', 'sofa', 'plant', 'sideboard', 'coffee table', 'dining table', 'round', 'TV', 'lamps', 'free standing lamp', 'living', 'dining', 'relaxing', 'picture'],
-	  'edgeAligned': ['sofa', 'shelf', 'armchair', 'sideboad', 'double bed', 'single bed', 'bed']
+	  default_margin: 0.05,
+	  default_search: 'isPublished:true -generic',
+	  tag_black_list: ['simplygon', 'hasChangeableMaterials', 'autofurnish', 'wallAttached', '2 seater', '3 seater', '4 seater'],
+	  tag_white_list: ['shelf', 'armchair', 'sofa', 'chair', 'plant', 'sideboard', 'coffee table', 'dining table', 'bed', 'round', 'tv', 'washing machine', 'lamps', 'free standing lamp', 'living',
+	  //'dining',
+	  'relaxing', 'picture', 'bathroom', 'storage', 'tables', 'seating', 'L shaped left', 'L shaped right'],
+	  edgeAligned: ['sofa', 'shelf', 'armchair', 'sideboad', 'double bed', 'single bed', 'bed']
 	};
 
-	var getAlternatives = function getAlternatives(id, options) {
-	  if (typeof id !== 'string') return Promise.reject('invalid input');
-
+	function getAlternatives(id, options) {
+	  // API
 	  options = options || {};
+	  var userQuery = options.query !== undefined ? options.query : null;
 
-	  this.userQuery = options.query || null;
-	  this.searchCount = 0;
-	  this.margin = config['default_margin'];
-	  this.furnitureInfo = null;
+	  var params = {
+	    userQuery: userQuery,
+	    searchCount: 0,
+	    margin: config['default_margin']
+	  };
 
-	  var self = this;
 	  return getFurnitureInfo(id).then(function (info) {
-	    self.furnitureInfo = info;
-	    var searchQuery = self.getQuery(self.furnitureInfo);
-	    return search(searchQuery);
+	    params.info = info;
+	    // check for tables to ( they should change in size too much )
+	    var isTable = params.info.categories.indexOf('tables') > -1;
+	    // set max search Count ( each one is increasing size margin )
+	    params.maxSearchCount = isTable ? 4 : 8;
+	    return search(getQuery(params));
 	  }).then(function (result) {
-	    return self.verifyResult(result, id);
+	    return verifyResult(result, id, params);
 	  }).catch(function (error) {
 	    console.error(error);
 	  });
-	};
+	}
 
-	getAlternatives.prototype.verifyResult = function (result, id) {
-	  if (this.searchCount > 10) {
-	    return Promise.reject(new Error('No furniture was found'));
+	function verifyResult(result, id, params) {
+	  var info = params.info;
+	  if (params.searchCount > 10) {
+	    return Promise.reject('No furniture was found');
 	  }
+
 	  var rawResult = result.filter(function (el) {
 	    return el.productResourceId !== id;
 	  });
-	  // if we didn't find anything in the first place
+
+	  // if we didn't find enough in the first place
 	  // let's increase dimensions a bit
-	  var self = this;
-	  if (rawResult.length < 1) {
-	    if (this.searchCount >= 3) this.margin += 0.10;
-	    var searchQuery = this.getQuery(this.furnitureInfo);
-	    this.searchCount += 1;
+	  var continueSearching = rawResult.length < 8 && params.searchCount < params.maxSearchCount;
+	  if (continueSearching) {
+	    if (params.searchCount >= 1) params.margin += 0.05;
+
+	    var searchQuery = getQuery(params);
+	    params.searchCount += 1;
 	    return search(searchQuery).then(function (result) {
-	      return self.verifyResult(result, id);
+	      return verifyResult(result, id, params);
 	    }).catch(function (error) {
-	      console.error('catch', searchQuery.query, error);
 	      return Promise.reject('No alternatives were found');
 	    });
-	  } else {
+	  } else if (rawResult.length) {
 	    var cleanResult = rawResult.map(normalizeFurnitureInfo).map(function (res) {
 	      return {
 	        furniture: res,
-	        offset: getOffset(self.furnitureInfo, res)
+	        offset: getOffset(info, res)
 	      };
 	    });
 	    return Promise.resolve(cleanResult);
-	  }
-	};
+	  } else Promise.reject('No alternatives were found');
+	}
 
-	getAlternatives.prototype.getQuery = function (info) {
-	  var query = config['default_search'];
-	  var tags = this.searchCount < 6 ? info.tags.concat(info.categories) : info.tags;
+	function getQuery(params) {
+	  var info = params.info;
+	  var queries = [config['default_search']];
+	  var tags = info.tags.concat(info.categories);
+
 	  tags = tags.filter(function (tag) {
 	    // removes blacklisted tags as well as 1P, 2P, ...
-	    return config['tag_black_list'].indexOf(tag) < 0 && !/^\d+P$/.test(tag);
+	    config['tag_black_list'] = config['tag_black_list'].map(function (tag) {
+	      return tag.toLowerCase();
+	    });
+	    return config['tag_black_list'].indexOf(tag.toLowerCase()) < 0 && !/^\d+P$/.test(tag);
 	  });
-	  // remove secondary tags from query when increasing dimensions didn't work
-	  if (this.searchCount > 2) {
+
+	  // remove secondary tags after the second search
+	  if (params.searchCount > 2) {
 	    tags = tags.filter(function (tag) {
-	      return config['tag_white_list'].indexOf(tag) > -1;
+	      config['tag_white_list'] = config['tag_white_list'].map(function (tag) {
+	        return tag.toLowerCase();
+	      });
+	      return config['tag_white_list'].indexOf(tag.toLowerCase()) > -1;
 	    });
 	  }
 
-	  query += ' ' + tags.join(' ');
-	  if (this.userQuery && tags.indexOf('TV') < 0) query += ' ' + this.userQuery;
-	  var searchQuery = { query: query };
-
-	  // add dimension search params if source provides dimensions
-	  var dim = info.boundingBox;
-	  var self = this;
+	  queries = queries.concat(tags);
+	  if (params.userQuery && tags.indexOf('tv') < 0) queries = queries.concat(params.userQuery);
+	  var searchQuery = { query: queries.join(' ')
+	    // add dimension search params if source provides dimensions
+	  };var dim = info.boundingBox;
 	  if (dim) {
 	    ['length', 'height', 'width'].forEach(function (d) {
-	      if (dim[d] - self.margin > 0) {
-	        searchQuery[d + 'Min'] = Math.round((dim[d] - self.margin) * 1e2) / 1e2;
-	        searchQuery[d + 'Max'] = Math.round((dim[d] + self.margin) * 1e2) / 1e2;
+	      if (dim[d] - params.margin > 0) {
+	        searchQuery[d + 'Min'] = Math.round((dim[d] - params.margin) * 1e2) / 1e2;
+	        searchQuery[d + 'Max'] = Math.round((dim[d] + params.margin) * 1e2) / 1e2;
 	      }
 	    });
 	  }
 	  return searchQuery;
-	};
-
-	// helper
+	}
 
 	function search(searchQuery) {
 	  // let's make sure we don't have trailing or double spaces
@@ -22468,7 +22578,7 @@
 	  timeElapsed += interval;
 	  // call
 	  callback(fulfill, reject, function next() {
-	    window.setTimeout(function () {
+	    setTimeout(function () {
 	      recursivePoll(callback, fulfill, reject, interval, maxInterval, intervalIncreaseFactor, timeElapsed, timeout, flags);
 	    }, interval);
 	  });
@@ -22857,7 +22967,7 @@
 
 	    var promises = [];
 	    Object.keys(furnitureIds).forEach(function (id) {
-	      promises.push(new getAlternatives(id, options));
+	      promises.push(getAlternatives(id, options));
 	    });
 
 	    return bluebird_1.all(promises);
@@ -22961,6 +23071,7 @@
 
 	var staging = {
 	  getFurnishings: furnish,
+	  getFurnitureAlternatives: getAlternatives,
 	  replaceFurniture: replaceFurniture
 	};
 
@@ -26012,6 +26123,10 @@
 	      }
 	    };
 
+	    if (options.subdivisions) {
+	      modifyParams.params.settings = JSON.stringify({ subdivisions: options.subdivisions });
+	    }
+
 	    return callService('Processing.task.enqueue', modifyParams);
 	  };
 	}
@@ -26019,13 +26134,15 @@
 	// expose api
 
 	var modifyModel = {
-	  origami: getModifier('origami'),
-	  consolidateFaceSides: getModifier('consolidateFaceSides')
+	  collisionObject: getModifier('collisionObject'),
+	  consolidateFaceSides: getModifier('consolidateFaceSides'),
+	  origami: getModifier('origami')
 	};
 
 	var modify = {
-	  origami: modifyModel.origami,
-	  consolidateFaceSides: modifyModel.consolidateFaceSides
+	  collisionObject: modifyModel.collisionObject,
+	  consolidateFaceSides: modifyModel.consolidateFaceSides,
+	  origami: modifyModel.origami
 	};
 
 	function getData3dInspectorUrl(storageId) {
@@ -26034,26 +26151,26 @@
 	}
 
 	function getTextureUrls(data3d) {
-	    var materialUrls = [];
-	    Object.keys(data3d.materials).forEach(function cacheMaterial(materialKey) {
-	        var material = data3d.materials[materialKey];
-	        if (material.mapDiffuse) materialUrls.push(material.mapDiffuse);
-	        if (material.mapDiffusePreview) materialUrls.push(material.mapDiffusePreview);
+	  var materialUrls = [];
+	  Object.keys(data3d.materials).forEach(function cacheMaterial(materialKey) {
+	    var material = data3d.materials[materialKey];
+	    if (material.mapDiffuse) materialUrls.push(material.mapDiffuse);
+	    if (material.mapDiffusePreview) materialUrls.push(material.mapDiffusePreview);
 
-	        if (material.mapNormal) materialUrls.push(material.mapNormal);
-	        if (material.mapNormalPreview) materialUrls.push(material.mapNormalPreview);
+	    if (material.mapNormal) materialUrls.push(material.mapNormal);
+	    if (material.mapNormalPreview) materialUrls.push(material.mapNormalPreview);
 
-	        if (material.mapSpecular) materialUrls.push(material.mapSpecular);
-	        if (material.mapSpecularPreview) materialUrls.push(material.mapSpecularPreview);
+	    if (material.mapSpecular) materialUrls.push(material.mapSpecular);
+	    if (material.mapSpecularPreview) materialUrls.push(material.mapSpecularPreview);
 
-	        if (material.mapAlpha) materialUrls.push(material.mapAlpha);
-	        if (material.mapAlphaPreview) materialUrls.push(material.mapAlphaPreview);
+	    if (material.mapAlpha) materialUrls.push(material.mapAlpha);
+	    if (material.mapAlphaPreview) materialUrls.push(material.mapAlphaPreview);
 
-	        if (material.mapLight) materialUrls.push(material.mapLight);
-	        if (material.mapLightPreview) materialUrls.push(material.mapLightPreview);
-	    });
+	    if (material.mapLight) materialUrls.push(material.mapLight);
+	    if (material.mapLightPreview) materialUrls.push(material.mapLightPreview);
+	  });
 
-	    return materialUrls;
+	  return materialUrls;
 	}
 
 	function storeInCache(url, cacheName) {
@@ -26764,142 +26881,142 @@
 	// main
 
 	function createResetPasswordUi(credentials, options) {
-	    runtime.assertBrowser();
-	    return new bluebird_1(function (resolve, reject) {
+	  runtime.assertBrowser();
+	  return new bluebird_1(function (resolve, reject) {
 
-	        credentials = credentials || {};
-	        var email = credentials.email;
+	    credentials = credentials || {};
+	    var email = credentials.email;
 
-	        // overlay
-	        var overlay = createOverlay().show();
+	    // overlay
+	    var overlay = createOverlay().show();
 
-	        // DOM
+	    // DOM
 
-	        el('<div>', {
-	            text: 'x',
-	            class: 'button close-button',
-	            click: function onCancel() {
-	                destroy(function () {
-	                    reject('User canceled action.');
-	                });
-	            }
-	        }).appendTo(overlay.mainEl);
+	    el('<div>', {
+	      text: 'x',
+	      class: 'button close-button',
+	      click: function onCancel() {
+	        destroy(function () {
+	          reject('User canceled action.');
+	        });
+	      }
+	    }).appendTo(overlay.mainEl);
 
-	        // centered content
+	    // centered content
 
-	        var centerEl = el('<div>', { style: CSS_WIDTH$2 }).appendTo(overlay.centerEl);
+	    var centerEl = el('<div>', { style: CSS_WIDTH$2 }).appendTo(overlay.centerEl);
 
-	        // tab with email input
+	    // tab with email input
 
-	        var emailTabEl = el('<div>').appendTo(centerEl);
+	    var emailTabEl = el('<div>').appendTo(centerEl);
 
-	        el('<h1>', { text: 'Reset Password' }).appendTo(emailTabEl);
+	    el('<h1>', { text: 'Reset Password' }).appendTo(emailTabEl);
 
-	        el('<p>', { text: 'email:', class: 'hint' }).appendTo(emailTabEl);
-	        var emailEl = el('<input>', { type: 'text' }).appendTo(emailTabEl);
-	        if (email) emailEl.val(email);
-	        emailEl.focus();
-	        function onEmailElKeyDown(e) {
-	            if (e.which === 13) onConfirm();
-	        }
-	        emailEl.addEventListener('keydown', onEmailElKeyDown);
-	        emailEl.addEventListener('input', updateGoButton);
+	    el('<p>', { text: 'email:', class: 'hint' }).appendTo(emailTabEl);
+	    var emailEl = el('<input>', { type: 'text' }).appendTo(emailTabEl);
+	    if (email) emailEl.val(email);
+	    emailEl.focus();
+	    function onEmailElKeyDown(e) {
+	      if (e.which === 13) onConfirm();
+	    }
+	    emailEl.addEventListener('keydown', onEmailElKeyDown);
+	    emailEl.addEventListener('input', updateGoButton);
 
-	        var goButtonEl = el('<div>', {
-	            text: 'go',
-	            class: 'button',
-	            click: onConfirm
-	        }).appendTo(emailTabEl);
+	    var goButtonEl = el('<div>', {
+	      text: 'go',
+	      class: 'button',
+	      click: onConfirm
+	    }).appendTo(emailTabEl);
 
-	        // tab with loading screen
+	    // tab with loading screen
 
-	        var loadingTabEl = el('<div>', {
-	            text: '...'
-	        }).appendTo(centerEl).hide();
+	    var loadingTabEl = el('<div>', {
+	      text: '...'
+	    }).appendTo(centerEl).hide();
 
-	        // tab with action message
+	    // tab with action message
 
-	        var requestSentTabEl = el('<div>').hide().appendTo(centerEl);
+	    var requestSentTabEl = el('<div>').hide().appendTo(centerEl);
 
-	        el('<p>', {
-	            html: 'Check your email for<br>support@archilogic.com<br>and follow instructions.'
-	        }).appendTo(requestSentTabEl);
+	    el('<p>', {
+	      html: 'Check your email for<br>support@archilogic.com<br>and follow instructions.'
+	    }).appendTo(requestSentTabEl);
 
-	        var goButton2El = el('<div>', {
-	            text: 'ok',
-	            class: 'button',
-	            click: function click() {
-	                destroy(function () {
-	                    resolve();
-	                });
-	            }
-	        }).appendTo(requestSentTabEl);
+	    var goButton2El = el('<div>', {
+	      text: 'ok',
+	      class: 'button',
+	      click: function click() {
+	        destroy(function () {
+	          resolve();
+	        });
+	      }
+	    }).appendTo(requestSentTabEl);
 
-	        // stuff at the bottom
+	    // stuff at the bottom
 
-	        var bottomEl = el('<div>', {
-	            text: 'Resend activation email.',
-	            style: CSS_WIDTH$2,
-	            class: 'clickable',
-	            click: function click() {
-	                destroy(function () {
-	                    createSignUpUi({ email: emailEl.val() }, { resendActivation: true }).then(resolve, reject);
-	                });
-	            }
-	        }).appendTo(overlay.bottomEl);
+	    var bottomEl = el('<div>', {
+	      text: 'Resend activation email.',
+	      style: CSS_WIDTH$2,
+	      class: 'clickable',
+	      click: function click() {
+	        destroy(function () {
+	          createSignUpUi({ email: emailEl.val() }, { resendActivation: true }).then(resolve, reject);
+	        });
+	      }
+	    }).appendTo(overlay.bottomEl);
 
-	        var bottomEl = el('<div>', {
-	            text: 'Already have an account? Log in.',
-	            style: CSS_WIDTH$2,
-	            class: 'clickable',
-	            click: function click() {
-	                destroy(function () {
-	                    createLogInUi({ email: emailEl.val() }).then(resolve, reject);
-	                });
-	            }
-	        }).appendTo(overlay.bottomEl);
+	    var bottomEl = el('<div>', {
+	      text: 'Already have an account? Log in.',
+	      style: CSS_WIDTH$2,
+	      class: 'clickable',
+	      click: function click() {
+	        destroy(function () {
+	          createLogInUi({ email: emailEl.val() }).then(resolve, reject);
+	        });
+	      }
+	    }).appendTo(overlay.bottomEl);
 
-	        // register ESC key
+	    // register ESC key
 
-	        function onKeyDown(e) {
-	            // ESC
-	            if (e.keyCode === 27) {
-	                destroy(function () {
-	                    reject('User canceled action.');
-	                });
-	            }
-	        }
-	        document.body.addEventListener('keydown', onKeyDown);
+	    function onKeyDown(e) {
+	      // ESC
+	      if (e.keyCode === 27) {
+	        destroy(function () {
+	          reject('User canceled action.');
+	        });
+	      }
+	    }
+	    document.body.addEventListener('keydown', onKeyDown);
 
-	        // methods
+	    // methods
 
-	        function updateGoButton() {
-	            // highlight button if email has entry
-	            emailEl.val() !== '' ? goButtonEl.addClass('button-highlighted') : goButtonEl.removeClass('button-highlighted');
-	        }
-	        updateGoButton();
+	    function updateGoButton() {
+	      // highlight button if email has entry
+	      emailEl.val() !== '' ? goButtonEl.addClass('button-highlighted') : goButtonEl.removeClass('button-highlighted');
+	    }
+	    updateGoButton();
 
-	        function onConfirm() {
-	            //FIXME: check email field not empty
-	            // show loading screen
-	            emailTabEl.hide();
-	            loadingTabEl.show();
-	            requestPasswordReset({ email: emailEl.val() }).then(function () {
-	                // show tab saying that email has been sent
-	                loadingTabEl.hide();
-	                requestSentTabEl.show();
-	            }).then();
-	        }
+	    function onConfirm() {
+	      //FIXME: check email field not empty
+	      // show loading screen
+	      emailTabEl.hide();
+	      loadingTabEl.show();
+	      requestPasswordReset({ email: emailEl.val() }).then(function () {
+	        // show tab saying that email has been sent
+	        loadingTabEl.hide();
+	        requestSentTabEl.show();
+	      }).then();
+	    }
 
-	        function destroy(callback) {
-	            // unbind events
-	            document.body.removeEventListener('keydown', onKeyDown);
-	            emailEl.removeEventListener('keydown', onEmailElKeyDown);
-	            emailEl.removeEventListener('input', updateGoButton);
-	            // remove DOM elements
-	            overlay.destroy(callback);
-	        }
-	    });
+	    function destroy(callback) {
+	      // unbind events
+	      document.body.removeEventListener('keydown', onKeyDown);
+	      emailEl.removeEventListener('keydown', onEmailElKeyDown);
+	      emailEl.removeEventListener('input', updateGoButton);
+	      // remove DOM elements
+	      overlay.destroy(callback);
+	    }
+	  });
 	}
 
 	// configs
@@ -27245,99 +27362,99 @@
 	// main
 
 	function createConfirmUi(a, b) {
-	    runtime.assertBrowser();
-	    return new Promise(function (resolve, reject) {
+	  runtime.assertBrowser();
+	  return new Promise(function (resolve, reject) {
 
-	        var options;
-	        if (el.isElement(a) || typeof a === 'string') {
-	            options = b || {};
-	            options.message = a;
-	        } else if ((typeof a === 'undefined' ? 'undefined' : _typeof(a)) === 'object') {
-	            options = a;
-	        } else {
-	            throw 'Argument mismatch https://3d.io/docs/api/1/ui.html';
-	        }
+	    var options;
+	    if (el.isElement(a) || typeof a === 'string') {
+	      options = b || {};
+	      options.message = a;
+	    } else if ((typeof a === 'undefined' ? 'undefined' : _typeof(a)) === 'object') {
+	      options = a;
+	    } else {
+	      throw 'Argument mismatch https://3d.io/docs/api/1/ui.html';
+	    }
 
-	        var title = options.title;
-	        var message = options.message;
-	        var bottom = options.bottom;
-	        var fixWidth = options.width && typeof options.width === 'number' ? options.width + 'px' : options.width;
-	        var maxWidth = options.maxWidth && typeof options.maxWidth === 'number' ? options.maxWidth + 'px' : options.maxWidth || '450px';
-	        var hasCloseButton = defaultTo(options.closeButton, true);
-	        var hasConfirmButton = defaultTo(options.confirmButton, true);
-	        var hasCancelButton = defaultTo(options.cancelButton, true);
+	    var title = options.title;
+	    var message = options.message;
+	    var bottom = options.bottom;
+	    var fixWidth = options.width && typeof options.width === 'number' ? options.width + 'px' : options.width;
+	    var maxWidth = options.maxWidth && typeof options.maxWidth === 'number' ? options.maxWidth + 'px' : options.maxWidth || '450px';
+	    var hasCloseButton = defaultTo(options.closeButton, true);
+	    var hasConfirmButton = defaultTo(options.confirmButton, true);
+	    var hasCancelButton = defaultTo(options.cancelButton, true);
 
-	        // internals
-	        var widthCss = fixWidth ? 'width:' + fixWidth + ';' : 'max-width:' + maxWidth + ';';
+	    // internals
+	    var widthCss = fixWidth ? 'width:' + fixWidth + ';' : 'max-width:' + maxWidth + ';';
 
-	        // overlay
-	        var overlay = createOverlay().show();
+	    // overlay
+	    var overlay = createOverlay().show();
 
-	        // DOM
+	    // DOM
 
-	        if (hasCloseButton) el('<div>', {
-	            text: 'x',
-	            class: 'button close-button',
-	            click: cancel
-	        }).appendTo(overlay.mainEl);
+	    if (hasCloseButton) el('<div>', {
+	      text: 'x',
+	      class: 'button close-button',
+	      click: cancel
+	    }).appendTo(overlay.mainEl);
 
-	        // centered content
+	    // centered content
 
-	        var centerEl = el('<div>', { style: widthCss }).appendTo(overlay.centerEl);
+	    var centerEl = el('<div>', { style: widthCss }).appendTo(overlay.centerEl);
 
-	        if (title) el('<h1>').append(title).appendTo(centerEl);
-	        if (message) el('<div>').append(message).appendTo(centerEl);
+	    if (title) el('<h1>').append(title).appendTo(centerEl);
+	    if (message) el('<div>').append(message).appendTo(centerEl);
 
-	        if (hasCancelButton) el('<div>', {
-	            text: 'x',
-	            class: 'button',
-	            click: cancel
-	        }).appendTo(centerEl);
+	    if (hasCancelButton) el('<div>', {
+	      text: 'x',
+	      class: 'button',
+	      click: cancel
+	    }).appendTo(centerEl);
 
-	        if (hasConfirmButton) el('<div>', {
-	            text: 'ok',
-	            class: 'button',
-	            click: confirm
-	        }).appendTo(centerEl);
+	    if (hasConfirmButton) el('<div>', {
+	      text: 'ok',
+	      class: 'button',
+	      click: confirm
+	    }).appendTo(centerEl);
 
-	        // stuff at the bottom
+	    // stuff at the bottom
 
-	        if (bottom) el('<div>', { style: widthCss }).append(bottom).appendTo(overlay.bottomEl);
+	    if (bottom) el('<div>', { style: widthCss }).append(bottom).appendTo(overlay.bottomEl);
 
-	        // register ESC key
+	    // register ESC key
 
-	        function onKeyDown(e) {
-	            if (e.keyCode === 27) cancel(); // ESC
-	        }
-	        document.body.addEventListener('keydown', onKeyDown);
+	    function onKeyDown(e) {
+	      if (e.keyCode === 27) cancel(); // ESC
+	    }
+	    document.body.addEventListener('keydown', onKeyDown);
 
-	        // methods
+	    // methods
 
-	        function confirm() {
-	            destroy(function () {
-	                resolve(true);
-	            });
-	        }
+	    function confirm() {
+	      destroy(function () {
+	        resolve(true);
+	      });
+	    }
 
-	        function cancel() {
-	            destroy(function () {
-	                resolve(false);
-	            });
-	        }
+	    function cancel() {
+	      destroy(function () {
+	        resolve(false);
+	      });
+	    }
 
-	        function destroy(callback) {
-	            // unbind events
-	            document.body.removeEventListener('keydown', onKeyDown);
-	            // remove DOM elements
-	            overlay.destroy(callback);
-	        }
-	    });
+	    function destroy(callback) {
+	      // unbind events
+	      document.body.removeEventListener('keydown', onKeyDown);
+	      // remove DOM elements
+	      overlay.destroy(callback);
+	    }
+	  });
 	}
 
 	// helper
 
 	function defaultTo(x, val) {
-	    return x !== undefined ? x : val;
+	  return x !== undefined ? x : val;
 	}
 
 	// main
