@@ -8,7 +8,7 @@ import vertexShader from './gblock/vertex-placeholder.glsl'
 
 // configs
 
-var LEGACY_GLFT_LOADER_URL = 'https://cdn.rawgit.com/mrdoob/three.js/r86/examples/js/loaders/GLTFLoader.js'
+var LEGACY_GLFT_V1_LOADER_URL = 'https://cdn.rawgit.com/mrdoob/three.js/r86/examples/js/loaders/GLTFLoader.js'
 var GBLOCK_API_GET_OFFICIAL_GLTF_URL = 'https://gblock.3d.io/api/get-gltf-url/?url='
 
 // internals
@@ -37,40 +37,19 @@ export default {
 
     this.remove()
 
-    Promise.all([
-      getGltfUrl(src),
-      fetchGblockLoader()
-    ]).then(function (results) {
+    getGltfUrl(src).then(loadGblockModel).then(function onLoaded (gltfModel) {
 
-      var gltfUrl = results[0]
-      var GblockLoader = results[1]
+      self.model = gltfModel.scene || gltfModel.scenes[0]
+      self.model.animations = gltfModel.animations
 
-      // load glTF model from original URL
-      new GblockLoader().load( gltfUrl, function onLoaded (gltfModel) {
-
-        self.model = gltfModel.scene || gltfModel.scenes[0]
-        // FIXME: adapt projection matrix in original shaders and do not replace materials
-        self.model.traverse(function (child) {
-          if (child.material) child.material = new THREE.MeshPhongMaterial({ vertexColors: THREE.VertexColors })
-        })
-        self.model.animations = gltfModel.animations
-
-        el.setObject3D('mesh', self.model)
-        el.emit('model-loaded', {format: 'gltf', model: self.model})
-
-      }, function onProgress() {
-        // do nothing
-
-      }, function onError(error) {
-
-        console.error('ERROR loading gblock model "'+ src +'" : ' + error)
-        el.emit('model-error', { message: error })
-
-      })
+      el.setObject3D('mesh', self.model)
+      el.emit('model-loaded', {format: 'gltf', model: self.model})
 
     }).catch(function(errorMessage){
+
       console.error('ERROR loading gblock model from "' + src +'" : ' + errorMessage)
       el.emit('model-error', { message: errorMessage })
+
     })
 
   },
@@ -128,56 +107,101 @@ function getGltfUrl (src) {
 
 }
 
-// loader has to be created asynchronously because we have to fetch legacy glTF loader script
-var GblockLoaderPromise
-function fetchGblockLoader() {
+// loads google block models (poly.google.com)
+function loadGblockModel(url, onProgress) {
+  return new Promise(function(resolve, reject) {
 
-  if (!GblockLoaderPromise) {
+    // create unviresal GLTF loader for google blocks
+    // this one will inherit methods from GLTF V1 or V2 based on file version
+    function GBlockLoader () {
+      this.manager = THREE.DefaultLoadingManager
+      this.path = THREE.Loader.prototype.extractUrlBase( url )
+    }
 
-    // legacy loader will overwrite THREE.GLTFLoader so we need to keep reference to it
-    THREE.___OriginalGLTFLoader = THREE.GLTFLoader
+    // load model
+    var loader = new THREE.FileLoader( GBlockLoader.manager )
+    loader.setResponseType( 'arraybuffer' )
+    loader.load( url, function onLoad( data ) {
+      try {
 
-    GblockLoaderPromise = fetchScript(LEGACY_GLFT_LOADER_URL).then(function(){
+        // convert uint8 to json
+        var json = JSON.parse(decodeArrayToString.utf8(data))
 
-      // keep reference to fetched legacy loader
-      var LegacyGLTFLoader = THREE.GLTFLoader
+        // check GLTF version
+        var isGLTF1 = json.asset === undefined || json.asset.version[ 0 ] < 2
 
-      // restore current GLTFLoader
-      THREE.GLTFLoader = THREE.___OriginalGLTFLoader
+        if (isGLTF1) {
 
-      // create modified GLTF loader for google blocks
-      function GBlockLoader () {
+          fetchGLTF1Loader().then(function(GLTF1Loader){
 
-        LegacyGLTFLoader.call(this)
+            // inherit methods from GLTF V1 loader
+            GBlockLoader.prototype = GLTF1Loader.prototype
+            var gblockLoader = new GBlockLoader()
+            GLTF1Loader.call(gblockLoader)
 
-        var self = this
+            // Replace original shaders with placeholders
+            Object.keys(json.shaders).forEach(function (key, i) {
+              if (key.indexOf('fragment') > -1) json.shaders[key].uri = fragmentShader.base64
+              else if (key.indexOf('vertex') > -1) json.shaders[key].uri = vertexShader.base64
+            })
 
-        this._parse = this.parse
-        this.parse = function (data, path, onLoad, onError) {
-          // convert uint8 array to json
-          var json = JSON.parse(decodeArrayToString.utf8(data))
-          // use base64 shaders
-          Object.keys(json.shaders).forEach(function (key, i) {
-            // Replacing original shaders with placeholders
-            if (key.indexOf('fragment') > -1) json.shaders[key].uri = fragmentShader.base64
-            else if (key.indexOf('vertex') > -1) json.shaders[key].uri = vertexShader.base64
+            // convert json back to uint8 data
+            var modifiedData = new TextEncoder('utf-8').encode(JSON.stringify(json))
+
+            // parse data
+            gblockLoader.parse( modifiedData, function onParsingDone (gltf) {
+
+              // FIXME: adapt projection matrix in original shaders and do not replace materials
+              (gltf.scene || gltf.scenes[0]).traverse(function (child) {
+                if (child.material) child.material = new THREE.MeshPhongMaterial({ vertexColors: THREE.VertexColors })
+              })
+
+              // GLTF V1 ready
+              resolve(gltf)
+
+            }, gblockLoader.path)
+
           })
-          // convert json to uint8
-          var uint8array = new TextEncoder('utf-8').encode(JSON.stringify(json))
+
+        } else {
+
+          // inferit methods from GLTF V2 loader
+          GBlockLoader.prototype = THREE.GLTFLoader.prototype
+          var gblockLoader = new GBlockLoader()
+          THREE.GLTFLoader.call(gblockLoader)
+
           // parse data
-          self._parse.call(self, uint8array, path, onLoad, onError)
+          gblockLoader.parse( data, gblockLoader.path, resolve, reject)
+
         }
 
+      } catch ( e ) {
+
+        // For SyntaxError or TypeError, return a generic failure message.
+        reject( e.constructor === Error ? e : new Error( 'THREE.GLTFLoader: Unable to parse model.' ) )
+
       }
-      GBlockLoader.prototype = LegacyGLTFLoader.prototype
 
-      // expose loader
-      return GBlockLoader
+    }, onProgress, reject )
 
+  })
+}
+
+// fetch legacy GLTF v1 loader on demand
+var GLFT1LoaderPromise
+function fetchGLTF1Loader () {
+  if (!GLFT1LoaderPromise ) {
+    // legacy loader will overwrite THREE.GLTFLoader so we need to keep reference to it
+    THREE.___GLTF2Loader = THREE.GLTFLoader
+    // fetch legacy loader for GLTF1
+    GLFT1LoaderPromise = fetchScript(LEGACY_GLFT_V1_LOADER_URL).then(function(){
+      // keep reference GLTF V1 loader
+      var GLTF1Loader = THREE.GLTFLoader
+      // restore GLTF V2 loader reference
+      THREE.GLTFLoader = THREE.___GLTF2Loader
+
+      return GLTF1Loader
     })
-
   }
-
-  return GblockLoaderPromise
-
+  return GLFT1LoaderPromise
 }
