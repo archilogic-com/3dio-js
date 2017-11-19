@@ -3,6 +3,7 @@ export default  {
   childrenTypes: [
     'box',
     'closet',
+    'column',
     'curtain',
     'floor',
     'floorplan',

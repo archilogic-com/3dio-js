@@ -6,6 +6,17 @@ export default {
       skipInAframe: true
     }
   },
-  childrenTypes: ['interior', 'object', 'wall', 'box', 'group', 'polybox'],
-  parentTypes: ['level', 'group']
+  childrenTypes: [
+    'box',
+    'column',
+    'group',
+    'interior',
+    'object',
+    'polybox',
+    'wall'
+  ],
+  parentTypes: [
+    'level',
+    'group'
+  ]
 }

@@ -13,8 +13,11 @@
 
 <!-- 3D -->
 <a-scene io3d-lighting>
-  <a-entity io3d-wall="l:3; w:0.12; h:5; material_front:bricks_clean_white; material_back:bricks_clean_white" position="7 0 -3" rotation="0 -90 0" shadow="receive: true"></a-entity>
-  <a-entity id="wall" io3d-wall="l:3; w:0.12; h:2.4;" position="0 0 0" shadow="receive: true">
+  <a-entity id="wall-1" io3d-wall="l:3; w:0.12; h:5; material_front:bricks_clean_white; material_back:bricks_clean_white" position="7 0 -3" rotation="0 -90 0" shadow="receive: true"></a-entity>
+  <a-entity id="column" io3d-column="shape:circle" position="5 0 -2.9"></a-entity>
+  <a-entity id="railing-1" io3d-railing="l:1.7" position="5.1 0 -3"></a-entity>
+  <a-entity id="railing-2" io3d-railing="l:1.7" position="3.1 0 -3"></a-entity>
+  <a-entity id="wall-2" io3d-wall="l:3; w:0.12; h:2.4;" position="0 0 0" shadow="receive: true">
     <a-entity id="window" io3d-window="h:1.2; l:1.6" position="1.2 1 0"></a-entity>
     <a-entity id="door" io3d-door="l:0.8" position="0.2 0 0"></a-entity>
   </a-entity>
@@ -25,7 +28,7 @@
   <a-entity io3d-polyfloor="material_top: wood_parquet_oak_stained; polygon: 0,1,0,-1.5,-1.5,-1.5,-1.5,1.5" position="3 0 0"></a-entity>
   <a-entity io3d-floor position="3 0 -3"></a-entity>
   <!-- Camera -->
-  <a-entity id="camera" camera="userHeight: 1.6" position="-1.2 0 -5.5" rotation="0 210 0" wasd-controls="acceleration:8;easing:5;" look-controls ></a-entity>
+  <a-entity id="camera" camera="userHeight: 1.6" position="-1.2 0 -5.5" rotation="0 220 0" wasd-controls="acceleration:8;easing:5;" look-controls ></a-entity>
 </a-scene>
 
 <!-- 2D / UI -->

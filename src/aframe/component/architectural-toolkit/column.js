@@ -11,7 +11,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 export default {
 
-  schema: getSchema('polyfloor'),
+  schema: getSchema('column'),
 
   init: function () {},
 
@@ -40,9 +40,8 @@ export default {
     // setup materials
     // defaults
     var materials = {
-      top: 'wood_parquet_oak',
-      side: 'basic-wall',
-      ceiling: 'basic-ceiling'
+      top: 'wall_top',
+      side: 'basic-wall'
     }
 
     // check for adapted materials
@@ -91,54 +90,95 @@ export default {
   generateMeshes3d: function () {
     var a = this.attributes
 
-    // a polygon can not have less than 3 points
-    if (a.polygon.length < 3) {
-      if (this.model) {
-        this.model.a.parent.remove(this.model)
-      }
-      return Promise.resolve({
-        meshes: {}
-      })
-    }
+    // config
+    var circleEdgeLength = 0.1
+    var minCircleEdges = 12
 
-    // prepare format
-    var vertices = a.polygon //[]
-    // for (var i = 0, l = a.polygon.length; i < l; i++) {
-    //   vertices[ i * 2 ] = a.polygon[ i ][ 0 ]
-    //   vertices[ i * 2 + 1 ] = a.polygon[ i ][ 1 ]
-    // }
+    // internals
+    var vertices = []
+    var sideUvs = []
+    var radius = a.l / 2
+    var shape = a.shape
+    var edgeCount = 4
+
+    // for circles set edge count from radius
+    if (shape === 'circle') edgeCount = Math.max(Math.floor(radius * Math.PI * 2 / circleEdgeLength), minCircleEdges)
+    var stepAngle = Math.PI * 2 / edgeCount
+
+    // for square get diagonal from edge length
+    if (shape === 'square') radius = radius / Math.cos(stepAngle / 2)
+    // edgeLength needed for correct side uvs
+    var edgeLength = Math.tan(stepAngle / 2) * radius * 2
+
+    // get contour vertices and side face uvs
+    var svUvPos = 0
+    var aX, aY, bY, cX
+    for (var i = 0; i < edgeCount * 2; i += 2) {
+      /* */
+      vertices[i] = Math.sin(stepAngle * i / 2 - stepAngle / 2) * radius
+      vertices[i + 1] = Math.cos(stepAngle * i / 2 - stepAngle / 2) * radius
+
+      // create UVS manually to have a continuous texture
+      // FRONT UVS
+      // A-----D
+      // |     |
+      // |     |
+      // |     |
+      // B-----C
+      aX = i / 2 * edgeLength
+      aY = a.h
+      bY = 0
+      cX = (i / 2 + 1) * edgeLength
+      // B
+      sideUvs[svUvPos] = aX
+      sideUvs[svUvPos + 1] = bY
+      // C
+      sideUvs[svUvPos + 2] = cX
+      sideUvs[svUvPos + 3] = bY
+      // A
+      sideUvs[svUvPos + 4] = aX
+      sideUvs[svUvPos + 5] = aY
+      // A
+      sideUvs[svUvPos + 6] = aX
+      sideUvs[svUvPos + 7] = aY
+      // C
+      sideUvs[svUvPos + 8] = cX
+      sideUvs[svUvPos + 9] = bY
+      // D
+      sideUvs[svUvPos + 10] = cX
+      sideUvs[svUvPos + 11] = aY
+      svUvPos += 12
+    }
 
     // top polygon
     var topPolygon = generatePolygonBuffer({
       outline: vertices,
+      y: a.h,
+      uvx: a.x,
+      uvz: a.z,
+      flipSide: false
+    })
+
+    // bottom polygon
+    var bottomPolygon = generatePolygonBuffer({
+      outline: vertices,
       y: 0,
       uvx: a.x,
-      uvz: a.z
-    })
-
-    // ceiling polygon
-    var ceilingPolygon
-    if (a.hasCeiling) {
-      ceilingPolygon = generatePolygonBuffer({
-        outline: vertices,
-        y: a.hCeiling,
-        uvx: a.x,
-        uvz: a.z,
-        flipSide: true
-      })
-    } else {
-      ceilingPolygon = {
-        vertices: new Float32Array(0),
-        uvs: new Float32Array(0)
-      }
-    }
-
-    // sides
-    var sides = generateExtrusionBuffer({
-      outline: vertices,
-      y: -a.h,
+      uvz: a.z,
       flipSide: true
     })
+
+    // sides
+    var sidesFaces = generateExtrusionBuffer({
+      outline: vertices,
+      y: a.h,
+      flipSide: false
+    })
+
+    // set normal smoothing according to shape
+    var sideNormals
+    if (shape === 'circle') sideNormals = generateNormals.smooth(sidesFaces.vertices)
+    else sideNormals = generateNormals.flat(sidesFaces.vertices)
 
     // return meshes
     return {
@@ -149,16 +189,16 @@ export default {
         material: 'top'
       },
       sides: {
-        positions: sides.vertices,
-        normals: generateNormals.flat(sides.vertices),
-        uvs: sides.uvs,
+        positions: sidesFaces.vertices,
+        normals: sideNormals,
+        uvs: new Float32Array(sideUvs),
         material: 'side'
       },
-      ceiling: {
-        positions: ceilingPolygon.vertices,
-        normals: generateNormals.flat(ceilingPolygon.vertices),
-        uvs: ceilingPolygon.uvs,
-        material: 'ceiling'
+      bottom: {
+        positions: bottomPolygon.vertices,
+        normals: generateNormals.flat(bottomPolygon.vertices),
+        uvs: bottomPolygon.uvs,
+        material: 'side'
       }
     }
   }

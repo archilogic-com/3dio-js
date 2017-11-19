@@ -92,7 +92,6 @@ export default {
   generateMeshes3d: function () {
     var a = this.attributes
 
-    console.log('stairs coming!!', a)
     // settings for step ratio
     var stepRatioMax = 2.6,
       stepRatioMin = 1.15,
@@ -1727,8 +1726,6 @@ export default {
         }
       }
     }
-
-    console.log('stairs result', stepsVertices, treadVertices)
 
     return {
       steps: {

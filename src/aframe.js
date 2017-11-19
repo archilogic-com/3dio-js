@@ -9,10 +9,12 @@ import lightingComponent from './aframe/component/lighting.js'
 import minimapComponent from './aframe/component/minimap.js'
 // architectural tookit
 import closetComponent from './aframe/component/architectural-toolkit/closet.js'
+import columnComponent from './aframe/component/architectural-toolkit/column.js'
 import doorComponent from './aframe/component/architectural-toolkit/door.js'
 import floorComponent from './aframe/component/architectural-toolkit/floor.js'
 import kitchenComponent from './aframe/component/architectural-toolkit/kitchen.js'
 import polyFloorComponent from './aframe/component/architectural-toolkit/polyfloor.js'
+import railingComponent from './aframe/component/architectural-toolkit/railing.js'
 import stairsComponent from './aframe/component/architectural-toolkit/stairs.js'
 import wallComponent from './aframe/component/architectural-toolkit/wall.js'
 import windowComponent from './aframe/component/architectural-toolkit/window.js'
@@ -39,10 +41,12 @@ checkDependencies({
   AFRAME.registerComponent('io3d-minimap', minimapComponent)
   // architectural tookit
   AFRAME.registerComponent('io3d-closet', closetComponent)
+  AFRAME.registerComponent('io3d-column', columnComponent)
   AFRAME.registerComponent('io3d-door', doorComponent)
   AFRAME.registerComponent('io3d-floor', floorComponent)
   AFRAME.registerComponent('io3d-kitchen', kitchenComponent)
   AFRAME.registerComponent('io3d-polyfloor', polyFloorComponent)
+  AFRAME.registerComponent('io3d-railing', railingComponent)
   AFRAME.registerComponent('io3d-stairs', stairsComponent)
   AFRAME.registerComponent('io3d-wall', wallComponent)
   AFRAME.registerComponent('io3d-window', windowComponent)

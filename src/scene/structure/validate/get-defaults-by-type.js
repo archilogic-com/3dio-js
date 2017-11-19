@@ -3,6 +3,7 @@ import generic from './generic'
 import box from './by-type/box.js'
 import cameraBookmark from './by-type/camera-bookmark.js'
 import closet from './by-type/closet.js'
+import column from './by-type/column.js'
 import curtain from './by-type/curtain.js'
 import door from './by-type/door.js'
 import floor from './by-type/floor.js'
@@ -28,6 +29,7 @@ export default function getDefaultsByType (type) {
     box: box,
     'camera-bookmark': cameraBookmark,
     closet: closet,
+    column: column,
     curtain: curtain,
     door: door,
     floor: floor,
