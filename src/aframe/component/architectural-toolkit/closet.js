@@ -88,10 +88,6 @@ export default {
   generateMeshes3d: function () {
     var a = this.attributes
 
-    var wallThickness = 10
-    if (a.parent && a.parent.a) {
-      wallThickness = a.parent.a.w
-    }
     var step = 0,
       elementNum = Math.round(a.l/0.6),
       elementLength = a.l/elementNum,
