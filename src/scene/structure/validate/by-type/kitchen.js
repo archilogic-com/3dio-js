@@ -12,10 +12,45 @@ export default {
       optional: false,
       min: 0.01 // 1cm
     },
-    l: { // length in meters
+    l: {
       type: 'number',
-      defaultValue: 1.8,
+      defaultValue: 4.2,
       optional: false,
+      min: 0.01
+    },
+    elementLength: {
+      type: 'number',
+      defaultValue: 0.6,
+      optional: false,
+      min: 0.01
+    },
+    baseBoard: {
+      type: 'number',
+      defaultValue: 0.1,
+      optional: true,
+      min: 0.01
+    },
+    counterHeight: {
+      type: 'number',
+      defaultValue: 0.9,
+      optional: true,
+      min: 0.01
+    },
+    counterThickness: {
+      type: 'number',
+      defaultValue: 0.03,
+      optional: true,
+      min: 0.01
+    },
+    barCounter: {
+      type: 'boolean',
+      defaultValue: false,
+      optional: true
+    },
+    doorWidth: {
+      type: 'number',
+      defaultValue: 0.02,
+      optional: true,
       min: 0.01
     },
     highCabinetLeft: {
@@ -33,6 +68,18 @@ export default {
       defaultValue: true,
       optional: true
     },
+    wallCabinetHeight: {
+      type: 'number',
+      defaultValue: 1.5,
+      optional: true,
+      min: 0.01
+    },
+    wallCabinetWidth: {
+      type: 'number',
+      defaultValue: 0.45,
+      optional: true,
+      min: 0.01
+    },
     cabinetType: {
       type: 'string',
       defaultValue: 'flat',
@@ -45,23 +92,58 @@ export default {
       optional: true,
       possibleValues: ['single', 'double', 'none']
     },
+    sinkPos: {
+      type: 'int',
+      defaultValue: 4,
+      optional: true
+    },
     extractorType: {
       type: 'string',
-      defaultValue: 'none',
+      defaultValue: 'integrated',
       optional: true,
       possibleValues: ['box', 'pyramid', 'integrated', 'none']
     },
     ovenType: {
       type: 'string',
-      defaultValue: 'none',
+      defaultValue: 'single',
       optional: true,
       possibleValues: ['single', 'double', 'none']
     },
+    ovenPos: {
+      type: 'int',
+      defaultValue: 6,
+      optional: true
+    },
     cooktopType: {
       type: 'string',
-      defaultValue: 'none',
+      defaultValue: 'electro60',
       optional: true,
       possibleValues: ['electro60', 'electro90', 'none']
+    },
+    cooktopPos: {
+      type: 'int',
+      defaultValue: 6,
+      optional: true
+    },
+    microwave: {
+      type: 'boolean',
+      defaultValue: false,
+      optional: true
+    },
+    microwavePos: {
+      type: 'int',
+      defaultValue: 1,
+      optional: true
+    },
+    fridge: {
+      type: 'boolean',
+      defaultValue: false,
+      optional: true
+    },
+    fridgePos: {
+      type: 'int',
+      defaultValue: 1,
+      optional: true
     }
     // TODO: add all the default values
   },

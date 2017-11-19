@@ -41,7 +41,7 @@ export default {
     // defaults
     var materials = {
       kitchen: 'cabinet_paint_white',
-      counter: 'cabinet_paint_white',
+      counter: 'counter_granite_black',
       tab: 'chrome',
       oven: 'oven_miele_60-60',
       cooktop: 'cooktop_westinghouse_60',
@@ -96,7 +96,6 @@ export default {
   generateMeshes3d: function () {
     var a = this.attributes
 
-    console.log('kitchen', a)
     // internals
     var
       fridgeHeight = 1.95,
@@ -1939,7 +1938,6 @@ export default {
         */
     // var meshes3d = {} //data3d.meshes
     // add internal meshes
-    console.log(kitchenVertices)
     return {
       kitchen: {
         positions: new Float32Array(kitchenVertices),
