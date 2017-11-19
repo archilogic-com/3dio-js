@@ -88,7 +88,7 @@ export default {
     },
     sinkType: {
       type: 'string',
-      defaultValue: 'none',
+      defaultValue: 'single',
       optional: true,
       possibleValues: ['single', 'double', 'none']
     },
@@ -118,7 +118,13 @@ export default {
       type: 'string',
       defaultValue: 'electro60',
       optional: true,
-      possibleValues: ['electro60', 'electro90', 'none']
+      possibleValues: [
+        'electro60',
+        'electro90',
+        'gas60',
+        'gas90',
+        'none'
+      ]
     },
     cooktopPos: {
       type: 'int',

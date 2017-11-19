@@ -2,11 +2,12 @@
 
 // dependencies
 
+import Promise from 'bluebird'
 import getSchema from './common/get-schema.js'
 import getMaterial from './common/get-material.js'
 import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import generateUvs from '../../../utils/data3d/buffer/get-uvs'
-import isString from 'lodash/isString'
+import loadData3d from '../../../utils/data3d/load'
 import cloneDeep from 'lodash/cloneDeep'
 
 export default {
@@ -23,63 +24,71 @@ export default {
     this.remove()
 
     // get defaults and
-    this.attributes = cloneDeep(data)
-
-    // get meshes and materials from el3d modules
-    var meshes = this.generateMeshes3d()
-
-    // clean up empty meshes to prevent errors
-    var meshKeys = Object.keys(meshes)
-    meshKeys.forEach(key => {
-      if (!meshes[key].positions || !meshes[key].positions.length) {
-        // console.warn('no vertices for mesh', key)
-        delete meshes[key]
-      }
-    })
+    this_.attributes = cloneDeep(data)
 
     // setup materials
     // defaults
-    var materials = {
+    this_.materials = {
       kitchen: 'cabinet_paint_white',
       counter: 'counter_granite_black',
       tab: 'chrome',
       oven: 'oven_miele_60-60',
       cooktop: 'cooktop_westinghouse_60',
-      microwave: 'microwave_samsung'
+      microwave: 'microwave_samsung',
+      chrome: 'chrome',
+      black_metal: {
+        "specularCoef": 24,
+        "colorDiffuse": [0.02, 0.02, 0.02],
+        "colorSpecular": [0.7, 0.7, 0.7]
+      }
     }
 
-    // check for adapted materials
-    var materialKeys = Object.keys(data).filter(function(key) {
-      return key.indexOf('material_') > -1
+    // get meshes and materials
+    // promised base because it loads external meshes
+    this.generateMeshes3d()
+      .then(function(meshes) {
+
+      // clean up empty meshes to prevent errors
+      var meshKeys = Object.keys(meshes)
+      meshKeys.forEach(function(key) {
+        if (!meshes[key].positions || !meshes[key].positions.length) {
+          // console.warn('no vertices for mesh', key)
+          delete meshes[key]
+        }
+      })
+
+      // check for adapted materials
+      var materialKeys = Object.keys(data).filter(function(key) {
+        return key.indexOf('material_') > -1
+      })
+      // add materials to instance
+      materialKeys.forEach(function(key) {
+        var mesh = key.replace('material_', '')
+        this_.materials[mesh] = data[key]
+      })
+
+      // fetch materials from mat library
+      Object.keys(this_.materials).forEach(function(mat) {
+        this_.materials[mat] = getMaterial(this_.materials[mat])
+      })
+
+      console.log(this_.materials)
+      // construct data3d object
+      var data3d = {
+        meshes: meshes,
+        materials: this_.materials
+      }
+
+      // create new one
+      this_.mesh = new THREE.Object3D()
+      this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh})
+
+      // update view
+      this_.data3dView.set(data3d)
+      this_.el.setObject3D('mesh', this_.mesh)
+      // emit event
+      this_.el.emit('mesh-updated');
     })
-    // add materials to instance
-    materialKeys.forEach(function(key) {
-      var mesh = key.replace('material_', '')
-      materials[mesh] = data[key]
-    })
-
-    // fetch materials from mat library
-    Object.keys(materials).forEach(mat => {
-      materials[mat] = getMaterial(materials[mat])
-    })
-
-    // construct data3d object
-    var data3d = {
-      meshes: meshes,
-      materials: materials
-    }
-
-    console.log(data3d)
-
-    // create new one
-    this_.mesh = new THREE.Object3D()
-    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh})
-
-    // update view
-    this_.data3dView.set(data3d)
-    this_.el.setObject3D('mesh', this_.mesh)
-    // emit event
-    this_.el.emit('mesh-updated');
   },
 
   remove: function () {
@@ -95,6 +104,16 @@ export default {
 
   generateMeshes3d: function () {
     var a = this.attributes
+
+    // external meshes
+
+    var externalMeshes = {
+      singleSink: 'https://storage.3d.io/535e624259ee6b0200000484/170429-0355-60hukz/bf4e4a56-ed95-4b58-a214-4b1a0a84ae0e.gz.data3d.buffer',
+      doubleSink: 'https://storage.3d.io/535e624259ee6b0200000484/170429-2156-7ufbnv/df481313-8fb4-48da-bc28-0369b08a2c6a.gz.data3d.buffer',
+      gas60: 'https://storage.3d.io/535e624259ee6b0200000484/170428-2318-1ayck9/ece0ead0-d27f-4cf9-b137-2021f25ad4ee.gz.data3d.buffer',
+      gas90: 'https://storage.3d.io/535e624259ee6b0200000484/170429-0114-jxswhr/523bb9dc-0103-4c93-aba8-ad0882123550.gz.data3d.buffer',
+      fridge: 'https://storage.3d.io/535e624259ee6b0200000484/170429-1020-5zimgz/4cec6215-9d5c-4f38-b714-e62fdab6d892.gz.data3d.buffer'
+    }
 
     // internals
     var
@@ -144,17 +163,15 @@ export default {
     if (a.highCabinetRight < 0) a.highCabinetRight = 0
     if (a.fridgePos <= 0) a.fridgePos = 1
 
-    // validate materials
-    try {
-      if (a.ovenPos === a.cooktopPos && isString(a.materials.oven)) {
-        if (largeCooktop && isString(a.materials.oven) && a.materials.oven.indexOf('_60') > -1) this.setMaterial('oven', 'oven_miele_90-48')
-        if (!largeCooktop && isString(a.materials.oven) && a.materials.oven.indexOf('_90') > -1) this.setMaterial('oven', 'oven_miele_60-60')
-      }
-      if (isString(a.materials.cooktop)) {
-        if (largeCooktop && a.materials.cooktop.indexOf('_60') > -1) this.setMaterial('cooktop', 'cooktop_westinghouse_90')
-        if (!largeCooktop && a.materials.cooktop.indexOf('_90') > -1) this.setMaterial('cooktop', 'cooktop_westinghouse_60')
-      }
-    } catch(err) { /* */ }
+    // validate and adapt materials
+    if (a.ovenPos === a.cooktopPos && typeof this.materials.oven === 'string') {
+      if (largeCooktop && this.materials.oven.indexOf('_60') > -1) this.materials['oven'] = 'oven_miele_90-48'
+      if (!largeCooktop && this.materials.oven.indexOf('_90') > -1) this.materials['oven'] = 'oven_miele_60-60'
+    }
+    if (typeof this.materials.cooktop === 'string') {
+      if (largeCooktop && this.materials.cooktop.indexOf('_60') > -1) this.materials['cooktop'] = 'cooktop_westinghouse_90'
+      if (!largeCooktop && this.materials.cooktop.indexOf('_90') > -1) this.materials['cooktop'] = 'cooktop_westinghouse_60'
+    }
 
     // prevent bar counter with high cabinets
     if ((a.highCabinetLeft || a.highCabinetRight) && a.barCounter) a.barCounter = false
@@ -1895,87 +1912,85 @@ export default {
       counterVertices[cvPos + 17] = eZ
 
     }
-    // get external meshes
-    /*
-     TODO: get external mesh loading to work
-
     // collect meshes that need to be loaded
-    var meshesToGet = {}
-    if (a.sinkType !== 'none') meshesToGet.sink = a.sinkType === 'single' ? meshes.singleSink : meshes.doubleSink
-    if (a.fridge) meshesToGet.fridge = meshes.fridge
-    if (a.cooktopType === 'gas60' || a.cooktopType === 'gas90') meshesToGet.cooktop = meshes[a.cooktopType]
+    var meshesToGet = []
+    if (a.sinkType !== 'none') meshesToGet.push({name: 'sink', key: a.sinkType === 'single' ? externalMeshes.singleSink : externalMeshes.doubleSink})
+    if (a.fridge) meshesToGet.push({name: 'fridge', key: externalMeshes.fridge})
+    if (a.cooktopType === 'gas60' || a.cooktopType === 'gas90') meshesToGet.push({name: 'cooktop', key: externalMeshes[a.cooktopType]})
 
-    return loadData3d(meshesToGet)
-      .then(function(result) {
-        console.log(result)
-        var dataKeys = Object.keys(result)
-        var children = []
-        // change mesh group positions
+    // load external meshes
+    return Promise.map(meshesToGet, function (obj) {
+      return loadData3d(obj.key)
+        .then(data3d => {
+          // wrap results
+          obj.data3d = data3d
+          return obj
+        })
+        .catch(console.error)
+    })
+      .then(function (result) {
+        // get mesh group positions
         var sinkX = getElementPos(a.sinkPos) + sinkOffset
         var cooktopX = getElementPos(a.cooktopPos) + elements[a.cooktopPos - 1] / 2
-        dataKeys.forEach(function (dKey) {
-          var data3d = result[dKey]
-          // position attribute is ignored when added to the mesh directly hence we need to add it to the parent node
-          // doing resolve + flatten afterwards transforms this hierarchy into flat meshes3d
-          if (dKey === 'sink') data3d.position = [sinkX, a.counterHeight, a.w + a.doorWidth - ovenDistance]
-          else if (dKey === 'cooktop') data3d.position = [cooktopX, a.counterHeight, a.w + a.doorWidth - ovenDistance]
-          else if (dKey === 'fridge') data3d.position = [getElementPos(a.fridgePos), a.baseBoard, a.w + a.doorWidth - ovenDistance]
-          children.push(data3d)
+
+        var meshes3d = {}
+        // map external meshes into internal meshes object
+        result.forEach(function (obj) {
+          // iterate through all meshes
+          var meshKeys = Object.keys(obj.data3d.meshes)
+          meshKeys.forEach(function (key, i) {
+            // create unique mesh name
+            var meshName = obj.name + '_' + i
+            meshes3d[meshName] = obj.data3d.meshes[key]
+            // apply mesh position
+            if (obj.name === 'sink') meshes3d[meshName].position = [sinkX, a.counterHeight, a.w + a.doorWidth - ovenDistance]
+            else if (obj.name === 'cooktop') meshes3d[meshName].position = [cooktopX, a.counterHeight, a.w + a.doorWidth - ovenDistance]
+            else if (obj.name === 'fridge') meshes3d[meshName].position = [getElementPos(a.fridgePos), a.baseBoard, a.w + a.doorWidth - ovenDistance]
+          })
         })
-        // return proper data3d
-        return resolve({children: children})
+
+        return meshes3d
       })
-      .then(function(data3d) {
-        // apply mesh group positions to meshes
-        return flatten(data3d)
+      .then(function (meshes3d) {
+
+        meshes3d.kitchen = {
+          positions: new Float32Array(kitchenVertices),
+          normals: generateNormals.flat(kitchenVertices),
+          uvs: generateUvs.architectural(kitchenVertices),
+          material: 'kitchen'
+        }
+        meshes3d.counter = {
+          positions: new Float32Array(counterVertices),
+          normals: generateNormals.flat(counterVertices),
+          uvs: generateUvs.architectural(counterVertices),
+          material: 'counter'
+        }
+        meshes3d.oven = {
+          positions: new Float32Array(ovenVertices),
+          normals: generateNormals.flat(ovenVertices),
+          uvs: new Float32Array(ovenUvs),
+          material: 'oven'
+        }
+        meshes3d.cooktop = {
+          positions: new Float32Array(cooktopVertices),
+          normals: generateNormals.flat(cooktopVertices),
+          uvs: new Float32Array(cooktopUvs),
+          material: 'cooktop'
+        }
+        meshes3d.extractor = {
+          positions: new Float32Array(extractorVertices),
+          normals: generateNormals.flat(extractorVertices),
+          material: 'tab'
+        }
+        meshes3d.microwave = {
+          positions: new Float32Array(mwVertices),
+          normals: generateNormals.flat(mwVertices),
+          uvs: new Float32Array(mwUvs),
+          material: 'microwave'
+        }
+        return meshes3d
       })
-      .then(function(data3d) {
-        // remove duplicate materials
-        data3d.meshKeys.forEach(function(key) {
-          var mat = data3d.meshes[key].material
-          if (mat.slice(-2) === '_1') data3d.meshes[key].material = mat.substring(0, mat.length - 2)
-        })
-        */
-    // var meshes3d = {} //data3d.meshes
-    // add internal meshes
-    return {
-      kitchen: {
-        positions: new Float32Array(kitchenVertices),
-        normals: generateNormals.flat(kitchenVertices),
-        uvs: generateUvs.architectural(kitchenVertices),
-        material: 'kitchen'
-      },
-      counter: {
-        positions: new Float32Array(counterVertices),
-        normals: generateNormals.flat(counterVertices),
-        uvs: generateUvs.architectural(counterVertices),
-        material: 'counter'
-      },
-      oven: {
-        positions: new Float32Array(ovenVertices),
-        normals: generateNormals.flat(ovenVertices),
-        uvs: new Float32Array(ovenUvs),
-        material: 'oven'
-      },
-      cooktop: {
-        positions: new Float32Array(cooktopVertices),
-        normals: generateNormals.flat(cooktopVertices),
-        uvs: new Float32Array(cooktopUvs),
-        material: 'cooktop'
-      },
-      extractor: {
-        positions: new Float32Array(extractorVertices),
-        normals: generateNormals.flat(extractorVertices),
-        material: 'tab'
-      },
-      microwave: {
-        positions: new Float32Array(mwVertices),
-        normals: generateNormals.flat(mwVertices),
-        uvs: new Float32Array(mwUvs),
-        material: 'microwave'
-      }
-    }
-    //})
+      .catch(console.error)
   }
 }
 
@@ -2010,20 +2025,12 @@ function updatePositions(a, config) {
     }
     else if (cooktop && largeCooktop && i === a.cooktopPos - 1) elements[i] = 0.9
     else if (config.remainder && ((!a.highCabinetRight && i === elNum - 1) || (a.highCabinetRight > 0 && i === elNum - a.highCabinetRight - 1))) elements[i] = config.remainder
-    //else if (getElementPos(elements, i) + 2 * a.elementLength <= a.l) elements[i] = a.elementLength
     else elements[i] = a.elementLength
   }
   if (!elements[0] && a.l > a.elementLength) elements[0] = a.elementLength
   else if (![elements[0]]) elements[0] = config.remainder
 
   return elements
-}
-
-// get x coordinate for element index
-function getElementPos(elements, pos) {
-  var l = 0
-  for (var i = 0; i < pos - 1; i++) { l += elements[i] }
-  return l
 }
 
 function round( value, factor ) {
