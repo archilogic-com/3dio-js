@@ -94,14 +94,25 @@ export default {
   generateMeshes3d: function () {
     var a = this.attributes
 
-    var wallThickness = 0.1
-    if (a.parent && a.parent.a) {
-      wallThickness = a.parent.a.w
+    var wallWidth = 0.15
+    var wallControlLine = 'back'
+    // get parent wall attributes
+    var parent = this.el.parentNode && this.el.parentNode.getAttribute('io3d-wall')
+    if (parent) {
+      parent = AFRAME.utils.styleParser.parse(parent)
+      // set wall width and control line
+      wallWidth = parseFloat(parent.w)
+      wallControlLine = parent.controlLine
+      // set door width to wall width
+      a.w = wallWidth
     }
 
     // definitions
-    var frameLength = a.frameLength,
-      frameWidth = wallThickness,
+    var
+      wallBackPos = wallControlLine === 'front' ? -wallWidth : wallControlLine === 'center' ? -wallWidth / 2 : 0,
+      wallFrontPos = wallWidth + wallBackPos,
+      frameLength = a.frameLength,
+      frameWidth = a.w,
       leafLength = a.l - (frameLength * 2),
       leafOffset = a.leafOffset,
       frameOffset = a.frameOffset,
@@ -134,8 +145,7 @@ export default {
       zCursor, xRotate, sinAngle, cosAngle, rotationOffset, lvs, lve, hvs, hve, hvf, hvt, hvm = [],
       aX,aY,aZ,bY,cX,cZ,dY,eX,eZ,gX,iZ,mZ,uZ
 
-    a.w = frameWidth
-
+    console.log('door attributes', a, frameWidth, frameLength)
     // DOOR TYPE CONFIGURATIONS
 
     // swing default
@@ -236,9 +246,9 @@ export default {
       frameFacesCount += 18
       if (frameOffset>0) frameFacesCount += 12
     }
-    var leafVertices = [],
-      handleVertices = [],
-      leafUvs = [],
+    var leafVertices = [], //new Float32Array(leafFacesCount * 9),
+      handleVertices = [], //new Float32Array(handleFacesCount * 9),
+      leafUvs = [], //new Float32Array(leafFacesCount * 6),
       frameVertices = new Float32Array(frameFacesCount * 9)
 
     // Threshold VERTICES
@@ -256,10 +266,10 @@ export default {
 
     aX = frameLength
     aY = thresholdHeight
-    aZ = wallThickness
+    aZ = wallFrontPos
     bY = 0
     cX = a.l - frameLength
-    eZ = 0
+    eZ = wallBackPos
 
     if (threshold) {
       // Top
@@ -361,15 +371,15 @@ export default {
 
       aX = 0
       aY = a.h
-      aZ = wallThickness+frameOffset
+      aZ = wallFrontPos + frameOffset
       bY = 0
       cX = frameLength
       dY = a.h - frameLength
       eX = a.l - frameLength
       gX = a.l
-      iZ = wallThickness
-      mZ = -frameOffset
-      uZ = 0
+      iZ = wallFrontPos
+      mZ = wallBackPos - frameOffset
+      uZ = wallBackPos
 
       // DOOR FRAME FRONT FACES
       // A
@@ -687,10 +697,10 @@ export default {
 
       aX = xCursor + frameLength// + leafGap
       aY = a.h - frameLength
-      aZ = a.leafWidth-leafOffset-frameOffset
+      aZ = wallBackPos + a.leafWidth - leafOffset - frameOffset
       bY = leafGap
       cX = xCursor + frameLength + leafLength//-leafGap
-      eZ = -leafOffset-frameOffset
+      eZ = wallBackPos-leafOffset-frameOffset
 
       // door leaf front ABCD
       leafVertices[lvPos] = leafVertices[lvPos + 3] = leafVertices[lvPos + 9] = aX
@@ -824,7 +834,7 @@ export default {
 
         // Size Definitions
 
-        zCursor = -leafOffset-frameOffset
+        zCursor = wallBackPos-leafOffset-frameOffset
         aX = xCursor + frameLength + leafLength-handleDistance-handleLength
         aY = handleHeight
         aZ = zCursor+a.leafWidth+handleWidth+handleThickness*0.6
@@ -1063,23 +1073,23 @@ export default {
         // set position in handle vertex array for current door leaf before mirroring
         hve = handleVertices.length
         // Duplicating Handle Vertices
-        hvt = handleVertices.slice(hvs,hve)
+        hvt = handleVertices.slice(hvs, hve)
         var t
         // Mirroring Z Vertices
-        for (t=0;t<hvt.length-2;t = t + 3){
-          hvt[t+2] = -hvt[t+2]+ (a.leafWidth-leafOffset-frameOffset)*2-a.leafWidth
+        for (t = 0; t < hvt.length - 2; t = t + 3) {
+          hvt[t + 2] = -hvt[t + 2] + (wallBackPos + a.leafWidth - leafOffset - frameOffset) * 2 - a.leafWidth
         }
         // Changing Vertex Order > Flipping Polygons
-        for (t=0;t<hvt.length-8;t = t + 9){
-          hvm[1] = hvt[t+3]
-          hvm[2] = hvt[t+4]
-          hvm[3] = hvt[t+5]
-          hvt[t+3] = hvt[t+6]
-          hvt[t+4] = hvt[t+7]
-          hvt[t+5] = hvt[t+8]
-          hvt[t+6] = hvm[1]
-          hvt[t+7] = hvm[2]
-          hvt[t+8] = hvm[3]
+        for (t = 0; t < hvt.length - 8; t = t + 9) {
+          hvm[1] = hvt[t + 3]
+          hvm[2] = hvt[t + 4]
+          hvm[3] = hvt[t + 5]
+          hvt[t + 3] = hvt[t + 6]
+          hvt[t + 4] = hvt[t + 7]
+          hvt[t + 5] = hvt[t + 8]
+          hvt[t + 6] = hvm[1]
+          hvt[t + 7] = hvm[2]
+          hvt[t + 8] = hvm[3]
         }
         // Push Vertices into Array
         handleVertices = handleVertices.concat(hvt)
@@ -1089,44 +1099,44 @@ export default {
         hvf = handleVertices.length
 
         // Flip Handle for flipped door leafs or if hinge is left
-        if (leaf[c].flipLeaf || (a.hinge==='left'&& (doorType!=='doubleSwing'&& doorType!=='doubleSwingDoubleFix'))) {
-          for (i = hvs; i < hvf-2; i = i + 3) {
-            xRotate = handleVertices[i] - frameLength - leafLength/2 - prevLeafs
-            handleVertices[i+2]=handleVertices[i+2]-a.leafWidth/2+leafOffset+frameOffset
-            handleVertices[i] = -xRotate + frameLength + leafLength/2 + prevLeafs
-            handleVertices[i + 2] = -handleVertices[i + 2] +a.leafWidth/2-leafOffset-frameOffset
+        if (leaf[c].flipLeaf || (a.hinge === 'left' && (doorType !== 'doubleSwing' && doorType !== 'doubleSwingDoubleFix'))) {
+          for (i = hvs; i < hvf - 2; i = i + 3) {
+            xRotate = handleVertices[i] - frameLength - leafLength / 2 - prevLeafs
+            handleVertices[i + 2] = handleVertices[i + 2] - wallBackPos - a.leafWidth / 2 + leafOffset + frameOffset
+            handleVertices[i] = -xRotate + frameLength + leafLength / 2 + prevLeafs
+            handleVertices[i + 2] = -handleVertices[i + 2] + wallBackPos + a.leafWidth / 2 - leafOffset - frameOffset
           }
         }
       }
 
       // rotation of leaf and handle vertices for door opening
-      if(leaf[c].angle>0){
+      if (leaf[c].angle > 0) {
 
         // rotation setup
         xRotate = 0
         cosAngle = Math.cos(leaf[c].angle / 180 * Math.PI)
         sinAngle = Math.sin(leaf[c].angle / 180 * Math.PI)
 
-        if (leaf[c].flipLeaf || (a.hinge==='left'&& (doorType!=='doubleSwing'&& doorType!=='doubleSwingDoubleFix'))) {
-          rotationOffset=-frameLength-leafLength-prevLeafs
+        if (leaf[c].flipLeaf || (a.hinge === 'left' && (doorType !== 'doubleSwing' && doorType !== 'doubleSwingDoubleFix'))) {
+          rotationOffset = -frameLength - leafLength - prevLeafs
         } else {
-          rotationOffset=-frameLength-prevLeafs
-          sinAngle=-sinAngle
+          rotationOffset = -frameLength - prevLeafs
+          sinAngle = -sinAngle
         }
 
         // rotation of leaf vertices
-        for (i=lvs;i<lve-2; i = i + 3){
-          xRotate=leafVertices[i]+rotationOffset
-          leafVertices[i+2]=leafVertices[i+2]+leafOffset+frameOffset
-          leafVertices[i]=xRotate*cosAngle-leafVertices[i+2]*sinAngle-rotationOffset
-          leafVertices[i+2]=leafVertices[i+2]*cosAngle+xRotate*sinAngle-leafOffset-frameOffset
+        for (i = lvs; i < lve - 2; i = i + 3) {
+          xRotate = leafVertices[i] + rotationOffset
+          leafVertices[i + 2] = leafVertices[i + 2] - wallBackPos + leafOffset + frameOffset
+          leafVertices[i] = xRotate * cosAngle - leafVertices[i + 2] * sinAngle - rotationOffset
+          leafVertices[i + 2] = leafVertices[i + 2] * cosAngle + xRotate * sinAngle + wallBackPos - leafOffset - frameOffset
         }
         // rotation of handle vertices
-        for (i=hvs;i<hvf-2; i = i + 3){
-          xRotate=handleVertices[i]+rotationOffset
-          handleVertices[i+2]=handleVertices[i+2]+leafOffset+frameOffset
-          handleVertices[i]=xRotate*cosAngle-handleVertices[i+2]*sinAngle-rotationOffset
-          handleVertices[i+2]=handleVertices[i+2]*cosAngle+xRotate*sinAngle-leafOffset-frameOffset
+        for (i = hvs; i < hvf - 2; i = i + 3) {
+          xRotate = handleVertices[i] + rotationOffset
+          handleVertices[i + 2] = handleVertices[i + 2] - wallBackPos + leafOffset + frameOffset
+          handleVertices[i] = xRotate * cosAngle - handleVertices[i + 2] * sinAngle - rotationOffset
+          handleVertices[i + 2] = handleVertices[i + 2] * cosAngle + xRotate * sinAngle + wallBackPos - leafOffset - frameOffset
         }
       }
       xCursor += leafLength
@@ -1138,18 +1148,18 @@ export default {
 
     // rotate everything by PI if door is set to front
 
-    if (a.side === 'front'){
-      for (i=0;i<ll;i=i+3) {
-        xRotate=leafVertices[i]-frameLength-doorOpening/2
-        leafVertices[i+2]=leafVertices[i+2]-leafOffset/2-frameOffset/2-frameWidth/2
-        leafVertices[i]=-xRotate+frameLength+doorOpening/2
-        leafVertices[i+2]=-leafVertices[i+2]-leafOffset/2-frameOffset/2+frameWidth/2
+    if (a.side === 'front') {
+      for (i = 0; i < ll; i = i + 3) {
+        xRotate = leafVertices[i] - frameLength - doorOpening / 2
+        leafVertices[i + 2] = leafVertices[i + 2] - wallBackPos - leafOffset / 2 - frameOffset / 2 - frameWidth / 2
+        leafVertices[i] = -xRotate + frameLength + doorOpening / 2
+        leafVertices[i + 2] = -leafVertices[i + 2] + wallBackPos - leafOffset / 2 - frameOffset / 2 + frameWidth / 2
       }
       for (i = 0; i < lh; i = i + 3) {
-        xRotate=handleVertices[i]-frameLength-doorOpening/2
-        handleVertices[i+2]=handleVertices[i+2]-leafOffset/2-frameOffset/2-frameWidth/2
-        handleVertices[i]=-xRotate+frameLength+doorOpening/2
-        handleVertices[i+2]=-handleVertices[i+2]-leafOffset/2-frameOffset/2+frameWidth/2
+        xRotate = handleVertices[i] - frameLength - doorOpening / 2
+        handleVertices[i + 2] = handleVertices[i + 2] - wallBackPos - leafOffset / 2 - frameOffset / 2 - frameWidth / 2
+        handleVertices[i] = -xRotate + frameLength + doorOpening / 2
+        handleVertices[i + 2] = -handleVertices[i + 2] + wallBackPos - leafOffset / 2 - frameOffset / 2 + frameWidth / 2
       }
     }
 
