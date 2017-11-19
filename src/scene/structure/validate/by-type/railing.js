@@ -5,52 +5,52 @@ export default {
       defaultValue: 0.05,
       optional: false,
       min: 0.01,
-      description: 'Width'
+      description: 'width'
     },
     h: { // height in meters
       type: 'number',
       defaultValue: 1,
       optional: false,
       min: 0.01,
-      description: 'Height'
+      description: 'height'
     },
     l: { // length in meters
       type: 'number',
       defaultValue: 1,
       optional: false,
       min: 0.01,
-      description: 'Length'
+      description: 'length'
     },
     pailing: {
       type: 'number',
       defaultValue: 0.01,
       optional: false,
-      description: 'Strength of the posts'
+      description: 'strength of the posts'
     },
     railCount: {
       type: 'int',
       defaultValue: 2,
       optional: true,
-      description: 'Horizontal rail count'
+      description: 'horizontal rail count'
     },
     segmentation: {
       type: 'string',
       defaultValue: 'distance',
       possibleValues: ['distance', 'number', 'none'],
       optional: false,
-      description: 'Vertical segmentation type'
+      description: 'vertical segmentation type'
     },
     segments: {
       type: 'int',
       defaultValue: 5,
       optional: true,
-      description: 'Number of vertical segments, for segmentation = \'number\''
+      description: 'number of vertical segments, for segmentation = \'number\''
     },
     segmentDistance: {
       type: 'number',
       defaultValue: 0.14,
       optional: true,
-      description: 'Distance between vertical segments, for segmentation = \'distance\''
+      description: 'distance between vertical segments, for segmentation = \'distance\''
     }
   },
   childrenTypes: [],

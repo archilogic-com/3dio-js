@@ -4,7 +4,8 @@ export default {
       type: 'number',
       defaultValue: 3,
       possibleValues: [3],
-      optional: false
+      optional: false,
+      description: 'version'
     },
     l: { // length in meters
       type: 'number',

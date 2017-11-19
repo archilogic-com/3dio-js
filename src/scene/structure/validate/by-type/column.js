@@ -5,14 +5,14 @@ export default {
       defaultValue: 0.2,
       optional: false,
       min: 0.01,
-      description: 'Length / Diameter'
+      description: 'length for square / diameter for circle'
     },
     h: { // height in meters
       type: 'number',
       defaultValue: 2.4,
       optional: false,
       min: 0.01,
-      description: 'Height'
+      description: 'height'
     },
     shape: {
       type: 'string',
@@ -20,12 +20,15 @@ export default {
       optional: false,
       min: 0.01,
       possibleValues: ['square', 'circle'],
-      description: 'Column contour'
+      description: 'column contour'
     }
   },
   childrenTypes: [],
   parentTypes: [
     'level',
     'group'
-  ]
+  ],
+  aframeComponent: {
+    name: 'io3d-column'
+  }
 }

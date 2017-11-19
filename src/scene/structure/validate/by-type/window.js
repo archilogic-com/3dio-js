@@ -3,43 +3,54 @@ export default {
     y: {
       defaultValue: 0.8,
     },
-    h: { // height in meters
+    h: {
       type: 'number',
       defaultValue: 1.5,
       optional: false,
-      min: 0.01 // 1cm
+      min: 0.01,
+      description: 'height'
     },
-    l: { // length in meters
+    l: {
       type: 'number',
       defaultValue: 1.6,
       optional: false,
-      min: 0.01
+      min: 0.01,
+      description: 'length'
     },
-    rowRatios: { // in meters
+    side: {
+      type: 'string',
+      defaultValue: 'back',
+      optional: false,
+      possibleValues: ['back', 'center', 'front'],
+      description: 'relative position of the window inside the wall opening'
+    },
+    rowRatios: {
       //type: 'array-with-numbers',
       type: 'array',
       defaultValue: [ 1 ],
-      // skipInAframe: true,
-      optional: true
+      optional: true,
+      description: 'relative height of horizontal segmentation'
     },
-    columnRatios: { // in meters
+    columnRatios: {
       //type: 'array-with-arrays-with-numbers',
       type: 'array',
       defaultValue: [ [ 1 ] ],
-      // skipInAframe: true,
-      optional: true
+      optional: true,
+      description: 'relative width of vertical segmentation per row'
     },
-    frameLength: { // in meters
+    frameLength: {
       type: 'number',
       defaultValue: 0.04,
       optional: true,
-      min: 0.01
+      min: 0.01,
+      description: 'thickness of the frame'
     },
-    frameWidth: { // in meters
+    frameWidth: {
       type: 'number',
       defaultValue: 0.06,
       optional: true,
-      min: 0.01
+      min: 0.01,
+      description: 'Wwidth of the frame'
     }
   },
   childrenTypes: [],
