@@ -145,7 +145,6 @@ export default {
       zCursor, xRotate, sinAngle, cosAngle, rotationOffset, lvs, lve, hvs, hve, hvf, hvt, hvm = [],
       aX,aY,aZ,bY,cX,cZ,dY,eX,eZ,gX,iZ,mZ,uZ
 
-    console.log('door attributes', a, frameWidth, frameLength)
     // DOOR TYPE CONFIGURATIONS
 
     // swing default

@@ -72,7 +72,6 @@ export default {
         this_.materials[mat] = getMaterial(this_.materials[mat])
       })
 
-      console.log(this_.materials)
       // construct data3d object
       var data3d = {
         meshes: meshes,

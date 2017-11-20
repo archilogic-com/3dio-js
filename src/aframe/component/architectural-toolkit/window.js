@@ -137,6 +137,7 @@ export default {
 
     for (var r = 0; r < rLen; r++) {
       rowSegments += rowRatios[ r ]
+      if (!columnRatios[ r ]) columnRatios[ r ] = [ 1 ]
       columnSegments[ r ] = 0
       cLen = columnRatios[ r ].length
       frameFacesCount += (cLen - 1) * 4 + cLen * 8
