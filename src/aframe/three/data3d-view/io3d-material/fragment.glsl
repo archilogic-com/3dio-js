@@ -36,10 +36,8 @@ void main() {
 
     vec3 totalEmissiveRadiance = emissive;
 
-    #include <map_fragment>
     #include <alphamap_fragment>
     #include <alphatest_fragment>
-    #include <specularmap_fragment>
 
     // Start of <normal_fragment> replace block
     #ifdef FLAT_SHADED
@@ -62,19 +60,8 @@ void main() {
 
     #endif
 
-    #ifdef USE_NORMALMAP
-
-      normal = perturbNormal2Arb( -vViewPosition, normal );
-
-    #elif defined( USE_BUMPMAP )
-
-      normal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );
-
-    #endif
+    // actual normal map parsing had to be moved due to a Radeon bug killing shadows...
     // End of <normal_fragment> replace block
-
-    // accumulation
-    #include <lights_phong_fragment>
 
     // Start of <light-template> replace block
     GeometricContext geometry;
@@ -94,10 +81,22 @@ void main() {
             pointLight = pointLights[ i ];
 
             getPointDirectLightIrradiance( pointLight, geometry, directLight );
+            float shadowFactor = 1.0;
 
             #ifdef USE_SHADOWMAP
-            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;
+              shadowFactor = all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;
             #endif
+
+            // Fix for missing shadows on Radeon cards
+            #include <map_fragment>
+            #include <specularmap_fragment>
+            // accumulation
+            #include <lights_phong_fragment>
+            #ifdef USE_NORMALMAP
+              geometry.normal = perturbNormal2Arb( -vViewPosition, normal );
+            #endif
+            directLight.color *= shadowFactor;
+            // end of fix
 
             RE_Direct( directLight, geometry, material, reflectedLight );
 
@@ -114,10 +113,22 @@ void main() {
             spotLight = spotLights[ i ];
 
             getSpotDirectLightIrradiance( spotLight, geometry, directLight );
+            float shadowFactor = 1.0;
 
             #ifdef USE_SHADOWMAP
-            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;
+              shadowFactor = all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;
             #endif
+
+            // Fix for missing shadows on Radeon cards
+            #include <map_fragment>
+            #include <specularmap_fragment>
+            // accumulation
+            #include <lights_phong_fragment>
+            #ifdef USE_NORMALMAP
+              geometry.normal = perturbNormal2Arb( -vViewPosition, normal );
+            #endif
+            directLight.color *= shadowFactor;
+            // end of fix
 
             RE_Direct( directLight, geometry, material, reflectedLight );
 
@@ -132,12 +143,24 @@ void main() {
         for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {
 
             directionalLight = directionalLights[ i ];
+            float shadowFactor = 1.0;
 
             getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );
 
             #ifdef USE_SHADOWMAP
-            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;
+              shadowFactor = all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;
             #endif
+
+            // Fix for missing shadows on Radeon cards
+            #include <map_fragment>
+            #include <specularmap_fragment>
+            // accumulation
+            #include <lights_phong_fragment>
+            #ifdef USE_NORMALMAP
+              geometry.normal = perturbNormal2Arb( -vViewPosition, normal );
+            #endif
+            directLight.color *= shadowFactor;
+            // end of fix
 
             RE_Direct( directLight, geometry, material, reflectedLight );
 
@@ -148,6 +171,16 @@ void main() {
     #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )
 
         RectAreaLight rectAreaLight;
+
+        // Fix for missing shadows on Radeon cards
+        #include <map_fragment>
+        #include <specularmap_fragment>
+        // accumulation
+        #include <lights_phong_fragment>
+        #ifdef USE_NORMALMAP
+          geometry.normal = perturbNormal2Arb( -vViewPosition, normal );
+        #endif
+        // End of fix for Radeon cards
 
         for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {
 
@@ -191,6 +224,16 @@ void main() {
             }
 
         #endif
+
+        // Fix for missing shadows on Radeon cards
+        #include <map_fragment>
+        #include <specularmap_fragment>
+        // accumulation
+        #include <lights_phong_fragment>
+        #ifdef USE_NORMALMAP
+          geometry.normal = perturbNormal2Arb( -vViewPosition, normal );
+        #endif
+        // end of fix
 
         RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );
 
