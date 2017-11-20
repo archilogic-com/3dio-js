@@ -26,6 +26,11 @@ export default {
     // get meshes and materials from el3d modules
     var meshes = this.generateMeshes3d()
 
+    // remove glass mesh if needed
+    var deleteGlass = data.hideGlass === 'true'
+    console.log('hide glass', deleteGlass)
+    if (deleteGlass) delete meshes.glass
+
     // clean up empty meshes to prevent errors
     var meshKeys = Object.keys(meshes)
     meshKeys.forEach(key => {

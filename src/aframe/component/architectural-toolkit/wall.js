@@ -13,7 +13,17 @@ export default {
 
   schema: getSchema('wall'),
 
-  init: function () {},
+  init: function () {
+    var this_ = this
+    var children = this_.el.children
+    if (children && children.length) {
+      for (var i = 0; i < children.length; i++) {
+        children[i].addEventListener('componentchanged', function (evt) {
+          this_.update()
+        })
+      }
+    }
+  },
 
   update: function (oldData) {
     var this_ = this
