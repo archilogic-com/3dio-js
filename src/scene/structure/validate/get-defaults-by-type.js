@@ -52,7 +52,9 @@ export default function getDefaultsByType (type) {
   if (type && types[type]) {
     return {
       params: defaults({}, generic.params, types[type].params),
-      childrenTypes: types[type].childrenTypes
+      childrenTypes: types[type].childrenTypes,
+      parentTypes: types[type].parentTypes,
+      aframeComponent: types[type].aframeComponent
     }
   } else {
     var typeSpecificValidations = {}
@@ -61,7 +63,9 @@ export default function getDefaultsByType (type) {
       generic.type = key
       typeSpecificValidations[key] = {
         params: defaults({}, generic.params, types[key].params),
-        childrenTypes: types[key].childrenTypes
+        childrenTypes: types[key].childrenTypes,
+        parentTypes: types[key].parentTypes,
+        aframeComponent: types[key].aframeComponent
       }
     })
     return typeSpecificValidations
