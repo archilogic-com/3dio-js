@@ -3,7 +3,7 @@
 var clone = cloneData3d
 clone.withPayload = cloneData3dWithPayload
 clone.meshes = cloneMeshes
-clone.meshe = cloneSingleMesh
+clone.mesh = cloneSingleMesh
 clone.materials = cloneMaterials
 clone.material = cloneSingleMaterial
 
