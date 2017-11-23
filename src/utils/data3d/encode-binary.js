@@ -4,6 +4,8 @@ import gzip from '../file/gzip.js'
 import getDefaultFilename from '../file/get-default-filename.js'
 import traverseData3d from './traverse.js'
 import cloneData3d from './clone.js'
+import textureAttributes from './texture-attributes.js'
+import getStorageIdFromUrl from '../../storage/get-id-from-url.js'
 
 // config
 
@@ -11,6 +13,10 @@ var FILE_EXTENSION = '.data3d.buffer'
 var HEADER_BYTE_LENGTH = 16
 var MAGIC_NUMBER = 0x41443344 // AD3D encoded as ASCII characters in hex
 var VERSION = 1
+
+// shared
+
+var dataArraysPropNames = ['positions', 'normals', 'uvs', 'uvsLightmap'] // heavy arrays
 
 // main
 
@@ -37,15 +43,15 @@ export default function encodeBinary (data3d, options) {
   
   var payloadArrays = []
   var payloadLength = 0
-  var meshes, meshKeys, i, l, array, mesh
-  var arrayNames = ['positions', 'normals', 'uvs', 'uvsLightmap'] // heavy arrays
+  var meshes, meshKeys, i, l, array, mesh, materialKeys, materials, material, storageId
   var _data3d = cloneData3d(data3d)
   traverseData3d( _data3d, function(data3d){
+
     meshes = data3d.meshes
     meshKeys = data3d.meshKeys || Object.keys(meshes)
     for (i=0, l=meshKeys.length; i<l; i++) {
       mesh = meshes[ meshKeys[i] ]
-      arrayNames.forEach(function(name){
+      dataArraysPropNames.forEach(function(name){
         array = mesh[name]
         if (array) {
           if (array.length) {
@@ -61,6 +67,20 @@ export default function encodeBinary (data3d, options) {
         }
       })
     }
+
+    materials = data3d.materials
+    materialKeys = Object.keys(data3d.materials)
+    for (i=0, l=materialKeys.length; i<l; i++) {
+      material = materials[ materialKeys[i] ]
+      textureAttributes.names.forEach(function(texAttributeName){
+        if (material[texAttributeName]) {
+          // convert storage URLs into storageIds
+          storageId = getStorageIdFromUrl(material[texAttributeName])
+          if (storageId) material[texAttributeName] = storageId
+        }
+      })
+    }
+
   })
   var payloadByteLength = payloadLength * 4
   
