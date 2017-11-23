@@ -8,7 +8,16 @@ export default function getConvertibleTextureKeys(storageId) {
   var url = getUrlFromStorageId(storageId)
 
   return loadData3d(url)
-    .then(getTextureKeys)
+    .then(function(data3d) {
+
+      return getTextureKeys(data3d, {
+        filter: function (storageId, type, format, material, data3d) {
+          // use source maps only
+          return format === 'source' ? storageId : false
+        }
+      })
+
+    })
     .then(function(textures) {
       return textures.map(getStorageIdFromUrl)
     })
