@@ -43,7 +43,6 @@
       const id = queryId || '62cb3510-6708-4f62-94c3-f9936db7e20b'
       const idInput = document.querySelector('input#inpt-id')
       const sceneEl = document.querySelector('a-scene')
-
       let addedElements = []
       idInput.value = id
       loadScene(id)
@@ -91,6 +90,11 @@
         minimapEl = document.createElement('a-entity')
         minimapEl.setAttribute('io3d-minimap', {sceneId:id, width:250, position: 'right'})
         sceneEl.appendChild(minimapEl)
+
+        // const minimap = document.querySelector('io3d-minimap')
+        minimapEl.addEventListener('minimap-created', function() {
+          console.log('we have a minimap')
+        })
       }
 
       function moveToFirstWaypoint() {

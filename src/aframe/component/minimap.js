@@ -1,3 +1,4 @@
+import cloneDeep from 'lodash/cloneDeep'
 
 export default {
   schema: {
@@ -19,22 +20,8 @@ export default {
     }
   },
   init: function () {
+    var this_ = this
     var data = this.data
-    var cameras = document.querySelectorAll('[camera]')
-    this.camera = cameras.length > 1 ? cameras[1] : cameras[0]
-    console.log('loading minimap', data)
-    console.log('loading minimap', cameras, this.camera.getAttribute('position'))
-    // create html container for minimap
-    var container = document.createElement('div')
-    container.id = 'minimap-container'
-    container.setAttribute('style', `position:absolute; z-index: 1000; top:10px; ${data.position}:10px`)
-    container.innerHTML = `<svg width="${data.width}"></svg>`
-    // put container as first child in body
-    var body = document.querySelector('body')
-    body.insertBefore(container, body.firstChild)
-    // bind svg element with component
-    this.svgEl = container.querySelector('svg')
-    this.svgEl.setAttribute('style', `transform: rotate(${data.rotation}deg);`)
 
     // get scene structure
     io3d.scene.getStructure(data.sceneId)
@@ -45,32 +32,54 @@ export default {
         let spaces = getSpaces(result)
         // apply plan rotation / position
 
+        if (!spaces || !spaces.length) {
+          return Promise.reject('Minimap generation failed, scene has no spaces')
+        }
         spaces = spaces.map(space => {
           let location = applyLocation(space, result[0])
           Object.keys(location).forEach(prop => {
             space[prop] = location[prop]
           })
-        //console.log(' ' + space.ry)
-        return space
+          //console.log(' ' + space.ry)
+          return space
+        })
+        setupMap()
+        // generate a clickable plan
+        generatePlan(spaces, this.svgEl)
       })
+      .catch(console.warn)
 
-      // generate a clickable plan
-      generatePlan(spaces, this.svgEl)
-    })
-    .catch(console.error)
-
+    function setupMap () {
+      // get camera
+      var cameras = document.querySelectorAll('[camera]')
+      // pick the last camera
+      // TODO: better to pick the active one
+      this_.camera = cameras.length > 1 ? cameras[1] : cameras[0]
+      // console.log('loading minimap', data)
+      // console.log('loading minimap', cameras, this_.camera.getAttribute('position'))
+      // create html container for minimap
+      var container = document.createElement('div')
+      container.id = 'minimap-container'
+      container.setAttribute('style', `position:absolute; width: ${data.width}px; z-index: 1000; top:10px; ${data.position}:10px`)
+      container.innerHTML = `<svg width="100%"></svg>`
+      // put container as first child in body
+      var body = document.querySelector('body')
+      body.insertBefore(container, body.firstChild)
+      // bind svg element with component
+      this_.svgEl = container.querySelector('svg')
+      this_.svgEl.setAttribute('style', `transform: rotate(${data.rotation}deg);`)
+    }
     // generate a pictogram of the floor plan
     function generatePlan (spaces, svgEl) {
       // empty svg element to fill
-      var min = [Infinity, Infinity]
-      var max = [-Infinity, -Infinity]
+      this_.min = [Infinity, Infinity]
+      this_.max = [-Infinity, -Infinity]
       var polygonStr = ''
 
       const style1 = 'fill:rgba(248, 248, 250, 0.8); stroke:rgba(48, 48, 50, 0.8); stroke-width:0.5;'
       const style2 = 'fill:rgba(255, 127, 80, 0.8);'
 
       spaces.forEach(space => {
-        var polygon = document.createElement('polygon')
         var pointStr = ''
         // get the polygon data for each space
         space.polygon.forEach(point => {
@@ -80,10 +89,10 @@ export default {
           var x = Math.round(location.x * 20)
           var y = Math.round(location.z * 20)
           // get min and max values for the overall boundingbox
-          if (x < min[0]) min[0] = x
-          else if (x > max[0]) max[0] = x
-          if (y < min[1]) min[1] = y
-          else if (y > max[1]) max[1] = y
+          if (x < this_.min[0]) this_.min[0] = x
+          else if (x > this_.max[0]) this_.max[0] = x
+          if (y < this_.min[1]) this_.min[1] = y
+          else if (y > this_.max[1]) this_.max[1] = y
           pointStr += x + ',' + y + ' '
         })
         polygonStr += `<polygon points="${pointStr}" style="${style1}" space-id="${space.id}"/>`
@@ -91,7 +100,11 @@ export default {
       // populate the svg
       svgEl.innerHTML = polygonStr
       // match the svg viewbox with the bouningbox of the polygons
-      svgEl.setAttribute('viewBox', `${min[0]} ${min[1]} ${max[0] - min[0]} ${max[1] - min[1]}`)
+      svgEl.setAttribute('viewBox', `${this_.min[0]} ${this_.min[1]} ${this_.max[0] - this_.min[0]} ${this_.max[1] - this_.min[1]}`)
+
+      // start position tracking
+      this_.mapActivated = true
+      this_.el.emit('minimap-created')
     }
 
     function applyLocation (element, parent) {
@@ -127,11 +140,20 @@ export default {
     minimapEl.parentNode.removeChild(minimapEl)
   },
   tick: function (time, timeDiff) {
+    if (!this.mapActivated) return
+
     // update dot every 100 ms
-    if (time % 100 < timeDiff + 5) {
-      let cameraDot = this.svgEl.querySelector('#camera-dot')
-      const cameraPos = this.camera.getAttribute('position')
-      const cameraRot = this.camera.getAttribute('rotation')
+    if (time % 50 < timeDiff + 5) {
+      var cameraDot = this.svgEl.querySelector('#camera-dot')
+      var cameraPos = this.camera.getAttribute('position')
+      var cameraRot = this.camera.getAttribute('rotation')
+      // make sure our point stays within the map
+      var pointPos = cloneDeep(cameraPos)
+      if (pointPos.x * 20 < this.min[0]) pointPos.x = this.min[0] / 20
+      else if (pointPos.x * 20 > this.max[0]) pointPos.x = this.max[0] / 20
+      if (pointPos.z * 20 < this.min[1]) pointPos.z = this.min[1] / 20
+      else if (pointPos.z * 20 > this.max[1]) pointPos.z = this.max[1] / 20
+
       // console.log(cameraPos)
       if (!cameraDot) {
         console.log('create dot')
@@ -148,7 +170,7 @@ export default {
 </defs>`
         // circle cx="150" cy="50" r="40"
       } else {
-        cameraDot.setAttribute('transform', `translate(${cameraPos.x * 20},${cameraPos.z * 20}) rotate(${-cameraRot.y - 90})`)
+        cameraDot.setAttribute('transform', `translate(${pointPos.x * 20},${pointPos.z * 20}) rotate(${-cameraRot.y - 90})`)
       }
     }
   }
