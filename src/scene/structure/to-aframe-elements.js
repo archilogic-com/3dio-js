@@ -18,6 +18,8 @@ var validTypes = [
   'window'
 ]
 
+var noIo3dComponents = ['plan', 'level', 'group']
+
 export default function toAframeElements(sceneStructure, options) {
   if (!sceneStructure) {
     console.error('nothing to convert')
@@ -94,18 +96,33 @@ function getAttributes(element3d) {
   })
 
   var paramKeys = Object.keys(validParams)
-  attributes['io3d-' + type] = ''
 
-  paramKeys.forEach(function(param) {
-    if (element3d[param] !== undefined && !validParams[param].skipInAframe) {
-      // materials have to be serialized
-      if (param === 'materials') attributes['io3d-' + type] += stringifyMaterials(element3d.materials)
-      // polygons have to be serialized
-      else if (param === 'polygon') attributes['io3d-' + type] += param + ': ' + element3d.polygon.map(function(p) { return p.join(',')}).join(',') + '; '
-      else attributes['io3d-' + type] += param + ': ' + element3d[param] + '; '
-    }
-  })
+  // plan, level, group don't have their own component
+  var skipComponent = noIo3dComponents.indexOf(type) > -1
+  if (!skipComponent) {
+    attributes['io3d-' + type] = ''
+
+    paramKeys.forEach(function(param) {
+      if (element3d[param] !== undefined && !validParams[param].skipInAframe) {
+        // materials have to be serialized
+        if (param === 'materials') attributes['io3d-' + type] += stringifyMaterials(element3d.materials)
+        // polygons have to be serialized
+        else if (param === 'polygon') attributes['io3d-' + type] += param + ': ' + element3d.polygon.map(function(p) { return p.join(',')}).join(',') + '; '
+        else if (type !== 'plan' && type !== 'level') attributes['io3d-' + type] += param + ': ' + element3d[param] + '; '
+      }
+    })
+  }
+
   switch (element3d.type) {
+    case 'plan':
+      attributes['class'] = 'io3d-scene'
+      break
+    case 'level':
+      attributes['class'] = 'io3d-level'
+      break
+    case 'group':
+      attributes['class'] = 'io3d-group'
+      break
     case 'interior':
       if (element3d.src) {
         attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1)
