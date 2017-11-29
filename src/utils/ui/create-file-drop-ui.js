@@ -1,5 +1,6 @@
 import Promise from 'bluebird'
 import runtime from '../../core/runtime.js'
+import configs from '../../core/configs.js'
 import putToStore from '../../storage/put.js'
 import getFilesFromDragAndDropEvent from './create-file-drop-ui/get-files-from-drag-and-drop-event.js'
 
@@ -80,7 +81,7 @@ export default function createFileDropUi (args) {
         var item = { file: file, name: file.name, size: file.size, type: file.type }
         if (storageIds) {
           item.storageId = storageIds[i]
-          item.url = 'https://storage.3d.io' + storageIds[i]
+          item.url = 'https://' + configs.storageDomain + storageIds[i]
         }
         return item
       })

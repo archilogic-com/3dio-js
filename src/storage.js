@@ -23,9 +23,11 @@ var storage = {
   exportDxf: modelExporter.exportDxf,
   // helpers
   getUrlFromStorageId: getUrlFromStorageId,
+  getUrlFromId: getUrlFromStorageId, // alias
   getNoCdnUrlFromStorageId: getNoCdnUrlFromStorageId,
-  getStorageIdFromUrl: getStorageIdFromUrl
-
+  getNoCdnUrlFromId: getNoCdnUrlFromStorageId, // alias
+  getStorageIdFromUrl: getStorageIdFromUrl,
+  getIdFromUrl: getStorageIdFromUrl // alias
 }
 
 export default storage

@@ -1,4 +1,7 @@
 import traverseData3d from './traverse.js'
+import textureAttributes from './texture-attributes.js'
+
+// main
 
 export default function getTextureKeys(data3d, options) {
   // API
@@ -8,81 +11,29 @@ export default function getTextureKeys(data3d, options) {
   // internals
   var cache = {}
 
-  // internals
+  // iterate over materials
   traverseData3d.materials(data3d, function(material) {
-    var filteredResult, attr, type, format, value
-    for (var i = 0, l = ATTRIBUTES.length; i < l; i++) {
-      attr = ATTRIBUTES[i]
-      value = material[attr]
+    var filteredResult, attrName, type, format, textureKey
+    // iterate over texture types
+    for (var i = 0, l = textureAttributes.names.length; i < l; i++) {
+      attrName = textureAttributes.names[i]
+      textureKey = material[attrName]
+
+      // material does not contain this type of texture - continue to next one
+      if (!textureKey) continue
 
       // apply filter function if specified in options
       if (filter) {
         // provide info on type and format of texture to the filter function
-        type = ATTRIBUTE_TO_TYPE[attr]
-        format = ATTRIBUTE_TO_FORMAT[attr]
-        value = filter(value, type, format, material, data3d)
+        type = textureAttributes.nameToType[attrName]
+        format = textureAttributes.nameToFormat[attrName]
+        textureKey = filter(textureKey, type, format, material, data3d)
       }
 
-      if (value) cache[value] = true
+      // filter function might return false in order to exclude textures from the results
+      if (textureKey) cache[textureKey] = true
     }
   })
 
   return Object.keys(cache)
-}
-
-// constants
-
-var ATTRIBUTES = [
-  'mapDiffuse',
-  'mapDiffusePreview',
-  'mapDiffuseSource',
-  // specular
-  'mapSpecular',
-  'mapSpecularPreview',
-  'mapSpecularSource',
-  // normal
-  'mapNormal',
-  'mapNormalPreview',
-  'mapNormalSource',
-  // alpha
-  'mapAlpha',
-  'mapAlphaPreview',
-  'mapAlphaSource'
-]
-
-var ATTRIBUTE_TO_TYPE = {
-  // diffuse
-  mapDiffuse: 'diffuse',
-  mapDiffusePreview: 'diffuse',
-  mapDiffuseSource: 'diffuse',
-  // specular
-  mapSpecular: 'specular',
-  mapSpecularPreview: 'specular',
-  mapSpecularSource: 'specular',
-  // normal
-  mapNormal: 'normal',
-  mapNormalPreview: 'normal',
-  mapNormalSource: 'normal',
-  // alpha
-  mapAlpha: 'alpha',
-  mapAlphaPreview: 'alpha',
-  mapAlphaSource: 'alpha'
-}
-
-var ATTRIBUTE_TO_FORMAT = {
-  // loRes
-  mapDiffusePreview: 'loRes',
-  mapSpecularPreview: 'loRes',
-  mapNormalPreview: 'loRes',
-  mapAlphaPreview: 'loRes',
-  // source
-  mapDiffuseSource: 'source',
-  mapSpecularSource: 'source',
-  mapNormalSource: 'source',
-  mapAlphaSource: 'source',
-  // dds
-  mapDiffuse: 'dds',
-  mapSpecular: 'dds',
-  mapNormal: 'dds',
-  mapAlpha: 'dds'
 }

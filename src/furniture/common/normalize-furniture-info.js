@@ -1,3 +1,5 @@
+import configs from '../../core/configs.js'
+
 export default function normalizeFurnitureInfo (rawInfo) {
   // normalizes furniture definitions from server side endpoints
 
@@ -41,7 +43,7 @@ function convertKeyToUrl (key) {
   if (!key) return
   // add leading slash
   if (key[0] !== '/') key = '/'+key
-  return 'https://storage.3d.io' + key
+  return 'https://' + configs.storageDomain + key
 }
 
 function cleanUpArrays (arr) {

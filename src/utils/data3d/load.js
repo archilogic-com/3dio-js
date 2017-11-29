@@ -10,6 +10,8 @@ var cache = new PromiseCache()
 
 export default function loadData3d (url, options) {
 
+  // prevent loading of unsupported formats
+  if (url.indexOf('data3d.buffer') < 0) return Promise.reject(url + ' no data3d')
   // try cache
   var cacheKey = url
   var promiseFromCache = cache.get(cacheKey)

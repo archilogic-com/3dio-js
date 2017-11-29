@@ -12,5 +12,8 @@ export default function getFurniture (id) {
         data3d: data3d
       }
     })
+    .catch(function(err) {
+      console.warn(err)
+    })
   })
 }

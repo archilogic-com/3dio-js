@@ -172,7 +172,7 @@ function getAttributes(element3d) {
 // creates a child for a baked model in the current element
 function createBakedElement(parentElem, element3d) {
   // we might have a scene that has no baked level
-  if (!element3d.bakedModelUrl) {
+  if (!element3d.bakedModelUrl && !element3d.bakePreviewStatusFileKey) {
     console.warn('Level without bakedModelUrl: ', element3d)
     return
   }
@@ -191,7 +191,7 @@ function createBakedElement(parentElem, element3d) {
     parent: parentElem
   })
 
-  if (parentElem.bakeRegularStatusFileKey || parentElem.bakePreviewStatusFileKey) {
+  if (element3d.bakeRegularStatusFileKey || element3d.bakePreviewStatusFileKey) {
     updateOnBake(bakedElem, element3d)
   }
 

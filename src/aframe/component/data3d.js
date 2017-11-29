@@ -75,7 +75,7 @@ export default {
     }
 
     // check params
-    if ((!url || url === '') && (!key || key === '')) return
+    if ((!url || url === '') && (!key || key === '' || key === 'undefined')) return
 
     // remove old mesh
     this_.remove()
@@ -103,6 +103,8 @@ export default {
       this_.el.setObject3D('mesh', this_.mesh)
       // emit event
       this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
+    }).catch(function(error) {
+      console.warn(error)
     })
   },
 
