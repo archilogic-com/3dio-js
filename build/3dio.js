@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.8
- * @date 2017/11/20 10:44
+ * @date 2017/11/30 00:23
  * @branch architectural-toolkit
- * @commit ea8c9bef34d97a8d2355a866851f59575815cb81
+ * @commit 55cc05b54390ece8a550e81861d4cc197988fba1
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/11/20 10:44', GIT_BRANCH = 'architectural-toolkit', GIT_COMMIT = 'ea8c9bef34d97a8d2355a866851f59575815cb81'
+	var BUILD_DATE='2017/11/30 00:23', GIT_BRANCH = 'architectural-toolkit', GIT_COMMIT = '55cc05b54390ece8a550e81861d4cc197988fba1'
 
 	var name = "3dio";
 	var version = "1.0.8";
@@ -13728,7 +13728,7 @@
 	    }
 
 	    // check params
-	    if ((!url || url === '') && (!key || key === '')) return
+	    if ((!url || url === '') && (!key || key === '' || key === 'undefined')) return
 
 	    // remove old mesh
 	    this_.remove();
@@ -13756,6 +13756,8 @@
 	      this_.el.setObject3D('mesh', this_.mesh);
 	      // emit event
 	      this_.el.emit('model-loaded', {format: 'data3d', model: this_.mesh});
+	    }).catch(function(error) {
+	      console.warn(error);
 	    });
 	  },
 
@@ -14095,6 +14097,9 @@
 	        this_._previousFurnitureId = furnitureId;
 	      }
 
+	    })
+	    .catch(function(err) {
+	      console.warn(err);
 	    });
 	  },
 
@@ -19297,6 +19302,34 @@
 	  parent.appendChild(el);
 	}
 
+	/** Used to compose bitmasks for cloning. */
+	var CLONE_DEEP_FLAG$3 = 1;
+	var CLONE_SYMBOLS_FLAG$2 = 4;
+
+	/**
+	 * This method is like `_.clone` except that it recursively clones `value`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 1.0.0
+	 * @category Lang
+	 * @param {*} value The value to recursively clone.
+	 * @returns {*} Returns the deep cloned value.
+	 * @see _.clone
+	 * @example
+	 *
+	 * var objects = [{ 'a': 1 }, { 'b': 2 }];
+	 *
+	 * var deep = _.cloneDeep(objects);
+	 * console.log(deep[0] === objects[0]);
+	 * // => false
+	 */
+	function cloneDeep(value) {
+	  return _baseClone(value, CLONE_DEEP_FLAG$3 | CLONE_SYMBOLS_FLAG$2);
+	}
+
+	var cloneDeep_1 = cloneDeep;
+
 	var minimapComponent = {
 	  schema: {
 	    sceneId: {
@@ -19317,22 +19350,8 @@
 	    }
 	  },
 	  init: function () {
+	    var this_ = this;
 	    var data = this.data;
-	    var cameras = document.querySelectorAll('[camera]');
-	    this.camera = cameras.length > 1 ? cameras[1] : cameras[0];
-	    console.log('loading minimap', data);
-	    console.log('loading minimap', cameras, this.camera.getAttribute('position'));
-	    // create html container for minimap
-	    var container = document.createElement('div');
-	    container.id = 'minimap-container';
-	    container.setAttribute('style', `position:absolute; z-index: 1000; top:10px; ${data.position}:10px`);
-	    container.innerHTML = `<svg width="${data.width}"></svg>`;
-	    // put container as first child in body
-	    var body = document.querySelector('body');
-	    body.insertBefore(container, body.firstChild);
-	    // bind svg element with component
-	    this.svgEl = container.querySelector('svg');
-	    this.svgEl.setAttribute('style', `transform: rotate(${data.rotation}deg);`);
 
 	    // get scene structure
 	    io3d.scene.getStructure(data.sceneId)
@@ -19343,32 +19362,54 @@
 	        let spaces = getSpaces(result);
 	        // apply plan rotation / position
 
+	        if (!spaces || !spaces.length) {
+	          return Promise.reject('Minimap generation failed, scene has no spaces')
+	        }
 	        spaces = spaces.map(space => {
 	          let location = applyLocation(space, result[0]);
 	          Object.keys(location).forEach(prop => {
 	            space[prop] = location[prop];
 	          });
-	        //console.log(' ' + space.ry)
-	        return space
-	      });
+	          //console.log(' ' + space.ry)
+	          return space
+	        });
+	        setupMap();
+	        // generate a clickable plan
+	        generatePlan(spaces, this.svgEl);
+	      })
+	      .catch(console.warn);
 
-	      // generate a clickable plan
-	      generatePlan(spaces, this.svgEl);
-	    })
-	    .catch(console.error);
-
+	    function setupMap () {
+	      // get camera
+	      var cameras = document.querySelectorAll('[camera]');
+	      // pick the last camera
+	      // TODO: better to pick the active one
+	      this_.camera = cameras.length > 1 ? cameras[1] : cameras[0];
+	      // console.log('loading minimap', data)
+	      // console.log('loading minimap', cameras, this_.camera.getAttribute('position'))
+	      // create html container for minimap
+	      var container = document.createElement('div');
+	      container.id = 'minimap-container';
+	      container.setAttribute('style', `position:absolute; width: ${data.width}px; z-index: 1000; top:10px; ${data.position}:10px`);
+	      container.innerHTML = `<svg width="100%"></svg>`;
+	      // put container as first child in body
+	      var body = document.querySelector('body');
+	      body.insertBefore(container, body.firstChild);
+	      // bind svg element with component
+	      this_.svgEl = container.querySelector('svg');
+	      this_.svgEl.setAttribute('style', `transform: rotate(${data.rotation}deg);`);
+	    }
 	    // generate a pictogram of the floor plan
 	    function generatePlan (spaces, svgEl) {
 	      // empty svg element to fill
-	      var min = [Infinity, Infinity];
-	      var max = [-Infinity, -Infinity];
+	      this_.min = [Infinity, Infinity];
+	      this_.max = [-Infinity, -Infinity];
 	      var polygonStr = '';
 
 	      const style1 = 'fill:rgba(248, 248, 250, 0.8); stroke:rgba(48, 48, 50, 0.8); stroke-width:0.5;';
 	      const style2 = 'fill:rgba(255, 127, 80, 0.8);';
 
 	      spaces.forEach(space => {
-	        var polygon = document.createElement('polygon');
 	        var pointStr = '';
 	        // get the polygon data for each space
 	        space.polygon.forEach(point => {
@@ -19378,10 +19419,10 @@
 	          var x = Math.round(location.x * 20);
 	          var y = Math.round(location.z * 20);
 	          // get min and max values for the overall boundingbox
-	          if (x < min[0]) min[0] = x;
-	          else if (x > max[0]) max[0] = x;
-	          if (y < min[1]) min[1] = y;
-	          else if (y > max[1]) max[1] = y;
+	          if (x < this_.min[0]) this_.min[0] = x;
+	          else if (x > this_.max[0]) this_.max[0] = x;
+	          if (y < this_.min[1]) this_.min[1] = y;
+	          else if (y > this_.max[1]) this_.max[1] = y;
 	          pointStr += x + ',' + y + ' ';
 	        });
 	        polygonStr += `<polygon points="${pointStr}" style="${style1}" space-id="${space.id}"/>`;
@@ -19389,7 +19430,11 @@
 	      // populate the svg
 	      svgEl.innerHTML = polygonStr;
 	      // match the svg viewbox with the bouningbox of the polygons
-	      svgEl.setAttribute('viewBox', `${min[0]} ${min[1]} ${max[0] - min[0]} ${max[1] - min[1]}`);
+	      svgEl.setAttribute('viewBox', `${this_.min[0]} ${this_.min[1]} ${this_.max[0] - this_.min[0]} ${this_.max[1] - this_.min[1]}`);
+
+	      // start position tracking
+	      this_.mapActivated = true;
+	      this_.el.emit('minimap-created');
 	    }
 
 	    function applyLocation (element, parent) {
@@ -19425,11 +19470,20 @@
 	    minimapEl.parentNode.removeChild(minimapEl);
 	  },
 	  tick: function (time, timeDiff) {
+	    if (!this.mapActivated) return
+
 	    // update dot every 100 ms
-	    if (time % 100 < timeDiff + 5) {
-	      let cameraDot = this.svgEl.querySelector('#camera-dot');
-	      const cameraPos = this.camera.getAttribute('position');
-	      const cameraRot = this.camera.getAttribute('rotation');
+	    if (time % 50 < timeDiff + 5) {
+	      var cameraDot = this.svgEl.querySelector('#camera-dot');
+	      var cameraPos = this.camera.getAttribute('position');
+	      var cameraRot = this.camera.getAttribute('rotation');
+	      // make sure our point stays within the map
+	      var pointPos = cloneDeep_1(cameraPos);
+	      if (pointPos.x * 20 < this.min[0]) pointPos.x = this.min[0] / 20;
+	      else if (pointPos.x * 20 > this.max[0]) pointPos.x = this.max[0] / 20;
+	      if (pointPos.z * 20 < this.min[1]) pointPos.z = this.min[1] / 20;
+	      else if (pointPos.z * 20 > this.max[1]) pointPos.z = this.max[1] / 20;
+
 	      // console.log(cameraPos)
 	      if (!cameraDot) {
 	        console.log('create dot');
@@ -19446,7 +19500,7 @@
 </defs>`;
 	        // circle cx="150" cy="50" r="40"
 	      } else {
-	        cameraDot.setAttribute('transform', `translate(${cameraPos.x * 20},${cameraPos.z * 20}) rotate(${-cameraRot.y - 90})`);
+	        cameraDot.setAttribute('transform', `translate(${pointPos.x * 20},${pointPos.z * 20}) rotate(${-cameraRot.y - 90})`);
 	      }
 	    }
 	  }
@@ -20527,34 +20581,6 @@
 	  });
 	  return schema
 	}
-
-	/** Used to compose bitmasks for cloning. */
-	var CLONE_DEEP_FLAG$3 = 1;
-	var CLONE_SYMBOLS_FLAG$2 = 4;
-
-	/**
-	 * This method is like `_.clone` except that it recursively clones `value`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 1.0.0
-	 * @category Lang
-	 * @param {*} value The value to recursively clone.
-	 * @returns {*} Returns the deep cloned value.
-	 * @see _.clone
-	 * @example
-	 *
-	 * var objects = [{ 'a': 1 }, { 'b': 2 }];
-	 *
-	 * var deep = _.cloneDeep(objects);
-	 * console.log(deep[0] === objects[0]);
-	 * // => false
-	 */
-	function cloneDeep(value) {
-	  return _baseClone(value, CLONE_DEEP_FLAG$3 | CLONE_SYMBOLS_FLAG$2);
-	}
-
-	var cloneDeep_1 = cloneDeep;
 
 	var materialLibrary = {
 	  "basic-floor": {
@@ -27494,6 +27520,8 @@
 
 	function loadData3d (url, options) {
 
+	  // prevent loading of unsupported formats
+	  if (url.indexOf('data3d.buffer') < 0) return Promise.reject(url + ' no data3d')
 	  // try cache
 	  var cacheKey = url;
 	  var promiseFromCache = cache.get(cacheKey);
@@ -36142,7 +36170,7 @@
 	  if (!key) return
 	  // add leading slash
 	  if (key[0] !== '/') key = '/'+key;
-	  return 'https://storage.3d.io' + key
+	  return 'https://' + configs.storageDomain + key
 	}
 
 	function cleanUpArrays (arr) {
@@ -36201,6 +36229,9 @@
 	        // contains geometry and material definitions
 	        data3d: data3d
 	      }
+	    })
+	    .catch(function(err) {
+	      console.warn(err);
 	    })
 	  })
 	}
@@ -36791,6 +36822,8 @@
 	  'window'
 	];
 
+	var noIo3dComponents = ['plan', 'level', 'group'];
+
 	function toAframeElements(sceneStructure, options) {
 	  if (!sceneStructure) {
 	    console.error('nothing to convert');
@@ -36867,18 +36900,33 @@
 	  });
 
 	  var paramKeys = Object.keys(validParams);
-	  attributes['io3d-' + type] = '';
 
-	  paramKeys.forEach(function(param) {
-	    if (element3d[param] !== undefined && !validParams[param].skipInAframe) {
-	      // materials have to be serialized
-	      if (param === 'materials') attributes['io3d-' + type] += stringifyMaterials(element3d.materials);
-	      // polygons have to be serialized
-	      else if (param === 'polygon') attributes['io3d-' + type] += param + ': ' + element3d.polygon.map(function(p) { return p.join(',')}).join(',') + '; ';
-	      else attributes['io3d-' + type] += param + ': ' + element3d[param] + '; ';
-	    }
-	  });
+	  // plan, level, group don't have their own component
+	  var skipComponent = noIo3dComponents.indexOf(type) > -1;
+	  if (!skipComponent) {
+	    attributes['io3d-' + type] = '';
+
+	    paramKeys.forEach(function(param) {
+	      if (element3d[param] !== undefined && !validParams[param].skipInAframe) {
+	        // materials have to be serialized
+	        if (param === 'materials') attributes['io3d-' + type] += stringifyMaterials(element3d.materials);
+	        // polygons have to be serialized
+	        else if (param === 'polygon') attributes['io3d-' + type] += param + ': ' + element3d.polygon.map(function(p) { return p.join(',')}).join(',') + '; ';
+	        else if (type !== 'plan' && type !== 'level') attributes['io3d-' + type] += param + ': ' + element3d[param] + '; ';
+	      }
+	    });
+	  }
+
 	  switch (element3d.type) {
+	    case 'plan':
+	      attributes['class'] = 'io3d-scene';
+	      break
+	    case 'level':
+	      attributes['class'] = 'io3d-level';
+	      break
+	    case 'group':
+	      attributes['class'] = 'io3d-group';
+	      break
 	    case 'interior':
 	      if (element3d.src) {
 	        attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1);
@@ -36912,6 +36960,8 @@
 	  // and generic attributes that apply for all nodes
 	  // check for custom scale
 	  if (element3d.sourceScale && element3d.sourceScale !== 1) attributes.scale = element3d.sourceScale + ' ' + element3d.sourceScale + ' ' + element3d.sourceScale;
+	  // check for axis flipping of source file
+	  if (element3d.flipYZ) element3d.rx = element3d.rx ? element3d.rx -= 90 : -90;
 	  // toggle visibility
 	  if (element3d.bake && element3d.bakeStatus === 'done') attributes.visible = false;
 	  if (element3d.visible && !element3d.visible.bird && !element3d.visible.person && !element3d.visible.floorplan) attributes.visible = false;
@@ -36926,7 +36976,7 @@
 	// creates a child for a baked model in the current element
 	function createBakedElement(parentElem, element3d) {
 	  // we might have a scene that has no baked level
-	  if (!element3d.bakedModelUrl) {
+	  if (!element3d.bakedModelUrl && !element3d.bakePreviewStatusFileKey) {
 	    console.warn('Level without bakedModelUrl: ', element3d);
 	    return
 	  }
@@ -36945,7 +36995,7 @@
 	    parent: parentElem
 	  });
 
-	  if (parentElem.bakeRegularStatusFileKey || parentElem.bakePreviewStatusFileKey) {
+	  if (element3d.bakeRegularStatusFileKey || element3d.bakePreviewStatusFileKey) {
 	    updateOnBake(bakedElem, element3d);
 	  }
 
@@ -37959,22 +38009,23 @@
 
 	// constants
 	var URL_TO_ID_CACHE = {};
-	var IS_URL$2 = new RegExp(
-	  '^(http(s?))\\:\\/\\/(' +
-	    configs.storageDomain +
-	    '|' +
-	    configs.storageDomainNoCdn +
-	    ')'
-	);
 
 	// main
 	function getStorageIdFromUrl(url) {
 	  // check cache
 	  if (URL_TO_ID_CACHE[url]) return URL_TO_ID_CACHE[url]
 
+	  var isStorageRegexp = new RegExp(
+	    '^(http(s?))\\:\\/\\/(' +
+	    configs.storageDomain +
+	    '|' +
+	    configs.storageDomainNoCdn +
+	    ')'
+	  );
+
 	  // check if url is valid url
-	  if (IS_URL$2.test(url)) {
-	    var storageId = url.replace(IS_URL$2, '');
+	  if (isStorageRegexp.test(url)) {
+	    var storageId = url.replace(isStorageRegexp, '');
 	    // add to cache
 	    URL_TO_ID_CACHE[url] = storageId;
 	    return storageId
@@ -39424,12 +39475,86 @@
 	  return runtime.isBrowser ? fetchScript(PAKO_LIB.inflate.url) : Promise.resolve(require(PAKO_LIB.inflate.module))
 	}
 
+	var textureAttributes = {
+
+	  names: [
+	    'mapDiffuse',
+	    'mapDiffusePreview',
+	    'mapDiffuseSource',
+	    // specular
+	    'mapSpecular',
+	    'mapSpecularPreview',
+	    'mapSpecularSource',
+	    // normal
+	    'mapNormal',
+	    'mapNormalPreview',
+	    'mapNormalSource',
+	    // alpha
+	    'mapAlpha',
+	    'mapAlphaPreview',
+	    'mapAlphaSource',
+	    // lightmap
+	    'mapLight',
+	    'mapLightPreview',
+	    'mapLightSource'
+	  ],
+
+	  nameToType: {
+	    // diffuse
+	    mapDiffuse: 'diffuse',
+	    mapDiffusePreview: 'diffuse',
+	    mapDiffuseSource: 'diffuse',
+	    // specular
+	    mapSpecular: 'specular',
+	    mapSpecularPreview: 'specular',
+	    mapSpecularSource: 'specular',
+	    // normal
+	    mapNormal: 'normal',
+	    mapNormalPreview: 'normal',
+	    mapNormalSource: 'normal',
+	    // alpha
+	    mapAlpha: 'alpha',
+	    mapAlphaPreview: 'alpha',
+	    mapAlphaSource: 'alpha',
+	    // light
+	    mapLight: 'light',
+	    mapLightPreview: 'light',
+	    mapLightSource: 'light',
+	  },
+
+	  nameToFormat: {
+	    // loRes
+	    mapDiffusePreview: 'loRes',
+	    mapSpecularPreview: 'loRes',
+	    mapNormalPreview: 'loRes',
+	    mapAlphaPreview: 'loRes',
+	    mapLightPreview: 'loRes',
+	    // source
+	    mapDiffuseSource: 'source',
+	    mapSpecularSource: 'source',
+	    mapNormalSource: 'source',
+	    mapAlphaSource: 'source',
+	    mapLightSource: 'source',
+	    // dds
+	    mapDiffuse: 'dds',
+	    mapSpecular: 'dds',
+	    mapNormal: 'dds',
+	    mapAlpha: 'dds',
+	    mapLight: 'dds'
+	  }
+
+	};
+
 	// config
 
 	var FILE_EXTENSION = '.data3d.buffer';
 	var HEADER_BYTE_LENGTH$1 = 16;
 	var MAGIC_NUMBER$1 = 0x41443344; // AD3D encoded as ASCII characters in hex
 	var VERSION$1 = 1;
+
+	// shared
+
+	var dataArraysPropNames = ['positions', 'normals', 'uvs', 'uvsLightmap']; // heavy arrays
 
 	// main
 
@@ -39456,15 +39581,15 @@
 	  
 	  var payloadArrays = [];
 	  var payloadLength = 0;
-	  var meshes, meshKeys, i, l, array, mesh;
-	  var arrayNames = ['positions', 'normals', 'uvs', 'uvsLightmap']; // heavy arrays
+	  var meshes, meshKeys, i, l, array, mesh, materialKeys, materials, material, storageId;
 	  var _data3d = clone(data3d);
 	  traverseData3d$1( _data3d, function(data3d){
+
 	    meshes = data3d.meshes;
 	    meshKeys = data3d.meshKeys || Object.keys(meshes);
 	    for (i=0, l=meshKeys.length; i<l; i++) {
 	      mesh = meshes[ meshKeys[i] ];
-	      arrayNames.forEach(function(name){
+	      dataArraysPropNames.forEach(function(name){
 	        array = mesh[name];
 	        if (array) {
 	          if (array.length) {
@@ -39480,6 +39605,20 @@
 	        }
 	      });
 	    }
+
+	    materials = data3d.materials;
+	    materialKeys = Object.keys(data3d.materials);
+	    for (i=0, l=materialKeys.length; i<l; i++) {
+	      material = materials[ materialKeys[i] ];
+	      textureAttributes.names.forEach(function(texAttributeName){
+	        if (material[texAttributeName]) {
+	          // convert storage URLs into storageIds
+	          storageId = getStorageIdFromUrl(material[texAttributeName]);
+	          if (storageId) material[texAttributeName] = storageId;
+	        }
+	      });
+	    }
+
 	  });
 	  var payloadByteLength = payloadLength * 4;
 	  
@@ -39612,6 +39751,8 @@
 	  })
 	}
 
+	// main
+
 	function getTextureKeys(data3d, options) {
 	  // API
 	  var options = options || {};
@@ -39620,84 +39761,32 @@
 	  // internals
 	  var cache = {};
 
-	  // internals
+	  // iterate over materials
 	  traverseData3d$1.materials(data3d, function(material) {
-	    var filteredResult, attr, type, format, value;
-	    for (var i = 0, l = ATTRIBUTES.length; i < l; i++) {
-	      attr = ATTRIBUTES[i];
-	      value = material[attr];
+	    var filteredResult, attrName, type, format, textureKey;
+	    // iterate over texture types
+	    for (var i = 0, l = textureAttributes.names.length; i < l; i++) {
+	      attrName = textureAttributes.names[i];
+	      textureKey = material[attrName];
+
+	      // material does not contain this type of texture - continue to next one
+	      if (!textureKey) continue
 
 	      // apply filter function if specified in options
 	      if (filter) {
 	        // provide info on type and format of texture to the filter function
-	        type = ATTRIBUTE_TO_TYPE[attr];
-	        format = ATTRIBUTE_TO_FORMAT[attr];
-	        value = filter(value, type, format, material, data3d);
+	        type = textureAttributes.nameToType[attrName];
+	        format = textureAttributes.nameToFormat[attrName];
+	        textureKey = filter(textureKey, type, format, material, data3d);
 	      }
 
-	      if (value) cache[value] = true;
+	      // filter function might return false in order to exclude textures from the results
+	      if (textureKey) cache[textureKey] = true;
 	    }
 	  });
 
 	  return Object.keys(cache)
 	}
-
-	// constants
-
-	var ATTRIBUTES = [
-	  'mapDiffuse',
-	  'mapDiffusePreview',
-	  'mapDiffuseSource',
-	  // specular
-	  'mapSpecular',
-	  'mapSpecularPreview',
-	  'mapSpecularSource',
-	  // normal
-	  'mapNormal',
-	  'mapNormalPreview',
-	  'mapNormalSource',
-	  // alpha
-	  'mapAlpha',
-	  'mapAlphaPreview',
-	  'mapAlphaSource'
-	];
-
-	var ATTRIBUTE_TO_TYPE = {
-	  // diffuse
-	  mapDiffuse: 'diffuse',
-	  mapDiffusePreview: 'diffuse',
-	  mapDiffuseSource: 'diffuse',
-	  // specular
-	  mapSpecular: 'specular',
-	  mapSpecularPreview: 'specular',
-	  mapSpecularSource: 'specular',
-	  // normal
-	  mapNormal: 'normal',
-	  mapNormalPreview: 'normal',
-	  mapNormalSource: 'normal',
-	  // alpha
-	  mapAlpha: 'alpha',
-	  mapAlphaPreview: 'alpha',
-	  mapAlphaSource: 'alpha'
-	};
-
-	var ATTRIBUTE_TO_FORMAT = {
-	  // loRes
-	  mapDiffusePreview: 'loRes',
-	  mapSpecularPreview: 'loRes',
-	  mapNormalPreview: 'loRes',
-	  mapAlphaPreview: 'loRes',
-	  // source
-	  mapDiffuseSource: 'source',
-	  mapSpecularSource: 'source',
-	  mapNormalSource: 'source',
-	  mapAlphaSource: 'source',
-	  // dds
-	  mapDiffuse: 'dds',
-	  mapSpecular: 'dds',
-	  mapNormal: 'dds',
-	  mapAlpha: 'dds'
-	};
 
 	/*
 	input: data3d (object or binary) or storageId (referencing data3d)
@@ -39783,7 +39872,16 @@
 	  var url = getUrlFromStorageId(storageId);
 
 	  return loadData3d(url)
-	    .then(getTextureKeys)
+	    .then(function(data3d) {
+
+	      return getTextureKeys(data3d, {
+	        filter: function (storageId, type, format, material, data3d) {
+	          // use source maps only
+	          return format === 'source' ? storageId : false
+	        }
+	      })
+
+	    })
 	    .then(function(textures) {
 	      return textures.map(getStorageIdFromUrl)
 	    })
@@ -39874,9 +39972,11 @@
 	  exportDxf: modelExporter.exportDxf,
 	  // helpers
 	  getUrlFromStorageId: getUrlFromStorageId,
+	  getUrlFromId: getUrlFromStorageId, // alias
 	  getNoCdnUrlFromStorageId: getNoCdnUrlFromStorageId,
-	  getStorageIdFromUrl: getStorageIdFromUrl
-
+	  getNoCdnUrlFromId: getNoCdnUrlFromStorageId, // alias
+	  getStorageIdFromUrl: getStorageIdFromUrl,
+	  getIdFromUrl: getStorageIdFromUrl // alias
 	};
 
 	function getSceneStructure (id) {
@@ -40068,6 +40168,20 @@
 	  } else {
 	    return typeof value
 	  }
+	}
+
+	function exportSvg (args) {
+	  if (!args.sceneStructure || typeof args.sceneStructure !== 'object') {
+	    return Promise.reject('Svg export failed: invalid input')
+	  }
+	  return callService('Scene.exportSvg', {arguments: args})
+	    .then(function(result) {
+	      return result
+	    })
+	    .catch(function(error) {
+	      console.error(error);
+	      return Promise.reject('Svg export failed: check console for details')
+	    })
 	}
 
 	function snapWalls(walls) {
@@ -40394,7 +40508,8 @@
 	  getHtmlFromSceneStructure: getHtmlFromSceneStructure,
 	  getAframeElementsFromSceneStructure: toAframeElements,
 	  getSceneStructureFromAframeElements: getSceneStructureFromAframeElements$1,
-	  snapWalls: snapWalls
+	  snapWalls: snapWalls,
+	  exportSvg: exportSvg
 	};
 
 	function getHtml() {
@@ -41209,7 +41324,7 @@
 	        var item = { file: file, name: file.name, size: file.size, type: file.type };
 	        if (storageIds) {
 	          item.storageId = storageIds[i];
-	          item.url = 'https://storage.3d.io' + storageIds[i];
+	          item.url = 'https://' + configs.storageDomain + storageIds[i];
 	        }
 	        return item
 	      });
@@ -42913,7 +43028,8 @@
 	    traverse: traverseData3d$1,
 	    getInspectorUrl: getData3dInspectorUrl,
 	    storeInCache: storeInCache,
-	    removeFromCache: removeFromCache
+	    removeFromCache: removeFromCache,
+	    textureAttributes: textureAttributes
 	  },
 	  ui: ui,
 	  auth: auth,
