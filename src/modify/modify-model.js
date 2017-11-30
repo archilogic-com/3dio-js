@@ -20,10 +20,8 @@ function getModifier(modifier) {
 
     if (Object.keys(modifySettings).length > 0) {
         modifyParams.params.settings = JSON.stringify(modifySettings)
-        console.log("truee")
     }
-    console.log(modifyParams)
-    console.log(modifySettings)
+    
     return callServices('Processing.task.enqueue', modifyParams)
 
   }
