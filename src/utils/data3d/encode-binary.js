@@ -1,6 +1,7 @@
 import Promise from 'bluebird'
 import runtime from '../../core/runtime.js'
 import gzip from '../file/gzip.js'
+import md5 from '../math/md5.js'
 import getDefaultFilename from '../file/get-default-filename.js'
 import traverseData3d from './traverse.js'
 import cloneData3d from './clone.js'
@@ -34,6 +35,7 @@ export default function encodeBinary (data3d, options) {
     file: null,
     warnings: []
   }
+  var arrayDataCache = {}
   var resultingPromise
   
   // add correct ending
@@ -55,12 +57,27 @@ export default function encodeBinary (data3d, options) {
         array = mesh[name]
         if (array) {
           if (array.length) {
+
+            var hash = md5(array.join('-'))
+
+            if (!arrayDataCache[hash]) {
+              console.log('adding to cache: '+hash)
+              // add to cache
+              arrayDataCache[hash] = {
+                offset: payloadLength,
+                length: array.length
+              }
+              // add to payload
+              payloadArrays[payloadArrays.length] = array
+              // increase payload offset
+              payloadLength += array.length
+            } else {
+              console.log('loading from cache: '+hash)
+            }
+
             // remember offset and length
-            mesh[name + 'Offset'] = payloadLength
-            mesh[name + 'Length'] = array.length
-            // increase overall offset
-            payloadLength += array.length
-            payloadArrays[payloadArrays.length] = array
+            mesh[name + 'Offset'] = arrayDataCache[hash].offset
+            mesh[name + 'Length'] = arrayDataCache[hash].length
           }
           // delete heavy array in structure
           delete mesh[name]
