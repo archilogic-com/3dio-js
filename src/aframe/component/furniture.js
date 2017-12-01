@@ -96,6 +96,9 @@ export default {
       }
 
     })
+    .catch(function(err) {
+      console.warn(err)
+    })
   },
 
   remove: function () {
