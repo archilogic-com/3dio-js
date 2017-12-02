@@ -68,6 +68,15 @@ function getAttributes(element3d) {
   // map type specific attributes
   // camera-bookmarks and bakedModel are handled separately
   switch (element3d.type) {
+    case 'plan':
+      attributes['class'] = 'io3d-scene'
+      break
+    case 'level':
+      attributes['class'] = 'io3d-level'
+      break
+    case 'group':
+      attributes['class'] = 'io3d-group'
+      break
     case 'interior':
       attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1)
       // apply custom material settings for furniture items
