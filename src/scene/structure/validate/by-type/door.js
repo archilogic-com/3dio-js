@@ -1,4 +1,5 @@
 export default {
+  description: 'door within a wall',
   params: {
     v: {
       type: 'number',

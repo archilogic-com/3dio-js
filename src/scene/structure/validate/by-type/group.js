@@ -1,4 +1,5 @@
 export default {
+  description: 'group node, for relative positioning',
   params: {
     src: {
       type: 'string',

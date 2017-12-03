@@ -1,4 +1,5 @@
 export default  {
+  description: 'highest node in hierarchy, contains levels',
   params: {
     modelDisplayName: {
       type: 'string',

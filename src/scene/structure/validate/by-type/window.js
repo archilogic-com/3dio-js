@@ -1,4 +1,5 @@
 export default {
+  description: 'window with optional segmentation',
   params: {
     y: {
       defaultValue: 0.8,

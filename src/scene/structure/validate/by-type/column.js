@@ -1,4 +1,5 @@
 export default {
+  description: 'simple structural column object, round or square',
   params: {
     l: { // diameter
       type: 'number',

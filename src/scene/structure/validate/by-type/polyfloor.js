@@ -1,4 +1,5 @@
 export default {
+  description: 'polygonal floor with optional ceiling',
   params: {
     h: { // height in meters
       type: 'number',

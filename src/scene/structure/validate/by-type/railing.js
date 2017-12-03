@@ -1,4 +1,5 @@
 export default {
+  description: 'segmented or solid railing',
   params: {
     w: { // width in meters
       type: 'number',

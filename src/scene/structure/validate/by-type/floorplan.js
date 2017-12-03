@@ -1,4 +1,5 @@
 export default  {
+  description: 'reference to a floor plan image',
   params: {
     w: { // width in meters
       type: 'number',

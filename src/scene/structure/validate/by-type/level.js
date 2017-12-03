@@ -1,4 +1,5 @@
 export default  {
+  description: 'node equivalent to a building storey',
   params: {},
   childrenTypes: [
     'box',

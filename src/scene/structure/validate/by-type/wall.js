@@ -1,4 +1,5 @@
 export default {
+  description: 'structural wall, can contains doors and windows',
   params: {
     w: { // width in meters
       type: 'number',

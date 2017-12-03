@@ -1,4 +1,5 @@
 export default {
+  description: 'curtain with random folds',
   params: {
     l: { // length in meters
       type: 'number',

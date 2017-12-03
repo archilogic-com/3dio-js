@@ -1,4 +1,5 @@
 export default {
+  description: 'simple box object',
   params: {
     l: { // length in meters
       type: 'number',
