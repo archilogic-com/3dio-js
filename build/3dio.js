@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.10
- * @date 2017/12/05 22:16
+ * @version 1.0.11
+ * @date 2017/12/06 00:13
  * @branch master
- * @commit cf02602d0a23849d04c9fe724d91608abb96ddc8
+ * @commit 7d42134584cb949cf393be9c4582d16fbdf532e3
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/12/05 22:16', GIT_BRANCH = 'master', GIT_COMMIT = 'cf02602d0a23849d04c9fe724d91608abb96ddc8'
+	var BUILD_DATE='2017/12/06 00:13', GIT_BRANCH = 'master', GIT_COMMIT = '7d42134584cb949cf393be9c4582d16fbdf532e3'
 
 	var name = "3dio";
-	var version = "1.0.10";
+	var version = "1.0.11";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d", "aframe", "cardboard", "components", "oculus", "vive", "rift", "vr", "WebVR", "WegGL", "three", "three.js", "3D model", "api", "visualization", "furniture", "real estate", "interior", "building", "architecture", "3d.io"];
 	var homepage = "https://3d.io";
@@ -26266,6 +26266,34 @@
 	  });
 	}
 
+	function convertFloorPlanToPremium3dModel(args) {
+
+	  // API
+	  var floorPlan = args.floorPlan;
+	  var jobId = args.jobId;
+	  var address = args.address;
+	  var callback = args.callback;
+
+	  if (!jobId) jobId = uuid.generate();
+
+	  // send request to server side endpoint
+	  return callService('FloorPlan.convertToPremium3dModel', {
+	    arguments: {
+	      jobId: jobId,
+	      floorplan: floorPlan,
+	      address: address,
+	      callback: callback
+	    }
+	  }).then(function onSuccess(result) {
+	    // conversion request accepted
+	    return result.conversionId;
+	  }).catch(function onError(error) {
+	    // conversion request error
+	    // TODO: provide info in debug mode
+	    return bluebird_1.reject(error);
+	  });
+	}
+
 	function getConversionStatus(args) {
 
 	  // API
@@ -26335,6 +26363,7 @@
 
 	var floorPlan = {
 	  convertToBasic3dModel: convertFloorPlanToBasic3dModel,
+	  convertToPremium3dModel: convertFloorPlanToPremium3dModel,
 	  getConversionStatus: getConversionStatus,
 	  recognize: recognize
 	};
