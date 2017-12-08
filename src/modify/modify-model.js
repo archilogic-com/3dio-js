@@ -7,17 +7,21 @@ function getModifier(modifier) {
     // API
     options = options || {}
 
+    var modifySettings = {}
+    if (options.ratio) modifySettings.ratio = options.ratio
+    if (options.subdivisions) modifySettings.subdivisions = options.subdivisions
+
     var modifyParams = {
-      method: 'modify'.concat('.', modifier),
-      params: {
-        inputFileKey: storageId
-      }
+        method: 'modify'.concat('.', modifier),
+        params: {
+            inputFileKey: storageId
+        }
     }
 
-    if (options.subdivisions) {
-      modifyParams.params.settings = JSON.stringify( { subdivisions: options.subdivisions } )
+    if (Object.keys(modifySettings).length > 0) {
+        modifyParams.params.settings = JSON.stringify(modifySettings)
     }
-
+    
     return callServices('Processing.task.enqueue', modifyParams)
 
   }

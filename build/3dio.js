@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.8
- * @date 2017/11/30 00:23
+ * @version 1.0.13
+ * @date 2017/12/08 14:22
  * @branch architectural-toolkit
- * @commit 55cc05b54390ece8a550e81861d4cc197988fba1
+ * @commit e3f5dd76c524a6c049dac763759413e1ed24696f
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/11/30 00:23', GIT_BRANCH = 'architectural-toolkit', GIT_COMMIT = '55cc05b54390ece8a550e81861d4cc197988fba1'
+	var BUILD_DATE='2017/12/08 14:22', GIT_BRANCH = 'architectural-toolkit', GIT_COMMIT = 'e3f5dd76c524a6c049dac763759413e1ed24696f'
 
 	var name = "3dio";
-	var version = "1.0.8";
+	var version = "1.0.13";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -13780,7 +13780,7 @@
 	var clone = cloneData3d$1;
 	clone.withPayload = cloneData3dWithPayload;
 	clone.meshes = cloneMeshes;
-	clone.meshe = cloneSingleMesh;
+	clone.mesh = cloneSingleMesh;
 	clone.materials = cloneMaterials;
 	clone.material = cloneSingleMaterial;
 
@@ -19580,6 +19580,7 @@
 	};
 
 	var box = {
+	  description: 'simple box object',
 	  params: {
 	    l: { // length in meters
 	      type: 'number',
@@ -19611,15 +19612,26 @@
 	};
 
 	var cameraBookmark = {
+	  description: 'preset camera positions for animations and navigation',
 	  params: {
 	    distance: {
-	      type: 'number'
+	      type: 'number',
+	      skipInAframe: true
+	    },
+	    fov: {
+	      type: 'number',
+	      defaultValue: 71,
+	      skipInAframe: true
 	    }
 	  },
-	  parentTypes: ['plan']
+	  parentTypes: ['plan'],
+	  aframeComponent: {
+	    name: 'tour-waypoint'
+	  }
 	};
 
 	var closet = {
+	  description: 'parametric closet with segmentation targeting 0.6m',
 	  params: {
 	    l: { // length in meters
 	      type: 'number',
@@ -19686,6 +19698,7 @@
 	};
 
 	var column = {
+	  description: 'simple structural column object, round or square',
 	  params: {
 	    l: { // diameter
 	      type: 'number',
@@ -19721,6 +19734,7 @@
 	};
 
 	var curtain = {
+	  description: 'curtain with random folds',
 	  params: {
 	    l: { // length in meters
 	      type: 'number',
@@ -19756,6 +19770,7 @@
 	};
 
 	var door = {
+	  description: 'door within a wall',
 	  params: {
 	    v: {
 	      type: 'number',
@@ -19856,6 +19871,7 @@
 	};
 
 	var floor = {
+	  description: 'rectangular floor with optional ceiling',
 	  params: {
 	    w: { // width in meters
 	      type: 'number',
@@ -19899,6 +19915,7 @@
 	};
 
 	var floorplan = {
+	  description: 'reference to a floor plan image',
 	  params: {
 	    w: { // width in meters
 	      type: 'number',
@@ -19920,6 +19937,7 @@
 	};
 
 	var group = {
+	  description: 'group node, for relative positioning',
 	  params: {
 	    src: {
 	      type: 'string',
@@ -19947,7 +19965,8 @@
 	    src: {
 	      type: 'string',
 	      optional: false,
-	      skipInAframe: true
+	      skipInAframe: true,
+	      description: 'furniture id prefixed with \'!\', check https://furniture.3d.io'
 	    }
 	  },
 	  childrenTypes: ['interior', 'object', 'tag'],
@@ -19958,6 +19977,7 @@
 	};
 
 	var kitchen = {
+	  description: 'parametric kitchen with vast configuration options',
 	  params: {
 	    w: { // width in meters
 	      type: 'number',
@@ -20120,6 +20140,7 @@
 	};
 
 	var level$1 = {
+	  description: 'node equivalent to a building storey',
 	  params: {},
 	  childrenTypes: [
 	    'box',
@@ -20143,16 +20164,25 @@
 	};
 
 	var object = {
+	  description: 'referenced 3d object in data3d.buffer format, for conversion drop a .obj into the editor spaces.archilogic.com/3d',
 	  params: {
 	    object: {
 	      type: 'string',
 	      optional: false,
-	      skipInAframe: true
+	      skipInAframe: true,
+	      description: 'reference to data3d.buffer file'
 	    },
 	    sourceScale: {
 	      type: 'number',
 	      optional: true,
-	      skipInAframe: true
+	      skipInAframe: true,
+	      description: 'relative scale of source file to 1 meter'
+	    },
+	    flipYZ: {
+	      type: 'boolean',
+	      optional: true,
+	      skipInAframe: true,
+	      description: 'flip Y and Z Axis'
 	    }
 	  },
 	  childrenTypes: ['interior'],
@@ -20163,6 +20193,7 @@
 	};
 
 	var plan = {
+	  description: 'highest node in hierarchy, contains levels',
 	  params: {
 	    modelDisplayName: {
 	      type: 'string',
@@ -20183,6 +20214,7 @@
 	};
 
 	var polybox = {
+	  description: 'polygonal extrusion object',
 	  params: {
 	    h: { // height in meters
 	      type: 'number',
@@ -20205,6 +20237,7 @@
 	};
 
 	var polyfloor = {
+	  description: 'polygonal floor with optional ceiling',
 	  params: {
 	    h: { // height in meters
 	      type: 'number',
@@ -20252,6 +20285,7 @@
 	};
 
 	var railing = {
+	  description: 'segmented or solid railing',
 	  params: {
 	    w: { // width in meters
 	      type: 'number',
@@ -20314,6 +20348,7 @@
 	};
 
 	var stairs = {
+	  description: 'all kinds of stairs types',
 	  params: {
 	    w: { // width in meters
 	      type: 'number',
@@ -20377,6 +20412,7 @@
 	};
 
 	var tag = {
+	  description: 'all kinds of stairs types',
 	  params: {
 	    title: {
 	      type: 'string',
@@ -20392,6 +20428,7 @@
 	};
 
 	var wall = {
+	  description: 'structural wall, can contains doors and windows',
 	  params: {
 	    w: { // width in meters
 	      type: 'number',
@@ -20454,6 +20491,7 @@
 	};
 
 	var window$1 = {
+	  description: 'window with optional segmentation',
 	  params: {
 	    y: {
 	      defaultValue: 0.8,
@@ -24924,7 +24962,15 @@
 
 	  schema: getSchema('door'),
 
-	  init: function () {},
+	  init: function () {
+	    var this_ = this;
+	    // listen to wall parent for updated geometry
+	    this.el.parentEl.addEventListener('wall-changed', function(evt) {
+	      this_.wallWidth = evt.detail.w;
+	      this_.wallControlLine = evt.detail.controlLine;
+	      this_.update();
+	    });
+	  },
 
 	  update: function (oldData) {
 	    var this_ = this;
@@ -25010,13 +25056,9 @@
 	    var wallWidth = 0.15;
 	    var wallControlLine = 'back';
 	    // get parent wall attributes
-	    var parent = this.el.parentNode && this.el.parentNode.getAttribute('io3d-wall');
-	    if (parent) {
-	      parent = AFRAME.utils.styleParser.parse(parent);
-	      // set wall width and control line
-	      wallWidth = parseFloat(parent.w);
-	      wallControlLine = parent.controlLine;
-	      // set door width to wall width
+	    if (this.wallWidth || this.wallControlLine) {
+	      wallWidth = this.wallWidth;
+	      wallControlLine = this.wallControlLine;
 	      a.w = wallWidth;
 	    }
 
@@ -31849,6 +31891,7 @@
 	  init: function () {
 	    var this_ = this;
 	    var children = this_.el.children;
+	    // listen to children, for updated positions
 	    if (children && children.length) {
 	      for (var i = 0; i < children.length; i++) {
 	        children[i].addEventListener('componentchanged', function (evt) {
@@ -31861,6 +31904,10 @@
 	  update: function (oldData) {
 	    var this_ = this;
 	    var data = this_.data;
+
+	    if (!oldData || this.data.w !== oldData.w || this.data.controlLine !== oldData.controlLine ) {
+	      this.el.emit('wall-changed', {w: this.data.w, controlLine: this.data.controlLine});
+	    }
 
 	    // remove old mesh
 	    this.remove();
@@ -33634,7 +33681,15 @@
 
 	  schema: getSchema('window'),
 
-	  init: function () {},
+	  init: function () {
+	    var this_ = this;
+	    // listen to wall parent for updated geometry
+	    this.el.parentEl.addEventListener('wall-changed', function(evt) {
+	      this_.wallWidth = evt.detail.w;
+	      this_.wallControlLine = evt.detail.controlLine;
+	      this_.update();
+	    });
+	  },
 
 	  update: function (oldData) {
 	    var this_ = this;
@@ -33677,10 +33732,17 @@
 	      return key.indexOf('material_') > -1
 	    });
 	    // add materials to instance
+	    var props = {};
 	    materialKeys.forEach(function(key) {
+	      props[key] = {
+	        type: 'string'
+	      };
+
 	      var mesh = key.replace('material_', '');
 	      materials[mesh] = data[key];
 	    });
+
+	    this_.extendSchema(props);
 
 	    // fetch materials from mat library
 	    Object.keys(materials).forEach(mat => {
@@ -33721,12 +33783,9 @@
 	    var wallWidth = 0.15;
 	    var wallControlLine = 'back';
 	    // get parent wall attributes
-	    var parent = this.el.parentEl && this.el.parentEl.getAttribute('io3d-wall');
-	    if (parent) {
-	      parent = AFRAME.utils.styleParser.parse(parent);
-	      // set wall width and control line
-	      wallWidth = parent.w;
-	      wallControlLine = parent.controlLine;
+	    if (this.wallWidth || this.wallControlLine) {
+	      wallWidth = this.wallWidth;
+	      wallControlLine = this.wallControlLine;
 	    }
 
 	    var wallBackPos = wallControlLine === 'front' ? -wallWidth : wallControlLine === 'center' ? -wallWidth / 2 : 0;
@@ -36178,6 +36237,9 @@
 	  return arr[0] === '' ? arr.slice(1) : arr
 	}
 
+	var dimRange = ['lengthMin', 'lengthMax', 'widthMin', 'widthMax', 'heightMin', 'heightMax'];
+	var dimFix = ['length', 'width', 'height'];
+
 	function searchFurniture (query, options) {
 
 	  // API
@@ -36188,17 +36250,46 @@
 
 	  // internals
 	  var apiErrorCount = 0;
+	  var reg;
+
+	  var params = {
+	    searchQuery: {
+	      // only published furniture & let's make sure we don't have trailing or double spaces
+	      query: 'isPublished:true ' + query.trim().replace(/\s+/g, ' ')
+	    },
+	    limit: 500
+	    // TODO: add this param once #251 https://github.com/archilogic-com/services/issues/251 is resolved
+	    //offset: offset
+	  };
+
+	  // extract dimension queries for range search
+	  dimRange.forEach( function iteratee(key) {
+	    reg = new RegExp( key + ':([0-9.*]+)');
+	    if (reg.test(params.searchQuery.query)) {
+	      // set range queries
+	      params.searchQuery[key] = parseFloat(reg.exec(params.searchQuery.query)[1]);
+	      // cleanup search query
+	      params.searchQuery.query = params.searchQuery.query.replace( reg.exec(params.searchQuery.query)[0], '').trim();
+	    }
+	  });
+
+	  // extract dimension queries for precise search
+	  dimFix.forEach( function iteratee(key) {
+	    reg = new RegExp( key + ':([0-9.*]+)');
+	    var margin = 0.04;
+	    if (reg.test(params.searchQuery.query)) {
+	      var dim = parseFloat(reg.exec(params.searchQuery.query)[1]);
+	      // set range queries
+	      params.searchQuery[key + 'Min'] = dim > margin ? dim - margin : dim;
+	      params.searchQuery[key + 'Max'] = dim + margin;
+	      // cleanup search query
+	      params.searchQuery.query = params.searchQuery.query.replace( reg.exec(params.searchQuery.query)[0], '').trim();
+	    }
+	  });
+
 	  // call API
 	  function callApi () {
-	    // let's make sure we don't have trailing or double spaces
-	    query = 'isPublished:true ' + query;
-	    query = query.trim().replace(/\s+/g, ' ');
-	    return callService('Product.search', {
-	      searchQuery: {query: query},
-	      limit: limit
-	      // TODO: add this param once #251 https://github.com/archilogic-com/services/issues/251 is resolved
-	      //offset: offset
-	    }).then(function onSuccess (rawResults) {
+	    return callService('Product.search', params).then(function onSuccess (rawResults) {
 	      apiErrorCount = 0;
 	      // normalize furniture data coming from server side endpoint
 	      return rawResults.map(normalizeFurnitureInfo)
@@ -39475,6 +39566,200 @@
 	  return runtime.isBrowser ? fetchScript(PAKO_LIB.inflate.url) : Promise.resolve(require(PAKO_LIB.inflate.module))
 	}
 
+	/**
+	 http://www.myersdaily.org/joseph/javascript/md5-text.html
+	 author: Joseph's Myers
+	 http://stackoverflow.com/questions/1655769/fastest-md5-implementation-in-javascript
+	 **/
+
+	// special case: allow function declaration inside if block (line 185)
+	// see https://github.com/jamesallardice/jslint-error-explanations/blob/master/message-articles/function-in-block.md
+	/* jshint -W082 */
+
+
+	function md5cycle(x, k) {
+	  var a = x[0], b = x[1], c = x[2], d = x[3];
+
+	  a = ff(a, b, c, d, k[0], 7, -680876936);
+	  d = ff(d, a, b, c, k[1], 12, -389564586);
+	  c = ff(c, d, a, b, k[2], 17,  606105819);
+	  b = ff(b, c, d, a, k[3], 22, -1044525330);
+	  a = ff(a, b, c, d, k[4], 7, -176418897);
+	  d = ff(d, a, b, c, k[5], 12,  1200080426);
+	  c = ff(c, d, a, b, k[6], 17, -1473231341);
+	  b = ff(b, c, d, a, k[7], 22, -45705983);
+	  a = ff(a, b, c, d, k[8], 7,  1770035416);
+	  d = ff(d, a, b, c, k[9], 12, -1958414417);
+	  c = ff(c, d, a, b, k[10], 17, -42063);
+	  b = ff(b, c, d, a, k[11], 22, -1990404162);
+	  a = ff(a, b, c, d, k[12], 7,  1804603682);
+	  d = ff(d, a, b, c, k[13], 12, -40341101);
+	  c = ff(c, d, a, b, k[14], 17, -1502002290);
+	  b = ff(b, c, d, a, k[15], 22,  1236535329);
+
+	  a = gg(a, b, c, d, k[1], 5, -165796510);
+	  d = gg(d, a, b, c, k[6], 9, -1069501632);
+	  c = gg(c, d, a, b, k[11], 14,  643717713);
+	  b = gg(b, c, d, a, k[0], 20, -373897302);
+	  a = gg(a, b, c, d, k[5], 5, -701558691);
+	  d = gg(d, a, b, c, k[10], 9,  38016083);
+	  c = gg(c, d, a, b, k[15], 14, -660478335);
+	  b = gg(b, c, d, a, k[4], 20, -405537848);
+	  a = gg(a, b, c, d, k[9], 5,  568446438);
+	  d = gg(d, a, b, c, k[14], 9, -1019803690);
+	  c = gg(c, d, a, b, k[3], 14, -187363961);
+	  b = gg(b, c, d, a, k[8], 20,  1163531501);
+	  a = gg(a, b, c, d, k[13], 5, -1444681467);
+	  d = gg(d, a, b, c, k[2], 9, -51403784);
+	  c = gg(c, d, a, b, k[7], 14,  1735328473);
+	  b = gg(b, c, d, a, k[12], 20, -1926607734);
+
+	  a = hh(a, b, c, d, k[5], 4, -378558);
+	  d = hh(d, a, b, c, k[8], 11, -2022574463);
+	  c = hh(c, d, a, b, k[11], 16,  1839030562);
+	  b = hh(b, c, d, a, k[14], 23, -35309556);
+	  a = hh(a, b, c, d, k[1], 4, -1530992060);
+	  d = hh(d, a, b, c, k[4], 11,  1272893353);
+	  c = hh(c, d, a, b, k[7], 16, -155497632);
+	  b = hh(b, c, d, a, k[10], 23, -1094730640);
+	  a = hh(a, b, c, d, k[13], 4,  681279174);
+	  d = hh(d, a, b, c, k[0], 11, -358537222);
+	  c = hh(c, d, a, b, k[3], 16, -722521979);
+	  b = hh(b, c, d, a, k[6], 23,  76029189);
+	  a = hh(a, b, c, d, k[9], 4, -640364487);
+	  d = hh(d, a, b, c, k[12], 11, -421815835);
+	  c = hh(c, d, a, b, k[15], 16,  530742520);
+	  b = hh(b, c, d, a, k[2], 23, -995338651);
+
+	  a = ii(a, b, c, d, k[0], 6, -198630844);
+	  d = ii(d, a, b, c, k[7], 10,  1126891415);
+	  c = ii(c, d, a, b, k[14], 15, -1416354905);
+	  b = ii(b, c, d, a, k[5], 21, -57434055);
+	  a = ii(a, b, c, d, k[12], 6,  1700485571);
+	  d = ii(d, a, b, c, k[3], 10, -1894986606);
+	  c = ii(c, d, a, b, k[10], 15, -1051523);
+	  b = ii(b, c, d, a, k[1], 21, -2054922799);
+	  a = ii(a, b, c, d, k[8], 6,  1873313359);
+	  d = ii(d, a, b, c, k[15], 10, -30611744);
+	  c = ii(c, d, a, b, k[6], 15, -1560198380);
+	  b = ii(b, c, d, a, k[13], 21,  1309151649);
+	  a = ii(a, b, c, d, k[4], 6, -145523070);
+	  d = ii(d, a, b, c, k[11], 10, -1120210379);
+	  c = ii(c, d, a, b, k[2], 15,  718787259);
+	  b = ii(b, c, d, a, k[9], 21, -343485551);
+
+	  x[0] = add32(a, x[0]);
+	  x[1] = add32(b, x[1]);
+	  x[2] = add32(c, x[2]);
+	  x[3] = add32(d, x[3]);
+
+	}
+
+	function cmn(q, a, b, x, s, t) {
+	  a = add32(add32(a, q), add32(x, t));
+	  return add32((a << s) | (a >>> (32 - s)), b);
+	}
+
+	function ff(a, b, c, d, x, s, t) {
+	  return cmn((b & c) | ((~b) & d), a, b, x, s, t);
+	}
+
+	function gg(a, b, c, d, x, s, t) {
+	  return cmn((b & d) | (c & (~d)), a, b, x, s, t);
+	}
+
+	function hh(a, b, c, d, x, s, t) {
+	  return cmn(b ^ c ^ d, a, b, x, s, t);
+	}
+
+	function ii(a, b, c, d, x, s, t) {
+	  return cmn(c ^ (b | (~d)), a, b, x, s, t);
+	}
+
+	function md51(s) {
+	//        txt = '';
+	  var n = s.length,
+	    state = [1732584193, -271733879, -1732584194, 271733878], i;
+	  for (i=64; i<=s.length; i+=64) {
+	    md5cycle(state, md5blk(s.substring(i-64, i)));
+	  }
+	  s = s.substring(i-64);
+	  var tail = [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0];
+	  for (i=0; i<s.length; i++)
+	    tail[i>>2] |= s.charCodeAt(i) << ((i%4) << 3);
+	  tail[i>>2] |= 0x80 << ((i%4) << 3);
+	  if (i > 55) {
+	    md5cycle(state, tail);
+	    for (i=0; i<16; i++) tail[i] = 0;
+	  }
+	  tail[14] = n*8;
+	  md5cycle(state, tail);
+	  return state;
+	}
+
+	/* there needs to be support for Unicode here,
+	 * unless we pretend that we can redefine the MD-5
+	 * algorithm for multi-byte characters (perhaps
+	 * by adding every four 16-bit characters and
+	 * shortening the sum to 32 bits). Otherwise
+	 * I suggest performing MD-5 as if every character
+	 * was two bytes--e.g., 0040 0025 = @%--but then
+	 * how will an ordinary MD-5 sum be matched?
+	 * There is no way to standardize text to something
+	 * like UTF-8 before transformation; speed cost is
+	 * utterly prohibitive. The JavaScript standard
+	 * itself needs to look at this: it should start
+	 * providing access to strings as preformed UTF-8
+	 * 8-bit unsigned value arrays.
+	 */
+	function md5blk(s) { /* I figured global was faster.   */
+	  var md5blks = [], i; /* Andy King said do it this way. */
+	  for (i=0; i<64; i+=4) {
+	    md5blks[i>>2] = s.charCodeAt(i)
+	      + (s.charCodeAt(i+1) << 8)
+	      + (s.charCodeAt(i+2) << 16)
+	      + (s.charCodeAt(i+3) << 24);
+	  }
+	  return md5blks;
+	}
+
+	var hex_chr = '0123456789abcdef'.split('');
+
+	function rhex(n)
+	{
+	  var s='', j=0;
+	  for(; j<4; j++)
+	    s += hex_chr[(n >> (j * 8 + 4)) & 0x0F]
+	      + hex_chr[(n >> (j * 8)) & 0x0F];
+	  return s;
+	}
+
+	function hex(x) {
+	  for (var i=0; i<x.length; i++)
+	    x[i] = rhex(x[i]);
+	  return x.join('');
+	}
+
+	/* this function is much faster,
+	 so if possible we use it. Some IEs
+	 are the only ones I know of that
+	 need the idiotic second function,
+	 generated by an if clause.  */
+
+	function add32(a, b) {
+	  return (a + b) & 0xFFFFFFFF;
+	}
+
+	if (md5('hello') != '5d41402abc4b2a76b9719d911017c592') {
+	  
+	}
+
+	// API
+
+	function md5(s) {
+	  return hex(md51(s));
+	}
+
 	var textureAttributes = {
 
 	  names: [
@@ -39572,6 +39857,7 @@
 	    file: null,
 	    warnings: []
 	  };
+	  var arrayDataCache = {};
 	  var resultingPromise;
 	  
 	  // add correct ending
@@ -39593,12 +39879,27 @@
 	        array = mesh[name];
 	        if (array) {
 	          if (array.length) {
+
+	            var hash = md5(array.join('-'));
+
+	            if (!arrayDataCache[hash]) {
+	              console.log('adding to cache: '+hash);
+	              // add to cache
+	              arrayDataCache[hash] = {
+	                offset: payloadLength,
+	                length: array.length
+	              };
+	              // add to payload
+	              payloadArrays[payloadArrays.length] = array;
+	              // increase payload offset
+	              payloadLength += array.length;
+	            } else {
+	              console.log('loading from cache: '+hash);
+	            }
+
 	            // remember offset and length
-	            mesh[name + 'Offset'] = payloadLength;
-	            mesh[name + 'Length'] = array.length;
-	            // increase overall offset
-	            payloadLength += array.length;
-	            payloadArrays[payloadArrays.length] = array;
+	            mesh[name + 'Offset'] = arrayDataCache[hash].offset;
+	            mesh[name + 'Length'] = arrayDataCache[hash].length;
 	          }
 	          // delete heavy array in structure
 	          delete mesh[name];
@@ -40699,17 +41000,21 @@
 	    // API
 	    options = options || {};
 
+	    var modifySettings = {};
+	    if (options.ratio) modifySettings.ratio = options.ratio;
+	    if (options.subdivisions) modifySettings.subdivisions = options.subdivisions;
+
 	    var modifyParams = {
-	      method: 'modify'.concat('.', modifier),
-	      params: {
-	        inputFileKey: storageId
-	      }
+	        method: 'modify'.concat('.', modifier),
+	        params: {
+	            inputFileKey: storageId
+	        }
 	    };
 
-	    if (options.subdivisions) {
-	      modifyParams.params.settings = JSON.stringify( { subdivisions: options.subdivisions } );
+	    if (Object.keys(modifySettings).length > 0) {
+	        modifyParams.params.settings = JSON.stringify(modifySettings);
 	    }
-
+	    
 	    return callService('Processing.task.enqueue', modifyParams)
 
 	  }
@@ -42657,200 +42962,6 @@
 	};
 
 	/**
-	 http://www.myersdaily.org/joseph/javascript/md5-text.html
-	 author: Joseph's Myers
-	 http://stackoverflow.com/questions/1655769/fastest-md5-implementation-in-javascript
-	 **/
-
-	// special case: allow function declaration inside if block (line 185)
-	// see https://github.com/jamesallardice/jslint-error-explanations/blob/master/message-articles/function-in-block.md
-	/* jshint -W082 */
-
-
-	function md5cycle(x, k) {
-	  var a = x[0], b = x[1], c = x[2], d = x[3];
-
-	  a = ff(a, b, c, d, k[0], 7, -680876936);
-	  d = ff(d, a, b, c, k[1], 12, -389564586);
-	  c = ff(c, d, a, b, k[2], 17,  606105819);
-	  b = ff(b, c, d, a, k[3], 22, -1044525330);
-	  a = ff(a, b, c, d, k[4], 7, -176418897);
-	  d = ff(d, a, b, c, k[5], 12,  1200080426);
-	  c = ff(c, d, a, b, k[6], 17, -1473231341);
-	  b = ff(b, c, d, a, k[7], 22, -45705983);
-	  a = ff(a, b, c, d, k[8], 7,  1770035416);
-	  d = ff(d, a, b, c, k[9], 12, -1958414417);
-	  c = ff(c, d, a, b, k[10], 17, -42063);
-	  b = ff(b, c, d, a, k[11], 22, -1990404162);
-	  a = ff(a, b, c, d, k[12], 7,  1804603682);
-	  d = ff(d, a, b, c, k[13], 12, -40341101);
-	  c = ff(c, d, a, b, k[14], 17, -1502002290);
-	  b = ff(b, c, d, a, k[15], 22,  1236535329);
-
-	  a = gg(a, b, c, d, k[1], 5, -165796510);
-	  d = gg(d, a, b, c, k[6], 9, -1069501632);
-	  c = gg(c, d, a, b, k[11], 14,  643717713);
-	  b = gg(b, c, d, a, k[0], 20, -373897302);
-	  a = gg(a, b, c, d, k[5], 5, -701558691);
-	  d = gg(d, a, b, c, k[10], 9,  38016083);
-	  c = gg(c, d, a, b, k[15], 14, -660478335);
-	  b = gg(b, c, d, a, k[4], 20, -405537848);
-	  a = gg(a, b, c, d, k[9], 5,  568446438);
-	  d = gg(d, a, b, c, k[14], 9, -1019803690);
-	  c = gg(c, d, a, b, k[3], 14, -187363961);
-	  b = gg(b, c, d, a, k[8], 20,  1163531501);
-	  a = gg(a, b, c, d, k[13], 5, -1444681467);
-	  d = gg(d, a, b, c, k[2], 9, -51403784);
-	  c = gg(c, d, a, b, k[7], 14,  1735328473);
-	  b = gg(b, c, d, a, k[12], 20, -1926607734);
-
-	  a = hh(a, b, c, d, k[5], 4, -378558);
-	  d = hh(d, a, b, c, k[8], 11, -2022574463);
-	  c = hh(c, d, a, b, k[11], 16,  1839030562);
-	  b = hh(b, c, d, a, k[14], 23, -35309556);
-	  a = hh(a, b, c, d, k[1], 4, -1530992060);
-	  d = hh(d, a, b, c, k[4], 11,  1272893353);
-	  c = hh(c, d, a, b, k[7], 16, -155497632);
-	  b = hh(b, c, d, a, k[10], 23, -1094730640);
-	  a = hh(a, b, c, d, k[13], 4,  681279174);
-	  d = hh(d, a, b, c, k[0], 11, -358537222);
-	  c = hh(c, d, a, b, k[3], 16, -722521979);
-	  b = hh(b, c, d, a, k[6], 23,  76029189);
-	  a = hh(a, b, c, d, k[9], 4, -640364487);
-	  d = hh(d, a, b, c, k[12], 11, -421815835);
-	  c = hh(c, d, a, b, k[15], 16,  530742520);
-	  b = hh(b, c, d, a, k[2], 23, -995338651);
-
-	  a = ii(a, b, c, d, k[0], 6, -198630844);
-	  d = ii(d, a, b, c, k[7], 10,  1126891415);
-	  c = ii(c, d, a, b, k[14], 15, -1416354905);
-	  b = ii(b, c, d, a, k[5], 21, -57434055);
-	  a = ii(a, b, c, d, k[12], 6,  1700485571);
-	  d = ii(d, a, b, c, k[3], 10, -1894986606);
-	  c = ii(c, d, a, b, k[10], 15, -1051523);
-	  b = ii(b, c, d, a, k[1], 21, -2054922799);
-	  a = ii(a, b, c, d, k[8], 6,  1873313359);
-	  d = ii(d, a, b, c, k[15], 10, -30611744);
-	  c = ii(c, d, a, b, k[6], 15, -1560198380);
-	  b = ii(b, c, d, a, k[13], 21,  1309151649);
-	  a = ii(a, b, c, d, k[4], 6, -145523070);
-	  d = ii(d, a, b, c, k[11], 10, -1120210379);
-	  c = ii(c, d, a, b, k[2], 15,  718787259);
-	  b = ii(b, c, d, a, k[9], 21, -343485551);
-
-	  x[0] = add32(a, x[0]);
-	  x[1] = add32(b, x[1]);
-	  x[2] = add32(c, x[2]);
-	  x[3] = add32(d, x[3]);
-
-	}
-
-	function cmn(q, a, b, x, s, t) {
-	  a = add32(add32(a, q), add32(x, t));
-	  return add32((a << s) | (a >>> (32 - s)), b);
-	}
-
-	function ff(a, b, c, d, x, s, t) {
-	  return cmn((b & c) | ((~b) & d), a, b, x, s, t);
-	}
-
-	function gg(a, b, c, d, x, s, t) {
-	  return cmn((b & d) | (c & (~d)), a, b, x, s, t);
-	}
-
-	function hh(a, b, c, d, x, s, t) {
-	  return cmn(b ^ c ^ d, a, b, x, s, t);
-	}
-
-	function ii(a, b, c, d, x, s, t) {
-	  return cmn(c ^ (b | (~d)), a, b, x, s, t);
-	}
-
-	function md51(s) {
-	//        txt = '';
-	  var n = s.length,
-	    state = [1732584193, -271733879, -1732584194, 271733878], i;
-	  for (i=64; i<=s.length; i+=64) {
-	    md5cycle(state, md5blk(s.substring(i-64, i)));
-	  }
-	  s = s.substring(i-64);
-	  var tail = [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0];
-	  for (i=0; i<s.length; i++)
-	    tail[i>>2] |= s.charCodeAt(i) << ((i%4) << 3);
-	  tail[i>>2] |= 0x80 << ((i%4) << 3);
-	  if (i > 55) {
-	    md5cycle(state, tail);
-	    for (i=0; i<16; i++) tail[i] = 0;
-	  }
-	  tail[14] = n*8;
-	  md5cycle(state, tail);
-	  return state;
-	}
-
-	/* there needs to be support for Unicode here,
-	 * unless we pretend that we can redefine the MD-5
-	 * algorithm for multi-byte characters (perhaps
-	 * by adding every four 16-bit characters and
-	 * shortening the sum to 32 bits). Otherwise
-	 * I suggest performing MD-5 as if every character
-	 * was two bytes--e.g., 0040 0025 = @%--but then
-	 * how will an ordinary MD-5 sum be matched?
-	 * There is no way to standardize text to something
-	 * like UTF-8 before transformation; speed cost is
-	 * utterly prohibitive. The JavaScript standard
-	 * itself needs to look at this: it should start
-	 * providing access to strings as preformed UTF-8
-	 * 8-bit unsigned value arrays.
-	 */
-	function md5blk(s) { /* I figured global was faster.   */
-	  var md5blks = [], i; /* Andy King said do it this way. */
-	  for (i=0; i<64; i+=4) {
-	    md5blks[i>>2] = s.charCodeAt(i)
-	      + (s.charCodeAt(i+1) << 8)
-	      + (s.charCodeAt(i+2) << 16)
-	      + (s.charCodeAt(i+3) << 24);
-	  }
-	  return md5blks;
-	}
-
-	var hex_chr = '0123456789abcdef'.split('');
-
-	function rhex(n)
-	{
-	  var s='', j=0;
-	  for(; j<4; j++)
-	    s += hex_chr[(n >> (j * 8 + 4)) & 0x0F]
-	      + hex_chr[(n >> (j * 8)) & 0x0F];
-	  return s;
-	}
-
-	function hex(x) {
-	  for (var i=0; i<x.length; i++)
-	    x[i] = rhex(x[i]);
-	  return x.join('');
-	}
-
-	/* this function is much faster,
-	 so if possible we use it. Some IEs
-	 are the only ones I know of that
-	 need the idiotic second function,
-	 generated by an if clause.  */
-
-	function add32(a, b) {
-	  return (a + b) & 0xFFFFFFFF;
-	}
-
-	if (md5('hello') != '5d41402abc4b2a76b9719d911017c592') {
-	  
-	}
-
-	// API
-
-	function md5(s) {
-	  return hex(md51(s));
-	}
-
-	/**
 	 *
 	 *  Secure Hash Algorithm (SHA1)
 	 *  http://www.webtoolkit.info/
@@ -43024,6 +43135,7 @@
 	    encodeBinary: encodeBinary,
 	    decodeBinary: decodeBinary,
 	    fromThreeJs: getData3dFromThreeJs,
+	    normalize: consolidate,
 	    clone: clone,
 	    traverse: traverseData3d$1,
 	    getInspectorUrl: getData3dInspectorUrl,
