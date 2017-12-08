@@ -199,7 +199,10 @@
   function rndAttr(att) {
     let _att = {}
     Object.keys(att).forEach(a => {
-      _att[a] = pickRnd(att[a])
+      if (a === 'rowRatios' || a === 'columnRatios') {
+        _att[a] = JSON.stringify(pickRnd(att[a]))
+      }
+      else _att[a] = pickRnd(att[a])
     })
     return _att
   }

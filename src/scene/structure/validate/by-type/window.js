@@ -31,7 +31,13 @@ export default {
       defaultValue: [ 1 ],
       optional: true,
       description: 'relative height of horizontal segmentation',
-      parse: JSON.parse
+      parse: function(val) {
+        if (!Array.isArray(val) || !val.length) {
+          console.warn('invalid input for window rowRatios')
+          return [ 1 ]
+        }
+        return JSON.parse(val)
+      }
     },
     columnRatios: {
       //type: 'array-with-arrays-with-numbers',
@@ -39,7 +45,13 @@ export default {
       defaultValue: [ [ 1 ] ],
       optional: true,
       description: 'relative width of vertical segmentation per row',
-      parse: JSON.parse
+      parse: function(val) {
+        if (!Array.isArray(val) || !val.length) {
+          console.warn('invalid input for window columnRatios')
+          return [ [ 1 ] ]
+        }
+        return JSON.parse(val)
+      }
     },
     frameLength: {
       type: 'number',
