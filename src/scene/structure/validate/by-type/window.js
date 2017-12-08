@@ -53,7 +53,13 @@ export default {
       defaultValue: 0.06,
       optional: true,
       min: 0.01,
-      description: 'Wwidth of the frame'
+      description: 'width of the frame'
+    },
+    hideGlass: {
+      type: 'boolean',
+      defaultValue: false,
+      optional: true,
+      description: 'Hides glass mesh'
     }
   },
   childrenTypes: [],
