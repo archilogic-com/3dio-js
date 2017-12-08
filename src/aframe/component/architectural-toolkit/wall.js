@@ -16,6 +16,7 @@ export default {
   init: function () {
     var this_ = this
     var children = this_.el.children
+    // listen to children, for updated positions
     if (children && children.length) {
       for (var i = 0; i < children.length; i++) {
         children[i].addEventListener('componentchanged', function (evt) {
@@ -28,6 +29,10 @@ export default {
   update: function (oldData) {
     var this_ = this
     var data = this_.data
+
+    if (!oldData || this.data.w !== oldData.w || this.data.controlLine !== oldData.controlLine ) {
+      this.el.emit('wall-changed', {w: this.data.w, controlLine: this.data.controlLine})
+    }
 
     // remove old mesh
     this.remove()

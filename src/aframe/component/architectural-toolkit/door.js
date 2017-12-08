@@ -11,7 +11,15 @@ export default {
 
   schema: getSchema('door'),
 
-  init: function () {},
+  init: function () {
+    var this_ = this
+    // listen to wall parent for updated geometry
+    this.el.parentEl.addEventListener('wall-changed', function(evt) {
+      this_.wallWidth = evt.detail.w
+      this_.wallControlLine = evt.detail.controlLine
+      this_.update()
+    })
+  },
 
   update: function (oldData) {
     var this_ = this
@@ -97,13 +105,9 @@ export default {
     var wallWidth = 0.15
     var wallControlLine = 'back'
     // get parent wall attributes
-    var parent = this.el.parentNode && this.el.parentNode.getAttribute('io3d-wall')
-    if (parent) {
-      parent = AFRAME.utils.styleParser.parse(parent)
-      // set wall width and control line
-      wallWidth = parseFloat(parent.w)
-      wallControlLine = parent.controlLine
-      // set door width to wall width
+    if (this.wallWidth || this.wallControlLine) {
+      wallWidth = this.wallWidth
+      wallControlLine = this.wallControlLine
       a.w = wallWidth
     }
 

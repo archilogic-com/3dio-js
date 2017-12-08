@@ -11,7 +11,15 @@ export default {
 
   schema: getSchema('window'),
 
-  init: function () {},
+  init: function () {
+    var this_ = this
+    // listen to wall parent for updated geometry
+    this.el.parentEl.addEventListener('wall-changed', function(evt) {
+      this_.wallWidth = evt.detail.w
+      this_.wallControlLine = evt.detail.controlLine
+      this_.update()
+    })
+  },
 
   update: function (oldData) {
     var this_ = this
@@ -54,10 +62,17 @@ export default {
       return key.indexOf('material_') > -1
     })
     // add materials to instance
+    var props = {}
     materialKeys.forEach(function(key) {
+      props[key] = {
+        type: 'string'
+      }
+
       var mesh = key.replace('material_', '')
       materials[mesh] = data[key]
     })
+
+    this_.extendSchema(props)
 
     // fetch materials from mat library
     Object.keys(materials).forEach(mat => {
@@ -98,12 +113,9 @@ export default {
     var wallWidth = 0.15
     var wallControlLine = 'back'
     // get parent wall attributes
-    var parent = this.el.parentEl && this.el.parentEl.getAttribute('io3d-wall')
-    if (parent) {
-      parent = AFRAME.utils.styleParser.parse(parent)
-      // set wall width and control line
-      wallWidth = parent.w
-      wallControlLine = parent.controlLine
+    if (this.wallWidth || this.wallControlLine) {
+      wallWidth = this.wallWidth
+      wallControlLine = this.wallControlLine
     }
 
     var wallBackPos = wallControlLine === 'front' ? -wallWidth : wallControlLine === 'center' ? -wallWidth / 2 : 0
