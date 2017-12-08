@@ -30,14 +30,16 @@ export default {
       type: 'array',
       defaultValue: [ 1 ],
       optional: true,
-      description: 'relative height of horizontal segmentation'
+      description: 'relative height of horizontal segmentation',
+      parse: JSON.parse
     },
     columnRatios: {
       //type: 'array-with-arrays-with-numbers',
       type: 'array',
       defaultValue: [ [ 1 ] ],
       optional: true,
-      description: 'relative width of vertical segmentation per row'
+      description: 'relative width of vertical segmentation per row',
+      parse: JSON.parse
     },
     frameLength: {
       type: 'number',

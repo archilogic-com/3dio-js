@@ -108,6 +108,9 @@ function getAttributes(element3d) {
         if (param === 'materials') attributes['io3d-' + type] += stringifyMaterials(element3d.materials)
         // polygons have to be serialized
         else if (param === 'polygon') attributes['io3d-' + type] += param + ': ' + element3d.polygon.map(function(p) { return p.join(',')}).join(',') + '; '
+        // stringify window segmentation arrays
+        else if (param === 'columnRatios' || param === 'rowRatios') attributes['io3d-' + type] += param + ': ' + JSON.stringify(element3d[param]) + '; '
+        // skip plan and level and map all remaining params
         else if (type !== 'plan' && type !== 'level') attributes['io3d-' + type] += param + ': ' + element3d[param] + '; '
       }
     })

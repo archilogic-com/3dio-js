@@ -10,8 +10,14 @@ function getSchema (type) {
     // skip location, children, material and id params
     if (params[key].skipInAframe || key === 'materials') return
     // map defaults to aframe schema convention
-    var paramType = params[key].aframeType || params[key].type
-    schema[key] = {type: paramType}
+    schema[key] = {}
+    // check schema definition for custom parsing rules
+    if (params[key].parse) {
+      schema[key].parse = params[key].parse
+    // or set the preset type
+    } else {
+      schema[key].type = params[key].aframeType || params[key].type
+    }
     if (params[key].defaultValue) schema[key].default = params[key].aframeDefault || params[key].defaultValue
     if (params[key].possibleValues) schema[key].oneOf = params[key].possibleValues
   })
