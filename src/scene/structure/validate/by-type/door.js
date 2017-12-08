@@ -86,6 +86,10 @@ export default {
       defaultValue: 0.3,
       optional: true
     },
+    threshold: {
+      type: 'boolean',
+      defaultValue: true
+    },
     thresholdHeight: {
       type: 'number',
       defaultValue: 0.01,

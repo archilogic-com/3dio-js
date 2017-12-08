@@ -53,7 +53,7 @@ export default {
       },
       leaf: 'doorLeaf-flush-white',
       handle: 'aluminium',
-      threshold: 'basic-floor'
+      threshold: 'wood_parquet_oak'
     }
 
     // check for adapted materials

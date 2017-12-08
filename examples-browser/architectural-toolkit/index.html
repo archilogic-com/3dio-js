@@ -181,9 +181,12 @@
   }
 
   function magic () {
-    floorEl.setAttribute('io3d-polyfloor', rndAttr(floorAttr))
+    let newFloorAttr = rndAttr(floorAttr)
+    let newDoorAttr = rndAttr(doorAttr)
+    newDoorAttr['material_threshold'] = newFloorAttr['material_top']
+    floorEl.setAttribute('io3d-polyfloor', newFloorAttr)
     kitchenEl.setAttribute('io3d-kitchen', rndAttr(kitchenAttr))
-    doorEl.setAttribute('io3d-door', rndAttr(doorAttr))
+    doorEl.setAttribute('io3d-door', newDoorAttr)
     windowEl.setAttribute('io3d-window', rndAttr(windowAttr))
 
     // set sky and font
