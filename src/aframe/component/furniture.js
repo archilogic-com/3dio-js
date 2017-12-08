@@ -12,6 +12,16 @@ export default {
   init: function () {
   },
 
+  updateSchema: function(newData) {
+    var materialProperties = {}
+    Object.keys(newData)
+      .filter(function (propKey) { return propKey.substr(0, 9) === 'material_' })
+      .forEach(function (propKey) {
+        materialProperties[propKey] = { type: 'string' }
+      })
+    this.extendSchema(materialProperties)
+  },
+
   update: function (oldData) {
     var this_ = this
     var el = this.el
