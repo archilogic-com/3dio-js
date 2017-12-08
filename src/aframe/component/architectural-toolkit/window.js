@@ -39,7 +39,6 @@ export default {
 
     // remove glass mesh if needed
     var deleteGlass = data.hideGlass === 'true'
-    console.log('hide glass', deleteGlass)
     if (deleteGlass) delete meshes.glass
 
     // clean up empty meshes to prevent errors
@@ -112,7 +111,6 @@ export default {
 
   generateMeshes3d: function () {
     var a = this.attributes
-
     var wallWidth = 0.15
     var wallControlLine = 'back'
     // get parent wall attributes

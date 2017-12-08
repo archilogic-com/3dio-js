@@ -29,10 +29,11 @@ export default {
       //type: 'array-with-numbers',
       type: 'array',
       defaultValue: [ 1 ],
+      aframeDefault: '[1]',
       optional: true,
       description: 'relative height of horizontal segmentation',
       parse: function(val) {
-        if (!Array.isArray(val) || !val.length) {
+        if (!/^\[.+\]/.test(val)) {
           console.warn('invalid input for window rowRatios')
           return [ 1 ]
         }
@@ -43,10 +44,11 @@ export default {
       //type: 'array-with-arrays-with-numbers',
       type: 'array',
       defaultValue: [ [ 1 ] ],
+      aframeDefault: '[[1]]',
       optional: true,
       description: 'relative width of vertical segmentation per row',
       parse: function(val) {
-        if (!Array.isArray(val) || !val.length) {
+        if (!/^\[\s*\[.+\]\s*\]/.test(val)) {
           console.warn('invalid input for window columnRatios')
           return [ [ 1 ] ]
         }
