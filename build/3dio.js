@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.13
- * @date 2017/12/08 14:22
+ * @date 2017/12/08 14:43
  * @branch architectural-toolkit
- * @commit e3f5dd76c524a6c049dac763759413e1ed24696f
+ * @commit d58251a563b5daea64b3c05d2834c07e3de24903
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/12/08 14:22', GIT_BRANCH = 'architectural-toolkit', GIT_COMMIT = 'e3f5dd76c524a6c049dac763759413e1ed24696f'
+	var BUILD_DATE='2017/12/08 14:43', GIT_BRANCH = 'architectural-toolkit', GIT_COMMIT = 'd58251a563b5daea64b3c05d2834c07e3de24903'
 
 	var name = "3dio";
 	var version = "1.0.13";
@@ -817,44 +817,6 @@
 
 	});
 
-	/* tslint:disable:no-empty */
-	function noop() { }
-	var noop_2 = noop;
-
-
-	var noop_1 = {
-		noop: noop_2
-	};
-
-	/* tslint:enable:max-line-length */
-	function pipe() {
-	    var fns = [];
-	    for (var _i = 0; _i < arguments.length; _i++) {
-	        fns[_i - 0] = arguments[_i];
-	    }
-	    return pipeFromArray(fns);
-	}
-	var pipe_2 = pipe;
-	/* @internal */
-	function pipeFromArray(fns) {
-	    if (!fns) {
-	        return noop_1.noop;
-	    }
-	    if (fns.length === 1) {
-	        return fns[0];
-	    }
-	    return function piped(input) {
-	        return fns.reduce(function (prev, fn) { return fn(prev); }, input);
-	    };
-	}
-	var pipeFromArray_1 = pipeFromArray;
-
-
-	var pipe_1 = {
-		pipe: pipe_2,
-		pipeFromArray: pipeFromArray_1
-	};
-
 	/**
 	 * A representation of any set of values over any amount of time. This is the most basic building block
 	 * of RxJS.
@@ -1089,54 +1051,6 @@
 	     */
 	    Observable.prototype[observable.observable] = function () {
 	        return this;
-	    };
-	    /* tslint:enable:max-line-length */
-	    /**
-	     * Used to stitch together functional operators into a chain.
-	     * @method pipe
-	     * @return {Observable} the Observable result of all of the operators having
-	     * been called in the order they were passed in.
-	     *
-	     * @example
-	     *
-	     * import { map, filter, scan } from 'rxjs/operators';
-	     *
-	     * Rx.Observable.interval(1000)
-	     *   .pipe(
-	     *     filter(x => x % 2 === 0),
-	     *     map(x => x + x),
-	     *     scan((acc, x) => acc + x)
-	     *   )
-	     *   .subscribe(x => console.log(x))
-	     */
-	    Observable.prototype.pipe = function () {
-	        var operations = [];
-	        for (var _i = 0; _i < arguments.length; _i++) {
-	            operations[_i - 0] = arguments[_i];
-	        }
-	        if (operations.length === 0) {
-	            return this;
-	        }
-	        return pipe_1.pipeFromArray(operations)(this);
-	    };
-	    /* tslint:enable:max-line-length */
-	    Observable.prototype.toPromise = function (PromiseCtor) {
-	        var _this = this;
-	        if (!PromiseCtor) {
-	            if (root.root.Rx && root.root.Rx.config && root.root.Rx.config.Promise) {
-	                PromiseCtor = root.root.Rx.config.Promise;
-	            }
-	            else if (root.root.Promise) {
-	                PromiseCtor = root.root.Promise;
-	            }
-	        }
-	        if (!PromiseCtor) {
-	            throw new Error('no Promise impl found');
-	        }
-	        return new PromiseCtor(function (resolve, reject) {
-	            var value;
-	            _this.subscribe(function (x) { return value = x; }, function (err) { return reject(err); }, function () { return resolve(value); });
-	        });
 	    };
 	    // HACK: Since TypeScript inherits static properties too, we have to
 	    // fight against TypeScript here so Subject can have a different static create signature
@@ -20543,7 +20457,13 @@
 	      defaultValue: 0.06,
 	      optional: true,
 	      min: 0.01,
-	      description: 'Wwidth of the frame'
+	      description: 'width of the frame'
+	    },
+	    hideGlass: {
+	      type: 'boolean',
+	      defaultValue: false,
+	      optional: true,
+	      description: 'Hides glass mesh'
 	    }
 	  },
 	  childrenTypes: [],
@@ -22959,6 +22879,16 @@
 	  return attr
 	}
 
+	function updateSchema(newData) {
+	  var materialProperties = {};
+	  Object.keys(newData)
+	    .filter(function (propKey) { return propKey.substr(0, 9) === 'material_' })
+	    .forEach(function (propKey) {
+	      materialProperties[propKey] = { type: 'string' };
+	    });
+	  this.extendSchema(materialProperties);
+	}
+
 	var DEBUG = true;
 
 	// methods
@@ -23171,6 +23101,8 @@
 	  schema: getSchema('closet'),
 
 	  init: function () {},
+
+	  updateSchema: updateSchema,
 
 	  update: function (oldData) {
 	    var this_ = this;
@@ -24767,6 +24699,8 @@
 
 	  init: function () {},
 
+	  updateSchema: updateSchema,
+
 	  update: function (oldData) {
 	    var this_ = this;
 	    var data = this_.data;
@@ -24971,6 +24905,8 @@
 	      this_.update();
 	    });
 	  },
+
+	  updateSchema: updateSchema,
 
 	  update: function (oldData) {
 	    var this_ = this;
@@ -26151,6 +26087,8 @@
 	  schema: getSchema('floor'),
 
 	  init: function () {},
+
+	  updateSchema: updateSchema,
 
 	  update: function (oldData) {
 	    var this_ = this;
@@ -27590,6 +27528,8 @@
 	  schema: getSchema('kitchen'),
 
 	  init: function () {},
+
+	  updateSchema: updateSchema,
 
 	  update: function (oldData) {
 	    var this_ = this;
@@ -29623,6 +29563,8 @@
 
 	  init: function () {},
 
+	  updateSchema: updateSchema,
+
 	  update: function (oldData) {
 	    var this_ = this;
 	    var data = this_.data;
@@ -29779,6 +29721,8 @@
 	  schema: getSchema('railing'),
 
 	  init: function () {},
+
+	  updateSchema: updateSchema,
 
 	  update: function (oldData) {
 	    var this_ = this;
@@ -30146,6 +30090,8 @@
 	  schema: getSchema('stairs'),
 
 	  init: function () {},
+
+	  updateSchema: updateSchema,
 
 	  update: function (oldData) {
 	    var this_ = this;
@@ -31900,6 +31846,8 @@
 	      }
 	    }
 	  },
+
+	  updateSchema: updateSchema,
 
 	  update: function (oldData) {
 	    var this_ = this;
@@ -33690,6 +33638,8 @@
 	      this_.update();
 	    });
 	  },
+
+	  updateSchema: updateSchema,
 
 	  update: function (oldData) {
 	    var this_ = this;

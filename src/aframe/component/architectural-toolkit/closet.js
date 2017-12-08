@@ -4,6 +4,7 @@
 
 import getSchema from './common/get-schema.js'
 import getMaterial from './common/get-material.js'
+import updateSchema from './common/update-schema.js'
 import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import generateUvs from '../../../utils/data3d/buffer/get-uvs'
 import cloneDeep from 'lodash/cloneDeep'
@@ -13,6 +14,8 @@ export default {
   schema: getSchema('closet'),
 
   init: function () {},
+
+  updateSchema: updateSchema,
 
   update: function (oldData) {
     var this_ = this

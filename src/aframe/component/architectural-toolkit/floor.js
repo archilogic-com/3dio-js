@@ -4,6 +4,7 @@
 
 import getSchema from './common/get-schema.js'
 import getMaterial from './common/get-material.js'
+import updateSchema from './common/update-schema.js'
 import generatePolygonBuffer from '../../../utils/data3d/buffer/get-polygon'
 import generateExtrusionBuffer from '../../../utils/data3d/buffer/get-extrusion'
 import generateNormals from '../../../utils/data3d/buffer/get-normals'
@@ -14,6 +15,8 @@ export default {
   schema: getSchema('floor'),
 
   init: function () {},
+
+  updateSchema: updateSchema,
 
   update: function (oldData) {
     var this_ = this
