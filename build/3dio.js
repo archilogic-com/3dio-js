@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.13
- * @date 2017/12/08 14:43
+ * @date 2017/12/10 10:30
  * @branch architectural-toolkit
- * @commit d58251a563b5daea64b3c05d2834c07e3de24903
+ * @commit 6395c2021369038c6bbcfea0ab92b21b9952c6f4
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/12/08 14:43', GIT_BRANCH = 'architectural-toolkit', GIT_COMMIT = 'd58251a563b5daea64b3c05d2834c07e3de24903'
+	var BUILD_DATE='2017/12/10 10:30', GIT_BRANCH = 'architectural-toolkit', GIT_COMMIT = '6395c2021369038c6bbcfea0ab92b21b9952c6f4'
 
 	var name = "3dio";
 	var version = "1.0.13";
@@ -817,6 +817,44 @@
 
 	});
 
+	/* tslint:disable:no-empty */
+	function noop() { }
+	var noop_2 = noop;
+
+
+	var noop_1 = {
+		noop: noop_2
+	};
+
+	/* tslint:enable:max-line-length */
+	function pipe() {
+	    var fns = [];
+	    for (var _i = 0; _i < arguments.length; _i++) {
+	        fns[_i - 0] = arguments[_i];
+	    }
+	    return pipeFromArray(fns);
+	}
+	var pipe_2 = pipe;
+	/* @internal */
+	function pipeFromArray(fns) {
+	    if (!fns) {
+	        return noop_1.noop;
+	    }
+	    if (fns.length === 1) {
+	        return fns[0];
+	    }
+	    return function piped(input) {
+	        return fns.reduce(function (prev, fn) { return fn(prev); }, input);
+	    };
+	}
+	var pipeFromArray_1 = pipeFromArray;
+
+
+	var pipe_1 = {
+		pipe: pipe_2,
+		pipeFromArray: pipeFromArray_1
+	};
+
 	/**
 	 * A representation of any set of values over any amount of time. This is the most basic building block
 	 * of RxJS.
@@ -1051,6 +1089,54 @@
 	     */
 	    Observable.prototype[observable.observable] = function () {
 	        return this;
+	    };
+	    /* tslint:enable:max-line-length */
+	    /**
+	     * Used to stitch together functional operators into a chain.
+	     * @method pipe
+	     * @return {Observable} the Observable result of all of the operators having
+	     * been called in the order they were passed in.
+	     *
+	     * @example
+	     *
+	     * import { map, filter, scan } from 'rxjs/operators';
+	     *
+	     * Rx.Observable.interval(1000)
+	     *   .pipe(
+	     *     filter(x => x % 2 === 0),
+	     *     map(x => x + x),
+	     *     scan((acc, x) => acc + x)
+	     *   )
+	     *   .subscribe(x => console.log(x))
+	     */
+	    Observable.prototype.pipe = function () {
+	        var operations = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            operations[_i - 0] = arguments[_i];
+	        }
+	        if (operations.length === 0) {
+	            return this;
+	        }
+	        return pipe_1.pipeFromArray(operations)(this);
+	    };
+	    /* tslint:enable:max-line-length */
+	    Observable.prototype.toPromise = function (PromiseCtor) {
+	        var _this = this;
+	        if (!PromiseCtor) {
+	            if (root.root.Rx && root.root.Rx.config && root.root.Rx.config.Promise) {
+	                PromiseCtor = root.root.Rx.config.Promise;
+	            }
+	            else if (root.root.Promise) {
+	                PromiseCtor = root.root.Promise;
+	            }
+	        }
+	        if (!PromiseCtor) {
+	            throw new Error('no Promise impl found');
+	        }
+	        return new PromiseCtor(function (resolve, reject) {
+	            var value;
+	            _this.subscribe(function (x) { return value = x; }, function (err) { return reject(err); }, function () { return resolve(value); });
+	        });
 	    };
 	    // HACK: Since TypeScript inherits static properties too, we have to
 	    // fight against TypeScript here so Subject can have a different static create signature
@@ -13928,6 +14014,16 @@
 	  init: function () {
 	  },
 
+	  updateSchema: function(newData) {
+	    var materialProperties = {};
+	    Object.keys(newData)
+	      .filter(function (propKey) { return propKey.substr(0, 9) === 'material_' })
+	      .forEach(function (propKey) {
+	        materialProperties[propKey] = { type: 'string' };
+	      });
+	    this.extendSchema(materialProperties);
+	  },
+
 	  update: function (oldData) {
 	    var this_ = this;
 	    var el = this.el;
@@ -19436,6 +19532,7 @@
 	        'interior',
 	        'kitchen',
 	        'level',
+	        'object',
 	        'plan',
 	        'polybox',
 	        'polyfloor',
@@ -19482,7 +19579,7 @@
 	    },
 	    id: {
 	      type: 'string',
-	      optional: true,
+	      optional: false,
 	      skipInAframe: true,
 	      description: 'unique identifier: UUID v4'
 	    },
@@ -19528,6 +19625,12 @@
 	var cameraBookmark = {
 	  description: 'preset camera positions for animations and navigation',
 	  params: {
+	    rx: {
+	      type: 'number',
+	      defaultValue: 0,
+	      skipInAframe: true,
+	      description: 'pitch'
+	    },
 	    distance: {
 	      type: 'number',
 	      skipInAframe: true
@@ -19536,6 +19639,10 @@
 	      type: 'number',
 	      defaultValue: 71,
 	      skipInAframe: true
+	    },
+	    name: {
+	      type: 'string',
+	      defaultValue: 'Camera Bookmark'
 	    }
 	  },
 	  parentTypes: ['plan'],
@@ -19689,7 +19796,6 @@
 	    v: {
 	      type: 'number',
 	      defaultValue: 3,
-	      possibleValues: [3],
 	      optional: false,
 	      description: 'version'
 	    },
@@ -19770,6 +19876,10 @@
 	      type: 'number',
 	      defaultValue: 0.3,
 	      optional: true
+	    },
+	    threshold: {
+	      type: 'boolean',
+	      defaultValue: true
 	    },
 	    thresholdHeight: {
 	      type: 'number',
@@ -20111,14 +20221,14 @@
 	  params: {
 	    modelDisplayName: {
 	      type: 'string',
-	      optional: false,
+	      optional: true,
 	      skipInAframe: true,
 	      description: 'name of the scene'
 	    },
 	    v: {
 	      type: 'number',
-	      possibleValues: [1],
-	      optional: false,
+	      defaultValue: 1,
+	      optional: true,
 	      skipInAframe: true,
 	      description: 'version'
 	    }
@@ -20165,9 +20275,16 @@
 	      type: 'array',
 	      // aframeType: 'string',
 	      defaultValue: [[1.5,1.5], [1.5,-1.5], [-1.5,-1.5], [-1.5,1.5]],
-	      aframeDefault: [ 1.5,1.5,1.5,-1.5,-1.5,-1.5,-1.5,1.5 ],
+	      aframeDefault: '[ 1.5,1.5,1.5,-1.5,-1.5,-1.5,-1.5,1.5 ]',
 	      optional: false,
-	      description: 'outer polygon'
+	      description: 'outer polygon',
+	      parse: function(val) {
+	        if (!/^\[.+\]/.test(val)) {
+	          console.warn('invalid input for polyfloor polygon', val);
+	          return [ 1 ]
+	        }
+	        return JSON.parse(val)
+	      }
 	    },
 	    polygonHoles: {
 	      type: 'array',
@@ -20427,7 +20544,7 @@
 	    side: {
 	      type: 'string',
 	      defaultValue: 'back',
-	      optional: false,
+	      optional: true,
 	      possibleValues: ['back', 'center', 'front'],
 	      description: 'relative position of the window inside the wall opening'
 	    },
@@ -20435,15 +20552,31 @@
 	      //type: 'array-with-numbers',
 	      type: 'array',
 	      defaultValue: [ 1 ],
+	      aframeDefault: '[1]',
 	      optional: true,
-	      description: 'relative height of horizontal segmentation'
+	      description: 'relative height of horizontal segmentation',
+	      parse: function(val) {
+	        if (!/^\[.+\]/.test(val)) {
+	          console.warn('invalid input for window rowRatios');
+	          return [ 1 ]
+	        }
+	        return JSON.parse(val)
+	      }
 	    },
 	    columnRatios: {
 	      //type: 'array-with-arrays-with-numbers',
 	      type: 'array',
 	      defaultValue: [ [ 1 ] ],
+	      aframeDefault: '[[1]]',
 	      optional: true,
-	      description: 'relative width of vertical segmentation per row'
+	      description: 'relative width of vertical segmentation per row',
+	      parse: function(val) {
+	        if (!/^\[\s*\[.+\]\s*\]/.test(val)) {
+	          console.warn('invalid input for window columnRatios');
+	          return [ [ 1 ] ]
+	        }
+	        return JSON.parse(val)
+	      }
 	    },
 	    frameLength: {
 	      type: 'number',
@@ -20532,8 +20665,14 @@
 	    // skip location, children, material and id params
 	    if (params[key].skipInAframe || key === 'materials') return
 	    // map defaults to aframe schema convention
-	    var paramType = params[key].aframeType || params[key].type;
-	    schema[key] = {type: paramType};
+	    schema[key] = {};
+	    // check schema definition for custom parsing rules
+	    if (params[key].parse) {
+	      schema[key].parse = params[key].parse;
+	    // or set the preset type
+	    } else {
+	      schema[key].type = params[key].aframeType || params[key].type;
+	    }
 	    if (params[key].defaultValue) schema[key].default = params[key].aframeDefault || params[key].defaultValue;
 	    if (params[key].possibleValues) schema[key].oneOf = params[key].possibleValues;
 	  });
@@ -24940,7 +25079,7 @@
 	      },
 	      leaf: 'doorLeaf-flush-white',
 	      handle: 'aluminium',
-	      threshold: 'basic-floor'
+	      threshold: 'wood_parquet_oak'
 	    };
 
 	    // check for adapted materials
@@ -33656,7 +33795,6 @@
 
 	    // remove glass mesh if needed
 	    var deleteGlass = data.hideGlass === 'true';
-	    console.log('hide glass', deleteGlass);
 	    if (deleteGlass) delete meshes.glass;
 
 	    // clean up empty meshes to prevent errors
@@ -33729,7 +33867,6 @@
 
 	  generateMeshes3d: function () {
 	    var a = this.attributes;
-
 	    var wallWidth = 0.15;
 	    var wallControlLine = 'back';
 	    // get parent wall attributes
@@ -36296,6 +36433,25 @@
 	  getData3dStorageId: getFurnitureData3dStorageId
 	};
 
+	function getParamValueType (value, target) {
+	  if (target === 'int' && isInt(value)) {
+	    return 'int'
+	  }
+	  if (Array.isArray(value)) {
+	    // TODO: add support for more sophisticated array types
+	    // array-with-objects, array-with-numbers, array-with-arrays-with-numbers
+	    return 'array'
+	  } else {
+	    return typeof value
+	  }
+	}
+
+	function isInt(value) {
+	  return !isNaN(value) &&
+	    parseInt(Number(value)) == value &&
+	    !isNaN(parseInt(value, 10));
+	}
+
 	function applyDefaults(element3d) {
 	  if (!element3d || !element3d.type) return
 
@@ -36303,11 +36459,28 @@
 	  var defaultParams = typeSpecificDefaults[element3d.type].params;
 
 	  Object.keys(defaultParams).forEach(function (key) {
-	    if (!element3d[key]) {
+	    var defaultVal = defaultParams[key].defaultValue;
+	    // check if type is valid
+	    if (element3d[key]) {
+	      var paramType = defaultParams[key].type;
+	      var elParamType = getParamValueType(element3d[key], paramType);
+	      // check if type is valid
+	      if (paramType !== elParamType) {
+	        // try to fix integers
+	        if (paramType === 'int' && parseInt(element3d[key])) element3d[key] = parseInt(element3d[key]);
+	        // try to fix floats
+	        else if (paramType === 'number' && parseFloat(element3d[key])) element3d[key] = parseFloat(element3d[key]);
+	        // set default
+	        else if (defaultVal !== undefined) element3d[key] = defaultVal;
+	        else delete element3d[key];
+	      }
+	    }
+	    // apply default
+	    if (element3d[key] === undefined) {
 	      // id needs to be generated hence no defaultValue
 	      if (key === 'id') element3d[key] = uuid.generate();
 	      // apply default value
-	      else if (defaultParams[key].defaultValue !== undefined) element3d[key] = defaultParams[key].defaultValue;
+	      else if (defaultVal !== undefined) element3d[key] = defaultVal;
 	    }
 	  });
 	  return element3d
@@ -36952,7 +37125,10 @@
 	        // materials have to be serialized
 	        if (param === 'materials') attributes['io3d-' + type] += stringifyMaterials(element3d.materials);
 	        // polygons have to be serialized
-	        else if (param === 'polygon') attributes['io3d-' + type] += param + ': ' + element3d.polygon.map(function(p) { return p.join(',')}).join(',') + '; ';
+	        else if (param === 'polygon') attributes['io3d-' + type] += param + ': ' + JSON.stringify([].concat.apply([], element3d.polygon)) + '; ';
+	        // stringify window segmentation arrays
+	        else if (param === 'columnRatios' || param === 'rowRatios') attributes['io3d-' + type] += param + ': ' + JSON.stringify(element3d[param]) + '; ';
+	        // skip plan and level and map all remaining params
 	        else if (type !== 'plan' && type !== 'level') attributes['io3d-' + type] += param + ': ' + element3d[param] + '; ';
 	      }
 	    });
@@ -40351,7 +40527,7 @@
 	    if (value !== undefined) {
 
 	      // check type
-	      var paramValueType = getParamValueType(value);
+	      var paramValueType = getParamValueType(value, v.type);
 	      if (v.type !== paramValueType) {
 	        isValid = false;
 	        var message = 'Parameter "' + paramName + '" is of type "' + paramValueType + '" but should be type "' + v.type + '"';
@@ -40409,16 +40585,6 @@
 	  if (!isValid) result.isValid = false;
 	  return isValid
 
-	}
-
-	function getParamValueType (value) {
-	  if (Array.isArray(value)) {
-	    // TODO: add support for more sophisticated array types
-	    // array-with-objects, array-with-numbers, array-with-arrays-with-numbers
-	    return 'array'
-	  } else {
-	    return typeof value
-	  }
 	}
 
 	function exportSvg (args) {
