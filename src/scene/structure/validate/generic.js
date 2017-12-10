@@ -6,6 +6,7 @@ export default {
         'box',
         'camera-bookmark',
         'closet',
+        'column',
         'curtain',
         'door',
         'floor',

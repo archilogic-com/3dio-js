@@ -5,6 +5,7 @@ import getDefaultsByType from './validate/get-defaults-by-type'
 
 var validTypes = [
   'closet',
+  'column',
   'door',
   'floor',
   'group',
@@ -14,6 +15,7 @@ var validTypes = [
   'object',
   'plan',
   'polyfloor',
+  'railing',
   'wall',
   'window'
 ]

@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.13
- * @date 2017/12/10 10:30
+ * @date 2017/12/10 10:43
  * @branch architectural-toolkit
- * @commit 6395c2021369038c6bbcfea0ab92b21b9952c6f4
+ * @commit b3197e36720ea4e4ed89eebf10cd52d599721700
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/12/10 10:30', GIT_BRANCH = 'architectural-toolkit', GIT_COMMIT = '6395c2021369038c6bbcfea0ab92b21b9952c6f4'
+	var BUILD_DATE='2017/12/10 10:43', GIT_BRANCH = 'architectural-toolkit', GIT_COMMIT = 'b3197e36720ea4e4ed89eebf10cd52d599721700'
 
 	var name = "3dio";
 	var version = "1.0.13";
@@ -19524,6 +19524,7 @@
 	        'box',
 	        'camera-bookmark',
 	        'closet',
+	        'column',
 	        'curtain',
 	        'door',
 	        'floor',
@@ -37023,6 +37024,7 @@
 
 	var validTypes = [
 	  'closet',
+	  'column',
 	  'door',
 	  'floor',
 	  'group',
@@ -37032,6 +37034,7 @@
 	  'object',
 	  'plan',
 	  'polyfloor',
+	  'railing',
 	  'wall',
 	  'window'
 	];
