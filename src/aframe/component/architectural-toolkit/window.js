@@ -15,11 +15,13 @@ export default {
   init: function () {
     var this_ = this
     // listen to wall parent for updated geometry
-    this.el.parentEl.addEventListener('wall-changed', function(evt) {
-      this_.wallWidth = evt.detail.w
-      this_.wallControlLine = evt.detail.controlLine
-      this_.update()
-    })
+    this.el.parentEl.addEventListener('wall-changed', this.updateFromWall)
+  },
+
+  updateFromWall: function(evt) {
+    this.wallWidth = evt.detail.w
+    this.wallControlLine = evt.detail.controlLine
+    this.update()
   },
 
   updateSchema: updateSchema,
@@ -99,6 +101,7 @@ export default {
   },
 
   remove: function () {
+    this.el.parentEl.removeEventListener('wall-changed', this.updateFromWall)
     if (this.data3dView) {
       this.data3dView.destroy()
       this.data3dView = null
@@ -111,7 +114,7 @@ export default {
 
   generateMeshes3d: function () {
     var a = this.attributes
-    var wallWidth = 0.15
+    var wallWidth = a.w || 0.15
     var wallControlLine = 'back'
     // get parent wall attributes
     if (this.wallWidth || this.wallControlLine) {

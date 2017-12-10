@@ -166,6 +166,11 @@ function getAttributes(element3d) {
   // toggle visibility
   if (element3d.bake && element3d.bakeStatus === 'done') attributes.visible = false
   if (element3d.visible && !element3d.visible.bird && !element3d.visible.person && !element3d.visible.floorplan) attributes.visible = false
+  // make sure we have a valid position
+  element3d.x = element3d.x || 0
+  element3d.y = element3d.y || 0
+  element3d.z = element3d.z || 0
+  element3d.ry = element3d.ry|| 0
   // stringify location objects
   attributes.position = element3d.x + ' ' + element3d.y + ' ' + element3d.z
   attributes.rotation = (element3d.rx || 0) + ' ' + element3d.ry + ' 0'

@@ -16,13 +16,31 @@ export default {
 
   init: function () {
     var this_ = this
-    var children = this_.el.children
+    // avoid simultanous update calls
+    this.throttledUpdate = AFRAME.utils.throttle(this.update, 100, this);
+    // bind event listeners for child elements
+    this.updateChildren()
+    // listen for added or removed children
+    this.el.addEventListener('child-attached', function(evt) {
+      // wait for a bit to make sure the child component is set up
+      setTimeout(function() {
+        this_.throttledUpdate()
+        this_.updateChildren()
+      }, 10)
+    })
+    this.el.addEventListener('child-detached', function(evt) {
+      setTimeout(function() {
+        this_.throttledUpdate()
+      }, 10)
+    })
+  },
+
+  updateChildren: function() {
+    var children = this.el.children
     // listen to children, for updated positions
     if (children && children.length) {
       for (var i = 0; i < children.length; i++) {
-        children[i].addEventListener('componentchanged', function (evt) {
-          this_.update()
-        })
+        children[i].addEventListener('componentchanged', this.throttledUpdate )
       }
     }
   },
