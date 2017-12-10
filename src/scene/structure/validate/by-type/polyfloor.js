@@ -13,9 +13,16 @@ export default {
       type: 'array',
       // aframeType: 'string',
       defaultValue: [[1.5,1.5], [1.5,-1.5], [-1.5,-1.5], [-1.5,1.5]],
-      aframeDefault: [ 1.5,1.5,1.5,-1.5,-1.5,-1.5,-1.5,1.5 ],
+      aframeDefault: '[ 1.5,1.5,1.5,-1.5,-1.5,-1.5,-1.5,1.5 ]',
       optional: false,
-      description: 'outer polygon'
+      description: 'outer polygon',
+      parse: function(val) {
+        if (!/^\[.+\]/.test(val)) {
+          console.warn('invalid input for polyfloor polygon', val)
+          return [ 1 ]
+        }
+        return JSON.parse(val)
+      }
     },
     polygonHoles: {
       type: 'array',

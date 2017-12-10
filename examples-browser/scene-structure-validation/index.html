@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scene Structure Validation</title>
+  <!-- vuejs -->
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <!-- Codemirror JS Vue -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-codemirror@4.0.0/dist/vue-codemirror.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/mode/javascript/javascript.min.js"></script>
+  <!-- A-Frame -->
+  <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+  <script src="https://rawgit.com/tizzle/aframe-orbit-controls-component/master/dist/aframe-orbit-controls-component.min.js"></script>
+  <!-- 3d.io -->
+  <script src="../../build/3dio.js"></script>
+  <!-- styles -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,700" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto Mono', monospace;
+      padding: 10px!important
+    }
+    h1 {
+      font-size: 24px;
+    }
+    #result {
+      border: 1px solid transparent;
+      margin: 1.6em 0;
+      padding: 0.8em;
+    }
+    #result.success {
+      background: #E6EFC2;
+      color: #529214;
+      border-color: #C6D880;
+    }
+    #result.error {
+      background: #FBE3E4;
+      color: #D12F19;
+      border-color: #FBC2C4;
+    }
+    button {
+      background-color: #fff;
+      padding: 10px 15px;
+      text-decoration: none;
+      border: 1px solid #e1e1e1;
+      font-size: 14px;
+      outline: none;
+      cursor: pointer;
+      font-family: 'Roboto Mono', sans-serif;
+      font-weight: 700;
+      color: #333;
+      margin: 10px 10px 0 0;
+    }
+    button:hover {
+      background: #f3f3f3;
+      border: 1px solid #d1d1d1;
+      cursor: pointer;
+    }
+    a-scene {
+      background: #dbe4ee;
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <h1>Scene Structure Validation</h1>
+  <codemirror v-model="code" :options="cmOption"></codemirror>
+  <button @click="validate">validate</button>
+  <button @click="normalize">normalize</button>
+  <button @click="visualize">visualize</button>
+  <pre id="result" :class="validationState" v-if="validationState">{{validationMsg}}</pre>
+</div>
+<p>A-Frame view</p>
+<a-scene style="height:400px;"embedded io3d-lighting>
+  <!-- orbit cam -->
+  <a-entity id="target" position="0 1 0"></a-entity>
+  <a-entity camera="fov: 50; zoom: 1;" position="-3 3 5" orbit-controls="invertZoom: true; autoRotate: false; target: #target; rotateSpeed: 0.2; enableDamping: true; dampingFactor: 0.1 ;minDistance:4;maxDistance:20;maxPolarAngle:1.8"></a-entity>
+</a-scene>
+<script>
+  Vue.use(VueCodemirror)
+  var addedItems = []
+  var app = new Vue({
+    el: '#app',
+    data: {
+      code: '{\n  "type": "wall",\n  "x": 0,\n  "y": 0,\n  "z": 0,\n  "ry": 0,\n  "id": "3b5ee2d1-88de-462f-bd04-c821d4fa3524",\n  "w": 0.15,\n  "h": 2.4,\n  "l": 2\n}',
+      isValid: null,
+      validationState: null,
+      validationMsg: '',
+      visualizeScene: false,
+      cmOption: {
+        tabSize: 4,
+        styleActiveLine: true,
+        lineNumbers: true,
+        mode: {name: "javascript", json: true}
+      },
+    },
+    methods: {
+      validate: function() {
+        let _code = this.parse(this.code)
+        if (!_code) return
+        return io3d.scene.validateSceneStructure(_code)
+          .then(result => {
+            console.log(result)
+            this.isValid = result.isValid
+            this.validationState = result.isValid ? 'success' : 'error'
+            if (this.isValid) this.validationMsg = 'valid Scene Structure!'
+            else {
+              this.validationMsg = `ERRORS: ${result.errors.length}\nWARNINGS: ${result.warnings.length}`
+              if (result.errors.length) {
+                result.errors.forEach(err => {
+                  this.validationMsg += `\nerror: ${err.message}`
+                })
+              }
+            }
+            return this.isValid
+          })
+      },
+      normalize: function() {
+        let _code = this.parse(this.code)
+        if (!_code) return
+        io3d.scene.normalizeSceneStructure(_code)
+          .then(result => {
+            result = result || {}
+            console.log(result)
+            this.code = JSON.stringify(result, null, '  ')
+            this.validate()
+          })
+      },
+      visualize: function() {
+        this.validate()
+          .then(isValid => {
+            if (!isValid) return
+            let _code = this.parse(this.code)
+            if (!_code) return
+            this.visualizeScene = true
+            const sceneEl = document.querySelector('a-scene')
+            addedItems.forEach(el => {
+              if (el && el.parentNode) el.parentNode.removeChild(el)
+            })
+            if (!sceneEl) {
+              console.log('no scene')
+              return
+            }
+            let elements = io3d.scene.getAframeElementsFromSceneStructure(_code)
+            if (Array.isArray(elements)) {
+              addedItems = elements
+              sceneEl.appendChild(elements[0])
+            } else {
+              addedItems = [elements]
+              sceneEl.appendChild(elements)
+            }
+          })
+
+      },
+      parse: function() {
+        let _code
+        try {
+          _code = JSON.parse(this.code)
+        } catch(err) {
+          try {
+            let _fixedCode = this.fixJson(this.code)
+            _code = JSON.parse(_fixedCode)
+            if (_code) this.code = _fixedCode
+          } catch(err) {
+            this.validationState = 'error'
+            this.validationMsg = 'Invalid JSON:\n' + err.message
+          }
+        }
+        return _code
+      },
+      // allow javascript object strings as input
+      fixJson: function(json) {
+        return json        // Replace ":" with "@colon@" if it's between double-quotes
+          .replace(/:\s*"([^"]*)"/g, function(match, p1) {
+            return ': "' + p1.replace(/:/g, '@colon@') + '"';
+          })
+
+          // Replace ":" with "@colon@" if it's between single-quotes
+          .replace(/:\s*'([^']*)'/g, function(match, p1) {
+            return ': "' + p1.replace(/:/g, '@colon@') + '"';
+          })
+
+          // Add double-quotes around any tokens before the remaining ":"
+          .replace(/(['"])?([a-z0-9A-Z_]+)(['"])?\s*:/g, '"$2": ')
+
+          // Turn "@colon@" back into ":"
+          .replace(/@colon@/g, ':')
+      }
+    }
+  })
+</script>
+</body>
+</html>

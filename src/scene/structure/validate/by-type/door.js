@@ -4,7 +4,6 @@ export default {
     v: {
       type: 'number',
       defaultValue: 3,
-      possibleValues: [3],
       optional: false,
       description: 'version'
     },

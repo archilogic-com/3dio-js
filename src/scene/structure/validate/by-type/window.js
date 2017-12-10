@@ -21,7 +21,7 @@ export default {
     side: {
       type: 'string',
       defaultValue: 'back',
-      optional: false,
+      optional: true,
       possibleValues: ['back', 'center', 'front'],
       description: 'relative position of the window inside the wall opening'
     },

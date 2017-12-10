@@ -14,6 +14,7 @@ export default {
         'interior',
         'kitchen',
         'level',
+        'object',
         'plan',
         'polybox',
         'polyfloor',
@@ -60,7 +61,7 @@ export default {
     },
     id: {
       type: 'string',
-      optional: true,
+      optional: false,
       skipInAframe: true,
       description: 'unique identifier: UUID v4'
     },
