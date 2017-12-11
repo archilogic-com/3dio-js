@@ -5,9 +5,6 @@ export default function exportSvg (args) {
     return Promise.reject('Svg export failed: invalid input')
   }
   return callService('Scene.exportSvg', {arguments: args})
-    .then(function(result) {
-      return result
-    })
     .catch(function(error) {
       console.error(error)
       return Promise.reject('Svg export failed: check console for details')
