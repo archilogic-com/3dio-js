@@ -61,7 +61,6 @@ export default function encodeBinary (data3d, options) {
             var hash = md5(array.join('-'))
 
             if (!arrayDataCache[hash]) {
-              console.log('adding to cache: '+hash)
               // add to cache
               arrayDataCache[hash] = {
                 offset: payloadLength,
@@ -71,8 +70,6 @@ export default function encodeBinary (data3d, options) {
               payloadArrays[payloadArrays.length] = array
               // increase payload offset
               payloadLength += array.length
-            } else {
-              console.log('loading from cache: '+hash)
             }
 
             // remember offset and length
