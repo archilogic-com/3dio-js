@@ -17,7 +17,7 @@ export default {
   init: function () {
     var this_ = this
     // avoid simultanous update calls
-    this.throttledUpdate = AFRAME.utils.throttle(this.update, 100, this);
+    this.throttledUpdate = AFRAME.utils.throttle(this.update, 10, this);
     // bind event listeners for child elements
     this.updateChildren()
     // listen for added or removed children
@@ -36,11 +36,17 @@ export default {
   },
 
   updateChildren: function() {
+    var this_ = this
     var children = this.el.children
     // listen to children, for updated positions
     if (children && children.length) {
       for (var i = 0; i < children.length; i++) {
-        children[i].addEventListener('componentchanged', this.throttledUpdate )
+        children[i].addEventListener('componentchanged', function() {
+          setTimeout(function() {
+            // FIXME: we need to wait till the new data is actually available
+            this_.throttledUpdate()
+          }, 20)
+        })
       }
     }
   },

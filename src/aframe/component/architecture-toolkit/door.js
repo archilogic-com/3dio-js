@@ -16,11 +16,26 @@ export default {
     var this_ = this
     // listen to wall parent for updated geometry
     this.el.parentEl.addEventListener('wall-changed', this.updateFromWall)
+    // FIXME: check for parent initially - we need to wait till it is available
+    setTimeout(function() {
+      this_.updateFromWall()
+    }, 20)
   },
 
   updateFromWall: function(evt) {
-    this.wallWidth = evt.detail.w
-    this.wallControlLine = evt.detail.controlLine
+    // if we have no event yet we need to get the attributes directly
+    if (!evt) {
+      var wallAttributes = this.el.parentEl.getAttribute('io3d-wall')
+      if (wallAttributes) {
+        // let's make sure we deal with an object
+        if (typeof wallAttributes === 'string') wallAttributes = AFRAME.utils.styleParser.parse(wallAttributes)
+        this.wallWidth = wallAttributes.w
+        this.wallControlLine = wallAttributes.controlLine
+      }
+    } else {
+      this.wallWidth = evt.detail.w
+      this.wallControlLine = evt.detail.controlLine
+    }
     this.update()
   },
 
