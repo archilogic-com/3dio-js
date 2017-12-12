@@ -69,11 +69,9 @@ function checkType(el) {
     delete data.id
   }
   if (data.type === 'polyfloor') {
-    var _poly = [], poly = data.polygon
-    for (var i = 0; i < poly.length; i += 2) {
-      _poly.push([parseFloat(poly[i]), parseFloat(poly[i + 1])])
-    }
-    data.polygon = _poly
+    data.polygon = data.polygon.map(function(p) {
+      return [parseFloat(p[0]), parseFloat(p[1])]
+    })
   }
   return data
 }
