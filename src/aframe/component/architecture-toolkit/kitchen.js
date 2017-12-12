@@ -83,7 +83,7 @@ export default {
 
       // create new one
       this_.mesh = new THREE.Object3D()
-      this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh})
+      this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh})
 
       // update view
       this_.data3dView.set(data3d)
