@@ -105,11 +105,11 @@ export default {
     }
 
     // prepare format
-    var vertices = a.polygon //[]
-    // for (var i = 0, l = a.polygon.length; i < l; i++) {
-    //   vertices[ i * 2 ] = a.polygon[ i ][ 0 ]
-    //   vertices[ i * 2 + 1 ] = a.polygon[ i ][ 1 ]
-    // }
+    var vertices = []
+    for (var i = 0, l = a.polygon.length; i < l; i++) {
+      vertices[ i * 2 ] = a.polygon[ i ][ 0 ]
+      vertices[ i * 2 + 1 ] = a.polygon[ i ][ 1 ]
+    }
 
     // top polygon
     var topPolygon = generatePolygonBuffer({
