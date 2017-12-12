@@ -9,7 +9,8 @@ export default function searchFurniture (query, options) {
   // API
   options = options || {}
   var limit = options.limit || 50
-  var offset = options.offset || 0
+  // TODO: add this param once #251 https://github.com/archilogic-com/services/issues/251 is resolved
+  //var offset = options.offset || 0
 
   // internals
   var apiErrorCount = 0
@@ -20,8 +21,9 @@ export default function searchFurniture (query, options) {
       // only published furniture & let's make sure we don't have trailing or double spaces
       query: 'isPublished:true ' + query.trim().replace(/\s+/g, ' ')
     },
-    limit: 500,
-    offset: offset
+    limit: 500
+    // TODO: add this param once #251 https://github.com/archilogic-com/services/issues/251 is resolved
+    //offset: offset
   }
 
   // extract dimension queries for range search
