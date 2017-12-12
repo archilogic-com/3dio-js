@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.13
- * @date 2017/12/12 10:30
+ * @date 2017/12/12 17:14
  * @branch architectural-toolkit
- * @commit 75c40649fc4347bc78957405f04239163ceac31d
+ * @commit 7b4262a78eb78f3f5f2556eb77d61d4467050ceb
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/12/12 10:30', GIT_BRANCH = 'architectural-toolkit', GIT_COMMIT = '75c40649fc4347bc78957405f04239163ceac31d'
+	var BUILD_DATE='2017/12/12 17:14', GIT_BRANCH = 'architectural-toolkit', GIT_COMMIT = '7b4262a78eb78f3f5f2556eb77d61d4467050ceb'
 
 	var name = "3dio";
 	var version = "1.0.13";
@@ -19594,6 +19594,12 @@
 	var box = {
 	  description: 'simple box object',
 	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      description: 'version'
+	    },
 	    l: { // length in meters
 	      type: 'number',
 	      defaultValue: 1,
@@ -19605,14 +19611,14 @@
 	      type: 'number',
 	      defaultValue: 1,
 	      optional: false,
-	      min: 0.01, // 1cm
+	      min: 0.01,
 	      description: 'width'
 	    },
 	    h: { // height in meters
 	      type: 'number',
 	      defaultValue: 1,
 	      optional: false,
-	      min: 0.01, // 1cm
+	      min: 0.01,
 	      description: 'height'
 	    }
 	  },
@@ -19626,6 +19632,12 @@
 	var cameraBookmark = {
 	  description: 'preset camera positions for animations and navigation',
 	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      description: 'version'
+	    },
 	    rx: {
 	      type: 'number',
 	      defaultValue: 0,
@@ -19655,6 +19667,12 @@
 	var closet = {
 	  description: 'parametric closet with segmentation targeting 0.6m',
 	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: true,
+	      description: 'version'
+	    },
 	    l: { // length in meters
 	      type: 'number',
 	      defaultValue: 1.8,
@@ -19722,6 +19740,12 @@
 	var column = {
 	  description: 'simple structural column object, round or square',
 	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: true,
+	      description: 'version'
+	    },
 	    l: { // diameter
 	      type: 'number',
 	      defaultValue: 0.2,
@@ -19758,6 +19782,12 @@
 	var curtain = {
 	  description: 'curtain with random folds',
 	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: true,
+	      description: 'version'
+	    },
 	    l: { // length in meters
 	      type: 'number',
 	      defaultValue: 1.8,
@@ -19898,18 +19928,24 @@
 	var floor = {
 	  description: 'rectangular floor with optional ceiling',
 	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      description: 'version'
+	    },
 	    w: { // width in meters
 	      type: 'number',
 	      defaultValue: 4,
 	      optional: false,
-	      min: 0.01, // 1cm
+	      min: 0.01,
 	      description: 'width'
 	    },
 	    h: { // height in meters
 	      type: 'number',
 	      defaultValue: 0.2,
 	      optional: false,
-	      min: 0.01, // 1cm
+	      min: 0.01,
 	      description: 'height'
 	    },
 	    l: { // length in meters
@@ -19942,10 +19978,16 @@
 	var floorplan = {
 	  description: 'reference to a floor plan image',
 	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      description: 'version'
+	    },
 	    w: { // width in meters
 	      type: 'number',
 	      optional: false,
-	      min: 0.01 // 1cm
+	      min: 0.01
 	    },
 	    l: { // length in meters
 	      type: 'number',
@@ -20004,17 +20046,23 @@
 	var kitchen = {
 	  description: 'parametric kitchen with vast configuration options',
 	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 2,
+	      optional: true,
+	      description: 'version'
+	    },
 	    w: { // width in meters
 	      type: 'number',
 	      defaultValue: 0.6,
 	      optional: false,
-	      min: 0.01 // 1cm
+	      min: 0.01
 	    },
 	    h: { // height in meters
 	      type: 'number',
 	      defaultValue: 2.4,
 	      optional: false,
-	      min: 0.01 // 1cm
+	      min: 0.01
 	    },
 	    l: {
 	      type: 'number',
@@ -20241,11 +20289,17 @@
 	var polybox = {
 	  description: 'polygonal extrusion object',
 	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: true,
+	      description: 'version'
+	    },
 	    h: { // height in meters
 	      type: 'number',
 	      defaultValue: 1,
 	      optional: false,
-	      min: 0.01 // 1cm
+	      min: 0.01
 	    },
 	    polygon: {
 	      //type: 'array-with-arrays-with-numbers',
@@ -20264,11 +20318,17 @@
 	var polyfloor = {
 	  description: 'polygonal floor with optional ceiling',
 	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      description: 'version'
+	    },
 	    h: { // height in meters
 	      type: 'number',
 	      defaultValue: 0.2,
 	      optional: false,
-	      min: 0.01, // 1cm
+	      min: 0.01,
 	      description: 'height'
 	    },
 	    polygon: {
@@ -20276,13 +20336,13 @@
 	      type: 'array',
 	      // aframeType: 'string',
 	      defaultValue: [[1.5,1.5], [1.5,-1.5], [-1.5,-1.5], [-1.5,1.5]],
-	      aframeDefault: '[ 1.5,1.5,1.5,-1.5,-1.5,-1.5,-1.5,1.5 ]',
+	      aframeDefault: '[[1.5,1.5], [1.5,-1.5], [-1.5,-1.5], [-1.5,1.5]]',
 	      optional: false,
 	      description: 'outer polygon',
 	      parse: function(val) {
 	        if (!/^\[.+\]/.test(val)) {
 	          console.warn('invalid input for polyfloor polygon', val);
-	          return [ 1 ]
+	          return [[1.5,1.5], [1.5,-1.5], [-1.5,-1.5], [-1.5,1.5]]
 	        }
 	        return JSON.parse(val)
 	      }
@@ -20319,6 +20379,12 @@
 	var railing = {
 	  description: 'segmented or solid railing',
 	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      description: 'version'
+	    },
 	    w: { // width in meters
 	      type: 'number',
 	      defaultValue: 0.05,
@@ -20382,17 +20448,23 @@
 	var stairs = {
 	  description: 'all kinds of stairs types',
 	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: true,
+	      description: 'version'
+	    },
 	    w: { // width in meters
 	      type: 'number',
 	      defaultValue: 1.2,
 	      optional: false,
-	      min: 0.01 // 1cm
+	      min: 0.01
 	    },
 	    h: { // height in meters
 	      type: 'number',
 	      defaultValue: 2.4,
 	      optional: false,
-	      min: 0.01 // 1cm
+	      min: 0.01
 	    },
 	    l: { // length in meters
 	      type: 'number',
@@ -20446,6 +20518,12 @@
 	var tag = {
 	  description: 'all kinds of stairs types',
 	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      description: 'version'
+	    },
 	    title: {
 	      type: 'string',
 	      optional: false
@@ -20462,6 +20540,12 @@
 	var wall = {
 	  description: 'structural wall, can contains doors and windows',
 	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      description: 'version'
+	    },
 	    w: { // width in meters
 	      type: 'number',
 	      defaultValue: 0.15,
@@ -20525,6 +20609,12 @@
 	var window$1 = {
 	  description: 'window with optional segmentation',
 	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      description: 'version'
+	    },
 	    y: {
 	      defaultValue: 0.8,
 	    },
@@ -23295,7 +23385,7 @@
 
 	    // create new one
 	    this_.mesh = new THREE.Object3D();
-	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
+	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
 
 	    // update view
 	    this_.data3dView.set(data3d);
@@ -24893,7 +24983,7 @@
 
 	    // create new one
 	    this_.mesh = new THREE.Object3D();
-	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
+	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
 
 	    // update view
 	    this_.data3dView.set(data3d);
@@ -25040,11 +25130,26 @@
 	    var this_ = this;
 	    // listen to wall parent for updated geometry
 	    this.el.parentEl.addEventListener('wall-changed', this.updateFromWall);
+	    // FIXME: check for parent initially - we need to wait till it is available
+	    setTimeout(function() {
+	      this_.updateFromWall();
+	    }, 20);
 	  },
 
 	  updateFromWall: function(evt) {
-	    this.wallWidth = evt.detail.w;
-	    this.wallControlLine = evt.detail.controlLine;
+	    // if we have no event yet we need to get the attributes directly
+	    if (!evt) {
+	      var wallAttributes = this.el.parentEl.getAttribute('io3d-wall');
+	      if (wallAttributes) {
+	        // let's make sure we deal with an object
+	        if (typeof wallAttributes === 'string') wallAttributes = AFRAME.utils.styleParser.parse(wallAttributes);
+	        this.wallWidth = wallAttributes.w;
+	        this.wallControlLine = wallAttributes.controlLine;
+	      }
+	    } else {
+	      this.wallWidth = evt.detail.w;
+	      this.wallControlLine = evt.detail.controlLine;
+	    }
 	    this.update();
 	  },
 
@@ -25108,7 +25213,7 @@
 
 	    // create new one
 	    this_.mesh = new THREE.Object3D();
-	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
+	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
 
 	    // update view
 	    this_.data3dView.set(data3d);
@@ -26286,7 +26391,7 @@
 
 	    // create new one
 	    this_.mesh = new THREE.Object3D();
-	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
+	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
 
 	    // update view
 	    this_.data3dView.set(data3d);
@@ -27738,7 +27843,7 @@
 
 	      // create new one
 	      this_.mesh = new THREE.Object3D();
-	      this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
+	      this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
 
 	      // update view
 	      this_.data3dView.set(data3d);
@@ -29761,7 +29866,7 @@
 
 	    // create new one
 	    this_.mesh = new THREE.Object3D();
-	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
+	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
 
 	    // update view
 	    this_.data3dView.set(data3d);
@@ -29795,11 +29900,11 @@
 	    }
 
 	    // prepare format
-	    var vertices = a.polygon; //[]
-	    // for (var i = 0, l = a.polygon.length; i < l; i++) {
-	    //   vertices[ i * 2 ] = a.polygon[ i ][ 0 ]
-	    //   vertices[ i * 2 + 1 ] = a.polygon[ i ][ 1 ]
-	    // }
+	    var vertices = [];
+	    for (var i = 0, l = a.polygon.length; i < l; i++) {
+	      vertices[ i * 2 ] = a.polygon[ i ][ 0 ];
+	      vertices[ i * 2 + 1 ] = a.polygon[ i ][ 1 ];
+	    }
 
 	    // top polygon
 	    var topPolygon = generatePolygonBuffer({
@@ -29920,7 +30025,7 @@
 
 	    // create new one
 	    this_.mesh = new THREE.Object3D();
-	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
+	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
 
 	    // update view
 	    this_.data3dView.set(data3d);
@@ -30291,7 +30396,7 @@
 
 	    // create new one
 	    this_.mesh = new THREE.Object3D();
-	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
+	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
 
 	    // update view
 	    this_.data3dView.set(data3d);
@@ -31980,7 +32085,7 @@
 	  init: function () {
 	    var this_ = this;
 	    // avoid simultanous update calls
-	    this.throttledUpdate = AFRAME.utils.throttle(this.update, 100, this);
+	    this.throttledUpdate = AFRAME.utils.throttle(this.update, 10, this);
 	    // bind event listeners for child elements
 	    this.updateChildren();
 	    // listen for added or removed children
@@ -31999,11 +32104,17 @@
 	  },
 
 	  updateChildren: function() {
+	    var this_ = this;
 	    var children = this.el.children;
 	    // listen to children, for updated positions
 	    if (children && children.length) {
 	      for (var i = 0; i < children.length; i++) {
-	        children[i].addEventListener('componentchanged', this.throttledUpdate );
+	        children[i].addEventListener('componentchanged', function() {
+	          setTimeout(function() {
+	            // FIXME: we need to wait till the new data is actually available
+	            this_.throttledUpdate();
+	          }, 20);
+	        });
 	      }
 	    }
 	  },
@@ -32087,7 +32198,7 @@
 
 	    // create new one
 	    this_.mesh = new THREE.Object3D();
-	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
+	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
 
 	    // update view
 	    this_.data3dView.set(data3d);
@@ -33794,11 +33905,26 @@
 	    var this_ = this;
 	    // listen to wall parent for updated geometry
 	    this.el.parentEl.addEventListener('wall-changed', this.updateFromWall);
+	    // FIXME: check for parent initially - we need to wait till it is available
+	    setTimeout(function() {
+	      this_.updateFromWall();
+	    }, 20);
 	  },
 
 	  updateFromWall: function(evt) {
-	    this.wallWidth = evt.detail.w;
-	    this.wallControlLine = evt.detail.controlLine;
+	    // if we have no event yet we need to get the attributes directly
+	    if (!evt) {
+	      var wallAttributes = this.el.parentEl.getAttribute('io3d-wall');
+	      if (wallAttributes) {
+	        // let's make sure we deal with an object
+	        if (typeof wallAttributes === 'string') wallAttributes = AFRAME.utils.styleParser.parse(wallAttributes);
+	        this.wallWidth = wallAttributes.w;
+	        this.wallControlLine = wallAttributes.controlLine;
+	      }
+	    } else {
+	      this.wallWidth = evt.detail.w;
+	      this.wallControlLine = evt.detail.controlLine;
+	    }
 	    this.update();
 	  },
 
@@ -33869,7 +33995,7 @@
 
 	    // create new one
 	    this_.mesh = new THREE.Object3D();
-	    this_.data3dView = new IO3D.aFrame.three.Data3dView({parent: this_.mesh});
+	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
 
 	    // update view
 	    this_.data3dView.set(data3d);
@@ -36357,8 +36483,7 @@
 	  // API
 	  options = options || {};
 	  var limit = options.limit || 50;
-	  // TODO: add this param once #251 https://github.com/archilogic-com/services/issues/251 is resolved
-	  //var offset = options.offset || 0
+	  var offset = options.offset || 0;
 
 	  // internals
 	  var apiErrorCount = 0;
@@ -36369,9 +36494,8 @@
 	      // only published furniture & let's make sure we don't have trailing or double spaces
 	      query: 'isPublished:true ' + query.trim().replace(/\s+/g, ' ')
 	    },
-	    limit: 500
-	    // TODO: add this param once #251 https://github.com/archilogic-com/services/issues/251 is resolved
-	    //offset: offset
+	    limit: 500,
+	    offset: offset
 	  };
 
 	  // extract dimension queries for range search
@@ -37153,7 +37277,7 @@
 	        // materials have to be serialized
 	        if (param === 'materials') attributes['io3d-' + type] += stringifyMaterials(element3d.materials);
 	        // polygons have to be serialized
-	        else if (param === 'polygon') attributes['io3d-' + type] += param + ': ' + JSON.stringify([].concat.apply([], element3d.polygon)) + '; ';
+	        else if (param === 'polygon') attributes['io3d-' + type] += param + ': ' + JSON.stringify(element3d.polygon) + '; ';
 	        // stringify window segmentation arrays
 	        else if (param === 'columnRatios' || param === 'rowRatios') attributes['io3d-' + type] += param + ': ' + JSON.stringify(element3d[param]) + '; ';
 	        // skip plan and level and map all remaining params
