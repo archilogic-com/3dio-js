@@ -11,6 +11,7 @@ export default function furnish (sceneStructure, options) {
     options = options || {},
     spaceId = options.spaceId,
     label = options.label,
+    tags = options.tags || ['generic'],
     spaceLabels = {}
 
   // make sure we're having a plan and a level object
@@ -32,8 +33,8 @@ export default function furnish (sceneStructure, options) {
       var params = {
         floors: spaceLabels,
         modelStructure: result,
-        maxResults: 1,
-        tags: ['generic']
+        maxResults: 3,
+        tags: tags
       }
 
       // do the actual home staging api call

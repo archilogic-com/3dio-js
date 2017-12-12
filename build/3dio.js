@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.13
- * @date 2017/12/10 10:43
+ * @date 2017/12/12 10:30
  * @branch architectural-toolkit
- * @commit b3197e36720ea4e4ed89eebf10cd52d599721700
+ * @commit 75c40649fc4347bc78957405f04239163ceac31d
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/12/10 10:43', GIT_BRANCH = 'architectural-toolkit', GIT_COMMIT = 'b3197e36720ea4e4ed89eebf10cd52d599721700'
+	var BUILD_DATE='2017/12/12 10:30', GIT_BRANCH = 'architectural-toolkit', GIT_COMMIT = '75c40649fc4347bc78957405f04239163ceac31d'
 
 	var name = "3dio";
 	var version = "1.0.13";
@@ -25039,11 +25039,13 @@
 	  init: function () {
 	    var this_ = this;
 	    // listen to wall parent for updated geometry
-	    this.el.parentEl.addEventListener('wall-changed', function(evt) {
-	      this_.wallWidth = evt.detail.w;
-	      this_.wallControlLine = evt.detail.controlLine;
-	      this_.update();
-	    });
+	    this.el.parentEl.addEventListener('wall-changed', this.updateFromWall);
+	  },
+
+	  updateFromWall: function(evt) {
+	    this.wallWidth = evt.detail.w;
+	    this.wallControlLine = evt.detail.controlLine;
+	    this.update();
 	  },
 
 	  updateSchema: updateSchema,
@@ -25116,6 +25118,7 @@
 	  },
 
 	  remove: function () {
+	    this.el.parentEl.removeEventListener('wall-changed', this.updateFromWall);
 	    if (this.data3dView) {
 	      this.data3dView.destroy();
 	      this.data3dView = null;
@@ -25129,7 +25132,7 @@
 	  generateMeshes3d: function () {
 	    var a = this.attributes;
 
-	    var wallWidth = 0.15;
+	    var wallWidth = a.w || 0.15;
 	    var wallControlLine = 'back';
 	    // get parent wall attributes
 	    if (this.wallWidth || this.wallControlLine) {
@@ -31976,13 +31979,31 @@
 
 	  init: function () {
 	    var this_ = this;
-	    var children = this_.el.children;
+	    // avoid simultanous update calls
+	    this.throttledUpdate = AFRAME.utils.throttle(this.update, 100, this);
+	    // bind event listeners for child elements
+	    this.updateChildren();
+	    // listen for added or removed children
+	    this.el.addEventListener('child-attached', function(evt) {
+	      // wait for a bit to make sure the child component is set up
+	      setTimeout(function() {
+	        this_.throttledUpdate();
+	        this_.updateChildren();
+	      }, 10);
+	    });
+	    this.el.addEventListener('child-detached', function(evt) {
+	      setTimeout(function() {
+	        this_.throttledUpdate();
+	      }, 10);
+	    });
+	  },
+
+	  updateChildren: function() {
+	    var children = this.el.children;
 	    // listen to children, for updated positions
 	    if (children && children.length) {
 	      for (var i = 0; i < children.length; i++) {
-	        children[i].addEventListener('componentchanged', function (evt) {
-	          this_.update();
-	        });
+	        children[i].addEventListener('componentchanged', this.throttledUpdate );
 	      }
 	    }
 	  },
@@ -33772,11 +33793,13 @@
 	  init: function () {
 	    var this_ = this;
 	    // listen to wall parent for updated geometry
-	    this.el.parentEl.addEventListener('wall-changed', function(evt) {
-	      this_.wallWidth = evt.detail.w;
-	      this_.wallControlLine = evt.detail.controlLine;
-	      this_.update();
-	    });
+	    this.el.parentEl.addEventListener('wall-changed', this.updateFromWall);
+	  },
+
+	  updateFromWall: function(evt) {
+	    this.wallWidth = evt.detail.w;
+	    this.wallControlLine = evt.detail.controlLine;
+	    this.update();
 	  },
 
 	  updateSchema: updateSchema,
@@ -33856,6 +33879,7 @@
 	  },
 
 	  remove: function () {
+	    this.el.parentEl.removeEventListener('wall-changed', this.updateFromWall);
 	    if (this.data3dView) {
 	      this.data3dView.destroy();
 	      this.data3dView = null;
@@ -33868,7 +33892,7 @@
 
 	  generateMeshes3d: function () {
 	    var a = this.attributes;
-	    var wallWidth = 0.15;
+	    var wallWidth = a.w || 0.15;
 	    var wallControlLine = 'back';
 	    // get parent wall attributes
 	    if (this.wallWidth || this.wallControlLine) {
@@ -36540,6 +36564,7 @@
 	    options = options || {},
 	    spaceId = options.spaceId,
 	    label = options.label,
+	    tags = options.tags || ['generic'],
 	    spaceLabels = {};
 
 	  // make sure we're having a plan and a level object
@@ -36561,8 +36586,8 @@
 	      var params = {
 	        floors: spaceLabels,
 	        modelStructure: result,
-	        maxResults: 1,
-	        tags: ['generic']
+	        maxResults: 3,
+	        tags: tags
 	      };
 
 	      // do the actual home staging api call
@@ -37185,6 +37210,11 @@
 	  // toggle visibility
 	  if (element3d.bake && element3d.bakeStatus === 'done') attributes.visible = false;
 	  if (element3d.visible && !element3d.visible.bird && !element3d.visible.person && !element3d.visible.floorplan) attributes.visible = false;
+	  // make sure we have a valid position
+	  element3d.x = element3d.x || 0;
+	  element3d.y = element3d.y || 0;
+	  element3d.z = element3d.z || 0;
+	  element3d.ry = element3d.ry|| 0;
 	  // stringify location objects
 	  attributes.position = element3d.x + ' ' + element3d.y + ' ' + element3d.z;
 	  attributes.rotation = (element3d.rx || 0) + ' ' + element3d.ry + ' 0';
@@ -40012,7 +40042,6 @@
 	            var hash = md5(array.join('-'));
 
 	            if (!arrayDataCache[hash]) {
-	              console.log('adding to cache: '+hash);
 	              // add to cache
 	              arrayDataCache[hash] = {
 	                offset: payloadLength,
@@ -40022,8 +40051,6 @@
 	              payloadArrays[payloadArrays.length] = array;
 	              // increase payload offset
 	              payloadLength += array.length;
-	            } else {
-	              console.log('loading from cache: '+hash);
 	            }
 
 	            // remember offset and length
@@ -40595,9 +40622,6 @@
 	    return Promise.reject('Svg export failed: invalid input')
 	  }
 	  return callService('Scene.exportSvg', {arguments: args})
-	    .then(function(result) {
-	      return result
-	    })
 	    .catch(function(error) {
 	      console.error(error);
 	      return Promise.reject('Svg export failed: check console for details')
