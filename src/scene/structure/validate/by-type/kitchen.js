@@ -1,6 +1,12 @@
 export default {
   description: 'parametric kitchen with vast configuration options',
   params: {
+    v: {
+      type: 'number',
+      defaultValue: 2,
+      optional: true,
+      description: 'version'
+    },
     w: { // width in meters
       type: 'number',
       defaultValue: 0.6,

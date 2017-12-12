@@ -1,6 +1,12 @@
 export default {
   description: 'preset camera positions for animations and navigation',
   params: {
+    v: {
+      type: 'number',
+      defaultValue: 0,
+      optional: true,
+      description: 'version'
+    },
     rx: {
       type: 'number',
       defaultValue: 0,

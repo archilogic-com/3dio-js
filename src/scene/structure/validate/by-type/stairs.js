@@ -1,6 +1,12 @@
 export default {
   description: 'all kinds of stairs types',
   params: {
+    v: {
+      type: 'number',
+      defaultValue: 1,
+      optional: true,
+      description: 'version'
+    },
     w: { // width in meters
       type: 'number',
       defaultValue: 1.2,

@@ -1,6 +1,12 @@
 export default {
   description: 'simple structural column object, round or square',
   params: {
+    v: {
+      type: 'number',
+      defaultValue: 1,
+      optional: true,
+      description: 'version'
+    },
     l: { // diameter
       type: 'number',
       defaultValue: 0.2,

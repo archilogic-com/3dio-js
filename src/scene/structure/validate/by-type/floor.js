@@ -1,6 +1,12 @@
 export default  {
   description: 'rectangular floor with optional ceiling',
   params: {
+    v: {
+      type: 'number',
+      defaultValue: 0,
+      optional: true,
+      description: 'version'
+    },
     w: { // width in meters
       type: 'number',
       defaultValue: 4,

@@ -1,6 +1,12 @@
 export default {
   description: 'window with optional segmentation',
   params: {
+    v: {
+      type: 'number',
+      defaultValue: 0,
+      optional: true,
+      description: 'version'
+    },
     y: {
       defaultValue: 0.8,
     },

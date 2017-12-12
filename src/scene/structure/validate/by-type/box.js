@@ -1,6 +1,12 @@
 export default {
   description: 'simple box object',
   params: {
+    v: {
+      type: 'number',
+      defaultValue: 0,
+      optional: true,
+      description: 'version'
+    },
     l: { // length in meters
       type: 'number',
       defaultValue: 1,

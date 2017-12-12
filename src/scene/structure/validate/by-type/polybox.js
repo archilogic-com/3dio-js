@@ -1,6 +1,12 @@
 export default  {
   description: 'polygonal extrusion object',
   params: {
+    v: {
+      type: 'number',
+      defaultValue: 1,
+      optional: true,
+      description: 'version'
+    },
     h: { // height in meters
       type: 'number',
       defaultValue: 1,

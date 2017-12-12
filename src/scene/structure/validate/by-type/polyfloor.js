@@ -1,6 +1,12 @@
 export default {
   description: 'polygonal floor with optional ceiling',
   params: {
+    v: {
+      type: 'number',
+      defaultValue: 0,
+      optional: true,
+      description: 'version'
+    },
     h: { // height in meters
       type: 'number',
       defaultValue: 0.2,

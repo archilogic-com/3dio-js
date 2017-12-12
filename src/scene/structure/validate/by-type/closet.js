@@ -1,6 +1,12 @@
 export default {
   description: 'parametric closet with segmentation targeting 0.6m',
   params: {
+    v: {
+      type: 'number',
+      defaultValue: 1,
+      optional: true,
+      description: 'version'
+    },
     l: { // length in meters
       type: 'number',
       defaultValue: 1.8,
