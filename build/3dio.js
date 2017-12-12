@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.1.0
- * @date 2017/12/12 17:27
+ * @version 1.1.1
+ * @date 2017/12/13 00:22
  * @branch master
- * @commit 35060d9d0f2bbc4866cfdd4f4998244490d61051
+ * @commit d76db189955ba44c1ba82ac496eb94757c64c63c
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/12/12 17:27', GIT_BRANCH = 'master', GIT_COMMIT = '35060d9d0f2bbc4866cfdd4f4998244490d61051'
+	var BUILD_DATE='2017/12/13 00:22', GIT_BRANCH = 'master', GIT_COMMIT = 'd76db189955ba44c1ba82ac496eb94757c64c63c'
 
 	var name = "3dio";
-	var version = "1.1.0";
+	var version = "1.1.1";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d", "aframe", "cardboard", "components", "oculus", "vive", "rift", "vr", "WebVR", "WegGL", "three", "three.js", "3D model", "api", "visualization", "furniture", "real estate", "interior", "building", "architecture", "3d.io"];
 	var homepage = "https://3d.io";
@@ -502,6 +502,8 @@
 	};
 
 	var rxSubscriber = createCommonjsModule(function (module, exports) {
+	  "use strict";
+
 	  var _Symbol = root.root.Symbol;
 	  exports.rxSubscriber = typeof _Symbol === 'function' && typeof _Symbol.for === 'function' ? _Symbol.for('rxSubscriber') : '@@rxSubscriber';
 	  /**
@@ -510,9 +512,6 @@
 	  exports.$$rxSubscriber = exports.rxSubscriber;
 	  
 	});
-
-	var rxSubscriber_1 = rxSubscriber.rxSubscriber;
-	var rxSubscriber_2 = rxSubscriber.$$rxSubscriber;
 
 	var __extends$2 = commonjsGlobal && commonjsGlobal.__extends || function (d, b) {
 	    for (var p in b) {
@@ -800,6 +799,8 @@
 	};
 
 	var observable = createCommonjsModule(function (module, exports) {
+	    "use strict";
+
 	    function getSymbolObservable(context) {
 	        var $$observable;
 	        var _Symbol = context.Symbol;
@@ -823,10 +824,6 @@
 	    exports.$$observable = exports.observable;
 	    
 	});
-
-	var observable_1 = observable.getSymbolObservable;
-	var observable_2 = observable.observable;
-	var observable_3 = observable.$$observable;
 
 	/* tslint:disable:no-empty */
 
@@ -1647,7 +1644,7 @@
 	    !function (e) {
 	        module.exports = e();
 	    }(function () {
-	        return function e(t, n, r) {
+	        var define, module, exports;return function e(t, n, r) {
 	            function s(o, u) {
 	                if (!n[o]) {
 	                    if (!t[o]) {
@@ -1660,6 +1657,8 @@
 	                s(r[o]);
 	            }return s;
 	        }({ 1: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise) {
 	                    var SomePromiseArray = Promise._SomePromiseArray;
 	                    function any(promises) {
@@ -1680,6 +1679,8 @@
 	                    };
 	                };
 	            }, {}], 2: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                var firstLineError;
 	                try {
 	                    throw new Error();
@@ -1845,6 +1846,8 @@
 	                module.exports = Async;
 	                module.exports.firstLineError = firstLineError;
 	            }, { "./queue": 26, "./schedule": 29, "./util": 36 }], 3: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, INTERNAL, tryConvertToPromise, debug) {
 	                    var calledBind = false;
 	                    var rejectThis = function rejectThis(_, e) {
@@ -1911,6 +1914,8 @@
 	                    };
 	                };
 	            }, {}], 4: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                var old;
 	                if (typeof Promise !== "undefined") old = Promise;
 	                function noConflict() {
@@ -1923,6 +1928,8 @@
 	                bluebird.noConflict = noConflict;
 	                module.exports = bluebird;
 	            }, { "./promise": 22 }], 5: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                var cr = Object.create;
 	                if (cr) {
 	                    var callerCache = cr(null);
@@ -1935,6 +1942,7 @@
 	                    var canEvaluate = util.canEvaluate;
 	                    var isIdentifier = util.isIdentifier;
 
+	                    var getMethodCaller;
 	                    var getGetter;
 	                    function ensureMethod(obj, methodName) {
 	                        var fn;
@@ -1982,6 +1990,8 @@
 	                    };
 	                };
 	            }, { "./util": 36 }], 6: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, PromiseArray, apiRejection, debug) {
 	                    var util = _dereq_("./util");
 	                    var tryCatch = util.tryCatch;
@@ -2109,6 +2119,8 @@
 	                    };
 	                };
 	            }, { "./util": 36 }], 7: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (NEXT_FILTER) {
 	                    var util = _dereq_("./util");
 	                    var getKeys = _dereq_("./es5").keys;
@@ -2150,6 +2162,8 @@
 	                    return catchFilter;
 	                };
 	            }, { "./es5": 13, "./util": 36 }], 8: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise) {
 	                    var longStackTraces = false;
 	                    var contextStack = [];
@@ -2221,6 +2235,8 @@
 	                    return Context;
 	                };
 	            }, {}], 9: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, Context) {
 	                    var getDomain = Promise._getDomain;
 	                    var async = Promise._async;
@@ -3097,6 +3113,8 @@
 	                    };
 	                };
 	            }, { "./errors": 12, "./util": 36 }], 10: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise) {
 	                    function returner() {
 	                        return this.value;
@@ -3141,6 +3159,8 @@
 	                    };
 	                };
 	            }, {}], 11: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, INTERNAL) {
 	                    var PromiseReduce = Promise.reduce;
 	                    var PromiseAll = Promise.all;
@@ -3168,6 +3188,8 @@
 	                    Promise.mapSeries = PromiseMapSeries;
 	                };
 	            }, {}], 12: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                var es5 = _dereq_("./es5");
 	                var Objectfreeze = es5.freeze;
 	                var util = _dereq_("./util");
@@ -3281,6 +3303,8 @@
 	                };
 	            }, { "./es5": 13, "./util": 36 }], 13: [function (_dereq_, module, exports) {
 	                var isES5 = function () {
+	                    "use strict";
+
 	                    return this === undefined;
 	                }();
 
@@ -3358,6 +3382,8 @@
 	                    };
 	                }
 	            }, {}], 14: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, INTERNAL) {
 	                    var PromiseMap = Promise.map;
 
@@ -3370,6 +3396,8 @@
 	                    };
 	                };
 	            }, {}], 15: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, tryConvertToPromise, NEXT_FILTER) {
 	                    var util = _dereq_("./util");
 	                    var CancellationError = Promise.CancellationError;
@@ -3493,6 +3521,8 @@
 	                    return PassThroughHandlerContext;
 	                };
 	            }, { "./catch_filter": 7, "./util": 36 }], 16: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, apiRejection, INTERNAL, tryConvertToPromise, Proxyable, debug) {
 	                    var errors = _dereq_("./errors");
 	                    var TypeError = errors.TypeError;
@@ -3690,11 +3720,15 @@
 	                    };
 	                };
 	            }, { "./errors": 12, "./util": 36 }], 17: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, PromiseArray, tryConvertToPromise, INTERNAL, async, getDomain) {
 	                    var util = _dereq_("./util");
 	                    var canEvaluate = util.canEvaluate;
 	                    var tryCatch = util.tryCatch;
 	                    var errorObj = util.errorObj;
+	                    var reject;
+
 	                    Promise.join = function () {
 	                        var last = arguments.length - 1;
 	                        var fn;
@@ -3711,6 +3745,8 @@
 	                    };
 	                };
 	            }, { "./util": 36 }], 18: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, PromiseArray, apiRejection, tryConvertToPromise, INTERNAL, debug) {
 	                    var getDomain = Promise._getDomain;
 	                    var util = _dereq_("./util");
@@ -3860,6 +3896,8 @@
 	                    };
 	                };
 	            }, { "./util": 36 }], 19: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, INTERNAL, tryConvertToPromise, apiRejection, debug) {
 	                    var util = _dereq_("./util");
 	                    var tryCatch = util.tryCatch;
@@ -3911,6 +3949,8 @@
 	                    };
 	                };
 	            }, { "./util": 36 }], 20: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                var util = _dereq_("./util");
 	                var maybeWrapAsError = util.maybeWrapAsError;
 	                var errors = _dereq_("./errors");
@@ -3961,6 +4001,8 @@
 
 	                module.exports = nodebackForPromise;
 	            }, { "./errors": 12, "./es5": 13, "./util": 36 }], 21: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise) {
 	                    var util = _dereq_("./util");
 	                    var async = Promise._async;
@@ -4009,6 +4051,8 @@
 	                    };
 	                };
 	            }, { "./util": 36 }], 22: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function () {
 	                    var makeSelfResolutionError = function makeSelfResolutionError() {
 	                        return new TypeError('circular promise resolution chain\n\n    See http://goo.gl/MqrFmX\n');
@@ -4743,6 +4787,8 @@
 	                    return Promise;
 	                };
 	            }, { "./any.js": 1, "./async": 2, "./bind": 3, "./call_get.js": 5, "./cancel": 6, "./catch_filter": 7, "./context": 8, "./debuggability": 9, "./direct_resolve": 10, "./each.js": 11, "./errors": 12, "./es5": 13, "./filter.js": 14, "./finally": 15, "./generators.js": 16, "./join": 17, "./map.js": 18, "./method": 19, "./nodeback": 20, "./nodeify.js": 21, "./promise_array": 23, "./promisify.js": 24, "./props.js": 25, "./race.js": 27, "./reduce.js": 28, "./settle.js": 30, "./some.js": 31, "./synchronous_inspection": 32, "./thenables": 33, "./timers.js": 34, "./using.js": 35, "./util": 36 }], 23: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, INTERNAL, tryConvertToPromise, apiRejection, Proxyable) {
 	                    var util = _dereq_("./util");
 	                    var isArray = util.isArray;
@@ -4922,6 +4968,8 @@
 	                    return PromiseArray;
 	                };
 	            }, { "./util": 36 }], 24: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, INTERNAL) {
 	                    var THIS = {};
 	                    var util = _dereq_("./util");
@@ -5089,6 +5137,8 @@
 	                    };
 	                };
 	            }, { "./errors": 12, "./nodeback": 20, "./util": 36 }], 25: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, PromiseArray, tryConvertToPromise, apiRejection) {
 	                    var util = _dereq_("./util");
 	                    var isObject = util.isObject;
@@ -5205,6 +5255,8 @@
 	                    };
 	                };
 	            }, { "./es5": 13, "./util": 36 }], 26: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                function arrayMove(src, srcIndex, dst, dstIndex, len) {
 	                    for (var j = 0; j < len; ++j) {
 	                        dst[j + dstIndex] = src[j + srcIndex];
@@ -5278,6 +5330,8 @@
 
 	                module.exports = Queue;
 	            }, {}], 27: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, INTERNAL, tryConvertToPromise, apiRejection) {
 	                    var util = _dereq_("./util");
 
@@ -5324,6 +5378,8 @@
 	                    };
 	                };
 	            }, { "./util": 36 }], 28: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, PromiseArray, apiRejection, tryConvertToPromise, INTERNAL, debug) {
 	                    var getDomain = Promise._getDomain;
 	                    var util = _dereq_("./util");
@@ -5481,6 +5537,8 @@
 	                    }
 	                };
 	            }, { "./util": 36 }], 29: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                var util = _dereq_("./util");
 	                var schedule;
 	                var noAsyncScheduler = function noAsyncScheduler() {
@@ -5540,6 +5598,8 @@
 	                }
 	                module.exports = schedule;
 	            }, { "./util": 36 }], 30: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, PromiseArray, debug) {
 	                    var PromiseInspection = Promise.PromiseInspection;
 	                    var util = _dereq_("./util");
@@ -5582,6 +5642,8 @@
 	                    };
 	                };
 	            }, { "./util": 36 }], 31: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, PromiseArray, apiRejection) {
 	                    var util = _dereq_("./util");
 	                    var RangeError = _dereq_("./errors").RangeError;
@@ -5724,6 +5786,8 @@
 	                    Promise._SomePromiseArray = SomePromiseArray;
 	                };
 	            }, { "./errors": 12, "./util": 36 }], 32: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise) {
 	                    function PromiseInspection(promise) {
 	                        if (promise !== undefined) {
@@ -5824,6 +5888,8 @@
 	                    Promise.PromiseInspection = PromiseInspection;
 	                };
 	            }, {}], 33: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, INTERNAL) {
 	                    var util = _dereq_("./util");
 	                    var errorObj = util.errorObj;
@@ -5904,6 +5970,8 @@
 	                    return tryConvertToPromise;
 	                };
 	            }, { "./util": 36 }], 34: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, INTERNAL, debug) {
 	                    var util = _dereq_("./util");
 	                    var TimeoutError = Promise.TimeoutError;
@@ -5997,6 +6065,8 @@
 	                    };
 	                };
 	            }, { "./util": 36 }], 35: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, apiRejection, tryConvertToPromise, createContext, INTERNAL, debug) {
 	                    var util = _dereq_("./util");
 	                    var TypeError = _dereq_("./errors").TypeError;
@@ -6208,6 +6278,8 @@
 	                    };
 	                };
 	            }, { "./errors": 12, "./util": 36 }], 36: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                var es5 = _dereq_("./es5");
 	                var canEvaluate = typeof navigator == "undefined";
 
@@ -6383,7 +6455,12 @@
 
 	                function toFastProperties(obj) {
 	                    /*jshint -W027,-W055,-W031*/
-	                    return obj;
+	                    function FakeConstructor() {}
+	                    FakeConstructor.prototype = obj;
+	                    var l = 8;
+	                    while (l--) {
+	                        new FakeConstructor();
+	                    }return obj;
 	                    eval(obj);
 	                }
 
@@ -6571,6 +6648,8 @@
 	});
 
 	(function (self) {
+	  'use strict';
+
 	  if (self.fetch) {
 	    return;
 	  }
@@ -7076,6 +7155,8 @@
 	  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
 	  (function () {
 	    Object.assign = function (target) {
+	      'use strict';
+
 	      if (target === undefined || target === null) {
 	        throw new TypeError('Cannot convert undefined or null to object');
 	      }
@@ -7128,6 +7209,10 @@
 	  * js-logger may be freely distributed under the MIT license.
 	  */
 		(function (global) {
+			"use strict";
+
+			// Top level module for the global, static logger instance.
+
 			var Logger = {};
 
 			// For those that are at home that are keeping score.
@@ -7485,7 +7570,7 @@
 	    libUrl = document.currentScript.getAttribute('src');
 	  } else {
 	    // browsers not supporting currentScript
-	    var src;
+	    var src, libSearch;
 	    var scripts = document.getElementsByTagName('script');
 	    var libNameRegex = new RegExp('(\/3dio\.js|\/3dio\.min\.js)');
 	    // iterating backwarts as the last script is most likely the current one
@@ -7548,6 +7633,8 @@
 
 	var es5 = createCommonjsModule(function (module) {
 	    var isES5 = function () {
+	        "use strict";
+
 	        return this === undefined;
 	    }();
 
@@ -7625,16 +7712,6 @@
 	        };
 	    }
 	});
-
-	var es5_1 = es5.freeze;
-	var es5_2 = es5.defineProperty;
-	var es5_3 = es5.getDescriptor;
-	var es5_4 = es5.keys;
-	var es5_5 = es5.names;
-	var es5_6 = es5.getPrototypeOf;
-	var es5_7 = es5.isArray;
-	var es5_8 = es5.isES5;
-	var es5_9 = es5.propertyIsWritable;
 
 	var canEvaluate = typeof navigator == "undefined";
 
@@ -7810,7 +7887,12 @@
 
 	function toFastProperties(obj) {
 	    /*jshint -W027,-W055,-W031*/
-	    return obj;
+	    function FakeConstructor() {}
+	    FakeConstructor.prototype = obj;
+	    var l = 8;
+	    while (l--) {
+	        new FakeConstructor();
+	    }return obj;
 	    eval(obj);
 	}
 
@@ -8479,6 +8561,8 @@
 
 	var promise_array = function promise_array(Promise, INTERNAL, tryConvertToPromise, apiRejection, Proxyable) {
 	    var util$$2 = util;
+	    var isArray = util$$2.isArray;
+
 	    function toResolutionValue(val) {
 	        switch (val) {
 	            case -2:
@@ -12007,6 +12091,8 @@
 	};
 
 	var promise = createCommonjsModule(function (module) {
+	    "use strict";
+
 	    module.exports = function () {
 	        var makeSelfResolutionError = function makeSelfResolutionError() {
 	            return new TypeError('circular promise resolution chain\n\n    See http://goo.gl/MqrFmX\n');
@@ -12056,6 +12142,7 @@
 	        /*jshint unused:false*/
 	        var createContext = Context.create;
 	        var debug = debuggability(Promise, Context);
+	        var CapturedTrace = debug.CapturedTrace;
 	        var PassThroughHandlerContext = _finally(Promise, tryConvertToPromise, NEXT_FILTER);
 	        var catchFilter = catch_filter(NEXT_FILTER);
 	        var nodebackForPromise = nodeback;
@@ -16244,7 +16331,7 @@
 	  return _apply(assignInWith_1, undefined, args);
 	});
 
-	var defaults_1 = defaults$2;
+	var defaults_1$1 = defaults$2;
 
 	var tourComponent = {
 	  schema: {
@@ -16346,8 +16433,8 @@
 
 	    this._isPlaying = false;
 	    // apply changes to current camera position
-	    var pos = defaults_1({}, posChange, clone_1(this.el.getAttribute('position')));
-	    var rot = defaults_1({}, rotChange, clone_1(this.el.getAttribute('rotation')));
+	    var pos = defaults_1$1({}, posChange, clone_1(this.el.getAttribute('position')));
+	    var rot = defaults_1$1({}, rotChange, clone_1(this.el.getAttribute('rotation')));
 
 	    var target = {
 	      position: pos,
@@ -18595,6 +18682,8 @@
 	      var polygonStr = '';
 
 	      var style1 = 'fill:rgba(248, 248, 250, 0.8); stroke:rgba(48, 48, 50, 0.8); stroke-width:0.5;';
+	      var style2 = 'fill:rgba(255, 127, 80, 0.8);';
+
 	      spaces.forEach(function (space) {
 	        var pointStr = '';
 	        // get the polygon data for each space
@@ -19820,7 +19909,7 @@
 
 	  if (type && types[type]) {
 	    return {
-	      params: defaults_1({}, generic.params, types[type].params),
+	      params: defaults_1$1({}, generic.params, types[type].params),
 	      childrenTypes: types[type].childrenTypes,
 	      parentTypes: types[type].parentTypes,
 	      aframeComponent: types[type].aframeComponent
@@ -19831,7 +19920,7 @@
 	    Object.keys(types).forEach(function (key) {
 	      generic.type = key;
 	      typeSpecificValidations[key] = {
-	        params: defaults_1({}, generic.params, types[key].params),
+	        params: defaults_1$1({}, generic.params, types[key].params),
 	        childrenTypes: types[key].childrenTypes,
 	        parentTypes: types[key].parentTypes,
 	        aframeComponent: types[key].aframeComponent
@@ -26091,8 +26180,10 @@
 	    }
 
 	  var doLowerCase = false;
+	  var idna = false;
 	  var hostNameStart = start;
 	  var hostNameEnd = end;
+	  var lastCh = -1;
 	  var portLength = 0;
 	  var charsAfterDot = 0;
 	  var authNeedsDecoding = false;
@@ -26185,8 +26276,9 @@
 	            hostNameEnd = i - 1;
 	            break;
 	          }
-	        
+	        idna = true;
 	      }
+	    lastCh = ch;
 	    charsAfterDot++;
 	  }
 
@@ -29733,6 +29825,7 @@
 	      bY = yCursor - riserExt;
 	      //cY = yCursor - riserExt
 	      cX = xCursor + platformExt;
+	      eX = aX;
 	      eY = yCursor - riserExt;
 	      fZ = zCursor;
 
@@ -33611,7 +33704,13 @@
 	  var off_BBitMask = 25;
 	  var off_ABitMask = 26;
 
+	  var off_caps = 27;
 	  var off_caps2 = 28;
+	  var off_caps3 = 29;
+	  var off_caps4 = 30;
+
+	  // Parse header
+
 	  var header = new Int32Array(buffer, 0, headerLengthInt);
 
 	  if (header[off_magic] !== DDS_MAGIC) {
@@ -33900,6 +33999,7 @@
 
 	var queues = {};
 	var queueFences = {};
+	var queuesChanged = false;
 	var queueInfo = {};
 	var queuesLength = queuesByPriority.length;
 	var concurrentRequests = 0;
@@ -33928,6 +34028,8 @@
 	  concurrentPerQueue[queueName] += 1;
 	  concurrentRequests++;
 	  // set flag
+	  queuesChanged = true;
+	  // Start request
 	  var queue = queues[queueName];
 	  var request = queue.shift();
 	  request.start();
@@ -33974,6 +34076,7 @@
 	  info.timeLastFinished = performance.now() / 1000;
 	  concurrentPerQueue[queueName] -= 1;
 	  concurrentRequests -= 1;
+	  queuesChanged = true;
 	  processQueue();
 	}
 
@@ -35618,7 +35721,7 @@
 	    // get sceneStructure from Furniture API -> info on type and possible children
 	    var sceneStructure = JSON.parse(furniture.modelStructure);
 	    // combine data from both API calls to turn result into full sceneStructure
-	    sceneStructure = defaults_1({}, group, sceneStructure);
+	    sceneStructure = defaults_1$1({}, group, sceneStructure);
 	    return bluebird_1.resolve(sceneStructure);
 	  });
 	}
@@ -35790,7 +35893,7 @@
 	    }
 	  }
 
-	  var sceneStructure = defaults_1(typeData, {
+	  var sceneStructure = defaults_1$1(typeData, {
 	    x: parseFloat(position.x),
 	    y: parseFloat(position.y),
 	    z: parseFloat(position.z),
@@ -35829,12 +35932,9 @@
 	    delete data.id;
 	  }
 	  if (data.type === 'polyfloor') {
-	    var _poly = [],
-	        poly = data.polygon;
-	    for (var i = 0; i < poly.length; i += 2) {
-	      _poly.push([parseFloat(poly[i]), parseFloat(poly[i + 1])]);
-	    }
-	    data.polygon = _poly;
+	    data.polygon = data.polygon.map(function (p) {
+	      return [parseFloat(p[0]), parseFloat(p[1])];
+	    });
 	  }
 	  return data;
 	}
@@ -36376,7 +36476,7 @@
 	    if (element3d.type === 'interior' && element3d.src && typeof element3d.src === 'string') collection[element3d.src.substring(1)] = true;
 	    // recursively search through scene structure
 	    if (element3d.children && element3d.children.length) {
-	      collection = defaults_1({}, collection, getIdsFromSceneStructure(element3d.children));
+	      collection = defaults_1$1({}, collection, getIdsFromSceneStructure(element3d.children));
 	    }
 	  });
 	  return collection;
@@ -36901,6 +37001,9 @@
 	  return result;
 	}
 
+	// configs
+
+	var ANONYMOUS_USER_ID = 'anonymous-uploads';
 	var KEY_USER_ID_PLACEHOLDER = '{{userId}}';
 
 	// main
@@ -36982,6 +37085,7 @@
 	        return '/' + session.user.id + '/' + uploadFolder + '/' + fileName;
 	      } else {
 	        // construct anonymous key
+	        var k = '/' + ANONYMOUS_USER_ID + '/' + uploadFolder + '/' + fileName;
 	        return null;
 	      }
 	    }
@@ -38684,7 +38788,11 @@
 	}
 
 	if (md5('hello') != '5d41402abc4b2a76b9719d911017c592') {
-	  
+	  var _add = function _add(x, y) {
+	    var lsw = (x & 0xFFFF) + (y & 0xFFFF),
+	        msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+	    return msw << 16 | lsw & 0xFFFF;
+	  };
 	}
 
 	// API
@@ -39373,7 +39481,8 @@
 	  }
 
 	  var basePoint,
-	      endPoint;
+	      endPoint,
+	      connectedWalls = 0;
 	  var maxDistance = 0.2,
 	      isWithinMaxDistance = false;
 
@@ -39408,7 +39517,7 @@
 
 	        wallData[i].data = getWallData(wallData[i].wall);
 	        wallData[j].data = getWallData(wallData[j].wall);
-	        
+	        connectedWalls += 1;
 	      }
 	      isWithinMaxDistance = false;
 	    }
@@ -39616,22 +39725,30 @@
 	  // get wall points
 	  function getWallData(wall) {
 	    var wallAngle, p1, p2, p3, p4, v, w;
-	    wallAngle = wall.ry / 180 * Math.PI, w = {
+	    wallAngle = wall.ry / 180 * Math.PI,
+	    // width vector
+	    w = {
 	      x: -wall.w * Math.cos(wallAngle + Math.PI / 2),
 	      z: wall.w * Math.sin(wallAngle + Math.PI / 2)
-	    }, p1 = {
+	    },
+	    // Base Line Points
+	    p1 = {
 	      x: wall.x,
 	      z: wall.z
 	    }, p2 = {
 	      x: wall.x + wall.l * Math.cos(wallAngle),
 	      z: wall.z - wall.l * Math.sin(wallAngle)
-	    }, p3 = {
+	    },
+	    // Support Line Points
+	    p3 = {
 	      x: wall.x + w.x,
 	      z: wall.z + w.z
 	    }, p4 = {
 	      x: p2.x + w.x,
 	      z: p2.z + w.z
-	    }, v = {
+	    },
+	    // normalized wall vector
+	    v = {
 	      x: (p2.x - p1.x) / wall.l,
 	      z: (p2.z - p1.z) / wall.l
 	    };
