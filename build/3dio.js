@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.13
- * @date 2017/12/12 17:14
- * @branch architectural-toolkit
- * @commit 7b4262a78eb78f3f5f2556eb77d61d4467050ceb
+ * @version 1.1.0
+ * @date 2017/12/12 17:27
+ * @branch master
+ * @commit db486a74790baefdbc911e1898a9ca38399111a3
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/12/12 17:14', GIT_BRANCH = 'architectural-toolkit', GIT_COMMIT = '7b4262a78eb78f3f5f2556eb77d61d4467050ceb'
+	var BUILD_DATE='2017/12/12 17:27', GIT_BRANCH = 'master', GIT_COMMIT = 'db486a74790baefdbc911e1898a9ca38399111a3'
 
 	var name = "3dio";
-	var version = "1.0.13";
+	var version = "1.1.0";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -36483,7 +36483,8 @@
 	  // API
 	  options = options || {};
 	  var limit = options.limit || 50;
-	  var offset = options.offset || 0;
+	  // TODO: add this param once #251 https://github.com/archilogic-com/services/issues/251 is resolved
+	  //var offset = options.offset || 0
 
 	  // internals
 	  var apiErrorCount = 0;
@@ -36494,8 +36495,9 @@
 	      // only published furniture & let's make sure we don't have trailing or double spaces
 	      query: 'isPublished:true ' + query.trim().replace(/\s+/g, ' ')
 	    },
-	    limit: 500,
-	    offset: offset
+	    limit: 500
+	    // TODO: add this param once #251 https://github.com/archilogic-com/services/issues/251 is resolved
+	    //offset: offset
 	  };
 
 	  // extract dimension queries for range search
