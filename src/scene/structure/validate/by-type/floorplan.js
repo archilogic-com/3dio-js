@@ -4,7 +4,7 @@ export default  {
     w: { // width in meters
       type: 'number',
       optional: false,
-      min: 0.01 // 1cm
+      min: 0.01
     },
     l: { // length in meters
       type: 'number',

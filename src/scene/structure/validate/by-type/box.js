@@ -12,14 +12,14 @@ export default {
       type: 'number',
       defaultValue: 1,
       optional: false,
-      min: 0.01, // 1cm
+      min: 0.01,
       description: 'width'
     },
     h: { // height in meters
       type: 'number',
       defaultValue: 1,
       optional: false,
-      min: 0.01, // 1cm
+      min: 0.01,
       description: 'height'
     }
   },

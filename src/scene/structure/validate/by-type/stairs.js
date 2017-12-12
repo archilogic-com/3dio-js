@@ -5,13 +5,13 @@ export default {
       type: 'number',
       defaultValue: 1.2,
       optional: false,
-      min: 0.01 // 1cm
+      min: 0.01
     },
     h: { // height in meters
       type: 'number',
       defaultValue: 2.4,
       optional: false,
-      min: 0.01 // 1cm
+      min: 0.01
     },
     l: { // length in meters
       type: 'number',
