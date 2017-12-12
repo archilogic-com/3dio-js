@@ -1,4 +1,5 @@
 import getDefaultsByType from './validate/get-defaults-by-type.js'
+import getParamValueType from './validate/get-param-value-type.js'
 
 var ErrorCodes = {
   OK: 0,
@@ -43,7 +44,7 @@ function validateElements3d (result, sourceElements3d, parentType) {
 
     // validate if children types are correct
     if (parentType) {
-      var validChild = typeSpecificValidations[parentType].possibleChildrenTypes.indexOf(sourceElement3d.type) > -1
+      var validChild = typeSpecificValidations[parentType].childrenTypes.indexOf(sourceElement3d.type) > -1
       if (!validChild)  {
         result.isValid = false
         var message = '"' + sourceElement3d.type + '" is invalid child for "' + parentType + '"'
@@ -99,7 +100,7 @@ function validateParams (result, validations, sourceElement3d, validatedElement3
     if (value !== undefined) {
 
       // check type
-      var paramValueType = getParamValueType(value)
+      var paramValueType = getParamValueType(value, v.type)
       if (v.type !== paramValueType) {
         isValid = false
         var message = 'Parameter "' + paramName + '" is of type "' + paramValueType + '" but should be type "' + v.type + '"'
@@ -159,15 +160,6 @@ function validateParams (result, validations, sourceElement3d, validatedElement3
 
 }
 
-function getParamValueType (value) {
-  if (Array.isArray(value)) {
-    // TODO: add support for more sophisticated array types
-    // array-with-objects, array-with-numbers, array-with-arrays-with-numbers
-    return 'array'
-  } else {
-    return typeof value
-  }
-}
 
 // public API methods
 

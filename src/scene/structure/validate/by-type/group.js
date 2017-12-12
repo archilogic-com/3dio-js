@@ -1,9 +1,23 @@
 export default {
+  description: 'group node, for relative positioning',
   params: {
     src: {
       type: 'string',
-      optional: true
+      optional: true,
+      skipInAframe: true
     }
   },
-  possibleChildrenTypes: ['interior', 'object', 'wall', 'box', 'group', 'polybox']
+  childrenTypes: [
+    'box',
+    'column',
+    'group',
+    'interior',
+    'object',
+    'polybox',
+    'wall'
+  ],
+  parentTypes: [
+    'level',
+    'group'
+  ]
 }

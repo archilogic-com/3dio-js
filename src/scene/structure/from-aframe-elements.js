@@ -1,27 +1,81 @@
 import uuid from '../../utils/uuid'
+import defaults from 'lodash/defaults'
+import getDefaults from './validate/get-defaults-by-type'
 
-export default function getSceneStructureFromAframeElements(el) {
+export default getSceneStructureFromAframeElements
+
+const types = getDefaults()
+
+function getSceneStructureFromAframeElements(el) {
   if (!isValidElement(el)) {
     console.error('element is not an "a-entity" DOM element')
+    return
   }
+
   var
     position = el.getAttribute('position'),
     rotation = el.getAttribute('rotation'),
-    furnitureInfo = el.getAttribute('io3d-furniture'),
-    furnitureUuid = el.getAttribute('io3d-uuid'),
-    sceneStructure
+    id = el.getAttribute('io3d-uuid'),
+    children= []
 
-  sceneStructure = {
-    x: position.x,
-    y: position.y,
-    z: position.z,
-    ry: rotation.y,
-    type: 'interior',
-    src: '!' + furnitureInfo.id,
-    id: furnitureUuid || uuid.generate()
+  if (typeof position === 'string') position = AFRAME.utils.coordinates.parse(position)
+  if (typeof rotation === 'string') rotation = AFRAME.utils.coordinates.parse(rotation)
+  var typeData = checkType(el)
+
+  var childNodes = el.children
+  if (childNodes && childNodes.length) {
+    for (var i = 0; i < childNodes.length; i++) {
+      var node = getSceneStructureFromAframeElements(childNodes[i])
+      if (node) children.push(node)
+    }
   }
 
+  var sceneStructure = defaults(typeData, {
+    x: parseFloat(position.x),
+    y: parseFloat(position.y),
+    z: parseFloat(position.z),
+    ry: parseFloat(rotation.y),
+    children: children,
+    id: id || uuid.generate()
+  })
+
   return sceneStructure
+}
+
+function checkType(el) {
+  var elComponents = Object.keys(el.components)
+  var data = {}
+  // find component type match
+  Object.keys(types).forEach(function(type) {
+    if (types[type].aframeComponent) {
+      var aframeName = types[type].aframeComponent.name
+      if (elComponents.indexOf(aframeName) > -1) {
+        data = el.getAttribute(aframeName)
+        data.type = type
+      }
+    }
+  })
+  // map materials
+  Object.keys(data).forEach(function(key) {
+    if (key.indexOf('material_') > -1 ) {
+      if (!data.materials) data.materials = {}
+      var meshName = key.replace('material_', '')
+      data.materials[meshName] = data[key]
+      delete data[key]
+    }
+  })
+  if (data.type === 'interior') {
+    data.src = '!' + data.id
+    delete data.id
+  }
+  if (data.type === 'polyfloor') {
+    var _poly = [], poly = data.polygon
+    for (var i = 0; i < poly.length; i += 2) {
+      _poly.push([parseFloat(poly[i]), parseFloat(poly[i + 1])])
+    }
+    data.polygon = _poly
+  }
+  return data
 }
 
 

@@ -3,6 +3,7 @@ import generic from './generic'
 import box from './by-type/box.js'
 import cameraBookmark from './by-type/camera-bookmark.js'
 import closet from './by-type/closet.js'
+import column from './by-type/column.js'
 import curtain from './by-type/curtain.js'
 import door from './by-type/door.js'
 import floor from './by-type/floor.js'
@@ -23,11 +24,12 @@ import window from './by-type/window.js'
 
 import defaults from 'lodash/defaults'
 
-export default function getDefaultsByType() {
+export default function getDefaultsByType (type) {
   var types = {
     box: box,
     'camera-bookmark': cameraBookmark,
     closet: closet,
+    column: column,
     curtain: curtain,
     door: door,
     floor: floor,
@@ -47,16 +49,27 @@ export default function getDefaultsByType() {
     window: window
   }
 
-  var typeSpecificValidations = {}
-
-  Object.keys(types).forEach(function(key) {
-    typeSpecificValidations[key] = {
-      params: defaults({}, generic.params, types[key].params),
-      possibleChildrenTypes: types[key].possibleChildrenTypes
+  if (type && types[type]) {
+    return {
+      params: defaults({}, generic.params, types[type].params),
+      childrenTypes: types[type].childrenTypes,
+      parentTypes: types[type].parentTypes,
+      aframeComponent: types[type].aframeComponent
     }
-  })
+  } else {
+    var typeSpecificValidations = {}
 
-  return typeSpecificValidations
+    Object.keys(types).forEach(function (key) {
+      generic.type = key
+      typeSpecificValidations[key] = {
+        params: defaults({}, generic.params, types[key].params),
+        childrenTypes: types[key].childrenTypes,
+        parentTypes: types[key].parentTypes,
+        aframeComponent: types[key].aframeComponent
+      }
+    })
+    return typeSpecificValidations
+  }
 }
 
 

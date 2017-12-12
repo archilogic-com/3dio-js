@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.0.13
- * @date 2017/12/08 14:28
- * @branch master
- * @commit aea71a60254dbc080f244930150d5ae5375724e7
+ * @date 2017/12/12 17:14
+ * @branch architectural-toolkit
+ * @commit 7b4262a78eb78f3f5f2556eb77d61d4467050ceb
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/12/08 14:28', GIT_BRANCH = 'master', GIT_COMMIT = 'aea71a60254dbc080f244930150d5ae5375724e7'
+	var BUILD_DATE='2017/12/12 17:14', GIT_BRANCH = 'architectural-toolkit', GIT_COMMIT = '7b4262a78eb78f3f5f2556eb77d61d4467050ceb'
 
 	var name = "3dio";
 	var version = "1.0.13";
@@ -817,6 +817,44 @@
 
 	});
 
+	/* tslint:disable:no-empty */
+	function noop() { }
+	var noop_2 = noop;
+
+
+	var noop_1 = {
+		noop: noop_2
+	};
+
+	/* tslint:enable:max-line-length */
+	function pipe() {
+	    var fns = [];
+	    for (var _i = 0; _i < arguments.length; _i++) {
+	        fns[_i - 0] = arguments[_i];
+	    }
+	    return pipeFromArray(fns);
+	}
+	var pipe_2 = pipe;
+	/* @internal */
+	function pipeFromArray(fns) {
+	    if (!fns) {
+	        return noop_1.noop;
+	    }
+	    if (fns.length === 1) {
+	        return fns[0];
+	    }
+	    return function piped(input) {
+	        return fns.reduce(function (prev, fn) { return fn(prev); }, input);
+	    };
+	}
+	var pipeFromArray_1 = pipeFromArray;
+
+
+	var pipe_1 = {
+		pipe: pipe_2,
+		pipeFromArray: pipeFromArray_1
+	};
+
 	/**
 	 * A representation of any set of values over any amount of time. This is the most basic building block
 	 * of RxJS.
@@ -1051,6 +1089,54 @@
 	     */
 	    Observable.prototype[observable.observable] = function () {
 	        return this;
+	    };
+	    /* tslint:enable:max-line-length */
+	    /**
+	     * Used to stitch together functional operators into a chain.
+	     * @method pipe
+	     * @return {Observable} the Observable result of all of the operators having
+	     * been called in the order they were passed in.
+	     *
+	     * @example
+	     *
+	     * import { map, filter, scan } from 'rxjs/operators';
+	     *
+	     * Rx.Observable.interval(1000)
+	     *   .pipe(
+	     *     filter(x => x % 2 === 0),
+	     *     map(x => x + x),
+	     *     scan((acc, x) => acc + x)
+	     *   )
+	     *   .subscribe(x => console.log(x))
+	     */
+	    Observable.prototype.pipe = function () {
+	        var operations = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            operations[_i - 0] = arguments[_i];
+	        }
+	        if (operations.length === 0) {
+	            return this;
+	        }
+	        return pipe_1.pipeFromArray(operations)(this);
+	    };
+	    /* tslint:enable:max-line-length */
+	    Observable.prototype.toPromise = function (PromiseCtor) {
+	        var _this = this;
+	        if (!PromiseCtor) {
+	            if (root.root.Rx && root.root.Rx.config && root.root.Rx.config.Promise) {
+	                PromiseCtor = root.root.Rx.config.Promise;
+	            }
+	            else if (root.root.Promise) {
+	                PromiseCtor = root.root.Promise;
+	            }
+	        }
+	        if (!PromiseCtor) {
+	            throw new Error('no Promise impl found');
+	        }
+	        return new PromiseCtor(function (resolve, reject) {
+	            var value;
+	            _this.subscribe(function (x) { return value = x; }, function (err) { return reject(err); }, function () { return resolve(value); });
+	        });
 	    };
 	    // HACK: Since TypeScript inherits static properties too, we have to
 	    // fight against TypeScript here so Subject can have a different static create signature
@@ -16904,7 +16990,7 @@
 	  return _apply(assignInWith_1, undefined, args);
 	});
 
-	var defaults_1 = defaults$1;
+	var defaults_1$1 = defaults$1;
 
 	var tourComponent = {
 	  schema: {
@@ -17003,8 +17089,8 @@
 
 	    this._isPlaying = false;
 	    // apply changes to current camera position
-	    var pos = defaults_1({}, posChange, clone_1(this.el.getAttribute('position')));
-	    var rot = defaults_1({}, rotChange, clone_1(this.el.getAttribute('rotation')));
+	    var pos = defaults_1$1({}, posChange, clone_1(this.el.getAttribute('position')));
+	    var rot = defaults_1$1({}, rotChange, clone_1(this.el.getAttribute('rotation')));
 
 	    var target = {
 	      position: pos,
@@ -19226,6 +19312,15254 @@
 	  parent.appendChild(el);
 	}
 
+	/** Used to compose bitmasks for cloning. */
+	var CLONE_DEEP_FLAG$3 = 1;
+	var CLONE_SYMBOLS_FLAG$2 = 4;
+
+	/**
+	 * This method is like `_.clone` except that it recursively clones `value`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 1.0.0
+	 * @category Lang
+	 * @param {*} value The value to recursively clone.
+	 * @returns {*} Returns the deep cloned value.
+	 * @see _.clone
+	 * @example
+	 *
+	 * var objects = [{ 'a': 1 }, { 'b': 2 }];
+	 *
+	 * var deep = _.cloneDeep(objects);
+	 * console.log(deep[0] === objects[0]);
+	 * // => false
+	 */
+	function cloneDeep(value) {
+	  return _baseClone(value, CLONE_DEEP_FLAG$3 | CLONE_SYMBOLS_FLAG$2);
+	}
+
+	var cloneDeep_1 = cloneDeep;
+
+	var minimapComponent = {
+	  schema: {
+	    sceneId: {
+	      type: 'string'
+	    },
+	    rotation: {
+	      type: 'number',
+	      default: 0
+	    },
+	    width: {
+	      type: 'number',
+	      default: 150
+	    },
+	    position: {
+	      type: 'string',
+	      default: 'left',
+	      oneOf: ['left', 'right']
+	    }
+	  },
+	  init: function () {
+	    var this_ = this;
+	    var data = this.data;
+
+	    // get scene structure
+	    io3d.scene.getStructure(data.sceneId)
+	      .then(result => {
+	        //this.sceneStructure = result
+	        if (!Array.isArray(result)) result = [result];
+	        // find all spaces in the model
+	        let spaces = getSpaces(result);
+	        // apply plan rotation / position
+
+	        if (!spaces || !spaces.length) {
+	          return Promise.reject('Minimap generation failed, scene has no spaces')
+	        }
+	        spaces = spaces.map(space => {
+	          let location = applyLocation(space, result[0]);
+	          Object.keys(location).forEach(prop => {
+	            space[prop] = location[prop];
+	          });
+	          //console.log(' ' + space.ry)
+	          return space
+	        });
+	        setupMap();
+	        // generate a clickable plan
+	        generatePlan(spaces, this.svgEl);
+	      })
+	      .catch(console.warn);
+
+	    function setupMap () {
+	      // get camera
+	      var cameras = document.querySelectorAll('[camera]');
+	      // pick the last camera
+	      // TODO: better to pick the active one
+	      this_.camera = cameras.length > 1 ? cameras[1] : cameras[0];
+	      // console.log('loading minimap', data)
+	      // console.log('loading minimap', cameras, this_.camera.getAttribute('position'))
+	      // create html container for minimap
+	      var container = document.createElement('div');
+	      container.id = 'minimap-container';
+	      container.setAttribute('style', `position:absolute; width: ${data.width}px; z-index: 1000; top:10px; ${data.position}:10px`);
+	      container.innerHTML = `<svg width="100%"></svg>`;
+	      // put container as first child in body
+	      var body = document.querySelector('body');
+	      body.insertBefore(container, body.firstChild);
+	      // bind svg element with component
+	      this_.svgEl = container.querySelector('svg');
+	      this_.svgEl.setAttribute('style', `transform: rotate(${data.rotation}deg);`);
+	    }
+	    // generate a pictogram of the floor plan
+	    function generatePlan (spaces, svgEl) {
+	      // empty svg element to fill
+	      this_.min = [Infinity, Infinity];
+	      this_.max = [-Infinity, -Infinity];
+	      var polygonStr = '';
+
+	      const style1 = 'fill:rgba(248, 248, 250, 0.8); stroke:rgba(48, 48, 50, 0.8); stroke-width:0.5;';
+	      const style2 = 'fill:rgba(255, 127, 80, 0.8);';
+
+	      spaces.forEach(space => {
+	        var pointStr = '';
+	        // get the polygon data for each space
+	        space.polygon.forEach(point => {
+	          // get absolute coordinates and map z to y
+	          // polygon points are relative to the polygon position
+	          var location = applyLocation({x: point[0], z: point[1]}, space);
+	          var x = Math.round(location.x * 20);
+	          var y = Math.round(location.z * 20);
+	          // get min and max values for the overall boundingbox
+	          if (x < this_.min[0]) this_.min[0] = x;
+	          else if (x > this_.max[0]) this_.max[0] = x;
+	          if (y < this_.min[1]) this_.min[1] = y;
+	          else if (y > this_.max[1]) this_.max[1] = y;
+	          pointStr += x + ',' + y + ' ';
+	        });
+	        polygonStr += `<polygon points="${pointStr}" style="${style1}" space-id="${space.id}"/>`;
+	      });
+	      // populate the svg
+	      svgEl.innerHTML = polygonStr;
+	      // match the svg viewbox with the bouningbox of the polygons
+	      svgEl.setAttribute('viewBox', `${this_.min[0]} ${this_.min[1]} ${this_.max[0] - this_.min[0]} ${this_.max[1] - this_.min[1]}`);
+
+	      // start position tracking
+	      this_.mapActivated = true;
+	      this_.el.emit('minimap-created');
+	    }
+
+	    function applyLocation (element, parent) {
+
+	      // Rotate look-at point on the XZ plane around parent's center
+	      var angleY = -parent.ry * Math.PI / 180;
+
+	      var rotatedX = element.x * Math.cos(angleY) - element.z * Math.sin(angleY);
+	      var rotatedZ = element.z * Math.cos(angleY) + element.x * Math.sin(angleY);
+
+	      // Get world space coordinates for our look-at point
+	      var location = {};
+	      location.x = parent.x + rotatedX;
+	      if (element.y !== undefined) location.y = parent.y + element.y;
+	      location.z = parent.z + rotatedZ;
+	      if (element.ry !== undefined) location.ry = parent.ry + element.ry;
+	      return location
+	    }
+
+	    function getSpaces (sceneStructure) {
+	      var spaces = [];
+	      sceneStructure.forEach(element3d => {
+	        if (element3d.type === 'polyfloor') spaces.push(element3d);
+	        if (element3d.children && element3d.children.length) {
+	          spaces = spaces.concat(getSpaces(element3d.children));
+	        }
+	      });
+	      return spaces
+	    }
+	  },
+	  remove: function() {
+	    var minimapEl = document.querySelector('#minimap-container');
+	    minimapEl.parentNode.removeChild(minimapEl);
+	  },
+	  tick: function (time, timeDiff) {
+	    if (!this.mapActivated) return
+
+	    // update dot every 100 ms
+	    if (time % 50 < timeDiff + 5) {
+	      var cameraDot = this.svgEl.querySelector('#camera-dot');
+	      var cameraPos = this.camera.getAttribute('position');
+	      var cameraRot = this.camera.getAttribute('rotation');
+	      // make sure our point stays within the map
+	      var pointPos = cloneDeep_1(cameraPos);
+	      if (pointPos.x * 20 < this.min[0]) pointPos.x = this.min[0] / 20;
+	      else if (pointPos.x * 20 > this.max[0]) pointPos.x = this.max[0] / 20;
+	      if (pointPos.z * 20 < this.min[1]) pointPos.z = this.min[1] / 20;
+	      else if (pointPos.z * 20 > this.max[1]) pointPos.z = this.max[1] / 20;
+
+	      // console.log(cameraPos)
+	      if (!cameraDot) {
+	        console.log('create dot');
+	        this.svgEl.innerHTML +=
+	          `<g id="camera-dot" transform="translate(30,30) rotate(80)">
+	<circle cx="0" cy="0"	r="5" fill="CadetBlue"/>
+	<polygon points="0,0 50,-40 50,40" fill="url(#Gradient)" />
+</g>
+<defs>
+  <linearGradient id="Gradient" x1="0" x2="1" y1="0" y2="0">
+     <stop offset="0%" stop-color="CadetBlue"/>
+     <stop offset="100%" stop-color="CadetBlue" stop-opacity="0"/>
+  </linearGradient>
+</defs>`;
+	        // circle cx="150" cy="50" r="40"
+	      } else {
+	        cameraDot.setAttribute('transform', `translate(${pointPos.x * 20},${pointPos.z * 20}) rotate(${-cameraRot.y - 90})`);
+	      }
+	    }
+	  }
+	};
+
+	var generic = {
+	  params: {
+	    type: {
+	      type: 'string',
+	      possibleValues: [
+	        'box',
+	        'camera-bookmark',
+	        'closet',
+	        'column',
+	        'curtain',
+	        'door',
+	        'floor',
+	        'floorplan',
+	        'group',
+	        'interior',
+	        'kitchen',
+	        'level',
+	        'object',
+	        'plan',
+	        'polybox',
+	        'polyfloor',
+	        'railing',
+	        'stairs',
+	        'tag',
+	        'wall',
+	        'window',
+	      ],
+	      optional: false,
+	      skipInAframe: true
+	    },
+	    x: { // x position in meters
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: false,
+	      skipInAframe: true
+	    },
+	    y: { // y position in meters
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: false,
+	      skipInAframe: true
+	    },
+	    z: { // z position in meters
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: false,
+	      skipInAframe: true
+	    },
+	    ry: { // y rotation in angle degrees
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: false,
+	      skipInAframe: true,
+	      description: 'rotation around y axis'
+	    },
+	    children: {
+	      //type: 'array-with-objects',
+	      type: 'array',
+	      defaultValue: [],
+	      optional: true,
+	      skipInAframe: true
+	    },
+	    id: {
+	      type: 'string',
+	      optional: false,
+	      skipInAframe: true,
+	      description: 'unique identifier: UUID v4'
+	    },
+	    materials: {
+	      type: 'object',
+	      optional: true
+	    }
+	  }
+	};
+
+	var box = {
+	  description: 'simple box object',
+	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      description: 'version'
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01,
+	      description: 'length'
+	    },
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01,
+	      description: 'width'
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01,
+	      description: 'height'
+	    }
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level'],
+	  aframeComponent: {
+	    name: 'io3d-box'
+	  }
+	};
+
+	var cameraBookmark = {
+	  description: 'preset camera positions for animations and navigation',
+	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      description: 'version'
+	    },
+	    rx: {
+	      type: 'number',
+	      defaultValue: 0,
+	      skipInAframe: true,
+	      description: 'pitch'
+	    },
+	    distance: {
+	      type: 'number',
+	      skipInAframe: true
+	    },
+	    fov: {
+	      type: 'number',
+	      defaultValue: 71,
+	      skipInAframe: true
+	    },
+	    name: {
+	      type: 'string',
+	      defaultValue: 'Camera Bookmark'
+	    }
+	  },
+	  parentTypes: ['plan'],
+	  aframeComponent: {
+	    name: 'tour-waypoint'
+	  }
+	};
+
+	var closet = {
+	  description: 'parametric closet with segmentation targeting 0.6m',
+	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: true,
+	      description: 'version'
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 1.8,
+	      optional: false,
+	      min: 0.01,
+	      description: 'length'
+	    },
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 0.6,
+	      optional: false,
+	      min: 0.01,
+	      description: 'width'
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      min: 0.01,
+	      description: 'height'
+	    },
+	    baseboard: {
+	      type: 'number',
+	      defaultValue: 0.1,
+	      optional: true,
+	      min: 0.01,
+	      description: 'height of baseboard'
+	    },
+	    doorWidth: {
+	      type: 'number',
+	      defaultValue: 0.02,
+	      optional: true,
+	      min: 0.01,
+	      description: 'thickness of closet door'
+	    },
+	    handleLength: {
+	      type: 'number',
+	      defaultValue: 0.02,
+	      optional: true,
+	      min: 0.01,
+	      description: 'length of closet door handle'
+	    },
+	    handleWidth: {
+	      type: 'number',
+	      defaultValue: 0.02,
+	      optional: true,
+	      min: 0.01,
+	      description: 'thickness of closet door handle'
+	    },
+	    handleHeight: {
+	      type: 'number',
+	      defaultValue: 0.3,
+	      optional: true,
+	      min: 0.01,
+	      description: 'height of closet door handle'
+	    }
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level'],
+	  aframeComponent: {
+	    name: 'io3d-closet'
+	  }
+	};
+
+	var column = {
+	  description: 'simple structural column object, round or square',
+	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: true,
+	      description: 'version'
+	    },
+	    l: { // diameter
+	      type: 'number',
+	      defaultValue: 0.2,
+	      optional: false,
+	      min: 0.01,
+	      description: 'length for square / diameter for circle'
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      min: 0.01,
+	      description: 'height'
+	    },
+	    shape: {
+	      type: 'string',
+	      defaultValue: 'square',
+	      optional: false,
+	      min: 0.01,
+	      possibleValues: ['square', 'circle'],
+	      description: 'column contour'
+	    }
+	  },
+	  childrenTypes: [],
+	  parentTypes: [
+	    'level',
+	    'group'
+	  ],
+	  aframeComponent: {
+	    name: 'io3d-column'
+	  }
+	};
+
+	var curtain = {
+	  description: 'curtain with random folds',
+	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: true,
+	      description: 'version'
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 1.8,
+	      optional: false,
+	      min: 0.01,
+	      description: 'length'
+	    },
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 0.2,
+	      optional: false,
+	      min: 0.01,
+	      description: 'thickness'
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      min: 0.01,
+	      description: 'height'
+	    },
+	    folds: {
+	      type: 'number',
+	      defaultValue: 14,
+	      optional: true,
+	      min: 0.01,
+	      description: 'number of folds'
+	    }
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level']
+	};
+
+	var door = {
+	  description: 'door within a wall',
+	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 3,
+	      optional: false,
+	      description: 'version'
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 0.9,
+	      optional: false,
+	      min: 0.01,
+	      description: 'length'
+	    },
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 0.05,
+	      optional: false,
+	      min: 0.01,
+	      description: 'width'
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2,
+	      optional: false,
+	      min: 0.01,
+	      description: 'height'
+	    },
+	    frameLength: { // in meters
+	      type: 'number',
+	      defaultValue: 0.05,
+	      optional: true,
+	      min: 0.01,
+	      description: 'thickness of frame'
+	    },
+	    frameOffset: { // in meters
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      description: 'frame thicker than wall'
+	    },
+	    leafWidth: { // in meters
+	      type: 'number',
+	      defaultValue: 0.03,
+	      optional: true,
+	      description: 'thickness of door leaf'
+	    },
+	    leafOffset: { // in meters
+	      type: 'number',
+	      defaultValue: 0.005,
+	      optional: true,
+	      description: 'z offset of door leaf'
+	    },
+	    doorType: {
+	      type: 'string',
+	      defaultValue: 'singleSwing',
+	      optional: false,
+	      possibleValues: ['singleSwing', 'doubleSwing', 'swingFix', 'swingDoubleFix', 'doubleSwingDoubleFix', 'slidingDoor', 'opening'],
+	      description: 'defines opening type'
+	    },
+	    hinge: {
+	      type: 'string',
+	      defaultValue: 'right',
+	      optional: false,
+	      possibleValues: ['right', 'left'],
+	      description: 'door leaf opening direction'
+	    },
+	    side: {
+	      type: 'string',
+	      defaultValue: 'back',
+	      optional: false,
+	      possibleValues: ['front', 'back'],
+	      description: 'door leaf opening to the front or back of the wall'
+	    },
+	    doorAngle: { // in angle degrees
+	      type: 'number',
+	      defaultValue: 92,
+	      optional: true,
+	      description: 'door leaf opening anlge'
+	    },
+	    fixLeafRatio: { // in meters
+	      type: 'number',
+	      defaultValue: 0.3,
+	      optional: true
+	    },
+	    threshold: {
+	      type: 'boolean',
+	      defaultValue: true
+	    },
+	    thresholdHeight: {
+	      type: 'number',
+	      defaultValue: 0.01,
+	      optional: true
+	    }
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['wall'],
+	  aframeComponent: {
+	    name: 'io3d-door'
+	  }
+	};
+
+	var floor = {
+	  description: 'rectangular floor with optional ceiling',
+	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      description: 'version'
+	    },
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 4,
+	      optional: false,
+	      min: 0.01,
+	      description: 'width'
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 0.2,
+	      optional: false,
+	      min: 0.01,
+	      description: 'height'
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 4,
+	      optional: false,
+	      min: 0.01,
+	      description: 'length'
+	    },
+	    hasCeiling: { // in meters
+	      type: 'boolean',
+	      defaultValue: true,
+	      optional: false,
+	      description: 'toggle ceiling'
+	    },
+	    hCeiling: { // in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      description: 'ceiling height'
+	    }
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level'],
+	  aframeComponent: {
+	    name: 'io3d-floor'
+	  }
+	};
+
+	var floorplan = {
+	  description: 'reference to a floor plan image',
+	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      description: 'version'
+	    },
+	    w: { // width in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      optional: false,
+	      min: 0.01
+	    },
+	    file: {
+	      type: 'string',
+	      optional: false
+	    }
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level']
+	};
+
+	var group = {
+	  description: 'group node, for relative positioning',
+	  params: {
+	    src: {
+	      type: 'string',
+	      optional: true,
+	      skipInAframe: true
+	    }
+	  },
+	  childrenTypes: [
+	    'box',
+	    'column',
+	    'group',
+	    'interior',
+	    'object',
+	    'polybox',
+	    'wall'
+	  ],
+	  parentTypes: [
+	    'level',
+	    'group'
+	  ]
+	};
+
+	var interior = {
+	  params: {
+	    src: {
+	      type: 'string',
+	      optional: false,
+	      skipInAframe: true,
+	      description: 'furniture id prefixed with \'!\', check https://furniture.3d.io'
+	    }
+	  },
+	  childrenTypes: ['interior', 'object', 'tag'],
+	  parentTypes: ['level', 'group', 'interior'],
+	  aframeComponent: {
+	    name: 'io3d-furniture'
+	  }
+	};
+
+	var kitchen = {
+	  description: 'parametric kitchen with vast configuration options',
+	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 2,
+	      optional: true,
+	      description: 'version'
+	    },
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 0.6,
+	      optional: false,
+	      min: 0.01
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      min: 0.01
+	    },
+	    l: {
+	      type: 'number',
+	      defaultValue: 4.2,
+	      optional: false,
+	      min: 0.01
+	    },
+	    elementLength: {
+	      type: 'number',
+	      defaultValue: 0.6,
+	      optional: false,
+	      min: 0.01
+	    },
+	    baseBoard: {
+	      type: 'number',
+	      defaultValue: 0.1,
+	      optional: true,
+	      min: 0.01
+	    },
+	    counterHeight: {
+	      type: 'number',
+	      defaultValue: 0.9,
+	      optional: true,
+	      min: 0.01
+	    },
+	    counterThickness: {
+	      type: 'number',
+	      defaultValue: 0.03,
+	      optional: true,
+	      min: 0.01
+	    },
+	    barCounter: {
+	      type: 'boolean',
+	      defaultValue: false,
+	      optional: true
+	    },
+	    doorWidth: {
+	      type: 'number',
+	      defaultValue: 0.02,
+	      optional: true,
+	      min: 0.01
+	    },
+	    highCabinetLeft: {
+	      type: 'int',
+	      defaultValue: 2,
+	      optional: true
+	    },
+	    highCabinetRight: {
+	      type: 'int',
+	      defaultValue: 0,
+	      optional: true
+	    },
+	    wallCabinet: {
+	      type: 'boolean',
+	      defaultValue: true,
+	      optional: true
+	    },
+	    wallCabinetHeight: {
+	      type: 'number',
+	      defaultValue: 1.5,
+	      optional: true,
+	      min: 0.01
+	    },
+	    wallCabinetWidth: {
+	      type: 'number',
+	      defaultValue: 0.45,
+	      optional: true,
+	      min: 0.01
+	    },
+	    cabinetType: {
+	      type: 'string',
+	      defaultValue: 'flat',
+	      optional: true,
+	      possibleValues: ['flat', 'style1', 'style2']
+	    },
+	    sinkType: {
+	      type: 'string',
+	      defaultValue: 'single',
+	      optional: true,
+	      possibleValues: ['single', 'double', 'none']
+	    },
+	    sinkPos: {
+	      type: 'int',
+	      defaultValue: 4,
+	      optional: true
+	    },
+	    extractorType: {
+	      type: 'string',
+	      defaultValue: 'integrated',
+	      optional: true,
+	      possibleValues: ['box', 'pyramid', 'integrated', 'none']
+	    },
+	    ovenType: {
+	      type: 'string',
+	      defaultValue: 'single',
+	      optional: true,
+	      possibleValues: ['single', 'double', 'none']
+	    },
+	    ovenPos: {
+	      type: 'int',
+	      defaultValue: 6,
+	      optional: true
+	    },
+	    cooktopType: {
+	      type: 'string',
+	      defaultValue: 'electro60',
+	      optional: true,
+	      possibleValues: [
+	        'electro60',
+	        'electro90',
+	        'gas60',
+	        'gas90',
+	        'none'
+	      ]
+	    },
+	    cooktopPos: {
+	      type: 'int',
+	      defaultValue: 6,
+	      optional: true
+	    },
+	    microwave: {
+	      type: 'boolean',
+	      defaultValue: false,
+	      optional: true
+	    },
+	    microwavePos: {
+	      type: 'int',
+	      defaultValue: 1,
+	      optional: true
+	    },
+	    fridge: {
+	      type: 'boolean',
+	      defaultValue: false,
+	      optional: true
+	    },
+	    fridgePos: {
+	      type: 'int',
+	      defaultValue: 1,
+	      optional: true
+	    }
+	    // TODO: add all the default values
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level'],
+	  aframeComponent: {
+	    name: 'io3d-kitchen'
+	  }
+	};
+
+	var level$1 = {
+	  description: 'node equivalent to a building storey',
+	  params: {},
+	  childrenTypes: [
+	    'box',
+	    'closet',
+	    'column',
+	    'curtain',
+	    'floor',
+	    'floorplan',
+	    'group',
+	    'interior',
+	    'kitchen',
+	    'object',
+	    'polybox',
+	    'polyfloor',
+	    'railing',
+	    'stairs',
+	    'tag',
+	    'wall'
+	  ],
+	  parentTypes: ['plan']
+	};
+
+	var object = {
+	  description: 'referenced 3d object in data3d.buffer format, for conversion drop a .obj into the editor spaces.archilogic.com/3d',
+	  params: {
+	    object: {
+	      type: 'string',
+	      optional: false,
+	      skipInAframe: true,
+	      description: 'reference to data3d.buffer file'
+	    },
+	    sourceScale: {
+	      type: 'number',
+	      optional: true,
+	      skipInAframe: true,
+	      description: 'relative scale of source file to 1 meter'
+	    },
+	    flipYZ: {
+	      type: 'boolean',
+	      optional: true,
+	      skipInAframe: true,
+	      description: 'flip Y and Z Axis'
+	    }
+	  },
+	  childrenTypes: ['interior'],
+	  parentTypes: ['level'],
+	  aframeComponent: {
+	    name: 'io3d-data3d'
+	  }
+	};
+
+	var plan = {
+	  description: 'highest node in hierarchy, contains levels',
+	  params: {
+	    modelDisplayName: {
+	      type: 'string',
+	      optional: true,
+	      skipInAframe: true,
+	      description: 'name of the scene'
+	    },
+	    v: {
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: true,
+	      skipInAframe: true,
+	      description: 'version'
+	    }
+	  },
+	  childrenTypes: ['level', 'camera-bookmark'],
+	  parentTypes: []
+	};
+
+	var polybox = {
+	  description: 'polygonal extrusion object',
+	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: true,
+	      description: 'version'
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01
+	    },
+	    polygon: {
+	      //type: 'array-with-arrays-with-numbers',
+	      type: 'array',
+	      aframeType: 'string',
+	      optional: false
+	    }
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level'],
+	  aframeComponent: {
+	    name: 'io3d-polybox'
+	  }
+	};
+
+	var polyfloor = {
+	  description: 'polygonal floor with optional ceiling',
+	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      description: 'version'
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 0.2,
+	      optional: false,
+	      min: 0.01,
+	      description: 'height'
+	    },
+	    polygon: {
+	      //type: 'array-with-arrays-with-numbers',
+	      type: 'array',
+	      // aframeType: 'string',
+	      defaultValue: [[1.5,1.5], [1.5,-1.5], [-1.5,-1.5], [-1.5,1.5]],
+	      aframeDefault: '[[1.5,1.5], [1.5,-1.5], [-1.5,-1.5], [-1.5,1.5]]',
+	      optional: false,
+	      description: 'outer polygon',
+	      parse: function(val) {
+	        if (!/^\[.+\]/.test(val)) {
+	          console.warn('invalid input for polyfloor polygon', val);
+	          return [[1.5,1.5], [1.5,-1.5], [-1.5,-1.5], [-1.5,1.5]]
+	        }
+	        return JSON.parse(val)
+	      }
+	    },
+	    polygonHoles: {
+	      type: 'array',
+	      optional: true,
+	      description: 'polygon holes'
+	    },
+	    hasCeiling: { // in meters
+	      type: 'boolean',
+	      defaultValue: true,
+	      optional: false,
+	      description: 'toggle ceiling'
+	    },
+	    hCeiling: { // in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      description: 'ceiling height'
+	    },
+	    usage: { // in meters
+	      type: 'string',
+	      optional: true
+	    }
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level'],
+	  aframeComponent: {
+	    name: 'io3d-polyfloor'
+	  }
+	};
+
+	var railing = {
+	  description: 'segmented or solid railing',
+	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      description: 'version'
+	    },
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 0.05,
+	      optional: false,
+	      min: 0.01,
+	      description: 'width'
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01,
+	      description: 'height'
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01,
+	      description: 'length'
+	    },
+	    pailing: {
+	      type: 'number',
+	      defaultValue: 0.01,
+	      optional: false,
+	      description: 'strength of the posts'
+	    },
+	    railCount: {
+	      type: 'int',
+	      defaultValue: 2,
+	      optional: true,
+	      description: 'horizontal rail count'
+	    },
+	    segmentation: {
+	      type: 'string',
+	      defaultValue: 'distance',
+	      possibleValues: ['distance', 'number', 'none'],
+	      optional: false,
+	      description: 'vertical segmentation type'
+	    },
+	    segments: {
+	      type: 'int',
+	      defaultValue: 5,
+	      optional: true,
+	      description: 'number of vertical segments, for segmentation = \'number\''
+	    },
+	    segmentDistance: {
+	      type: 'number',
+	      defaultValue: 0.14,
+	      optional: true,
+	      description: 'distance between vertical segments, for segmentation = \'distance\''
+	    }
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level'],
+	  aframeComponent: {
+	    name: 'io3d-railing'
+	  }
+	};
+
+	var stairs = {
+	  description: 'all kinds of stairs types',
+	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: true,
+	      description: 'version'
+	    },
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 1.2,
+	      optional: false,
+	      min: 0.01
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      min: 0.01
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 4,
+	      optional: false,
+	      min: 0.01
+	    },
+	    stepWidth: {
+	      type: 'number',
+	      defaultValue: 1.2,
+	      optional: false,
+	      min: 0.01
+	    },
+	    stairType: {
+	      type: 'string',
+	      defaultValue: 'straight',
+	      optional: false,
+	      possibleValues: ['straight', 'straightLanding', 'lShaped', 'halfLanding', '2QuarterLanding', 'winder', 'doubleWinder', 'spiral']
+	    },
+	    treadHeight: {
+	      type: 'number',
+	      defaultValue: 0.02,
+	      optional: false
+	    },
+	    stepThickness: {
+	      type: 'number',
+	      defaultValue: 0.17,
+	      optional: false
+	    },
+	    railing: {
+	      type: 'string',
+	      defaultValue: 'right',
+	      optional: false,
+	      possibleValues: ['none', 'left', 'right', 'both']
+	    },
+	    railingType: {
+	      type: 'string',
+	      defaultValue: 'verticalBars',
+	      optional: false,
+	      possibleValues: ['verticalBars']
+	    }
+	    // TODO: add all default values
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level'],
+	  aframeComponent: {
+	    name: 'io3d-stairs'
+	  }
+	};
+
+	var tag = {
+	  description: 'all kinds of stairs types',
+	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      description: 'version'
+	    },
+	    title: {
+	      type: 'string',
+	      optional: false
+	    },
+	    notes: {
+	      type: 'string',
+	      optional: true
+	    },
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['level', 'interior']
+	};
+
+	var wall = {
+	  description: 'structural wall, can contains doors and windows',
+	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      description: 'version'
+	    },
+	    w: { // width in meters
+	      type: 'number',
+	      defaultValue: 0.15,
+	      optional: false,
+	      min: 0.01,
+	      description: 'width'
+	    },
+	    h: { // height in meters
+	      type: 'number',
+	      defaultValue: 2.4,
+	      optional: false,
+	      min: 0.01,
+	      description: 'height'
+	    },
+	    l: { // length in meters
+	      type: 'number',
+	      defaultValue: 1,
+	      optional: false,
+	      min: 0.01,
+	      description: 'length'
+	    },
+	    controlLine: {
+	      type: 'string',
+	      defaultValue: 'back',
+	      optional: true,
+	      possibleValues: ['back', 'center', 'front'],
+	      description: 'relative position of the control line to the wall'
+	    },
+	    baseHeight: {
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      description: 'height of the baseboard'
+	    },
+	    frontHasBase: {
+	      type: 'boolean',
+	      defaultValue: false,
+	      optional: true,
+	      description: 'show baseboard on the front'
+	    },
+	    backHasBase: {
+	      type: 'boolean',
+	      defaultValue: false,
+	      optional: true,
+	      description: 'show baseboard on the back'
+	    }
+	  },
+	  childrenTypes: [
+	    'window',
+	    'door'
+	  ],
+	  parentTypes: [
+	    'level',
+	    'group'
+	  ],
+	  aframeComponent: {
+	    name: 'io3d-wall'
+	  }
+	};
+
+	var window$1 = {
+	  description: 'window with optional segmentation',
+	  params: {
+	    v: {
+	      type: 'number',
+	      defaultValue: 0,
+	      optional: true,
+	      description: 'version'
+	    },
+	    y: {
+	      defaultValue: 0.8,
+	    },
+	    h: {
+	      type: 'number',
+	      defaultValue: 1.5,
+	      optional: false,
+	      min: 0.01,
+	      description: 'height'
+	    },
+	    l: {
+	      type: 'number',
+	      defaultValue: 1.6,
+	      optional: false,
+	      min: 0.01,
+	      description: 'length'
+	    },
+	    side: {
+	      type: 'string',
+	      defaultValue: 'back',
+	      optional: true,
+	      possibleValues: ['back', 'center', 'front'],
+	      description: 'relative position of the window inside the wall opening'
+	    },
+	    rowRatios: {
+	      //type: 'array-with-numbers',
+	      type: 'array',
+	      defaultValue: [ 1 ],
+	      aframeDefault: '[1]',
+	      optional: true,
+	      description: 'relative height of horizontal segmentation',
+	      parse: function(val) {
+	        if (!/^\[.+\]/.test(val)) {
+	          console.warn('invalid input for window rowRatios');
+	          return [ 1 ]
+	        }
+	        return JSON.parse(val)
+	      }
+	    },
+	    columnRatios: {
+	      //type: 'array-with-arrays-with-numbers',
+	      type: 'array',
+	      defaultValue: [ [ 1 ] ],
+	      aframeDefault: '[[1]]',
+	      optional: true,
+	      description: 'relative width of vertical segmentation per row',
+	      parse: function(val) {
+	        if (!/^\[\s*\[.+\]\s*\]/.test(val)) {
+	          console.warn('invalid input for window columnRatios');
+	          return [ [ 1 ] ]
+	        }
+	        return JSON.parse(val)
+	      }
+	    },
+	    frameLength: {
+	      type: 'number',
+	      defaultValue: 0.04,
+	      optional: true,
+	      min: 0.01,
+	      description: 'thickness of the frame'
+	    },
+	    frameWidth: {
+	      type: 'number',
+	      defaultValue: 0.06,
+	      optional: true,
+	      min: 0.01,
+	      description: 'width of the frame'
+	    },
+	    hideGlass: {
+	      type: 'boolean',
+	      defaultValue: false,
+	      optional: true,
+	      description: 'Hides glass mesh'
+	    }
+	  },
+	  childrenTypes: [],
+	  parentTypes: ['wall'],
+	  aframeComponent: {
+	    name: 'io3d-window'
+	  }
+	};
+
+	// import sceneStructure types
+	function getDefaultsByType (type) {
+	  var types = {
+	    box: box,
+	    'camera-bookmark': cameraBookmark,
+	    closet: closet,
+	    column: column,
+	    curtain: curtain,
+	    door: door,
+	    floor: floor,
+	    floorplan: floorplan,
+	    group: group,
+	    interior: interior,
+	    kitchen: kitchen,
+	    level: level$1,
+	    object: object,
+	    plan: plan,
+	    polybox: polybox,
+	    polyfloor: polyfloor,
+	    railing: railing,
+	    stairs: stairs,
+	    tag: tag,
+	    wall: wall,
+	    window: window$1
+	  };
+
+	  if (type && types[type]) {
+	    return {
+	      params: defaults_1$1({}, generic.params, types[type].params),
+	      childrenTypes: types[type].childrenTypes,
+	      parentTypes: types[type].parentTypes,
+	      aframeComponent: types[type].aframeComponent
+	    }
+	  } else {
+	    var typeSpecificValidations = {};
+
+	    Object.keys(types).forEach(function (key) {
+	      generic.type = key;
+	      typeSpecificValidations[key] = {
+	        params: defaults_1$1({}, generic.params, types[key].params),
+	        childrenTypes: types[key].childrenTypes,
+	        parentTypes: types[key].parentTypes,
+	        aframeComponent: types[key].aframeComponent
+	      };
+	    });
+	    return typeSpecificValidations
+	  }
+	}
+
+	function getSchema (type) {
+	  // get valid params and default values for each type
+	  var validProps = getDefaultsByType(type);
+	  let schema = {};
+	  var params = validProps.params;
+	  var propKeys = Object.keys(params);
+	  propKeys.forEach(function (key) {
+	    // skip location, children, material and id params
+	    if (params[key].skipInAframe || key === 'materials') return
+	    // map defaults to aframe schema convention
+	    schema[key] = {};
+	    // check schema definition for custom parsing rules
+	    if (params[key].parse) {
+	      schema[key].parse = params[key].parse;
+	    // or set the preset type
+	    } else {
+	      schema[key].type = params[key].aframeType || params[key].type;
+	    }
+	    if (params[key].defaultValue) schema[key].default = params[key].aframeDefault || params[key].defaultValue;
+	    if (params[key].possibleValues) schema[key].oneOf = params[key].possibleValues;
+	  });
+	  return schema
+	}
+
+	var materialLibrary = {
+	  "basic-floor": {
+	    "meta": {
+	      "displayName": "Basic floor",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorDiffuse": [0.278,0.278,0.278],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 40,
+	      "mapNormal": "archilogic/tex/f4bee6370d34d5616e4693aa39287efd.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/22dacd7e3ed1e454bddb88f321fd1315.hi-res.gz.dds",
+	      "mapNormalSource": "archilogic/tex/f4bee6370d34d5616e4693aa39287efd.source.png",
+	      "mapNormalPreview": "archilogic/tex/f4bee6370d34d5616e4693aa39287efd.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/22dacd7e3ed1e454bddb88f321fd1315.source.png",
+	      "mapSpecularPreview": "archilogic/tex/22dacd7e3ed1e454bddb88f321fd1315.lo-res.jpg",
+	      "receiveRealTimeShadows": true
+	    }
+	  },
+	  "basic-balcony": {
+	    "meta": {
+	      "displayName": "Basic balcony",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "colorDiffuse": [0.5,0.5,0.5],
+	      "colorSpecular": [0.125,0.125,0.125],
+	      "specularCoef": 10,
+	      "receiveRealTimeShadows": true
+	    }
+	  },
+	  "basic-wall": {
+	    "meta": {
+	      "displayName": "Basic wall",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "colorDiffuse": [0.839,0.839,0.839],
+	      "colorSpecular": [0.098,0.098,0.098],
+	      "specularCoef": 2
+	    }
+	  },
+	  "basic-ceiling": {
+	    "meta": {
+	      "displayName": "Basic ceiling",
+	      "category": "ceiling",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "colorDiffuse": [0.878,0.878,0.878],
+	      "colorSpecular": [0.125,0.125,0.125],
+	      "specularCoef": 10
+	    }
+	  },
+	  "wood_parquet_oak": {
+	    "meta": {
+	      "displayName": "Parquet Oak",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "colorDiffuse": [0.89,0.82,0.69],
+	      "colorSpecular": [0.667,0.667,0.667],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/c659ad823689f7502699105e6b8974f1.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/c659ad823689f7502699105e6b8974f1.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/c659ad823689f7502699105e6b8974f1.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.source.jpg"
+	    }
+	  },
+	  "wood_parquet_4": {
+	    "meta": {
+	      "displayName": "Parquet Stained Oak",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "colorSpecular": [0.45,0.45,0.45],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/c659ad823689f7502699105e6b8974f1.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/c659ad823689f7502699105e6b8974f1.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/c659ad823689f7502699105e6b8974f1.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.source.jpg"
+	    }
+	  },
+	  "wood_parquet_oak_stained": {
+	    "meta": {
+	      "displayName": "Parquet Stained Oak",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "colorDiffuse": [ 0.906, 0.91,0.89],
+	      "colorSpecular": [0.667,0.667,0.667],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/c659ad823689f7502699105e6b8974f1.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/c659ad823689f7502699105e6b8974f1.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/c659ad823689f7502699105e6b8974f1.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.source.jpg"
+	    }
+	  },
+	  "wood_parquet_oak_dark": {
+	    "meta": {
+	      "displayName": "Parquet Oak Dark",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "colorDiffuse": [ 0.463,0.412, 0.337],
+	      "colorSpecular": [0.667,0.667,0.667],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/c659ad823689f7502699105e6b8974f1.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/c659ad823689f7502699105e6b8974f1.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/c659ad823689f7502699105e6b8974f1.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.source.jpg"
+	    }
+	  },
+	  "wood_parquet_oak_black": {
+	    "meta": {
+	      "displayName": "Parquet Oak Black",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "colorDiffuse": [0.204,0.176,0.137],
+	      "colorSpecular": [0.667,0.667,0.667],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/c659ad823689f7502699105e6b8974f1.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/c659ad823689f7502699105e6b8974f1.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/c659ad823689f7502699105e6b8974f1.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/a98a53f296ac58b8bde6a5fec57cd476.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/671b2122630e5d1f7c2ebc864dd87f5c.source.jpg"
+	    }
+	  },
+	  "floor_oak_parquet": {
+	    "meta": {
+	      "displayName": "Parquet Herringbone",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [3.3,3.5],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/b63633f00674bd2317c40c90b7ec30b9.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/b63633f00674bd2317c40c90b7ec30b9.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/b63633f00674bd2317c40c90b7ec30b9.source.jpg"
+	    }
+	  },
+	  "parquet_heringbone_oak": {
+	    "meta": {
+	      "displayName": "Parquet Herringbone Oak",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "colorSpecular": [0.188,0.188,0.188],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/87e4c3ef437932b07adfc132b2b58d00.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/9e3128f1785cc3355b178702816024b1.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/82b49d5fedede1707f8015b2987bd0b8.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/87e4c3ef437932b07adfc132b2b58d00.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/87e4c3ef437932b07adfc132b2b58d00.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/82b49d5fedede1707f8015b2987bd0b8.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/82b49d5fedede1707f8015b2987bd0b8.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/9e3128f1785cc3355b178702816024b1.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/9e3128f1785cc3355b178702816024b1.source.jpg"
+	    }
+	  },
+	  "parquet_tiles_01": {
+	    "meta": {
+	      "displayName": "Parquet Tiles",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1.5,1.5],
+	      "colorSpecular": [0.376,0.376,0.376],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/3727a4b6bae77be55d2ce2b2de033a5b.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/dc9143fbf3e7df6c5ff67d9b12bdc2e7.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/e3fc1d6cdf6bfd30f805c25b72fcea65.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/3727a4b6bae77be55d2ce2b2de033a5b.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/3727a4b6bae77be55d2ce2b2de033a5b.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/e3fc1d6cdf6bfd30f805c25b72fcea65.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/e3fc1d6cdf6bfd30f805c25b72fcea65.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/dc9143fbf3e7df6c5ff67d9b12bdc2e7.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/dc9143fbf3e7df6c5ff67d9b12bdc2e7.source.jpg"
+	    }
+	  },
+	  "wood_parquet": {
+	    "meta": {
+	      "displayName": "Parquet 2",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "colorSpecular": [0.376,0.376,0.376],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/23fecde666551205efd5469b10dbcc57.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/7339da972d8f15d586f849ff7b7ca455.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/076bf25a31aac947867fc15afdfa4a6c.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/23fecde666551205efd5469b10dbcc57.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/23fecde666551205efd5469b10dbcc57.source.png",
+	      "mapSpecularPreview": "archilogic/tex/076bf25a31aac947867fc15afdfa4a6c.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/076bf25a31aac947867fc15afdfa4a6c.source.png",
+	      "mapNormalPreview": "archilogic/tex/7339da972d8f15d586f849ff7b7ca455.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/7339da972d8f15d586f849ff7b7ca455.source.png"
+	    }
+	  },
+	  "wood_parquet_3": {
+	    "meta": {
+	      "displayName": "Parquet 3",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.667,0.667,0.667],
+	      "mapDiffuse": "archilogic/tex/47204e093a6ac04f6ac3467fb78efc46.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/f4bee6370d34d5616e4693aa39287efd.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/22dacd7e3ed1e454bddb88f321fd1315.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/47204e093a6ac04f6ac3467fb78efc46.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/47204e093a6ac04f6ac3467fb78efc46.source.png",
+	      "mapSpecularPreview": "archilogic/tex/22dacd7e3ed1e454bddb88f321fd1315.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/22dacd7e3ed1e454bddb88f321fd1315.source.png",
+	      "mapNormalPreview": "archilogic/tex/f4bee6370d34d5616e4693aa39287efd.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/f4bee6370d34d5616e4693aa39287efd.source.png"
+	    }
+	  },
+	  "parquet_dark_01": {
+	    "meta": {
+	      "displayName": "Parquet Dark",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/c5a58ec7d86d3641cf77c661c0fdf500.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/f4bee6370d34d5616e4693aa39287efd.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/22dacd7e3ed1e454bddb88f321fd1315.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/c5a58ec7d86d3641cf77c661c0fdf500.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/c5a58ec7d86d3641cf77c661c0fdf500.source.png",
+	      "mapSpecularPreview": "archilogic/tex/22dacd7e3ed1e454bddb88f321fd1315.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/22dacd7e3ed1e454bddb88f321fd1315.source.png",
+	      "mapNormalPreview": "archilogic/tex/f4bee6370d34d5616e4693aa39287efd.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/f4bee6370d34d5616e4693aa39287efd.source.png"
+	    }
+	  },
+	  "fitted_carpet_light_grey": {
+	    "meta": {
+	      "displayName": "Fitted Carpet Light Grey",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.6,0.6,0.6],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/acdcd29e06d541f25ab8e60d3d3f9a85.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/7d425fc857c256bfa8a06ac48208078f.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/2d373be23d2925ecab0d809e14734c5a.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/acdcd29e06d541f25ab8e60d3d3f9a85.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/acdcd29e06d541f25ab8e60d3d3f9a85.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/2d373be23d2925ecab0d809e14734c5a.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/2d373be23d2925ecab0d809e14734c5a.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/7d425fc857c256bfa8a06ac48208078f.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/7d425fc857c256bfa8a06ac48208078f.source.jpg"
+	    }
+	  },
+	  "floor_concrete_001": {
+	    "meta": {
+	      "displayName": "Floor Concrete 001",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [4,4],
+	      "colorSpecular": [0.063,0.063,0.063],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/3fdde165b96f531f1f4ff81ccd7b38c4.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/3fdde165b96f531f1f4ff81ccd7b38c4.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/3fdde165b96f531f1f4ff81ccd7b38c4.source.jpg"
+	    }
+	  },
+	  "floor_concrete_001_ceiling": {
+	    "meta": {
+	      "displayName": "Floor Concrete 001",
+	      "category": "ceiling",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [4,4],
+	      "colorSpecular": [0.063,0.063,0.063],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/3fdde165b96f531f1f4ff81ccd7b38c4.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/3fdde165b96f531f1f4ff81ccd7b38c4.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/3fdde165b96f531f1f4ff81ccd7b38c4.source.jpg"
+	    }
+	  },
+	  "concrete_fluid": {
+	    "meta": {
+	      "displayName": "Concrete Natural",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorDiffuse": [0.867,0.867,0.867],
+	      "colorSpecular": [0.537,0.537,0.537],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/7af78308b190531d128c71e3482e21ea.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/f544850902a92746d30d0b80bda43c62.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/7af78308b190531d128c71e3482e21ea.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/7af78308b190531d128c71e3482e21ea.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/f544850902a92746d30d0b80bda43c62.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/f544850902a92746d30d0b80bda43c62.source.jpg"
+	    }
+	  },
+	  "concrete_beige": {
+	    "meta": {
+	      "displayName": "Concrete Beige",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.537,0.537,0.537],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/5b293c62b59fd9a56122244d7d4ce13d.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/f544850902a92746d30d0b80bda43c62.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/5b293c62b59fd9a56122244d7d4ce13d.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/5b293c62b59fd9a56122244d7d4ce13d.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/f544850902a92746d30d0b80bda43c62.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/f544850902a92746d30d0b80bda43c62.source.jpg"
+	    }
+	  },
+	  "concrete_beige_ceiling": {
+	    "meta": {
+	      "displayName": "Concrete Beige",
+	      "category": "ceiling",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.537,0.537,0.537],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/5b293c62b59fd9a56122244d7d4ce13d.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/f544850902a92746d30d0b80bda43c62.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/5b293c62b59fd9a56122244d7d4ce13d.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/5b293c62b59fd9a56122244d7d4ce13d.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/f544850902a92746d30d0b80bda43c62.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/f544850902a92746d30d0b80bda43c62.source.jpg"
+	    }
+	  },
+	  "concrete_dark": {
+	    "meta": {
+	      "displayName": "Concrete Dark",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.537,0.537,0.537],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/e533a34333f62a4999a50e4ddf00a898.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/f544850902a92746d30d0b80bda43c62.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/e533a34333f62a4999a50e4ddf00a898.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/e533a34333f62a4999a50e4ddf00a898.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/f544850902a92746d30d0b80bda43c62.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/f544850902a92746d30d0b80bda43c62.source.jpg"
+	    }
+	  },
+	  "concrete_dark_ceiling": {
+	    "meta": {
+	      "displayName": "Concrete Dark",
+	      "category": "ceiling",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.537,0.537,0.537],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/e533a34333f62a4999a50e4ddf00a898.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/f544850902a92746d30d0b80bda43c62.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/e533a34333f62a4999a50e4ddf00a898.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/e533a34333f62a4999a50e4ddf00a898.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/f544850902a92746d30d0b80bda43c62.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/f544850902a92746d30d0b80bda43c62.source.jpg"
+	    }
+	  },
+	  "concrete_black": {
+	    "meta": {
+	      "displayName": "Concrete Black",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.537,0.537,0.537],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/7304a447edb67785758a328b5e9770c8.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/f544850902a92746d30d0b80bda43c62.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/7304a447edb67785758a328b5e9770c8.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/7304a447edb67785758a328b5e9770c8.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/f544850902a92746d30d0b80bda43c62.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/f544850902a92746d30d0b80bda43c62.source.jpg"
+	    }
+	  },
+	  "concrete_black_ceiling": {
+	    "meta": {
+	      "displayName": "Concrete Black",
+	      "category": "ceiling",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.537,0.537,0.537],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/7304a447edb67785758a328b5e9770c8.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/f544850902a92746d30d0b80bda43c62.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/7304a447edb67785758a328b5e9770c8.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/7304a447edb67785758a328b5e9770c8.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/f544850902a92746d30d0b80bda43c62.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/f544850902a92746d30d0b80bda43c62.source.jpg"
+	    }
+	  },
+	  "default_plaster_001": {
+	    "meta": {
+	      "displayName": "Plaster Rough",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.5,0.5],
+	      "specularCoef": 20,
+	      "mapDiffuse": "archilogic/tex/278b6dee7782d3ca882d8dd8b0dcd85c.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/278b6dee7782d3ca882d8dd8b0dcd85c.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/278b6dee7782d3ca882d8dd8b0dcd85c.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.source.jpg"
+	    }
+	  },
+	  "default_plaster_001_ceiling": {
+	    "meta": {
+	      "displayName": "Plaster Rough",
+	      "category": "ceiling",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.5,0.5],
+	      "specularCoef": 20,
+	      "mapDiffuse": "archilogic/tex/278b6dee7782d3ca882d8dd8b0dcd85c.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/278b6dee7782d3ca882d8dd8b0dcd85c.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/278b6dee7782d3ca882d8dd8b0dcd85c.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.source.jpg"
+	    }
+	  },
+	  "plaster_smooth": {
+	    "meta": {
+	      "displayName": "Plaster Smooth",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.3,0.3],
+	      "specularCoef": 20,
+	      "mapDiffuse": "archilogic/tex/1c6397e5715169b6b024c8645cf2efdc.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/1c6397e5715169b6b024c8645cf2efdc.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/1c6397e5715169b6b024c8645cf2efdc.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.source.jpg"
+	    }
+	  },
+	  "plaster_smooth_ceiling": {
+	    "meta": {
+	      "displayName": "Plaster Smooth",
+	      "category": "ceiling",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.3,0.3],
+	      "specularCoef": 20,
+	      "mapDiffuse": "archilogic/tex/1c6397e5715169b6b024c8645cf2efdc.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/1c6397e5715169b6b024c8645cf2efdc.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/1c6397e5715169b6b024c8645cf2efdc.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/d4460b4a6f82d9cd693db900dd547ee2.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/79542e108b0ff7749e4c3df25ad96267.source.jpg"
+	    }
+	  },
+	  "tiles-white-large": {
+	    "meta": {
+	      "displayName": "Tiles Square White",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.976,0.976,0.976],
+	      "colorSpecular": [0.251,0.251,0.251],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/0b4ecca17b840beb219e32bceb21ffc3.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/627ac2ca3cab7e2790b36c97cd58e243.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/bd83b5c8611c3bbe71d61f9b2c57b45f.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/0b4ecca17b840beb219e32bceb21ffc3.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/0b4ecca17b840beb219e32bceb21ffc3.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/bd83b5c8611c3bbe71d61f9b2c57b45f.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/bd83b5c8611c3bbe71d61f9b2c57b45f.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/627ac2ca3cab7e2790b36c97cd58e243.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/627ac2ca3cab7e2790b36c97cd58e243.source.jpg"
+	    }
+	  },
+	  "tiles-dark-large": {
+	    "meta": {
+	      "displayName": "Tiles Square Anthrazit",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/8aa2417d8bc9c6bb1d80db87bc409c9f.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/dcc25defadefce42ac0dde87d6060150.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/14398cecb6ce505232a7c7ed5644b07a.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/8aa2417d8bc9c6bb1d80db87bc409c9f.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/8aa2417d8bc9c6bb1d80db87bc409c9f.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/14398cecb6ce505232a7c7ed5644b07a.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/14398cecb6ce505232a7c7ed5644b07a.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/dcc25defadefce42ac0dde87d6060150.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/dcc25defadefce42ac0dde87d6060150.source.jpg"
+	    }
+	  },
+	  "tiles_large_rect_white": {
+	    "meta": {
+	      "displayName": "Tiles Rectangle White",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.025,0.025,0.025],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/d8572227e2a76395a528e0462cf5b895.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/d8572227e2a76395a528e0462cf5b895.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/d8572227e2a76395a528e0462cf5b895.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.source.jpg"
+	    }
+	  },
+	  "tiles_large_rect_white_floor": {
+	    "meta": {
+	      "displayName": "Tiles Rectangle White",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.025,0.025,0.025],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/d8572227e2a76395a528e0462cf5b895.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/d8572227e2a76395a528e0462cf5b895.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/d8572227e2a76395a528e0462cf5b895.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.source.jpg"
+	    }
+	  },
+	  "tiles_large_rect_grey": {
+	    "meta": {
+	      "displayName": "Tiles Rectangle Grey",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.03,0.03,0.03],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/0921c5463ce717013b12f45418f8a81f.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/0921c5463ce717013b12f45418f8a81f.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/0921c5463ce717013b12f45418f8a81f.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.source.jpg"
+	    }
+	  },
+	  "tiles_large_rect_grey_floor": {
+	    "meta": {
+	      "displayName": "Tiles Rectangle Grey",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.03,0.03,0.03],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/0921c5463ce717013b12f45418f8a81f.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/0921c5463ce717013b12f45418f8a81f.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/0921c5463ce717013b12f45418f8a81f.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/ade515c7810e38629f1c5992570d5c44.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/af2ce3936272199e72b91a52cd032d38.source.jpg"
+	    }
+	  },
+	  "tiles_large_shifted_sand": {
+	    "meta": {
+	      "displayName": "Tiles Shifted Sand",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.25,0.25,0.25],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/f0d0f3f85673051179bf44bfce706efd.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/6d3096b1dbb5c9ae16f9cae41c08c86f.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/8e1e6a287c1930134639a7b4236bd552.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/f0d0f3f85673051179bf44bfce706efd.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/f0d0f3f85673051179bf44bfce706efd.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/8e1e6a287c1930134639a7b4236bd552.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/8e1e6a287c1930134639a7b4236bd552.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/6d3096b1dbb5c9ae16f9cae41c08c86f.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/6d3096b1dbb5c9ae16f9cae41c08c86f.source.jpg"
+	    }
+	  },
+	  "tiles_large_shifted_sand_floor": {
+	    "meta": {
+	      "displayName": "Tiles Shifted Sand",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.25,0.25,0.25],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/f0d0f3f85673051179bf44bfce706efd.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/6d3096b1dbb5c9ae16f9cae41c08c86f.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/8e1e6a287c1930134639a7b4236bd552.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/f0d0f3f85673051179bf44bfce706efd.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/f0d0f3f85673051179bf44bfce706efd.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/8e1e6a287c1930134639a7b4236bd552.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/8e1e6a287c1930134639a7b4236bd552.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/6d3096b1dbb5c9ae16f9cae41c08c86f.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/6d3096b1dbb5c9ae16f9cae41c08c86f.source.jpg"
+	    }
+	  },
+	  "black_white_tiles": {
+	    "meta": {
+	      "displayName": "Tiles Checkerboard Black/White",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.537,0.537,0.537],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/6516dbd748a176400f878fa8e9c99ba3.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/a72b2b7a876446fc0266c483eec1e1c5.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/98b4993fcad50697c3387edff1df4414.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/6516dbd748a176400f878fa8e9c99ba3.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/6516dbd748a176400f878fa8e9c99ba3.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/98b4993fcad50697c3387edff1df4414.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/98b4993fcad50697c3387edff1df4414.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/a72b2b7a876446fc0266c483eec1e1c5.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/a72b2b7a876446fc0266c483eec1e1c5.source.jpg"
+	    }
+	  },
+	  "floor_tiles_002": {
+	    "meta": {
+	      "displayName": "Floor Tiles 002",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/033cf06fbf6b93c7bd0fb3691fa72f17.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/033cf06fbf6b93c7bd0fb3691fa72f17.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/033cf06fbf6b93c7bd0fb3691fa72f17.source.jpg"
+	    }
+	  },
+	  "floor_tiles_003": {
+	    "meta": {
+	      "displayName": "Floor Tiles 003",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/09716599ae75e4f4fc559b8dc37c7671.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/09716599ae75e4f4fc559b8dc37c7671.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/09716599ae75e4f4fc559b8dc37c7671.source.jpg"
+	    }
+	  },
+	  "white_tiles": {
+	    "meta": {
+	      "displayName": "Tiles Mosaic White Big",
+	      "category": "wall",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.125,0.125,0.125],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/3df033cc051926797d49509f766af355.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/02aab5d4adaf4690c49ba55cfaa6b80f.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/0a2a5927b4f16b67adef3af0f1f5826d.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/3df033cc051926797d49509f766af355.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/3df033cc051926797d49509f766af355.source.png",
+	      "mapSpecularPreview": "archilogic/tex/0a2a5927b4f16b67adef3af0f1f5826d.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/0a2a5927b4f16b67adef3af0f1f5826d.source.png",
+	      "mapNormalPreview": "archilogic/tex/02aab5d4adaf4690c49ba55cfaa6b80f.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/02aab5d4adaf4690c49ba55cfaa6b80f.source.png"
+	    }
+	  },
+	  "white_tiles_floor": {
+	    "meta": {
+	      "displayName": "Tiles Mosaic White Big",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.125,0.125,0.125],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/3df033cc051926797d49509f766af355.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/02aab5d4adaf4690c49ba55cfaa6b80f.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/0a2a5927b4f16b67adef3af0f1f5826d.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/3df033cc051926797d49509f766af355.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/3df033cc051926797d49509f766af355.source.png",
+	      "mapSpecularPreview": "archilogic/tex/0a2a5927b4f16b67adef3af0f1f5826d.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/0a2a5927b4f16b67adef3af0f1f5826d.source.png",
+	      "mapNormalPreview": "archilogic/tex/02aab5d4adaf4690c49ba55cfaa6b80f.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/02aab5d4adaf4690c49ba55cfaa6b80f.source.png"
+	    }
+	  },
+	  "white_tiles_small": {
+	    "meta": {
+	      "displayName": "Tiles Mosaic White",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.125,0.125,0.125],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/3416ceb5e5625b1214d778e71413e138.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/e5f0d1e90c2b0fdd1f88fa48157dc68c.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/044e5fcdc243b61f90b8a92f1355b9be.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/3416ceb5e5625b1214d778e71413e138.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/3416ceb5e5625b1214d778e71413e138.source.png",
+	      "mapSpecularPreview": "archilogic/tex/044e5fcdc243b61f90b8a92f1355b9be.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/044e5fcdc243b61f90b8a92f1355b9be.source.png",
+	      "mapNormalPreview": "archilogic/tex/e5f0d1e90c2b0fdd1f88fa48157dc68c.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/e5f0d1e90c2b0fdd1f88fa48157dc68c.source.png"
+	    }
+	  },
+	  "white_tiles_small_floor": {
+	    "meta": {
+	      "displayName": "Tiles Mosaic White",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.125,0.125,0.125],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/3416ceb5e5625b1214d778e71413e138.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/e5f0d1e90c2b0fdd1f88fa48157dc68c.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/044e5fcdc243b61f90b8a92f1355b9be.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/3416ceb5e5625b1214d778e71413e138.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/3416ceb5e5625b1214d778e71413e138.source.png",
+	      "mapSpecularPreview": "archilogic/tex/044e5fcdc243b61f90b8a92f1355b9be.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/044e5fcdc243b61f90b8a92f1355b9be.source.png",
+	      "mapNormalPreview": "archilogic/tex/e5f0d1e90c2b0fdd1f88fa48157dc68c.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/e5f0d1e90c2b0fdd1f88fa48157dc68c.source.png"
+	    }
+	  },
+	  "tiles_mosaic_brown": {
+	    "meta": {
+	      "displayName": "Tiles Mosaic Brown",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.5,0.5],
+	      "colorSpecular": [0.15,0.15,0.15],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/739ac1c99b22d62693314fb55c8b847a.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/739ac1c99b22d62693314fb55c8b847a.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/739ac1c99b22d62693314fb55c8b847a.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.source.jpg"
+	    }
+	  },
+	  "tiles_mosaic_brown_floor": {
+	    "meta": {
+	      "displayName": "Tiles Mosaic Brown",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.5,0.5],
+	      "colorSpecular": [0.15,0.15,0.15],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/739ac1c99b22d62693314fb55c8b847a.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/739ac1c99b22d62693314fb55c8b847a.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/739ac1c99b22d62693314fb55c8b847a.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.source.jpg"
+	    }
+	  },
+	  "tiles_mosaic_green": {
+	    "meta": {
+	      "displayName": "Tiles Mosaic Green",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.5,0.5],
+	      "colorSpecular": [0.1,0.1,0.1],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/cf01041b30b308d8c1d5797490eefb3d.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/cf01041b30b308d8c1d5797490eefb3d.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/cf01041b30b308d8c1d5797490eefb3d.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.source.jpg"
+	    }
+	  },
+	  "tiles_mosaic_green_floor": {
+	    "meta": {
+	      "displayName": "Tiles Mosaic Green",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.5,0.5],
+	      "colorSpecular": [0.1,0.1,0.1],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/cf01041b30b308d8c1d5797490eefb3d.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/cf01041b30b308d8c1d5797490eefb3d.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/cf01041b30b308d8c1d5797490eefb3d.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/b19abec3667b65b6ef609d9aaf0a9461.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/5c4f63d51333703dcac9659cb7fcd68d.source.jpg"
+	    }
+	  },
+	  "dark_tiles": {
+	    "meta": {
+	      "displayName": "Brown Tiles",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.486,0.486,0.486],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/6b0b81b4cdbaca9628eb0d78ed092f0f.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/02aab5d4adaf4690c49ba55cfaa6b80f.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/0a2a5927b4f16b67adef3af0f1f5826d.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/6b0b81b4cdbaca9628eb0d78ed092f0f.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/6b0b81b4cdbaca9628eb0d78ed092f0f.source.png",
+	      "mapSpecularPreview": "archilogic/tex/0a2a5927b4f16b67adef3af0f1f5826d.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/0a2a5927b4f16b67adef3af0f1f5826d.source.png",
+	      "mapNormalPreview": "archilogic/tex/02aab5d4adaf4690c49ba55cfaa6b80f.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/02aab5d4adaf4690c49ba55cfaa6b80f.source.png"
+	    }
+	  },
+	  "dark_tiles_small": {
+	    "meta": {
+	      "displayName": "Brown Tiles Small",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.486,0.486,0.486],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/186699961b8afaf24d3a21eb07aadd6d.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/e5f0d1e90c2b0fdd1f88fa48157dc68c.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/044e5fcdc243b61f90b8a92f1355b9be.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/186699961b8afaf24d3a21eb07aadd6d.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/186699961b8afaf24d3a21eb07aadd6d.source.png",
+	      "mapSpecularPreview": "archilogic/tex/044e5fcdc243b61f90b8a92f1355b9be.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/044e5fcdc243b61f90b8a92f1355b9be.source.png",
+	      "mapNormalPreview": "archilogic/tex/e5f0d1e90c2b0fdd1f88fa48157dc68c.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/e5f0d1e90c2b0fdd1f88fa48157dc68c.source.png"
+	    }
+	  },
+	  "floor_tiles_001": {
+	    "meta": {
+	      "displayName": "Tiles Slate",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1.5,1.5],
+	      "colorSpecular": [0.584,0.584,0.584],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/2d6e29a6701b30f14a9fd4ff5611821c.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/0cbeaa8fae8ac9c017f3e54a0d0f2b7a.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/cf02b31506b385e6dd0a1cade7e22cc7.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/2d6e29a6701b30f14a9fd4ff5611821c.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/2d6e29a6701b30f14a9fd4ff5611821c.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/cf02b31506b385e6dd0a1cade7e22cc7.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/cf02b31506b385e6dd0a1cade7e22cc7.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/0cbeaa8fae8ac9c017f3e54a0d0f2b7a.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/0cbeaa8fae8ac9c017f3e54a0d0f2b7a.source.jpg"
+	    }
+	  },
+	  "terrazzo_tiles": {
+	    "meta": {
+	      "displayName": "Tiles Terrazzo",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.584,0.584,0.584],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/25694889b08b343b90c3e4c7261d86e8.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/57e26201a21d93254c4bb45ed2d2aa19.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/6702ac5458148d80116088ba2c7d2c42.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/25694889b08b343b90c3e4c7261d86e8.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/25694889b08b343b90c3e4c7261d86e8.source.png",
+	      "mapSpecularPreview": "archilogic/tex/6702ac5458148d80116088ba2c7d2c42.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/6702ac5458148d80116088ba2c7d2c42.source.png",
+	      "mapNormalPreview": "archilogic/tex/57e26201a21d93254c4bb45ed2d2aa19.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/57e26201a21d93254c4bb45ed2d2aa19.source.png"
+	    }
+	  },
+	  "tiles_white_marble": {
+	    "meta": {
+	      "displayName": "Tiles Marble White",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 25,
+	      "mapDiffuse": "archilogic/tex/0b2c734dd939a01faaa867ec65e0ef4c.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/69bba4d9620c0c37fa9f0997156e693a.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/8fc3f68d9193efa80002bd940ad93be4.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/0b2c734dd939a01faaa867ec65e0ef4c.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/0b2c734dd939a01faaa867ec65e0ef4c.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/8fc3f68d9193efa80002bd940ad93be4.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/8fc3f68d9193efa80002bd940ad93be4.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/69bba4d9620c0c37fa9f0997156e693a.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/69bba4d9620c0c37fa9f0997156e693a.source.jpg"
+	    }
+	  },
+	  "tiles_white_marble_floor": {
+	    "meta": {
+	      "displayName": "Tiles Marble White",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 25,
+	      "mapDiffuse": "archilogic/tex/0b2c734dd939a01faaa867ec65e0ef4c.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/69bba4d9620c0c37fa9f0997156e693a.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/8fc3f68d9193efa80002bd940ad93be4.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/0b2c734dd939a01faaa867ec65e0ef4c.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/0b2c734dd939a01faaa867ec65e0ef4c.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/8fc3f68d9193efa80002bd940ad93be4.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/8fc3f68d9193efa80002bd940ad93be4.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/69bba4d9620c0c37fa9f0997156e693a.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/69bba4d9620c0c37fa9f0997156e693a.source.jpg"
+	    }
+	  },
+	  "stone-travertin": {
+	    "meta": {
+	      "displayName": "Tiles Travertin",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.424,0.424,0.424],
+	      "specularCoef": 25,
+	      "mapDiffuse": "archilogic/tex/82a80f62139d16b46c21188d6bf65383.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/3c34372d7adc7d0cfb6241818e7bdd33.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/77a50e96fcb72da716a1fa5ff59a6405.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/82a80f62139d16b46c21188d6bf65383.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/82a80f62139d16b46c21188d6bf65383.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/77a50e96fcb72da716a1fa5ff59a6405.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/77a50e96fcb72da716a1fa5ff59a6405.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/3c34372d7adc7d0cfb6241818e7bdd33.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/3c34372d7adc7d0cfb6241818e7bdd33.source.jpg"
+	    }
+	  },
+	  "stone-travertin-floor": {
+	    "meta": {
+	      "displayName": "Tiles Travertin",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.424,0.424,0.424],
+	      "specularCoef": 25,
+	      "mapDiffuse": "archilogic/tex/82a80f62139d16b46c21188d6bf65383.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/3c34372d7adc7d0cfb6241818e7bdd33.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/77a50e96fcb72da716a1fa5ff59a6405.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/82a80f62139d16b46c21188d6bf65383.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/82a80f62139d16b46c21188d6bf65383.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/77a50e96fcb72da716a1fa5ff59a6405.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/77a50e96fcb72da716a1fa5ff59a6405.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/3c34372d7adc7d0cfb6241818e7bdd33.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/3c34372d7adc7d0cfb6241818e7bdd33.source.jpg"
+	    }
+	  },
+	  "terrazzo": {
+	    "meta": {
+	      "displayName": "Terrazzo",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.8,0.8],
+	      "colorSpecular": [0.125,0.125,0.125],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/b6669597fae40407427303941f738325.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/550eb2c4d601fe57c9ea74d9b1987eea.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/a0a56174d016a466f6bb465c1fb8a55e.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/b6669597fae40407427303941f738325.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/b6669597fae40407427303941f738325.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/a0a56174d016a466f6bb465c1fb8a55e.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/a0a56174d016a466f6bb465c1fb8a55e.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/550eb2c4d601fe57c9ea74d9b1987eea.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/550eb2c4d601fe57c9ea74d9b1987eea.source.jpg"
+	    }
+	  },
+	  "terrazzo_ceiling": {
+	    "meta": {
+	      "displayName": "Terrazzo",
+	      "category": "ceiling",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.8,0.8],
+	      "colorSpecular": [0.125,0.125,0.125],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/b6669597fae40407427303941f738325.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/550eb2c4d601fe57c9ea74d9b1987eea.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/a0a56174d016a466f6bb465c1fb8a55e.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/b6669597fae40407427303941f738325.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/b6669597fae40407427303941f738325.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/a0a56174d016a466f6bb465c1fb8a55e.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/a0a56174d016a466f6bb465c1fb8a55e.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/550eb2c4d601fe57c9ea74d9b1987eea.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/550eb2c4d601fe57c9ea74d9b1987eea.source.jpg"
+	    }
+	  },
+	  "bricks_clean_red": {
+	    "meta": {
+	      "displayName": "Bricks Clean Red",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1.2,1.2],
+	      "colorSpecular": [0.08,0.08,0.08],
+	      "specularCoef": 50,
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/d399b0bf607e60e545c0ceb060b7982c.hi-res.gz.dds",
+	      "mapNormal": "/535e624259ee6b0200000484/textures/uploads/7a6112cd3134c623afacd882e2cb4585.hi-res.gz.dds",
+	      "mapSpecular": "/535e624259ee6b0200000484/textures/uploads/06fd5ee205b44156205c4180a21e815a.hi-res.gz.dds",
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/d399b0bf607e60e545c0ceb060b7982c.lo-res.jpg",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/d399b0bf607e60e545c0ceb060b7982c.source.jpg",
+	      "mapSpecularPreview": "/535e624259ee6b0200000484/textures/uploads/06fd5ee205b44156205c4180a21e815a.lo-res.jpg",
+	      "mapSpecularSource": "/535e624259ee6b0200000484/textures/uploads/06fd5ee205b44156205c4180a21e815a.source.jpg",
+	      "mapNormalPreview": "/535e624259ee6b0200000484/textures/uploads/7a6112cd3134c623afacd882e2cb4585.lo-res.jpg",
+	      "mapNormalSource": "/535e624259ee6b0200000484/textures/uploads/7a6112cd3134c623afacd882e2cb4585.source.jpg"
+	    }
+	  },
+	  "bricks_clean_orange": {
+	    "meta": {
+	      "displayName": "Bricks Clean Orange",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1.2,1.2],
+	      "colorSpecular": [0.08,0.08,0.08],
+	      "specularCoef": 50,
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/d981f439a0d62b0e1d68c5c91daad674.hi-res.gz.dds",
+	      "mapNormal": "/535e624259ee6b0200000484/textures/uploads/7a6112cd3134c623afacd882e2cb4585.hi-res.gz.dds",
+	      "mapSpecular": "/535e624259ee6b0200000484/textures/uploads/06fd5ee205b44156205c4180a21e815a.hi-res.gz.dds",
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/d981f439a0d62b0e1d68c5c91daad674.lo-res.jpg",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/d981f439a0d62b0e1d68c5c91daad674.source.jpg",
+	      "mapSpecularPreview": "/535e624259ee6b0200000484/textures/uploads/06fd5ee205b44156205c4180a21e815a.lo-res.jpg",
+	      "mapSpecularSource": "/535e624259ee6b0200000484/textures/uploads/06fd5ee205b44156205c4180a21e815a.source.jpg",
+	      "mapNormalPreview": "/535e624259ee6b0200000484/textures/uploads/7a6112cd3134c623afacd882e2cb4585.lo-res.jpg",
+	      "mapNormalSource": "/535e624259ee6b0200000484/textures/uploads/7a6112cd3134c623afacd882e2cb4585.source.jpg"
+	    }
+	  },
+	  "bricks_clean_white": {
+	    "meta": {
+	      "displayName": "Bricks Clean White",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1.2,1.2],
+	      "colorSpecular": [0.08,0.08,0.08],
+	      "specularCoef": 50,
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/e167b3c467c84e496fdf5feb34e3a978.hi-res.gz.dds",
+	      "mapNormal": "/535e624259ee6b0200000484/textures/uploads/7a6112cd3134c623afacd882e2cb4585.hi-res.gz.dds",
+	      "mapSpecular": "/535e624259ee6b0200000484/textures/uploads/06fd5ee205b44156205c4180a21e815a.hi-res.gz.dds",
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/e167b3c467c84e496fdf5feb34e3a978.lo-res.jpg",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/e167b3c467c84e496fdf5feb34e3a978.source.jpg",
+	      "mapSpecularPreview": "/535e624259ee6b0200000484/textures/uploads/06fd5ee205b44156205c4180a21e815a.lo-res.jpg",
+	      "mapSpecularSource": "/535e624259ee6b0200000484/textures/uploads/06fd5ee205b44156205c4180a21e815a.source.jpg",
+	      "mapNormalPreview": "/535e624259ee6b0200000484/textures/uploads/7a6112cd3134c623afacd882e2cb4585.lo-res.jpg",
+	      "mapNormalSource": "/535e624259ee6b0200000484/textures/uploads/7a6112cd3134c623afacd882e2cb4585.source.jpg"
+	    }
+	  },
+	  "bricks_red": {
+	    "meta": {
+	      "displayName": "Bricks Red",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.08,0.08,0.08],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/e4946d35b80274163c6b6477e68e2b00.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/545119d25a25288d358632490643ddc2.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/0e83232f013132b11b4b2b194717fbc5.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/e4946d35b80274163c6b6477e68e2b00.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/e4946d35b80274163c6b6477e68e2b00.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/0e83232f013132b11b4b2b194717fbc5.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/0e83232f013132b11b4b2b194717fbc5.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/545119d25a25288d358632490643ddc2.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/545119d25a25288d358632490643ddc2.source.jpg"
+	    }
+	  },
+	  "bricks_yellow": {
+	    "meta": {
+	      "displayName": "Bricks Yellow",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.05,0.05,0.05],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/d287580522c79c80aea849747b9ab914.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/545119d25a25288d358632490643ddc2.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/0e83232f013132b11b4b2b194717fbc5.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/d287580522c79c80aea849747b9ab914.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/d287580522c79c80aea849747b9ab914.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/0e83232f013132b11b4b2b194717fbc5.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/0e83232f013132b11b4b2b194717fbc5.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/545119d25a25288d358632490643ddc2.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/545119d25a25288d358632490643ddc2.source.jpg"
+	    }
+	  },
+	  "bricks_white": {
+	    "meta": {
+	      "displayName": "Bricks White",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.05,0.05,0.05],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/7c5134a614d03c79d008c5c1a7cf5f54.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/545119d25a25288d358632490643ddc2.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/0e83232f013132b11b4b2b194717fbc5.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/7c5134a614d03c79d008c5c1a7cf5f54.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/7c5134a614d03c79d008c5c1a7cf5f54.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/0e83232f013132b11b4b2b194717fbc5.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/0e83232f013132b11b4b2b194717fbc5.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/545119d25a25288d358632490643ddc2.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/545119d25a25288d358632490643ddc2.source.jpg"
+	    }
+	  },
+	  "concrete_board": {
+	    "meta": {
+	      "displayName": "Concrete Raw Board",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2.4,2.4],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/fea909bb96aa0fcea514647d97875be5.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/b9f04ce9f2742488128ea450d465963b.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/ae044508902f2bf472542a6afc0db6f8.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/fea909bb96aa0fcea514647d97875be5.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/fea909bb96aa0fcea514647d97875be5.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/ae044508902f2bf472542a6afc0db6f8.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/ae044508902f2bf472542a6afc0db6f8.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/b9f04ce9f2742488128ea450d465963b.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/b9f04ce9f2742488128ea450d465963b.source.jpg"
+	    }
+	  },
+	  "concrete_board_ceiling": {
+	    "meta": {
+	      "displayName": "Concrete Raw Board",
+	      "category": "ceiling",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2.4,2.4],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/fea909bb96aa0fcea514647d97875be5.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/b9f04ce9f2742488128ea450d465963b.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/ae044508902f2bf472542a6afc0db6f8.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/fea909bb96aa0fcea514647d97875be5.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/fea909bb96aa0fcea514647d97875be5.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/ae044508902f2bf472542a6afc0db6f8.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/ae044508902f2bf472542a6afc0db6f8.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/b9f04ce9f2742488128ea450d465963b.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/b9f04ce9f2742488128ea450d465963b.source.jpg"
+	    }
+	  },
+	  "wall_top": {
+	    "meta": {
+	      "displayName": "Stone Wall Natural",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "colorDiffuse": [0.2,0.2,0.2],
+	      "addLightmap": false,
+	      "useInBaking": true,
+	      "hideAfterBaking": false
+	    }
+	  },
+	  "stone_wall": {
+	    "meta": {
+	      "displayName": "Stone Wall Natural",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.424,0.424,0.424],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/5b9bed2afa0dff30e14bfbc0344c90e7.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/0f2f5fcd5532a2acfbe1b62e93b1e2da.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/d562e8020049d2d6e4b3583e4e624522.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/5b9bed2afa0dff30e14bfbc0344c90e7.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/5b9bed2afa0dff30e14bfbc0344c90e7.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/d562e8020049d2d6e4b3583e4e624522.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/d562e8020049d2d6e4b3583e4e624522.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/0f2f5fcd5532a2acfbe1b62e93b1e2da.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/0f2f5fcd5532a2acfbe1b62e93b1e2da.source.jpg"
+	    }
+	  },
+	  "floor_vintage_timber_2": {
+	    "meta": {
+	      "displayName": "Planks Stained",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3.4,3.4],
+	      "colorSpecular": [0.031,0.031,0.031],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/dc17b74b6569a8fc02c51369bcc20b9b.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/dc17b74b6569a8fc02c51369bcc20b9b.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/dc17b74b6569a8fc02c51369bcc20b9b.source.jpg"
+	    }
+	  },
+	  "ceiling_vintage_timber_2": {
+	    "meta": {
+	      "displayName": "Planks Stained",
+	      "category": "ceiling",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3.4,3.4],
+	      "colorSpecular": [0.031,0.031,0.031],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/dc17b74b6569a8fc02c51369bcc20b9b.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/dc17b74b6569a8fc02c51369bcc20b9b.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/dc17b74b6569a8fc02c51369bcc20b9b.source.jpg"
+	    }
+	  },
+	  "wall_vintage_timber_2": {
+	    "meta": {
+	      "displayName": "Planks Stained",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3.4,3.4],
+	      "colorSpecular": [0.031,0.031,0.031],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/dc17b74b6569a8fc02c51369bcc20b9b.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/dc17b74b6569a8fc02c51369bcc20b9b.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/dc17b74b6569a8fc02c51369bcc20b9b.source.jpg"
+	    }
+	  },
+	  "truss_wood": {
+	    "meta": {
+	      "displayName": "Truss Wood",
+	      "category": "other",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.667,0.667,0.667],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/22327ea017e8c358402d1130c5a74ba7.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/2ccf45239f3760043910d7729a7c0b30.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/e96e36ae77a7b6929ff62d6e70b18d8b.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/22327ea017e8c358402d1130c5a74ba7.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/22327ea017e8c358402d1130c5a74ba7.source.png",
+	      "mapSpecularPreview": "archilogic/tex/e96e36ae77a7b6929ff62d6e70b18d8b.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/e96e36ae77a7b6929ff62d6e70b18d8b.source.png",
+	      "mapNormalPreview": "archilogic/tex/2ccf45239f3760043910d7729a7c0b30.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/2ccf45239f3760043910d7729a7c0b30.source.png"
+	    }
+	  },
+	  "brushed_chrome": {
+	    "meta": {
+	      "displayName": "Brushed Chrome",
+	      "category": "counter",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [0.855,0.855,0.855],
+	      "specularCoef": 80
+	    }
+	  },
+	  "concrete_tiles_vertical": {
+	    "meta": {
+	      "displayName": "Concrete Tiles Vertical",
+	      "category": "wall",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [2.4,2.4],
+	      "colorSpecular": [0.486,0.486,0.486],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/ea24f67d1cfba1caa593e621e937bc37.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/391452dc766083a8a6fce340b2d2af44.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/55d5ac9d2cd7c1ed99514fd92175e5bc.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/ea24f67d1cfba1caa593e621e937bc37.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/ea24f67d1cfba1caa593e621e937bc37.source.png",
+	      "mapSpecularPreview": "archilogic/tex/55d5ac9d2cd7c1ed99514fd92175e5bc.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/55d5ac9d2cd7c1ed99514fd92175e5bc.source.png",
+	      "mapNormalPreview": "archilogic/tex/391452dc766083a8a6fce340b2d2af44.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/391452dc766083a8a6fce340b2d2af44.source.png"
+	    }
+	  },
+	  "glass_old": {
+	    "meta": {
+	      "displayName": "Glass (Old)",
+	      "category": "glass",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "colorDiffuse": [1,1,1],
+	      "specularCoef": 40,
+	      "opacity": 0.3,
+	      "addLightmap": false,
+	      "useInBaking": false
+	    }
+	  },
+	  "glass": {
+	    "meta": {
+	      "displayName": "Glass",
+	      "category": "glass",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "colorDiffuse": [0.949,1,0.988],
+	      "colorSpecular": [0,1,0.769],
+	      "specularCoef": 100,
+	      "opacity": 0.14,
+	      "addLightmap": false,
+	      "useInBaking": false
+	    }
+	  },
+	  "glass-wall": {
+	    "meta": {
+	      "displayName": "Glass",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "colorDiffuse": [0.949,1,0.988],
+	      "colorSpecular": [0,1,0.769],
+	      "specularCoef": 100,
+	      "opacity": 0.14,
+	      "addLightmap": false,
+	      "useInBaking": false
+	    }
+	  },
+	  "wallTop": {
+	    "meta": {
+	      "displayName": "Wall Top"
+	    },
+	    "attributes": {
+	      "colorDiffuse": [0.188,0.188,0.188],
+	      "specularCoef": 0.1
+	    }
+	  },
+	  "grass-01": {
+	    "meta": {
+	      "displayName": "Grass",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [4,4],
+	      "specularCoef": 20,
+	      "mapDiffuse": "archilogic/tex/8463d96062b98f018edb34af61642f50.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/626edbfd34ba34c19fb92dad87fade82.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/12fd170deef977469cb810a8759aa3eb.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/8463d96062b98f018edb34af61642f50.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/8463d96062b98f018edb34af61642f50.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/12fd170deef977469cb810a8759aa3eb.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/12fd170deef977469cb810a8759aa3eb.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/626edbfd34ba34c19fb92dad87fade82.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/626edbfd34ba34c19fb92dad87fade82.source.jpg"
+	    }
+	  },
+	  "gravel-01": {
+	    "meta": {
+	      "displayName": "Gravel",
+	      "category": "floor",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "specularCoef": 20,
+	      "mapDiffuse": "archilogic/tex/9fbf5f70818f431ddf28b6a828b68af7.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/0f83e844962e6c10ca9ca56d0ae02cfd.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/367a4374a0d049aa0886ef68b76054f4.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/9fbf5f70818f431ddf28b6a828b68af7.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/9fbf5f70818f431ddf28b6a828b68af7.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/367a4374a0d049aa0886ef68b76054f4.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/367a4374a0d049aa0886ef68b76054f4.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/0f83e844962e6c10ca9ca56d0ae02cfd.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/0f83e844962e6c10ca9ca56d0ae02cfd.source.jpg"
+	    }
+	  },
+	  "floor_grass": {
+	    "meta": {
+	      "displayName": "Grass",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorSpecular": [1,1,1],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/828dfb1aae222e7e4bf563cfb65fc26a.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/828dfb1aae222e7e4bf563cfb65fc26a.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/828dfb1aae222e7e4bf563cfb65fc26a.source.jpg"
+	    }
+	  },
+	  "concrete-wall": {
+	    "meta": {
+	      "displayName": "Concrete Formwork",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [3.6,3.6],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/e529f05d7e3b1ad95c94752098c6ee8e.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/e529f05d7e3b1ad95c94752098c6ee8e.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/e529f05d7e3b1ad95c94752098c6ee8e.source.jpg"
+	    }
+	  },
+	  "floor_wood": {
+	    "meta": {
+	      "displayName": "Floor Wood",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [7,7],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/4433d7b5ed780022d4ad9be94a457961.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/4433d7b5ed780022d4ad9be94a457961.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/4433d7b5ed780022d4ad9be94a457961.source.jpg"
+	    }
+	  },
+	  "floor_ahorn": {
+	    "meta": {
+	      "displayName": "Floor Ahorn",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/73fc859500c231c1f67346dd40ace8dc.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/73fc859500c231c1f67346dd40ace8dc.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/73fc859500c231c1f67346dd40ace8dc.source.jpg"
+	    }
+	  },
+	  "floor_ebenholz": {
+	    "meta": {
+	      "displayName": "Floor Ebenholz",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/d6f9e525372773289d3721cdad924fb9.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/d6f9e525372773289d3721cdad924fb9.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/d6f9e525372773289d3721cdad924fb9.source.jpg"
+	    }
+	  },
+	  "floor_vintage_timber_1": {
+	    "meta": {
+	      "displayName": "Floor Vintage Timber 1",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/26601a09792802ffd9ebdd66d418a1b1.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/26601a09792802ffd9ebdd66d418a1b1.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/26601a09792802ffd9ebdd66d418a1b1.source.jpg"
+	    }
+	  },
+	  "wood_parquet_2": {
+	    "meta": {
+	      "displayName": "Wood Parquet 2",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "colorSpecular": [0.667,0.667,0.667],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/22327ea017e8c358402d1130c5a74ba7.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/2ccf45239f3760043910d7729a7c0b30.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/e96e36ae77a7b6929ff62d6e70b18d8b.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/22327ea017e8c358402d1130c5a74ba7.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/22327ea017e8c358402d1130c5a74ba7.source.png",
+	      "mapSpecularPreview": "archilogic/tex/e96e36ae77a7b6929ff62d6e70b18d8b.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/e96e36ae77a7b6929ff62d6e70b18d8b.source.png",
+	      "mapNormalPreview": "archilogic/tex/2ccf45239f3760043910d7729a7c0b30.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/2ccf45239f3760043910d7729a7c0b30.source.png"
+	    }
+	  },
+	  "floor_vintage_timber_3": {
+	    "meta": {
+	      "displayName": "Floor Vintage Timber 3",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [3.2,3.2],
+	      "colorSpecular": [0.102,0.102,0.102],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/c659ad823689f7502699105e6b8974f1.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/c659ad823689f7502699105e6b8974f1.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/c659ad823689f7502699105e6b8974f1.source.jpg"
+	    }
+	  },
+	  "floor_vintage_timber_4": {
+	    "meta": {
+	      "displayName": "Floor Vintage Timber 4",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [3,3],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/e4ce6e72837661fa4555fb4cb9da7b1b.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/e4ce6e72837661fa4555fb4cb9da7b1b.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/e4ce6e72837661fa4555fb4cb9da7b1b.source.jpg"
+	    }
+	  },
+	  "floor_vintage_timber_5": {
+	    "meta": {
+	      "displayName": "Floor Vintage Timber 5",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [3.6,3.6],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/04e192e36ae01ff961c9a882682a19ff.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/04e192e36ae01ff961c9a882682a19ff.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/04e192e36ae01ff961c9a882682a19ff.source.jpg"
+	    }
+	  },
+	  "floor_vintage_timber_6": {
+	    "meta": {
+	      "displayName": "Floor Vintage Timber 6",
+	      "category": "floor",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [2,2],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/82ca0b741e0ef051e55d0d5b7a46cd54.hi-res.gz.dds",
+	      "receiveRealTimeShadows": true,
+	      "mapDiffusePreview": "archilogic/tex/82ca0b741e0ef051e55d0d5b7a46cd54.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/82ca0b741e0ef051e55d0d5b7a46cd54.source.jpg"
+	    }
+	  },
+	  "doorLeaf-flush-white": {
+	    "meta": {
+	      "displayName": "Door Flush White",
+	      "category": "doorLeaf",
+	      "showInMenu": true,
+	      "thumb": "/archilogic/texture/doors/thumbs/door-flush-white-thumb.jpg"
+	    },
+	    "attributes": {
+	      "colorDiffuse": [0.95,0.95,0.95],
+	      "colorSpecular": [0.04,0.04,0.04],
+	      "specularCoef": 30
+	    }
+	  },
+	  "doorLeaf-4-panels-white": {
+	    "meta": {
+	      "displayName": "Door 4 Panels White",
+	      "category": "doorLeaf",
+	      "showInMenu": true,
+	      "thumb": "/archilogic/texture/doors/thumbs/door-panel-white-thumb.jpg"
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.95,0.95,0.95],
+	      "colorSpecular": [0.04,0.04,0.04],
+	      "specularCoef": 30,
+	      "mapDiffuse": "archilogic/tex/dd1814c45fe19b59a01d389dbf9d2ab1.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/b42162adaa029e5d56958027b066eb1c.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/dd1814c45fe19b59a01d389dbf9d2ab1.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/dd1814c45fe19b59a01d389dbf9d2ab1.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/b42162adaa029e5d56958027b066eb1c.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/b42162adaa029e5d56958027b066eb1c.source.jpg"
+	    }
+	  },
+	  "doorFrame-flush-white": {
+	    "meta": {
+	      "displayName": "Door Flush White",
+	      "category": "doorFrame",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.95,0.95,0.95],
+	      "colorSpecular": [0.04,0.04,0.04],
+	      "specularCoef": 30
+	    }
+	  },
+	  "aluminium": {
+	    "meta": {
+	      "displayName": "Aluminium",
+	      "category": "doorHandle",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.5,0.5,0.5],
+	      "colorSpecular": [0.34,0.34,0.34],
+	      "specularCoef": 40
+	    }
+	  },
+	  "doorLeaf-whitewood": {
+	    "meta": {
+	      "displayName": "Whitewood Panels",
+	      "category": "doorLeaf",
+	      "showInMenu": true,
+	      "thumb": "/archilogic/texture/doors/thumbs/door-panel-whitewood-thumb.jpg"
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.19,0.19,0.19],
+	      "specularCoef": 20,
+	      "mapDiffuse": "archilogic/tex/072bd60b99f5a92cdde5bd5098dc9284.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/7f51acb6c6eb3d81aa866f9eed5dc3d6.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/b42162adaa029e5d56958027b066eb1c.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/072bd60b99f5a92cdde5bd5098dc9284.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/072bd60b99f5a92cdde5bd5098dc9284.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/7f51acb6c6eb3d81aa866f9eed5dc3d6.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/7f51acb6c6eb3d81aa866f9eed5dc3d6.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/b42162adaa029e5d56958027b066eb1c.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/b42162adaa029e5d56958027b066eb1c.source.jpg"
+	    }
+	  },
+	  "doorLeaf-glass": {
+	    "meta": {
+	      "displayName": "Glass",
+	      "category": "doorLeaf",
+	      "showInMenu": true,
+	      "thumb": "/archilogic/texture/doors/thumbs/door-glass-thumb.jpg"
+	    },
+	    "attributes": {
+	      "colorDiffuse": [0.949,1,0.988],
+	      "colorSpecular": [0,1,0.769],
+	      "specularCoef": 100,
+	      "opacity": 0.24,
+	      "addLightmap": false
+	    }
+	  },
+	  "chrome": {
+	    "meta": {
+	      "displayName": "Aluminium",
+	      "category": "metal",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.5,0.5,0.5],
+	      "colorSpecular": [0.34,0.34,0.34],
+	      "specularCoef": 50
+	    }
+	  },
+	  "cabinet_paint_white": {
+	    "meta": {
+	      "displayName": "Paint White",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.9,0.9,0.9],
+	      "colorSpecular": [0.1,0.1,0.1],
+	      "specularCoef": 10
+	    }
+	  },
+	  "cabinet_paint_creme": {
+	    "meta": {
+	      "displayName": "Paint Creme",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.8,0.78,0.73],
+	      "colorSpecular": [0.2,0.2,0.2],
+	      "specularCoef": 10
+	    }
+	  },
+	  "cabinet_paint_grey": {
+	    "meta": {
+	      "displayName": "Paint Light Grey",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.7,0.7,0.7],
+	      "colorSpecular": [0.2,0.2,0.2],
+	      "specularCoef": 10
+	    }
+	  },
+	  "cabinet_paint_beige": {
+	    "meta": {
+	      "displayName": "Paint Beige",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.57,0.53,0.48],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 10
+	    }
+	  },
+	  "cabinet_paint_green": {
+	    "meta": {
+	      "displayName": "Paint Green",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.455, 0.502, 0.357],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 10
+	    }
+	  },
+	  "cabinet_paint_blue": {
+	    "meta": {
+	      "displayName": "Paint Blue",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse":[0.357,0.447,0.502],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 10
+	    }
+	  },
+	  "cabinet_paint_brick": {
+	    "meta": {
+	      "displayName": "Paint Brick",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.651, 0.357, 0.247],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 10
+	    }
+	  },
+	  "cabinet_paint_anthrazit": {
+	    "meta": {
+	      "displayName": "Paint Anthrazit",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.3,0.3,0.3],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 10
+	    }
+	  },
+	  "cabinet_paint_black": {
+	    "meta": {
+	      "displayName": "Paint Black",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [0.05,0.05,0.05],
+	      "colorSpecular": [0.5,0.5,0.5],
+	      "specularCoef": 10
+	    }
+	  },
+	  "cabinet_wood_fir": {
+	    "meta": {
+	      "displayName": "Wood Fir mtex_12756",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2.4,2.4],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.2,0.2,0.2],
+	      "specularCoef": 15,
+	      "mapDiffuse": "archilogic/tex/e0ad17dc344e514eb91d98b365d4e1c0.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/e0ad17dc344e514eb91d98b365d4e1c0.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/e0ad17dc344e514eb91d98b365d4e1c0.source.jpg"
+	    }
+	  },
+	  "cabinet_cherry_veneer": {
+	    "meta": {
+	      "displayName": "Wood Cherry Veneer",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1.2, 1.2 ],
+	      "colorDiffuse": [1, 1, 1],
+	      "colorSpecular": [0.322, 0.318,0.318],
+	      "specularCoef": 26,
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/7239eb736d6877a34e8ebe2e5e9c8a57.lo-res.jpg",
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/7239eb736d6877a34e8ebe2e5e9c8a57.hi-res.gz.dds",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/7239eb736d6877a34e8ebe2e5e9c8a57.source.jpg",
+	      "mapSpecularPreview": "/535e624259ee6b0200000484/textures/uploads/58301ccaa8ed2be78e00c9ecdf5ab7af.lo-res.jpg",
+	      "mapSpecular": "/535e624259ee6b0200000484/textures/uploads/58301ccaa8ed2be78e00c9ecdf5ab7af.hi-res.gz.dds",
+	      "mapSpecularSource": "/535e624259ee6b0200000484/textures/uploads/58301ccaa8ed2be78e00c9ecdf5ab7af.source.jpg",
+	      "mapNormalPreview": "/535e624259ee6b0200000484/textures/uploads/ff30448e22c5e2131991e25c219d2c2c.lo-res.jpg",
+	      "mapNormal": "/535e624259ee6b0200000484/textures/uploads/ff30448e22c5e2131991e25c219d2c2c.hi-res.gz.dds",
+	      "mapNormalSource": "/535e624259ee6b0200000484/textures/uploads/ff30448e22c5e2131991e25c219d2c2c.source.jpg"
+	    }
+	  },
+	  "cabinet_beech_veneer": {
+	    "meta": {
+	      "displayName": "Wood Beech Veneer",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1, 1],
+	      "colorDiffuse": [1, 1, 1],
+	      "colorSpecular": [0.212, 0.212, 0.212],
+	      "specularCoef": 24,
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/96487b8905d72f171b84400f5f1759d8.lo-res.jpg",
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/96487b8905d72f171b84400f5f1759d8.hi-res.gz.dds",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/96487b8905d72f171b84400f5f1759d8.source.jpg",
+	      "mapNormalPreview": "/535e624259ee6b0200000484/textures/uploads/62b61216bf12d6c1a1a26938fbb454f7.lo-res.jpg",
+	      "mapNormal": "/535e624259ee6b0200000484/textures/uploads/62b61216bf12d6c1a1a26938fbb454f7.hi-res.gz.dds",
+	      "mapNormalSource": "/535e624259ee6b0200000484/textures/uploads/62b61216bf12d6c1a1a26938fbb454f7.source.jpg",
+	      "mapSpecularPreview": "/535e624259ee6b0200000484/textures/uploads/9f974ddee94d5c2a49b99d5ec32da287.lo-res.jpg",
+	      "mapSpecular": "/535e624259ee6b0200000484/textures/uploads/9f974ddee94d5c2a49b99d5ec32da287.hi-res.gz.dds",
+	      "mapSpecularSource": "/535e624259ee6b0200000484/textures/uploads/9f974ddee94d5c2a49b99d5ec32da287.source.jpg"
+	    }
+	  },
+	  "cabinet_chalked_veneer": {
+	    "meta": {
+	      "displayName": "Wood Chalked Veneer",
+	      "category": "cabinet",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1, 1],
+	      "colorDiffuse": [1, 1, 1],
+	      "colorSpecular": [0.14, 0.14, 0.14],
+	      "specularCoef": 24,
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/a08fb76c0fc9ece60f60262b730c7e59.lo-res.jpg",
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/a08fb76c0fc9ece60f60262b730c7e59.hi-res.gz.dds",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/a08fb76c0fc9ece60f60262b730c7e59.source.jpg",
+	      "mapNormalPreview": "/535e624259ee6b0200000484/textures/uploads/62b61216bf12d6c1a1a26938fbb454f7.lo-res.jpg",
+	      "mapNormal": "/535e624259ee6b0200000484/textures/uploads/62b61216bf12d6c1a1a26938fbb454f7.hi-res.gz.dds",
+	      "mapNormalSource": "/535e624259ee6b0200000484/textures/uploads/62b61216bf12d6c1a1a26938fbb454f7.source.jpg",
+	      "mapSpecularPreview": "/535e624259ee6b0200000484/textures/uploads/9f974ddee94d5c2a49b99d5ec32da287.lo-res.jpg",
+	      "mapSpecular": "/535e624259ee6b0200000484/textures/uploads/9f974ddee94d5c2a49b99d5ec32da287.hi-res.gz.dds",
+	      "mapSpecularSource": "/535e624259ee6b0200000484/textures/uploads/9f974ddee94d5c2a49b99d5ec32da287.source.jpg"
+	    }
+	  },
+	  "cabinet_wood_fir_wall": {
+	    "meta": {
+	      "displayName": "Wood Fir mtex_12756",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [2.4,2.4],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.2,0.2,0.2],
+	      "specularCoef": 15,
+	      "mapDiffuse": "archilogic/tex/e0ad17dc344e514eb91d98b365d4e1c0.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/e0ad17dc344e514eb91d98b365d4e1c0.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/e0ad17dc344e514eb91d98b365d4e1c0.source.jpg"
+	    }
+	  },
+	  "counter_chrome_brushed": {
+	    "meta": {
+	      "displayName": "Chrome Brushed",
+	      "category": "counter",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.2,0.7],
+	      "colorDiffuse": [0.5,0.5,0.5],
+	      "colorSpecular": [0.34,0.34,0.34],
+	      "specularCoef": 50,
+	      "mapNormal": "archilogic/tex/03305e054dbd97bb57de94531ebcde49.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/fe502e29ec739e20e25e0a26090f8200.hi-res.gz.dds",
+	      "mapSpecularPreview": "archilogic/tex/fe502e29ec739e20e25e0a26090f8200.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/fe502e29ec739e20e25e0a26090f8200.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/03305e054dbd97bb57de94531ebcde49.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/03305e054dbd97bb57de94531ebcde49.source.jpg"
+	    }
+	  },
+	  "counter_stone_white": {
+	    "meta": {
+	      "displayName": "Stone White",
+	      "category": "counter",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.5,0.5],
+	      "colorDiffuse": [0.9,0.9,0.9],
+	      "colorSpecular": [0.3,0.3,0.3],
+	      "specularCoef": 15,
+	      "mapDiffuse": "archilogic/tex/61019e9b8e7f4542eb7a013e7dfae30b.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/cfe24afab1a720ee1525af2b6821f1e7.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/5ec4dfae5d8545d38177a6f76147fd26.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/61019e9b8e7f4542eb7a013e7dfae30b.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/61019e9b8e7f4542eb7a013e7dfae30b.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/5ec4dfae5d8545d38177a6f76147fd26.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/5ec4dfae5d8545d38177a6f76147fd26.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/cfe24afab1a720ee1525af2b6821f1e7.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/cfe24afab1a720ee1525af2b6821f1e7.source.jpg"
+	    }
+	  },
+	  "counter_granite_light": {
+	    "meta": {
+	      "displayName": "Granite Light mtex_11181",
+	      "category": "counter",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.5,0.5],
+	      "colorDiffuse": [0.9,0.9,0.9],
+	      "colorSpecular": [0.3,0.3,0.3],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/ded6f1d9a706119919bbc7c96d8ed6b2.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/cfe24afab1a720ee1525af2b6821f1e7.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/976e94355e5bda592304f280d1d02d48.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/ded6f1d9a706119919bbc7c96d8ed6b2.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/ded6f1d9a706119919bbc7c96d8ed6b2.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/976e94355e5bda592304f280d1d02d48.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/976e94355e5bda592304f280d1d02d48.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/cfe24afab1a720ee1525af2b6821f1e7.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/cfe24afab1a720ee1525af2b6821f1e7.source.jpg"
+	    }
+	  },
+	  "counter_granite_black": {
+	    "meta": {
+	      "displayName": "Granite Black mtex_11180",
+	      "category": "counter",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.5,0.5],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/975742bddd8326ef574878ca9132b4ed.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/19cc02e1993bd5b118e03c169ee0ef33.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/7fe0c88fc1c03881949652c8c3d55aaa.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/975742bddd8326ef574878ca9132b4ed.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/975742bddd8326ef574878ca9132b4ed.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/7fe0c88fc1c03881949652c8c3d55aaa.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/7fe0c88fc1c03881949652c8c3d55aaa.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/19cc02e1993bd5b118e03c169ee0ef33.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/19cc02e1993bd5b118e03c169ee0ef33.source.jpg"
+	    }
+	  },
+	  "counter_concrete_fluid": {
+	    "meta": {
+	      "displayName": "Concrete Natural",
+	      "category": "counter",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [0.5,0.5],
+	      "colorDiffuse": [0.867,0.867,0.867],
+	      "colorSpecular": [0.4,0.4,0.4],
+	      "specularCoef": 40,
+	      "mapDiffuse": "archilogic/tex/7af78308b190531d128c71e3482e21ea.hi-res.gz.dds",
+	      "mapNormal": "archilogic/tex/f544850902a92746d30d0b80bda43c62.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/7af78308b190531d128c71e3482e21ea.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/7af78308b190531d128c71e3482e21ea.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/34b87f4d4d1b6d89b370862e243ebf12.source.jpg",
+	      "mapNormalPreview": "archilogic/tex/f544850902a92746d30d0b80bda43c62.lo-res.jpg",
+	      "mapNormalSource": "archilogic/tex/f544850902a92746d30d0b80bda43c62.source.jpg"
+	    }
+	  },
+	  "cooktop_westinghouse_60": {
+	    "meta": {
+	      "displayName": "Cooktop Westinghouse 60",
+	      "category": "cooktop60",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.3,0.3,0.3],
+	      "specularCoef": 50,
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/03796b53a0776136c919ef7e9dc6c96b.hi-res.gz.dds",
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/03796b53a0776136c919ef7e9dc6c96b.lo-res.jpg",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/03796b53a0776136c919ef7e9dc6c96b.source.jpg"
+	    }
+	  },
+	  "cooktop_westinghouse_90": {
+	    "meta": {
+	      "displayName": "Cooktop Westinghouse 90",
+	      "category": "cooktop90",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.3,0.3,0.3],
+	      "specularCoef": 50,
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/8aa7c25cd74007e497b782f0fbfea187.hi-res.gz.dds",
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/8aa7c25cd74007e497b782f0fbfea187.lo-res.jpg",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/8aa7c25cd74007e497b782f0fbfea187.source.jpg"
+	    }
+	  },
+	  "oven_miele_60-60": {
+	    "meta": {
+	      "displayName": "Oven Miele 60x60",
+	      "category": "oven60",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.3,0.3,0.3],
+	      "specularCoef": 50,
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/53ce86d2ae02d701c70c9488e681d54e.hi-res.gz.dds",
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/53ce86d2ae02d701c70c9488e681d54e.lo-res.jpg",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/53ce86d2ae02d701c70c9488e681d54e.source.jpg"
+	    }
+	  },
+	  "oven_miele_90-48": {
+	    "meta": {
+	      "displayName": "Oven Miele 90x48",
+	      "category": "oven90",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.3,0.3,0.3],
+	      "specularCoef": 50,
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/22e8dd6c7d90cf88e6d0d5c89403753d.hi-res.gz.dds",
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/22e8dd6c7d90cf88e6d0d5c89403753d.lo-res.jpg",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/22e8dd6c7d90cf88e6d0d5c89403753d.source.jpg"
+	    }
+	  },
+	  "microwave_samsung": {
+	    "meta": {
+	      "displayName": "Microwave Samsung",
+	      "category": "microwave",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.3,0.3,0.3],
+	      "specularCoef": 50,
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/e3959871393650ae83389cd69f377c25.hi-res.gz.dds",
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/e3959871393650ae83389cd69f377c25.lo-res.jpg",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/e3959871393650ae83389cd69f377c25.source.jpg"
+	    }
+	  },
+	  "oven_vzug": {
+	    "meta": {
+	      "displayName": "Oven VZug",
+	      "category": "oven",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.3,0.3,0.3],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/d67fb5b3b852f44aa95f12b9f6f9e721.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/18168af2d7c5d21845d67424b9f42fee.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/d67fb5b3b852f44aa95f12b9f6f9e721.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/d67fb5b3b852f44aa95f12b9f6f9e721.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/18168af2d7c5d21845d67424b9f42fee.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/18168af2d7c5d21845d67424b9f42fee.source.jpg"
+	    }
+	  },
+	  "oven_miele": {
+	    "meta": {
+	      "displayName": "Oven VZug",
+	      "category": "oven",
+	      "showInMenu": false
+	    },
+	    "attributes": {
+	      "size": [1,1],
+	      "colorDiffuse": [1,1,1],
+	      "colorSpecular": [0.3,0.3,0.3],
+	      "specularCoef": 50,
+	      "mapDiffuse": "archilogic/tex/1fc90bca228862d77d943a3a0fc0c22a.hi-res.gz.dds",
+	      "mapSpecular": "archilogic/tex/b6c63f108ef511dd768663c334123496.hi-res.gz.dds",
+	      "mapDiffusePreview": "archilogic/tex/1fc90bca228862d77d943a3a0fc0c22a.lo-res.jpg",
+	      "mapDiffuseSource": "archilogic/tex/1fc90bca228862d77d943a3a0fc0c22a.source.jpg",
+	      "mapSpecularPreview": "archilogic/tex/b6c63f108ef511dd768663c334123496.lo-res.jpg",
+	      "mapSpecularSource": "archilogic/tex/b6c63f108ef511dd768663c334123496.source.jpg"
+	    }
+	  }
+	};
+
+	function getMaterial(material) {
+	  var STORAGE_URL = 'https://storage.3d.io/';
+	  var mat = materialLibrary[material];
+
+	  if (!mat) return material
+
+	  var attr = cloneDeep_1(mat.attributes);
+	  Object.keys(attr).forEach(a => {
+	    // get textures
+	    if (a.indexOf('map') > -1 ) {
+	      // fix to prevent double slash
+	      if (attr[a][0] === '/') attr[a] = attr[a].substring(1);
+	      // get full texture path
+	      attr[a] = STORAGE_URL + attr[a];
+	    }
+	  });
+	  return attr
+	}
+
+	function updateSchema(newData) {
+	  var materialProperties = {};
+	  Object.keys(newData)
+	    .filter(function (propKey) { return propKey.substr(0, 9) === 'material_' })
+	    .forEach(function (propKey) {
+	      materialProperties[propKey] = { type: 'string' };
+	    });
+	  this.extendSchema(materialProperties);
+	}
+
+	var DEBUG = true;
+
+	// methods
+
+	function flat (v) {
+	  // calculate normals for flat shading
+	  var n = new Float32Array(v.length);
+	  var i, l, crx, cry, crz, invScalar;
+	  var hasFaultyTrigons = false;
+	  for (i = 0, l = v.length; i < l; i += 9) {
+	    // cross product (a-b) x (c-b)
+	    crx = (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]);
+	    cry = (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]);
+	    crz = (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3]);
+	    // normalize
+	    invScalar = 1 / Math.sqrt(crx * crx + cry * cry + crz * crz);
+	    // Fallback for trigons that don't span an area
+	    if (invScalar === Infinity) {
+	      invScalar = 0;
+	      hasFaultyTrigons = true;
+	    }
+	    // set normals
+	    n[i] = n[i + 3] = n[i + 6] = crx * invScalar;
+	    n[i + 1] = n[i + 4] = n[i + 7] = cry * invScalar;
+	    n[i + 2] = n[i + 5] = n[i + 8] = crz * invScalar;
+
+	  }
+	  if (DEBUG && hasFaultyTrigons) console.error('Geometry contains trigons that don\'t span an area.');
+	  return n
+	}
+	flat.title = 'Flat';
+
+	function smooth (v) {
+
+	  // output
+
+	  var normals = new Float32Array(v.length);
+
+	  // internals
+
+	  var hash, hashes = [], vertexRelatedNormals = {}, faceNormals, averageNormal;
+	  var n;
+	  var crx, cry, crz, invScalar;
+	  var hasFaultyTrigons = false;
+	  var i, l, i2, l2;
+
+	  ////////// 1. connect vertices to faces
+
+	  // go face by face
+	  for (i = 0, l = v.length; i < l; i += 9) {
+
+	    // calculate face normal
+	    // cross product (a-b) x (c-b)
+	    crx = (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]);
+	    cry = (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]);
+	    crz = (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3]);
+	    // normalize
+	    invScalar = 1 / Math.sqrt(crx * crx + cry * cry + crz * crz);
+	    if (invScalar === Infinity) {
+	      hasFaultyTrigons = true;
+	      invScalar = 0;
+	    }
+	    // set normals
+	    n = [crx * invScalar, cry * invScalar, crz * invScalar];
+
+	    for (i2 = 0, l2 = 9; i2 < l2; i2 += 3) {
+	      hash = v[i + i2] + '_' + v[i + i2 + 1] + '_' + v[i + i2 + 2];
+	      if (!vertexRelatedNormals[hash]) {
+	        vertexRelatedNormals[hash] = {
+	          faceNormals: [n]
+	        };
+	        hashes[hashes.length] = hash;
+	      } else {
+	        vertexRelatedNormals[hash].faceNormals.push(n);
+	      }
+	    }
+	  }
+
+	  ////////// 2. calculate average normals from related face normals
+
+	  var avx, avy, avz;
+	  for (i = 0, l = hashes.length; i < l; i++) {
+	    hash = hashes[i];
+	    faceNormals = vertexRelatedNormals[hash].faceNormals;
+	    avx = 0;
+	    avy = 0;
+	    avz = 0;
+	    for (i2 = 0, l2 = faceNormals.length; i2 < l2; i2++) {
+	      avx += faceNormals[i2][0];
+	      avy += faceNormals[i2][1];
+	      avz += faceNormals[i2][2];
+	    }
+	    // normalize
+	    invScalar = 1 / Math.sqrt(avx * avx + avy * avy + avz * avz);
+	    if (invScalar === Infinity) {
+	      hasFaultyTrigons = true;
+	      invScalar = 0;
+	    }
+	    // set average normal
+	    vertexRelatedNormals[hash].averageNormal = [avx * invScalar, avy * invScalar, avz * invScalar];
+	  }
+
+	  ////////// 3. apply average normals to vertices
+
+	  for (i = 0, l = v.length; i < l; i += 3) {
+	    hash = v[i] + '_' + v[i + 1] + '_' + v[i + 2];
+	    averageNormal = vertexRelatedNormals[hash].averageNormal;
+	    normals[i] = averageNormal[0];
+	    normals[i + 1] = averageNormal[1];
+	    normals[i + 2] = averageNormal[2];
+	  }
+
+	  // return
+	  if (DEBUG && hasFaultyTrigons) console.error('Shade Smooth: Geometry contains trigons that don\'t span an area.');
+	  return normals
+
+	}
+	smooth.title = 'Smooth';
+
+	// API
+
+	var getNormalsBuffer = {
+	  flat: flat,
+	  smooth: smooth,
+	};
+
+	// methods
+
+	function projectAxisY (v) {
+
+	  var uvs = new Float32Array(v.length / 1.5);
+	  var uvPos = 0;
+
+	  var i, l;
+	  for (i = 0, l = v.length; i < l; i += 9) {
+
+	    uvs[uvPos] = v[i + 2];
+	    uvs[uvPos + 1] = v[i];
+	    uvs[uvPos + 2] = v[i + 5];
+	    uvs[uvPos + 3] = v[i + 3];
+	    uvs[uvPos + 4] = v[i + 8];
+	    uvs[uvPos + 5] = v[i + 6];
+	    uvPos += 6;
+
+	  }
+
+	  return uvs
+
+	}
+	projectAxisY.title = 'Project Top Down';
+
+	function architectural (v) {
+
+	  var uvs = new Float32Array(v.length / 1.5);
+	  var uvPos = 0;
+
+	  var i, l, n, components;
+	  for (i = 0, l = v.length; i < l; i += 9) {
+
+	    // calculate face normal
+	    // cross product (a-b) x (c-b)
+	    n = [
+	      (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]),
+	      (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]),
+	      (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3])
+	    ];
+
+	    // normals should be absolute
+	    if (n[0] < 0) {
+	      n[0] *= -1;
+	    }
+	    if (n[1] < 0) {
+	      n[1] *= -1;
+	    }
+	    if (n[2] < 0) {
+	      n[2] *= -1;
+	    }
+
+	    // highest first?
+	    components = [1, 0, 2].sort(function (a, b) {
+	      return n[a] - n[b]
+	    });
+
+	    uvs[uvPos] = v[i + components[1]];
+	    uvs[uvPos + 1] = v[i + components[0]];
+	    uvs[uvPos + 2] = v[i + 3 + components[1]];
+	    uvs[uvPos + 3] = v[i + 3 + components[0]];
+	    uvs[uvPos + 4] = v[i + 6 + components[1]];
+	    uvs[uvPos + 5] = v[i + 6 + components[0]];
+	    uvPos += 6;
+
+	  }
+
+	  return uvs
+
+	}
+	architectural.title = 'Architectural';
+
+	// API
+
+	var getUvsBuffer = {
+	  architectural: architectural,
+	  projectAxisY: projectAxisY
+	};
+
+	// dependencies
+
+	var closetComponent = {
+
+	  schema: getSchema('closet'),
+
+	  init: function () {},
+
+	  updateSchema: updateSchema,
+
+	  update: function (oldData) {
+	    var this_ = this;
+	    var data = this_.data;
+
+	    // remove old mesh
+	    this.remove();
+
+	    // get defaults and
+	    this.attributes = cloneDeep_1(data);
+
+	    // get meshes and materials from el3d modules
+	    var meshes = this.generateMeshes3d();
+
+	    // clean up empty meshes to prevent errors
+	    var meshKeys = Object.keys(meshes);
+	    meshKeys.forEach(key => {
+	      if (!meshes[key].positions || !meshes[key].positions.length) {
+	        // console.warn('no vertices for mesh', key)
+	        delete meshes[key];
+	      }
+	    });
+
+	    // setup materials
+	    // defaults
+	    var materials = {
+	      closet: 'cabinet_paint_white'
+	    };
+
+	    // check for adapted materials
+	    var materialKeys = Object.keys(data).filter(function(key) {
+	      return key.indexOf('material_') > -1
+	    });
+	    // add materials to instance
+	    materialKeys.forEach(function(key) {
+	      var mesh = key.replace('material_', '');
+	      materials[mesh] = data[key];
+	    });
+
+	    // fetch materials from mat library
+	    Object.keys(materials).forEach(mat => {
+	      materials[mat] = getMaterial(materials[mat]);
+	    });
+
+	    // construct data3d object
+	    var data3d = {
+	      meshes: meshes,
+	      materials: materials
+	    };
+
+	    // create new one
+	    this_.mesh = new THREE.Object3D();
+	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
+
+	    // update view
+	    this_.data3dView.set(data3d);
+	    this_.el.setObject3D('mesh', this_.mesh);
+	    // emit event
+	    this_.el.emit('mesh-updated');
+	  },
+
+	  remove: function () {
+	    if (this.data3dView) {
+	      this.data3dView.destroy();
+	      this.data3dView = null;
+	    }
+	    if (this.mesh) {
+	      this.el.removeObject3D('mesh');
+	      this.mesh = null;
+	    }
+	  },
+
+	  generateMeshes3d: function () {
+	    var a = this.attributes;
+
+	    var step = 0,
+	      elementNum = Math.round(a.l/0.6),
+	      elementLength = a.l/elementNum,
+	      handlePos = elementLength*0.8,
+	      //handleWidth = a.handleWidth+ a.doorWidth,
+	      handleDistance = 0.05,
+	      offsetY = -0.01,
+
+	      // internals
+	      closetVertices = [],
+	      cvPos = 0;
+
+	    //CLOSET DOORS
+
+	    // FRONT VIEW VERTICES
+	    //
+	    // A------------C
+	    // |E\I------G\K|
+	    // | |        | |
+	    // | |M\Q-O\S | |
+	    // | ||   |   | |
+	    // | |N\R-P\T | |
+	    // |F\J------H\L|
+	    // B------------D
+
+	    var aX = step,
+	      aY = a.h + offsetY,
+	      aZ = a.w,
+	      bY = 0,
+	      cX = step+elementLength,
+	      eX = step+a.doorWidth/2,
+	      eY = a.h-a.doorWidth,
+	      fY = a.baseboard,
+	      gX = step+elementLength-a.doorWidth/2,
+	      iZ = a.w+a.doorWidth,
+	      mX = step+handlePos,
+	      mY = 1+a.handleHeight/2,
+	      nY = 1-a.handleHeight/2,
+	      oX = step+handlePos+a.handleLength,
+	      qZ = a.w+a.doorWidth+ a.handleWidth;
+
+	    for(var c = 0; c<elementNum; c++){
+
+	      if(c % 2 == 1 || c===elementNum-1 ){
+	        handlePos = handleDistance + a.handleLength/2;
+	      }
+	      else{
+	        handlePos = elementLength-handleDistance- a.handleLength/2;
+	      }
+	      aX = step;
+	      cX = step+elementLength;
+	      eX = step+ a.doorWidth/2;
+	      gX = step+elementLength- a.doorWidth/2;
+	      mX = step+handlePos- a.handleLength/2;
+	      oX = step+handlePos+ a.handleLength/2;
+
+	      // DOOR FRAME
+	      //A
+	      closetVertices[cvPos] = closetVertices[cvPos+9] = aX;
+	      closetVertices[cvPos+1] = closetVertices[cvPos+10] = aY;
+	      closetVertices[cvPos+2] = closetVertices[cvPos+11] = aZ;
+	      //B
+	      closetVertices[cvPos+3] = aX;
+	      closetVertices[cvPos+4] = bY;
+	      closetVertices[cvPos+5] = aZ;
+	      //F
+	      closetVertices[cvPos+6] = closetVertices[cvPos+12] = eX;
+	      closetVertices[cvPos+7] = closetVertices[cvPos+13] = fY;
+	      closetVertices[cvPos+8] = closetVertices[cvPos+14] = aZ;
+	      //E
+	      closetVertices[cvPos+15] = eX;
+	      closetVertices[cvPos+16] = eY;
+	      closetVertices[cvPos+17] = aZ;
+
+	      cvPos = cvPos+18;
+
+	      //F
+	      closetVertices[cvPos] = closetVertices[cvPos+9] = eX;
+	      closetVertices[cvPos+1] = closetVertices[cvPos+10] = fY;
+	      closetVertices[cvPos+2] = closetVertices[cvPos+11] = aZ;
+	      //B
+	      closetVertices[cvPos+3] = aX;
+	      closetVertices[cvPos+4] = bY;
+	      closetVertices[cvPos+5] = aZ;
+	      //D
+	      closetVertices[cvPos+6] = closetVertices[cvPos+12] = cX;
+	      closetVertices[cvPos+7] = closetVertices[cvPos+13] = bY;
+	      closetVertices[cvPos+8] = closetVertices[cvPos+14] = aZ;
+	      //H
+	      closetVertices[cvPos+15] = gX;
+	      closetVertices[cvPos+16] = fY;
+	      closetVertices[cvPos+17] = aZ;
+
+	      cvPos = cvPos+18;
+
+	      //G
+	      closetVertices[cvPos] = closetVertices[cvPos+9] = gX;
+	      closetVertices[cvPos+1] = closetVertices[cvPos+10] = eY;
+	      closetVertices[cvPos+2] = closetVertices[cvPos+11] = aZ;
+	      //H
+	      closetVertices[cvPos+3] = gX;
+	      closetVertices[cvPos+4] = fY;
+	      closetVertices[cvPos+5] = aZ;
+	      //D
+	      closetVertices[cvPos+6] = closetVertices[cvPos+12] = cX;
+	      closetVertices[cvPos+7] = closetVertices[cvPos+13] = bY;
+	      closetVertices[cvPos+8] = closetVertices[cvPos+14] = aZ;
+	      //C
+	      closetVertices[cvPos+15] = cX;
+	      closetVertices[cvPos+16] = aY;
+	      closetVertices[cvPos+17] = aZ;
+
+	      cvPos = cvPos+18;
+
+	      //A
+	      closetVertices[cvPos] = closetVertices[cvPos+9] = aX;
+	      closetVertices[cvPos+1] = closetVertices[cvPos+10] = aY;
+	      closetVertices[cvPos+2] = closetVertices[cvPos+11] = aZ;
+	      //E
+	      closetVertices[cvPos+3] = eX;
+	      closetVertices[cvPos+4] = eY;
+	      closetVertices[cvPos+5] = aZ;
+	      //G
+	      closetVertices[cvPos+6] = closetVertices[cvPos+12] = gX;
+	      closetVertices[cvPos+7] = closetVertices[cvPos+13] = eY;
+	      closetVertices[cvPos+8] = closetVertices[cvPos+14] = aZ;
+	      //C
+	      closetVertices[cvPos+15] = cX;
+	      closetVertices[cvPos+16] = aY;
+	      closetVertices[cvPos+17] = aZ;
+
+	      cvPos = cvPos+18;
+
+	      // DOOR LEAF
+
+	      //E
+	      closetVertices[cvPos] = closetVertices[cvPos+9] = eX;
+	      closetVertices[cvPos+1] = closetVertices[cvPos+10] = eY;
+	      closetVertices[cvPos+2] = closetVertices[cvPos+11] = aZ;
+	      //F
+	      closetVertices[cvPos+3] = eX;
+	      closetVertices[cvPos+4] = fY;
+	      closetVertices[cvPos+5] = aZ;
+	      //J
+	      closetVertices[cvPos+6] = closetVertices[cvPos+12] = eX;
+	      closetVertices[cvPos+7] = closetVertices[cvPos+13] = fY;
+	      closetVertices[cvPos+8] = closetVertices[cvPos+14] = iZ;
+	      //I
+	      closetVertices[cvPos+15] = eX;
+	      closetVertices[cvPos+16] = eY;
+	      closetVertices[cvPos+17] = iZ;
+
+	      cvPos = cvPos+18;
+
+	      //J
+	      closetVertices[cvPos] = closetVertices[cvPos+9] = eX;
+	      closetVertices[cvPos+1] = closetVertices[cvPos+10] = fY;
+	      closetVertices[cvPos+2] = closetVertices[cvPos+11] = iZ;
+	      //F
+	      closetVertices[cvPos+3] = eX;
+	      closetVertices[cvPos+4] = fY;
+	      closetVertices[cvPos+5] = aZ;
+	      //H
+	      closetVertices[cvPos+6] = closetVertices[cvPos+12] = gX;
+	      closetVertices[cvPos+7] = closetVertices[cvPos+13] = fY;
+	      closetVertices[cvPos+8] = closetVertices[cvPos+14] = aZ;
+	      //L
+	      closetVertices[cvPos+15] = gX;
+	      closetVertices[cvPos+16] = fY;
+	      closetVertices[cvPos+17] = iZ;
+
+	      cvPos = cvPos+18;
+
+	      //K
+	      closetVertices[cvPos] = closetVertices[cvPos+9] = gX;
+	      closetVertices[cvPos+1] = closetVertices[cvPos+10] = eY;
+	      closetVertices[cvPos+2] = closetVertices[cvPos+11] = iZ;
+	      //L
+	      closetVertices[cvPos+3] = gX;
+	      closetVertices[cvPos+4] = fY;
+	      closetVertices[cvPos+5] = iZ;
+	      //H
+	      closetVertices[cvPos+6] = closetVertices[cvPos+12] = gX;
+	      closetVertices[cvPos+7] = closetVertices[cvPos+13] = fY;
+	      closetVertices[cvPos+8] = closetVertices[cvPos+14] = aZ;
+	      //G
+	      closetVertices[cvPos+15] = gX;
+	      closetVertices[cvPos+16] = eY;
+	      closetVertices[cvPos+17] = aZ;
+
+	      cvPos = cvPos+18;
+
+	      //E
+	      closetVertices[cvPos] = closetVertices[cvPos+9] = eX;
+	      closetVertices[cvPos+1] = closetVertices[cvPos+10] = eY;
+	      closetVertices[cvPos+2] = closetVertices[cvPos+11] = aZ;
+	      //I
+	      closetVertices[cvPos+3] = eX;
+	      closetVertices[cvPos+4] = eY;
+	      closetVertices[cvPos+5] = iZ;
+	      //K
+	      closetVertices[cvPos+6] = closetVertices[cvPos+12] = gX;
+	      closetVertices[cvPos+7] = closetVertices[cvPos+13] = eY;
+	      closetVertices[cvPos+8] = closetVertices[cvPos+14] = iZ;
+	      //G
+	      closetVertices[cvPos+15] = gX;
+	      closetVertices[cvPos+16] = eY;
+	      closetVertices[cvPos+17] = aZ;
+
+	      cvPos = cvPos+18;
+
+	      //I
+	      closetVertices[cvPos] = closetVertices[cvPos+9] = eX;
+	      closetVertices[cvPos+1] = closetVertices[cvPos+10] = eY;
+	      closetVertices[cvPos+2] = closetVertices[cvPos+11] = iZ;
+	      //J
+	      closetVertices[cvPos+3] = eX;
+	      closetVertices[cvPos+4] = fY;
+	      closetVertices[cvPos+5] = iZ;
+	      //N
+	      closetVertices[cvPos+6] = closetVertices[cvPos+12] = mX;
+	      closetVertices[cvPos+7] = closetVertices[cvPos+13] = nY;
+	      closetVertices[cvPos+8] = closetVertices[cvPos+14] = iZ;
+	      //M
+	      closetVertices[cvPos+15] = mX;
+	      closetVertices[cvPos+16] = mY;
+	      closetVertices[cvPos+17] = iZ;
+
+	      cvPos = cvPos+18;
+
+	      //N
+	      closetVertices[cvPos] = closetVertices[cvPos+9] = mX;
+	      closetVertices[cvPos+1] = closetVertices[cvPos+10] = nY;
+	      closetVertices[cvPos+2] = closetVertices[cvPos+11] = iZ;
+	      //J
+	      closetVertices[cvPos+3] = eX;
+	      closetVertices[cvPos+4] = fY;
+	      closetVertices[cvPos+5] = iZ;
+	      //L
+	      closetVertices[cvPos+6] = closetVertices[cvPos+12] = gX;
+	      closetVertices[cvPos+7] = closetVertices[cvPos+13] = fY;
+	      closetVertices[cvPos+8] = closetVertices[cvPos+14] = iZ;
+	      //P
+	      closetVertices[cvPos+15] = oX;
+	      closetVertices[cvPos+16] = nY;
+	      closetVertices[cvPos+17] = iZ;
+
+	      cvPos = cvPos+18;
+
+	      //O
+	      closetVertices[cvPos] = closetVertices[cvPos+9] = oX;
+	      closetVertices[cvPos+1] = closetVertices[cvPos+10] = mY;
+	      closetVertices[cvPos+2] = closetVertices[cvPos+11] = iZ;
+	      //P
+	      closetVertices[cvPos+3] = oX;
+	      closetVertices[cvPos+4] = nY;
+	      closetVertices[cvPos+5] = iZ;
+	      //L
+	      closetVertices[cvPos+6] = closetVertices[cvPos+12] = gX;
+	      closetVertices[cvPos+7] = closetVertices[cvPos+13] = fY;
+	      closetVertices[cvPos+8] = closetVertices[cvPos+14] = iZ;
+	      //K
+	      closetVertices[cvPos+15] = gX;
+	      closetVertices[cvPos+16] = eY;
+	      closetVertices[cvPos+17] = iZ;
+
+	      cvPos = cvPos+18;
+
+	      //I
+	      closetVertices[cvPos] = closetVertices[cvPos+9] = eX;
+	      closetVertices[cvPos+1] = closetVertices[cvPos+10] = eY;
+	      closetVertices[cvPos+2] = closetVertices[cvPos+11] = iZ;
+	      //M
+	      closetVertices[cvPos+3] = mX;
+	      closetVertices[cvPos+4] = mY;
+	      closetVertices[cvPos+5] = iZ;
+	      //O
+	      closetVertices[cvPos+6] = closetVertices[cvPos+12] = oX;
+	      closetVertices[cvPos+7] = closetVertices[cvPos+13] = mY;
+	      closetVertices[cvPos+8] = closetVertices[cvPos+14] = iZ;
+	      //K
+	      closetVertices[cvPos+15] = gX;
+	      closetVertices[cvPos+16] = eY;
+	      closetVertices[cvPos+17] = iZ;
+
+	      cvPos = cvPos+18;
+
+	      // HANDLE
+	      if (a.handleWidth >0 ) {
+	        // HANDLE SIDES
+	        //M
+	        closetVertices[cvPos] = closetVertices[cvPos + 9] = mX;
+	        closetVertices[cvPos + 1] = closetVertices[cvPos + 10] = mY;
+	        closetVertices[cvPos + 2] = closetVertices[cvPos + 11] = iZ;
+	        //N
+	        closetVertices[cvPos + 3] = mX;
+	        closetVertices[cvPos + 4] = nY;
+	        closetVertices[cvPos + 5] = iZ;
+	        //R
+	        closetVertices[cvPos + 6] = closetVertices[cvPos + 12] = mX;
+	        closetVertices[cvPos + 7] = closetVertices[cvPos + 13] = nY;
+	        closetVertices[cvPos + 8] = closetVertices[cvPos + 14] = qZ;
+	        //Q
+	        closetVertices[cvPos + 15] = mX;
+	        closetVertices[cvPos + 16] = mY;
+	        closetVertices[cvPos + 17] = qZ;
+
+	        cvPos = cvPos + 18;
+
+	        //R
+	        closetVertices[cvPos] = closetVertices[cvPos + 9] = mX;
+	        closetVertices[cvPos + 1] = closetVertices[cvPos + 10] = nY;
+	        closetVertices[cvPos + 2] = closetVertices[cvPos + 11] = qZ;
+	        //N
+	        closetVertices[cvPos + 3] = mX;
+	        closetVertices[cvPos + 4] = nY;
+	        closetVertices[cvPos + 5] = iZ;
+	        //P
+	        closetVertices[cvPos + 6] = closetVertices[cvPos + 12] = oX;
+	        closetVertices[cvPos + 7] = closetVertices[cvPos + 13] = nY;
+	        closetVertices[cvPos + 8] = closetVertices[cvPos + 14] = iZ;
+	        //T
+	        closetVertices[cvPos + 15] = oX;
+	        closetVertices[cvPos + 16] = nY;
+	        closetVertices[cvPos + 17] = qZ;
+
+	        cvPos = cvPos + 18;
+
+	        //S
+	        closetVertices[cvPos] = closetVertices[cvPos + 9] = oX;
+	        closetVertices[cvPos + 1] = closetVertices[cvPos + 10] = mY;
+	        closetVertices[cvPos + 2] = closetVertices[cvPos + 11] = qZ;
+	        //T
+	        closetVertices[cvPos + 3] = oX;
+	        closetVertices[cvPos + 4] = nY;
+	        closetVertices[cvPos + 5] = qZ;
+	        //P
+	        closetVertices[cvPos + 6] = closetVertices[cvPos + 12] = oX;
+	        closetVertices[cvPos + 7] = closetVertices[cvPos + 13] = nY;
+	        closetVertices[cvPos + 8] = closetVertices[cvPos + 14] = iZ;
+	        //O
+	        closetVertices[cvPos + 15] = oX;
+	        closetVertices[cvPos + 16] = mY;
+	        closetVertices[cvPos + 17] = iZ;
+
+	        cvPos = cvPos + 18;
+
+	        //M
+	        closetVertices[cvPos] = closetVertices[cvPos + 9] = mX;
+	        closetVertices[cvPos + 1] = closetVertices[cvPos + 10] = mY;
+	        closetVertices[cvPos + 2] = closetVertices[cvPos + 11] = iZ;
+	        //Q
+	        closetVertices[cvPos + 3] = mX;
+	        closetVertices[cvPos + 4] = mY;
+	        closetVertices[cvPos + 5] = qZ;
+	        //S
+	        closetVertices[cvPos + 6] = closetVertices[cvPos + 12] = oX;
+	        closetVertices[cvPos + 7] = closetVertices[cvPos + 13] = mY;
+	        closetVertices[cvPos + 8] = closetVertices[cvPos + 14] = qZ;
+	        //O
+	        closetVertices[cvPos + 15] = oX;
+	        closetVertices[cvPos + 16] = mY;
+	        closetVertices[cvPos + 17] = iZ;
+
+	        cvPos = cvPos + 18;
+	      }
+	      // HANDLE FRONT
+	      //Q
+	      closetVertices[cvPos] = closetVertices[cvPos+9] = mX;
+	      closetVertices[cvPos+1] = closetVertices[cvPos+10] = mY;
+	      closetVertices[cvPos+2] = closetVertices[cvPos+11] = qZ;
+	      //R
+	      closetVertices[cvPos+3] = mX;
+	      closetVertices[cvPos+4] = nY;
+	      closetVertices[cvPos+5] = qZ;
+	      //T
+	      closetVertices[cvPos+6] = closetVertices[cvPos+12] = oX;
+	      closetVertices[cvPos+7] = closetVertices[cvPos+13] = nY;
+	      closetVertices[cvPos+8] = closetVertices[cvPos+14] = qZ;
+	      //S
+	      closetVertices[cvPos+15] = oX;
+	      closetVertices[cvPos+16] = mY;
+	      closetVertices[cvPos+17] = qZ;
+
+	      cvPos = cvPos+18;
+
+	      step += elementLength;
+	    }
+
+	    //CLOSET BOX
+
+	    // FRONT VIEW VERTICES
+	    //
+	    // A/E---C/G
+	    //  |     |
+	    //  |     |
+	    //  |     |
+	    // B/F---D/H
+
+	    aX = 0;
+	    aY = a.h + offsetY;
+	    aZ = a.w;
+	    bY = 0;
+	    cX = a.l;
+	    var eZ = 0;
+
+	    //E
+	    closetVertices[cvPos] = closetVertices[cvPos+9] = aX;
+	    closetVertices[cvPos+1] = closetVertices[cvPos+10] = aY;
+	    closetVertices[cvPos+2] = closetVertices[cvPos+11] = eZ;
+	    //F
+	    closetVertices[cvPos+3] = aX;
+	    closetVertices[cvPos+4] = bY;
+	    closetVertices[cvPos+5] = eZ;
+	    //B
+	    closetVertices[cvPos+6] = closetVertices[cvPos+12] = aX;
+	    closetVertices[cvPos+7] = closetVertices[cvPos+13] = bY;
+	    closetVertices[cvPos+8] = closetVertices[cvPos+14] = aZ;
+	    //A
+	    closetVertices[cvPos+15] = aX;
+	    closetVertices[cvPos+16] = aY;
+	    closetVertices[cvPos+17] = aZ;
+
+	    cvPos = cvPos+18;
+
+	    //E
+	    closetVertices[cvPos] = closetVertices[cvPos+9] = aX;
+	    closetVertices[cvPos+1] = closetVertices[cvPos+10] = aY;
+	    closetVertices[cvPos+2] = closetVertices[cvPos+11] = eZ;
+	    //A
+	    closetVertices[cvPos+3] = aX;
+	    closetVertices[cvPos+4] = aY;
+	    closetVertices[cvPos+5] = aZ;
+	    //C
+	    closetVertices[cvPos+6] = closetVertices[cvPos+12] = cX;
+	    closetVertices[cvPos+7] = closetVertices[cvPos+13] = aY;
+	    closetVertices[cvPos+8] = closetVertices[cvPos+14] = aZ;
+	    //G
+	    closetVertices[cvPos+15] = cX;
+	    closetVertices[cvPos+16] = aY;
+	    closetVertices[cvPos+17] = eZ;
+
+	    cvPos = cvPos+18;
+
+	    //C
+	    closetVertices[cvPos] = closetVertices[cvPos+9] = cX;
+	    closetVertices[cvPos+1] = closetVertices[cvPos+10] = aY;
+	    closetVertices[cvPos+2] = closetVertices[cvPos+11] = aZ;
+	    //D
+	    closetVertices[cvPos+3] = cX;
+	    closetVertices[cvPos+4] = bY;
+	    closetVertices[cvPos+5] = aZ;
+	    //H
+	    closetVertices[cvPos+6] = closetVertices[cvPos+12] = cX;
+	    closetVertices[cvPos+7] = closetVertices[cvPos+13] = bY;
+	    closetVertices[cvPos+8] = closetVertices[cvPos+14] = eZ;
+	    //G
+	    closetVertices[cvPos+15] = cX;
+	    closetVertices[cvPos+16] = aY;
+	    closetVertices[cvPos+17] = eZ;
+
+	    cvPos = cvPos+18;
+
+	    //G
+	    closetVertices[cvPos] = closetVertices[cvPos+9] = cX;
+	    closetVertices[cvPos+1] = closetVertices[cvPos+10] = aY;
+	    closetVertices[cvPos+2] = closetVertices[cvPos+11] = eZ;
+	    //H
+	    closetVertices[cvPos+3] = cX;
+	    closetVertices[cvPos+4] = bY;
+	    closetVertices[cvPos+5] = eZ;
+	    //F
+	    closetVertices[cvPos+6] = closetVertices[cvPos+12] = aX;
+	    closetVertices[cvPos+7] = closetVertices[cvPos+13] = bY;
+	    closetVertices[cvPos+8] = closetVertices[cvPos+14] = eZ;
+	    //E
+	    closetVertices[cvPos+15] = aX;
+	    closetVertices[cvPos+16] = aY;
+	    closetVertices[cvPos+17] = eZ;
+
+	    return {
+	      closet: {
+	        positions: new Float32Array(closetVertices),
+	        normals: getNormalsBuffer.flat(closetVertices),
+	        uvs: getUvsBuffer.architectural(closetVertices),
+	        material: 'closet'
+	      }
+	    }
+	  }
+	};
+
+	// fast 2d polygon tesselation
+	// can also triangulate 3D n-gons but fails very often to do so
+	// use triangulate-3d for 3D n-gons
+
+	// modified version of triangulate.js (https://github.com/mapbox/earcut)
+	// - wrapped in require module
+
+	/**
+	 * earcut.js triangulation function
+	 * Copyright (c) 2015, Mapbox
+	 */
+
+	//function earcut (data, holeIndices, dim) {
+	var triangulate2d = function (data, holeIndices, dim) {
+
+	  dim = dim || 2;
+
+	  var hasHoles = holeIndices && holeIndices.length,
+	    outerLen = hasHoles ? holeIndices[0] * dim : data.length,
+	    outerNode = filterPoints(data, linkedList(data, 0, outerLen, dim, true)),
+	    triangles = [];
+
+	  if (!outerNode) {
+	    return triangles
+	  }
+
+	  var minX, minY, maxX, maxY, x, y, size;
+
+	  if (hasHoles) {
+	    outerNode = eliminateHoles(data, holeIndices, outerNode, dim);
+	  }
+
+	  // if the shape is not too simple, we'll use z-order curve hash later; calculate polygon bbox
+	  if (data.length > 80 * dim) {
+	    minX = maxX = data[0];
+	    minY = maxY = data[1];
+
+	    for (var i = dim; i < outerLen; i += dim) {
+	      x = data[i];
+	      y = data[i + 1];
+	      if (x < minX) {
+	        minX = x;
+	      }
+	      if (y < minY) {
+	        minY = y;
+	      }
+	      if (x > maxX) {
+	        maxX = x;
+	      }
+	      if (y > maxY) {
+	        maxY = y;
+	      }
+	    }
+
+	    // minX, minY and size are later used to transform coords into integers for z-order calculation
+	    size = Math.max(maxX - minX, maxY - minY);
+	  }
+
+	  earcutLinked(data, outerNode, triangles, dim, minX, minY, size);
+
+	  return triangles
+	};
+
+	// create a circular doubly linked list from polygon points in the specified winding order
+	function linkedList (data, start, end, dim, clockwise) {
+	  var sum = 0,
+	    i, j, last;
+
+	  // calculate original winding order of a polygon ring
+	  for (i = start, j = end - dim; i < end; i += dim) {
+	    sum += (data[j] - data[i]) * (data[i + 1] + data[j + 1]);
+	    j = i;
+	  }
+
+	  // link points into circular doubly-linked list in the specified winding order
+	  if (clockwise === (sum > 0)) {
+	    for (i = start; i < end; i += dim) {
+	      last = insertNode(i, last);
+	    }
+	  } else {
+	    for (i = end - dim; i >= start; i -= dim) {
+	      last = insertNode(i, last);
+	    }
+	  }
+
+	  return last
+	}
+
+	// eliminate colinear or duplicate points
+	function filterPoints (data, start, end) {
+	  if (!end) {
+	    end = start;
+	  }
+
+	  var node = start,
+	    again;
+	  do {
+	    again = false;
+
+	    if (!node.steiner && (equals(data, node.i, node.next.i) || orient(data, node.prev.i, node.i, node.next.i) === 0)) {
+
+	      // remove node
+	      node.prev.next = node.next;
+	      node.next.prev = node.prev;
+
+	      if (node.prevZ) {
+	        node.prevZ.nextZ = node.nextZ;
+	      }
+	      if (node.nextZ) {
+	        node.nextZ.prevZ = node.prevZ;
+	      }
+
+	      node = end = node.prev;
+
+	      if (node === node.next) {
+	        return null
+	      }
+	      again = true;
+
+	    } else {
+	      node = node.next;
+	    }
+	  } while (again || node !== end)
+
+	  return end
+	}
+
+	// main ear slicing loop which triangulates a polygon (given as a linked list)
+	function earcutLinked (data, ear, triangles, dim, minX, minY, size, pass) {
+	  if (!ear) {
+	    return
+	  }
+
+	  // interlink polygon nodes in z-order
+	  if (!pass && minX !== undefined) {
+	    indexCurve(data, ear, minX, minY, size);
+	  }
+
+	  var stop = ear,
+	    prev, next;
+
+	  // iterate through ears, slicing them one by one
+	  while (ear.prev !== ear.next) {
+	    prev = ear.prev;
+	    next = ear.next;
+
+	    if (isEar(data, ear, minX, minY, size)) {
+	      // cut off the triangle
+	      triangles.push(prev.i / dim);
+	      triangles.push(ear.i / dim);
+	      triangles.push(next.i / dim);
+
+	      // remove ear node
+	      next.prev = prev;
+	      prev.next = next;
+
+	      if (ear.prevZ) {
+	        ear.prevZ.nextZ = ear.nextZ;
+	      }
+	      if (ear.nextZ) {
+	        ear.nextZ.prevZ = ear.prevZ;
+	      }
+
+	      // skipping the next vertice leads to less sliver triangles
+	      ear = next.next;
+	      stop = next.next;
+
+	      continue
+	    }
+
+	    ear = next;
+
+	    // if we looped through the whole remaining polygon and can't find any more ears
+	    if (ear === stop) {
+	      // try filtering points and slicing again
+	      if (!pass) {
+	        earcutLinked(data, filterPoints(data, ear), triangles, dim, minX, minY, size, 1);
+
+	        // if this didn't work, try curing all small self-intersections locally
+	      } else if (pass === 1) {
+	        ear = cureLocalIntersections(data, ear, triangles, dim);
+	        earcutLinked(data, ear, triangles, dim, minX, minY, size, 2);
+
+	        // as a last resort, try splitting the remaining polygon into two
+	      } else if (pass === 2) {
+	        splitEarcut(data, ear, triangles, dim, minX, minY, size);
+	      }
+
+	      break
+	    }
+	  }
+	}
+
+	// check whether a polygon node forms a valid ear with adjacent nodes
+	function isEar (data, ear, minX, minY, size) {
+
+	  var a = ear.prev.i,
+	    b = ear.i,
+	    c = ear.next.i,
+
+	    ax = data[a], ay = data[a + 1],
+	    bx = data[b], by = data[b + 1],
+	    cx = data[c], cy = data[c + 1],
+
+	    abd = ax * by - ay * bx,
+	    acd = ax * cy - ay * cx,
+	    cbd = cx * by - cy * bx,
+	    A = abd - acd - cbd;
+
+	  if (A <= 0) {
+	    return false
+	  } // reflex, can't be an ear
+
+	  // now make sure we don't have other points inside the potential ear;
+	  // the code below is a bit verbose and repetitive but this is done for performance
+
+	  var cay = cy - ay,
+	    acx = ax - cx,
+	    aby = ay - by,
+	    bax = bx - ax,
+	    i, px, py, s, t, k, node;
+
+	  // if we use z-order curve hashing, iterate through the curve
+	  if (minX !== undefined) {
+
+	    // triangle bbox; min & max are calculated like this for speed
+	    var minTX = ax < bx ? (ax < cx ? ax : cx) : (bx < cx ? bx : cx),
+	      minTY = ay < by ? (ay < cy ? ay : cy) : (by < cy ? by : cy),
+	      maxTX = ax > bx ? (ax > cx ? ax : cx) : (bx > cx ? bx : cx),
+	      maxTY = ay > by ? (ay > cy ? ay : cy) : (by > cy ? by : cy),
+
+	      // z-order range for the current triangle bbox;
+	      minZ = zOrder(minTX, minTY, minX, minY, size),
+	      maxZ = zOrder(maxTX, maxTY, minX, minY, size);
+
+	    // first look for points inside the triangle in increasing z-order
+	    node = ear.nextZ;
+
+	    while (node && node.z <= maxZ) {
+	      i = node.i;
+	      node = node.nextZ;
+	      if (i === a || i === c) {
+	        continue
+	      }
+
+	      px = data[i];
+	      py = data[i + 1];
+
+	      s = cay * px + acx * py - acd;
+	      if (s >= 0) {
+	        t = aby * px + bax * py + abd;
+	        if (t >= 0) {
+	          k = A - s - t;
+	          if ((k >= 0) && ((s && t) || (s && k) || (t && k))) {
+	            return false
+	          }
+	        }
+	      }
+	    }
+
+	    // then look for points in decreasing z-order
+	    node = ear.prevZ;
+
+	    while (node && node.z >= minZ) {
+	      i = node.i;
+	      node = node.prevZ;
+	      if (i === a || i === c) {
+	        continue
+	      }
+
+	      px = data[i];
+	      py = data[i + 1];
+
+	      s = cay * px + acx * py - acd;
+	      if (s >= 0) {
+	        t = aby * px + bax * py + abd;
+	        if (t >= 0) {
+	          k = A - s - t;
+	          if ((k >= 0) && ((s && t) || (s && k) || (t && k))) {
+	            return false
+	          }
+	        }
+	      }
+	    }
+
+	    // if we don't use z-order curve hash, simply iterate through all other points
+	  } else {
+	    node = ear.next.next;
+
+	    while (node !== ear.prev) {
+	      i = node.i;
+	      node = node.next;
+
+	      px = data[i];
+	      py = data[i + 1];
+
+	      s = cay * px + acx * py - acd;
+	      if (s >= 0) {
+	        t = aby * px + bax * py + abd;
+	        if (t >= 0) {
+	          k = A - s - t;
+	          if ((k >= 0) && ((s && t) || (s && k) || (t && k))) {
+	            return false
+	          }
+	        }
+	      }
+	    }
+	  }
+
+	  return true
+	}
+
+	// go through all polygon nodes and cure small local self-intersections
+	function cureLocalIntersections (data, start, triangles, dim) {
+	  var node = start;
+	  do {
+	    var a = node.prev,
+	      b = node.next.next;
+
+	    // a self-intersection where edge (v[i-1],v[i]) intersects (v[i+1],v[i+2])
+	    if (a.i !== b.i && intersects(data, a.i, node.i, node.next.i, b.i) &&
+	      locallyInside(data, a, b) && locallyInside(data, b, a)) {
+
+	      triangles.push(a.i / dim);
+	      triangles.push(node.i / dim);
+	      triangles.push(b.i / dim);
+
+	      // remove two nodes involved
+	      a.next = b;
+	      b.prev = a;
+
+	      var az = node.prevZ,
+	        bz = node.nextZ && node.nextZ.nextZ;
+
+	      if (az) {
+	        az.nextZ = bz;
+	      }
+	      if (bz) {
+	        bz.prevZ = az;
+	      }
+
+	      node = start = b;
+	    }
+	    node = node.next;
+	  } while (node !== start)
+
+	  return node
+	}
+
+	// try splitting polygon into two and triangulate them independently
+	function splitEarcut (data, start, triangles, dim, minX, minY, size) {
+	  // look for a valid diagonal that divides the polygon into two
+	  var a = start;
+	  do {
+	    var b = a.next.next;
+	    while (b !== a.prev) {
+	      if (a.i !== b.i && isValidDiagonal(data, a, b)) {
+	        // split the polygon in two by the diagonal
+	        var c = splitPolygon(a, b);
+
+	        // filter colinear points around the cuts
+	        a = filterPoints(data, a, a.next);
+	        c = filterPoints(data, c, c.next);
+
+	        // run earcut on each half
+	        earcutLinked(data, a, triangles, dim, minX, minY, size);
+	        earcutLinked(data, c, triangles, dim, minX, minY, size);
+	        return
+	      }
+	      b = b.next;
+	    }
+	    a = a.next;
+	  } while (a !== start)
+	}
+
+	// link every hole into the outer loop, producing a single-ring polygon without holes
+	function eliminateHoles (data, holeIndices, outerNode, dim) {
+	  var queue = [],
+	    i, len, start, end, list;
+
+	  for (i = 0, len = holeIndices.length; i < len; i++) {
+	    start = holeIndices[i] * dim;
+	    end = i < len - 1 ? holeIndices[i + 1] * dim : data.length;
+	    list = linkedList(data, start, end, dim, false);
+	    if (list === list.next) {
+	      list.steiner = true;
+	    }
+	    list = filterPoints(data, list);
+	    if (list) {
+	      queue.push(getLeftmost(data, list));
+	    }
+	  }
+
+	  queue.sort(function (a, b) {
+	    return data[a.i] - data[b.i]
+	  });
+
+	  // process holes from left to right
+	  for (i = 0; i < queue.length; i++) {
+	    eliminateHole(data, queue[i], outerNode);
+	    outerNode = filterPoints(data, outerNode, outerNode.next);
+	  }
+
+	  return outerNode
+	}
+
+	// find a bridge between vertices that connects hole with an outer ring and and link it
+	function eliminateHole (data, holeNode, outerNode) {
+	  outerNode = findHoleBridge(data, holeNode, outerNode);
+	  if (outerNode) {
+	    var b = splitPolygon(outerNode, holeNode);
+	    filterPoints(data, b, b.next);
+	  }
+	}
+
+	// David Eberly's algorithm for finding a bridge between hole and outer polygon
+	function findHoleBridge (data, holeNode, outerNode) {
+	  var node = outerNode,
+	    i = holeNode.i,
+	    px = data[i],
+	    py = data[i + 1],
+	    qMax = -Infinity,
+	    mNode, a, b;
+
+	  // find a segment intersected by a ray from the hole's leftmost point to the left;
+	  // segment's endpoint with lesser x will be potential connection point
+	  do {
+	    a = node.i;
+	    b = node.next.i;
+
+	    if (py <= data[a + 1] && py >= data[b + 1]) {
+	      var qx = data[a] + (py - data[a + 1]) * (data[b] - data[a]) / (data[b + 1] - data[a + 1]);
+	      if (qx <= px && qx > qMax) {
+	        qMax = qx;
+	        mNode = data[a] < data[b] ? node : node.next;
+	      }
+	    }
+	    node = node.next;
+	  } while (node !== outerNode)
+
+	  if (!mNode) {
+	    return null
+	  }
+
+	  // look for points strictly inside the triangle of hole point, segment intersection and endpoint;
+	  // if there are no points found, we have a valid connection;
+	  // otherwise choose the point of the minimum angle with the ray as connection point
+
+	  var bx = data[mNode.i],
+	    by = data[mNode.i + 1],
+	    pbd = px * by - py * bx,
+	    pcd = px * py - py * qMax,
+	    cpy = py - py,
+	    pcx = px - qMax,
+	    pby = py - by,
+	    bpx = bx - px,
+	    A = pbd - pcd - (qMax * by - py * bx),
+	    sign = A <= 0 ? -1 : 1,
+	    stop = mNode,
+	    tanMin = Infinity,
+	    mx, my, amx, s, t, tan;
+
+	  node = mNode.next;
+
+	  while (node !== stop) {
+
+	    mx = data[node.i];
+	    my = data[node.i + 1];
+	    amx = px - mx;
+
+	    if (amx >= 0 && mx >= bx) {
+	      s = (cpy * mx + pcx * my - pcd) * sign;
+	      if (s >= 0) {
+	        t = (pby * mx + bpx * my + pbd) * sign;
+
+	        if (t >= 0 && A * sign - s - t >= 0) {
+	          tan = Math.abs(py - my) / amx; // tangential
+	          if (tan < tanMin && locallyInside(data, node, holeNode)) {
+	            mNode = node;
+	            tanMin = tan;
+	          }
+	        }
+	      }
+	    }
+
+	    node = node.next;
+	  }
+
+	  return mNode
+	}
+
+	// interlink polygon nodes in z-order
+	function indexCurve (data, start, minX, minY, size) {
+	  var node = start;
+
+	  do {
+	    if (node.z === null) {
+	      node.z = zOrder(data[node.i], data[node.i + 1], minX, minY, size);
+	    }
+	    node.prevZ = node.prev;
+	    node.nextZ = node.next;
+	    node = node.next;
+	  } while (node !== start)
+
+	  node.prevZ.nextZ = null;
+	  node.prevZ = null;
+
+	  sortLinked(node);
+	}
+
+	// Simon Tatham's linked list merge sort algorithm
+	// http://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.html
+	function sortLinked (list) {
+	  var i, p, q, e, tail, numMerges, pSize, qSize,
+	    inSize = 1;
+
+	  do {
+	    p = list;
+	    list = null;
+	    tail = null;
+	    numMerges = 0;
+
+	    while (p) {
+	      numMerges++;
+	      q = p;
+	      pSize = 0;
+	      for (i = 0; i < inSize; i++) {
+	        pSize++;
+	        q = q.nextZ;
+	        if (!q) {
+	          break
+	        }
+	      }
+
+	      qSize = inSize;
+
+	      while (pSize > 0 || (qSize > 0 && q)) {
+
+	        if (pSize === 0) {
+	          e = q;
+	          q = q.nextZ;
+	          qSize--;
+	        } else if (qSize === 0 || !q) {
+	          e = p;
+	          p = p.nextZ;
+	          pSize--;
+	        } else if (p.z <= q.z) {
+	          e = p;
+	          p = p.nextZ;
+	          pSize--;
+	        } else {
+	          e = q;
+	          q = q.nextZ;
+	          qSize--;
+	        }
+
+	        if (tail) {
+	          tail.nextZ = e;
+	        } else {
+	          list = e;
+	        }
+
+	        e.prevZ = tail;
+	        tail = e;
+	      }
+
+	      p = q;
+	    }
+
+	    tail.nextZ = null;
+	    inSize *= 2;
+
+	  } while (numMerges > 1)
+
+	  return list
+	}
+
+	// z-order of a point given coords and size of the data bounding box
+	function zOrder (x, y, minX, minY, size) {
+	  // coords are transformed into (0..1000) integer range
+	  x = 1000 * (x - minX) / size;
+	  x = (x | (x << 8)) & 0x00FF00FF;
+	  x = (x | (x << 4)) & 0x0F0F0F0F;
+	  x = (x | (x << 2)) & 0x33333333;
+	  x = (x | (x << 1)) & 0x55555555;
+
+	  y = 1000 * (y - minY) / size;
+	  y = (y | (y << 8)) & 0x00FF00FF;
+	  y = (y | (y << 4)) & 0x0F0F0F0F;
+	  y = (y | (y << 2)) & 0x33333333;
+	  y = (y | (y << 1)) & 0x55555555;
+
+	  return x | (y << 1)
+	}
+
+	// find the leftmost node of a polygon ring
+	function getLeftmost (data, start) {
+	  var node = start,
+	    leftmost = start;
+	  do {
+	    if (data[node.i] < data[leftmost.i]) {
+	      leftmost = node;
+	    }
+	    node = node.next;
+	  } while (node !== start)
+
+	  return leftmost
+	}
+
+	// check if a diagonal between two polygon nodes is valid (lies in polygon interior)
+	function isValidDiagonal (data, a, b) {
+	  return !intersectsPolygon(data, a, a.i, b.i) &&
+	    locallyInside(data, a, b) && locallyInside(data, b, a) &&
+	    middleInside(data, a, a.i, b.i)
+	}
+
+	// winding order of triangle formed by 3 given points
+	function orient (data, p, q, r) {
+	  var o = (data[q + 1] - data[p + 1]) * (data[r] - data[q]) - (data[q] - data[p]) * (data[r + 1] - data[q + 1]);
+	  return o > 0 ? 1 : o < 0 ? -1 : 0
+	}
+
+	// check if two points are equal
+	function equals (data, p1, p2) {
+	  return data[p1] === data[p2] && data[p1 + 1] === data[p2 + 1]
+	}
+
+	// check if two segments intersect
+	function intersects (data, p1, q1, p2, q2) {
+	  return orient(data, p1, q1, p2) !== orient(data, p1, q1, q2) &&
+	    orient(data, p2, q2, p1) !== orient(data, p2, q2, q1)
+	}
+
+	// check if a polygon diagonal intersects any polygon segments
+	function intersectsPolygon (data, start, a, b) {
+	  var node = start;
+	  do {
+	    var p1 = node.i,
+	      p2 = node.next.i;
+
+	    if (p1 !== a && p2 !== a && p1 !== b && p2 !== b && intersects(data, p1, p2, a, b)) {
+	      return true
+	    }
+
+	    node = node.next;
+	  } while (node !== start)
+
+	  return false
+	}
+
+	// check if a polygon diagonal is locally inside the polygon
+	function locallyInside (data, a, b) {
+	  return orient(data, a.prev.i, a.i, a.next.i) === -1 ? orient(data, a.i, b.i, a.next.i) !== -1 && orient(data, a.i, a.prev.i, b.i) !== -1 : orient(data, a.i, b.i, a.prev.i) === -1 || orient(data, a.i, a.next.i, b.i) === -1
+	}
+
+	// check if the middle point of a polygon diagonal is inside the polygon
+	function middleInside (data, start, a, b) {
+	  var node = start,
+	    inside = false,
+	    px = (data[a] + data[b]) / 2,
+	    py = (data[a + 1] + data[b + 1]) / 2;
+	  do {
+	    var p1 = node.i,
+	      p2 = node.next.i;
+
+	    if (((data[p1 + 1] > py) !== (data[p2 + 1] > py)) &&
+	      (px < (data[p2] - data[p1]) * (py - data[p1 + 1]) / (data[p2 + 1] - data[p1 + 1]) + data[p1])) {
+	      inside = !inside;
+	    }
+
+	    node = node.next;
+	  } while (node !== start)
+
+	  return inside
+	}
+
+	// link two polygon vertices with a bridge; if the vertices belong to the same ring, it splits polygon into two;
+	// if one belongs to the outer ring and another to a hole, it merges it into a single ring
+	function splitPolygon (a, b) {
+	  var a2 = new Node(a.i),
+	    b2 = new Node(b.i),
+	    an = a.next,
+	    bp = b.prev;
+
+	  a.next = b;
+	  b.prev = a;
+
+	  a2.next = an;
+	  an.prev = a2;
+
+	  b2.next = a2;
+	  a2.prev = b2;
+
+	  bp.next = b2;
+	  b2.prev = bp;
+
+	  return b2
+	}
+
+	// create a node and optionally link it with previous one (in a circular doubly linked list)
+	function insertNode (i, last) {
+	  var node = new Node(i);
+
+	  if (!last) {
+	    node.prev = node;
+	    node.next = node;
+
+	  } else {
+	    node.next = last.next;
+	    node.prev = last;
+	    last.next.prev = node;
+	    last.next = node;
+	  }
+	  return node
+	}
+
+	function Node (i) {
+	  // vertex coordinates
+	  this.i = i;
+
+	  // previous and next vertice nodes in a polygon ring
+	  this.prev = null;
+	  this.next = null;
+
+	  // z-order curve value
+	  this.z = null;
+
+	  // previous and next nodes in z-order
+	  this.prevZ = null;
+	  this.nextZ = null;
+
+	  // indicates whether this is a steiner point
+	  this.steiner = false;
+	}
+
+	// dependencies
+
+	var generatePolygonBuffer = function(options) {
+
+	  // API
+
+	  var inputVertices = options.outline;
+	  var holes = options.holes;
+	  var uvx = options.uvx || 0;
+	  var uvz = options.uvz || 0;
+	  var y = options.y || 0;
+	  var flipSide = !!options.flipSide;
+
+	  // internals
+	  var i, l, iv, iuv;
+	  var indices;
+
+	  // triangulate
+	  if (inputVertices.length === 4 && (holes === undefined || holes.length === 0)) {
+	    // its a quad - no triangulation needed
+	    indices = [1,0,3,3,2,1];
+	  } else {
+	    // use "earcut" triangulation
+	    if ( holes && holes.length > 0 ) {
+	      // has holes
+	      var holeIndices = new Array(holes.length);
+	      for (i = 0, l = holes.length; i < l; i++) {
+	        holeIndices[i] = inputVertices.length / 2;
+	        inputVertices = inputVertices.concat(holes[i]);
+	      }
+	      indices = triangulate2d(inputVertices, holeIndices);
+	    } else {
+	      // has no holes
+	      indices = triangulate2d(inputVertices);
+	    }
+
+	  }
+
+	  var outputVertices = new Float32Array(indices.length * 3);
+	  var outputUvs = new Float32Array(indices.length * 2);
+
+	  if (flipSide) {
+
+	    for (i = 0, l = indices.length; i < l; i += 3) {
+	      iv = i * 3;
+	      iuv = i * 2;
+	      // vertices
+	      outputVertices[ iv ] = inputVertices[ indices[ i + 2 ] * 2 ];
+	      outputVertices[ iv + 1 ] = y;
+	      outputVertices[ iv + 2 ] = inputVertices[ indices[ i + 2 ] * 2 + 1 ];
+	      outputVertices[ iv + 3 ] = inputVertices[ indices[ i ] * 2 ];
+	      outputVertices[ iv + 4 ] = y;
+	      outputVertices[ iv + 5 ] = inputVertices[ indices[ i ] * 2 + 1 ];
+	      outputVertices[ iv + 6 ] = inputVertices[ indices[ i + 1 ] * 2 ];
+	      outputVertices[ iv + 7 ] = y;
+	      outputVertices[ iv + 8 ] = inputVertices[ indices[ i + 1 ] * 2 + 1 ];
+	      // uvs
+	      outputUvs[ iuv ] = inputVertices[ indices[ i + 2 ] * 2 +1 ] + uvz;
+	      outputUvs[ iuv + 1 ] = inputVertices[ indices[ i + 2 ] * 2 ] + uvx;
+	      outputUvs[ iuv + 2 ] = inputVertices[ indices[ i ] * 2+1 ] + uvz;
+	      outputUvs[ iuv + 3 ] = inputVertices[ indices[ i ] * 2 ] + uvx;
+	      outputUvs[ iuv + 4 ] = inputVertices[ indices[ i + 1 ] * 2+1 ] + uvz;
+	      outputUvs[ iuv + 5 ] = inputVertices[ indices[ i + 1 ] * 2 ] + uvx;
+	    }
+
+	  } else {
+
+	    for (i = 0, l = indices.length; i < l; i += 3) {
+	      iv = i * 3;
+	      iuv = i * 2;
+	      // vertices
+	      outputVertices[ iv ] = inputVertices[ indices[ i + 2 ] * 2 ];
+	      outputVertices[ iv + 1 ] = y;
+	      outputVertices[ iv + 2 ] = inputVertices[ indices[ i + 2 ] * 2 + 1 ];
+	      outputVertices[ iv + 3 ] = inputVertices[ indices[ i + 1 ] * 2 ];
+	      outputVertices[ iv + 4 ] = y;
+	      outputVertices[ iv + 5 ] = inputVertices[ indices[ i + 1 ] * 2 + 1 ];
+	      outputVertices[ iv + 6 ] = inputVertices[ indices[ i ] * 2 ];
+	      outputVertices[ iv + 7 ] = y;
+	      outputVertices[ iv + 8 ] = inputVertices[ indices[ i ] * 2 + 1 ];
+	      // uvs
+	      outputUvs[ iuv ] = inputVertices[ indices[ i + 2 ] * 2+1 ] + uvz;
+	      outputUvs[ iuv + 1 ] = inputVertices[ indices[ i + 2 ] * 2 ] + uvx;
+	      outputUvs[ iuv + 2 ] = inputVertices[ indices[ i + 1 ] * 2+1 ] + uvz;
+	      outputUvs[ iuv + 3 ] = inputVertices[ indices[ i + 1 ] * 2 ] + uvx;
+	      outputUvs[ iuv + 4 ] = inputVertices[ indices[ i ] * 2+1 ] + uvz;
+	      outputUvs[ iuv + 5 ] = inputVertices[ indices[ i ] * 2 ] + uvx;
+	    }
+
+	  }
+
+	  return {
+	    vertices: outputVertices,
+	    uvs: outputUvs
+	  }
+
+	};
+
+	// main
+
+	var generateExtrusionBuffer = function(options) {
+
+	  // API
+
+	  var inputVertices = options.outline;
+	  var y = options.y || 1;
+	  var flipSide = !!options.flipSide;
+	  var isOpenOutline = options.isOpenOutline || false;
+	  var inputVerticesLength = inputVertices.length;
+
+	  // side faces
+
+	  var outputVertices = new Float32Array(inputVerticesLength * 9);
+	  var outputUvs = new Float32Array(inputVerticesLength * 6);
+	  var distance;
+
+	  if (flipSide) {
+
+	    if (!isOpenOutline) {
+
+	      // first side quad is special because it has to deal with first and last point
+
+	      outputVertices[0] = inputVertices[inputVerticesLength - 2];
+	      outputVertices[1] = 0;
+	      outputVertices[2] = inputVertices[inputVerticesLength - 1];
+	      outputVertices[3] = inputVertices[inputVerticesLength - 2];
+	      outputVertices[4] = y;
+	      outputVertices[5] = inputVertices[inputVerticesLength - 1];
+	      outputVertices[6] = inputVertices[0];
+	      outputVertices[7] = 0;
+	      outputVertices[8] = inputVertices[1];
+	      outputVertices[9] = inputVertices[inputVerticesLength - 2];
+	      outputVertices[10] = y;
+	      outputVertices[11] = inputVertices[inputVerticesLength - 1];
+	      outputVertices[12] = inputVertices[0];
+	      outputVertices[13] = y;
+	      outputVertices[14] = inputVertices[1];
+	      outputVertices[15] = inputVertices[0];
+	      outputVertices[16] = 0;
+	      outputVertices[17] = inputVertices[1];
+
+	      distance = distance2d(inputVertices[inputVerticesLength - 2], inputVertices[inputVerticesLength - 1], inputVertices[0], inputVertices[1]);
+	      outputUvs[0] = 0;
+	      outputUvs[1] = 0;
+	      outputUvs[2] = 0;
+	      outputUvs[3] = y;
+	      outputUvs[4] = distance;
+	      outputUvs[5] = 0;
+	      outputUvs[6] = 0;
+	      outputUvs[7] = y;
+	      outputUvs[8] = distance;
+	      outputUvs[9] = y;
+	      outputUvs[10] = distance;
+	      outputUvs[11] = 0;
+	    }
+
+	    // other side quads
+	    for (var i = 2; i < inputVerticesLength; i += 2) {
+
+	      outputVertices[ i * 9 ] = inputVertices[ i - 2 ];
+	      outputVertices[ i * 9 + 1 ] = 0;
+	      outputVertices[ i * 9 + 2 ] = inputVertices[ i - 1 ];
+	      outputVertices[ i * 9 + 3 ] = inputVertices[ i - 2 ];
+	      outputVertices[ i * 9 + 4 ] = y;
+	      outputVertices[ i * 9 + 5 ] = inputVertices[ i - 1 ];
+	      outputVertices[ i * 9 + 6 ] = inputVertices[ i ];
+	      outputVertices[ i * 9 + 7 ] = 0;
+	      outputVertices[ i * 9 + 8 ] = inputVertices[ i + 1 ];
+	      outputVertices[ i * 9 + 9 ] = inputVertices[ i - 2 ];
+	      outputVertices[ i * 9 + 10 ] = y;
+	      outputVertices[ i * 9 + 11 ] = inputVertices[ i - 1 ];
+	      outputVertices[ i * 9 + 12 ] = inputVertices[ i ];
+	      outputVertices[ i * 9 + 13 ] = y;
+	      outputVertices[ i * 9 + 14 ] = inputVertices[ i + 1 ];
+	      outputVertices[ i * 9 + 15 ] = inputVertices[ i ];
+	      outputVertices[ i * 9 + 16 ] = 0;
+	      outputVertices[ i * 9 + 17 ] = inputVertices[ i + 1 ];
+
+	      distance = distance2d(inputVertices[ i - 2 ], inputVertices[ i - 1 ], inputVertices[ i ], inputVertices[ i + 1 ]);
+	      outputUvs[ i * 6 ] = 0;
+	      outputUvs[ i * 6 + 1 ] = 0;
+	      outputUvs[ i * 6 + 2 ] = 0;
+	      outputUvs[ i * 6 + 3 ] = y;
+	      outputUvs[ i * 6 + 4 ] = distance;
+	      outputUvs[ i * 6 + 5 ] = 0;
+	      outputUvs[ i * 6 + 6 ] = 0;
+	      outputUvs[ i * 6 + 7 ] = y;
+	      outputUvs[ i * 6 + 8 ] = distance;
+	      outputUvs[ i * 6 + 9 ] = y;
+	      outputUvs[ i * 6 + 10 ] = distance;
+	      outputUvs[ i * 6 + 11 ] = 0;
+	    }
+
+	  } else {
+
+	    if (!isOpenOutline) {
+
+	      // first side quad is special because it has to deal with first and last point
+
+	      outputVertices[0] = inputVertices[inputVerticesLength - 2];
+	      outputVertices[1] = 0;
+	      outputVertices[2] = inputVertices[inputVerticesLength - 1];
+	      outputVertices[3] = inputVertices[0];
+	      outputVertices[4] = 0;
+	      outputVertices[5] = inputVertices[1];
+	      outputVertices[6] = inputVertices[inputVerticesLength - 2];
+	      outputVertices[7] = y;
+	      outputVertices[8] = inputVertices[inputVerticesLength - 1];
+	      outputVertices[9] = inputVertices[inputVerticesLength - 2];
+	      outputVertices[10] = y;
+	      outputVertices[11] = inputVertices[inputVerticesLength - 1];
+	      outputVertices[12] = inputVertices[0];
+	      outputVertices[13] = 0;
+	      outputVertices[14] = inputVertices[1];
+	      outputVertices[15] = inputVertices[0];
+	      outputVertices[16] = y;
+	      outputVertices[17] = inputVertices[1];
+
+	      distance = distance2d(inputVertices[inputVerticesLength - 2], inputVertices[inputVerticesLength - 1], inputVertices[0], inputVertices[1]);
+	      outputUvs[0] = 0;
+	      outputUvs[1] = 0;
+	      outputUvs[2] = distance;
+	      outputUvs[3] = 0;
+	      outputUvs[4] = 0;
+	      outputUvs[5] = y;
+	      outputUvs[6] = 0;
+	      outputUvs[7] = y;
+	      outputUvs[8] = distance;
+	      outputUvs[9] = 0;
+	      outputUvs[10] = distance;
+	      outputUvs[11] = y;
+
+	    }
+
+	    // other side quads
+	    for (var i = 2; i < inputVerticesLength; i += 2) {
+
+	      outputVertices[ i * 9 ] = inputVertices[ i - 2 ];
+	      outputVertices[ i * 9 + 1 ] = 0;
+	      outputVertices[ i * 9 + 2 ] = inputVertices[ i - 1 ];
+	      outputVertices[ i * 9 + 3 ] = inputVertices[ i ];
+	      outputVertices[ i * 9 + 4 ] = 0;
+	      outputVertices[ i * 9 + 5 ] = inputVertices[ i + 1 ];
+	      outputVertices[ i * 9 + 6 ] = inputVertices[ i - 2 ];
+	      outputVertices[ i * 9 + 7 ] = y;
+	      outputVertices[ i * 9 + 8 ] = inputVertices[ i - 1 ];
+	      outputVertices[ i * 9 + 9 ] = inputVertices[ i - 2 ];
+	      outputVertices[ i * 9 + 10 ] = y;
+	      outputVertices[ i * 9 + 11 ] = inputVertices[ i - 1 ];
+	      outputVertices[ i * 9 + 12 ] = inputVertices[ i ];
+	      outputVertices[ i * 9 + 13 ] = 0;
+	      outputVertices[ i * 9 + 14 ] = inputVertices[ i + 1 ];
+	      outputVertices[ i * 9 + 15 ] = inputVertices[ i ];
+	      outputVertices[ i * 9 + 16 ] = y;
+	      outputVertices[ i * 9 + 17 ] = inputVertices[ i + 1 ];
+
+	      distance = distance2d(inputVertices[ i - 2 ], inputVertices[ i - 1 ], inputVertices[ i ], inputVertices[ i + 1 ]);
+	      outputUvs[ i * 6 ] = 0;
+	      outputUvs[ i * 6 + 1 ] = 0;
+	      outputUvs[ i * 6 + 2 ] = distance;
+	      outputUvs[ i * 6 + 3 ] = 0;
+	      outputUvs[ i * 6 + 4 ] = 0;
+	      outputUvs[ i * 6 + 5 ] = y;
+	      outputUvs[ i * 6 + 6 ] = 0;
+	      outputUvs[ i * 6 + 7 ] = y;
+	      outputUvs[ i * 6 + 8 ] = distance;
+	      outputUvs[ i * 6 + 9 ] = 0;
+	      outputUvs[ i * 6 + 10 ] = distance;
+	      outputUvs[ i * 6 + 11 ] = y;
+
+	    }
+
+	  }
+
+	  return {
+	    vertices: outputVertices,
+	    uvs: outputUvs
+	  }
+
+	};
+
+	// helpers
+
+	function distance2d (p1x, p1y, p2x, p2y) {
+	  return Math.sqrt((p2x - p1x) * (p2x - p1x) + (p2y - p1y) * (p2y - p1y))
+	}
+
+	// dependencies
+
+	var columnComponent = {
+
+	  schema: getSchema('column'),
+
+	  init: function () {},
+
+	  updateSchema: updateSchema,
+
+	  update: function (oldData) {
+	    var this_ = this;
+	    var data = this_.data;
+
+	    // remove old mesh
+	    this.remove();
+
+	    // get defaults and
+	    this.attributes = cloneDeep_1(data);
+
+	    // get meshes and materials from el3d modules
+	    var meshes = this.generateMeshes3d();
+
+	    // clean up empty meshes to prevent errors
+	    var meshKeys = Object.keys(meshes);
+	    meshKeys.forEach(key => {
+	      if (!meshes[key].positions || !meshes[key].positions.length) {
+	        // console.warn('no vertices for mesh', key)
+	        delete meshes[key];
+	      }
+	    });
+
+	    // setup materials
+	    // defaults
+	    var materials = {
+	      top: 'wall_top',
+	      side: 'basic-wall'
+	    };
+
+	    // check for adapted materials
+	    var materialKeys = Object.keys(data).filter(function(key) {
+	      return key.indexOf('material_') > -1
+	    });
+	    // add materials to instance
+	    materialKeys.forEach(function(key) {
+	      var mesh = key.replace('material_', '');
+	      materials[mesh] = data[key];
+	    });
+
+	    // fetch materials from mat library
+	    Object.keys(materials).forEach(mat => {
+	      materials[mat] = getMaterial(materials[mat]);
+	    });
+
+	    // construct data3d object
+	    var data3d = {
+	      meshes: meshes,
+	      materials: materials
+	    };
+
+	    // create new one
+	    this_.mesh = new THREE.Object3D();
+	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
+
+	    // update view
+	    this_.data3dView.set(data3d);
+	    this_.el.setObject3D('mesh', this_.mesh);
+	    // emit event
+	    this_.el.emit('mesh-updated');
+	  },
+
+	  remove: function () {
+	    if (this.data3dView) {
+	      this.data3dView.destroy();
+	      this.data3dView = null;
+	    }
+	    if (this.mesh) {
+	      this.el.removeObject3D('mesh');
+	      this.mesh = null;
+	    }
+	  },
+
+	  generateMeshes3d: function () {
+	    var a = this.attributes;
+
+	    // config
+	    var circleEdgeLength = 0.1;
+	    var minCircleEdges = 12;
+
+	    // internals
+	    var vertices = [];
+	    var sideUvs = [];
+	    var radius = a.l / 2;
+	    var shape = a.shape;
+	    var edgeCount = 4;
+
+	    // for circles set edge count from radius
+	    if (shape === 'circle') edgeCount = Math.max(Math.floor(radius * Math.PI * 2 / circleEdgeLength), minCircleEdges);
+	    var stepAngle = Math.PI * 2 / edgeCount;
+
+	    // for square get diagonal from edge length
+	    if (shape === 'square') radius = radius / Math.cos(stepAngle / 2);
+	    // edgeLength needed for correct side uvs
+	    var edgeLength = Math.tan(stepAngle / 2) * radius * 2;
+
+	    // get contour vertices and side face uvs
+	    var svUvPos = 0;
+	    var aX, aY, bY, cX;
+	    for (var i = 0; i < edgeCount * 2; i += 2) {
+	      /* */
+	      vertices[i] = Math.sin(stepAngle * i / 2 - stepAngle / 2) * radius;
+	      vertices[i + 1] = Math.cos(stepAngle * i / 2 - stepAngle / 2) * radius;
+
+	      // create UVS manually to have a continuous texture
+	      // FRONT UVS
+	      // A-----D
+	      // |     |
+	      // |     |
+	      // |     |
+	      // B-----C
+	      aX = i / 2 * edgeLength;
+	      aY = a.h;
+	      bY = 0;
+	      cX = (i / 2 + 1) * edgeLength;
+	      // B
+	      sideUvs[svUvPos] = aX;
+	      sideUvs[svUvPos + 1] = bY;
+	      // C
+	      sideUvs[svUvPos + 2] = cX;
+	      sideUvs[svUvPos + 3] = bY;
+	      // A
+	      sideUvs[svUvPos + 4] = aX;
+	      sideUvs[svUvPos + 5] = aY;
+	      // A
+	      sideUvs[svUvPos + 6] = aX;
+	      sideUvs[svUvPos + 7] = aY;
+	      // C
+	      sideUvs[svUvPos + 8] = cX;
+	      sideUvs[svUvPos + 9] = bY;
+	      // D
+	      sideUvs[svUvPos + 10] = cX;
+	      sideUvs[svUvPos + 11] = aY;
+	      svUvPos += 12;
+	    }
+
+	    // top polygon
+	    var topPolygon = generatePolygonBuffer({
+	      outline: vertices,
+	      y: a.h,
+	      uvx: a.x,
+	      uvz: a.z,
+	      flipSide: false
+	    });
+
+	    // bottom polygon
+	    var bottomPolygon = generatePolygonBuffer({
+	      outline: vertices,
+	      y: 0,
+	      uvx: a.x,
+	      uvz: a.z,
+	      flipSide: true
+	    });
+
+	    // sides
+	    var sidesFaces = generateExtrusionBuffer({
+	      outline: vertices,
+	      y: a.h,
+	      flipSide: false
+	    });
+
+	    // set normal smoothing according to shape
+	    var sideNormals;
+	    if (shape === 'circle') sideNormals = getNormalsBuffer.smooth(sidesFaces.vertices);
+	    else sideNormals = getNormalsBuffer.flat(sidesFaces.vertices);
+
+	    // return meshes
+	    return {
+	      top: {
+	        positions: topPolygon.vertices,
+	        normals: getNormalsBuffer.flat(topPolygon.vertices),
+	        uvs: topPolygon.uvs,
+	        material: 'top'
+	      },
+	      sides: {
+	        positions: sidesFaces.vertices,
+	        normals: sideNormals,
+	        uvs: new Float32Array(sideUvs),
+	        material: 'side'
+	      },
+	      bottom: {
+	        positions: bottomPolygon.vertices,
+	        normals: getNormalsBuffer.flat(bottomPolygon.vertices),
+	        uvs: bottomPolygon.uvs,
+	        material: 'side'
+	      }
+	    }
+	  }
+	};
+
+	// dependencies
+
+	var doorComponent = {
+
+	  schema: getSchema('door'),
+
+	  init: function () {
+	    var this_ = this;
+	    // listen to wall parent for updated geometry
+	    this.el.parentEl.addEventListener('wall-changed', this.updateFromWall);
+	    // FIXME: check for parent initially - we need to wait till it is available
+	    setTimeout(function() {
+	      this_.updateFromWall();
+	    }, 20);
+	  },
+
+	  updateFromWall: function(evt) {
+	    // if we have no event yet we need to get the attributes directly
+	    if (!evt) {
+	      var wallAttributes = this.el.parentEl.getAttribute('io3d-wall');
+	      if (wallAttributes) {
+	        // let's make sure we deal with an object
+	        if (typeof wallAttributes === 'string') wallAttributes = AFRAME.utils.styleParser.parse(wallAttributes);
+	        this.wallWidth = wallAttributes.w;
+	        this.wallControlLine = wallAttributes.controlLine;
+	      }
+	    } else {
+	      this.wallWidth = evt.detail.w;
+	      this.wallControlLine = evt.detail.controlLine;
+	    }
+	    this.update();
+	  },
+
+	  updateSchema: updateSchema,
+
+	  update: function (oldData) {
+	    var this_ = this;
+	    var data = this_.data;
+
+	    // remove old mesh
+	    this.remove();
+
+	    // get defaults and
+	    this.attributes = cloneDeep_1(data);
+
+	    // get meshes and materials from el3d modules
+	    var meshes = this.generateMeshes3d();
+
+	    // clean up empty meshes to prevent errors
+	    var meshKeys = Object.keys(meshes);
+	    meshKeys.forEach(key => {
+	      if (!meshes[key].positions || !meshes[key].positions.length) {
+	        // console.warn('no vertices for mesh', key)
+	        delete meshes[key];
+	      }
+	    });
+
+	    // setup materials
+	    // defaults
+	    var materials = {
+	      frame: {
+	        colorDiffuse: [0.95, 0.95, 0.95],
+	        colorSpecular: [0.04, 0.04, 0.04],
+	        specularCoef: 30
+	      },
+	      leaf: 'doorLeaf-flush-white',
+	      handle: 'aluminium',
+	      threshold: 'wood_parquet_oak'
+	    };
+
+	    // check for adapted materials
+	    var materialKeys = Object.keys(data).filter(function(key) {
+	      return key.indexOf('material_') > -1
+	    });
+	    // add materials to instance
+	    materialKeys.forEach(function(key) {
+	      var mesh = key.replace('material_', '');
+	      materials[mesh] = data[key];
+	    });
+
+	    // fetch materials from mat library
+	    Object.keys(materials).forEach(mat => {
+	      materials[mat] = getMaterial(materials[mat]);
+	    });
+
+	    // construct data3d object
+	    var data3d = {
+	      meshes: meshes,
+	      materials: materials
+	    };
+
+	    // create new one
+	    this_.mesh = new THREE.Object3D();
+	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
+
+	    // update view
+	    this_.data3dView.set(data3d);
+	    this_.el.setObject3D('mesh', this_.mesh);
+	    // emit event
+	    this_.el.emit('mesh-updated');
+	  },
+
+	  remove: function () {
+	    this.el.parentEl.removeEventListener('wall-changed', this.updateFromWall);
+	    if (this.data3dView) {
+	      this.data3dView.destroy();
+	      this.data3dView = null;
+	    }
+	    if (this.mesh) {
+	      this.el.removeObject3D('mesh');
+	      this.mesh = null;
+	    }
+	  },
+
+	  generateMeshes3d: function () {
+	    var a = this.attributes;
+
+	    var wallWidth = a.w || 0.15;
+	    var wallControlLine = 'back';
+	    // get parent wall attributes
+	    if (this.wallWidth || this.wallControlLine) {
+	      wallWidth = this.wallWidth;
+	      wallControlLine = this.wallControlLine;
+	      a.w = wallWidth;
+	    }
+
+	    // definitions
+	    var
+	      wallBackPos = wallControlLine === 'front' ? -wallWidth : wallControlLine === 'center' ? -wallWidth / 2 : 0,
+	      wallFrontPos = wallWidth + wallBackPos,
+	      frameLength = a.frameLength,
+	      frameWidth = a.w,
+	      leafLength = a.l - (frameLength * 2),
+	      leafOffset = a.leafOffset,
+	      frameOffset = a.frameOffset,
+	      prevLeafs = 0,
+	      doorType = a.doorType,
+	      threshold = a.threshold,
+	      thresholdHeight = a.thresholdHeight,
+	      leaf,
+	      doorOpening = a.l - (frameLength * 2),
+	      handleHeight = 1,
+	      handleThickness = 0.018,
+	      handleLength = 0.13,
+	      handleWidth = 0.035,
+	      handleDistance = 0.06, //Dornmass
+	      handlePlateLength = 0.04,
+	      handlePlateHeight = 0.21,
+	      handlePlateWidth = 0.002,
+	      handlePlateDistance = handleDistance+handleThickness/2-handlePlateLength/ 2,
+	      leafGap = threshold && thresholdHeight ? thresholdHeight : 0.005,
+
+	      // internals
+
+	      frameFacesCount = 0,
+	      floorFacesCount = threshold ? thresholdHeight > 0 ? 6 : 2 : 0,
+	      hvPos = 0,
+	      fvPos = 0,
+	      lvPos = 0,
+	      lvUvPos = 0,
+	      xCursor = 0,
+	      zCursor, xRotate, sinAngle, cosAngle, rotationOffset, lvs, lve, hvs, hve, hvf, hvt, hvm = [],
+	      aX,aY,aZ,bY,cX,cZ,dY,eX,eZ,gX,iZ,mZ,uZ;
+
+	    // DOOR TYPE CONFIGURATIONS
+
+	    // swing default
+	    if (doorType==='singleSwing') {
+	      leaf = [{
+	        leafLength : leafLength,
+	        handle : true,
+	        angle : a.doorAngle
+	      }];
+	    } else if (doorType==='opening') {
+	      leaf = [];
+	    } else if (doorType==='doubleSwing') {
+	      leaf = [{
+	        leafLength : leafLength/2,
+	        handle : true,
+	        angle : a.doorAngle
+	      },
+	        {
+	          leafLength : leafLength/2,
+	          handle : true,
+	          angle : a.doorAngle,
+	          flipLeaf : true
+	        }];
+	    } else if (doorType==='swingFix') {
+	      leaf = [{
+	        leafLength : doorOpening * (1-a.fixLeafRatio),
+	        handle : true,
+	        angle : a.doorAngle
+	      },
+	        {
+	          leafLength : doorOpening * a.fixLeafRatio,
+	          handle : false,
+	          angle : 0
+	        }];
+	      if (a.hinge==='left') leaf.reverse();
+	    } else if (doorType==='swingDoubleFix') {
+	      leaf = [{
+	        leafLength : doorOpening * a.fixLeafRatio/2,
+	        handle : false,
+	        angle : 0
+	      },
+	        {
+	          leafLength : doorOpening * (1-a.fixLeafRatio),
+	          handle : true,
+	          angle : a.doorAngle
+	        },
+	        {
+	          leafLength : doorOpening * a.fixLeafRatio/2,
+	          handle : false,
+	          angle : 0
+	        }];
+	      if (a.hinge==='left') leaf.reverse();
+	    } else if (doorType==='doubleSwingDoubleFix') {
+	      leaf = [{
+	        leafLength : doorOpening * a.fixLeafRatio/2,
+	        handle : false,
+	        angle : 0
+	      },
+	        {
+	          leafLength : doorOpening * ((1-a.fixLeafRatio)/2),
+	          handle : true,
+	          angle : a.doorAngle
+	        },
+	        {
+	          leafLength : doorOpening * ((1-a.fixLeafRatio)/2),
+	          handle : true,
+	          angle : a.doorAngle,
+	          flipLeaf : true
+	        },
+	        {
+	          leafLength : doorOpening * a.fixLeafRatio/2,
+	          handle : false,
+	          angle : 0
+	        }];
+	    } else if (doorType==='slidingDoor') {
+	      leaf = [{
+	        leafLength : leafLength* (1-a.doorAngle/180),
+	        handle : false,
+	        angle : 0
+	      }];
+	      leafOffset = -0.1;
+	      if (a.hinge==='left') xCursor = doorOpening - leafLength* (1-a.doorAngle/180);
+	    } else {
+	      // Fallback old doors
+	      a.doorType = 'singleSwing';
+	      leaf = [{
+	        leafLength : leafLength,
+	        handle : true,
+	        angle : a.doorAngle
+	      }];
+	    }
+
+	    // FIXME Workaround for older Doors - remove Feb '16
+	    if (leafOffset>0.005) leafOffset = 0.005;
+
+	    // Set Face Count
+	    if (frameLength>0) {
+	      frameFacesCount += 18;
+	      if (frameOffset>0) frameFacesCount += 12;
+	    }
+	    var leafVertices = [], //new Float32Array(leafFacesCount * 9),
+	      handleVertices = [], //new Float32Array(handleFacesCount * 9),
+	      leafUvs = [], //new Float32Array(leafFacesCount * 6),
+	      frameVertices = new Float32Array(frameFacesCount * 9);
+
+	    // Threshold VERTICES
+	    //
+	    //   E------G
+	    //  /|     /|
+	    // A------C |
+	    // | F----|-H
+	    // |/     |/
+	    // B------D
+	    var floorVertices = new Float32Array(floorFacesCount * 9),
+	      floorUvs = new Float32Array(floorFacesCount * 6),
+	      wvPos = 0,
+	      fvUvPos = 0;
+
+	    aX = frameLength;
+	    aY = thresholdHeight;
+	    aZ = wallFrontPos;
+	    bY = 0;
+	    cX = a.l - frameLength;
+	    eZ = wallBackPos;
+
+	    if (threshold) {
+	      // Top
+	      //E
+	      floorVertices[wvPos] = floorVertices[wvPos + 9] = aX;
+	      floorVertices[wvPos + 1] = floorVertices[wvPos + 10] = aY;
+	      floorVertices[wvPos + 2] = floorVertices[wvPos + 11] = eZ;
+	      //A
+	      floorVertices[wvPos + 3] = aX;
+	      floorVertices[wvPos + 4] = aY;
+	      floorVertices[wvPos + 5] = aZ;
+	      //C
+	      floorVertices[wvPos + 6] = floorVertices[wvPos + 12] = cX;
+	      floorVertices[wvPos + 7] = floorVertices[wvPos + 13] = aY;
+	      floorVertices[wvPos + 8] = floorVertices[wvPos + 14] = aZ;
+	      //G
+	      floorVertices[wvPos + 15] = cX;
+	      floorVertices[wvPos + 16] = aY;
+	      floorVertices[wvPos + 17] = eZ;
+
+	      floorUvs [fvUvPos] = floorUvs [fvUvPos + 2] = floorUvs [fvUvPos + 6] = 1 - cX;
+	      floorUvs [fvUvPos + 1] = floorUvs [fvUvPos + 7] = floorUvs [fvUvPos + 11] = aZ;
+	      floorUvs [fvUvPos + 3] = floorUvs [fvUvPos + 5] = floorUvs [fvUvPos + 9] = 0;
+	      floorUvs [fvUvPos + 4] = floorUvs [fvUvPos + 8] = floorUvs [fvUvPos + 10] = 1;
+
+	      wvPos += 18;
+	      fvUvPos += 12;
+
+	      if (thresholdHeight > 0) {
+	        // Front
+	        //A
+	        floorVertices[wvPos] = floorVertices[wvPos + 9] = aX;
+	        floorVertices[wvPos + 1] = floorVertices[wvPos + 10] = aY;
+	        floorVertices[wvPos + 2] = floorVertices[wvPos + 11] = aZ;
+	        //B
+	        floorVertices[wvPos + 3] = aX;
+	        floorVertices[wvPos + 4] = bY;
+	        floorVertices[wvPos + 5] = aZ;
+	        //D
+	        floorVertices[wvPos + 6] = floorVertices[wvPos + 12] = cX;
+	        floorVertices[wvPos + 7] = floorVertices[wvPos + 13] = bY;
+	        floorVertices[wvPos + 8] = floorVertices[wvPos + 14] = aZ;
+	        //C
+	        floorVertices[wvPos + 15] = cX;
+	        floorVertices[wvPos + 16] = aY;
+	        floorVertices[wvPos + 17] = aZ;
+
+	        floorUvs [fvUvPos] = floorUvs [fvUvPos + 2] = floorUvs [fvUvPos + 6] = 1 - cX;
+	        floorUvs [fvUvPos + 1] = floorUvs [fvUvPos + 7] = floorUvs [fvUvPos + 11] = thresholdHeight;
+	        floorUvs [fvUvPos + 3] = floorUvs [fvUvPos + 5] = floorUvs [fvUvPos + 9] = 0;
+	        floorUvs [fvUvPos + 4] = floorUvs [fvUvPos + 8] = floorUvs [fvUvPos + 10] = 1;
+
+	        wvPos += 18;
+	        fvUvPos += 12;
+
+	        // Back
+	        //G
+	        floorVertices[wvPos] = floorVertices[wvPos + 9] = cX;
+	        floorVertices[wvPos + 1] = floorVertices[wvPos + 10] = aY;
+	        floorVertices[wvPos + 2] = floorVertices[wvPos + 11] = eZ;
+	        //H
+	        floorVertices[wvPos + 3] = cX;
+	        floorVertices[wvPos + 4] = bY;
+	        floorVertices[wvPos + 5] = eZ;
+	        //F
+	        floorVertices[wvPos + 6] = floorVertices[wvPos + 12] = aX;
+	        floorVertices[wvPos + 7] = floorVertices[wvPos + 13] = bY;
+	        floorVertices[wvPos + 8] = floorVertices[wvPos + 14] = eZ;
+	        //E
+	        floorVertices[wvPos + 15] = aX;
+	        floorVertices[wvPos + 16] = aY;
+	        floorVertices[wvPos + 17] = eZ;
+
+	        floorUvs [fvUvPos] = floorUvs [fvUvPos + 2] = floorUvs [fvUvPos + 6] = 1 - cX;
+	        floorUvs [fvUvPos + 1] = floorUvs [fvUvPos + 7] = floorUvs [fvUvPos + 11] = thresholdHeight;
+	        floorUvs [fvUvPos + 3] = floorUvs [fvUvPos + 5] = floorUvs [fvUvPos + 9] = 0;
+	        floorUvs [fvUvPos + 4] = floorUvs [fvUvPos + 8] = floorUvs [fvUvPos + 10] = 1;
+	      }
+	    }
+
+	    // DOOR FRAME CREATION
+	    if (frameLength>0) {
+
+	      // DOOR FRAME FRONT
+
+	      //  A/I-------H/L
+	      //   |  D---E  |
+	      //   |  |   |  |
+	      //   |  |   |  |
+	      //  B/J-C   F-G/K
+
+	      // DOOR FRAME BACK
+
+	      //  M/U-------T/X
+	      //   |  P---Q  |
+	      //   |  |   |  |
+	      //   |  |   |  |
+	      //  N/V-O   R-S/W
+
+	      aX = 0;
+	      aY = a.h;
+	      aZ = wallFrontPos + frameOffset;
+	      bY = 0;
+	      cX = frameLength;
+	      dY = a.h - frameLength;
+	      eX = a.l - frameLength;
+	      gX = a.l;
+	      iZ = wallFrontPos;
+	      mZ = wallBackPos - frameOffset;
+	      uZ = wallBackPos;
+
+	      // DOOR FRAME FRONT FACES
+	      // A
+	      frameVertices[fvPos] = frameVertices[fvPos + 9] = aX;
+	      frameVertices[fvPos + 1] = frameVertices[fvPos + 10] = aY;
+	      frameVertices[fvPos + 2] = frameVertices[fvPos + 11] = aZ;
+	      // B
+	      frameVertices[fvPos + 3] = aX;
+	      frameVertices[fvPos + 4] = bY;
+	      frameVertices[fvPos + 5] = aZ;
+	      // C
+	      frameVertices[fvPos + 6] = frameVertices[fvPos + 12] = cX;
+	      frameVertices[fvPos + 7] = frameVertices[fvPos + 13] = bY;
+	      frameVertices[fvPos + 8] = frameVertices[fvPos + 14] = aZ;
+	      // D
+	      frameVertices[fvPos + 15] = cX;
+	      frameVertices[fvPos + 16] = dY;
+	      frameVertices[fvPos + 17] = aZ;
+
+	      fvPos += 18;
+	      // A
+	      frameVertices[fvPos] = frameVertices[fvPos + 9] = aX;
+	      frameVertices[fvPos + 1] = frameVertices[fvPos + 10] = aY;
+	      frameVertices[fvPos + 2] = frameVertices[fvPos + 11] = aZ;
+	      // D
+	      frameVertices[fvPos + 3] = cX;
+	      frameVertices[fvPos + 4] = dY;
+	      frameVertices[fvPos + 5] = aZ;
+	      // E
+	      frameVertices[fvPos + 6] = frameVertices[fvPos + 12] = eX;
+	      frameVertices[fvPos + 7] = frameVertices[fvPos + 13] = dY;
+	      frameVertices[fvPos + 8] = frameVertices[fvPos + 14] = aZ;
+	      // H
+	      frameVertices[fvPos + 15] = gX;
+	      frameVertices[fvPos + 16] = aY;
+	      frameVertices[fvPos + 17] = aZ;
+
+	      fvPos += 18;
+	      // E
+	      frameVertices[fvPos] = frameVertices[fvPos + 9] = eX;
+	      frameVertices[fvPos + 1] = frameVertices[fvPos + 10] = dY;
+	      frameVertices[fvPos + 2] = frameVertices[fvPos + 11] = aZ;
+	      // F
+	      frameVertices[fvPos + 3] = eX;
+	      frameVertices[fvPos + 4] = bY;
+	      frameVertices[fvPos + 5] = aZ;
+	      // G
+	      frameVertices[fvPos + 6] = frameVertices[fvPos + 12] = gX;
+	      frameVertices[fvPos + 7] = frameVertices[fvPos + 13] = bY;
+	      frameVertices[fvPos + 8] = frameVertices[fvPos + 14] = aZ;
+	      // H
+	      frameVertices[fvPos + 15] = gX;
+	      frameVertices[fvPos + 16] = aY;
+	      frameVertices[fvPos + 17] = aZ;
+
+	      fvPos += 18;
+
+	      // DOOR FRAME BACK FACES
+
+	      // M
+	      frameVertices[fvPos] = frameVertices[fvPos + 9] = gX;
+	      frameVertices[fvPos + 1] = frameVertices[fvPos + 10] = aY;
+	      frameVertices[fvPos + 2] = frameVertices[fvPos + 11] = mZ;
+	      // N
+	      frameVertices[fvPos + 3] = gX;
+	      frameVertices[fvPos + 4] = bY;
+	      frameVertices[fvPos + 5] = mZ;
+	      // O
+	      frameVertices[fvPos + 6] = frameVertices[fvPos + 12] = eX;
+	      frameVertices[fvPos + 7] = frameVertices[fvPos + 13] = bY;
+	      frameVertices[fvPos + 8] = frameVertices[fvPos + 14] = mZ;
+	      // P
+	      frameVertices[fvPos + 15] = eX;
+	      frameVertices[fvPos + 16] = dY;
+	      frameVertices[fvPos + 17] = mZ;
+
+	      fvPos += 18;
+
+	      // M
+	      frameVertices[fvPos] = frameVertices[fvPos + 9] = gX;
+	      frameVertices[fvPos + 1] = frameVertices[fvPos + 10] = aY;
+	      frameVertices[fvPos + 2] = frameVertices[fvPos + 11] = mZ;
+	      // P
+	      frameVertices[fvPos + 3] = eX;
+	      frameVertices[fvPos + 4] = dY;
+	      frameVertices[fvPos + 5] = mZ;
+	      // Q
+	      frameVertices[fvPos + 6] = frameVertices[fvPos + 12] = cX;
+	      frameVertices[fvPos + 7] = frameVertices[fvPos + 13] = dY;
+	      frameVertices[fvPos + 8] = frameVertices[fvPos + 14] = mZ;
+	      // T
+	      frameVertices[fvPos + 15] = aX;
+	      frameVertices[fvPos + 16] = aY;
+	      frameVertices[fvPos + 17] = mZ;
+
+	      fvPos += 18;
+
+	      // Q
+	      frameVertices[fvPos] = frameVertices[fvPos + 9] = cX;
+	      frameVertices[fvPos + 1] = frameVertices[fvPos + 10] = dY;
+	      frameVertices[fvPos + 2] = frameVertices[fvPos + 11] = mZ;
+	      // R
+	      frameVertices[fvPos + 3] = cX;
+	      frameVertices[fvPos + 4] = bY;
+	      frameVertices[fvPos + 5] = mZ;
+	      // S
+	      frameVertices[fvPos + 6] = frameVertices[fvPos + 12] = aX;
+	      frameVertices[fvPos + 7] = frameVertices[fvPos + 13] = bY;
+	      frameVertices[fvPos + 8] = frameVertices[fvPos + 14] = mZ;
+	      // T
+	      frameVertices[fvPos + 15] = aX;
+	      frameVertices[fvPos + 16] = aY;
+	      frameVertices[fvPos + 17] = mZ;
+
+	      fvPos += 18;
+
+	      // FRAME INSIDE
+
+	      // D
+	      frameVertices[fvPos] = frameVertices[fvPos + 9] = cX;
+	      frameVertices[fvPos + 1] = frameVertices[fvPos + 10] = dY;
+	      frameVertices[fvPos + 2] = frameVertices[fvPos + 11] = aZ;
+	      // C
+	      frameVertices[fvPos + 3] = cX;
+	      frameVertices[fvPos + 4] = bY;
+	      frameVertices[fvPos + 5] = aZ;
+	      // R
+	      frameVertices[fvPos + 6] = frameVertices[fvPos + 12] = cX;
+	      frameVertices[fvPos + 7] = frameVertices[fvPos + 13] = bY;
+	      frameVertices[fvPos + 8] = frameVertices[fvPos + 14] = mZ;
+	      // Q
+	      frameVertices[fvPos + 15] = cX;
+	      frameVertices[fvPos + 16] = dY;
+	      frameVertices[fvPos + 17] = mZ;
+
+	      fvPos += 18;
+
+	      // D
+	      frameVertices[fvPos] = frameVertices[fvPos + 9] = cX;
+	      frameVertices[fvPos + 1] = frameVertices[fvPos + 10] = dY;
+	      frameVertices[fvPos + 2] = frameVertices[fvPos + 11] = aZ;
+	      // Q
+	      frameVertices[fvPos + 3] = cX;
+	      frameVertices[fvPos + 4] = dY;
+	      frameVertices[fvPos + 5] = mZ;
+	      // P
+	      frameVertices[fvPos + 6] = frameVertices[fvPos + 12] = eX;
+	      frameVertices[fvPos + 7] = frameVertices[fvPos + 13] = dY;
+	      frameVertices[fvPos + 8] = frameVertices[fvPos + 14] = mZ;
+	      // E
+	      frameVertices[fvPos + 15] = eX;
+	      frameVertices[fvPos + 16] = dY;
+	      frameVertices[fvPos + 17] = aZ;
+
+	      fvPos += 18;
+
+	      // Q
+	      frameVertices[fvPos] = frameVertices[fvPos + 9] = eX;
+	      frameVertices[fvPos + 1] = frameVertices[fvPos + 10] = dY;
+	      frameVertices[fvPos + 2] = frameVertices[fvPos + 11] = mZ;
+	      // R
+	      frameVertices[fvPos + 3] = eX;
+	      frameVertices[fvPos + 4] = bY;
+	      frameVertices[fvPos + 5] = mZ;
+	      // F
+	      frameVertices[fvPos + 6] = frameVertices[fvPos + 12] = eX;
+	      frameVertices[fvPos + 7] = frameVertices[fvPos + 13] = bY;
+	      frameVertices[fvPos + 8] = frameVertices[fvPos + 14] = aZ;
+	      // E
+	      frameVertices[fvPos + 15] = eX;
+	      frameVertices[fvPos + 16] = dY;
+	      frameVertices[fvPos + 17] = aZ;
+
+	      fvPos += 18;
+
+
+	      // FRAME OFFSET SIDE FACES
+	      if (frameOffset>0) {
+	        // FRONT
+	        // I
+	        frameVertices[ fvPos ] = frameVertices[ fvPos + 9 ] = aX;
+	        frameVertices[ fvPos + 1 ] = frameVertices[ fvPos + 10 ] = aY;
+	        frameVertices[ fvPos + 2 ] = frameVertices[ fvPos + 11 ] = iZ;
+	        // J
+	        frameVertices[ fvPos + 3 ] = aX;
+	        frameVertices[ fvPos + 4 ] = bY;
+	        frameVertices[ fvPos + 5 ] = iZ;
+	        // B
+	        frameVertices[ fvPos + 6 ] = frameVertices[ fvPos + 12 ] = aX;
+	        frameVertices[ fvPos + 7 ] = frameVertices[ fvPos + 13 ] = bY;
+	        frameVertices[ fvPos + 8 ] = frameVertices[ fvPos + 14 ] = aZ;
+	        // A
+	        frameVertices[ fvPos + 15 ] = aX;
+	        frameVertices[ fvPos + 16 ] = aY;
+	        frameVertices[ fvPos + 17 ] = aZ;
+
+	        fvPos += 18;
+
+	        // I
+	        frameVertices[ fvPos ] = frameVertices[ fvPos + 9 ] = aX;
+	        frameVertices[ fvPos + 1 ] = frameVertices[ fvPos + 10 ] = aY;
+	        frameVertices[ fvPos + 2 ] = frameVertices[ fvPos + 11 ] = iZ;
+	        // A
+	        frameVertices[ fvPos + 3 ] = aX;
+	        frameVertices[ fvPos + 4 ] = aY;
+	        frameVertices[ fvPos + 5 ] = aZ;
+	        // H
+	        frameVertices[ fvPos + 6 ] = frameVertices[ fvPos + 12 ] = gX;
+	        frameVertices[ fvPos + 7 ] = frameVertices[ fvPos + 13 ] = aY;
+	        frameVertices[ fvPos + 8 ] = frameVertices[ fvPos + 14 ] = aZ;
+	        // L
+	        frameVertices[ fvPos + 15 ] = gX;
+	        frameVertices[ fvPos + 16 ] = aY;
+	        frameVertices[ fvPos + 17 ] = iZ;
+
+	        fvPos += 18;
+
+	        // H
+	        frameVertices[ fvPos ] = frameVertices[ fvPos + 9 ] = gX;
+	        frameVertices[ fvPos + 1 ] = frameVertices[ fvPos + 10 ] = aY;
+	        frameVertices[ fvPos + 2 ] = frameVertices[ fvPos + 11 ] = aZ;
+	        // G
+	        frameVertices[ fvPos + 3 ] = gX;
+	        frameVertices[ fvPos + 4 ] = bY;
+	        frameVertices[ fvPos + 5 ] = aZ;
+	        // K
+	        frameVertices[ fvPos + 6 ] = frameVertices[ fvPos + 12 ] = gX;
+	        frameVertices[ fvPos + 7 ] = frameVertices[ fvPos + 13 ] = bY;
+	        frameVertices[ fvPos + 8 ] = frameVertices[ fvPos + 14 ] = iZ;
+	        // L
+	        frameVertices[ fvPos + 15 ] = gX;
+	        frameVertices[ fvPos + 16 ] = aY;
+	        frameVertices[ fvPos + 17 ] = iZ;
+
+	        fvPos += 18;
+
+	        // BACK
+
+	        // U
+	        frameVertices[ fvPos ] = frameVertices[ fvPos + 9 ] = gX;
+	        frameVertices[ fvPos + 1 ] = frameVertices[ fvPos + 10 ] = aY;
+	        frameVertices[ fvPos + 2 ] = frameVertices[ fvPos + 11 ] = uZ;
+	        // V
+	        frameVertices[ fvPos + 3 ] = gX;
+	        frameVertices[ fvPos + 4 ] = bY;
+	        frameVertices[ fvPos + 5 ] = uZ;
+	        // N
+	        frameVertices[ fvPos + 6 ] = frameVertices[ fvPos + 12 ] = gX;
+	        frameVertices[ fvPos + 7 ] = frameVertices[ fvPos + 13 ] = bY;
+	        frameVertices[ fvPos + 8 ] = frameVertices[ fvPos + 14 ] = mZ;
+	        // M
+	        frameVertices[ fvPos + 15 ] = gX;
+	        frameVertices[ fvPos + 16 ] = aY;
+	        frameVertices[ fvPos + 17 ] = mZ;
+
+	        fvPos += 18;
+
+	        // U
+	        frameVertices[ fvPos ] = frameVertices[ fvPos + 9 ] = gX;
+	        frameVertices[ fvPos + 1 ] = frameVertices[ fvPos + 10 ] = aY;
+	        frameVertices[ fvPos + 2 ] = frameVertices[ fvPos + 11 ] = uZ;
+	        // M
+	        frameVertices[ fvPos + 3 ] = gX;
+	        frameVertices[ fvPos + 4 ] = aY;
+	        frameVertices[ fvPos + 5 ] = mZ;
+	        // T
+	        frameVertices[ fvPos + 6 ] = frameVertices[ fvPos + 12 ] = aX;
+	        frameVertices[ fvPos + 7 ] = frameVertices[ fvPos + 13 ] = aY;
+	        frameVertices[ fvPos + 8 ] = frameVertices[ fvPos + 14 ] = mZ;
+	        // X
+	        frameVertices[ fvPos + 15 ] = aX;
+	        frameVertices[ fvPos + 16 ] = aY;
+	        frameVertices[ fvPos + 17 ] = uZ;
+
+	        fvPos += 18;
+
+	        // T
+	        frameVertices[ fvPos ] = frameVertices[ fvPos + 9 ] = aX;
+	        frameVertices[ fvPos + 1 ] = frameVertices[ fvPos + 10 ] = aY;
+	        frameVertices[ fvPos + 2 ] = frameVertices[ fvPos + 11 ] = mZ;
+	        // S
+	        frameVertices[ fvPos + 3 ] = aX;
+	        frameVertices[ fvPos + 4 ] = bY;
+	        frameVertices[ fvPos + 5 ] = mZ;
+	        // W
+	        frameVertices[ fvPos + 6 ] = frameVertices[ fvPos + 12 ] = aX;
+	        frameVertices[ fvPos + 7 ] = frameVertices[ fvPos + 13 ] = bY;
+	        frameVertices[ fvPos + 8 ] = frameVertices[ fvPos + 14 ] = uZ;
+	        // X
+	        frameVertices[ fvPos + 15 ] = aX;
+	        frameVertices[ fvPos + 16 ] = aY;
+	        frameVertices[ fvPos + 17 ] = uZ;
+
+	      }
+	    }
+
+	    // LEAF + HANDLE CREATION depending on Door Type
+	    for (var c = 0;c<leaf.length;c++){
+
+	      // set start position in leaf vertex array for current door leaf
+	      lvs = leafVertices.length;
+
+	      // set Leaf Length
+	      leafLength = leaf[c].leafLength;
+
+	      prevLeafs = 0;
+	      if ( c>1) prevLeafs = leaf[c-1].leafLength+leaf[c-2].leafLength;
+	      else if (c>0) prevLeafs = leaf[c-1].leafLength;
+
+	      // Vertex Front View
+	      // A/H____D/E
+	      //  |      |
+	      //  |      |
+	      // B/G____C/F
+
+	      aX = xCursor + frameLength;// + leafGap
+	      aY = a.h - frameLength;
+	      aZ = wallBackPos + a.leafWidth - leafOffset - frameOffset;
+	      bY = leafGap;
+	      cX = xCursor + frameLength + leafLength;//-leafGap
+	      eZ = wallBackPos-leafOffset-frameOffset;
+
+	      // door leaf front ABCD
+	      leafVertices[lvPos] = leafVertices[lvPos + 3] = leafVertices[lvPos + 9] = aX;
+	      leafVertices[lvPos + 1] = leafVertices[lvPos + 10] = leafVertices[lvPos + 16] = aY;
+	      leafVertices[lvPos + 2] = leafVertices[lvPos + 5] = leafVertices[lvPos + 11] = aZ;
+	      leafVertices[lvPos + 4] = leafVertices[lvPos + 7] = leafVertices[lvPos + 13] = bY;
+	      leafVertices[lvPos + 6] = leafVertices[lvPos + 12] = leafVertices[lvPos + 15] = cX;
+	      leafVertices[lvPos + 8] = leafVertices[lvPos + 14] = leafVertices[lvPos + 17] = aZ;
+
+	      // UV Mapping depending on Door Configuration
+	      if (a.hinge==='left') leafUvs [lvUvPos] = leafUvs [lvUvPos + 2] = leafUvs [lvUvPos + 6] = xCursor/doorOpening;
+	      else leafUvs [lvUvPos] = leafUvs [lvUvPos + 2] = leafUvs [lvUvPos + 6] = -xCursor/doorOpening;
+	      leafUvs [lvUvPos + 1] = leafUvs [lvUvPos + 7] = leafUvs [lvUvPos + 11] = 1;
+	      leafUvs [lvUvPos + 3] = leafUvs [lvUvPos + 5] = leafUvs [lvUvPos + 9] = 0;
+	      if (a.hinge==='left')leafUvs [lvUvPos + 4] = leafUvs [lvUvPos + 8] = leafUvs [lvUvPos + 10] = (xCursor+leafLength)/doorOpening;
+	      else leafUvs [lvUvPos + 4] = leafUvs [lvUvPos + 8] = leafUvs [lvUvPos + 10] = -(xCursor+leafLength)/doorOpening;
+
+	      lvPos += 18;
+	      lvUvPos += 12;
+
+	      // door leaf back EFGH
+	      leafVertices[lvPos] = leafVertices[lvPos + 3] = leafVertices[lvPos + 9] = cX;
+	      leafVertices[lvPos + 1] = leafVertices[lvPos + 10] = leafVertices[lvPos + 16] = aY;
+	      leafVertices[lvPos + 2] = leafVertices[lvPos + 5] = leafVertices[lvPos + 11] = eZ;
+	      leafVertices[lvPos + 4] = leafVertices[lvPos + 7] = leafVertices[lvPos + 13] = bY;
+	      leafVertices[lvPos + 6] = leafVertices[lvPos + 12] = leafVertices[lvPos + 15] = aX;
+	      leafVertices[lvPos + 8] = leafVertices[lvPos + 14] = leafVertices[lvPos + 17] = eZ;
+
+	      // UV Mapping depending on Door Configuration
+	      if (a.hinge==='right') leafUvs [lvUvPos] = leafUvs [lvUvPos + 2] = leafUvs [lvUvPos + 6] = -xCursor/doorOpening;
+	      else leafUvs [lvUvPos] = leafUvs [lvUvPos + 2] = leafUvs [lvUvPos + 6] = xCursor/doorOpening;
+	      leafUvs [lvUvPos + 1] = leafUvs [lvUvPos + 7] = leafUvs [lvUvPos + 11] = 1;
+	      leafUvs [lvUvPos + 3] = leafUvs [lvUvPos + 5] = leafUvs [lvUvPos + 9] = 0;
+	      if (a.hinge==='right') leafUvs [lvUvPos + 4] = leafUvs [lvUvPos + 8] = leafUvs [lvUvPos + 10] = -(xCursor+leafLength)/doorOpening;
+	      else leafUvs [lvUvPos + 4] = leafUvs [lvUvPos + 8] = leafUvs [lvUvPos + 10] = (xCursor+leafLength)/doorOpening;
+
+	      lvPos += 18;
+	      lvUvPos += 12;
+
+	      // door leaf extrusion top HADE
+	      // H
+	      leafVertices[ lvPos ] = leafVertices[ lvPos + 9 ] = aX;
+	      leafVertices[ lvPos + 1 ] = leafVertices[ lvPos + 10 ] = aY;
+	      leafVertices[ lvPos + 2 ] = leafVertices[ lvPos + 11 ] = eZ;
+	      // A
+	      leafVertices[ lvPos + 3 ] = aX;
+	      leafVertices[ lvPos + 4 ] = aY;
+	      leafVertices[ lvPos + 5 ] = aZ;
+	      // D
+	      leafVertices[ lvPos + 6 ] = leafVertices[ lvPos + 12 ] = cX;
+	      leafVertices[ lvPos + 7 ] = leafVertices[ lvPos + 13 ] = aY;
+	      leafVertices[ lvPos + 8 ] = leafVertices[ lvPos + 14 ] = aZ;
+	      // E
+	      leafVertices[ lvPos + 15 ] = cX;
+	      leafVertices[ lvPos + 16 ] = aY;
+	      leafVertices[ lvPos + 17 ] = eZ;
+
+	      leafUvs [lvUvPos] = leafUvs [lvUvPos + 2] = leafUvs [lvUvPos + 6] = 0;
+	      leafUvs [lvUvPos + 1] = leafUvs [lvUvPos + 7] = leafUvs [lvUvPos + 11] = 1;
+	      leafUvs [lvUvPos + 3] = leafUvs [lvUvPos + 5] = leafUvs [lvUvPos + 9] = 0;
+	      leafUvs [lvUvPos + 4] = leafUvs [lvUvPos + 8] = leafUvs [lvUvPos + 10] = 0.05;
+
+	      lvPos += 18;
+	      lvUvPos += 12;
+
+	      // door leaf extrusion outer side DCFE
+	      // D
+	      leafVertices[ lvPos ] = leafVertices[ lvPos + 9 ] = cX;
+	      leafVertices[ lvPos + 1 ] = leafVertices[ lvPos + 10 ] = aY;
+	      leafVertices[ lvPos + 2 ] = leafVertices[ lvPos + 11 ] = aZ;
+	      // C
+	      leafVertices[ lvPos + 3 ] = cX;
+	      leafVertices[ lvPos + 4 ] = bY;
+	      leafVertices[ lvPos + 5 ] = aZ;
+	      // F
+	      leafVertices[ lvPos + 6 ] = leafVertices[ lvPos + 12 ] = cX;
+	      leafVertices[ lvPos + 7 ] = leafVertices[ lvPos + 13 ] = bY;
+	      leafVertices[ lvPos + 8 ] = leafVertices[ lvPos + 14 ] = eZ;
+	      // E
+	      leafVertices[ lvPos + 15 ] = cX;
+	      leafVertices[ lvPos + 16 ] = aY;
+	      leafVertices[ lvPos + 17 ] = eZ;
+
+	      leafUvs [lvUvPos] = leafUvs [lvUvPos + 2] = leafUvs [lvUvPos + 6] = 0;
+	      leafUvs [lvUvPos + 1] = leafUvs [lvUvPos + 7] = leafUvs [lvUvPos + 11] = 1;
+	      leafUvs [lvUvPos + 3] = leafUvs [lvUvPos + 5] = leafUvs [lvUvPos + 9] = 0;
+	      leafUvs [lvUvPos + 4] = leafUvs [lvUvPos + 8] = leafUvs [lvUvPos + 10] = 0.05;
+
+	      lvPos += 18;
+	      lvUvPos += 12;
+
+	      // door leaf extrusion inner side HGBA
+	      // H
+	      leafVertices[ lvPos ] = leafVertices[ lvPos + 9 ] = aX;
+	      leafVertices[ lvPos + 1 ] = leafVertices[ lvPos + 10 ] = aY;
+	      leafVertices[ lvPos + 2 ] = leafVertices[ lvPos + 11 ] = eZ;
+	      // G
+	      leafVertices[ lvPos + 3 ] = aX;
+	      leafVertices[ lvPos + 4 ] = bY;
+	      leafVertices[ lvPos + 5 ] = eZ;
+	      // B
+	      leafVertices[ lvPos + 6 ] = leafVertices[ lvPos + 12 ] = aX;
+	      leafVertices[ lvPos + 7 ] = leafVertices[ lvPos + 13 ] = bY;
+	      leafVertices[ lvPos + 8 ] = leafVertices[ lvPos + 14 ] = aZ;
+	      // A
+	      leafVertices[ lvPos + 15 ] = aX;
+	      leafVertices[ lvPos + 16 ] = aY;
+	      leafVertices[ lvPos + 17 ] = aZ;
+
+	      leafUvs [lvUvPos] = leafUvs [lvUvPos + 2] = leafUvs [lvUvPos + 6] = 0;
+	      leafUvs [lvUvPos + 1] = leafUvs [lvUvPos + 7] = leafUvs [lvUvPos + 11] = 1;
+	      leafUvs [lvUvPos + 3] = leafUvs [lvUvPos + 5] = leafUvs [lvUvPos + 9] = 0;
+	      leafUvs [lvUvPos + 4] = leafUvs [lvUvPos + 8] = leafUvs [lvUvPos + 10] = 0.05;
+
+	      lvPos += 18;
+	      lvUvPos += 12;
+
+	      // set end position in leaf vertex array for current door leaf
+	      lve = leafVertices.length;
+
+	      if (leaf[c].handle){
+	        // DOOR HANDLE
+	        //
+	        // Top View:
+	        //
+	        //          I/J__K/L
+	        //           |    |
+	        // E/F______G/H   |
+	        //  |             |
+	        // A/B___________C/D
+
+	        // Size Definitions
+
+	        zCursor = wallBackPos-leafOffset-frameOffset;
+	        aX = xCursor + frameLength + leafLength-handleDistance-handleLength;
+	        aY = handleHeight;
+	        aZ = zCursor+a.leafWidth+handleWidth+handleThickness*0.6;
+	        bY = handleHeight-handleThickness;
+	        cX = xCursor + frameLength + leafLength-handleDistance;
+	        cZ = zCursor+a.leafWidth+handleWidth+handleThickness;
+	        eZ = zCursor+a.leafWidth+handleWidth;
+	        gX = xCursor + frameLength + leafLength-handleDistance-handleThickness;
+	        iZ = zCursor+a.leafWidth;
+
+	        var l;
+	        // set start position in handle vertex array for current door leaf
+	        hvs = handleVertices.length;
+	        if (a.handleType==='knob') {
+	          handleVertices = handleVertices.concat([0.025203,-0.091811,-1.094472e-08,0.025203,-0.091811,0.007999989,0.0265,-0.1,0.007999988,0.0025,-0.099188,0.007999988,0.0025,-0.1,0.007999988,0.0265,-0.1,0.007999988,0.025203,-0.091811,-1.094472e-08,0.021439,-0.084424,-1.006412e-08,0.021439,-0.084424,0.00799999,0.015576,-0.078561,-9.365201e-09,0.015576,-0.078561,0.007999991,0.021439,-0.084424,0.00799999,0.008189,-0.074797,-8.916497e-09,0.008189,-0.074797,0.007999991,0.015576,-0.078561,0.007999991,0,-0.0735,0.007999992,0.008189,-0.074797,0.007999991,0.008189,-0.074797,-8.916497e-09,0.0025,-0.0875,0.00799999,0.0025,-0.092306,0.007999989,0.008189,-0.074797,0.007999991,-0.008189,-0.074797,-8.916497e-09,-0.008189,-0.074797,0.007999991,0,-0.0735,0.007999992,-0.015576,-0.078561,0.007999991,-0.008189,-0.074797,0.007999991,-0.008189,-0.074797,-8.916497e-09,-0.021439,-0.084424,0.00799999,-0.015576,-0.078561,0.007999991,-0.015576,-0.078561,-9.365201e-09,-0.025203,-0.091811,0.007999989,-0.021439,-0.084424,0.00799999,-0.021439,-0.084424,-1.006412e-08,-0.0025,-0.098184,0.007999988,-0.021439,-0.084424,0.00799999,-0.025203,-0.091811,0.007999989,-0.0265,-0.1,0.007999988,-0.025203,-0.091811,0.007999989,-0.025203,-0.091811,-1.094472e-08,-0.025203,-0.108189,0.007999987,-0.0265,-0.1,0.007999988,-0.0265,-0.1,-1.192093e-08,-0.021439,-0.115576,0.007999986,-0.025203,-0.108189,0.007999987,-0.025203,-0.108189,-1.289713e-08,-0.0025,-0.101816,0.007999988,-0.0025,-0.100812,0.007999988,-0.025203,-0.108189,0.007999987,-0.015576,-0.121439,0.007999985,-0.021439,-0.115576,0.007999986,-0.021439,-0.115576,-1.377773e-08,-0.008189,-0.125203,0.007999985,-0.015576,-0.121439,0.007999985,-0.015576,-0.121439,-1.447666e-08,0,-0.1265,0.007999985,-0.008189,-0.125203,0.007999985,-0.008189,-0.125203,-1.492536e-08,0.008189,-0.125203,0.007999985,0,-0.1265,0.007999985,0,-0.1265,-1.507997e-08,0.0025,-0.1125,0.007999987,0,-0.1125,0.007999987,0,-0.1265,0.007999985,0.008189,-0.125203,0.007999985,0.0025,-0.107694,0.007999987,0.0025,-0.1125,0.007999987,0.015576,-0.121439,0.007999985,0.008189,-0.125203,0.007999985,0.008189,-0.125203,-1.492536e-08,0.0025,-0.107694,0.007999987,0.008189,-0.125203,0.007999985,0.015576,-0.121439,0.007999985,0.021439,-0.115576,0.007999986,0.015576,-0.121439,0.007999985,0.015576,-0.121439,-1.447666e-08,0.025203,-0.108189,0.007999987,0.021439,-0.115576,0.007999986,0.021439,-0.115576,-1.377773e-08,0.0265,-0.1,0.007999988,0.025203,-0.108189,0.007999987,0.025203,-0.108189,-1.289713e-08,-0.021439,-0.115576,0.007999986,-0.015576,-0.121439,0.007999985,-0.0025,-0.103441,0.007999988,0.0025,-0.098184,0.007999988,0.0025,-0.099188,0.007999988,0.025203,-0.091811,0.007999989,-0.0025,-0.100812,0.007999988,-0.0025,-0.1,0.007999988,-0.0265,-0.1,0.007999988,-0.008189,-0.074797,0.007999991,-0.0025,-0.092306,0.007999989,-0.0025,-0.0875,0.00799999,-0.015576,-0.121439,0.007999985,-0.008189,-0.125203,0.007999985,-0.0025,-0.107694,0.007999987,-0.0025,-0.096559,0.007999989,-0.015576,-0.078561,0.007999991,-0.021439,-0.084424,0.00799999,-0.0265,-0.1,0.007999988,-0.0025,-0.1,0.007999988,-0.0025,-0.099188,0.007999988,-0.0025,-0.0875,0.00799999,0,-0.0875,0.00799999,0,-0.0735,0.007999992,-0.0025,-0.092306,0.007999989,-0.008189,-0.074797,0.007999991,-0.015576,-0.078561,0.007999991,-0.0025,-0.1125,0.0008419866,0.0025,-0.1125,0.0008419866,0.0025,-0.0875,0.0008419896,0,-0.1125,0.007999987,0.0025,-0.1125,0.007999987,0.0025,-0.1125,0.0008419866,0.0025,-0.101816,0.007999988,0.021439,-0.115576,0.007999986,0.025203,-0.108189,0.007999987,-0.0025,-0.1125,0.007999987,-0.0025,-0.107694,0.007999987,-0.008189,-0.125203,0.007999985,0.0025,-0.1,0.007999988,0.0025,-0.1125,0.0008419866,0.0025,-0.100812,0.007999988,-0.0025,-0.0875,0.0008419896,-0.0025,-0.098184,0.007999988,-0.0025,-0.099188,0.007999988,0.0265,-0.1,0.007999988,0.0025,-0.1,0.007999988,0.0025,-0.100812,0.007999988,0,-0.0875,0.00799999,-0.0025,-0.0875,0.00799999,-0.0025,-0.0875,0.0008419896,0,-0.1265,0.007999985,0,-0.1125,0.007999987,-0.0025,-0.1125,0.007999987,0.0025,-0.103441,0.007999988,0.015576,-0.121439,0.007999985,0.021439,-0.115576,0.007999986,0,-0.0735,0.007999992,0,-0.0875,0.00799999,0.0025,-0.0875,0.00799999,0.021439,-0.084424,0.00799999,0.015576,-0.078561,0.007999991,0.0025,-0.096559,0.007999989,0.015576,-0.078561,0.007999991,0.008189,-0.074797,0.007999991,0.0025,-0.092306,0.007999989,-0.010141,0.024483,0.033,0,0.0265,0.033,0,0.009999997,0.033,0.0265,-4.53789e-09,0.049,0.024483,-0.010141,0.049,0.024483,-0.010141,0.033,-0.010141,-0.024483,0.033,-0.018738,-0.018738,0.033,-0.007071,-0.007071002,0.033,0,-0.0265,0.033,0,-0.0265,0.049,-0.010141,-0.024483,0.049,-0.007071,-0.007071002,0.033,-0.018738,-0.018738,0.033,-0.024483,-0.010141,0.033,-0.024483,-0.010141,0.033,-0.0265,-2.630541e-09,0.033,-0.01,-2.630541e-09,0.033,0.010141,0.024483,0.033,0.018738,0.018738,0.033,0.007071,0.007070998,0.033,0,0.009999997,0.033,0,0.0265,0.033,0.010141,0.024483,0.033,0.018738,0.018738,0.04900001,0,-4.53789e-09,0.049,0.024483,0.010141,0.049,0.010141,0.024483,0.04900001,0,-4.53789e-09,0.049,0.018738,0.018738,0.04900001,0.024483,-0.010141,0.033,0.024483,-0.010141,0.049,0.018738,-0.018738,0.049,-0.024483,0.010141,0.049,-0.018738,0.018738,0.04900001,-0.018738,0.018738,0.033,-0.0265,-2.630541e-09,0.033,-0.0265,-4.53789e-09,0.049,-0.024483,0.010141,0.049,0.024483,-0.010141,0.033,0.018738,-0.018738,0.033,0.007071,-0.007071002,0.033,-0.018738,-0.018738,0.049,0,-4.53789e-09,0.049,-0.024483,-0.010141,0.049,-0.010141,-0.024483,0.049,0,-4.53789e-09,0.049,-0.018738,-0.018738,0.049,0,-0.01,0.033,0,-0.0265,0.033,-0.010141,-0.024483,0.033,0,-0.0265,0.049,0,-4.53789e-09,0.049,-0.010141,-0.024483,0.049,0.0265,-4.53789e-09,0.049,0,-4.53789e-09,0.049,0.024483,-0.010141,0.049,-0.024483,0.010141,0.033,-0.007071,0.007070998,0.033,-0.01,-2.630541e-09,0.033,0.010141,-0.024483,0.049,0,-0.0265,0.049,0,-0.0265,0.033,-0.024483,0.010141,0.033,-0.018738,0.018738,0.033,-0.007071,0.007070998,0.033,-0.010141,0.024483,0.033,0,0.009999997,0.033,-0.007071,0.007070998,0.033,0.010141,-0.024483,0.049,0,-4.53789e-09,0.049,0,-0.0265,0.049,0.024483,0.010141,0.049,0.0265,-4.53789e-09,0.049,0.0265,-2.630541e-09,0.033,0.024483,0.010141,0.049,0,-4.53789e-09,0.049,0.0265,-4.53789e-09,0.049,0.018738,-0.018738,0.049,0.010141,-0.024483,0.049,0.010141,-0.024483,0.033,0.018738,0.018738,0.033,0.018738,0.018738,0.04900001,0.024483,0.010141,0.049,0.018738,-0.018738,0.049,0,-4.53789e-09,0.049,0.010141,-0.024483,0.049,0.010141,0.024483,0.04900001,0.018738,0.018738,0.04900001,0.018738,0.018738,0.033,0,0.0265,0.04900001,0.010141,0.024483,0.04900001,0.010141,0.024483,0.033,0,0.0265,0.04900001,0,-4.53789e-09,0.049,0.010141,0.024483,0.04900001,0.024483,-0.010141,0.049,0,-4.53789e-09,0.049,0.018738,-0.018738,0.049,-0.010141,0.024483,0.04900001,0,0.0265,0.04900001,0,0.0265,0.033,-0.010141,0.024483,0.04900001,0,-4.53789e-09,0.049,0,0.0265,0.04900001,0.007071,0.007070998,0.033,0.018738,0.018738,0.033,0.024483,0.010141,0.033,-0.010141,0.024483,0.033,-0.018738,0.018738,0.033,-0.018738,0.018738,0.04900001,-0.018738,0.018738,0.04900001,0,-4.53789e-09,0.049,-0.010141,0.024483,0.04900001,0.024483,0.010141,0.033,0.0265,-2.630541e-09,0.033,0.01,-2.630541e-09,0.033,-0.024483,0.010141,0.049,0,-4.53789e-09,0.049,-0.018738,0.018738,0.04900001,0.01,-2.630541e-09,0.033,0.0265,-2.630541e-09,0.033,0.024483,-0.010141,0.033,-0.0265,-4.53789e-09,0.049,0,-4.53789e-09,0.049,-0.024483,0.010141,0.049,-0.024483,-0.010141,0.033,-0.024483,-0.010141,0.049,-0.0265,-4.53789e-09,0.049,-0.024483,-0.010141,0.049,0,-4.53789e-09,0.049,-0.0265,-4.53789e-09,0.049,0.007071,-0.007071002,0.033,0.018738,-0.018738,0.033,0.010141,-0.024483,0.033,-0.018738,-0.018738,0.049,-0.024483,-0.010141,0.049,-0.024483,-0.010141,0.033,0.010141,-0.024483,0.033,0,-0.0265,0.033,0,-0.01,0.033,-0.010141,-0.024483,0.049,-0.018738,-0.018738,0.049,-0.018738,-0.018738,0.033,0.025203,0.008188999,0.008000001,0.0265,-9.536744e-10,0.008,0.0265,0,0,0.021439,0.015576,0.008000002,0.025203,0.008188999,0.008000001,0.025203,0.008189,9.762049e-10,0.007071,0.007071001,0.008000001,0.01,-9.536744e-10,0.008,0.025203,0.008188999,0.008000001,0.015576,0.021439,0.008000003,0.021439,0.015576,0.008000002,0.021439,0.015576,1.856804e-09,0.008189,0.025203,0.008000003,0.015576,0.021439,0.008000003,0.015576,0.021439,2.555728e-09,0,0.0265,0.008000003,0.008189,0.025203,0.008000003,0.008189,0.025203,3.004432e-09,-0.008189,0.025203,0.008000003,0,0.0265,0.008000003,0,0.0265,3.159046e-09,-0.015576,0.021439,0.008000003,-0.008189,0.025203,0.008000003,-0.008189,0.025203,3.004432e-09,-0.021439,0.015576,0.008000002,-0.015576,0.021439,0.008000003,-0.015576,0.021439,2.555728e-09,-0.025203,0.008188999,0.008000001,-0.021439,0.015576,0.008000002,-0.021439,0.015576,1.856804e-09,-0.0265,0,0,-0.0265,-9.536744e-10,0.008,-0.025203,0.008188999,0.008000001,-0.025203,-0.008189001,0.007999999,-0.0265,-9.536744e-10,0.008,-0.0265,0,0,-0.021439,-0.015576,0.007999999,-0.025203,-0.008189001,0.007999999,-0.025203,-0.008189,-9.762049e-10,-0.015576,-0.021439,0.007999998,-0.021439,-0.015576,0.007999999,-0.021439,-0.015576,-1.856804e-09,-0.008189,-0.025203,0.007999998,-0.015576,-0.021439,0.007999998,-0.015576,-0.021439,-2.555728e-09,0,-0.0265,0.007999998,-0.008189,-0.025203,0.007999998,-0.008189,-0.025203,-3.004432e-09,0.008189,-0.025203,0.007999998,0,-0.0265,0.007999998,0,-0.0265,-3.159046e-09,0.015576,-0.021439,0.007999998,0.008189,-0.025203,0.007999998,0.008189,-0.025203,-3.004432e-09,0.021439,-0.015576,-1.856804e-09,0.021439,-0.015576,0.007999999,0.015576,-0.021439,0.007999998,0.025203,-0.008189001,0.007999999,0.021439,-0.015576,0.007999999,0.021439,-0.015576,-1.856804e-09,0.0265,-9.536744e-10,0.008,0.025203,-0.008189001,0.007999999,0.025203,-0.008189,-9.762049e-10,0.007071,0.007070998,0.033,0.01,-2.630541e-09,0.033,0.01,-9.536744e-10,0.008,0,0.009999997,0.033,0.007071,0.007070998,0.033,0.007071,0.007071001,0.008000001,-0.007071,0.007071,0.008,-0.007071,0.007070998,0.033,0,0.009999997,0.033,-0.01,-2.630541e-09,0.033,-0.007071,0.007070998,0.033,-0.007071,0.007071,0.008,-0.007071,-0.007071002,0.033,-0.01,-2.630541e-09,0.033,-0.01,-1.186505e-09,0.008,0,-0.01,0.007999999,0,-0.01,0.033,-0.007071,-0.007071002,0.033,0.007071,-0.007071,0.007999999,0.007071,-0.007071002,0.033,0,-0.01,0.033,0.01,-9.536744e-10,0.008,0.01,-2.630541e-09,0.033,0.007071,-0.007071002,0.033,0.0265,-9.536744e-10,0.008,0.025203,0.008188999,0.008000001,0.01,-9.536744e-10,0.008,0.021439,0.015576,0.008000002,0.015576,0.021439,0.008000003,0.007071,0.007071001,0.008000001,0.008189,0.025203,0.008000003,0,0.01,0.008000001,0.007071,0.007071001,0.008000001,0.008189,0.025203,0.008000003,0,0.0265,0.008000003,0,0.01,0.008000001,-0.008189,0.025203,0.008000003,-0.007071,0.007071,0.008,0,0.01,0.008000001,-0.008189,0.025203,0.008000003,-0.015576,0.021439,0.008000003,-0.007071,0.007071,0.008,-0.021439,0.015576,0.008000002,-0.007071,0.007071,0.008,-0.015576,0.021439,0.008000003,-0.025203,0.008188999,0.008000001,-0.01,-1.186505e-09,0.008,-0.007071,0.007071,0.008,-0.0265,-9.536744e-10,0.008,-0.01,-1.186505e-09,0.008,-0.025203,0.008188999,0.008000001,-0.025203,-0.008189001,0.007999999,-0.007071,-0.007071,0.007999999,-0.01,-1.186505e-09,0.008,-0.021439,-0.015576,0.007999999,-0.007071,-0.007071,0.007999999,-0.025203,-0.008189001,0.007999999,-0.021439,-0.015576,0.007999999,-0.015576,-0.021439,0.007999998,-0.007071,-0.007071,0.007999999,-0.008189,-0.025203,0.007999998,0,-0.01,0.007999999,-0.007071,-0.007071,0.007999999,-0.008189,-0.025203,0.007999998,0,-0.0265,0.007999998,0,-0.01,0.007999999,0.008189,-0.025203,0.007999998,0,-0.01,0.007999999,0,-0.0265,0.007999998,0.008189,-0.025203,0.007999998,0.015576,-0.021439,0.007999998,0.007071,-0.007071,0.007999999,0.021439,-0.015576,0.007999999,0.007071,-0.007071,0.007999999,0.015576,-0.021439,0.007999998,0.021439,-0.015576,0.007999999,0.025203,-0.008189001,0.007999999,0.007071,-0.007071,0.007999999,0.01,-9.536744e-10,0.008,0.007071,-0.007071,0.007999999,0.025203,-0.008189001,0.007999999,0.0265,-0.1,-1.192093e-08,0.025203,-0.091811,-1.094472e-08,0.0265,-0.1,0.007999988,0.025203,-0.091811,0.007999989,0.0025,-0.099188,0.007999988,0.0265,-0.1,0.007999988,0.025203,-0.091811,0.007999989,0.025203,-0.091811,-1.094472e-08,0.021439,-0.084424,0.00799999,0.021439,-0.084424,-1.006412e-08,0.015576,-0.078561,-9.365201e-09,0.021439,-0.084424,0.00799999,0.015576,-0.078561,-9.365201e-09,0.008189,-0.074797,-8.916497e-09,0.015576,-0.078561,0.007999991,0,-0.0735,-8.761883e-09,0,-0.0735,0.007999992,0.008189,-0.074797,-8.916497e-09,0,-0.0735,-8.761883e-09,-0.008189,-0.074797,-8.916497e-09,0,-0.0735,0.007999992,-0.015576,-0.078561,-9.365201e-09,-0.015576,-0.078561,0.007999991,-0.008189,-0.074797,-8.916497e-09,-0.021439,-0.084424,-1.006412e-08,-0.021439,-0.084424,0.00799999,-0.015576,-0.078561,-9.365201e-09,-0.025203,-0.091811,-1.094472e-08,-0.025203,-0.091811,0.007999989,-0.021439,-0.084424,-1.006412e-08,-0.0025,-0.099188,0.007999988,-0.0025,-0.098184,0.007999988,-0.025203,-0.091811,0.007999989,-0.0265,-0.1,-1.192093e-08,-0.0265,-0.1,0.007999988,-0.025203,-0.091811,-1.094472e-08,-0.025203,-0.108189,-1.289713e-08,-0.025203,-0.108189,0.007999987,-0.0265,-0.1,-1.192093e-08,-0.021439,-0.115576,-1.377773e-08,-0.021439,-0.115576,0.007999986,-0.025203,-0.108189,-1.289713e-08,-0.021439,-0.115576,0.007999986,-0.0025,-0.101816,0.007999988,-0.025203,-0.108189,0.007999987,-0.015576,-0.121439,-1.447666e-08,-0.015576,-0.121439,0.007999985,-0.021439,-0.115576,-1.377773e-08,-0.008189,-0.125203,-1.492536e-08,-0.008189,-0.125203,0.007999985,-0.015576,-0.121439,-1.447666e-08,0,-0.1265,-1.507997e-08,0,-0.1265,0.007999985,-0.008189,-0.125203,-1.492536e-08,0.008189,-0.125203,-1.492536e-08,0.008189,-0.125203,0.007999985,0,-0.1265,-1.507997e-08,0.008189,-0.125203,0.007999985,0.0025,-0.1125,0.007999987,0,-0.1265,0.007999985,0.015576,-0.121439,-1.447666e-08,0.015576,-0.121439,0.007999985,0.008189,-0.125203,-1.492536e-08,0.0025,-0.103441,0.007999988,0.0025,-0.107694,0.007999987,0.015576,-0.121439,0.007999985,0.021439,-0.115576,-1.377773e-08,0.021439,-0.115576,0.007999986,0.015576,-0.121439,-1.447666e-08,0.025203,-0.108189,-1.289713e-08,0.025203,-0.108189,0.007999987,0.021439,-0.115576,-1.377773e-08,0.0265,-0.1,-1.192093e-08,0.0265,-0.1,0.007999988,0.025203,-0.108189,-1.289713e-08,-0.0025,-0.101816,0.007999988,-0.021439,-0.115576,0.007999986,-0.0025,-0.103441,0.007999988,0.021439,-0.084424,0.00799999,0.0025,-0.098184,0.007999988,0.025203,-0.091811,0.007999989,-0.025203,-0.108189,0.007999987,-0.0025,-0.100812,0.007999988,-0.0265,-0.1,0.007999988,-0.0025,-0.103441,0.007999988,-0.015576,-0.121439,0.007999985,-0.0025,-0.107694,0.007999987,-0.0025,-0.098184,0.007999988,-0.0025,-0.096559,0.007999989,-0.021439,-0.084424,0.00799999,-0.025203,-0.091811,0.007999989,-0.0265,-0.1,0.007999988,-0.0025,-0.099188,0.007999988,-0.008189,-0.074797,0.007999991,-0.0025,-0.0875,0.00799999,0,-0.0735,0.007999992,-0.0025,-0.096559,0.007999989,-0.0025,-0.092306,0.007999989,-0.015576,-0.078561,0.007999991,-0.0025,-0.0875,0.0008419896,-0.0025,-0.1125,0.0008419866,0.0025,-0.0875,0.0008419896,-0.0025,-0.1125,0.0008419866,-0.0025,-0.1125,0.007999987,0,-0.1125,0.007999987,0,-0.1125,0.007999987,0.0025,-0.1125,0.0008419866,-0.0025,-0.1125,0.0008419866,0.0025,-0.100812,0.007999988,0.0025,-0.101816,0.007999988,0.025203,-0.108189,0.007999987,0.0025,-0.0875,0.0008419896,0.0025,-0.096559,0.007999989,0.0025,-0.092306,0.007999989,0.0025,-0.0875,0.0008419896,0.0025,-0.1,0.007999988,0.0025,-0.098184,0.007999988,0.0025,-0.1125,0.0008419866,0.0025,-0.101816,0.007999988,0.0025,-0.100812,0.007999988,0.0025,-0.1125,0.0008419866,0.0025,-0.1125,0.007999987,0.0025,-0.107694,0.007999987,0.0025,-0.1125,0.0008419866,0.0025,-0.103441,0.007999988,0.0025,-0.101816,0.007999988,0.0025,-0.092306,0.007999989,0.0025,-0.0875,0.00799999,0.0025,-0.0875,0.0008419896,0.0025,-0.0875,0.0008419896,0.0025,-0.1125,0.0008419866,0.0025,-0.1,0.007999988,0.0025,-0.098184,0.007999988,0.0025,-0.096559,0.007999989,0.0025,-0.0875,0.0008419896,0.0025,-0.103441,0.007999988,0.0025,-0.1125,0.0008419866,0.0025,-0.107694,0.007999987,-0.0025,-0.1,0.007999988,-0.0025,-0.1125,0.0008419866,-0.0025,-0.0875,0.0008419896,-0.0025,-0.1125,0.0008419866,-0.0025,-0.103441,0.007999988,-0.0025,-0.107694,0.007999987,-0.0025,-0.107694,0.007999987,-0.0025,-0.1125,0.007999987,-0.0025,-0.1125,0.0008419866,-0.0025,-0.0875,0.0008419896,-0.0025,-0.0875,0.00799999,-0.0025,-0.092306,0.007999989,-0.0025,-0.0875,0.0008419896,-0.0025,-0.096559,0.007999989,-0.0025,-0.098184,0.007999988,-0.0025,-0.0875,0.0008419896,-0.0025,-0.099188,0.007999988,-0.0025,-0.1,0.007999988,-0.0025,-0.1125,0.0008419866,-0.0025,-0.100812,0.007999988,-0.0025,-0.101816,0.007999988,-0.0025,-0.101816,0.007999988,-0.0025,-0.103441,0.007999988,-0.0025,-0.1125,0.0008419866,-0.0025,-0.0875,0.0008419896,-0.0025,-0.092306,0.007999989,-0.0025,-0.096559,0.007999989,-0.0025,-0.1125,0.0008419866,-0.0025,-0.1,0.007999988,-0.0025,-0.100812,0.007999988,0.025203,-0.108189,0.007999987,0.0265,-0.1,0.007999988,0.0025,-0.100812,0.007999988,0.0025,-0.0875,0.0008419896,0.0025,-0.0875,0.00799999,0,-0.0875,0.00799999,0,-0.0875,0.00799999,-0.0025,-0.0875,0.0008419896,0.0025,-0.0875,0.0008419896,-0.008189,-0.125203,0.007999985,0,-0.1265,0.007999985,-0.0025,-0.1125,0.007999987,0.0025,-0.101816,0.007999988,0.0025,-0.103441,0.007999988,0.021439,-0.115576,0.007999986,0.008189,-0.074797,0.007999991,0,-0.0735,0.007999992,0.0025,-0.0875,0.00799999,0.0025,-0.098184,0.007999988,0.021439,-0.084424,0.00799999,0.0025,-0.096559,0.007999989,0.0025,-0.096559,0.007999989,0.015576,-0.078561,0.007999991,0.0025,-0.092306,0.007999989,0.0265,-2.630541e-09,0.033,0.0265,-4.53789e-09,0.049,0.024483,-0.010141,0.033,-0.010141,-0.024483,0.033,0,-0.0265,0.033,-0.010141,-0.024483,0.049,-0.01,-2.630541e-09,0.033,-0.007071,-0.007071002,0.033,-0.024483,-0.010141,0.033,0.007071,0.007070998,0.033,0,0.009999997,0.033,0.010141,0.024483,0.033,0.018738,-0.018738,0.033,0.024483,-0.010141,0.033,0.018738,-0.018738,0.049,-0.024483,0.010141,0.033,-0.024483,0.010141,0.049,-0.018738,0.018738,0.033,-0.024483,0.010141,0.033,-0.0265,-2.630541e-09,0.033,-0.024483,0.010141,0.049,-0.007071,-0.007071002,0.033,0,-0.01,0.033,-0.010141,-0.024483,0.033,-0.0265,-2.630541e-09,0.033,-0.024483,0.010141,0.033,-0.01,-2.630541e-09,0.033,0.010141,-0.024483,0.033,0.010141,-0.024483,0.049,0,-0.0265,0.033,-0.018738,0.018738,0.033,-0.010141,0.024483,0.033,-0.007071,0.007070998,0.033,0.024483,0.010141,0.033,0.024483,0.010141,0.049,0.0265,-2.630541e-09,0.033,0.018738,-0.018738,0.033,0.018738,-0.018738,0.049,0.010141,-0.024483,0.033,0.024483,0.010141,0.033,0.018738,0.018738,0.033,0.024483,0.010141,0.049,0.010141,0.024483,0.033,0.010141,0.024483,0.04900001,0.018738,0.018738,0.033,0,0.0265,0.033,0,0.0265,0.04900001,0.010141,0.024483,0.033,-0.010141,0.024483,0.033,-0.010141,0.024483,0.04900001,0,0.0265,0.033,0.01,-2.630541e-09,0.033,0.007071,0.007070998,0.033,0.024483,0.010141,0.033,-0.010141,0.024483,0.04900001,-0.010141,0.024483,0.033,-0.018738,0.018738,0.04900001,0.007071,-0.007071002,0.033,0.01,-2.630541e-09,0.033,0.024483,-0.010141,0.033,-0.0265,-2.630541e-09,0.033,-0.024483,-0.010141,0.033,-0.0265,-4.53789e-09,0.049,0,-0.01,0.033,0.007071,-0.007071002,0.033,0.010141,-0.024483,0.033,-0.018738,-0.018738,0.033,-0.018738,-0.018738,0.049,-0.024483,-0.010141,0.033,-0.010141,-0.024483,0.033,-0.010141,-0.024483,0.049,-0.018738,-0.018738,0.033,0.025203,0.008189,9.762049e-10,0.025203,0.008188999,0.008000001,0.0265,0,0,0.021439,0.015576,1.856804e-09,0.021439,0.015576,0.008000002,0.025203,0.008189,9.762049e-10,0.021439,0.015576,0.008000002,0.007071,0.007071001,0.008000001,0.025203,0.008188999,0.008000001,0.015576,0.021439,2.555728e-09,0.015576,0.021439,0.008000003,0.021439,0.015576,1.856804e-09,0.008189,0.025203,3.004432e-09,0.008189,0.025203,0.008000003,0.015576,0.021439,2.555728e-09,0,0.0265,3.159046e-09,0,0.0265,0.008000003,0.008189,0.025203,3.004432e-09,-0.008189,0.025203,3.004432e-09,-0.008189,0.025203,0.008000003,0,0.0265,3.159046e-09,-0.015576,0.021439,2.555728e-09,-0.015576,0.021439,0.008000003,-0.008189,0.025203,3.004432e-09,-0.021439,0.015576,1.856804e-09,-0.021439,0.015576,0.008000002,-0.015576,0.021439,2.555728e-09,-0.025203,0.008189,9.762049e-10,-0.025203,0.008188999,0.008000001,-0.021439,0.015576,1.856804e-09,-0.025203,0.008189,9.762049e-10,-0.0265,0,0,-0.025203,0.008188999,0.008000001,-0.025203,-0.008189,-9.762049e-10,-0.025203,-0.008189001,0.007999999,-0.0265,0,0,-0.021439,-0.015576,-1.856804e-09,-0.021439,-0.015576,0.007999999,-0.025203,-0.008189,-9.762049e-10,-0.015576,-0.021439,-2.555728e-09,-0.015576,-0.021439,0.007999998,-0.021439,-0.015576,-1.856804e-09,-0.008189,-0.025203,-3.004432e-09,-0.008189,-0.025203,0.007999998,-0.015576,-0.021439,-2.555728e-09,0,-0.0265,-3.159046e-09,0,-0.0265,0.007999998,-0.008189,-0.025203,-3.004432e-09,0.008189,-0.025203,-3.004432e-09,0.008189,-0.025203,0.007999998,0,-0.0265,-3.159046e-09,0.015576,-0.021439,-2.555728e-09,0.015576,-0.021439,0.007999998,0.008189,-0.025203,-3.004432e-09,0.015576,-0.021439,-2.555728e-09,0.021439,-0.015576,-1.856804e-09,0.015576,-0.021439,0.007999998,0.025203,-0.008189,-9.762049e-10,0.025203,-0.008189001,0.007999999,0.021439,-0.015576,-1.856804e-09,0.0265,0,0,0.0265,-9.536744e-10,0.008,0.025203,-0.008189,-9.762049e-10,0.007071,0.007071001,0.008000001,0.007071,0.007070998,0.033,0.01,-9.536744e-10,0.008,0,0.01,0.008000001,0,0.009999997,0.033,0.007071,0.007071001,0.008000001,0,0.01,0.008000001,-0.007071,0.007071,0.008,0,0.009999997,0.033,-0.01,-1.186505e-09,0.008,-0.01,-2.630541e-09,0.033,-0.007071,0.007071,0.008,-0.007071,-0.007071,0.007999999,-0.007071,-0.007071002,0.033,-0.01,-1.186505e-09,0.008,-0.007071,-0.007071,0.007999999,0,-0.01,0.007999999,-0.007071,-0.007071002,0.033,0,-0.01,0.007999999,0.007071,-0.007071,0.007999999,0,-0.01,0.033,0.007071,-0.007071,0.007999999,0.01,-9.536744e-10,0.008,0.007071,-0.007071002,0.033,0.015576,0.021439,0.008000003,0.008189,0.025203,0.008000003,0.007071,0.007071001,0.008000001,0,0.0265,0.008000003,-0.008189,0.025203,0.008000003,0,0.01,0.008000001,-0.021439,0.015576,0.008000002,-0.025203,0.008188999,0.008000001,-0.007071,0.007071,0.008,-0.0265,-9.536744e-10,0.008,-0.025203,-0.008189001,0.007999999,-0.01,-1.186505e-09,0.008,-0.015576,-0.021439,0.007999998,-0.008189,-0.025203,0.007999998,-0.007071,-0.007071,0.007999999,0,-0.01,0.007999999,0.008189,-0.025203,0.007999998,0.007071,-0.007071,0.007999999,0.0265,-9.536744e-10,0.008,0.01,-9.536744e-10,0.008,0.025203,-0.008189001,0.007999999]);
+	          for (l = hvs; l < handleVertices.length - 2; l = l + 3) {
+	            handleVertices[l] += cX;
+	            handleVertices[l + 1] += aY;
+	            handleVertices[l + 2] += iZ;
+	          }
+	        } else if (a.handleType==='round') {
+	          handleVertices = handleVertices.concat([-0.12,0.005877995,0.04491,-0.12,-5.126e-09,0.043,-0.12,-6.318092e-09,0.053,-0.12,0.005877995,0.04491,-0.00809,0.005877995,0.04491,-0.01,-5.126e-09,0.043,-0.12,0.009510994,0.04991,-0.12,0.005877995,0.04491,-0.12,-6.318092e-09,0.053,-0.12,0.009510993,0.05609,-0.12,0.009510994,0.04991,-0.12,-6.318092e-09,0.053,-0.12,0.005877993,0.06109,-0.12,0.009510993,0.05609,-0.12,-6.318092e-09,0.053,-0.12,-7.510185e-09,0.063,-0.12,0.005877993,0.06109,-0.12,-6.318092e-09,0.053,-0.12,-0.005878008,0.06109,-0.12,-7.510185e-09,0.063,-0.12,-6.318092e-09,0.053,-0.12,-7.510185e-09,0.063,-0.12,-0.005878008,0.06109,0.00809,-0.005878008,0.06109,-0.12,-0.009511006,0.05609,-0.12,-0.005878008,0.06109,-0.12,-6.318092e-09,0.053,-0.12,-0.009511005,0.04991,-0.12,-0.009511006,0.05609,-0.12,-6.318092e-09,0.053,-0.12,-0.005878005,0.04491,-0.12,-0.009511005,0.04991,-0.12,-6.318092e-09,0.053,-0.12,-0.009511005,0.04991,-0.12,-0.005878005,0.04491,-0.00809,-0.005878005,0.04491,-0.12,-5.126e-09,0.043,-0.12,-0.005878005,0.04491,-0.12,-6.318092e-09,0.053,-0.12,-0.005878005,0.04491,-0.12,-5.126e-09,0.043,-0.01,-5.126e-09,0.043,0.00809,0.005878,0.008,0.00309,0.009511,0.008,0.00309,0.009510993,0.05609,0.00309,0.009511,0.008,-0.00309,0.009511,0.008,-0.00309,0.009510994,0.04991,-0.00809,0.005877995,0.04491,-0.12,0.005877995,0.04491,-0.12,0.009510994,0.04991,-0.00309,0.009510994,0.04991,-0.12,0.009510994,0.04991,-0.12,0.009510993,0.05609,0.00309,0.009510993,0.05609,-0.12,0.009510993,0.05609,-0.12,0.005877993,0.06109,0.00809,0.005877993,0.06109,-0.12,0.005877993,0.06109,-0.12,-7.510185e-09,0.063,-0.12,-0.005878008,0.06109,-0.12,-0.009511006,0.05609,0.00309,-0.009511006,0.05609,-0.12,-0.009511006,0.05609,-0.12,-0.009511005,0.04991,-0.00309,-0.009511005,0.04991,0.01,-1.390709e-10,0.007999999,0.00809,0.005878,0.008,0.00809,0.005877993,0.06109,-0.00309,0.009511,0.008,-0.00809,0.005878,0.008,-0.00809,0.005877995,0.04491,-0.00809,0.005878,0.008,-0.01,-1.390709e-10,0.007999999,-0.01,-5.126e-09,0.043,-0.00309,-0.009511005,0.04991,-0.00309,-0.009511,0.007999999,0.00309,-0.009511,0.007999999,0.025203,-0.091811,-1.094472e-08,0.025203,-0.091811,0.007999989,0.0265,-0.1,0.007999988,0.0025,-0.099188,0.007999988,0.0025,-0.1,0.007999988,0.0265,-0.1,0.007999988,0.025203,-0.091811,-1.094472e-08,0.021439,-0.084424,-1.006412e-08,0.021439,-0.084424,0.00799999,0.015576,-0.078561,-9.365201e-09,0.015576,-0.078561,0.007999991,0.021439,-0.084424,0.00799999,0.008189,-0.074797,-8.916497e-09,0.008189,-0.074797,0.007999991,0.015576,-0.078561,0.007999991,0,-0.0735,0.007999992,0.008189,-0.074797,0.007999991,0.008189,-0.074797,-8.916497e-09,0.0025,-0.0875,0.00799999,0.0025,-0.092306,0.007999989,0.008189,-0.074797,0.007999991,-0.008189,-0.074797,-8.916497e-09,-0.008189,-0.074797,0.007999991,0,-0.0735,0.007999992,-0.015576,-0.078561,0.007999991,-0.008189,-0.074797,0.007999991,-0.008189,-0.074797,-8.916497e-09,-0.021439,-0.084424,0.00799999,-0.015576,-0.078561,0.007999991,-0.015576,-0.078561,-9.365201e-09,-0.025203,-0.091811,0.007999989,-0.021439,-0.084424,0.00799999,-0.021439,-0.084424,-1.006412e-08,-0.0025,-0.098184,0.007999988,-0.021439,-0.084424,0.00799999,-0.025203,-0.091811,0.007999989,-0.0265,-0.1,0.007999988,-0.025203,-0.091811,0.007999989,-0.025203,-0.091811,-1.094472e-08,-0.025203,-0.108189,0.007999987,-0.0265,-0.1,0.007999988,-0.0265,-0.1,-1.192093e-08,-0.021439,-0.115576,0.007999986,-0.025203,-0.108189,0.007999987,-0.025203,-0.108189,-1.289713e-08,-0.0025,-0.101816,0.007999988,-0.0025,-0.100812,0.007999988,-0.025203,-0.108189,0.007999987,-0.015576,-0.121439,0.007999985,-0.021439,-0.115576,0.007999986,-0.021439,-0.115576,-1.377773e-08,-0.008189,-0.125203,0.007999985,-0.015576,-0.121439,0.007999985,-0.015576,-0.121439,-1.447666e-08,0,-0.1265,0.007999985,-0.008189,-0.125203,0.007999985,-0.008189,-0.125203,-1.492536e-08,0.008189,-0.125203,0.007999985,0,-0.1265,0.007999985,0,-0.1265,-1.507997e-08,0.0025,-0.1125,0.007999987,0,-0.1125,0.007999987,0,-0.1265,0.007999985,0.008189,-0.125203,0.007999985,0.0025,-0.107694,0.007999987,0.0025,-0.1125,0.007999987,0.015576,-0.121439,0.007999985,0.008189,-0.125203,0.007999985,0.008189,-0.125203,-1.492536e-08,0.0025,-0.107694,0.007999987,0.008189,-0.125203,0.007999985,0.015576,-0.121439,0.007999985,0.021439,-0.115576,0.007999986,0.015576,-0.121439,0.007999985,0.015576,-0.121439,-1.447666e-08,0.025203,-0.108189,0.007999987,0.021439,-0.115576,0.007999986,0.021439,-0.115576,-1.377773e-08,0.0265,-0.1,0.007999988,0.025203,-0.108189,0.007999987,0.025203,-0.108189,-1.289713e-08,-0.021439,-0.115576,0.007999986,-0.015576,-0.121439,0.007999985,-0.0025,-0.103441,0.007999988,0.0025,-0.098184,0.007999988,0.0025,-0.099188,0.007999988,0.025203,-0.091811,0.007999989,-0.0025,-0.100812,0.007999988,-0.0025,-0.1,0.007999988,-0.0265,-0.1,0.007999988,-0.008189,-0.074797,0.007999991,-0.0025,-0.092306,0.007999989,-0.0025,-0.0875,0.00799999,-0.015576,-0.121439,0.007999985,-0.008189,-0.125203,0.007999985,-0.0025,-0.107694,0.007999987,-0.0025,-0.096559,0.007999989,-0.015576,-0.078561,0.007999991,-0.021439,-0.084424,0.00799999,-0.0265,-0.1,0.007999988,-0.0025,-0.1,0.007999988,-0.0025,-0.099188,0.007999988,-0.0025,-0.0875,0.00799999,0,-0.0875,0.00799999,0,-0.0735,0.007999992,-0.0025,-0.092306,0.007999989,-0.008189,-0.074797,0.007999991,-0.015576,-0.078561,0.007999991,-0.0025,-0.1125,0.0008419866,0.0025,-0.1125,0.0008419866,0.0025,-0.0875,0.0008419896,0,-0.1125,0.007999987,0.0025,-0.1125,0.007999987,0.0025,-0.1125,0.0008419866,0.0025,-0.101816,0.007999988,0.021439,-0.115576,0.007999986,0.025203,-0.108189,0.007999987,-0.0025,-0.1125,0.007999987,-0.0025,-0.107694,0.007999987,-0.008189,-0.125203,0.007999985,0.0025,-0.1,0.007999988,0.0025,-0.1125,0.0008419866,0.0025,-0.100812,0.007999988,-0.0025,-0.0875,0.0008419896,-0.0025,-0.098184,0.007999988,-0.0025,-0.099188,0.007999988,0.0265,-0.1,0.007999988,0.0025,-0.1,0.007999988,0.0025,-0.100812,0.007999988,0,-0.0875,0.00799999,-0.0025,-0.0875,0.00799999,-0.0025,-0.0875,0.0008419896,0,-0.1265,0.007999985,0,-0.1125,0.007999987,-0.0025,-0.1125,0.007999987,0.0025,-0.103441,0.007999988,0.015576,-0.121439,0.007999985,0.021439,-0.115576,0.007999986,0,-0.0735,0.007999992,0,-0.0875,0.00799999,0.0025,-0.0875,0.00799999,0.021439,-0.084424,0.00799999,0.015576,-0.078561,0.007999991,0.0025,-0.096559,0.007999989,0.015576,-0.078561,0.007999991,0.008189,-0.074797,0.007999991,0.0025,-0.092306,0.007999989,0.025203,0.008188999,0.008000001,0.0265,-9.536744e-10,0.008,0.0265,0,0,0.021439,0.015576,0.008000002,0.025203,0.008188999,0.008000001,0.025203,0.008189,9.762049e-10,0.015576,0.021439,0.008000003,0.021439,0.015576,0.008000002,0.021439,0.015576,1.856804e-09,0.008189,0.025203,0.008000003,0.015576,0.021439,0.008000003,0.015576,0.021439,2.555728e-09,0,0.0265,0.008000003,0.008189,0.025203,0.008000003,0.008189,0.025203,3.004432e-09,-0.008189,0.025203,0.008000003,0,0.0265,0.008000003,0,0.0265,3.159046e-09,-0.015576,0.021439,0.008000003,-0.008189,0.025203,0.008000003,-0.008189,0.025203,3.004432e-09,-0.021439,0.015576,0.008000002,-0.015576,0.021439,0.008000003,-0.015576,0.021439,2.555728e-09,-0.025203,0.008188999,0.008000001,-0.021439,0.015576,0.008000002,-0.021439,0.015576,1.856804e-09,-0.0265,0,0,-0.0265,-9.536744e-10,0.008,-0.025203,0.008188999,0.008000001,-0.025203,-0.008189001,0.007999999,-0.0265,-9.536744e-10,0.008,-0.0265,0,0,-0.021439,-0.015576,0.007999999,-0.025203,-0.008189001,0.007999999,-0.025203,-0.008189,-9.762049e-10,-0.00809,-0.005878001,0.007999999,-0.009045,-0.002939001,0.008,-0.025203,-0.008189001,0.007999999,-0.015576,-0.021439,0.007999998,-0.021439,-0.015576,0.007999999,-0.021439,-0.015576,-1.856804e-09,-0.015576,-0.021439,0.007999998,-0.00559,-0.007694001,0.007999999,-0.00809,-0.005878001,0.007999999,-0.008189,-0.025203,0.007999998,-0.015576,-0.021439,0.007999998,-0.015576,-0.021439,-2.555728e-09,0,-0.0265,0.007999998,-0.008189,-0.025203,0.007999998,-0.008189,-0.025203,-3.004432e-09,0.008189,-0.025203,0.007999998,0,-0.0265,0.007999998,0,-0.0265,-3.159046e-09,0.015576,-0.021439,0.007999998,0.008189,-0.025203,0.007999998,0.008189,-0.025203,-3.004432e-09,0.021439,-0.015576,-1.856804e-09,0.021439,-0.015576,0.007999999,0.015576,-0.021439,0.007999998,0.00809,-0.005878001,0.007999999,0.00559,-0.007694001,0.007999999,0.015576,-0.021439,0.007999998,0.025203,-0.008189001,0.007999999,0.021439,-0.015576,0.007999999,0.021439,-0.015576,-1.856804e-09,0.025203,-0.008189001,0.007999999,0.009045,-0.002939001,0.008,0.00809,-0.005878001,0.007999999,0.0265,-9.536744e-10,0.008,0.025203,-0.008189001,0.007999999,0.025203,-0.008189,-9.762049e-10,-0.01,-5.126e-09,0.043,-0.01,-1.390709e-10,0.007999999,-0.00809,-0.005878001,0.007999999,-0.00809,-0.005878005,0.04491,-0.00809,-0.005878001,0.007999999,-0.00309,-0.009511,0.007999999,0.00309,-0.009511006,0.05609,0.00309,-0.009511,0.007999999,0.00809,-0.005878001,0.007999999,0.00809,-0.005878008,0.06109,0.00809,-0.005878001,0.007999999,0.01,-1.390709e-10,0.007999999,0.025203,0.008188999,0.008000001,0.009045,0.002938999,0.008,0.01,-1.390709e-10,0.007999999,0.00809,0.005878,0.008,0.009045,0.002938999,0.008,0.025203,0.008188999,0.008000001,0.015576,0.021439,0.008000003,0.00559,0.007693999,0.008000001,0.00809,0.005878,0.008,0.00309,0.009511,0.008,0.00559,0.007693999,0.008000001,0.015576,0.021439,0.008000003,0,0.0265,0.008000003,0,0.009510999,0.008000001,0.00309,0.009511,0.008,-0.00309,0.009511,0.008,0,0.009510999,0.008000001,0,0.0265,0.008000003,-0.015576,0.021439,0.008000003,-0.00559,0.007693999,0.008000001,-0.00309,0.009511,0.008,-0.00809,0.005878,0.008,-0.00559,0.007693999,0.008000001,-0.015576,0.021439,0.008000003,-0.025203,0.008188999,0.008000001,-0.009045,0.002938999,0.008,-0.00809,0.005878,0.008,-0.01,-1.390709e-10,0.007999999,-0.009045,0.002938999,0.008,-0.025203,0.008188999,0.008000001,-0.025203,-0.008189001,0.007999999,-0.009045,-0.002939001,0.008,-0.01,-1.390709e-10,0.007999999,-0.00309,-0.009511,0.007999999,-0.00559,-0.007694001,0.007999999,-0.015576,-0.021439,0.007999998,0,-0.0265,0.007999998,0,-0.009511,0.007999999,-0.00309,-0.009511,0.007999999,0.00309,-0.009511,0.007999999,0,-0.009511,0.007999999,0,-0.0265,0.007999998,0.015576,-0.021439,0.007999998,0.00559,-0.007694001,0.007999999,0.00309,-0.009511,0.007999999,0.01,-1.390709e-10,0.007999999,0.009045,-0.002939001,0.008,0.025203,-0.008189001,0.007999999,-0.12,-5.126e-09,0.043,-0.12,0.005877995,0.04491,-0.01,-5.126e-09,0.043,0.01,-7.510185e-09,0.063,-0.12,-7.510185e-09,0.063,0.00809,-0.005878008,0.06109,-0.00309,-0.009511005,0.04991,-0.12,-0.009511005,0.04991,-0.00809,-0.005878005,0.04491,-0.00809,-0.005878005,0.04491,-0.12,-0.005878005,0.04491,-0.01,-5.126e-09,0.043,0.00809,0.005877993,0.06109,0.00809,0.005878,0.008,0.00309,0.009510993,0.05609,0.00309,0.009510993,0.05609,0.00309,0.009511,0.008,-0.00309,0.009510994,0.04991,-0.00309,0.009510994,0.04991,-0.00809,0.005877995,0.04491,-0.12,0.009510994,0.04991,0.00309,0.009510993,0.05609,-0.00309,0.009510994,0.04991,-0.12,0.009510993,0.05609,0.00809,0.005877993,0.06109,0.00309,0.009510993,0.05609,-0.12,0.005877993,0.06109,0.01,-7.510185e-09,0.063,0.00809,0.005877993,0.06109,-0.12,-7.510185e-09,0.063,0.00809,-0.005878008,0.06109,-0.12,-0.005878008,0.06109,0.00309,-0.009511006,0.05609,0.00309,-0.009511006,0.05609,-0.12,-0.009511006,0.05609,-0.00309,-0.009511005,0.04991,0.01,-7.510185e-09,0.063,0.01,-1.390709e-10,0.007999999,0.00809,0.005877993,0.06109,-0.00309,0.009510994,0.04991,-0.00309,0.009511,0.008,-0.00809,0.005877995,0.04491,-0.00809,0.005877995,0.04491,-0.00809,0.005878,0.008,-0.01,-5.126e-09,0.043,0.00309,-0.009511006,0.05609,-0.00309,-0.009511005,0.04991,0.00309,-0.009511,0.007999999,0.0265,-0.1,-1.192093e-08,0.025203,-0.091811,-1.094472e-08,0.0265,-0.1,0.007999988,0.025203,-0.091811,0.007999989,0.0025,-0.099188,0.007999988,0.0265,-0.1,0.007999988,0.025203,-0.091811,0.007999989,0.025203,-0.091811,-1.094472e-08,0.021439,-0.084424,0.00799999,0.021439,-0.084424,-1.006412e-08,0.015576,-0.078561,-9.365201e-09,0.021439,-0.084424,0.00799999,0.015576,-0.078561,-9.365201e-09,0.008189,-0.074797,-8.916497e-09,0.015576,-0.078561,0.007999991,0,-0.0735,-8.761883e-09,0,-0.0735,0.007999992,0.008189,-0.074797,-8.916497e-09,0,-0.0735,-8.761883e-09,-0.008189,-0.074797,-8.916497e-09,0,-0.0735,0.007999992,-0.015576,-0.078561,-9.365201e-09,-0.015576,-0.078561,0.007999991,-0.008189,-0.074797,-8.916497e-09,-0.021439,-0.084424,-1.006412e-08,-0.021439,-0.084424,0.00799999,-0.015576,-0.078561,-9.365201e-09,-0.025203,-0.091811,-1.094472e-08,-0.025203,-0.091811,0.007999989,-0.021439,-0.084424,-1.006412e-08,-0.0025,-0.099188,0.007999988,-0.0025,-0.098184,0.007999988,-0.025203,-0.091811,0.007999989,-0.0265,-0.1,-1.192093e-08,-0.0265,-0.1,0.007999988,-0.025203,-0.091811,-1.094472e-08,-0.025203,-0.108189,-1.289713e-08,-0.025203,-0.108189,0.007999987,-0.0265,-0.1,-1.192093e-08,-0.021439,-0.115576,-1.377773e-08,-0.021439,-0.115576,0.007999986,-0.025203,-0.108189,-1.289713e-08,-0.021439,-0.115576,0.007999986,-0.0025,-0.101816,0.007999988,-0.025203,-0.108189,0.007999987,-0.015576,-0.121439,-1.447666e-08,-0.015576,-0.121439,0.007999985,-0.021439,-0.115576,-1.377773e-08,-0.008189,-0.125203,-1.492536e-08,-0.008189,-0.125203,0.007999985,-0.015576,-0.121439,-1.447666e-08,0,-0.1265,-1.507997e-08,0,-0.1265,0.007999985,-0.008189,-0.125203,-1.492536e-08,0.008189,-0.125203,-1.492536e-08,0.008189,-0.125203,0.007999985,0,-0.1265,-1.507997e-08,0.008189,-0.125203,0.007999985,0.0025,-0.1125,0.007999987,0,-0.1265,0.007999985,0.015576,-0.121439,-1.447666e-08,0.015576,-0.121439,0.007999985,0.008189,-0.125203,-1.492536e-08,0.0025,-0.103441,0.007999988,0.0025,-0.107694,0.007999987,0.015576,-0.121439,0.007999985,0.021439,-0.115576,-1.377773e-08,0.021439,-0.115576,0.007999986,0.015576,-0.121439,-1.447666e-08,0.025203,-0.108189,-1.289713e-08,0.025203,-0.108189,0.007999987,0.021439,-0.115576,-1.377773e-08,0.0265,-0.1,-1.192093e-08,0.0265,-0.1,0.007999988,0.025203,-0.108189,-1.289713e-08,-0.0025,-0.101816,0.007999988,-0.021439,-0.115576,0.007999986,-0.0025,-0.103441,0.007999988,0.021439,-0.084424,0.00799999,0.0025,-0.098184,0.007999988,0.025203,-0.091811,0.007999989,-0.025203,-0.108189,0.007999987,-0.0025,-0.100812,0.007999988,-0.0265,-0.1,0.007999988,-0.0025,-0.103441,0.007999988,-0.015576,-0.121439,0.007999985,-0.0025,-0.107694,0.007999987,-0.0025,-0.098184,0.007999988,-0.0025,-0.096559,0.007999989,-0.021439,-0.084424,0.00799999,-0.025203,-0.091811,0.007999989,-0.0265,-0.1,0.007999988,-0.0025,-0.099188,0.007999988,-0.008189,-0.074797,0.007999991,-0.0025,-0.0875,0.00799999,0,-0.0735,0.007999992,-0.0025,-0.096559,0.007999989,-0.0025,-0.092306,0.007999989,-0.015576,-0.078561,0.007999991,-0.0025,-0.0875,0.0008419896,-0.0025,-0.1125,0.0008419866,0.0025,-0.0875,0.0008419896,-0.0025,-0.1125,0.0008419866,-0.0025,-0.1125,0.007999987,0,-0.1125,0.007999987,0,-0.1125,0.007999987,0.0025,-0.1125,0.0008419866,-0.0025,-0.1125,0.0008419866,0.0025,-0.100812,0.007999988,0.0025,-0.101816,0.007999988,0.025203,-0.108189,0.007999987,0.0025,-0.0875,0.0008419896,0.0025,-0.096559,0.007999989,0.0025,-0.092306,0.007999989,0.0025,-0.0875,0.0008419896,0.0025,-0.1,0.007999988,0.0025,-0.098184,0.007999988,0.0025,-0.1125,0.0008419866,0.0025,-0.101816,0.007999988,0.0025,-0.100812,0.007999988,0.0025,-0.1125,0.0008419866,0.0025,-0.1125,0.007999987,0.0025,-0.107694,0.007999987,0.0025,-0.1125,0.0008419866,0.0025,-0.103441,0.007999988,0.0025,-0.101816,0.007999988,0.0025,-0.092306,0.007999989,0.0025,-0.0875,0.00799999,0.0025,-0.0875,0.0008419896,0.0025,-0.0875,0.0008419896,0.0025,-0.1125,0.0008419866,0.0025,-0.1,0.007999988,0.0025,-0.098184,0.007999988,0.0025,-0.096559,0.007999989,0.0025,-0.0875,0.0008419896,0.0025,-0.103441,0.007999988,0.0025,-0.1125,0.0008419866,0.0025,-0.107694,0.007999987,-0.0025,-0.1,0.007999988,-0.0025,-0.1125,0.0008419866,-0.0025,-0.0875,0.0008419896,-0.0025,-0.1125,0.0008419866,-0.0025,-0.103441,0.007999988,-0.0025,-0.107694,0.007999987,-0.0025,-0.107694,0.007999987,-0.0025,-0.1125,0.007999987,-0.0025,-0.1125,0.0008419866,-0.0025,-0.0875,0.0008419896,-0.0025,-0.0875,0.00799999,-0.0025,-0.092306,0.007999989,-0.0025,-0.0875,0.0008419896,-0.0025,-0.096559,0.007999989,-0.0025,-0.098184,0.007999988,-0.0025,-0.0875,0.0008419896,-0.0025,-0.099188,0.007999988,-0.0025,-0.1,0.007999988,-0.0025,-0.1125,0.0008419866,-0.0025,-0.100812,0.007999988,-0.0025,-0.101816,0.007999988,-0.0025,-0.101816,0.007999988,-0.0025,-0.103441,0.007999988,-0.0025,-0.1125,0.0008419866,-0.0025,-0.0875,0.0008419896,-0.0025,-0.092306,0.007999989,-0.0025,-0.096559,0.007999989,-0.0025,-0.1125,0.0008419866,-0.0025,-0.1,0.007999988,-0.0025,-0.100812,0.007999988,0.025203,-0.108189,0.007999987,0.0265,-0.1,0.007999988,0.0025,-0.100812,0.007999988,0.0025,-0.0875,0.0008419896,0.0025,-0.0875,0.00799999,0,-0.0875,0.00799999,0,-0.0875,0.00799999,-0.0025,-0.0875,0.0008419896,0.0025,-0.0875,0.0008419896,-0.008189,-0.125203,0.007999985,0,-0.1265,0.007999985,-0.0025,-0.1125,0.007999987,0.0025,-0.101816,0.007999988,0.0025,-0.103441,0.007999988,0.021439,-0.115576,0.007999986,0.008189,-0.074797,0.007999991,0,-0.0735,0.007999992,0.0025,-0.0875,0.00799999,0.0025,-0.098184,0.007999988,0.021439,-0.084424,0.00799999,0.0025,-0.096559,0.007999989,0.0025,-0.096559,0.007999989,0.015576,-0.078561,0.007999991,0.0025,-0.092306,0.007999989,0.025203,0.008189,9.762049e-10,0.025203,0.008188999,0.008000001,0.0265,0,0,0.021439,0.015576,1.856804e-09,0.021439,0.015576,0.008000002,0.025203,0.008189,9.762049e-10,0.015576,0.021439,2.555728e-09,0.015576,0.021439,0.008000003,0.021439,0.015576,1.856804e-09,0.008189,0.025203,3.004432e-09,0.008189,0.025203,0.008000003,0.015576,0.021439,2.555728e-09,0,0.0265,3.159046e-09,0,0.0265,0.008000003,0.008189,0.025203,3.004432e-09,-0.008189,0.025203,3.004432e-09,-0.008189,0.025203,0.008000003,0,0.0265,3.159046e-09,-0.015576,0.021439,2.555728e-09,-0.015576,0.021439,0.008000003,-0.008189,0.025203,3.004432e-09,-0.021439,0.015576,1.856804e-09,-0.021439,0.015576,0.008000002,-0.015576,0.021439,2.555728e-09,-0.025203,0.008189,9.762049e-10,-0.025203,0.008188999,0.008000001,-0.021439,0.015576,1.856804e-09,-0.025203,0.008189,9.762049e-10,-0.0265,0,0,-0.025203,0.008188999,0.008000001,-0.025203,-0.008189,-9.762049e-10,-0.025203,-0.008189001,0.007999999,-0.0265,0,0,-0.021439,-0.015576,-1.856804e-09,-0.021439,-0.015576,0.007999999,-0.025203,-0.008189,-9.762049e-10,-0.021439,-0.015576,0.007999999,-0.00809,-0.005878001,0.007999999,-0.025203,-0.008189001,0.007999999,-0.015576,-0.021439,-2.555728e-09,-0.015576,-0.021439,0.007999998,-0.021439,-0.015576,-1.856804e-09,-0.021439,-0.015576,0.007999999,-0.015576,-0.021439,0.007999998,-0.00809,-0.005878001,0.007999999,-0.008189,-0.025203,-3.004432e-09,-0.008189,-0.025203,0.007999998,-0.015576,-0.021439,-2.555728e-09,0,-0.0265,-3.159046e-09,0,-0.0265,0.007999998,-0.008189,-0.025203,-3.004432e-09,0.008189,-0.025203,-3.004432e-09,0.008189,-0.025203,0.007999998,0,-0.0265,-3.159046e-09,0.015576,-0.021439,-2.555728e-09,0.015576,-0.021439,0.007999998,0.008189,-0.025203,-3.004432e-09,0.015576,-0.021439,-2.555728e-09,0.021439,-0.015576,-1.856804e-09,0.015576,-0.021439,0.007999998,0.021439,-0.015576,0.007999999,0.00809,-0.005878001,0.007999999,0.015576,-0.021439,0.007999998,0.025203,-0.008189,-9.762049e-10,0.025203,-0.008189001,0.007999999,0.021439,-0.015576,-1.856804e-09,0.021439,-0.015576,0.007999999,0.025203,-0.008189001,0.007999999,0.00809,-0.005878001,0.007999999,0.0265,0,0,0.0265,-9.536744e-10,0.008,0.025203,-0.008189,-9.762049e-10,-0.00809,-0.005878005,0.04491,-0.01,-5.126e-09,0.043,-0.00809,-0.005878001,0.007999999,-0.00309,-0.009511005,0.04991,-0.00809,-0.005878005,0.04491,-0.00309,-0.009511,0.007999999,0.00809,-0.005878008,0.06109,0.00309,-0.009511006,0.05609,0.00809,-0.005878001,0.007999999,0.01,-7.510185e-09,0.063,0.00809,-0.005878008,0.06109,0.01,-1.390709e-10,0.007999999,0.0265,-9.536744e-10,0.008,0.025203,0.008188999,0.008000001,0.01,-1.390709e-10,0.007999999,0.021439,0.015576,0.008000002,0.00809,0.005878,0.008,0.025203,0.008188999,0.008000001,0.021439,0.015576,0.008000002,0.015576,0.021439,0.008000003,0.00809,0.005878,0.008,0.008189,0.025203,0.008000003,0.00309,0.009511,0.008,0.015576,0.021439,0.008000003,0.008189,0.025203,0.008000003,0,0.0265,0.008000003,0.00309,0.009511,0.008,-0.008189,0.025203,0.008000003,-0.00309,0.009511,0.008,0,0.0265,0.008000003,-0.008189,0.025203,0.008000003,-0.015576,0.021439,0.008000003,-0.00309,0.009511,0.008,-0.021439,0.015576,0.008000002,-0.00809,0.005878,0.008,-0.015576,0.021439,0.008000003,-0.021439,0.015576,0.008000002,-0.025203,0.008188999,0.008000001,-0.00809,0.005878,0.008,-0.0265,-9.536744e-10,0.008,-0.01,-1.390709e-10,0.007999999,-0.025203,0.008188999,0.008000001,-0.0265,-9.536744e-10,0.008,-0.025203,-0.008189001,0.007999999,-0.01,-1.390709e-10,0.007999999,-0.008189,-0.025203,0.007999998,-0.00309,-0.009511,0.007999999,-0.015576,-0.021439,0.007999998,-0.008189,-0.025203,0.007999998,0,-0.0265,0.007999998,-0.00309,-0.009511,0.007999999,0.008189,-0.025203,0.007999998,0.00309,-0.009511,0.007999999,0,-0.0265,0.007999998,0.008189,-0.025203,0.007999998,0.015576,-0.021439,0.007999998,0.00309,-0.009511,0.007999999,0.0265,-9.536744e-10,0.008,0.01,-1.390709e-10,0.007999999,0.025203,-0.008189001,0.007999999]);
+	          for (l = hvs; l < handleVertices.length - 2; l = l + 3) {
+	            handleVertices[l] += cX;
+	            handleVertices[l + 1] += aY;
+	            handleVertices[l + 2] += iZ;
+	          }
+	        } else if (a.handleType==='classic') {
+	          handleVertices = handleVertices.concat([-0.019075,0.060079,0.002000007,-0.02,0.06,0.002000007,-0.019047,-0.120065,0.001999986,0.016353,-0.121573,-1.449263e-08,0.016978,-0.121042,-1.442933e-08,0.016978,-0.121042,0.001999986,-0.02,-0.12,0.001999986,-0.019047,-0.120065,0.001999986,-0.02,0.06,0.002000007,0.015764,-0.122191,0.001999985,0.015764,-0.122191,-1.45663e-08,0.016353,-0.121573,-1.449263e-08,0.014929,-0.123252,-1.469278e-08,0.015764,-0.122191,-1.45663e-08,0.015764,-0.122191,0.001999985,-0.018231,0.060289,0.002000007,-0.019075,0.060079,0.002000007,0.019137,0.060079,0.002000007,0.002936,-0.134721,0.001999984,0.007464,-0.132813,0.001999984,0.008788,-0.131752,0.001999984,0.0015,-0.077781,0.001999991,0.019137,0.060079,0.002000007,-0.019075,0.060079,0.002000007,-0.018604,-0.120148,0.001999986,-0.0015,-0.097781,0.001999988,-0.0015,-0.077781,0.001999991,-0.018604,-0.120148,0.001999986,0.019149,-0.120075,0.001999986,0.0015,-0.097781,0.001999988,0.0015,-0.077781,0.001999991,0.0015,-0.097781,0.001999988,0.019149,-0.120075,0.001999986,0,-0.135,0.001999984,0.009953,-0.130562,0.001999984,-0.010391,-0.129722,0.001999985,-0.017458,0.060619,0.002000007,-0.018231,0.060289,0.002000007,0.018344,0.060288,0.002000007,0.001531,-0.134926,0.001999984,0.008788,-0.131752,0.001999984,0.009953,-0.130562,0.001999984,-0.016747,0.061058,0.002000007,-0.017458,0.060619,0.002000007,0.017614,0.060617,0.002000007,0.009953,-0.130562,0.001999984,0.014929,-0.123252,0.001999985,-0.011868,-0.127496,0.001999985,-0.016089,0.061593,0.002000008,-0.016747,0.061058,0.002000007,0.016937,0.061053,0.002000007,0.014929,-0.123252,0.001999985,0.015764,-0.122191,0.001999985,-0.014802,-0.122855,0.001999985,-0.015475,0.062214,0.002000008,-0.016089,0.061593,0.002000008,0.016304,0.061587,0.002000008,0.015764,-0.122191,0.001999985,0.016353,-0.121573,0.001999986,-0.015686,-0.121844,0.001999986,-0.014617,0.063281,0.002000008,-0.015475,0.062214,0.002000008,0.015421,0.062543,0.002000008,-0.007335,0.072848,0.002000009,-0.008209,0.072159,0.002000009,-0.004169,0.074417,0.002000009,-0.005324,0.073988,0.002000009,-0.006376,0.073461,0.002000009,-0.007335,0.072848,0.002000009,0.009953,-0.130562,-1.55642e-08,0.014929,-0.123252,-1.469278e-08,0.014929,-0.123252,0.001999985,0.016978,-0.121042,0.001999986,0.017646,-0.120607,0.001999986,-0.017021,-0.120787,0.001999986,0.016353,-0.121573,0.001999986,0.016978,-0.121042,0.001999986,-0.016327,-0.121269,0.001999986,-0.009384,0.071011,0.002000008,-0.014617,0.063281,0.002000008,0.012136,0.067516,0.002000008,0.009512,0.070979,0.002000008,0,0.075,0.002000009,-0.009384,0.071011,0.002000008,-0.008209,0.072159,0.002000009,-0.009384,0.071011,0.002000008,-0.002903,0.074736,0.002000009,-0.001517,0.074934,0.002000009,-0.002903,0.074736,0.002000009,-0.009384,0.071011,0.002000008,0.001519,0.074926,0.002000009,0,0.075,0.002000009,0.009512,0.070979,0.002000008,0.002913,0.074722,0.002000009,0.001519,0.074926,0.002000009,0.008304,0.072129,0.002000009,0.017646,-0.120607,0.001999986,0.018367,-0.120281,0.001999986,-0.017776,-0.120409,0.001999986,0.007408,0.072818,0.002000009,0.00536,0.073964,0.002000009,0.004191,0.074397,0.002000009,0.007408,0.072818,0.002000009,0.00643,0.073434,0.002000009,0.00536,0.073964,0.002000009,-0.018604,-0.120148,0.001999986,-0.017776,-0.120409,0.001999986,0.018367,-0.120281,0.001999986,0.02,0.06,0.002000007,0.019137,0.060079,0.002000007,0.019149,-0.120075,0.001999986,0.005401,-0.133961,0.001999984,0.006479,-0.13343,0.001999984,0.007464,-0.132813,0.001999984,0.008788,-0.131752,-1.570606e-08,0.009953,-0.130562,-1.55642e-08,0.009953,-0.130562,0.001999984,0.004223,-0.134395,0.001999984,0.005401,-0.133961,0.001999984,0.007464,-0.132813,0.001999984,-0.001527,-0.134934,0.001999984,0,-0.135,0.001999984,-0.009371,-0.130983,0.001999984,-0.00821,-0.132139,0.001999984,-0.004188,-0.134412,0.001999984,-0.002919,-0.134734,0.001999984,0.007464,-0.132813,-1.583254e-08,0.008788,-0.131752,-1.570606e-08,0.008788,-0.131752,0.001999984,-0.007343,-0.132832,0.001999984,-0.005342,-0.13398,0.001999984,-0.004188,-0.134412,0.001999984,0.006479,-0.13343,-1.59061e-08,0.007464,-0.132813,-1.583254e-08,0.007464,-0.132813,0.001999984,-0.007343,-0.132832,0.001999984,-0.00639,-0.13345,0.001999984,-0.005342,-0.13398,0.001999984,0.005401,-0.133961,0.001999984,0.005401,-0.133961,-1.59694e-08,0.006479,-0.13343,-1.59061e-08,0.004223,-0.134395,-1.602113e-08,0.005401,-0.133961,-1.59694e-08,0.005401,-0.133961,0.001999984,0.002936,-0.134721,-1.605999e-08,0.004223,-0.134395,-1.602113e-08,0.004223,-0.134395,0.001999984,0.001531,-0.134926,-1.608443e-08,0.002936,-0.134721,-1.605999e-08,0.002936,-0.134721,0.001999984,0,-0.135,-1.609325e-08,0.001531,-0.134926,-1.608443e-08,0.001531,-0.134926,0.001999984,-0.001527,-0.134934,-1.608539e-08,0,-0.135,-1.609325e-08,0,-0.135,0.001999984,-0.002919,-0.134734,-1.606154e-08,-0.001527,-0.134934,-1.608539e-08,-0.001527,-0.134934,0.001999984,-0.004188,-0.134412,-1.602316e-08,-0.002919,-0.134734,-1.606154e-08,-0.002919,-0.134734,0.001999984,-0.005342,-0.13398,-1.597166e-08,-0.004188,-0.134412,-1.602316e-08,-0.004188,-0.134412,0.001999984,-0.00639,-0.13345,-1.590848e-08,-0.005342,-0.13398,-1.597166e-08,-0.005342,-0.13398,0.001999984,-0.007343,-0.132832,-1.583481e-08,-0.00639,-0.13345,-1.590848e-08,-0.00639,-0.13345,0.001999984,-0.00821,-0.132139,-1.57522e-08,-0.007343,-0.132832,-1.583481e-08,-0.007343,-0.132832,0.001999984,-0.009371,-0.130983,-1.561439e-08,-0.00821,-0.132139,-1.57522e-08,-0.00821,-0.132139,0.001999984,-0.010391,-0.129722,-1.546407e-08,-0.009371,-0.130983,-1.561439e-08,-0.009371,-0.130983,0.001999984,-0.011868,-0.127496,-1.519871e-08,-0.010391,-0.129722,-1.546407e-08,-0.010391,-0.129722,0.001999985,-0.014802,-0.122855,-1.464546e-08,-0.011868,-0.127496,-1.519871e-08,-0.011868,-0.127496,0.001999985,-0.015686,-0.121844,-1.452494e-08,-0.014802,-0.122855,-1.464546e-08,-0.014802,-0.122855,0.001999985,-0.016327,-0.121269,-1.445639e-08,-0.015686,-0.121844,-1.452494e-08,-0.015686,-0.121844,0.001999986,-0.017021,-0.120787,-1.439893e-08,-0.016327,-0.121269,-1.445639e-08,-0.016327,-0.121269,0.001999986,-0.017776,-0.120409,-1.435387e-08,-0.017021,-0.120787,-1.439893e-08,-0.017021,-0.120787,0.001999986,-0.018604,-0.120148,-1.432276e-08,-0.017776,-0.120409,-1.435387e-08,-0.017776,-0.120409,0.001999986,-0.018604,-0.120148,-1.432276e-08,-0.018604,-0.120148,0.001999986,-0.019047,-0.120065,0.001999986,-0.02,-0.12,-1.430511e-08,-0.019047,-0.120065,-1.431286e-08,-0.019047,-0.120065,0.001999986,-0.02,0.06,7.152557e-09,-0.02,-0.12,-1.430511e-08,-0.02,-0.12,0.001999986,-0.019075,0.060079,7.161975e-09,-0.02,0.06,7.152557e-09,-0.02,0.06,0.002000007,-0.018231,0.060289,7.187009e-09,-0.019075,0.060079,7.161975e-09,-0.019075,0.060079,0.002000007,-0.017458,0.060619,7.226348e-09,-0.018231,0.060289,7.187009e-09,-0.018231,0.060289,0.002000007,-0.016747,0.061058,7.278681e-09,-0.017458,0.060619,7.226348e-09,-0.017458,0.060619,0.002000007,-0.016089,0.061593,7.342458e-09,-0.016747,0.061058,7.278681e-09,-0.016747,0.061058,0.002000007,-0.015475,0.062214,7.416487e-09,-0.016089,0.061593,7.342458e-09,-0.016089,0.061593,0.002000008,-0.014617,0.063281,7.543683e-09,-0.015475,0.062214,7.416487e-09,-0.015475,0.062214,0.002000008,-0.009384,0.071011,8.465171e-09,-0.014617,0.063281,7.543683e-09,-0.014617,0.063281,0.002000008,-0.008209,0.072159,8.602023e-09,-0.009384,0.071011,8.465171e-09,-0.009384,0.071011,0.002000008,-0.007335,0.072848,8.684158e-09,-0.008209,0.072159,8.602023e-09,-0.008209,0.072159,0.002000009,-0.006376,0.073461,8.757234e-09,-0.007335,0.072848,8.684158e-09,-0.007335,0.072848,0.002000009,-0.005324,0.073988,8.820057e-09,-0.006376,0.073461,8.757234e-09,-0.006376,0.073461,0.002000009,-0.004169,0.074417,8.871198e-09,-0.005324,0.073988,8.820057e-09,-0.005324,0.073988,0.002000009,-0.002903,0.074736,8.909225e-09,-0.004169,0.074417,8.871198e-09,-0.004169,0.074417,0.002000009,-0.001517,0.074934,8.932829e-09,-0.002903,0.074736,8.909225e-09,-0.002903,0.074736,0.002000009,0,0.075,8.940697e-09,-0.001517,0.074934,8.932829e-09,-0.001517,0.074934,0.002000009,0.001519,0.074926,8.931875e-09,0,0.075,8.940697e-09,0,0.075,0.002000009,0.002913,0.074722,8.907556e-09,0.001519,0.074926,8.931875e-09,0.001519,0.074926,0.002000009,0.004191,0.074397,8.868813e-09,0.002913,0.074722,8.907556e-09,0.002913,0.074722,0.002000009,0.00536,0.073964,8.817196e-09,0.004191,0.074397,8.868813e-09,0.004191,0.074397,0.002000009,0.00643,0.073434,8.754015e-09,0.00536,0.073964,8.817196e-09,0.00536,0.073964,0.002000009,0.007408,0.072818,0.002000009,0.007408,0.072818,8.680582e-09,0.00643,0.073434,8.754015e-09,0.008304,0.072129,8.598447e-09,0.007408,0.072818,8.680582e-09,0.007408,0.072818,0.002000009,0.009512,0.070979,0.002000008,0.009512,0.070979,8.461356e-09,0.008304,0.072129,8.598447e-09,0.010582,0.069727,8.312107e-09,0.009512,0.070979,8.461356e-09,0.009512,0.070979,0.002000008,0.012136,0.067516,8.048534e-09,0.010582,0.069727,8.312107e-09,0.010582,0.069727,0.002000008,0.015421,0.062543,0.002000008,0.015421,0.062543,7.455706e-09,0.012136,0.067516,8.048534e-09,0.016304,0.061587,7.341742e-09,0.015421,0.062543,7.455706e-09,0.015421,0.062543,0.002000008,0.016937,0.061053,0.002000007,0.016937,0.061053,7.278085e-09,0.016304,0.061587,7.341742e-09,0.017614,0.060617,7.226109e-09,0.016937,0.061053,7.278085e-09,0.016937,0.061053,0.002000007,0.018344,0.060288,7.18689e-09,0.017614,0.060617,7.226109e-09,0.017614,0.060617,0.002000007,0.019137,0.060079,7.161975e-09,0.018344,0.060288,7.18689e-09,0.018344,0.060288,0.002000007,0.02,0.06,7.152557e-09,0.019137,0.060079,7.161975e-09,0.019137,0.060079,0.002000007,0.02,-0.12,-1.430511e-08,0.02,0.06,7.152557e-09,0.02,0.06,0.002000007,0.019149,-0.120075,-1.431406e-08,0.02,-0.12,-1.430511e-08,0.02,-0.12,0.001999986,0.018367,-0.120281,0.001999986,0.018367,-0.120281,-1.433861e-08,0.019149,-0.120075,-1.431406e-08,0.017646,-0.120607,-1.437748e-08,0.018367,-0.120281,-1.433861e-08,0.018367,-0.120281,0.001999986,0.016978,-0.121042,-1.442933e-08,0.017646,-0.120607,-1.437748e-08,0.017646,-0.120607,0.001999986,0.0015,-0.097781,0.001999988,0.0015,-0.077781,0.001999991,0.0015,-0.077781,0.0002859907,-0.0015,-0.097781,0.0002859883,0.0015,-0.097781,0.0002859883,0.0015,-0.077781,0.0002859907,-0.0015,-0.077781,0.001999991,-0.0015,-0.097781,0.001999988,-0.0015,-0.097781,0.0002859883,0.0015,-0.077781,0.001999991,-0.0015,-0.077781,0.001999991,-0.0015,-0.077781,0.0002859907,-0.0015,-0.097781,0.001999988,0.0015,-0.097781,0.001999988,0.0015,-0.097781,0.0002859883,-0.117827,0.01488799,0.05,-0.13022,0.01067999,0.05,-0.12806,0.006308994,0.05,-0.099274,0.01439299,0.05,-0.099431,0.01943799,0.05,-0.117827,0.01488799,0.05,-0.014557,0.006875994,0.05,-0.013731,0.006550996,0.03,-0.025779,0.01158599,0.05,-0.117827,0.014888,0.03,-0.13022,0.01068,0.03,-0.13022,0.01067999,0.05,-0.084271,0.016682,0.05,-0.083361,0.02189199,0.05,-0.099431,0.01943799,0.05,-0.004666,0.011094,0.03,-0.010367,0.007194996,0.03,-0.006544,0.01007999,0.05,-0.07202,0.022593,0.05,-0.083361,0.02189199,0.05,-0.084271,0.016682,0.05,-0.001836,-0.011942,0.03,0.003453,-0.011674,0.03,0.002058,-0.01196301,0.05,-0.041427,0.017156,0.03,-0.036433,0.009406996,0.03,-0.046802,0.013694,0.03,-0.028133,0.004891996,0.03,-0.019128,-0.001211004,0.03,-0.025827,0.003515994,0.05,-0.025779,0.011586,0.03,-0.028133,0.004891996,0.03,-0.036433,0.009406996,0.03,-0.116398,0.01016199,0.05,-0.099274,0.01439299,0.05,-0.117827,0.01488799,0.05,-0.002725,-0.01174801,0.05,-0.006544,0.01007999,0.05,-0.008287,-0.009412006,0.05,-0.061504,0.017023,0.05,-0.063789,0.02212399,0.05,-0.07202,0.022593,0.05,-0.05451,0.020603,0.03,-0.066857,0.022477,0.03,-0.063789,0.02212399,0.05,-0.061504,0.017023,0.05,-0.05451,0.02060299,0.05,-0.063789,0.02212399,0.05,-0.099274,0.01439299,0.05,-0.099274,0.014393,0.03,-0.084271,0.016682,0.05,-0.041427,0.01715599,0.05,-0.05451,0.02060299,0.05,-0.048108,0.01411699,0.05,0.00138,0.012095,0.03,-0.004666,0.011094,0.03,-0.001142,0.01205599,0.05,-0.061504,0.017023,0.05,-0.048108,0.01411699,0.05,-0.05451,0.02060299,0.05,-0.084271,0.016682,0.03,-0.071009,0.017476,0.03,-0.071009,0.01747599,0.05,-0.025779,0.011586,0.03,-0.013731,0.006550996,0.03,-0.028133,0.004891996,0.03,-0.025779,0.01158599,0.05,-0.041427,0.01715599,0.05,-0.036433,0.009406994,0.05,0.008867,0.008342994,0.05,0.008705,0.008682996,0.03,0.004144,0.01134299,0.05,-0.048108,0.01411699,0.05,-0.036433,0.009406994,0.05,-0.041427,0.01715599,0.05,0.002058,-0.01196301,0.05,0.011654,-0.003769006,0.05,-0.002725,-0.01174801,0.05,-0.014557,0.006875994,0.05,-0.025779,0.01158599,0.05,-0.025827,0.003515994,0.05,-0.061504,0.017023,0.05,-0.060622,0.016912,0.03,-0.048108,0.01411699,0.05,-0.041427,0.017156,0.03,-0.025779,0.011586,0.03,-0.036433,0.009406996,0.03,-0.05451,0.020603,0.03,-0.060622,0.016912,0.03,-0.066857,0.022477,0.03,-0.010367,0.007194996,0.03,-0.013731,0.006550996,0.03,-0.011039,0.006736994,0.05,-0.025827,0.003515994,0.05,-0.011039,0.006736994,0.05,-0.014557,0.006875994,0.05,-0.099431,0.01943799,0.05,-0.099431,0.019438,0.03,-0.117827,0.01488799,0.05,-0.084271,0.016682,0.05,-0.084271,0.016682,0.03,-0.071009,0.01747599,0.05,-0.041427,0.01715599,0.05,-0.041427,0.017156,0.03,-0.05451,0.02060299,0.05,-0.05451,0.02060299,0.05,-0.05451,0.020603,0.03,-0.063789,0.02212399,0.05,0.011705,0.003085994,0.05,0.004144,0.01134299,0.05,0.011654,-0.003769006,0.05,-0.036433,0.009406994,0.05,-0.036433,0.009406996,0.03,-0.025827,0.003515994,0.05,-0.008287,-0.009412006,0.05,-0.006544,0.01007999,0.05,-0.011039,0.006736994,0.05,0.008705,0.008682996,0.03,0.00138,0.012095,0.03,0.004144,0.01134299,0.05,-0.011039,0.006736994,0.05,-0.013731,0.006550996,0.03,-0.014557,0.006875994,0.05,-0.013731,0.006550996,0.03,-0.019128,-0.001211004,0.03,-0.028133,0.004891996,0.03,0.004144,0.01134299,0.05,0.00138,0.012095,0.03,-0.001142,0.01205599,0.05,-0.099274,0.01439299,0.05,-0.084271,0.016682,0.05,-0.099431,0.01943799,0.05,-0.025827,0.003515994,0.05,-0.025779,0.01158599,0.05,-0.036433,0.009406994,0.05,-0.081659,0.022124,0.03,-0.099431,0.019438,0.03,-0.099431,0.01943799,0.05,-0.002725,-0.01174801,0.05,0.011654,-0.003769006,0.05,-0.006544,0.01007999,0.05,-0.099274,0.014393,0.03,-0.084271,0.016682,0.03,-0.084271,0.016682,0.05,-0.13022,0.01068,0.03,-0.12806,0.006308996,0.03,-0.12806,0.006308994,0.05,-0.013731,0.006550996,0.03,-0.025779,0.011586,0.03,-0.025779,0.01158599,0.05,-0.081659,0.022124,0.03,-0.084271,0.016682,0.03,-0.099431,0.019438,0.03,-0.025827,0.003515994,0.05,-0.008287,-0.009412006,0.05,-0.011039,0.006736994,0.05,-0.019128,-0.001211004,0.03,-0.007621,-0.009812004,0.03,-0.008287,-0.009412006,0.05,-0.025827,0.003515994,0.05,-0.019128,-0.001211004,0.03,-0.008287,-0.009412006,0.05,-0.071009,0.01747599,0.05,-0.07202,0.022593,0.05,-0.084271,0.016682,0.05,-0.063789,0.02212399,0.05,-0.066857,0.022477,0.03,-0.07202,0.022593,0.05,-0.07202,0.022593,0.05,-0.081659,0.022124,0.03,-0.083361,0.02189199,0.05,0.004144,0.01134299,0.05,-0.001142,0.01205599,0.05,0.011654,-0.003769006,0.05,-0.116398,0.010162,0.03,-0.099274,0.014393,0.03,-0.099274,0.01439299,0.05,-0.116398,0.01016199,0.05,-0.117827,0.01488799,0.05,-0.12806,0.006308994,0.05,-0.002725,-0.01174801,0.05,-0.001836,-0.011942,0.03,0.002058,-0.01196301,0.05,0.008867,0.008342994,0.05,0.004144,0.01134299,0.05,0.011705,0.003085994,0.05,-0.071009,0.01747599,0.05,-0.061504,0.017023,0.05,-0.07202,0.022593,0.05,-0.048108,0.01411699,0.05,-0.046802,0.013694,0.03,-0.036433,0.009406994,0.05,-0.025779,0.01158599,0.05,-0.025779,0.011586,0.03,-0.041427,0.01715599,0.05,-0.099431,0.019438,0.03,-0.117827,0.014888,0.03,-0.117827,0.01488799,0.05,-0.066857,0.022477,0.03,-0.081659,0.022124,0.03,-0.07202,0.022593,0.05,-0.099431,0.019438,0.03,-0.099274,0.014393,0.03,-0.117827,0.014888,0.03,-0.117827,0.01488799,0.05,-0.117827,0.014888,0.03,-0.13022,0.01067999,0.05,-0.116398,0.01016199,0.05,-0.116398,0.010162,0.03,-0.099274,0.01439299,0.05,-0.041427,0.017156,0.03,-0.05451,0.020603,0.03,-0.05451,0.02060299,0.05,-0.006544,0.01007999,0.05,-0.010367,0.007194996,0.03,-0.011039,0.006736994,0.05,-0.025779,0.011586,0.03,-0.041427,0.017156,0.03,-0.041427,0.01715599,0.05,-0.12806,0.006308996,0.03,-0.116398,0.010162,0.03,-0.116398,0.01016199,0.05,-0.13022,0.01067999,0.05,-0.13022,0.01068,0.03,-0.12806,0.006308994,0.05,-0.007621,-0.009812004,0.03,-0.019128,-0.001211004,0.03,-0.013731,0.006550996,0.03,-0.05451,0.020603,0.03,-0.046802,0.013694,0.03,-0.060622,0.016912,0.03,0.002058,-0.01196301,0.05,0.003453,-0.011674,0.03,0.007522,-0.009724005,0.05,-0.046802,0.013694,0.03,-0.036433,0.009406996,0.03,-0.036433,0.009406994,0.05,0.012011,0.001776996,0.03,0.008705,0.008682996,0.03,0.011705,0.003085994,0.05,-0.060622,0.016912,0.03,-0.046802,0.013694,0.03,-0.048108,0.01411699,0.05,-0.071009,0.017476,0.03,-0.060622,0.016912,0.03,-0.061504,0.017023,0.05,-0.001142,0.01205599,0.05,-0.006544,0.01007999,0.05,0.011654,-0.003769006,0.05,0.011654,-0.003769006,0.05,0.012011,0.001776996,0.03,0.011705,0.003085994,0.05,-0.008287,-0.009412006,0.05,-0.007621,-0.009812004,0.03,-0.002725,-0.01174801,0.05,-0.071009,0.01747599,0.05,-0.071009,0.017476,0.03,-0.061504,0.017023,0.05,-0.001142,0.01205599,0.05,-0.004666,0.011094,0.03,-0.006544,0.01007999,0.05,-0.05451,0.020603,0.03,-0.041427,0.017156,0.03,-0.046802,0.013694,0.03,0.011131,-0.005043004,0.03,0.012011,0.001776996,0.03,0.011654,-0.003769006,0.05,0.007522,-0.009724005,0.05,0.011654,-0.003769006,0.05,0.002058,-0.01196301,0.05,0.003453,-0.011674,0.03,0.007132,-0.009824004,0.03,0.007522,-0.009724005,0.05,-0.116398,0.010162,0.03,-0.12806,0.006308996,0.03,-0.117827,0.014888,0.03,-0.099274,0.014393,0.03,-0.116398,0.010162,0.03,-0.117827,0.014888,0.03,-0.12806,0.006308996,0.03,-0.13022,0.01068,0.03,-0.117827,0.014888,0.03,-0.084271,0.016682,0.03,-0.099274,0.014393,0.03,-0.099431,0.019438,0.03,-0.081659,0.022124,0.03,-0.071009,0.017476,0.03,-0.084271,0.016682,0.03,-0.083361,0.02189199,0.05,-0.081659,0.022124,0.03,-0.099431,0.01943799,0.05,-0.060622,0.016912,0.03,-0.071009,0.017476,0.03,-0.066857,0.022477,0.03,0.011705,0.003085994,0.05,0.008705,0.008682996,0.03,0.008867,0.008342994,0.05,0.007132,-0.009824004,0.03,0.011131,-0.005043004,0.03,0.007522,-0.009724005,0.05,-0.081659,0.022124,0.03,-0.066857,0.022477,0.03,-0.071009,0.017476,0.03,-0.036433,0.009406996,0.03,-0.028133,0.004891996,0.03,-0.025827,0.003515994,0.05,-0.12806,0.006308994,0.05,-0.12806,0.006308996,0.03,-0.116398,0.01016199,0.05,-0.007621,-0.009812004,0.03,-0.001836,-0.011942,0.03,-0.002725,-0.01174801,0.05,0.007522,-0.009724005,0.05,0.011131,-0.005043004,0.03,0.011654,-0.003769006,0.05,0.008705,0.008682996,0.03,0.006472,0.004701996,0.03,0.002472,0.007607996,0.03,0.00138,0.012095,0.03,0.002472,0.007607996,0.03,-0.002472,0.007607996,0.03,0.012011,0.001776996,0.03,0.008,-3.576279e-09,0.03,0.006472,0.004701996,0.03,0.011131,-0.005043004,0.03,0.006472,-0.004702004,0.03,0.008,-3.576279e-09,0.03,0.007132,-0.009824004,0.03,0.002472,-0.007608004,0.03,0.006472,-0.004702004,0.03,-0.002472,-0.007608004,0.03,-0.001836,-0.011942,0.03,-0.007621,-0.009812004,0.03,-0.007621,-0.009812004,0.03,-0.013731,0.006550996,0.03,-0.008,-3.576279e-09,0.03,-0.010367,0.007194996,0.03,-0.006472,0.004701996,0.03,-0.008,-3.576279e-09,0.03,-0.004666,0.011094,0.03,-0.002472,0.007607996,0.03,-0.006472,0.004701996,0.03,-0.006472,0.004701996,0.03,-0.002472,0.007607996,0.03,-0.002472,0.007608,0.002000001,0.006472,0.004701996,0.03,0.008,-3.576279e-09,0.03,0.008,-2.384186e-10,0.002,0.006472,-0.004702004,0.03,0.002472,-0.007608004,0.03,0.002472,-0.007608001,0.001999999,-0.008,-2.384186e-10,0.002,-0.008,-3.576279e-09,0.03,-0.006472,0.004701996,0.03,0.002472,0.007607996,0.03,0.006472,0.004701996,0.03,0.006472,0.004701999,0.002000001,0.002472,-0.007608004,0.03,-0.002472,-0.007608004,0.03,-0.002472,-0.007608001,0.001999999,-0.006472,-0.004702,0.002,-0.006472,-0.004702004,0.03,-0.008,-3.576279e-09,0.03,-0.002472,0.007607996,0.03,0.002472,0.007607996,0.03,0.002472,0.007608,0.002000001,0.008,-3.576279e-09,0.03,0.006472,-0.004702004,0.03,0.006472,-0.004702,0.002,-0.002472,-0.007608004,0.03,-0.006472,-0.004702004,0.03,-0.006472,-0.004702,0.002,0.002472,-0.007608004,0.03,0.003453,-0.011674,0.03,-0.001836,-0.011942,0.03,-0.018604,-0.120148,0.001999986,-0.019075,0.060079,0.002000007,-0.019047,-0.120065,0.001999986,0.016353,-0.121573,0.001999986,0.016353,-0.121573,-1.449263e-08,0.016978,-0.121042,0.001999986,0.016353,-0.121573,0.001999986,0.015764,-0.122191,0.001999985,0.016353,-0.121573,-1.449263e-08,0.014929,-0.123252,0.001999985,0.014929,-0.123252,-1.469278e-08,0.015764,-0.122191,0.001999985,0.018344,0.060288,0.002000007,-0.018231,0.060289,0.002000007,0.019137,0.060079,0.002000007,0.001531,-0.134926,0.001999984,0.002936,-0.134721,0.001999984,0.008788,-0.131752,0.001999984,-0.0015,-0.077781,0.001999991,0.0015,-0.077781,0.001999991,-0.019075,0.060079,0.002000007,-0.019075,0.060079,0.002000007,-0.018604,-0.120148,0.001999986,-0.0015,-0.077781,0.001999991,-0.0015,-0.097781,0.001999988,-0.018604,-0.120148,0.001999986,0.0015,-0.097781,0.001999988,0.019137,0.060079,0.002000007,0.0015,-0.077781,0.001999991,0.019149,-0.120075,0.001999986,-0.009371,-0.130983,0.001999984,0,-0.135,0.001999984,-0.010391,-0.129722,0.001999985,0.017614,0.060617,0.002000007,-0.017458,0.060619,0.002000007,0.018344,0.060288,0.002000007,0,-0.135,0.001999984,0.001531,-0.134926,0.001999984,0.009953,-0.130562,0.001999984,0.016937,0.061053,0.002000007,-0.016747,0.061058,0.002000007,0.017614,0.060617,0.002000007,-0.010391,-0.129722,0.001999985,0.009953,-0.130562,0.001999984,-0.011868,-0.127496,0.001999985,0.016304,0.061587,0.002000008,-0.016089,0.061593,0.002000008,0.016937,0.061053,0.002000007,-0.011868,-0.127496,0.001999985,0.014929,-0.123252,0.001999985,-0.014802,-0.122855,0.001999985,0.015421,0.062543,0.002000008,-0.015475,0.062214,0.002000008,0.016304,0.061587,0.002000008,-0.014802,-0.122855,0.001999985,0.015764,-0.122191,0.001999985,-0.015686,-0.121844,0.001999986,0.012136,0.067516,0.002000008,-0.014617,0.063281,0.002000008,0.015421,0.062543,0.002000008,-0.005324,0.073988,0.002000009,-0.007335,0.072848,0.002000009,-0.004169,0.074417,0.002000009,0.009953,-0.130562,0.001999984,0.009953,-0.130562,-1.55642e-08,0.014929,-0.123252,0.001999985,-0.016327,-0.121269,0.001999986,0.016978,-0.121042,0.001999986,-0.017021,-0.120787,0.001999986,-0.015686,-0.121844,0.001999986,0.016353,-0.121573,0.001999986,-0.016327,-0.121269,0.001999986,0.010582,0.069727,0.002000008,-0.009384,0.071011,0.002000008,0.012136,0.067516,0.002000008,0.010582,0.069727,0.002000008,0.009512,0.070979,0.002000008,-0.009384,0.071011,0.002000008,-0.004169,0.074417,0.002000009,-0.008209,0.072159,0.002000009,-0.002903,0.074736,0.002000009,0,0.075,0.002000009,-0.001517,0.074934,0.002000009,-0.009384,0.071011,0.002000008,0.008304,0.072129,0.002000009,0.001519,0.074926,0.002000009,0.009512,0.070979,0.002000008,0.004191,0.074397,0.002000009,0.002913,0.074722,0.002000009,0.008304,0.072129,0.002000009,-0.017021,-0.120787,0.001999986,0.017646,-0.120607,0.001999986,-0.017776,-0.120409,0.001999986,0.008304,0.072129,0.002000009,0.007408,0.072818,0.002000009,0.004191,0.074397,0.002000009,0.019149,-0.120075,0.001999986,-0.018604,-0.120148,0.001999986,0.018367,-0.120281,0.001999986,0.02,-0.12,0.001999986,0.02,0.06,0.002000007,0.019149,-0.120075,0.001999986,0.008788,-0.131752,0.001999984,0.008788,-0.131752,-1.570606e-08,0.009953,-0.130562,0.001999984,0.002936,-0.134721,0.001999984,0.004223,-0.134395,0.001999984,0.007464,-0.132813,0.001999984,-0.002919,-0.134734,0.001999984,-0.001527,-0.134934,0.001999984,-0.009371,-0.130983,0.001999984,-0.009371,-0.130983,0.001999984,-0.00821,-0.132139,0.001999984,-0.002919,-0.134734,0.001999984,0.007464,-0.132813,0.001999984,0.007464,-0.132813,-1.583254e-08,0.008788,-0.131752,0.001999984,-0.00821,-0.132139,0.001999984,-0.007343,-0.132832,0.001999984,-0.004188,-0.134412,0.001999984,0.006479,-0.13343,0.001999984,0.006479,-0.13343,-1.59061e-08,0.007464,-0.132813,0.001999984,0.006479,-0.13343,0.001999984,0.005401,-0.133961,0.001999984,0.006479,-0.13343,-1.59061e-08,0.004223,-0.134395,0.001999984,0.004223,-0.134395,-1.602113e-08,0.005401,-0.133961,0.001999984,0.002936,-0.134721,0.001999984,0.002936,-0.134721,-1.605999e-08,0.004223,-0.134395,0.001999984,0.001531,-0.134926,0.001999984,0.001531,-0.134926,-1.608443e-08,0.002936,-0.134721,0.001999984,0,-0.135,0.001999984,0,-0.135,-1.609325e-08,0.001531,-0.134926,0.001999984,-0.001527,-0.134934,0.001999984,-0.001527,-0.134934,-1.608539e-08,0,-0.135,0.001999984,-0.002919,-0.134734,0.001999984,-0.002919,-0.134734,-1.606154e-08,-0.001527,-0.134934,0.001999984,-0.004188,-0.134412,0.001999984,-0.004188,-0.134412,-1.602316e-08,-0.002919,-0.134734,0.001999984,-0.005342,-0.13398,0.001999984,-0.005342,-0.13398,-1.597166e-08,-0.004188,-0.134412,0.001999984,-0.00639,-0.13345,0.001999984,-0.00639,-0.13345,-1.590848e-08,-0.005342,-0.13398,0.001999984,-0.007343,-0.132832,0.001999984,-0.007343,-0.132832,-1.583481e-08,-0.00639,-0.13345,0.001999984,-0.00821,-0.132139,0.001999984,-0.00821,-0.132139,-1.57522e-08,-0.007343,-0.132832,0.001999984,-0.009371,-0.130983,0.001999984,-0.009371,-0.130983,-1.561439e-08,-0.00821,-0.132139,0.001999984,-0.010391,-0.129722,0.001999985,-0.010391,-0.129722,-1.546407e-08,-0.009371,-0.130983,0.001999984,-0.011868,-0.127496,0.001999985,-0.011868,-0.127496,-1.519871e-08,-0.010391,-0.129722,0.001999985,-0.014802,-0.122855,0.001999985,-0.014802,-0.122855,-1.464546e-08,-0.011868,-0.127496,0.001999985,-0.015686,-0.121844,0.001999986,-0.015686,-0.121844,-1.452494e-08,-0.014802,-0.122855,0.001999985,-0.016327,-0.121269,0.001999986,-0.016327,-0.121269,-1.445639e-08,-0.015686,-0.121844,0.001999986,-0.017021,-0.120787,0.001999986,-0.017021,-0.120787,-1.439893e-08,-0.016327,-0.121269,0.001999986,-0.017776,-0.120409,0.001999986,-0.017776,-0.120409,-1.435387e-08,-0.017021,-0.120787,0.001999986,-0.018604,-0.120148,0.001999986,-0.018604,-0.120148,-1.432276e-08,-0.017776,-0.120409,0.001999986,-0.019047,-0.120065,-1.431286e-08,-0.018604,-0.120148,-1.432276e-08,-0.019047,-0.120065,0.001999986,-0.02,-0.12,0.001999986,-0.02,-0.12,-1.430511e-08,-0.019047,-0.120065,0.001999986,-0.02,0.06,0.002000007,-0.02,0.06,7.152557e-09,-0.02,-0.12,0.001999986,-0.019075,0.060079,0.002000007,-0.019075,0.060079,7.161975e-09,-0.02,0.06,0.002000007,-0.018231,0.060289,0.002000007,-0.018231,0.060289,7.187009e-09,-0.019075,0.060079,0.002000007,-0.017458,0.060619,0.002000007,-0.017458,0.060619,7.226348e-09,-0.018231,0.060289,0.002000007,-0.016747,0.061058,0.002000007,-0.016747,0.061058,7.278681e-09,-0.017458,0.060619,0.002000007,-0.016089,0.061593,0.002000008,-0.016089,0.061593,7.342458e-09,-0.016747,0.061058,0.002000007,-0.015475,0.062214,0.002000008,-0.015475,0.062214,7.416487e-09,-0.016089,0.061593,0.002000008,-0.014617,0.063281,0.002000008,-0.014617,0.063281,7.543683e-09,-0.015475,0.062214,0.002000008,-0.009384,0.071011,0.002000008,-0.009384,0.071011,8.465171e-09,-0.014617,0.063281,0.002000008,-0.008209,0.072159,0.002000009,-0.008209,0.072159,8.602023e-09,-0.009384,0.071011,0.002000008,-0.007335,0.072848,0.002000009,-0.007335,0.072848,8.684158e-09,-0.008209,0.072159,0.002000009,-0.006376,0.073461,0.002000009,-0.006376,0.073461,8.757234e-09,-0.007335,0.072848,0.002000009,-0.005324,0.073988,0.002000009,-0.005324,0.073988,8.820057e-09,-0.006376,0.073461,0.002000009,-0.004169,0.074417,0.002000009,-0.004169,0.074417,8.871198e-09,-0.005324,0.073988,0.002000009,-0.002903,0.074736,0.002000009,-0.002903,0.074736,8.909225e-09,-0.004169,0.074417,0.002000009,-0.001517,0.074934,0.002000009,-0.001517,0.074934,8.932829e-09,-0.002903,0.074736,0.002000009,0,0.075,0.002000009,0,0.075,8.940697e-09,-0.001517,0.074934,0.002000009,0.001519,0.074926,0.002000009,0.001519,0.074926,8.931875e-09,0,0.075,0.002000009,0.002913,0.074722,0.002000009,0.002913,0.074722,8.907556e-09,0.001519,0.074926,0.002000009,0.004191,0.074397,0.002000009,0.004191,0.074397,8.868813e-09,0.002913,0.074722,0.002000009,0.00536,0.073964,0.002000009,0.00536,0.073964,8.817196e-09,0.004191,0.074397,0.002000009,0.00643,0.073434,0.002000009,0.00643,0.073434,8.754015e-09,0.00536,0.073964,0.002000009,0.00643,0.073434,0.002000009,0.007408,0.072818,0.002000009,0.00643,0.073434,8.754015e-09,0.008304,0.072129,0.002000009,0.008304,0.072129,8.598447e-09,0.007408,0.072818,0.002000009,0.008304,0.072129,0.002000009,0.009512,0.070979,0.002000008,0.008304,0.072129,8.598447e-09,0.010582,0.069727,0.002000008,0.010582,0.069727,8.312107e-09,0.009512,0.070979,0.002000008,0.012136,0.067516,0.002000008,0.012136,0.067516,8.048534e-09,0.010582,0.069727,0.002000008,0.012136,0.067516,0.002000008,0.015421,0.062543,0.002000008,0.012136,0.067516,8.048534e-09,0.016304,0.061587,0.002000008,0.016304,0.061587,7.341742e-09,0.015421,0.062543,0.002000008,0.016304,0.061587,0.002000008,0.016937,0.061053,0.002000007,0.016304,0.061587,7.341742e-09,0.017614,0.060617,0.002000007,0.017614,0.060617,7.226109e-09,0.016937,0.061053,0.002000007,0.018344,0.060288,0.002000007,0.018344,0.060288,7.18689e-09,0.017614,0.060617,0.002000007,0.019137,0.060079,0.002000007,0.019137,0.060079,7.161975e-09,0.018344,0.060288,0.002000007,0.02,0.06,0.002000007,0.02,0.06,7.152557e-09,0.019137,0.060079,0.002000007,0.02,-0.12,0.001999986,0.02,-0.12,-1.430511e-08,0.02,0.06,0.002000007,0.019149,-0.120075,0.001999986,0.019149,-0.120075,-1.431406e-08,0.02,-0.12,0.001999986,0.019149,-0.120075,0.001999986,0.018367,-0.120281,0.001999986,0.019149,-0.120075,-1.431406e-08,0.017646,-0.120607,0.001999986,0.017646,-0.120607,-1.437748e-08,0.018367,-0.120281,0.001999986,0.016978,-0.121042,0.001999986,0.016978,-0.121042,-1.442933e-08,0.017646,-0.120607,0.001999986,0.0015,-0.097781,0.0002859883,0.0015,-0.097781,0.001999988,0.0015,-0.077781,0.0002859907,-0.0015,-0.077781,0.0002859907,-0.0015,-0.097781,0.0002859883,0.0015,-0.077781,0.0002859907,-0.0015,-0.077781,0.0002859907,-0.0015,-0.077781,0.001999991,-0.0015,-0.097781,0.0002859883,0.0015,-0.077781,0.0002859907,0.0015,-0.077781,0.001999991,-0.0015,-0.077781,0.0002859907,-0.0015,-0.097781,0.0002859883,-0.0015,-0.097781,0.001999988,0.0015,-0.097781,0.0002859883,0.00138,0.012095,0.03,0.008705,0.008682996,0.03,0.002472,0.007607996,0.03,-0.004666,0.011094,0.03,0.00138,0.012095,0.03,-0.002472,0.007607996,0.03,0.008705,0.008682996,0.03,0.012011,0.001776996,0.03,0.006472,0.004701996,0.03,0.012011,0.001776996,0.03,0.011131,-0.005043004,0.03,0.008,-3.576279e-09,0.03,0.011131,-0.005043004,0.03,0.007132,-0.009824004,0.03,0.006472,-0.004702004,0.03,-0.006472,-0.004702004,0.03,-0.002472,-0.007608004,0.03,-0.007621,-0.009812004,0.03,-0.006472,-0.004702004,0.03,-0.007621,-0.009812004,0.03,-0.008,-3.576279e-09,0.03,-0.013731,0.006550996,0.03,-0.010367,0.007194996,0.03,-0.008,-3.576279e-09,0.03,-0.010367,0.007194996,0.03,-0.004666,0.011094,0.03,-0.006472,0.004701996,0.03,-0.006472,0.004701999,0.002000001,-0.006472,0.004701996,0.03,-0.002472,0.007608,0.002000001,0.006472,0.004701999,0.002000001,0.006472,0.004701996,0.03,0.008,-2.384186e-10,0.002,0.006472,-0.004702,0.002,0.006472,-0.004702004,0.03,0.002472,-0.007608001,0.001999999,-0.006472,0.004701999,0.002000001,-0.008,-2.384186e-10,0.002,-0.006472,0.004701996,0.03,0.002472,0.007608,0.002000001,0.002472,0.007607996,0.03,0.006472,0.004701999,0.002000001,0.002472,-0.007608001,0.001999999,0.002472,-0.007608004,0.03,-0.002472,-0.007608001,0.001999999,-0.008,-2.384186e-10,0.002,-0.006472,-0.004702,0.002,-0.008,-3.576279e-09,0.03,-0.002472,0.007608,0.002000001,-0.002472,0.007607996,0.03,0.002472,0.007608,0.002000001,0.008,-2.384186e-10,0.002,0.008,-3.576279e-09,0.03,0.006472,-0.004702,0.002,-0.002472,-0.007608001,0.001999999,-0.002472,-0.007608004,0.03,-0.006472,-0.004702,0.002,0.003453,-0.011674,0.03,0.002472,-0.007608004,0.03,0.007132,-0.009824004,0.03,0.002472,-0.007608004,0.03,-0.001836,-0.011942,0.03,-0.002472,-0.007608004,0.03]);
+	          for (l = hvs; l < handleVertices.length - 2; l = l + 3) {
+	            handleVertices[l] += cX;
+	            handleVertices[l + 1] += aY;
+	            handleVertices[l + 2] += iZ;
+	          }
+	        }
+	        else {
+	          // Face Definitions FRONT HANDLE
+	          // A
+	          handleVertices[ hvPos ] = handleVertices[ hvPos + 9 ] = aX;
+	          handleVertices[ hvPos + 1 ] = handleVertices[ hvPos + 10 ] = aY;
+	          handleVertices[ hvPos + 2 ] = handleVertices[ hvPos + 11 ] = aZ;
+	          // B
+	          handleVertices[ hvPos + 3 ] = aX;
+	          handleVertices[ hvPos + 4 ] = bY;
+	          handleVertices[ hvPos + 5 ] = aZ;
+	          // D
+	          handleVertices[ hvPos + 6 ] = handleVertices[ hvPos + 12 ] = cX;
+	          handleVertices[ hvPos + 7 ] = handleVertices[ hvPos + 13 ] = bY;
+	          handleVertices[ hvPos + 8 ] = handleVertices[ hvPos + 14 ] = cZ;
+	          // C
+	          handleVertices[ hvPos + 15 ] = cX;
+	          handleVertices[ hvPos + 16 ] = aY;
+	          handleVertices[ hvPos + 17 ] = cZ;
+
+	          hvPos += 18;
+	          // E
+	          handleVertices[ hvPos ] = handleVertices[ hvPos + 9 ] = aX;
+	          handleVertices[ hvPos + 1 ] = handleVertices[ hvPos + 10 ] = aY;
+	          handleVertices[ hvPos + 2 ] = handleVertices[ hvPos + 11 ] = eZ;
+	          // F
+	          handleVertices[ hvPos + 3 ] = aX;
+	          handleVertices[ hvPos + 4 ] = bY;
+	          handleVertices[ hvPos + 5 ] = eZ;
+	          // B
+	          handleVertices[ hvPos + 6 ] = handleVertices[ hvPos + 12 ] = aX;
+	          handleVertices[ hvPos + 7 ] = handleVertices[ hvPos + 13 ] = bY;
+	          handleVertices[ hvPos + 8 ] = handleVertices[ hvPos + 14 ] = aZ;
+	          // A
+	          handleVertices[ hvPos + 15 ] = aX;
+	          handleVertices[ hvPos + 16 ] = aY;
+	          handleVertices[ hvPos + 17 ] = aZ;
+
+	          hvPos += 18;
+	          // G
+	          handleVertices[ hvPos ] = handleVertices[ hvPos + 9 ] = gX;
+	          handleVertices[ hvPos + 1 ] = handleVertices[ hvPos + 10 ] = aY;
+	          handleVertices[ hvPos + 2 ] = handleVertices[ hvPos + 11 ] = eZ;
+	          // H
+	          handleVertices[ hvPos + 3 ] = gX;
+	          handleVertices[ hvPos + 4 ] = bY;
+	          handleVertices[ hvPos + 5 ] = eZ;
+	          // F
+	          handleVertices[ hvPos + 6 ] = handleVertices[ hvPos + 12 ] = aX;
+	          handleVertices[ hvPos + 7 ] = handleVertices[ hvPos + 13 ] = bY;
+	          handleVertices[ hvPos + 8 ] = handleVertices[ hvPos + 14 ] = eZ;
+	          // E
+	          handleVertices[ hvPos + 15 ] = aX;
+	          handleVertices[ hvPos + 16 ] = aY;
+	          handleVertices[ hvPos + 17 ] = eZ;
+
+	          hvPos += 18;
+	          // I
+	          handleVertices[ hvPos ] = handleVertices[ hvPos + 9 ] = gX;
+	          handleVertices[ hvPos + 1 ] = handleVertices[ hvPos + 10 ] = aY;
+	          handleVertices[ hvPos + 2 ] = handleVertices[ hvPos + 11 ] = iZ;
+	          // J
+	          handleVertices[ hvPos + 3 ] = gX;
+	          handleVertices[ hvPos + 4 ] = bY;
+	          handleVertices[ hvPos + 5 ] = iZ;
+	          // H
+	          handleVertices[ hvPos + 6 ] = handleVertices[ hvPos + 12 ] = gX;
+	          handleVertices[ hvPos + 7 ] = handleVertices[ hvPos + 13 ] = bY;
+	          handleVertices[ hvPos + 8 ] = handleVertices[ hvPos + 14 ] = eZ;
+	          // G
+	          handleVertices[ hvPos + 15 ] = gX;
+	          handleVertices[ hvPos + 16 ] = aY;
+	          handleVertices[ hvPos + 17 ] = eZ;
+
+	          hvPos += 18;
+	          // C
+	          handleVertices[ hvPos ] = handleVertices[ hvPos + 9 ] = cX;
+	          handleVertices[ hvPos + 1 ] = handleVertices[ hvPos + 10 ] = aY;
+	          handleVertices[ hvPos + 2 ] = handleVertices[ hvPos + 11 ] = cZ;
+	          // D
+	          handleVertices[ hvPos + 3 ] = cX;
+	          handleVertices[ hvPos + 4 ] = bY;
+	          handleVertices[ hvPos + 5 ] = cZ;
+	          // L
+	          handleVertices[ hvPos + 6 ] = handleVertices[ hvPos + 12 ] = cX;
+	          handleVertices[ hvPos + 7 ] = handleVertices[ hvPos + 13 ] = bY;
+	          handleVertices[ hvPos + 8 ] = handleVertices[ hvPos + 14 ] = iZ;
+	          // K
+	          handleVertices[ hvPos + 15 ] = cX;
+	          handleVertices[ hvPos + 16 ] = aY;
+	          handleVertices[ hvPos + 17 ] = iZ;
+
+	          hvPos += 18;
+	          // E
+	          handleVertices[ hvPos ] = handleVertices[ hvPos + 9 ] = aX;
+	          handleVertices[ hvPos + 1 ] = handleVertices[ hvPos + 10 ] = aY;
+	          handleVertices[ hvPos + 2 ] = handleVertices[ hvPos + 11 ] = eZ;
+	          // A
+	          handleVertices[ hvPos + 3 ] = aX;
+	          handleVertices[ hvPos + 4 ] = aY;
+	          handleVertices[ hvPos + 5 ] = aZ;
+	          // C
+	          handleVertices[ hvPos + 6 ] = handleVertices[ hvPos + 12 ] = cX;
+	          handleVertices[ hvPos + 7 ] = handleVertices[ hvPos + 13 ] = aY;
+	          handleVertices[ hvPos + 8 ] = handleVertices[ hvPos + 14 ] = cZ;
+	          // G
+	          handleVertices[ hvPos + 15 ] = gX;
+	          handleVertices[ hvPos + 16 ] = aY;
+	          handleVertices[ hvPos + 17 ] = eZ;
+
+	          hvPos += 18;
+	          // K
+	          handleVertices[ hvPos ] = handleVertices[ hvPos + 9 ] = cX;
+	          handleVertices[ hvPos + 1 ] = handleVertices[ hvPos + 10 ] = aY;
+	          handleVertices[ hvPos + 2 ] = handleVertices[ hvPos + 11 ] = iZ;
+	          // I
+	          handleVertices[ hvPos + 3 ] = gX;
+	          handleVertices[ hvPos + 4 ] = aY;
+	          handleVertices[ hvPos + 5 ] = iZ;
+	          // G
+	          handleVertices[ hvPos + 6 ] = handleVertices[ hvPos + 12 ] = gX;
+	          handleVertices[ hvPos + 7 ] = handleVertices[ hvPos + 13 ] = aY;
+	          handleVertices[ hvPos + 8 ] = handleVertices[ hvPos + 14 ] = eZ;
+	          // C
+	          handleVertices[ hvPos + 15 ] = cX;
+	          handleVertices[ hvPos + 16 ] = aY;
+	          handleVertices[ hvPos + 17 ] = cZ;
+
+	          hvPos += 18;
+	          // B
+	          handleVertices[ hvPos ] = handleVertices[ hvPos + 9 ] = aX;
+	          handleVertices[ hvPos + 1 ] = handleVertices[ hvPos + 10 ] = bY;
+	          handleVertices[ hvPos + 2 ] = handleVertices[ hvPos + 11 ] = aZ;
+	          // F
+	          handleVertices[ hvPos + 3 ] = aX;
+	          handleVertices[ hvPos + 4 ] = bY;
+	          handleVertices[ hvPos + 5 ] = eZ;
+	          // H
+	          handleVertices[ hvPos + 6 ] = handleVertices[ hvPos + 12 ] = gX;
+	          handleVertices[ hvPos + 7 ] = handleVertices[ hvPos + 13 ] = bY;
+	          handleVertices[ hvPos + 8 ] = handleVertices[ hvPos + 14 ] = eZ;
+	          // D
+	          handleVertices[ hvPos + 15 ] = cX;
+	          handleVertices[ hvPos + 16 ] = bY;
+	          handleVertices[ hvPos + 17 ] = cZ;
+
+	          hvPos += 18;
+	          // D
+	          handleVertices[ hvPos ] = handleVertices[ hvPos + 9 ] = cX;
+	          handleVertices[ hvPos + 1 ] = handleVertices[ hvPos + 10 ] = bY;
+	          handleVertices[ hvPos + 2 ] = handleVertices[ hvPos + 11 ] = cZ;
+	          // H
+	          handleVertices[ hvPos + 3 ] = gX;
+	          handleVertices[ hvPos + 4 ] = bY;
+	          handleVertices[ hvPos + 5 ] = eZ;
+	          // J
+	          handleVertices[ hvPos + 6 ] = handleVertices[ hvPos + 12 ] = gX;
+	          handleVertices[ hvPos + 7 ] = handleVertices[ hvPos + 13 ] = bY;
+	          handleVertices[ hvPos + 8 ] = handleVertices[ hvPos + 14 ] = iZ;
+	          // L
+	          handleVertices[ hvPos + 15 ] = cX;
+	          handleVertices[ hvPos + 16 ] = bY;
+	          handleVertices[ hvPos + 17 ] = iZ;
+
+	          hvPos += 18;
+
+	          // HANDLE PLATE
+
+	          // Vertex Front View
+	          // A/E____D/H
+	          // |      |
+	          // |      |
+	          // |      |
+	          // B/F____C/G
+
+	          aX = xCursor + frameLength + leafLength-handlePlateDistance-handlePlateLength;
+	          aY = handleHeight+0.06;
+	          aZ = zCursor+a.leafWidth+handlePlateWidth;
+	          bY = handleHeight+0.06-handlePlateHeight;
+	          cX = xCursor + frameLength + leafLength-handlePlateDistance;
+	          eZ = zCursor-handlePlateWidth;
+
+	          // A
+	          handleVertices[ hvPos ] = handleVertices[ hvPos + 9 ] = aX;
+	          handleVertices[ hvPos + 1 ] = handleVertices[ hvPos + 10 ] = aY;
+	          handleVertices[ hvPos + 2 ] = handleVertices[ hvPos + 11 ] = aZ;
+	          // B
+	          handleVertices[ hvPos + 3 ] = aX;
+	          handleVertices[ hvPos + 4 ] = bY;
+	          handleVertices[ hvPos + 5 ] = aZ;
+	          // C
+	          handleVertices[ hvPos + 6 ] = handleVertices[ hvPos + 12 ] = cX;
+	          handleVertices[ hvPos + 7 ] = handleVertices[ hvPos + 13 ] = bY;
+	          handleVertices[ hvPos + 8 ] = handleVertices[ hvPos + 14 ] = aZ;
+	          // D
+	          handleVertices[ hvPos + 15 ] = cX;
+	          handleVertices[ hvPos + 16 ] = aY;
+	          handleVertices[ hvPos + 17 ] = aZ;
+
+	          hvPos += 18;
+	        }
+	        // set position in handle vertex array for current door leaf before mirroring
+	        hve = handleVertices.length;
+	        // Duplicating Handle Vertices
+	        hvt = handleVertices.slice(hvs, hve);
+	        var t;
+	        // Mirroring Z Vertices
+	        for (t = 0; t < hvt.length - 2; t = t + 3) {
+	          hvt[t + 2] = -hvt[t + 2] + (wallBackPos + a.leafWidth - leafOffset - frameOffset) * 2 - a.leafWidth;
+	        }
+	        // Changing Vertex Order > Flipping Polygons
+	        for (t = 0; t < hvt.length - 8; t = t + 9) {
+	          hvm[1] = hvt[t + 3];
+	          hvm[2] = hvt[t + 4];
+	          hvm[3] = hvt[t + 5];
+	          hvt[t + 3] = hvt[t + 6];
+	          hvt[t + 4] = hvt[t + 7];
+	          hvt[t + 5] = hvt[t + 8];
+	          hvt[t + 6] = hvm[1];
+	          hvt[t + 7] = hvm[2];
+	          hvt[t + 8] = hvm[3];
+	        }
+	        // Push Vertices into Array
+	        handleVertices = handleVertices.concat(hvt);
+	        hvPos += hvt.length;
+
+	        // set end position in handle vertex array for current door leaf
+	        hvf = handleVertices.length;
+
+	        // Flip Handle for flipped door leafs or if hinge is left
+	        if (leaf[c].flipLeaf || (a.hinge === 'left' && (doorType !== 'doubleSwing' && doorType !== 'doubleSwingDoubleFix'))) {
+	          for (i = hvs; i < hvf - 2; i = i + 3) {
+	            xRotate = handleVertices[i] - frameLength - leafLength / 2 - prevLeafs;
+	            handleVertices[i + 2] = handleVertices[i + 2] - wallBackPos - a.leafWidth / 2 + leafOffset + frameOffset;
+	            handleVertices[i] = -xRotate + frameLength + leafLength / 2 + prevLeafs;
+	            handleVertices[i + 2] = -handleVertices[i + 2] + wallBackPos + a.leafWidth / 2 - leafOffset - frameOffset;
+	          }
+	        }
+	      }
+
+	      // rotation of leaf and handle vertices for door opening
+	      if (leaf[c].angle > 0) {
+
+	        // rotation setup
+	        xRotate = 0;
+	        cosAngle = Math.cos(leaf[c].angle / 180 * Math.PI);
+	        sinAngle = Math.sin(leaf[c].angle / 180 * Math.PI);
+
+	        if (leaf[c].flipLeaf || (a.hinge === 'left' && (doorType !== 'doubleSwing' && doorType !== 'doubleSwingDoubleFix'))) {
+	          rotationOffset = -frameLength - leafLength - prevLeafs;
+	        } else {
+	          rotationOffset = -frameLength - prevLeafs;
+	          sinAngle = -sinAngle;
+	        }
+
+	        // rotation of leaf vertices
+	        for (i = lvs; i < lve - 2; i = i + 3) {
+	          xRotate = leafVertices[i] + rotationOffset;
+	          leafVertices[i + 2] = leafVertices[i + 2] - wallBackPos + leafOffset + frameOffset;
+	          leafVertices[i] = xRotate * cosAngle - leafVertices[i + 2] * sinAngle - rotationOffset;
+	          leafVertices[i + 2] = leafVertices[i + 2] * cosAngle + xRotate * sinAngle + wallBackPos - leafOffset - frameOffset;
+	        }
+	        // rotation of handle vertices
+	        for (i = hvs; i < hvf - 2; i = i + 3) {
+	          xRotate = handleVertices[i] + rotationOffset;
+	          handleVertices[i + 2] = handleVertices[i + 2] - wallBackPos + leafOffset + frameOffset;
+	          handleVertices[i] = xRotate * cosAngle - handleVertices[i + 2] * sinAngle - rotationOffset;
+	          handleVertices[i + 2] = handleVertices[i + 2] * cosAngle + xRotate * sinAngle + wallBackPos - leafOffset - frameOffset;
+	        }
+	      }
+	      xCursor += leafLength;
+	    }
+
+	    var i,
+	      ll = leafVertices.length,
+	      lh = handleVertices.length;
+
+	    // rotate everything by PI if door is set to front
+
+	    if (a.side === 'front') {
+	      for (i = 0; i < ll; i = i + 3) {
+	        xRotate = leafVertices[i] - frameLength - doorOpening / 2;
+	        leafVertices[i + 2] = leafVertices[i + 2] - wallBackPos - leafOffset / 2 - frameOffset / 2 - frameWidth / 2;
+	        leafVertices[i] = -xRotate + frameLength + doorOpening / 2;
+	        leafVertices[i + 2] = -leafVertices[i + 2] + wallBackPos - leafOffset / 2 - frameOffset / 2 + frameWidth / 2;
+	      }
+	      for (i = 0; i < lh; i = i + 3) {
+	        xRotate = handleVertices[i] - frameLength - doorOpening / 2;
+	        handleVertices[i + 2] = handleVertices[i + 2] - wallBackPos - leafOffset / 2 - frameOffset / 2 - frameWidth / 2;
+	        handleVertices[i] = -xRotate + frameLength + doorOpening / 2;
+	        handleVertices[i + 2] = -handleVertices[i + 2] + wallBackPos - leafOffset / 2 - frameOffset / 2 + frameWidth / 2;
+	      }
+	    }
+
+	    return {
+	      frame: {
+	        positions: frameVertices,
+	        normals: getNormalsBuffer.flat(frameVertices),
+	        material: 'frame'
+	      },
+	      handle: {
+	        positions: new Float32Array(handleVertices),
+	        normals: getNormalsBuffer.flat(handleVertices),
+	        material: 'handle'
+	      },
+	      leaf: {
+	        positions: new Float32Array(leafVertices),
+	        normals: getNormalsBuffer.flat(leafVertices),
+	        uvs: new Float32Array(leafUvs),
+	        material: 'leaf'
+	      },
+	      threshold: {
+	        positions: floorVertices,
+	        normals: getNormalsBuffer.flat(floorVertices),
+	        uvs: floorUvs,
+	        material: 'threshold'
+	      }
+	    }
+	  }
+	};
+
+	// dependencies
+
+	var floorComponent = {
+
+	  schema: getSchema('floor'),
+
+	  init: function () {},
+
+	  updateSchema: updateSchema,
+
+	  update: function (oldData) {
+	    var this_ = this;
+	    var data = this_.data;
+
+	    // remove old mesh
+	    this.remove();
+
+	    // get defaults and
+	    this.attributes = cloneDeep_1(data);
+
+	    // get meshes and materials from el3d modules
+	    var meshes = this.generateMeshes3d();
+
+	    // clean up empty meshes to prevent errors
+	    var meshKeys = Object.keys(meshes);
+	    meshKeys.forEach(key => {
+	      if (!meshes[key].positions || !meshes[key].positions.length) {
+	        // console.warn('no vertices for mesh', key)
+	        delete meshes[key];
+	      }
+	    });
+
+	    // setup materials
+	    // defaults
+	    var materials = {
+	      top: 'wood_parquet_oak',
+	      side: 'basic-wall',
+	      ceiling: 'basic-ceiling'
+	    };
+
+	    // check for adapted materials
+	    var materialKeys = Object.keys(data).filter(function(key) {
+	      return key.indexOf('material_') > -1
+	    });
+	    // add materials to instance
+	    materialKeys.forEach(function(key) {
+	      var mesh = key.replace('material_', '');
+	      materials[mesh] = data[key];
+	    });
+
+	    // fetch materials from mat library
+	    Object.keys(materials).forEach(mat => {
+	      materials[mat] = getMaterial(materials[mat]);
+	    });
+
+	    // construct data3d object
+	    var data3d = {
+	      meshes: meshes,
+	      materials: materials
+	    };
+
+	    // create new one
+	    this_.mesh = new THREE.Object3D();
+	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
+
+	    // update view
+	    this_.data3dView.set(data3d);
+	    this_.el.setObject3D('mesh', this_.mesh);
+	    // emit event
+	    this_.el.emit('mesh-updated');
+	  },
+
+	  remove: function () {
+	    if (this.data3dView) {
+	      this.data3dView.destroy();
+	      this.data3dView = null;
+	    }
+	    if (this.mesh) {
+	      this.el.removeObject3D('mesh');
+	      this.mesh = null;
+	    }
+	  },
+
+	  generateMeshes3d: function () {
+	    var a = this.attributes;
+
+	    // 2d polygon vertices
+	    var vertices = [ 0, 0, 0, a.w, a.l, a.w, a.l, 0 ];
+
+	    // top polygon
+	    var topPolygon = generatePolygonBuffer({
+	      outline: vertices,
+	      y: 0,
+	      uvx: a.x,
+	      uvz: a.z
+	    });
+
+	    // ceiling polygon
+	    var ceilingPolygon;
+	    if (a.hasCeiling) {
+	      ceilingPolygon = generatePolygonBuffer({
+	        outline: vertices,
+	        y: a.hCeiling,
+	        uvx: a.x,
+	        uvz: a.z,
+	        flipSide: true
+	      });
+	    } else {
+	      ceilingPolygon = {
+	        vertices: new Float32Array(0),
+	        uvs: new Float32Array(0)
+	      };
+	    }
+
+	    // sides
+	    var sides = generateExtrusionBuffer({
+	      outline: vertices,
+	      y: -a.h,
+	      flipSide: true
+	    });
+
+	    // return meshes
+	    return {
+	      top: {
+	        positions: topPolygon.vertices,
+	        normals: getNormalsBuffer.flat(topPolygon.vertices),
+	        uvs: topPolygon.uvs,
+	        material: 'top'
+	      },
+	      sides: {
+	        positions: sides.vertices,
+	        normals: getNormalsBuffer.flat(sides.vertices),
+	        uvs: sides.uvs,
+	        material: 'side'
+	      },
+	      ceiling: {
+	        positions: ceilingPolygon.vertices,
+	        normals: getNormalsBuffer.flat(ceilingPolygon.vertices),
+	        uvs: ceilingPolygon.uvs,
+	        material: 'ceiling'
+	      }
+	    }
+	  }
+	};
+
+	// from https://github.com/jbgutierrez/path-parse
+	// Split a filename into [root, dir, basename, ext], unix version
+	// 'root' is just a slash, or nothing.
+	var splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+
+	function parsePath (path) {
+	  if (typeof path !== 'string') {
+	    throw new TypeError(
+	      "Parameter 'path' must be a string, not " + typeof path
+	    );
+	  }
+	  var allParts = splitPathRe.exec(path).slice(1);
+	  if (!allParts || allParts.length !== 4) {
+	    throw new TypeError("Invalid path '" + path + "'");
+	  }
+	  allParts[2] = allParts[2] || '';
+	  allParts[3] = allParts[3] || '';
+
+	  return {
+	    root: allParts[0],
+	    dir: allParts[0] + allParts[1].slice(0, -1),
+	    base: allParts[2],
+	    ext: allParts[3],
+	    name: allParts[2].slice(0, allParts[2].length - allParts[3].length)
+	  }
+	}
+
+	var path = {
+	  parse: parsePath
+	};
+
+	// source: https://github.com/petkaantonov/urlparser
+	// modified for browser compatibility
+
+	/*
+	 Copyright (c) 2014 Petka Antonov
+
+	 Permission is hereby granted, free of charge, to any person obtaining a copy
+	 of this software and associated documentation files (the "Software"), to deal
+	 in the Software without restriction, including without limitation the rights
+	 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	 copies of the Software, and to permit persons to whom the Software is
+	 furnished to do so, subject to the following conditions:
+
+	 The above copyright notice and this permission notice shall be included in
+	 all copies or substantial portions of the Software.
+
+	 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+	 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+	 THE SOFTWARE.
+	 */
+	function Url() {
+	  //For more efficient internal representation and laziness.
+	  //The non-underscore versions of these properties are accessor functions
+	  //defined on the prototype.
+	  this._protocol = null;
+	  this._href = "";
+	  this._port = -1;
+	  this._query = null;
+
+	  this.auth = null;
+	  this.slashes = null;
+	  this.host = null;
+	  this.hostname = null;
+	  this.hash = null;
+	  this.search = null;
+	  this.pathname = null;
+
+	  this._prependSlash = false;
+	}
+
+	Url.prototype.parse =
+	  function Url$parse(str, parseQueryString, hostDenotesSlash, disableAutoEscapeChars) {
+	    if (typeof str !== "string") {
+	      throw new TypeError("Parameter 'url' must be a string, not " +
+	        typeof str);
+	    }
+
+	    // check for relative URL in a browser
+	    if(typeof window !== 'undefined' && !str.match(/^[^:]+:\/\//) && str.substr(0, 2) !== '//') {
+	      if(str[0] === '/') str = str.slice(1);
+	      str = window.location.protocol + '//' + window.location.host + window.location.pathname + str;
+	      console.error('mutated', str);
+	    }
+
+	    if (str.substr(0,2) === '//' && typeof window !== 'undefined' && window.location && window.location.protocol) {
+	      str = window.location.protocol + str;
+	    }
+	    var start = 0;
+	    var end = str.length - 1;
+
+	    //Trim leading and trailing ws
+	    while (str.charCodeAt(start) <= 0x20 /*' '*/) start++;
+	    while (str.charCodeAt(end) <= 0x20 /*' '*/) end--;
+
+	    start = this._parseProtocol(str, start, end);
+
+	    //Javascript doesn't have host
+	    if (this._protocol !== "javascript") {
+	      start = this._parseHost(str, start, end, hostDenotesSlash);
+	      var proto = this._protocol;
+	      if (!this.hostname &&
+	        (this.slashes || (proto && !slashProtocols[proto]))) {
+	        this.hostname = this.host = "";
+	      }
+	    }
+
+	    if (start <= end) {
+	      var ch = str.charCodeAt(start);
+
+	      if (ch === 0x2F /*'/'*/ || ch === 0x5C /*'\'*/) {
+	        this._parsePath(str, start, end, disableAutoEscapeChars);
+	      }
+	      else if (ch === 0x3F /*'?'*/) {
+	        this._parseQuery(str, start, end, disableAutoEscapeChars);
+	      }
+	      else if (ch === 0x23 /*'#'*/) {
+	        this._parseHash(str, start, end, disableAutoEscapeChars);
+	      }
+	      else if (this._protocol !== "javascript") {
+	        this._parsePath(str, start, end, disableAutoEscapeChars);
+	      }
+	      else { //For javascript the pathname is just the rest of it
+	        this.pathname = str.slice(start, end + 1 );
+	      }
+
+	    }
+
+	    if (!this.pathname && this.hostname &&
+	      this._slashProtocols[this._protocol]) {
+	      this.pathname = "/";
+	    }
+
+	    if (parseQueryString) {
+	      var search = this.search;
+	      if (search == null) {
+	        search = this.search = "";
+	      }
+	      if (search.charCodeAt(0) === 0x3F /*'?'*/) {
+	        search = search.slice(1);
+	      }
+	      //This calls a setter function, there is no .query data property
+	      this.query = Url.queryString.parse(search);
+	    }
+	  };
+
+	Url.prototype.resolve = function Url$resolve(relative) {
+	  return this.resolveObject(Url.parse(relative, false, true)).format();
+	};
+
+	Url.prototype.format = function Url$format() {
+	  var auth = this.auth || "";
+
+	  if (auth) {
+	    auth = encodeURIComponent(auth);
+	    auth = auth.replace(/%3A/i, ":");
+	    auth += "@";
+	  }
+
+	  var protocol = this.protocol || "";
+	  var pathname = this.pathname || "";
+	  var hash = this.hash || "";
+	  var search = this.search || "";
+	  var query = "";
+	  var hostname = this.hostname || "";
+	  var port = this.port || "";
+	  var host = false;
+	  var scheme = "";
+
+	  //Cache the result of the getter function
+	  var q = this.query;
+	  if (q && typeof q === "object") {
+	    query = Url.queryString.stringify(q);
+	  }
+
+	  if (!search) {
+	    search = query ? "?" + query : "";
+	  }
+
+	  if (protocol && protocol.charCodeAt(protocol.length - 1) !== 0x3A /*':'*/)
+	    protocol += ":";
+
+	  if (this.host) {
+	    host = auth + this.host;
+	  }
+	  else if (hostname) {
+	    var ip6 = hostname.indexOf(":") > -1;
+	    if (ip6) hostname = "[" + hostname + "]";
+	    host = auth + hostname + (port ? ":" + port : "");
+	  }
+
+	  var slashes = this.slashes ||
+	    ((!protocol ||
+	    slashProtocols[protocol]) && host !== false);
+
+
+	  if (protocol) scheme = protocol + (slashes ? "//" : "");
+	  else if (slashes) scheme = "//";
+
+	  if (slashes && pathname && pathname.charCodeAt(0) !== 0x2F /*'/'*/) {
+	    pathname = "/" + pathname;
+	  }
+	  if (search && search.charCodeAt(0) !== 0x3F /*'?'*/)
+	    search = "?" + search;
+	  if (hash && hash.charCodeAt(0) !== 0x23 /*'#'*/)
+	    hash = "#" + hash;
+
+	  pathname = escapePathName(pathname);
+	  search = escapeSearch(search);
+
+	  return scheme + (host === false ? "" : host) + pathname + search + hash;
+	};
+
+	Url.prototype.resolveObject = function Url$resolveObject(relative) {
+	  if (typeof relative === "string")
+	    relative = Url.parse(relative, false, true);
+
+	  var result = this._clone();
+
+	  // hash is always overridden, no matter what.
+	  // even href="" will remove it.
+	  result.hash = relative.hash;
+
+	  // if the relative url is empty, then there"s nothing left to do here.
+	  if (!relative.href) {
+	    result._href = "";
+	    return result;
+	  }
+
+	  // hrefs like //foo/bar always cut to the protocol.
+	  if (relative.slashes && !relative._protocol) {
+	    relative._copyPropsTo(result, true);
+
+	    if (slashProtocols[result._protocol] &&
+	      result.hostname && !result.pathname) {
+	      result.pathname = "/";
+	    }
+	    result._href = "";
+	    return result;
+	  }
+
+	  if (relative._protocol && relative._protocol !== result._protocol) {
+	    // if it"s a known url protocol, then changing
+	    // the protocol does weird things
+	    // first, if it"s not file:, then we MUST have a host,
+	    // and if there was a path
+	    // to begin with, then we MUST have a path.
+	    // if it is file:, then the host is dropped,
+	    // because that"s known to be hostless.
+	    // anything else is assumed to be absolute.
+	    if (!slashProtocols[relative._protocol]) {
+	      relative._copyPropsTo(result, false);
+	      result._href = "";
+	      return result;
+	    }
+
+	    result._protocol = relative._protocol;
+	    if (!relative.host && relative._protocol !== "javascript") {
+	      var relPath = (relative.pathname || "").split("/");
+	      while (relPath.length && !(relative.host = relPath.shift()));
+	      if (!relative.host) relative.host = "";
+	      if (!relative.hostname) relative.hostname = "";
+	      if (relPath[0] !== "") relPath.unshift("");
+	      if (relPath.length < 2) relPath.unshift("");
+	      result.pathname = relPath.join("/");
+	    } else {
+	      result.pathname = relative.pathname;
+	    }
+
+	    result.search = relative.search;
+	    result.host = relative.host || "";
+	    result.auth = relative.auth;
+	    result.hostname = relative.hostname || relative.host;
+	    result._port = relative._port;
+	    result.slashes = result.slashes || relative.slashes;
+	    result._href = "";
+	    return result;
+	  }
+
+	  var isSourceAbs =
+	    (result.pathname && result.pathname.charCodeAt(0) === 0x2F /*'/'*/);
+	  var isRelAbs = (
+	    relative.host ||
+	    (relative.pathname &&
+	    relative.pathname.charCodeAt(0) === 0x2F /*'/'*/)
+	  );
+	  var mustEndAbs = (isRelAbs || isSourceAbs ||
+	  (result.host && relative.pathname));
+
+	  var removeAllDots = mustEndAbs;
+
+	  var srcPath = result.pathname && result.pathname.split("/") || [];
+	  var relPath = relative.pathname && relative.pathname.split("/") || [];
+	  var psychotic = result._protocol && !slashProtocols[result._protocol];
+
+	  // if the url is a non-slashed url, then relative
+	  // links like ../.. should be able
+	  // to crawl up to the hostname, as well.  This is strange.
+	  // result.protocol has already been set by now.
+	  // Later on, put the first path part into the host field.
+	  if (psychotic) {
+	    result.hostname = "";
+	    result._port = -1;
+	    if (result.host) {
+	      if (srcPath[0] === "") srcPath[0] = result.host;
+	      else srcPath.unshift(result.host);
+	    }
+	    result.host = "";
+	    if (relative._protocol) {
+	      relative.hostname = "";
+	      relative._port = -1;
+	      if (relative.host) {
+	        if (relPath[0] === "") relPath[0] = relative.host;
+	        else relPath.unshift(relative.host);
+	      }
+	      relative.host = "";
+	    }
+	    mustEndAbs = mustEndAbs && (relPath[0] === "" || srcPath[0] === "");
+	  }
+
+	  if (isRelAbs) {
+	    // it"s absolute.
+	    result.host = relative.host ?
+	      relative.host : result.host;
+	    result.hostname = relative.hostname ?
+	      relative.hostname : result.hostname;
+	    result.search = relative.search;
+	    srcPath = relPath;
+	    // fall through to the dot-handling below.
+	  } else if (relPath.length) {
+	    // it"s relative
+	    // throw away the existing file, and take the new path instead.
+	    if (!srcPath) srcPath = [];
+	    srcPath.pop();
+	    srcPath = srcPath.concat(relPath);
+	    result.search = relative.search;
+	  } else if (relative.search) {
+	    // just pull out the search.
+	    // like href="?foo".
+	    // Put this after the other two cases because it simplifies the booleans
+	    if (psychotic) {
+	      result.hostname = result.host = srcPath.shift();
+	      //occationaly the auth can get stuck only in host
+	      //this especialy happens in cases like
+	      //url.resolveObject("mailto:local1@domain1", "local2@domain2")
+	      var authInHost = result.host && result.host.indexOf("@") > 0 ?
+	        result.host.split("@") : false;
+	      if (authInHost) {
+	        result.auth = authInHost.shift();
+	        result.host = result.hostname = authInHost.shift();
+	      }
+	    }
+	    result.search = relative.search;
+	    result._href = "";
+	    return result;
+	  }
+
+	  if (!srcPath.length) {
+	    // no path at all.  easy.
+	    // we"ve already handled the other stuff above.
+	    result.pathname = null;
+	    result._href = "";
+	    return result;
+	  }
+
+	  // if a url ENDs in . or .., then it must get a trailing slash.
+	  // however, if it ends in anything else non-slashy,
+	  // then it must NOT get a trailing slash.
+	  var last = srcPath.slice(-1)[0];
+	  var hasTrailingSlash = (
+	  (result.host || relative.host) && (last === "." || last === "..") ||
+	  last === "");
+
+	  // strip single dots, resolve double dots to parent dir
+	  // if the path tries to go above the root, `up` ends up > 0
+	  var up = 0;
+	  for (var i = srcPath.length; i >= 0; i--) {
+	    last = srcPath[i];
+	    if (last === ".") {
+	      srcPath.splice(i, 1);
+	    } else if (last === "..") {
+	      srcPath.splice(i, 1);
+	      up++;
+	    } else if (up) {
+	      srcPath.splice(i, 1);
+	      up--;
+	    }
+	  }
+
+	  // if the path is allowed to go above the root, restore leading ..s
+	  if (!mustEndAbs && !removeAllDots) {
+	    for (; up--; up) {
+	      srcPath.unshift("..");
+	    }
+	  }
+
+	  if (mustEndAbs && srcPath[0] !== "" &&
+	    (!srcPath[0] || srcPath[0].charCodeAt(0) !== 0x2F /*'/'*/)) {
+	    srcPath.unshift("");
+	  }
+
+	  if (hasTrailingSlash && (srcPath.join("/").substr(-1) !== "/")) {
+	    srcPath.push("");
+	  }
+
+	  var isAbsolute = srcPath[0] === "" ||
+	    (srcPath[0] && srcPath[0].charCodeAt(0) === 0x2F /*'/'*/);
+
+	  // put the host back
+	  if (psychotic) {
+	    result.hostname = result.host = isAbsolute ? "" :
+	      srcPath.length ? srcPath.shift() : "";
+	    //occationaly the auth can get stuck only in host
+	    //this especialy happens in cases like
+	    //url.resolveObject("mailto:local1@domain1", "local2@domain2")
+	    var authInHost = result.host && result.host.indexOf("@") > 0 ?
+	      result.host.split("@") : false;
+	    if (authInHost) {
+	      result.auth = authInHost.shift();
+	      result.host = result.hostname = authInHost.shift();
+	    }
+	  }
+
+	  mustEndAbs = mustEndAbs || (result.host && srcPath.length);
+
+	  if (mustEndAbs && !isAbsolute) {
+	    srcPath.unshift("");
+	  }
+
+	  result.pathname = srcPath.length === 0 ? null : srcPath.join("/");
+	  result.auth = relative.auth || result.auth;
+	  result.slashes = result.slashes || relative.slashes;
+	  result._href = "";
+	  return result;
+	};
+
+	var escapePathName = Url.prototype._escapePathName =
+	  function Url$_escapePathName(pathname) {
+	    if (!containsCharacter2(pathname, 0x23 /*'#'*/, 0x3F /*'?'*/)) {
+	      return pathname;
+	    }
+	    //Avoid closure creation to keep this inlinable
+	    return _escapePath(pathname);
+	  };
+
+	var escapeSearch = Url.prototype._escapeSearch =
+	  function Url$_escapeSearch(search) {
+	    if (!containsCharacter2(search, 0x23 /*'#'*/, -1)) return search;
+	    //Avoid closure creation to keep this inlinable
+	    return _escapeSearch(search);
+	  };
+
+	Url.prototype._parseProtocol = function Url$_parseProtocol(str, start, end) {
+	  var doLowerCase = false;
+	  var protocolCharacters = this._protocolCharacters;
+
+	  for (var i = start; i <= end; ++i) {
+	    var ch = str.charCodeAt(i);
+
+	    if (ch === 0x3A /*':'*/) {
+	      var protocol = str.slice(start, i);
+	      if (doLowerCase) protocol = protocol.toLowerCase();
+	      this._protocol = protocol;
+	      return i + 1;
+	    }
+	    else if (protocolCharacters[ch] === 1) {
+	      if (ch < 0x61 /*'a'*/)
+	        doLowerCase = true;
+	    }
+	    else {
+	      return start;
+	    }
+
+	  }
+	  return start;
+	};
+
+	Url.prototype._parseAuth = function Url$_parseAuth(str, start, end, decode) {
+	  var auth = str.slice(start, end + 1);
+	  if (decode) {
+	    auth = decodeURIComponent(auth);
+	  }
+	  this.auth = auth;
+	};
+
+	Url.prototype._parsePort = function Url$_parsePort(str, start, end) {
+	  //Internal format is integer for more efficient parsing
+	  //and for efficient trimming of leading zeros
+	  var port = 0;
+	  //Distinguish between :0 and : (no port number at all)
+	  var hadChars = false;
+	  var validPort = true;
+
+	  for (var i = start; i <= end; ++i) {
+	    var ch = str.charCodeAt(i);
+
+	    if (0x30 /*'0'*/ <= ch && ch <= 0x39 /*'9'*/) {
+	      port = (10 * port) + (ch - 0x30 /*'0'*/);
+	      hadChars = true;
+	    }
+	    else {
+	      validPort = false;
+	      if (ch === 0x5C/*'\'*/ || ch === 0x2F/*'/'*/) {
+	        validPort = true;
+	      }
+	      break;
+	    }
+
+	  }
+	  if ((port === 0 && !hadChars) || !validPort) {
+	    if (!validPort) {
+	      this._port = -2;
+	    }
+	    return 0;
+	  }
+
+	  this._port = port;
+	  return i - start;
+	};
+
+	Url.prototype._parseHost =
+	  function Url$_parseHost(str, start, end, slashesDenoteHost) {
+	    var hostEndingCharacters = this._hostEndingCharacters;
+	    var first = str.charCodeAt(start);
+	    var second = str.charCodeAt(start + 1);
+	    if ((first === 0x2F /*'/'*/ || first === 0x5C /*'\'*/) &&
+	      (second === 0x2F /*'/'*/ || second === 0x5C /*'\'*/)) {
+	      this.slashes = true;
+
+	      //The string starts with //
+	      if (start === 0) {
+	        //The string is just "//"
+	        if (end < 2) return start;
+	        //If slashes do not denote host and there is no auth,
+	        //there is no host when the string starts with //
+	        var hasAuth =
+	          containsCharacter(str, 0x40 /*'@'*/, 2, hostEndingCharacters);
+	        if (!hasAuth && !slashesDenoteHost) {
+	          this.slashes = null;
+	          return start;
+	        }
+	      }
+	      //There is a host that starts after the //
+	      start += 2;
+	    }
+	    //If there is no slashes, there is no hostname if
+	    //1. there was no protocol at all
+	    else if (!this._protocol ||
+	      //2. there was a protocol that requires slashes
+	      //e.g. in 'http:asd' 'asd' is not a hostname
+	      slashProtocols[this._protocol]
+	    ) {
+	      return start;
+	    }
+
+	    var doLowerCase = false;
+	    var idna = false;
+	    var hostNameStart = start;
+	    var hostNameEnd = end;
+	    var lastCh = -1;
+	    var portLength = 0;
+	    var charsAfterDot = 0;
+	    var authNeedsDecoding = false;
+
+	    var j = -1;
+
+	    //Find the last occurrence of an @-sign until hostending character is met
+	    //also mark if decoding is needed for the auth portion
+	    for (var i = start; i <= end; ++i) {
+	      var ch = str.charCodeAt(i);
+
+	      if (ch === 0x40 /*'@'*/) {
+	        j = i;
+	      }
+	      //This check is very, very cheap. Unneeded decodeURIComponent is very
+	      //very expensive
+	      else if (ch === 0x25 /*'%'*/) {
+	        authNeedsDecoding = true;
+	      }
+	      else if (hostEndingCharacters[ch] === 1) {
+	        break;
+	      }
+	    }
+
+	    //@-sign was found at index j, everything to the left from it
+	    //is auth part
+	    if (j > -1) {
+	      this._parseAuth(str, start, j - 1, authNeedsDecoding);
+	      //hostname starts after the last @-sign
+	      start = hostNameStart = j + 1;
+	    }
+
+	    //Host name is starting with a [
+	    if (str.charCodeAt(start) === 0x5B /*'['*/) {
+	      for (var i = start + 1; i <= end; ++i) {
+	        var ch = str.charCodeAt(i);
+
+	        //Assume valid IP6 is between the brackets
+	        if (ch === 0x5D /*']'*/) {
+	          if (str.charCodeAt(i + 1) === 0x3A /*':'*/) {
+	            portLength = this._parsePort(str, i + 2, end) + 1;
+	          }
+	          var hostname = str.slice(start + 1, i).toLowerCase();
+	          this.hostname = hostname;
+	          this.host = this._port > 0 ?
+	            "[" + hostname + "]:" + this._port :
+	            "[" + hostname + "]";
+	          this.pathname = "/";
+	          return i + portLength + 1;
+	        }
+	      }
+	      //Empty hostname, [ starts a path
+	      return start;
+	    }
+
+	    for (var i = start; i <= end; ++i) {
+	      if (charsAfterDot > 62) {
+	        this.hostname = this.host = str.slice(start, i);
+	        return i;
+	      }
+	      var ch = str.charCodeAt(i);
+
+	      if (ch === 0x3A /*':'*/) {
+	        portLength = this._parsePort(str, i + 1, end) + 1;
+	        hostNameEnd = i - 1;
+	        break;
+	      }
+	      else if (ch < 0x61 /*'a'*/) {
+	        if (ch === 0x2E /*'.'*/) {
+	          //Node.js ignores this error
+	          /*
+	           if (lastCh === DOT || lastCh === -1) {
+	           this.hostname = this.host = "";
+	           return start;
+	           }
+	           */
+	          charsAfterDot = -1;
+	        }
+	        else if (0x41 /*'A'*/ <= ch && ch <= 0x5A /*'Z'*/) {
+	          doLowerCase = true;
+	        }
+	        //Valid characters other than ASCII letters -, _, +, 0-9
+	        else if (!(ch === 0x2D /*'-'*/ ||
+	          ch === 0x5F /*'_'*/ ||
+	          ch === 0x2B /*'+'*/ ||
+	          (0x30 /*'0'*/ <= ch && ch <= 0x39 /*'9'*/))
+	        ) {
+	          if (hostEndingCharacters[ch] === 0 &&
+	            this._noPrependSlashHostEnders[ch] === 0) {
+	            this._prependSlash = true;
+	          }
+	          hostNameEnd = i - 1;
+	          break;
+	        }
+	      }
+	      else if (ch >= 0x7B /*'{'*/) {
+	        if (ch <= 0x7E /*'~'*/) {
+	          if (this._noPrependSlashHostEnders[ch] === 0) {
+	            this._prependSlash = true;
+	          }
+	          hostNameEnd = i - 1;
+	          break;
+	        }
+	        idna = true;
+	      }
+	      lastCh = ch;
+	      charsAfterDot++;
+	    }
+
+	    //Node.js ignores this error
+	    /*
+	     if (lastCh === DOT) {
+	     hostNameEnd--;
+	     }
+	     */
+
+	    if (hostNameEnd + 1 !== start &&
+	      hostNameEnd - hostNameStart <= 256) {
+	      var hostname = str.slice(hostNameStart, hostNameEnd + 1);
+	      if (doLowerCase) hostname = hostname.toLowerCase();
+	      this.hostname = hostname;
+	      this.host = this._port > 0 ? hostname + ":" + this._port : hostname;
+	    }
+
+	    return hostNameEnd + 1 + portLength;
+
+	  };
+
+	Url.prototype._copyPropsTo = function Url$_copyPropsTo(input, noProtocol) {
+	  if (!noProtocol) {
+	    input._protocol = this._protocol;
+	  }
+	  input._href = this._href;
+	  input._port = this._port;
+	  input._prependSlash = this._prependSlash;
+	  input.auth = this.auth;
+	  input.slashes = this.slashes;
+	  input.host = this.host;
+	  input.hostname = this.hostname;
+	  input.hash = this.hash;
+	  input.search = this.search;
+	  input.pathname = this.pathname;
+	};
+
+	Url.prototype._clone = function Url$_clone() {
+	  var ret = new Url();
+	  ret._protocol = this._protocol;
+	  ret._href = this._href;
+	  ret._port = this._port;
+	  ret._prependSlash = this._prependSlash;
+	  ret.auth = this.auth;
+	  ret.slashes = this.slashes;
+	  ret.host = this.host;
+	  ret.hostname = this.hostname;
+	  ret.hash = this.hash;
+	  ret.search = this.search;
+	  ret.pathname = this.pathname;
+	  return ret;
+	};
+
+	Url.prototype._getComponentEscaped =
+	  function Url$_getComponentEscaped(str, start, end, isAfterQuery) {
+	    var cur = start;
+	    var i = start;
+	    var ret = "";
+	    var autoEscapeMap = isAfterQuery ?
+	      this._afterQueryAutoEscapeMap : this._autoEscapeMap;
+	    for (; i <= end; ++i) {
+	      var ch = str.charCodeAt(i);
+	      var escaped = autoEscapeMap[ch];
+
+	      if (escaped !== "" && escaped !== undefined) {
+	        if (cur < i) ret += str.slice(cur, i);
+	        ret += escaped;
+	        cur = i + 1;
+	      }
+	    }
+	    if (cur < i + 1) ret += str.slice(cur, i);
+	    return ret;
+	  };
+
+	Url.prototype._parsePath =
+	  function Url$_parsePath(str, start, end, disableAutoEscapeChars) {
+	    var pathStart = start;
+	    var pathEnd = end;
+	    var escape = false;
+	    var autoEscapeCharacters = this._autoEscapeCharacters;
+	    var prePath = this._port === -2 ? "/:" : "";
+
+	    for (var i = start; i <= end; ++i) {
+	      var ch = str.charCodeAt(i);
+	      if (ch === 0x23 /*'#'*/) {
+	        this._parseHash(str, i, end, disableAutoEscapeChars);
+	        pathEnd = i - 1;
+	        break;
+	      }
+	      else if (ch === 0x3F /*'?'*/) {
+	        this._parseQuery(str, i, end, disableAutoEscapeChars);
+	        pathEnd = i - 1;
+	        break;
+	      }
+	      else if (!disableAutoEscapeChars && !escape && autoEscapeCharacters[ch] === 1) {
+	        escape = true;
+	      }
+	    }
+
+	    if (pathStart > pathEnd) {
+	      this.pathname = prePath === "" ? "/" : prePath;
+	      return;
+	    }
+
+	    var path;
+	    if (escape) {
+	      path = this._getComponentEscaped(str, pathStart, pathEnd, false);
+	    }
+	    else {
+	      path = str.slice(pathStart, pathEnd + 1);
+	    }
+	    this.pathname = prePath === ""
+	      ? (this._prependSlash ? "/" + path : path)
+	      : prePath + path;
+	  };
+
+	Url.prototype._parseQuery = function Url$_parseQuery(str, start, end, disableAutoEscapeChars) {
+	  var queryStart = start;
+	  var queryEnd = end;
+	  var escape = false;
+	  var autoEscapeCharacters = this._autoEscapeCharacters;
+
+	  for (var i = start; i <= end; ++i) {
+	    var ch = str.charCodeAt(i);
+
+	    if (ch === 0x23 /*'#'*/) {
+	      this._parseHash(str, i, end, disableAutoEscapeChars);
+	      queryEnd = i - 1;
+	      break;
+	    }
+	    else if (!disableAutoEscapeChars && !escape && autoEscapeCharacters[ch] === 1) {
+	      escape = true;
+	    }
+	  }
+
+	  if (queryStart > queryEnd) {
+	    this.search = "";
+	    return;
+	  }
+
+	  var query;
+	  if (escape) {
+	    query = this._getComponentEscaped(str, queryStart, queryEnd, true);
+	  }
+	  else {
+	    query = str.slice(queryStart, queryEnd + 1);
+	  }
+	  this.search = query;
+	};
+
+	Url.prototype._parseHash = function Url$_parseHash(str, start, end, disableAutoEscapeChars) {
+	  if (start > end) {
+	    this.hash = "";
+	    return;
+	  }
+
+	  this.hash = disableAutoEscapeChars ?
+	    str.slice(start, end + 1) : this._getComponentEscaped(str, start, end, true);
+	};
+
+	Object.defineProperty(Url.prototype, "port", {
+	  get: function() {
+	    if (this._port >= 0) {
+	      return ("" + this._port);
+	    }
+	    return null;
+	  },
+	  set: function(v) {
+	    if (v == null) {
+	      this._port = -1;
+	    }
+	    else {
+	      this._port = parseInt(v, 10);
+	    }
+	  }
+	});
+
+	Object.defineProperty(Url.prototype, "query", {
+	  get: function() {
+	    var query = this._query;
+	    if (query != null) {
+	      return query;
+	    }
+	    var search = this.search;
+
+	    if (search) {
+	      if (search.charCodeAt(0) === 0x3F /*'?'*/) {
+	        search = search.slice(1);
+	      }
+	      if (search !== "") {
+	        this._query = search;
+	        return search;
+	      }
+	    }
+	    return search;
+	  },
+	  set: function(v) {
+	    this._query = v;
+	  }
+	});
+
+	Object.defineProperty(Url.prototype, "path", {
+	  get: function() {
+	    var p = this.pathname || "";
+	    var s = this.search || "";
+	    if (p || s) {
+	      return p + s;
+	    }
+	    return (p == null && s) ? ("/" + s) : null;
+	  },
+	  set: function() {}
+	});
+
+	Object.defineProperty(Url.prototype, "protocol", {
+	  get: function() {
+	    var proto = this._protocol;
+	    return proto ? proto + ":" : proto;
+	  },
+	  set: function(v) {
+	    if (typeof v === "string") {
+	      var end = v.length - 1;
+	      if (v.charCodeAt(end) === 0x3A /*':'*/) {
+	        this._protocol = v.slice(0, end);
+	      }
+	      else {
+	        this._protocol = v;
+	      }
+	    }
+	    else if (v == null) {
+	      this._protocol = null;
+	    }
+	  }
+	});
+
+	Object.defineProperty(Url.prototype, "href", {
+	  get: function() {
+	    var href = this._href;
+	    if (!href) {
+	      href = this._href = this.format();
+	    }
+	    return href;
+	  },
+	  set: function(v) {
+	    this._href = v;
+	  }
+	});
+
+	Url.parse = function Url$Parse(str, parseQueryString, hostDenotesSlash, disableAutoEscapeChars) {
+	  if (str instanceof Url) return str;
+	  var ret = new Url();
+	  ret.parse(str, !!parseQueryString, !!hostDenotesSlash, !!disableAutoEscapeChars);
+	  return ret;
+	};
+
+	Url.format = function Url$Format(obj) {
+	  if (typeof obj === "string") {
+	    obj = Url.parse(obj);
+	  }
+	  if (!(obj instanceof Url)) {
+	    return Url.prototype.format.call(obj);
+	  }
+	  return obj.format();
+	};
+
+	Url.resolve = function Url$Resolve(source, relative) {
+	  return Url.parse(source, false, true).resolve(relative);
+	};
+
+	Url.resolveObject = function Url$ResolveObject(source, relative) {
+	  if (!source) return relative;
+	  return Url.parse(source, false, true).resolveObject(relative);
+	};
+
+	function _escapePath(pathname) {
+	  return pathname.replace(/[?#]/g, function(match) {
+	    return encodeURIComponent(match);
+	  });
+	}
+
+	function _escapeSearch(search) {
+	  return search.replace(/#/g, function(match) {
+	    return encodeURIComponent(match);
+	  });
+	}
+
+	//Search `char1` (integer code for a character) in `string`
+	//starting from `fromIndex` and ending at `string.length - 1`
+	//or when a stop character is found
+	function containsCharacter(string, char1, fromIndex, stopCharacterTable) {
+	  var len = string.length;
+	  for (var i = fromIndex; i < len; ++i) {
+	    var ch = string.charCodeAt(i);
+
+	    if (ch === char1) {
+	      return true;
+	    }
+	    else if (stopCharacterTable[ch] === 1) {
+	      return false;
+	    }
+	  }
+	  return false;
+	}
+
+	//See if `char1` or `char2` (integer codes for characters)
+	//is contained in `string`
+	function containsCharacter2(string, char1, char2) {
+	  for (var i = 0, len = string.length; i < len; ++i) {
+	    var ch = string.charCodeAt(i);
+	    if (ch === char1 || ch === char2) return true;
+	  }
+	  return false;
+	}
+
+	//Makes an array of 128 uint8's which represent boolean values.
+	//Spec is an array of ascii code points or ascii code point ranges
+	//ranges are expressed as [start, end]
+
+	//Create a table with the characters 0x30-0x39 (decimals '0' - '9') and
+	//0x7A (lowercaseletter 'z') as `true`:
+	//
+	//var a = makeAsciiTable([[0x30, 0x39], 0x7A]);
+	//a[0x30]; //1
+	//a[0x15]; //0
+	//a[0x35]; //1
+	function makeAsciiTable(spec) {
+	  var ret = new Uint8Array(128);
+	  spec.forEach(function(item){
+	    if (typeof item === "number") {
+	      ret[item] = 1;
+	    }
+	    else {
+	      var start = item[0];
+	      var end = item[1];
+	      for (var j = start; j <= end; ++j) {
+	        ret[j] = 1;
+	      }
+	    }
+	  });
+
+	  return ret;
+	}
+
+
+	var autoEscape = ["<", ">", "\"", "`", " ", "\r", "\n",
+	  "\t", "{", "}", "|", "\\", "^", "`", "'"];
+
+	var autoEscapeMap = new Array(128);
+
+
+
+	for (var i$1 = 0, len = autoEscapeMap.length; i$1 < len; ++i$1) {
+	  autoEscapeMap[i$1] = "";
+	}
+
+	for (var i$1 = 0, len = autoEscape.length; i$1 < len; ++i$1) {
+	  var c = autoEscape[i$1];
+	  var esc = encodeURIComponent(c);
+	  if (esc === c) {
+	    esc = escape(c);
+	  }
+	  autoEscapeMap[c.charCodeAt(0)] = esc;
+	}
+	var afterQueryAutoEscapeMap = autoEscapeMap.slice();
+	autoEscapeMap[0x5C /*'\'*/] = "/";
+
+	var slashProtocols = Url.prototype._slashProtocols = {
+	  http: true,
+	  https: true,
+	  gopher: true,
+	  file: true,
+	  ftp: true,
+
+	  "http:": true,
+	  "https:": true,
+	  "gopher:": true,
+	  "file:": true,
+	  "ftp:": true
+	};
+
+	Url.prototype._protocolCharacters = makeAsciiTable([
+	  [0x61 /*'a'*/, 0x7A /*'z'*/],
+	  [0x41 /*'A'*/, 0x5A /*'Z'*/],
+	  0x2E /*'.'*/, 0x2B /*'+'*/, 0x2D /*'-'*/
+	]);
+
+	Url.prototype._hostEndingCharacters = makeAsciiTable([
+	  0x23 /*'#'*/, 0x3F /*'?'*/, 0x2F /*'/'*/, 0x5C /*'\'*/
+	]);
+
+	Url.prototype._autoEscapeCharacters = makeAsciiTable(
+	  autoEscape.map(function(v) {
+	    return v.charCodeAt(0);
+	  })
+	);
+
+	//If these characters end a host name, the path will not be prepended a /
+	Url.prototype._noPrependSlashHostEnders = makeAsciiTable(
+	  [
+	    "<", ">", "'", "`", " ", "\r",
+	    "\n", "\t", "{", "}", "|",
+	    "^", "`", "\"", "%", ";"
+	  ].map(function(v) {
+	    return v.charCodeAt(0);
+	  })
+	);
+
+	Url.prototype._autoEscapeMap = autoEscapeMap;
+	Url.prototype._afterQueryAutoEscapeMap = afterQueryAutoEscapeMap;
+
+	// constants
+	var IS_URL = new RegExp('^http:\\/\\/.*$|^https:\\/\\/.*$');
+
+	// configs
+
+	var HEADER_BYTE_LENGTH = 16;
+	var MAGIC_NUMBER = 0x41443344; // AD3D encoded as ASCII characters in hex
+	var VERSION = 1;
+	var TEXTURE_PATH_KEYS = [
+	  // source
+	  'mapDiffuseSource',
+	  'mapSpecularSource',
+	  'mapNormalSource',
+	  'mapAlphaSource',
+	  'mapLightSource',
+	  // hi-res
+	  'mapDiffuse',
+	  'mapSpecular',
+	  'mapNormal',
+	  'mapAlpha',
+	  'mapLight',
+	  // preview
+	  'mapDiffusePreview',
+	  'mapSpecularPreview',
+	  'mapNormalPreview',
+	  'mapAlphaPreview',
+	  'mapLightPreview'
+	];
+
+	// public methods
+
+	function decodeBinary (buffer, options) {
+
+	  // API
+	  options = options || {};
+	  var url = options.url;
+
+	  var parsedUrl, rootDir, origin;
+
+	  if (url) {
+	    parsedUrl = Url.parse(url);
+	    rootDir = path.parse(parsedUrl.path || parsedUrl.pathname || '').dir;
+	    origin = parsedUrl.protocol + '//' + parsedUrl.host;
+	  }
+
+	  // check buffer type
+	  if (!buffer) {
+	    return bluebird_1.reject('Missing buffer parameter.')
+	  } else if (typeof Buffer !== 'undefined' && buffer instanceof Buffer) {
+	    // convert node buffer to arrayBuffer
+	    buffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+	  }
+
+	  // internals
+	  var headerArray = new Int32Array(buffer, 0, HEADER_BYTE_LENGTH / 4);
+	  var magicNumber = headerArray[0];
+	  var version = headerArray[1];
+	  var structureByteLength = headerArray[2];
+	  var payloadByteLength = headerArray[3];
+	  var expectedFileByteLength = HEADER_BYTE_LENGTH + structureByteLength + payloadByteLength;
+
+	  // validation warnings
+
+	  if (magicNumber !== MAGIC_NUMBER) {
+	    console.error('File header error: Wrong magic number. File is probably not data3d buffer format.');
+	  }
+	  if (version !== VERSION) {
+	    console.error('File header error: Wrong version number: ' + version + '. Parser supports version: ' + VERSION);
+	  }
+
+	  // validation errors
+
+	  if (buffer.byteLength !== expectedFileByteLength) {
+	    var errorMessage = 'Can not parse Data3d buffer. Wrong buffer size: ' + buffer.byteLength + ' Expected: ' + expectedFileByteLength;
+	    console.error(errorMessage);
+	    return bluebird_1.reject(errorMessage)
+	  }
+
+	  // parse structure info
+
+	  var structureArray = new Uint16Array(buffer, HEADER_BYTE_LENGTH, structureByteLength / 2);
+	  var structureString = decodeTextArray.utf16(structureArray);
+	  var structure;
+	  try {
+	    structure = JSON.parse(structureString);
+	  } catch (e) {
+	    return bluebird_1.reject(e)
+	  }
+
+
+	  // add geometry arrays to data3d
+
+	  var payloadByteOffset = HEADER_BYTE_LENGTH + structureByteLength;
+	  traverseData3d(structure.data3d, function (data3d) {
+
+	    // map typed arrays to payload area in file buffer
+	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url);
+
+	    //  convert relative material keys into absolute one
+	    if (origin && data3d.materials) convertTextureKeys(data3d, origin, rootDir);
+
+	  });
+
+	  return bluebird_1.resolve(structure.data3d)
+
+	}
+
+	function convertTextureKeys (data3d, origin, rootDir) {
+
+	  var i, l, i2, l2, m, materialKeys = data3d.materialKeys || Object.keys(data3d.materials || {}), texturePathKey;
+
+	  for (i = 0, l = materialKeys.length; i < l; i++) {
+	    m = data3d.materials[materialKeys[i]];
+
+	    // hi-res textures
+	    for (i2 = 0, l2 = TEXTURE_PATH_KEYS.length; i2 < l2; i2++) {
+	      texturePathKey = TEXTURE_PATH_KEYS[i2];
+
+	      if (m[texturePathKey]) {
+	        if (IS_URL.test(m[texturePathKey])) {
+	          // is full URL already
+	          m[texturePathKey] = m[texturePathKey];
+	        } else if (m[texturePathKey].substring(0,5) === '/http') {
+	          // FIXME: prevent leading slashes being added to absolute paths
+	          m[texturePathKey] = m[texturePathKey].substring(1);
+	        } else if (m[texturePathKey][0] === '/') {
+	          // absolute path
+	          m[texturePathKey] = origin + m[texturePathKey];
+	        } else {
+	          // relative path
+	          m[texturePathKey] = origin + rootDir +'/'+ m[texturePathKey];
+	        }
+	      }
+	    }
+
+	  }
+
+	}
+
+	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url) {
+
+	  var mesh, i, l, meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
+
+	  for (i = 0, l = meshKeys.length; i < l; i++) {
+	    mesh = data3d.meshes[meshKeys[i]];
+
+	    // map arrays to meshes
+	    if (mesh.positionsOffset !== undefined && mesh.positionsLength !== undefined) {
+	      mesh.positions = new Float32Array(buffer, payloadByteOffset + mesh.positionsOffset * 4, mesh.positionsLength);
+	      delete mesh.positionsOffset;
+	      delete mesh.positionsLength;
+	    }
+	    if (mesh.normalsOffset !== undefined && mesh.normalsLength !== undefined) {
+	      mesh.normals = new Float32Array(buffer, payloadByteOffset + mesh.normalsOffset * 4, mesh.normalsLength);
+	      delete mesh.normalsOffset;
+	      delete mesh.normalsLength;
+	    }
+	    if (mesh.uvsOffset !== undefined && mesh.uvsLength !== undefined) {
+	      mesh.uvs = new Float32Array(buffer, payloadByteOffset + mesh.uvsOffset * 4, mesh.uvsLength);
+	      delete mesh.uvsOffset;
+	      delete mesh.uvsLength;
+	    }
+	    if (mesh.uvsLightmapOffset !== undefined && mesh.uvsLightmapLength !== undefined) {
+	      mesh.uvsLightmap = new Float32Array(buffer, payloadByteOffset + mesh.uvsLightmapOffset * 4, mesh.uvsLightmapLength);
+	      delete mesh.uvsLightmapOffset;
+	      delete mesh.uvsLightmapLength;
+	    }
+
+	    // add cache key
+	    if (url) mesh.cacheKey = url + ':' + meshKeys[i];
+
+	  }
+
+	}
+
+	function traverseData3d (data3d, callback) {
+
+	  callback(data3d);
+
+	  if (data3d.children) {
+	    for (var i = 0, l = data3d.children.length; i < l; i++) {
+	      traverseData3d(data3d.children[i], callback);
+	    }
+	  }
+
+	}
+
+	// private shared
+
+	var cache = new PromiseCache();
+
+	// main
+
+	function loadData3d (url, options) {
+
+	  // prevent loading of unsupported formats
+	  if (url.indexOf('data3d.buffer') < 0) return Promise.reject(url + ' no data3d')
+	  // try cache
+	  var cacheKey = url;
+	  var promiseFromCache = cache.get(cacheKey);
+	  if (promiseFromCache) return promiseFromCache
+
+	  // fetch
+	  var promise = fetch$1(url, options).then(function(res){
+	    return res.arrayBuffer()
+	  }).then(function(buffer){
+	    return decodeBinary(buffer, { url: url })
+	  });
+
+	  // add to cache
+	  cache.add(cacheKey, promise);
+
+	  return promise
+
+	}
+
+	// dependencies
+
+	var kitchenComponent = {
+
+	  schema: getSchema('kitchen'),
+
+	  init: function () {},
+
+	  updateSchema: updateSchema,
+
+	  update: function (oldData) {
+	    var this_ = this;
+	    var data = this_.data;
+
+	    // remove old mesh
+	    this.remove();
+
+	    // get defaults and
+	    this_.attributes = cloneDeep_1(data);
+
+	    // setup materials
+	    // defaults
+	    this_.materials = {
+	      kitchen: 'cabinet_paint_white',
+	      counter: 'counter_granite_black',
+	      tab: 'chrome',
+	      oven: 'oven_miele_60-60',
+	      cooktop: 'cooktop_westinghouse_60',
+	      microwave: 'microwave_samsung',
+	      chrome: 'chrome',
+	      black_metal: {
+	        "specularCoef": 24,
+	        "colorDiffuse": [0.02, 0.02, 0.02],
+	        "colorSpecular": [0.7, 0.7, 0.7]
+	      }
+	    };
+
+	    // get meshes and materials
+	    // promised base because it loads external meshes
+	    this.generateMeshes3d()
+	      .then(function(meshes) {
+
+	      // clean up empty meshes to prevent errors
+	      var meshKeys = Object.keys(meshes);
+	      meshKeys.forEach(function(key) {
+	        if (!meshes[key].positions || !meshes[key].positions.length) {
+	          // console.warn('no vertices for mesh', key)
+	          delete meshes[key];
+	        }
+	      });
+
+	      // check for adapted materials
+	      var materialKeys = Object.keys(data).filter(function(key) {
+	        return key.indexOf('material_') > -1
+	      });
+	      // add materials to instance
+	      materialKeys.forEach(function(key) {
+	        var mesh = key.replace('material_', '');
+	        this_.materials[mesh] = data[key];
+	      });
+
+	      // fetch materials from mat library
+	      Object.keys(this_.materials).forEach(function(mat) {
+	        this_.materials[mat] = getMaterial(this_.materials[mat]);
+	      });
+
+	      // construct data3d object
+	      var data3d = {
+	        meshes: meshes,
+	        materials: this_.materials
+	      };
+
+	      // create new one
+	      this_.mesh = new THREE.Object3D();
+	      this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
+
+	      // update view
+	      this_.data3dView.set(data3d);
+	      this_.el.setObject3D('mesh', this_.mesh);
+	      // emit event
+	      this_.el.emit('mesh-updated');
+	    });
+	  },
+
+	  remove: function () {
+	    if (this.data3dView) {
+	      this.data3dView.destroy();
+	      this.data3dView = null;
+	    }
+	    if (this.mesh) {
+	      this.el.removeObject3D('mesh');
+	      this.mesh = null;
+	    }
+	  },
+
+	  generateMeshes3d: function () {
+	    var a = this.attributes;
+
+	    // external meshes
+
+	    var externalMeshes = {
+	      singleSink: 'https://storage.3d.io/535e624259ee6b0200000484/170429-0355-60hukz/bf4e4a56-ed95-4b58-a214-4b1a0a84ae0e.gz.data3d.buffer',
+	      doubleSink: 'https://storage.3d.io/535e624259ee6b0200000484/170429-2156-7ufbnv/df481313-8fb4-48da-bc28-0369b08a2c6a.gz.data3d.buffer',
+	      gas60: 'https://storage.3d.io/535e624259ee6b0200000484/170428-2318-1ayck9/ece0ead0-d27f-4cf9-b137-2021f25ad4ee.gz.data3d.buffer',
+	      gas90: 'https://storage.3d.io/535e624259ee6b0200000484/170429-0114-jxswhr/523bb9dc-0103-4c93-aba8-ad0882123550.gz.data3d.buffer',
+	      fridge: 'https://storage.3d.io/535e624259ee6b0200000484/170429-1020-5zimgz/4cec6215-9d5c-4f38-b714-e62fdab6d892.gz.data3d.buffer'
+	    };
+
+	    // internals
+	    var
+	      fridgeHeight = 1.95,
+	      sinkWidth = 0.47,
+	      barCounter = 0.25,
+	      sink = a.sinkType !== 'none',
+	      oven = a.ovenType !== 'none',
+	      cooktop = a.cooktopType !== 'none',
+	      microwave = a.microwave,
+	      largeCooktop = cooktop && a.cooktopType.slice(-2) === '90',
+	      cabinetType = a.cabinetType;
+
+	    // config
+	    var
+	      ovenDistance = 0.02,
+	      extractorHeight = 0.04,
+	      extractorPyramid = largeCooktop ? 0.18 : 0.12,
+	      extractorBottom = a.wallCabinetHeight + 0.1,
+	      extractorWidth = 0.50,
+	      microwaveHeight = 0.33,
+	      ovenHeight = largeCooktop && a.ovenPos === a.cooktopPos ? 0.48 : 0.6,
+	      offsetY = -0.01,
+	      minWallCabinet = 0.3,
+	      cabinetSegments = [
+	        [a.baseBoard, 0.7, 1.9, a.h + offsetY],                                                                 // 0 High Cabinet
+	        [a.baseBoard, 0.7, 1.30, 1.9, a.h + offsetY],                                                           // 1 High Cabinet Oven
+	        [a.baseBoard, 0.4, 0.7, a.counterHeight - a.counterThickness],                                          // 2 Base Cabinet 3 Drawers
+	        [a.baseBoard, 0.7, a.counterHeight - a.counterThickness],                                               // 3 Base Cabinet 2 Drawers
+	        [a.baseBoard, a.counterHeight - a.counterThickness - ovenHeight, a.counterHeight - a.counterThickness], // 4 Base Cabinet Oven
+	        [a.wallCabinetHeight, a.h + offsetY],                                                                   // 5 Wall Cabinet
+	        [a.wallCabinetHeight, a.wallCabinetHeight + microwaveHeight, a.h + offsetY] ,                           // 6 Wall Cabinet Microwave
+	        [a.baseBoard + fridgeHeight, a.h + offsetY],                                                            // 7 High Cabinet Fridge
+	        [a.baseBoard, 0.7, 1.9 - microwaveHeight, 1.9, a.h + offsetY],                                          // 8 High Cabinet Microwave
+	        [a.baseBoard, 0.7, 1.30, 1.9, 1.9 + microwaveHeight, a.h + offsetY],                                    // 9 High Cabinet Oven Microwave
+	      ],
+	      elementLength = a.elementLength,
+	      i,
+	      elementNum, elements = [];
+
+	    ///////////////////
+	    // INPUT VALIDATION
+	    ///////////////////
+
+	    // prevent invalid input
+	    if (a.highCabinetLeft < 0) a.highCabinetLeft = 0;
+	    if (a.highCabinetRight < 0) a.highCabinetRight = 0;
+	    if (a.fridgePos <= 0) a.fridgePos = 1;
+
+	    // validate and adapt materials
+	    if (a.ovenPos === a.cooktopPos && typeof this.materials.oven === 'string') {
+	      if (largeCooktop && this.materials.oven.indexOf('_60') > -1) this.materials['oven'] = 'oven_miele_90-48';
+	      if (!largeCooktop && this.materials.oven.indexOf('_90') > -1) this.materials['oven'] = 'oven_miele_60-60';
+	    }
+	    if (typeof this.materials.cooktop === 'string') {
+	      if (largeCooktop && this.materials.cooktop.indexOf('_60') > -1) this.materials['cooktop'] = 'cooktop_westinghouse_90';
+	      if (!largeCooktop && this.materials.cooktop.indexOf('_90') > -1) this.materials['cooktop'] = 'cooktop_westinghouse_60';
+	    }
+
+	    // prevent bar counter with high cabinets
+	    if ((a.highCabinetLeft || a.highCabinetRight) && a.barCounter) a.barCounter = false;
+	    // prevent integrated extractor when there is no wall cabinet
+	    if (!a.wallCabinet && a.extractorType === 'integrated') a.extractorType = 'box';
+
+	    elementNum = getElCount(a).elementNum;
+	    var remainder = getElCount(a).remainder;
+
+	    // check if fridge fits
+	    if (a.fridge && a.highCabinetLeft < a.fridgePos + 1) {
+	      console.log(elementNum - a.highCabinetRight - 1);
+	      if (a.fridgePos < elementNum - a.highCabinetRight - 1 ) a.highCabinetLeft = a.fridgePos + 1;
+	      else a.fridgePos = a.highCabinetLeft - 1;
+
+	    }
+
+	    // convert 90 cooktop to 60 if is space is too small
+	    if (cooktop && a.cooktopPos >= elementNum - a.highCabinetRight && a.cooktopType.slice(-2) === '90') {
+	      console.log('Large cooktop does not fit');
+	      a.cooktopType = a.cooktopType.substring(0, a.cooktopType.length - 2) + '60';
+	      elementNum = getElCount(a).elementNum;
+	      remainder = getElCount(a).remainder;
+	    }
+
+	    elements = updatePositions(a, {elementNum: elementNum, remainder: remainder});
+
+	    // validate positions
+	    var
+	      cLeft = a.highCabinetLeft,
+	      cRight = elementNum - a.highCabinetRight,
+	      baseCabinets = cRight - cLeft - (remainder > 0 ? 1 : 0),
+	      openPositions = [];
+
+	    for (i = cLeft; i < cRight; i++) {
+	      if ((!cooktop || i !== a.cooktopPos - 1) && (!sink || i !== a.sinkPos - 1) && elements[i] >= elementLength) openPositions.push(i);
+	    }
+
+	    if (!baseCabinets) {
+	      a.sinkType = 'none';
+	      a.cooktopType = 'none';
+	    }
+
+	    if (a.highCabinetLeft && a.highCabinetRight + a.highCabinetLeft > elementNum) a.highCabinetLeft -= 1;
+	    else if (a.highCabinetRight * elementLength > a.l) a.highCabinetRight -= 1;
+
+	    // try to place out of scope elements
+	    if (openPositions.length > 0) {
+	      if (cooktop && a.cooktopPos <= cLeft) a.cooktopPos = openPositions[0] + 1;
+	      if (cooktop && a.cooktopPos > cRight) a.cooktopPos = openPositions[openPositions.length - 1] + 1;
+
+	      if (sink && a.sinkPos <= cLeft) a.sinkPos = openPositions[0] + 1;
+	      if (sink && a.sinkPos > cRight) a.sinkPos = openPositions[openPositions.length - 1] + 1;
+	    }
+
+	    if (oven && a.ovenType === 'double' && a.ovenPos > cLeft && a.ovenPos < cRight) a.ovenType = 'single';
+	    if (oven && sink && a.ovenPos === a.sinkPos) a.ovenPos -= 1;
+	    if (oven && a.ovenPos <= 0) a.ovenPos = cLeft + 1;
+	    if (oven && a.ovenPos > elementNum) a.ovenPos = cRight - 1;
+
+	    // prevent placement in small cabinet
+	    if (cooktop && elements[a.cooktopPos - 1] < elementLength) a.cooktopPos -= 1;
+	    if (sink && elements[a.sinkPos - 1] < elementLength) a.sinkPos -= 1;
+	    if (sink && a.sinkType === 'double' && elements[a.sinkPos] < elementLength) a.sinkType = 'single';
+	    if (oven && elements[a.ovenPos - 1] < elementLength) {
+	      if (a.highCabinetRight > 0) a.ovenPos += 1;
+	      else a.ovenPos -=1;
+	    }
+	    if (microwave && elements[a.microwavePos - 1] < elementLength) a.microwavePos -= 1;
+
+	    // prevent collision
+	    if (sink && a.sinkType === 'double' && cooktop && a.sinkPos + 1 === a.cooktopPos) a.sinkType = 'single';
+	    if (sink && cooktop && a.sinkPos === a.cooktopPos && openPositions.length > 0) {
+	      if (openPositions.length > 1 && openPositions[openPositions.length - 1] + 1 === a.sinkPos) a.sinkPos = openPositions[0] + 1;
+	      else a.sinkPos = openPositions[openPositions.length - 1] + 1;
+	    }
+
+	    // deactivate elements
+	    if (sink && cooktop && a.sinkPos === a.cooktopPos) a.sinkType = 'none';
+	    if (a.sinkPos <= cLeft || a.sinkPos > cRight) a.sinkType = 'none';
+	    if (a.cooktopType <= cLeft || a.cooktopType > cRight) a.cooktopType = 'none';
+
+	    elements = updatePositions(a, {elementNum: elementNum, remainder: remainder});
+
+	    // get x coordinate for element index
+	    function getElementPos(pos) {
+	      var l = 0;
+	      for (var i = 0; i < pos - 1; i++) { l += elements[i]; }
+	      return l
+	    }
+
+	    sink = a.sinkType !== 'none';
+	    oven = a.ovenType !== 'none';
+	    cooktop = a.cooktopType !== 'none';
+
+	    var
+	      sinkLength = a.sinkType === 'single' ? 0.54 : 1.16,
+	      sinkOffset = a.sinkType === 'single' ? 0.03 : 0.02,
+	      extractor = a.extractorType !== 'none',
+	      xCursor = 0, xCursorRight = 0,
+	      baseCabinetNum = elementNum - a.highCabinetLeft - a.highCabinetRight,
+
+	      // internals
+	      k = 0,
+	      kitchenVertices = [],
+	      kvPos = 0,
+	      counterVertices = [],
+	      cvPos = 0,
+	      extractorVertices = [],
+	      evPos = 0,
+	      ovenVertices = [],
+	      ovPos = 0,
+	      ovenUvs = [],
+	      ovUvPos = 0,
+	      cooktopVertices = [],
+	      cooktopUvs = [],
+	      mwVertices = [],
+	      mwUvs = [],
+	      aX,aY,aZ,bY,cX,eX,eY,eZ,fY,gX,iX, iY, iZ, jY, jZ, kX, mX, mY, mZ, nY, nZ, oX, qZ;
+
+	    ///////////////////
+	    // GEOMETRY FUNCTIONS
+	    //////////////////
+
+	    function cabinetDoor(params) {
+
+	      ///////////////////
+	      // CABINET DOORS
+	      //////////////////
+
+	      var minCabinet = 0.1;
+	      var minCabinetFrame = 0.15;
+	      var isFlat = cabinetType === 'flat';
+
+	      // FRONT VIEW VERTICES
+	      //
+	      // A----------C    I----------K
+	      // |E\I----G\K|    | M------O |
+	      // | |      | |    | | Q  S | |
+	      // | |      | |    | | R  T | |
+	      // |F\J----H\L|    | N------P |
+	      // B----------D    J----------L
+	      // U----------V
+
+	      //           __
+	      // style 1 _|  \__
+	      //
+	      //         _   __
+	      // style 2  |_/
+
+	      var outerZOffset = cabinetType === 'style1' ? 0.01 : cabinetType === 'style2' ? -0.01 : a.doorWidth;
+	      var outerOffset = cabinetType === 'style1' ? 0.04 : cabinetType === 'style2' ? 0.005 : 0;
+	      var innerZOffset = cabinetType === 'style1' ? -0.01 : cabinetType === 'style2' ? 0.02 : 0;
+	      var innerOffset = cabinetType === 'style1' ? 0.015 : cabinetType === 'style2' ? 0.03 : 0;
+
+	      aX = params.aX;
+	      aY = params.aY;
+	      aZ = params.aZ;
+	      bY = params.bY;
+	      cX = params.cX;
+	      eY = aY - a.doorWidth / 2;
+	      iZ = aZ + outerZOffset;
+	      fY = bY + a.doorWidth / 2;
+
+	      // prevent messed up polygons
+	      if (aY <= bY || cX <= aX ) return
+
+	      mX = eX + outerOffset;
+	      mY = eY - outerOffset;
+	      nY = fY + outerOffset;
+	      oX = gX - outerOffset;
+	      var qX = mX + innerOffset;
+	      var qY = mY - innerOffset;
+	      qZ = iZ + innerZOffset;
+	      var rY = nY + innerOffset;
+	      var sX = oX - innerOffset;
+
+	      // ADD BASEBOARD FOR LOWEST TILE
+	      if (params.i === 0) {
+	        //B
+	        kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = aX;
+	        kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = a.baseBoard;
+	        kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = aZ;
+	        //U
+	        kitchenVertices[kvPos + 3] = aX;
+	        kitchenVertices[kvPos + 4] = 0;
+	        kitchenVertices[kvPos + 5] = aZ;
+	        //V
+	        kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = cX;
+	        kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = 0;
+	        kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = aZ;
+	        //D
+	        kitchenVertices[kvPos + 15] = cX;
+	        kitchenVertices[kvPos + 16] = a.baseBoard;
+	        kitchenVertices[kvPos + 17] = aZ;
+
+	        kvPos = kvPos + 18;
+	      }
+
+	      // if the gap is too small we'll put a simple placeholder
+	      if (cX - aX < minCabinet || aY - bY < minCabinet) {
+	        // PLACE HOLDER
+	        //A
+	        kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = aX;
+	        kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = aY;
+	        kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = aZ;
+	        //B
+	        kitchenVertices[kvPos + 3] = aX;
+	        kitchenVertices[kvPos + 4] = bY;
+	        kitchenVertices[kvPos + 5] = aZ;
+	        //D
+	        kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = cX;
+	        kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = bY;
+	        kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = aZ;
+	        //C
+	        kitchenVertices[kvPos + 15] = cX;
+	        kitchenVertices[kvPos + 16] = aY;
+	        kitchenVertices[kvPos + 17] = aZ;
+
+	        kvPos = kvPos + 18;
+
+	        return
+	      }
+
+	      var showMicroWave = false, showOven = false;
+	      if ( microwave && c + 1 === a.microwavePos ) {
+	        if (params.k === 6 && params.i === 0) showMicroWave = true;
+	        else if (params.k === 8 && params.i === 2) showMicroWave = true;
+	        else if (params.k === 9 && params.i === 3) showMicroWave = true;
+	      }
+	      if ( oven && c + 1 === a.ovenPos ) {
+	        if (params.k === 1 && (params.i === 1 || (params.i === 2 && a.ovenType === 'double'))) showOven = true;
+	        else if (params.k === 4 || params.k === 9) {
+	          if (params.i === 1 || (params.i === 2 && a.ovenType === 'double')) showOven = true;
+	        }
+	      }
+	      // if (oven && c + 1 === a.ovenPos && a.ovenType === 'double') console.log('double oven', params.k, params.i, a.ovenType)
+	      // if (showMicroWave) console.log('showMicroWav', params.k, params.i)
+	      // if (showOven) console.log('showOven', params.k, params.i, a.ovenType)
+
+	      // DOOR FRAME
+	      //A
+	      kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = aX;
+	      kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = aY;
+	      kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = aZ;
+	      //B
+	      kitchenVertices[kvPos + 3] = aX;
+	      kitchenVertices[kvPos + 4] = bY;
+	      kitchenVertices[kvPos + 5] = aZ;
+	      //F
+	      kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = eX;
+	      kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = fY;
+	      kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = aZ;
+	      //E
+	      kitchenVertices[kvPos + 15] = eX;
+	      kitchenVertices[kvPos + 16] = eY;
+	      kitchenVertices[kvPos + 17] = aZ;
+
+	      kvPos = kvPos + 18;
+
+	      //F
+	      kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = eX;
+	      kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = fY;
+	      kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = aZ;
+	      //B
+	      kitchenVertices[kvPos + 3] = aX;
+	      kitchenVertices[kvPos + 4] = bY;
+	      kitchenVertices[kvPos + 5] = aZ;
+	      //D
+	      kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = cX;
+	      kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = bY;
+	      kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = aZ;
+	      //H
+	      kitchenVertices[kvPos + 15] = gX;
+	      kitchenVertices[kvPos + 16] = fY;
+	      kitchenVertices[kvPos + 17] = aZ;
+
+	      kvPos = kvPos + 18;
+
+	      //G
+	      kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = gX;
+	      kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = eY;
+	      kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = aZ;
+	      //H
+	      kitchenVertices[kvPos + 3] = gX;
+	      kitchenVertices[kvPos + 4] = fY;
+	      kitchenVertices[kvPos + 5] = aZ;
+	      //D
+	      kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = cX;
+	      kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = bY;
+	      kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = aZ;
+	      //C
+	      kitchenVertices[kvPos + 15] = cX;
+	      kitchenVertices[kvPos + 16] = aY;
+	      kitchenVertices[kvPos + 17] = aZ;
+
+	      kvPos = kvPos + 18;
+
+	      //A
+	      kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = aX;
+	      kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = aY;
+	      kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = aZ;
+	      //E
+	      kitchenVertices[kvPos + 3] = eX;
+	      kitchenVertices[kvPos + 4] = eY;
+	      kitchenVertices[kvPos + 5] = aZ;
+	      //G
+	      kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = gX;
+	      kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = eY;
+	      kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = aZ;
+	      //C
+	      kitchenVertices[kvPos + 15] = cX;
+	      kitchenVertices[kvPos + 16] = aY;
+	      kitchenVertices[kvPos + 17] = aZ;
+
+	      kvPos = kvPos + 18;
+
+	      // DOOR LEAF SIDES
+
+	      //E
+	      kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = eX;
+	      kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = eY;
+	      kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = aZ;
+	      //F
+	      kitchenVertices[kvPos + 3] = eX;
+	      kitchenVertices[kvPos + 4] = fY;
+	      kitchenVertices[kvPos + 5] = aZ;
+	      //J
+	      kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = eX;
+	      kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = fY;
+	      kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = iZ;
+	      //I
+	      kitchenVertices[kvPos + 15] = eX;
+	      kitchenVertices[kvPos + 16] = eY;
+	      kitchenVertices[kvPos + 17] = iZ;
+
+	      kvPos = kvPos + 18;
+
+	      //J
+	      kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = eX;
+	      kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = fY;
+	      kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = iZ;
+	      //F
+	      kitchenVertices[kvPos + 3] = eX;
+	      kitchenVertices[kvPos + 4] = fY;
+	      kitchenVertices[kvPos + 5] = aZ;
+	      //H
+	      kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = gX;
+	      kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = fY;
+	      kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = aZ;
+	      //L
+	      kitchenVertices[kvPos + 15] = gX;
+	      kitchenVertices[kvPos + 16] = fY;
+	      kitchenVertices[kvPos + 17] = iZ;
+
+	      kvPos = kvPos + 18;
+
+	      //K
+	      kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = gX;
+	      kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = eY;
+	      kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = iZ;
+	      //L
+	      kitchenVertices[kvPos + 3] = gX;
+	      kitchenVertices[kvPos + 4] = fY;
+	      kitchenVertices[kvPos + 5] = iZ;
+	      //H
+	      kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = gX;
+	      kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = fY;
+	      kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = aZ;
+	      //G
+	      kitchenVertices[kvPos + 15] = gX;
+	      kitchenVertices[kvPos + 16] = eY;
+	      kitchenVertices[kvPos + 17] = aZ;
+
+	      kvPos = kvPos + 18;
+
+	      //E
+	      kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = eX;
+	      kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = eY;
+	      kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = aZ;
+	      //I
+	      kitchenVertices[kvPos + 3] = eX;
+	      kitchenVertices[kvPos + 4] = eY;
+	      kitchenVertices[kvPos + 5] = iZ;
+	      //K
+	      kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = gX;
+	      kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = eY;
+	      kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = iZ;
+	      //G
+	      kitchenVertices[kvPos + 15] = gX;
+	      kitchenVertices[kvPos + 16] = eY;
+	      kitchenVertices[kvPos + 17] = aZ;
+
+	      kvPos = kvPos + 18;
+
+	      // DOOR LEAF FRONT
+	      if ( showOven ) {
+
+	        // oven front
+
+	        //I
+	        ovenVertices[ovPos] = ovenVertices[ovPos + 9] = eX;
+	        ovenVertices[ovPos + 1] = ovenVertices[ovPos + 10] = eY;
+	        ovenVertices[ovPos + 2] = ovenVertices[ovPos + 11] = iZ;
+	        //J
+	        ovenVertices[ovPos + 3] = eX;
+	        ovenVertices[ovPos + 4] = fY;
+	        ovenVertices[ovPos + 5] = iZ;
+	        //L
+	        ovenVertices[ovPos + 6] = ovenVertices[ovPos + 12] = gX;
+	        ovenVertices[ovPos + 7] = ovenVertices[ovPos + 13] = fY;
+	        ovenVertices[ovPos + 8] = ovenVertices[ovPos + 14] = iZ;
+	        //K
+	        ovenVertices[ovPos + 15] = gX;
+	        ovenVertices[ovPos + 16] = eY;
+	        ovenVertices[ovPos + 17] = iZ;
+
+	        ovPos = ovPos + 18;
+
+	        //I
+	        ovenUvs [ovUvPos] = ovenUvs [ovUvPos + 6] = 0;
+	        ovenUvs [ovUvPos + 1] = ovenUvs [ovUvPos + 7] = 1;
+	        //J
+	        ovenUvs [ovUvPos + 2] = 0;
+	        ovenUvs [ovUvPos + 3] = 0; //0.5
+	        //L
+	        ovenUvs [ovUvPos + 4] = ovenUvs [ovUvPos + 8] = 1;
+	        ovenUvs [ovUvPos + 5] = ovenUvs [ovUvPos + 9] = 0; //0.5
+	        //K
+	        ovenUvs [ovUvPos + 10] = 1;
+	        ovenUvs [ovUvPos + 11] = 1;
+
+	        ovUvPos = ovUvPos + 12;
+
+
+	        //kvPos = kvPos+18
+
+	      } else if ( showMicroWave ) {
+
+	        // microwave front
+
+	        //I
+	        mwVertices[0] = mwVertices[9] = eX;
+	        mwVertices[1] = mwVertices[10] = eY;
+	        mwVertices[2] = mwVertices[11] = iZ;
+	        //J
+	        mwVertices[3] = eX;
+	        mwVertices[4] = fY;
+	        mwVertices[5] = iZ;
+	        //L
+	        mwVertices[6] = mwVertices[12] = gX;
+	        mwVertices[7] = mwVertices[13] = fY;
+	        mwVertices[8] = mwVertices[14] = iZ;
+	        //K
+	        mwVertices[15] = gX;
+	        mwVertices[16] = eY;
+	        mwVertices[17] = iZ;
+
+	        mwUvs = [0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1];
+
+
+	        //kvPos = kvPos+18
+
+	      } else {
+
+	        // regular front
+
+	        if (isFlat ||  cX - aX <= minCabinetFrame || aY - bY <= minCabinetFrame ){
+
+	          //I
+	          kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = eX;
+	          kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = eY;
+	          kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = iZ;
+	          //J
+	          kitchenVertices[kvPos + 3] = eX;
+	          kitchenVertices[kvPos + 4] = fY;
+	          kitchenVertices[kvPos + 5] = iZ;
+	          //L
+	          kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = gX;
+	          kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = fY;
+	          kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = iZ;
+	          //K
+	          kitchenVertices[kvPos + 15] = gX;
+	          kitchenVertices[kvPos + 16] = eY;
+	          kitchenVertices[kvPos + 17] = iZ;
+
+	          kvPos = kvPos + 18;
+
+	        } else {
+
+	          // front facing ring
+
+	          //I
+	          kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = eX;
+	          kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = eY;
+	          kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = iZ;
+	          //J
+	          kitchenVertices[kvPos + 3] = eX;
+	          kitchenVertices[kvPos + 4] = fY;
+	          kitchenVertices[kvPos + 5] = iZ;
+	          //N
+	          kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = mX;
+	          kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = nY;
+	          kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = iZ;
+	          //M
+	          kitchenVertices[kvPos + 15] = mX;
+	          kitchenVertices[kvPos + 16] = mY;
+	          kitchenVertices[kvPos + 17] = iZ;
+
+	          kvPos = kvPos + 18;
+
+	          //N
+	          kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = mX;
+	          kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = nY;
+	          kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = iZ;
+	          //J
+	          kitchenVertices[kvPos + 3] = eX;
+	          kitchenVertices[kvPos + 4] = fY;
+	          kitchenVertices[kvPos + 5] = iZ;
+	          //L
+	          kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = gX;
+	          kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = fY;
+	          kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = iZ;
+	          //P
+	          kitchenVertices[kvPos + 15] = oX;
+	          kitchenVertices[kvPos + 16] = nY;
+	          kitchenVertices[kvPos + 17] = iZ;
+
+	          kvPos = kvPos + 18;
+
+	          //O
+	          kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = oX;
+	          kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = mY;
+	          kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = iZ;
+	          //P
+	          kitchenVertices[kvPos + 3] = oX;
+	          kitchenVertices[kvPos + 4] = nY;
+	          kitchenVertices[kvPos + 5] = iZ;
+	          //L
+	          kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = gX;
+	          kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = fY;
+	          kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = iZ;
+	          //K
+	          kitchenVertices[kvPos + 15] = gX;
+	          kitchenVertices[kvPos + 16] = eY;
+	          kitchenVertices[kvPos + 17] = iZ;
+
+	          kvPos = kvPos + 18;
+
+	          //I
+	          kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = eX;
+	          kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = eY;
+	          kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = iZ;
+	          //M
+	          kitchenVertices[kvPos + 3] = mX;
+	          kitchenVertices[kvPos + 4] = mY;
+	          kitchenVertices[kvPos + 5] = iZ;
+	          //O
+	          kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = oX;
+	          kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = mY;
+	          kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = iZ;
+	          //K
+	          kitchenVertices[kvPos + 15] = gX;
+	          kitchenVertices[kvPos + 16] = eY;
+	          kitchenVertices[kvPos + 17] = iZ;
+
+	          kvPos = kvPos + 18;
+
+	          // inner facing ring
+
+	          //M
+	          kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = mX;
+	          kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = mY;
+	          kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = iZ;
+	          //N
+	          kitchenVertices[kvPos + 3] = mX;
+	          kitchenVertices[kvPos + 4] = nY;
+	          kitchenVertices[kvPos + 5] = iZ;
+	          //R
+	          kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = qX;
+	          kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = rY;
+	          kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = qZ;
+	          //Q
+	          kitchenVertices[kvPos + 15] = qX;
+	          kitchenVertices[kvPos + 16] = qY;
+	          kitchenVertices[kvPos + 17] = qZ;
+
+	          kvPos = kvPos + 18;
+
+	          //R
+	          kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = qX;
+	          kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = rY;
+	          kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = qZ;
+	          //N
+	          kitchenVertices[kvPos + 3] = mX;
+	          kitchenVertices[kvPos + 4] = nY;
+	          kitchenVertices[kvPos + 5] = iZ;
+	          //P
+	          kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = oX;
+	          kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = nY;
+	          kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = iZ;
+	          //T
+	          kitchenVertices[kvPos + 15] = sX;
+	          kitchenVertices[kvPos + 16] = rY;
+	          kitchenVertices[kvPos + 17] = qZ;
+
+	          kvPos = kvPos + 18;
+
+	          //S
+	          kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = sX;
+	          kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = qY;
+	          kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = qZ;
+	          //T
+	          kitchenVertices[kvPos + 3] = sX;
+	          kitchenVertices[kvPos + 4] = rY;
+	          kitchenVertices[kvPos + 5] = qZ;
+	          //P
+	          kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = oX;
+	          kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = nY;
+	          kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = iZ;
+	          //O
+	          kitchenVertices[kvPos + 15] = oX;
+	          kitchenVertices[kvPos + 16] = mY;
+	          kitchenVertices[kvPos + 17] = iZ;
+
+	          kvPos = kvPos + 18;
+
+	          //M
+	          kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = mX;
+	          kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = mY;
+	          kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = iZ;
+	          //Q
+	          kitchenVertices[kvPos + 3] = qX;
+	          kitchenVertices[kvPos + 4] = qY;
+	          kitchenVertices[kvPos + 5] = qZ;
+	          //S
+	          kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = sX;
+	          kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = qY;
+	          kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = qZ;
+	          //O
+	          kitchenVertices[kvPos + 15] = oX;
+	          kitchenVertices[kvPos + 16] = mY;
+	          kitchenVertices[kvPos + 17] = iZ;
+
+	          kvPos = kvPos + 18;
+
+	          // inner face
+
+	          //Q
+	          kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = qX;
+	          kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = qY;
+	          kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = qZ;
+	          //R
+	          kitchenVertices[kvPos + 3] = qX;
+	          kitchenVertices[kvPos + 4] = rY;
+	          kitchenVertices[kvPos + 5] = qZ;
+	          //T
+	          kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = sX;
+	          kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = rY;
+	          kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = qZ;
+	          //S
+	          kitchenVertices[kvPos + 15] = sX;
+	          kitchenVertices[kvPos + 16] = qY;
+	          kitchenVertices[kvPos + 17] = qZ;
+
+	          kvPos = kvPos + 18;
+	        }
+	      }
+	    }
+
+	    function genExtractor () {
+	      // EXTRACTOR
+	      //   E------G
+	      //  /|     /|
+	      // A------C |
+	      // | F----|-H
+	      // |/     |/
+	      // B------D
+
+	      var
+	        isIntegrated = a.extractorType === 'integrated',
+	        aX = getElementPos(a.cooktopPos) + (a.wallCabinet && !isIntegrated ? 0.05 : 0 ),
+	        aY = extractorBottom + extractorHeight,
+	        aZ = a.wallCabinet && isIntegrated ? extractorWidth : a.w - 0.6 + extractorWidth,
+	        cX = getElementPos(a.cooktopPos + 1) - (a.wallCabinet && !isIntegrated ? 0.05 : 0 ),
+	        eZ = a.wallCabinet && isIntegrated ? a.wallCabinetWidth : a.w - 0.6,
+	        bY = extractorBottom; // a.wallCabinetHeight
+
+	      // front
+	      // A
+	      extractorVertices[evPos] = extractorVertices[evPos + 9] = aX;
+	      extractorVertices[evPos + 1] = extractorVertices[evPos + 10] = aY;
+	      extractorVertices[evPos + 2] = extractorVertices[evPos + 11] = aZ;
+	      //B
+	      extractorVertices[evPos + 3] = aX;
+	      extractorVertices[evPos + 4] = bY;
+	      extractorVertices[evPos + 5] = aZ;
+	      //D
+	      extractorVertices[evPos + 6] = extractorVertices[evPos + 12] = cX;
+	      extractorVertices[evPos + 7] = extractorVertices[evPos + 13] = bY;
+	      extractorVertices[evPos + 8] = extractorVertices[evPos + 14] = aZ;
+	      //C
+	      extractorVertices[evPos + 15] = cX;
+	      extractorVertices[evPos + 16] = aY;
+	      extractorVertices[evPos + 17] = aZ;
+
+	      evPos = evPos + 18;
+
+	      if (a.wallCabinet && isIntegrated) {
+	        // top
+	        // E
+	        extractorVertices[evPos] = extractorVertices[evPos + 9] = aX;
+	        extractorVertices[evPos + 1] = extractorVertices[evPos + 10] = aY;
+	        extractorVertices[evPos + 2] = extractorVertices[evPos + 11] = eZ;
+	        //A
+	        extractorVertices[evPos + 3] = aX;
+	        extractorVertices[evPos + 4] = aY;
+	        extractorVertices[evPos + 5] = aZ;
+	        //C
+	        extractorVertices[evPos + 6] = extractorVertices[evPos + 12] = cX;
+	        extractorVertices[evPos + 7] = extractorVertices[evPos + 13] = aY;
+	        extractorVertices[evPos + 8] = extractorVertices[evPos + 14] = aZ;
+	        //G
+	        extractorVertices[evPos + 15] = cX;
+	        extractorVertices[evPos + 16] = aY;
+	        extractorVertices[evPos + 17] = eZ;
+
+	        evPos = evPos + 18;
+	      }
+
+	      // left
+	      // E
+	      extractorVertices[evPos] = extractorVertices[evPos + 9] = aX;
+	      extractorVertices[evPos + 1] = extractorVertices[evPos + 10] = aY;
+	      extractorVertices[evPos + 2] = extractorVertices[evPos + 11] = eZ;
+	      //F
+	      extractorVertices[evPos + 3] = aX;
+	      extractorVertices[evPos + 4] = bY;
+	      extractorVertices[evPos + 5] = eZ;
+	      //B
+	      extractorVertices[evPos + 6] = extractorVertices[evPos + 12] = aX;
+	      extractorVertices[evPos + 7] = extractorVertices[evPos + 13] = bY;
+	      extractorVertices[evPos + 8] = extractorVertices[evPos + 14] = aZ;
+	      //A
+	      extractorVertices[evPos + 15] = aX;
+	      extractorVertices[evPos + 16] = aY;
+	      extractorVertices[evPos + 17] = aZ;
+
+	      evPos = evPos + 18;
+
+	      // right
+	      //C
+	      extractorVertices[evPos] = extractorVertices[evPos + 9] = cX;
+	      extractorVertices[evPos + 1] = extractorVertices[evPos + 10] = aY;
+	      extractorVertices[evPos + 2] = extractorVertices[evPos + 11] = aZ;
+	      //D
+	      extractorVertices[evPos + 3] = cX;
+	      extractorVertices[evPos + 4] = bY;
+	      extractorVertices[evPos + 5] = aZ;
+	      //H
+	      extractorVertices[evPos + 6] = extractorVertices[evPos + 12] = cX;
+	      extractorVertices[evPos + 7] = extractorVertices[evPos + 13] = bY;
+	      extractorVertices[evPos + 8] = extractorVertices[evPos + 14] = eZ;
+	      //G
+	      extractorVertices[evPos + 15] = cX;
+	      extractorVertices[evPos + 16] = aY;
+	      extractorVertices[evPos + 17] = eZ;
+
+	      evPos = evPos + 18;
+
+
+	      // bottom
+	      //B
+	      extractorVertices[evPos] = extractorVertices[evPos + 9] = aX;
+	      extractorVertices[evPos + 1] = extractorVertices[evPos + 10] = bY;
+	      extractorVertices[evPos + 2] = extractorVertices[evPos + 11] = aZ;
+	      //F
+	      extractorVertices[evPos + 3] = aX;
+	      extractorVertices[evPos + 4] = bY;
+	      extractorVertices[evPos + 5] = eZ;
+	      //H
+	      extractorVertices[evPos + 6] = extractorVertices[evPos + 12] = cX;
+	      extractorVertices[evPos + 7] = extractorVertices[evPos + 13] = bY;
+	      extractorVertices[evPos + 8] = extractorVertices[evPos + 14] = eZ;
+	      //D
+	      extractorVertices[evPos + 15] = cX;
+	      extractorVertices[evPos + 16] = bY;
+	      extractorVertices[evPos + 17] = aZ;
+
+	      evPos = evPos + 18;
+
+	      // back
+	      //G
+	      extractorVertices[evPos] = extractorVertices[evPos + 9] = cX;
+	      extractorVertices[evPos + 1] = extractorVertices[evPos + 10] = aY;
+	      extractorVertices[evPos + 2] = extractorVertices[evPos + 11] = eZ;
+	      //H
+	      extractorVertices[evPos + 3] = cX;
+	      extractorVertices[evPos + 4] = bY;
+	      extractorVertices[evPos + 5] = eZ;
+	      //F
+	      extractorVertices[evPos + 6] = extractorVertices[evPos + 12] = aX;
+	      extractorVertices[evPos + 7] = extractorVertices[evPos + 13] = bY;
+	      extractorVertices[evPos + 8] = extractorVertices[evPos + 14] = eZ;
+	      //E
+	      extractorVertices[evPos + 15] = aX;
+	      extractorVertices[evPos + 16] = aY;
+	      extractorVertices[evPos + 17] = eZ;
+
+	      evPos = evPos + 18;
+
+	      if (!a.wallCabinet || a.extractorType !== 'integrated') {
+
+	        var centerVent = (a.w >= 0.7 && !a.wallCabinet) || a.barCounter;
+
+	        iX = aX + (cX - aX) / 2 - 0.12;
+	        iY = a.h + offsetY;
+	        iZ = centerVent ? a.w - 0.25 : a.w - 0.4;
+	        jY = aY + (a.extractorType === 'pyramid' ? extractorPyramid : 0);
+	        kX = iX + 0.24;
+	        mZ = centerVent ? a.w - 0.45 : a.w - 0.6;
+
+	        // EXTRACTOR ROOF TOP
+	        // E-N--P--G
+	        // | J--L  |
+	        // |       |
+	        // A-------C
+
+
+	        // LEFT
+	        // E
+	        extractorVertices[evPos] = extractorVertices[evPos + 9] = aX;
+	        extractorVertices[evPos + 1] = extractorVertices[evPos + 10] = aY;
+	        extractorVertices[evPos + 2] = extractorVertices[evPos + 11] = eZ;
+	        // A
+	        extractorVertices[evPos + 3] = aX;
+	        extractorVertices[evPos + 4] = aY;
+	        extractorVertices[evPos + 5] = aZ;
+	        //J
+	        extractorVertices[evPos + 6] = extractorVertices[evPos + 12] = iX;
+	        extractorVertices[evPos + 7] = extractorVertices[evPos + 13] = jY;
+	        extractorVertices[evPos + 8] = extractorVertices[evPos + 14] = iZ;
+	        //N
+	        extractorVertices[evPos + 15] = iX;
+	        extractorVertices[evPos + 16] = jY;
+	        extractorVertices[evPos + 17] = mZ;
+
+	        evPos = evPos + 18;
+
+	        // FRONT
+	        // J
+	        extractorVertices[evPos] = extractorVertices[evPos + 9] = iX;
+	        extractorVertices[evPos + 1] = extractorVertices[evPos + 10] = jY;
+	        extractorVertices[evPos + 2] = extractorVertices[evPos + 11] = iZ;
+	        // A
+	        extractorVertices[evPos + 3] = aX;
+	        extractorVertices[evPos + 4] = aY;
+	        extractorVertices[evPos + 5] = aZ;
+	        // C
+	        extractorVertices[evPos + 6] = extractorVertices[evPos + 12] = cX;
+	        extractorVertices[evPos + 7] = extractorVertices[evPos + 13] = aY;
+	        extractorVertices[evPos + 8] = extractorVertices[evPos + 14] = aZ;
+	        // L
+	        extractorVertices[evPos + 15] = kX;
+	        extractorVertices[evPos + 16] = jY;
+	        extractorVertices[evPos + 17] = iZ;
+
+	        evPos = evPos + 18;
+
+	        // RIGHT
+	        // P
+	        extractorVertices[evPos] = extractorVertices[evPos + 9] = kX;
+	        extractorVertices[evPos + 1] = extractorVertices[evPos + 10] = jY;
+	        extractorVertices[evPos + 2] = extractorVertices[evPos + 11] = mZ;
+	        // L
+	        extractorVertices[evPos + 3] = kX;
+	        extractorVertices[evPos + 4] = jY;
+	        extractorVertices[evPos + 5] = iZ;
+	        // C
+	        extractorVertices[evPos + 6] = extractorVertices[evPos + 12] = cX;
+	        extractorVertices[evPos + 7] = extractorVertices[evPos + 13] = aY;
+	        extractorVertices[evPos + 8] = extractorVertices[evPos + 14] = aZ;
+	        // G
+	        extractorVertices[evPos + 15] = cX;
+	        extractorVertices[evPos + 16] = aY;
+	        extractorVertices[evPos + 17] = eZ;
+
+	        evPos = evPos + 18;
+
+	        if (a.extractorType === 'pyramid' || a.w > 0.6 || a.barCounter ) {
+	          // BACK
+	          // E
+	          extractorVertices[evPos] = extractorVertices[evPos + 9] = aX;
+	          extractorVertices[evPos + 1] = extractorVertices[evPos + 10] = aY;
+	          extractorVertices[evPos + 2] = extractorVertices[evPos + 11] = eZ;
+	          // N
+	          extractorVertices[evPos + 3] = iX;
+	          extractorVertices[evPos + 4] = jY;
+	          extractorVertices[evPos + 5] = mZ;
+	          // P
+	          extractorVertices[evPos + 6] = extractorVertices[evPos + 12] = kX;
+	          extractorVertices[evPos + 7] = extractorVertices[evPos + 13] = jY;
+	          extractorVertices[evPos + 8] = extractorVertices[evPos + 14] = mZ;
+	          // G
+	          extractorVertices[evPos + 15] = cX;
+	          extractorVertices[evPos + 16] = aY;
+	          extractorVertices[evPos + 17] = eZ;
+
+	          evPos = evPos + 18;
+	        }
+
+
+	        // ventilation
+	        //   M------O
+	        //  /|     /|
+	        // I------K |
+	        // | N----|-P
+	        // |/     |/
+	        // J------L
+
+	        // front
+	        // A
+	        extractorVertices[evPos] = extractorVertices[evPos + 9] = iX;
+	        extractorVertices[evPos + 1] = extractorVertices[evPos + 10] = iY;
+	        extractorVertices[evPos + 2] = extractorVertices[evPos + 11] = iZ;
+	        //B
+	        extractorVertices[evPos + 3] = iX;
+	        extractorVertices[evPos + 4] = jY;
+	        extractorVertices[evPos + 5] = iZ;
+	        //D
+	        extractorVertices[evPos + 6] = extractorVertices[evPos + 12] = kX;
+	        extractorVertices[evPos + 7] = extractorVertices[evPos + 13] = jY;
+	        extractorVertices[evPos + 8] = extractorVertices[evPos + 14] = iZ;
+	        //C
+	        extractorVertices[evPos + 15] = kX;
+	        extractorVertices[evPos + 16] = iY;
+	        extractorVertices[evPos + 17] = iZ;
+
+	        evPos = evPos + 18;
+
+	        // top
+	        // E
+	        extractorVertices[evPos] = extractorVertices[evPos + 9] = iX;
+	        extractorVertices[evPos + 1] = extractorVertices[evPos + 10] = iY;
+	        extractorVertices[evPos + 2] = extractorVertices[evPos + 11] = mZ;
+	        //A
+	        extractorVertices[evPos + 3] = iX;
+	        extractorVertices[evPos + 4] = iY;
+	        extractorVertices[evPos + 5] = iZ;
+	        //C
+	        extractorVertices[evPos + 6] = extractorVertices[evPos + 12] = kX;
+	        extractorVertices[evPos + 7] = extractorVertices[evPos + 13] = iY;
+	        extractorVertices[evPos + 8] = extractorVertices[evPos + 14] = iZ;
+	        //G
+	        extractorVertices[evPos + 15] = kX;
+	        extractorVertices[evPos + 16] = iY;
+	        extractorVertices[evPos + 17] = mZ;
+
+	        evPos = evPos + 18;
+
+	        // left
+	        // E
+	        extractorVertices[evPos] = extractorVertices[evPos + 9] = iX;
+	        extractorVertices[evPos + 1] = extractorVertices[evPos + 10] = iY;
+	        extractorVertices[evPos + 2] = extractorVertices[evPos + 11] = mZ;
+	        //F
+	        extractorVertices[evPos + 3] = iX;
+	        extractorVertices[evPos + 4] = jY;
+	        extractorVertices[evPos + 5] = mZ;
+	        //B
+	        extractorVertices[evPos + 6] = extractorVertices[evPos + 12] = iX;
+	        extractorVertices[evPos + 7] = extractorVertices[evPos + 13] = jY;
+	        extractorVertices[evPos + 8] = extractorVertices[evPos + 14] = iZ;
+	        //A
+	        extractorVertices[evPos + 15] = iX;
+	        extractorVertices[evPos + 16] = iY;
+	        extractorVertices[evPos + 17] = iZ;
+
+	        evPos = evPos + 18;
+
+	        // right
+	        //C
+	        extractorVertices[evPos] = extractorVertices[evPos + 9] = kX;
+	        extractorVertices[evPos + 1] = extractorVertices[evPos + 10] = iY;
+	        extractorVertices[evPos + 2] = extractorVertices[evPos + 11] = iZ;
+	        //D
+	        extractorVertices[evPos + 3] = kX;
+	        extractorVertices[evPos + 4] = jY;
+	        extractorVertices[evPos + 5] = iZ;
+	        //H
+	        extractorVertices[evPos + 6] = extractorVertices[evPos + 12] = kX;
+	        extractorVertices[evPos + 7] = extractorVertices[evPos + 13] = jY;
+	        extractorVertices[evPos + 8] = extractorVertices[evPos + 14] = mZ;
+	        //G
+	        extractorVertices[evPos + 15] = kX;
+	        extractorVertices[evPos + 16] = iY;
+	        extractorVertices[evPos + 17] = mZ;
+
+	        evPos = evPos + 18;
+
+	        // back
+	        //O
+	        extractorVertices[evPos] = extractorVertices[evPos + 9] = kX;
+	        extractorVertices[evPos + 1] = extractorVertices[evPos + 10] = iY;
+	        extractorVertices[evPos + 2] = extractorVertices[evPos + 11] = mZ;
+	        //P
+	        extractorVertices[evPos + 3] = kX;
+	        extractorVertices[evPos + 4] = jY;
+	        extractorVertices[evPos + 5] = mZ;
+	        //N
+	        extractorVertices[evPos + 6] = extractorVertices[evPos + 12] = iX;
+	        extractorVertices[evPos + 7] = extractorVertices[evPos + 13] = jY;
+	        extractorVertices[evPos + 8] = extractorVertices[evPos + 14] = mZ;
+	        //M
+	        extractorVertices[evPos + 15] = iX;
+	        extractorVertices[evPos + 16] = iY;
+	        extractorVertices[evPos + 17] = mZ;
+
+	        evPos = evPos + 18;
+	      }
+
+	      // reset variables
+	      aZ = a.w;
+	      eZ = aZ;
+	      iZ = a.w + a.doorWidth;
+	    }
+
+	    function genCabinetBox(aX, aY, aZ, bY, cX, eZ, id) {
+
+	      ///////////////////
+	      // CABINET BOXES
+	      //////////////////
+
+	      // FRONT VIEW VERTICES
+	      //
+	      //   E------G
+	      //  /|     /|
+	      // A------C |
+	      // | F----|-H
+	      // |/     |/
+	      // B------D
+
+	      if (id !== 1){
+	        // TOP
+	        //E
+	        kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = aX;
+	        kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = aY;
+	        kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = eZ;
+	        //A
+	        kitchenVertices[kvPos + 3] = aX;
+	        kitchenVertices[kvPos + 4] = aY;
+	        kitchenVertices[kvPos + 5] = aZ;
+	        //C
+	        kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = cX;
+	        kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = aY;
+	        kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = aZ;
+	        //G
+	        kitchenVertices[kvPos + 15] = cX;
+	        kitchenVertices[kvPos + 16] = aY;
+	        kitchenVertices[kvPos + 17] = eZ;
+
+	        kvPos = kvPos + 18;
+	      }
+
+	      // SIDES
+	      //E
+	      kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = aX;
+	      kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = aY;
+	      kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = eZ;
+	      //F
+	      kitchenVertices[kvPos + 3] = aX;
+	      kitchenVertices[kvPos + 4] = bY;
+	      kitchenVertices[kvPos + 5] = eZ;
+	      //B
+	      kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = aX;
+	      kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = bY;
+	      kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = aZ;
+	      //A
+	      kitchenVertices[kvPos + 15] = aX;
+	      kitchenVertices[kvPos + 16] = aY;
+	      kitchenVertices[kvPos + 17] = aZ;
+
+	      kvPos = kvPos + 18;
+
+	      // LEFT
+	      //E
+	      kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = aX;
+	      kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = aY;
+	      kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = eZ;
+	      //F
+	      kitchenVertices[kvPos + 3] = aX;
+	      kitchenVertices[kvPos + 4] = bY;
+	      kitchenVertices[kvPos + 5] = eZ;
+	      //B
+	      kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = aX;
+	      kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = bY;
+	      kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = aZ;
+	      //A
+	      kitchenVertices[kvPos + 15] = aX;
+	      kitchenVertices[kvPos + 16] = aY;
+	      kitchenVertices[kvPos + 17] = aZ;
+
+	      kvPos = kvPos + 18;
+
+	      // RIGHT
+	      //C
+	      kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = cX;
+	      kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = aY;
+	      kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = aZ;
+	      //D
+	      kitchenVertices[kvPos + 3] = cX;
+	      kitchenVertices[kvPos + 4] = bY;
+	      kitchenVertices[kvPos + 5] = aZ;
+	      //H
+	      kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = cX;
+	      kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = bY;
+	      kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = eZ;
+	      //G
+	      kitchenVertices[kvPos + 15] = cX;
+	      kitchenVertices[kvPos + 16] = aY;
+	      kitchenVertices[kvPos + 17] = eZ;
+
+	      kvPos = kvPos + 18;
+
+	      // BACK
+	      //G
+	      kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = cX;
+	      kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = aY;
+	      kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = eZ;
+	      //H
+	      kitchenVertices[kvPos + 3] = cX;
+	      kitchenVertices[kvPos + 4] = bY;
+	      kitchenVertices[kvPos + 5] = eZ;
+	      //F
+	      kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = aX;
+	      kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = bY;
+	      kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = eZ;
+	      //E
+	      kitchenVertices[kvPos + 15] = aX;
+	      kitchenVertices[kvPos + 16] = aY;
+	      kitchenVertices[kvPos + 17] = eZ;
+
+	      kvPos = kvPos + 18;
+	      if (id === 2){
+	        // BOTTOM
+	        //B
+	        kitchenVertices[kvPos] = kitchenVertices[kvPos + 9] = aX;
+	        kitchenVertices[kvPos + 1] = kitchenVertices[kvPos + 10] = bY;
+	        kitchenVertices[kvPos + 2] = kitchenVertices[kvPos + 11] = aZ;
+	        //F
+	        kitchenVertices[kvPos + 3] = aX;
+	        kitchenVertices[kvPos + 4] = bY;
+	        kitchenVertices[kvPos + 5] = eZ;
+	        //H
+	        kitchenVertices[kvPos + 6] = kitchenVertices[kvPos + 12] = cX;
+	        kitchenVertices[kvPos + 7] = kitchenVertices[kvPos + 13] = bY;
+	        kitchenVertices[kvPos + 8] = kitchenVertices[kvPos + 14] = eZ;
+	        //D
+	        kitchenVertices[kvPos + 15] = cX;
+	        kitchenVertices[kvPos + 16] = bY;
+	        kitchenVertices[kvPos + 17] = aZ;
+
+	        kvPos = kvPos + 18;
+	      }
+	    }
+
+	    var baseCabinetCursor = getElementPos(a.highCabinetLeft + 1);
+
+	    aX = xCursor;
+	    aY = a.counterHeight - a.counterThickness;
+	    aZ = a.w;
+	    bY = 0;
+	    cX = xCursor + elements[0];
+	    eX = xCursor + a.doorWidth / 2;
+	    eY = aY - a.doorWidth;
+	    eZ = aZ;
+	    fY = a.baseBoard;
+	    gX = cX - a.doorWidth / 2;
+	    iZ = a.w + a.doorWidth;
+
+	    ///////////////////
+	    // CABINET DOORS
+	    //////////////////
+
+	    for (var c = 0; c < elementNum; c++) {
+	      aX = xCursor;
+	      cX = xCursor + elements[c];
+	      eX = xCursor + a.doorWidth / 2;
+	      gX = xCursor + elements[c] - a.doorWidth / 2;
+
+	      var isSink = (c === a.sinkPos - 1 || (c === a.sinkPos && a.sinkType === 'double')) && sink;
+
+	      // Get CabinetSegments depending on configuration
+	      if (c < a.highCabinetLeft) {
+	        if (a.fridge && (a.fridgePos - 1 === c || a.fridgePos === c)) k = 7;
+	        else if (c + 1 === a.ovenPos && oven && c + 1 === a.microwavePos && microwave) k = 9;
+	        else if (c + 1 === a.ovenPos && oven) k = 1;
+	        else if (c + 1 === a.microwavePos && microwave) k = 8;
+	        else k = 0;
+	      }
+	      else if (c < a.highCabinetLeft + baseCabinetNum && c+1 === a.ovenPos && oven) k = 4;
+	      //else if (c === elementNum - a.highCabinetRight - 1) k = 3
+	      else if (c > a.highCabinetLeft + baseCabinetNum -1 ) {
+	        if (c + 1 === a.ovenPos && oven && c + 1 === a.microwavePos && microwave) k = 9;
+	        else if (c + 1 === a.ovenPos) k = 1;
+	        else if (c + 1 === a.microwavePos && microwave) k = 8;
+	        else k = 0;
+	        aX = a.l - a.highCabinetRight * elementLength + xCursorRight;
+	        eX = a.l - a.highCabinetRight * elementLength + a.doorWidth / 2 + xCursorRight;
+	        cX = a.l - (a.highCabinetRight-1) * elementLength + xCursorRight;
+	        gX = a.l - (a.highCabinetRight-1) * elementLength + xCursorRight - a.doorWidth / 2;
+	        xCursorRight += elements[c];
+	      }
+	      else if ( isSink || c === a.highCabinetLeft || c === a.highCabinetLeft + baseCabinetNum - 1 ) k = 3;
+	      else k = 2;
+
+	      if (c === elementNum - a.highCabinetRight - 1) {
+	        cX = a.l - a.highCabinetRight * elementLength;
+	        gX = a.l - a.highCabinetRight * elementLength - a.doorWidth / 2;
+	      }
+
+	      if (c === a.cooktopPos-1 && cooktop && extractor) genExtractor();
+
+	      // HIGH & BASE CABINET DOORS
+	      for (var i = 0; i < cabinetSegments[k].length - 1; i++) {
+	        cabinetDoor({
+	          i: i,
+	          aX: aX,
+	          aY: cabinetSegments[k][i + 1],
+	          aZ: a.w,
+	          bY: cabinetSegments[k][i],
+	          cX: cX,
+	          k: k
+	        });
+
+	      }
+
+	      // WALL CABINET DOORS
+	      if (a.wallCabinet && c >= a.highCabinetLeft && c < a.highCabinetLeft + baseCabinetNum) {
+	        k = 5;
+	        if (microwave && c === a.microwavePos - 1 ) k = 6;
+	        var extractorOffset;
+
+	        for (var j = 0; j < cabinetSegments[k].length - 1; j++) {
+	          // skip cabinet door for extractors
+	          if (extractor && cooktop && a.extractorType !== 'integrated') {
+	            if (c === a.cooktopPos - 1) continue
+	            if (elements[c] < minWallCabinet && c === a.cooktopPos) continue
+	          }
+	          // toggle door height for extractor
+	          extractorOffset = c === a.cooktopPos - 1 && cooktop && extractor ? extractorHeight + extractorBottom - a.wallCabinetHeight : 0;
+	          cabinetDoor({
+	            i: j,
+	            aX: aX,
+	            aY: round(cabinetSegments[k][j + 1] + (cabinetSegments[k].length > 2 && j === 0 ? extractorOffset : 0), 100),
+	            aZ: a.wallCabinetWidth,
+	            bY: round(cabinetSegments[k][j] + extractorOffset, 100),
+	            cX: cX,
+	            k: k
+	          });
+	        }
+	      }
+	      aZ = a.w;
+	      iZ = aZ + a.doorWidth;
+	      xCursor += elements[c];
+	    }
+
+	    ///////////////////
+	    // CABINET BOXES
+	    //////////////////
+
+	    // define aX, aY, aZ, bY, cX, eZ, id for each Box Type
+	    // BASE CABINET BOX
+	    if (baseCabinetNum>0) genCabinetBox(baseCabinetCursor, a.counterHeight - a.counterThickness, a.w, 0, a.l - a.highCabinetRight * elementLength, 0,1);
+	    // WALL CABINET BOX
+	    if (a.wallCabinet && baseCabinetNum > 0) {
+	      var leftWallCabinet = a.cooktopPos > a.highCabinetLeft + 1;
+	      var rightWallCabinet = elements[a.cooktopPos] >= minWallCabinet || a.extractorType === 'integrated';
+	      //console.log(elements.length, a.cooktopPos, elements[a.cooktopPos])
+	      if (!extractor || a.cooktopType === 'none') {
+	        // one single wall cabinet
+	        genCabinetBox(baseCabinetCursor, a.h + offsetY, a.wallCabinetWidth, a.wallCabinetHeight, a.l - a.highCabinetRight * elementLength, 0,2);
+	      } else if (extractor && a.extractorType !== 'integrated') {
+	        // two wall cabinets around the extractor
+	        if (leftWallCabinet) genCabinetBox(baseCabinetCursor, a.h + offsetY, a.wallCabinetWidth, a.wallCabinetHeight, getElementPos(a.cooktopPos), 0,2);
+	        if (rightWallCabinet) genCabinetBox(getElementPos(a.cooktopPos + 1), a.h + offsetY, a.wallCabinetWidth, a.wallCabinetHeight, a.l - a.highCabinetRight * elementLength, 0,2);
+	      } else {
+	        // two wall cabinets + the extractor integrated
+	        if (leftWallCabinet) genCabinetBox(baseCabinetCursor, a.h + offsetY, a.wallCabinetWidth, a.wallCabinetHeight, getElementPos(a.cooktopPos), 0,2);
+	        genCabinetBox(getElementPos(a.cooktopPos), a.h + offsetY, a.wallCabinetWidth, extractorBottom, getElementPos(a.cooktopPos + 1), 0,2);
+	        if (rightWallCabinet) genCabinetBox(getElementPos(a.cooktopPos + 1), a.h + offsetY, a.wallCabinetWidth, a.wallCabinetHeight, a.l - a.highCabinetRight * elementLength, 0, 2);
+	      }
+	    }
+	    // HIGH CABINET BOX LEFT
+	    if (a.highCabinetLeft!==0 && baseCabinetNum > 0) genCabinetBox(0, a.h + offsetY, a.w, 0, baseCabinetCursor, 0,3);
+	    if (a.highCabinetLeft!==0 && baseCabinetNum < 1) genCabinetBox(0, a.h + offsetY, a.w, 0, a.l, 0,3);
+	    // HIGH CABINET BOX RIGHT
+	    if (a.highCabinetRight!==0 && elementNum-a.highCabinetLeft>0) genCabinetBox(a.l - a.highCabinetRight * elementLength, a.h + offsetY, a.w, 0, a.l, 0,4);
+
+	    ///////////////////
+	    // COUNTER TOP
+	    //////////////////
+	    if (baseCabinetNum > 0) {
+	      //   E------G
+	      //  /|     /|
+	      // A------C |
+	      // | F----|-H
+	      // |/     |/
+	      // B------D
+
+	      aX = getElementPos(a.highCabinetLeft + 1);//baseCabinetCursor
+	      aY = a.counterHeight;
+	      aZ = a.w + a.doorWidth;
+	      bY = a.counterHeight - a.counterThickness;
+	      cX = a.l - a.highCabinetRight * elementLength;
+	      eZ = a.barCounter ? - barCounter : 0;
+
+	      var counterElements = [
+	        [ // cooktop
+	          getElementPos(a.cooktopPos) + ovenDistance,
+	          a.w + a.doorWidth - 0.55,
+	          a.w + a.doorWidth - ovenDistance,
+	          getElementPos(a.cooktopPos + 1) - ovenDistance
+	        ],
+	        [ // sink
+	          getElementPos(a.sinkPos) + sinkOffset,
+	          a.w + a.doorWidth - ovenDistance - sinkWidth,
+	          a.w + a.doorWidth - ovenDistance,
+	          getElementPos(a.sinkPos) + sinkOffset + sinkLength,
+	        ]
+	      ];
+
+	      if (cooktop && sink) {
+	        //    E--------Q----G
+	        //   / I---K  M--O /
+	        //  / J---L  N--P /
+	        // A--------R----C
+	        if (a.cooktopPos < a.sinkPos) {
+	          // cooktop
+	          iX = counterElements [0][0];
+	          iZ = counterElements [0][1];
+	          jZ = counterElements [0][2];
+	          kX = counterElements [0][3];
+	          // sink
+	          mX = counterElements [1][0];
+	          mZ = counterElements [1][1];
+	          nZ = counterElements [1][2];
+	          oX = counterElements [1][3];
+	        }
+	        else {
+	          // sink
+	          iX = counterElements [1][0];
+	          iZ = counterElements [1][1];
+	          jZ = counterElements [1][2];
+	          kX = counterElements [1][3];
+	          // cooktop
+	          mX = counterElements [0][0];
+	          mZ = counterElements [0][1];
+	          nZ = counterElements [0][2];
+	          oX = counterElements [0][3];
+	        }
+	        // TOP
+	        //E
+	        counterVertices[cvPos] = counterVertices[cvPos + 9] = aX;
+	        counterVertices[cvPos + 1] = counterVertices[cvPos + 10] = aY;
+	        counterVertices[cvPos + 2] = counterVertices[cvPos + 11] = eZ;
+	        //A
+	        counterVertices[cvPos + 3] = aX;
+	        counterVertices[cvPos + 4] = aY;
+	        counterVertices[cvPos + 5] = aZ;
+	        //J
+	        counterVertices[cvPos + 6] = counterVertices[cvPos + 12] = iX;
+	        counterVertices[cvPos + 7] = counterVertices[cvPos + 13] = aY;
+	        counterVertices[cvPos + 8] = counterVertices[cvPos + 14] = jZ;
+	        //I
+	        counterVertices[cvPos + 15] = iX;
+	        counterVertices[cvPos + 16] = aY;
+	        counterVertices[cvPos + 17] = iZ;
+
+	        cvPos = cvPos + 18;
+
+	        //J
+	        counterVertices[cvPos] = counterVertices[cvPos + 9] = iX;
+	        counterVertices[cvPos + 1] = counterVertices[cvPos + 10] = aY;
+	        counterVertices[cvPos + 2] = counterVertices[cvPos + 11] = jZ;
+	        //A
+	        counterVertices[cvPos + 3] = aX;
+	        counterVertices[cvPos + 4] = aY;
+	        counterVertices[cvPos + 5] = aZ;
+	        //R
+	        counterVertices[cvPos + 6] = counterVertices[cvPos + 12] = mX;
+	        counterVertices[cvPos + 7] = counterVertices[cvPos + 13] = aY;
+	        counterVertices[cvPos + 8] = counterVertices[cvPos + 14] = aZ;
+	        //L
+	        counterVertices[cvPos + 15] = kX;
+	        counterVertices[cvPos + 16] = aY;
+	        counterVertices[cvPos + 17] = jZ;
+
+	        cvPos = cvPos + 18;
+
+	        //K
+	        counterVertices[cvPos] = counterVertices[cvPos + 9] = kX;
+	        counterVertices[cvPos + 1] = counterVertices[cvPos + 10] = aY;
+	        counterVertices[cvPos + 2] = counterVertices[cvPos + 11] = iZ;
+	        //L
+	        counterVertices[cvPos + 3] = kX;
+	        counterVertices[cvPos + 4] = aY;
+	        counterVertices[cvPos + 5] = jZ;
+	        //R
+	        counterVertices[cvPos + 6] = counterVertices[cvPos + 12] = mX;
+	        counterVertices[cvPos + 7] = counterVertices[cvPos + 13] = aY;
+	        counterVertices[cvPos + 8] = counterVertices[cvPos + 14] = aZ;
+	        //Q
+	        counterVertices[cvPos + 15] = mX;
+	        counterVertices[cvPos + 16] = aY;
+	        counterVertices[cvPos + 17] = eZ;
+
+	        cvPos = cvPos + 18;
+
+	        //E
+	        counterVertices[cvPos] = counterVertices[cvPos + 9] = aX;
+	        counterVertices[cvPos + 1] = counterVertices[cvPos + 10] = aY;
+	        counterVertices[cvPos + 2] = counterVertices[cvPos + 11] = eZ;
+	        //I
+	        counterVertices[cvPos + 3] = iX;
+	        counterVertices[cvPos + 4] = aY;
+	        counterVertices[cvPos + 5] = iZ;
+	        //K
+	        counterVertices[cvPos + 6] = counterVertices[cvPos + 12] = kX;
+	        counterVertices[cvPos + 7] = counterVertices[cvPos + 13] = aY;
+	        counterVertices[cvPos + 8] = counterVertices[cvPos + 14] = iZ;
+	        //Q
+	        counterVertices[cvPos + 15] = mX;
+	        counterVertices[cvPos + 16] = aY;
+	        counterVertices[cvPos + 17] = eZ;
+
+	        cvPos = cvPos + 18;
+
+	        //N
+	        counterVertices[cvPos] = counterVertices[cvPos + 9] = mX;
+	        counterVertices[cvPos + 1] = counterVertices[cvPos + 10] = aY;
+	        counterVertices[cvPos + 2] = counterVertices[cvPos + 11] = nZ;
+	        //R
+	        counterVertices[cvPos + 3] = mX;
+	        counterVertices[cvPos + 4] = aY;
+	        counterVertices[cvPos + 5] = aZ;
+	        //C
+	        counterVertices[cvPos + 6] = counterVertices[cvPos + 12] = cX;
+	        counterVertices[cvPos + 7] = counterVertices[cvPos + 13] = aY;
+	        counterVertices[cvPos + 8] = counterVertices[cvPos + 14] = aZ;
+	        //P
+	        counterVertices[cvPos + 15] = oX;
+	        counterVertices[cvPos + 16] = aY;
+	        counterVertices[cvPos + 17] = nZ;
+
+	        cvPos = cvPos + 18;
+
+	        //O
+	        counterVertices[cvPos] = counterVertices[cvPos + 9] = oX;
+	        counterVertices[cvPos + 1] = counterVertices[cvPos + 10] = aY;
+	        counterVertices[cvPos + 2] = counterVertices[cvPos + 11] = mZ;
+	        //P
+	        counterVertices[cvPos + 3] = oX;
+	        counterVertices[cvPos + 4] = aY;
+	        counterVertices[cvPos + 5] = nZ;
+	        //C
+	        counterVertices[cvPos + 6] = counterVertices[cvPos + 12] = cX;
+	        counterVertices[cvPos + 7] = counterVertices[cvPos + 13] = aY;
+	        counterVertices[cvPos + 8] = counterVertices[cvPos + 14] = aZ;
+	        //G
+	        counterVertices[cvPos + 15] = cX;
+	        counterVertices[cvPos + 16] = aY;
+	        counterVertices[cvPos + 17] = eZ;
+
+	        cvPos = cvPos + 18;
+
+	        //Q
+	        counterVertices[cvPos] = counterVertices[cvPos + 9] = mX;
+	        counterVertices[cvPos + 1] = counterVertices[cvPos + 10] = aY;
+	        counterVertices[cvPos + 2] = counterVertices[cvPos + 11] = eZ;
+	        //M
+	        counterVertices[cvPos + 3] = mX;
+	        counterVertices[cvPos + 4] = aY;
+	        counterVertices[cvPos + 5] = mZ;
+	        //O
+	        counterVertices[cvPos + 6] = counterVertices[cvPos + 12] = oX;
+	        counterVertices[cvPos + 7] = counterVertices[cvPos + 13] = aY;
+	        counterVertices[cvPos + 8] = counterVertices[cvPos + 14] = mZ;
+	        //G
+	        counterVertices[cvPos + 15] = cX;
+	        counterVertices[cvPos + 16] = aY;
+	        counterVertices[cvPos + 17] = eZ;
+
+	        cvPos = cvPos + 18;
+
+	        // cooktop
+
+	        iX = counterElements [0][0];
+	        iZ = counterElements [0][1];
+	        jZ = counterElements [0][2];
+	        kX = counterElements [0][3];
+
+	        //I
+	        cooktopVertices[0] = cooktopVertices[9] = iX;
+	        cooktopVertices[1] = cooktopVertices[10] = aY;
+	        cooktopVertices[2] = cooktopVertices[11] = iZ;
+	        //J
+	        cooktopVertices[3] = iX;
+	        cooktopVertices[4] = aY;
+	        cooktopVertices[5] = jZ;
+	        //L
+	        cooktopVertices[6] = cooktopVertices[12] = kX;
+	        cooktopVertices[7] = cooktopVertices[13] = aY;
+	        cooktopVertices[8] = cooktopVertices[14] = jZ;
+	        //K
+	        cooktopVertices[15] = kX;
+	        cooktopVertices[16] = aY;
+	        cooktopVertices[17] = iZ;
+
+	        //I
+	        cooktopUvs = [0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1];
+	      }
+	      else if (cooktop || sink) {
+	        //    E-------G
+	        //   / I---K /
+	        //  / J---L /
+	        // A-------C
+	        if (sink === false) {
+	          // cooktop
+	          iX = counterElements [0][0];
+	          iZ = counterElements [0][1];
+	          jZ = counterElements [0][2];
+	          kX = counterElements [0][3];
+	        }
+	        else {
+	          // sink
+	          iX = counterElements [1][0];
+	          iZ = counterElements [1][1];
+	          jZ = counterElements [1][2];
+	          kX = counterElements [1][3];
+	        }
+	        // TOP
+	        //E
+	        counterVertices[cvPos] = counterVertices[cvPos + 9] = aX;
+	        counterVertices[cvPos + 1] = counterVertices[cvPos + 10] = aY;
+	        counterVertices[cvPos + 2] = counterVertices[cvPos + 11] = eZ;
+	        //A
+	        counterVertices[cvPos + 3] = aX;
+	        counterVertices[cvPos + 4] = aY;
+	        counterVertices[cvPos + 5] = aZ;
+	        //J
+	        counterVertices[cvPos + 6] = counterVertices[cvPos + 12] = iX;
+	        counterVertices[cvPos + 7] = counterVertices[cvPos + 13] = aY;
+	        counterVertices[cvPos + 8] = counterVertices[cvPos + 14] = jZ;
+	        //I
+	        counterVertices[cvPos + 15] = iX;
+	        counterVertices[cvPos + 16] = aY;
+	        counterVertices[cvPos + 17] = iZ;
+
+	        cvPos = cvPos + 18;
+
+	        //J
+	        counterVertices[cvPos] = counterVertices[cvPos + 9] = iX;
+	        counterVertices[cvPos + 1] = counterVertices[cvPos + 10] = aY;
+	        counterVertices[cvPos + 2] = counterVertices[cvPos + 11] = jZ;
+	        //A
+	        counterVertices[cvPos + 3] = aX;
+	        counterVertices[cvPos + 4] = aY;
+	        counterVertices[cvPos + 5] = aZ;
+	        //C
+	        counterVertices[cvPos + 6] = counterVertices[cvPos + 12] = cX;
+	        counterVertices[cvPos + 7] = counterVertices[cvPos + 13] = aY;
+	        counterVertices[cvPos + 8] = counterVertices[cvPos + 14] = aZ;
+	        //L
+	        counterVertices[cvPos + 15] = kX;
+	        counterVertices[cvPos + 16] = aY;
+	        counterVertices[cvPos + 17] = jZ;
+
+	        cvPos = cvPos + 18;
+
+	        //K
+	        counterVertices[cvPos] = counterVertices[cvPos + 9] = kX;
+	        counterVertices[cvPos + 1] = counterVertices[cvPos + 10] = aY;
+	        counterVertices[cvPos + 2] = counterVertices[cvPos + 11] = iZ;
+	        //L
+	        counterVertices[cvPos + 3] = kX;
+	        counterVertices[cvPos + 4] = aY;
+	        counterVertices[cvPos + 5] = jZ;
+	        //C
+	        counterVertices[cvPos + 6] = counterVertices[cvPos + 12] = cX;
+	        counterVertices[cvPos + 7] = counterVertices[cvPos + 13] = aY;
+	        counterVertices[cvPos + 8] = counterVertices[cvPos + 14] = aZ;
+	        //G
+	        counterVertices[cvPos + 15] = cX;
+	        counterVertices[cvPos + 16] = aY;
+	        counterVertices[cvPos + 17] = eZ;
+
+	        cvPos = cvPos + 18;
+
+	        //E
+	        counterVertices[cvPos] = counterVertices[cvPos + 9] = aX;
+	        counterVertices[cvPos + 1] = counterVertices[cvPos + 10] = aY;
+	        counterVertices[cvPos + 2] = counterVertices[cvPos + 11] = eZ;
+	        //I
+	        counterVertices[cvPos + 3] = iX;
+	        counterVertices[cvPos + 4] = aY;
+	        counterVertices[cvPos + 5] = iZ;
+	        //K
+	        counterVertices[cvPos + 6] = counterVertices[cvPos + 12] = kX;
+	        counterVertices[cvPos + 7] = counterVertices[cvPos + 13] = aY;
+	        counterVertices[cvPos + 8] = counterVertices[cvPos + 14] = iZ;
+	        //G
+	        counterVertices[cvPos + 15] = cX;
+	        counterVertices[cvPos + 16] = aY;
+	        counterVertices[cvPos + 17] = eZ;
+
+	        cvPos = cvPos + 18;
+	        if (cooktop) {
+
+	          //I
+	          cooktopVertices[0] = cooktopVertices[9] = iX;
+	          cooktopVertices[1] = cooktopVertices[10] = aY;
+	          cooktopVertices[2] = cooktopVertices[11] = iZ;
+	          //J
+	          cooktopVertices[3] = iX;
+	          cooktopVertices[4] = aY;
+	          cooktopVertices[5] = jZ;
+	          //L
+	          cooktopVertices[6] = cooktopVertices[12] = kX;
+	          cooktopVertices[7] = cooktopVertices[13] = aY;
+	          cooktopVertices[8] = cooktopVertices[14] = jZ;
+	          //K
+	          cooktopVertices[15] = kX;
+	          cooktopVertices[16] = aY;
+	          cooktopVertices[17] = iZ;
+
+	          //I
+	          cooktopUvs = [0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1];
+	        }
+
+	      }
+	      else {
+	        // TOP
+	        //E
+	        counterVertices[cvPos] = counterVertices[cvPos + 9] = aX;
+	        counterVertices[cvPos + 1] = counterVertices[cvPos + 10] = aY;
+	        counterVertices[cvPos + 2] = counterVertices[cvPos + 11] = eZ;
+	        //A
+	        counterVertices[cvPos + 3] = aX;
+	        counterVertices[cvPos + 4] = aY;
+	        counterVertices[cvPos + 5] = aZ;
+	        //C
+	        counterVertices[cvPos + 6] = counterVertices[cvPos + 12] = cX;
+	        counterVertices[cvPos + 7] = counterVertices[cvPos + 13] = aY;
+	        counterVertices[cvPos + 8] = counterVertices[cvPos + 14] = aZ;
+	        //G
+	        counterVertices[cvPos + 15] = cX;
+	        counterVertices[cvPos + 16] = aY;
+	        counterVertices[cvPos + 17] = eZ;
+
+	        cvPos = cvPos + 18;
+	      }
+
+	      // FRONT
+	      //A
+	      counterVertices[cvPos] = counterVertices[cvPos + 9] = aX;
+	      counterVertices[cvPos + 1] = counterVertices[cvPos + 10] = aY;
+	      counterVertices[cvPos + 2] = counterVertices[cvPos + 11] = aZ;
+	      //B
+	      counterVertices[cvPos + 3] = aX;
+	      counterVertices[cvPos + 4] = bY;
+	      counterVertices[cvPos + 5] = aZ;
+	      //D
+	      counterVertices[cvPos + 6] = counterVertices[cvPos + 12] = cX;
+	      counterVertices[cvPos + 7] = counterVertices[cvPos + 13] = bY;
+	      counterVertices[cvPos + 8] = counterVertices[cvPos + 14] = aZ;
+	      //C
+	      counterVertices[cvPos + 15] = cX;
+	      counterVertices[cvPos + 16] = aY;
+	      counterVertices[cvPos + 17] = aZ;
+
+	      cvPos = cvPos + 18;
+
+	      // SIDES
+	      //E
+	      counterVertices[cvPos] = counterVertices[cvPos + 9] = aX;
+	      counterVertices[cvPos + 1] = counterVertices[cvPos + 10] = aY;
+	      counterVertices[cvPos + 2] = counterVertices[cvPos + 11] = eZ;
+	      //F
+	      counterVertices[cvPos + 3] = aX;
+	      counterVertices[cvPos + 4] = bY;
+	      counterVertices[cvPos + 5] = eZ;
+	      //B
+	      counterVertices[cvPos + 6] = counterVertices[cvPos + 12] = aX;
+	      counterVertices[cvPos + 7] = counterVertices[cvPos + 13] = bY;
+	      counterVertices[cvPos + 8] = counterVertices[cvPos + 14] = aZ;
+	      //A
+	      counterVertices[cvPos + 15] = aX;
+	      counterVertices[cvPos + 16] = aY;
+	      counterVertices[cvPos + 17] = aZ;
+
+	      cvPos = cvPos + 18;
+
+	      //C
+	      counterVertices[cvPos] = counterVertices[cvPos + 9] = cX;
+	      counterVertices[cvPos + 1] = counterVertices[cvPos + 10] = aY;
+	      counterVertices[cvPos + 2] = counterVertices[cvPos + 11] = aZ;
+	      //D
+	      counterVertices[cvPos + 3] = cX;
+	      counterVertices[cvPos + 4] = bY;
+	      counterVertices[cvPos + 5] = aZ;
+	      //H
+	      counterVertices[cvPos + 6] = counterVertices[cvPos + 12] = cX;
+	      counterVertices[cvPos + 7] = counterVertices[cvPos + 13] = bY;
+	      counterVertices[cvPos + 8] = counterVertices[cvPos + 14] = eZ;
+	      //G
+	      counterVertices[cvPos + 15] = cX;
+	      counterVertices[cvPos + 16] = aY;
+	      counterVertices[cvPos + 17] = eZ;
+
+	      cvPos = cvPos + 18;
+
+	      //G
+	      counterVertices[cvPos] = counterVertices[cvPos + 9] = cX;
+	      counterVertices[cvPos + 1] = counterVertices[cvPos + 10] = aY;
+	      counterVertices[cvPos + 2] = counterVertices[cvPos + 11] = eZ;
+	      //H
+	      counterVertices[cvPos + 3] = cX;
+	      counterVertices[cvPos + 4] = bY;
+	      counterVertices[cvPos + 5] = eZ;
+	      //F
+	      counterVertices[cvPos + 6] = counterVertices[cvPos + 12] = aX;
+	      counterVertices[cvPos + 7] = counterVertices[cvPos + 13] = bY;
+	      counterVertices[cvPos + 8] = counterVertices[cvPos + 14] = eZ;
+	      //E
+	      counterVertices[cvPos + 15] = aX;
+	      counterVertices[cvPos + 16] = aY;
+	      counterVertices[cvPos + 17] = eZ;
+
+	    }
+	    // collect meshes that need to be loaded
+	    var meshesToGet = [];
+	    if (a.sinkType !== 'none') meshesToGet.push({name: 'sink', key: a.sinkType === 'single' ? externalMeshes.singleSink : externalMeshes.doubleSink});
+	    if (a.fridge) meshesToGet.push({name: 'fridge', key: externalMeshes.fridge});
+	    if (a.cooktopType === 'gas60' || a.cooktopType === 'gas90') meshesToGet.push({name: 'cooktop', key: externalMeshes[a.cooktopType]});
+
+	    // load external meshes
+	    return bluebird_1.map(meshesToGet, function (obj) {
+	      return loadData3d(obj.key)
+	        .then(data3d => {
+	          // wrap results
+	          obj.data3d = data3d;
+	          return obj
+	        })
+	        .catch(console.error)
+	    })
+	      .then(function (result) {
+	        // get mesh group positions
+	        var sinkX = getElementPos(a.sinkPos) + sinkOffset;
+	        var cooktopX = getElementPos(a.cooktopPos) + elements[a.cooktopPos - 1] / 2;
+
+	        var meshes3d = {};
+	        // map external meshes into internal meshes object
+	        result.forEach(function (obj) {
+	          // iterate through all meshes
+	          var meshKeys = Object.keys(obj.data3d.meshes);
+	          meshKeys.forEach(function (key, i) {
+	            // create unique mesh name
+	            var meshName = obj.name + '_' + i;
+	            meshes3d[meshName] = obj.data3d.meshes[key];
+	            // apply mesh position
+	            if (obj.name === 'sink') meshes3d[meshName].position = [sinkX, a.counterHeight, a.w + a.doorWidth - ovenDistance];
+	            else if (obj.name === 'cooktop') meshes3d[meshName].position = [cooktopX, a.counterHeight, a.w + a.doorWidth - ovenDistance];
+	            else if (obj.name === 'fridge') meshes3d[meshName].position = [getElementPos(a.fridgePos), a.baseBoard, a.w + a.doorWidth - ovenDistance];
+	          });
+	        });
+
+	        return meshes3d
+	      })
+	      .then(function (meshes3d) {
+
+	        meshes3d.kitchen = {
+	          positions: new Float32Array(kitchenVertices),
+	          normals: getNormalsBuffer.flat(kitchenVertices),
+	          uvs: getUvsBuffer.architectural(kitchenVertices),
+	          material: 'kitchen'
+	        };
+	        meshes3d.counter = {
+	          positions: new Float32Array(counterVertices),
+	          normals: getNormalsBuffer.flat(counterVertices),
+	          uvs: getUvsBuffer.architectural(counterVertices),
+	          material: 'counter'
+	        };
+	        meshes3d.oven = {
+	          positions: new Float32Array(ovenVertices),
+	          normals: getNormalsBuffer.flat(ovenVertices),
+	          uvs: new Float32Array(ovenUvs),
+	          material: 'oven'
+	        };
+	        meshes3d.cooktop = {
+	          positions: new Float32Array(cooktopVertices),
+	          normals: getNormalsBuffer.flat(cooktopVertices),
+	          uvs: new Float32Array(cooktopUvs),
+	          material: 'cooktop'
+	        };
+	        meshes3d.extractor = {
+	          positions: new Float32Array(extractorVertices),
+	          normals: getNormalsBuffer.flat(extractorVertices),
+	          material: 'tab'
+	        };
+	        meshes3d.microwave = {
+	          positions: new Float32Array(mwVertices),
+	          normals: getNormalsBuffer.flat(mwVertices),
+	          uvs: new Float32Array(mwUvs),
+	          material: 'microwave'
+	        };
+	        return meshes3d
+	      })
+	      .catch(console.error)
+	  }
+	};
+
+	// helper
+
+	function getElCount(a) {
+	  var
+	    cooktop = a.cooktopType !== 'none',
+	    largeCooktop = cooktop && a.cooktopType.slice(-2) === '90',
+	    fridgeLength = 0.52;
+
+	  var nLength, elNum, remainder, elLength;
+	  elLength = a.elementLength;
+	  nLength = a.l + (a.fridge ? (elLength - fridgeLength) * 2 : 0) + (cooktop && largeCooktop ?  elLength - 0.90 : 0);
+	  elNum = Math.ceil(round(nLength / elLength, 100));
+	  remainder = round(elLength - (elNum * elLength - nLength), 100);
+	  return {elementNum: elNum, remainder: remainder}
+	}
+
+	function updatePositions(a, config) {
+	  var
+	    cooktop = a.cooktopType !== 'none',
+	    largeCooktop = cooktop && a.cooktopType.slice(-2) === '90',
+	    fridgeLength = 0.52;
+
+	  var elements = [];
+	  var elNum = config.elementNum;
+	  // set all element lengths
+	  for (var i = 0; i < elNum; i++) {
+	    if (a.fridge && (i === a.fridgePos - 1 || i === a.fridgePos)) {
+	      elements[i] = fridgeLength;
+	    }
+	    else if (cooktop && largeCooktop && i === a.cooktopPos - 1) elements[i] = 0.9;
+	    else if (config.remainder && ((!a.highCabinetRight && i === elNum - 1) || (a.highCabinetRight > 0 && i === elNum - a.highCabinetRight - 1))) elements[i] = config.remainder;
+	    else elements[i] = a.elementLength;
+	  }
+	  if (!elements[0] && a.l > a.elementLength) elements[0] = a.elementLength;
+	  else if (![elements[0]]) elements[0] = config.remainder;
+
+	  return elements
+	}
+
+	function round( value, factor ) {
+	  if (!factor) {
+	    return Math.round(value)
+	  } else {
+	    return Math.round(value * factor) / factor
+	  }
+	}
+
+	// dependencies
+
+	var polyFloorComponent = {
+
+	  schema: getSchema('polyfloor'),
+
+	  init: function () {},
+
+	  updateSchema: updateSchema,
+
+	  update: function (oldData) {
+	    var this_ = this;
+	    var data = this_.data;
+
+	    // remove old mesh
+	    this.remove();
+
+	    // get defaults and
+	    this.attributes = cloneDeep_1(data);
+
+	    // get meshes and materials from el3d modules
+	    var meshes = this.generateMeshes3d();
+
+	    // clean up empty meshes to prevent errors
+	    var meshKeys = Object.keys(meshes);
+	    meshKeys.forEach(key => {
+	      if (!meshes[key].positions || !meshes[key].positions.length) {
+	        // console.warn('no vertices for mesh', key)
+	        delete meshes[key];
+	      }
+	    });
+
+	    // setup materials
+	    // defaults
+	    var materials = {
+	      top: 'wood_parquet_oak',
+	      side: 'basic-wall',
+	      ceiling: 'basic-ceiling'
+	    };
+
+	    // check for adapted materials
+	    var materialKeys = Object.keys(data).filter(function(key) {
+	      return key.indexOf('material_') > -1
+	    });
+	    // add materials to instance
+	    materialKeys.forEach(function(key) {
+	      var mesh = key.replace('material_', '');
+	      materials[mesh] = data[key];
+	    });
+
+	    // fetch materials from mat library
+	    Object.keys(materials).forEach(mat => {
+	      materials[mat] = getMaterial(materials[mat]);
+	    });
+
+	    // construct data3d object
+	    var data3d = {
+	      meshes: meshes,
+	      materials: materials
+	    };
+
+	    // create new one
+	    this_.mesh = new THREE.Object3D();
+	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
+
+	    // update view
+	    this_.data3dView.set(data3d);
+	    this_.el.setObject3D('mesh', this_.mesh);
+	    // emit event
+	    this_.el.emit('mesh-updated');
+	  },
+
+	  remove: function () {
+	    if (this.data3dView) {
+	      this.data3dView.destroy();
+	      this.data3dView = null;
+	    }
+	    if (this.mesh) {
+	      this.el.removeObject3D('mesh');
+	      this.mesh = null;
+	    }
+	  },
+
+	  generateMeshes3d: function () {
+	    var a = this.attributes;
+
+	    // a polygon can not have less than 3 points
+	    if (a.polygon.length < 3) {
+	      if (this.model) {
+	        this.model.a.parent.remove(this.model);
+	      }
+	      return Promise.resolve({
+	        meshes: {}
+	      })
+	    }
+
+	    // prepare format
+	    var vertices = [];
+	    for (var i = 0, l = a.polygon.length; i < l; i++) {
+	      vertices[ i * 2 ] = a.polygon[ i ][ 0 ];
+	      vertices[ i * 2 + 1 ] = a.polygon[ i ][ 1 ];
+	    }
+
+	    // top polygon
+	    var topPolygon = generatePolygonBuffer({
+	      outline: vertices,
+	      y: 0,
+	      uvx: a.x,
+	      uvz: a.z
+	    });
+
+	    // ceiling polygon
+	    var ceilingPolygon;
+	    if (a.hasCeiling) {
+	      ceilingPolygon = generatePolygonBuffer({
+	        outline: vertices,
+	        y: a.hCeiling,
+	        uvx: a.x,
+	        uvz: a.z,
+	        flipSide: true
+	      });
+	    } else {
+	      ceilingPolygon = {
+	        vertices: new Float32Array(0),
+	        uvs: new Float32Array(0)
+	      };
+	    }
+
+	    // sides
+	    var sides = generateExtrusionBuffer({
+	      outline: vertices,
+	      y: -a.h,
+	      flipSide: true
+	    });
+
+	    // return meshes
+	    return {
+	      top: {
+	        positions: topPolygon.vertices,
+	        normals: getNormalsBuffer.flat(topPolygon.vertices),
+	        uvs: topPolygon.uvs,
+	        material: 'top'
+	      },
+	      sides: {
+	        positions: sides.vertices,
+	        normals: getNormalsBuffer.flat(sides.vertices),
+	        uvs: sides.uvs,
+	        material: 'side'
+	      },
+	      ceiling: {
+	        positions: ceilingPolygon.vertices,
+	        normals: getNormalsBuffer.flat(ceilingPolygon.vertices),
+	        uvs: ceilingPolygon.uvs,
+	        material: 'ceiling'
+	      }
+	    }
+	  }
+	};
+
+	// dependencies
+
+	var railingComponent = {
+
+	  schema: getSchema('railing'),
+
+	  init: function () {},
+
+	  updateSchema: updateSchema,
+
+	  update: function (oldData) {
+	    var this_ = this;
+	    var data = this_.data;
+
+	    // remove old mesh
+	    this.remove();
+
+	    // get defaults and
+	    this.attributes = cloneDeep_1(data);
+
+	    // get meshes and materials from el3d modules
+	    var meshes = this.generateMeshes3d();
+
+	    // clean up empty meshes to prevent errors
+	    var meshKeys = Object.keys(meshes);
+	    meshKeys.forEach(key => {
+	      if (!meshes[key].positions || !meshes[key].positions.length) {
+	        // console.warn('no vertices for mesh', key)
+	        delete meshes[key];
+	      }
+	    });
+
+	    // setup materials
+	    // defaults
+	    var materials = {
+	      railing: {
+	        colorDiffuse: [0.85, 0.85, 0.85]
+	      }
+	    };
+
+	    // check for adapted materials
+	    var materialKeys = Object.keys(data).filter(function(key) {
+	      return key.indexOf('material_') > -1
+	    });
+	    // add materials to instance
+	    materialKeys.forEach(function(key) {
+	      var mesh = key.replace('material_', '');
+	      materials[mesh] = data[key];
+	    });
+
+	    // fetch materials from mat library
+	    Object.keys(materials).forEach(mat => {
+	      materials[mat] = getMaterial(materials[mat]);
+	    });
+
+	    // construct data3d object
+	    var data3d = {
+	      meshes: meshes,
+	      materials: materials
+	    };
+
+	    // create new one
+	    this_.mesh = new THREE.Object3D();
+	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
+
+	    // update view
+	    this_.data3dView.set(data3d);
+	    this_.el.setObject3D('mesh', this_.mesh);
+	    // emit event
+	    this_.el.emit('mesh-updated');
+	  },
+
+	  remove: function () {
+	    if (this.data3dView) {
+	      this.data3dView.destroy();
+	      this.data3dView = null;
+	    }
+	    if (this.mesh) {
+	      this.el.removeObject3D('mesh');
+	      this.mesh = null;
+	    }
+	  },
+
+	  generateMeshes3d: function () {
+	    var a = this.attributes;
+
+	    var
+	      railingVertices = [],
+	      rvPos = 0,
+	      segmentation = a.segmentation,
+	      segmentLen = (a.l - a.pailing) / (((a.l - a.pailing) / a.segmentDistance) >> 0),
+	      segments = a.l / segmentLen,
+	      railCount = Math.max(parseInt(a.railCount), 1),
+	      segmentHeight = (a.h - (railCount * a.pailing)) / Math.max(railCount - 1, 1);
+
+	    if (segmentation === 'number') {
+	      segments = a.segments;
+	      segmentLen = (a.l - a.pailing) / segments;
+	    }
+
+
+	    //POSTS
+
+	    // FRONT VIEW VERTICES
+	    //   E-----G
+	    //  /|    /|
+	    // A-----C |
+	    // | |   | |
+	    // | F---|-H
+	    // |/    |/
+	    // B-----D
+
+	    var aX = 0,
+	      aY,
+	      aZ = a.w,
+	      bY = railCount > 1 ? a.pailing : 0,
+	      cX = a.pailing,
+	      eZ = 0;
+
+	    // posts
+	    if (segmentation !== 'none') {
+	      // split them by the rails
+	      for (var n = 0; n < Math.max(railCount - 1, 1); n++) {
+	        aY = bY + segmentHeight;
+	        // iterate through posts
+	        for (var i = 0; i <= segments; i++) {
+	          var offset = i * segmentLen;
+
+	          aX = offset;
+	          cX = offset + a.pailing;
+	          //FRONT
+	          //A
+	          railingVertices[rvPos] = railingVertices[rvPos + 9] = aX;
+	          railingVertices[rvPos + 1] = railingVertices[rvPos + 10] = aY;
+	          railingVertices[rvPos + 2] = railingVertices[rvPos + 11] = aZ;
+	          //B
+	          railingVertices[rvPos + 3] = aX;
+	          railingVertices[rvPos + 4] = bY;
+	          railingVertices[rvPos + 5] = aZ;
+	          //D
+	          railingVertices[rvPos + 6] = railingVertices[rvPos + 12] = cX;
+	          railingVertices[rvPos + 7] = railingVertices[rvPos + 13] = bY;
+	          railingVertices[rvPos + 8] = railingVertices[rvPos + 14] = aZ;
+	          //C
+	          railingVertices[rvPos + 15] = cX;
+	          railingVertices[rvPos + 16] = aY;
+	          railingVertices[rvPos + 17] = aZ;
+
+	          rvPos = rvPos + 18;
+
+	          //LEFT
+	          //E
+	          railingVertices[rvPos] = railingVertices[rvPos + 9] = aX;
+	          railingVertices[rvPos + 1] = railingVertices[rvPos + 10] = aY;
+	          railingVertices[rvPos + 2] = railingVertices[rvPos + 11] = eZ;
+	          //F
+	          railingVertices[rvPos + 3] = aX;
+	          railingVertices[rvPos + 4] = bY;
+	          railingVertices[rvPos + 5] = eZ;
+	          //B
+	          railingVertices[rvPos + 6] = railingVertices[rvPos + 12] = aX;
+	          railingVertices[rvPos + 7] = railingVertices[rvPos + 13] = bY;
+	          railingVertices[rvPos + 8] = railingVertices[rvPos + 14] = aZ;
+	          //A
+	          railingVertices[rvPos + 15] = aX;
+	          railingVertices[rvPos + 16] = aY;
+	          railingVertices[rvPos + 17] = aZ;
+
+	          rvPos = rvPos + 18;
+
+	          //RIGHT
+	          //C
+	          railingVertices[rvPos] = railingVertices[rvPos + 9] = cX;
+	          railingVertices[rvPos + 1] = railingVertices[rvPos + 10] = aY;
+	          railingVertices[rvPos + 2] = railingVertices[rvPos + 11] = aZ;
+	          //D
+	          railingVertices[rvPos + 3] = cX;
+	          railingVertices[rvPos + 4] = bY;
+	          railingVertices[rvPos + 5] = aZ;
+	          //H
+	          railingVertices[rvPos + 6] = railingVertices[rvPos + 12] = cX;
+	          railingVertices[rvPos + 7] = railingVertices[rvPos + 13] = bY;
+	          railingVertices[rvPos + 8] = railingVertices[rvPos + 14] = eZ;
+	          //G
+	          railingVertices[rvPos + 15] = cX;
+	          railingVertices[rvPos + 16] = aY;
+	          railingVertices[rvPos + 17] = eZ;
+
+	          rvPos = rvPos + 18;
+
+	          //BACK
+	          //G
+	          railingVertices[rvPos] = railingVertices[rvPos + 9] = cX;
+	          railingVertices[rvPos + 1] = railingVertices[rvPos + 10] = aY;
+	          railingVertices[rvPos + 2] = railingVertices[rvPos + 11] = eZ;
+	          //H
+	          railingVertices[rvPos + 3] = cX;
+	          railingVertices[rvPos + 4] = bY;
+	          railingVertices[rvPos + 5] = eZ;
+	          //F
+	          railingVertices[rvPos + 6] = railingVertices[rvPos + 12] = aX;
+	          railingVertices[rvPos + 7] = railingVertices[rvPos + 13] = bY;
+	          railingVertices[rvPos + 8] = railingVertices[rvPos + 14] = eZ;
+	          //E
+	          railingVertices[rvPos + 15] = aX;
+	          railingVertices[rvPos + 16] = aY;
+	          railingVertices[rvPos + 17] = eZ;
+
+	          rvPos = rvPos + 18;
+	        }
+	        bY += a.pailing + segmentHeight;
+	      }
+	    }
+
+	    //HANDRAIL
+
+	    // start at top for single rail - otherwise at bottom
+	    var yCursor = segmentation !== 'none' && railCount === 1 ? a.h - a.pailing : 0;
+	    railCount = segmentation !== 'none' ? railCount : 1;
+
+	    for (var i = 0; i < railCount; i++) {
+	      // FRONT VIEW VERTICES
+	      //   E----------G
+	      //  /|         /|
+	      // A----------C |
+	      // | F--------|-H
+	      // |/         |/
+	      // B----------D
+
+	      aX = 0;
+	      aY = segmentation !== 'none' ? yCursor + a.pailing : a.h;
+	      aZ = a.w;
+	      bY = yCursor;
+	      cX = a.l;
+	      eZ = 0;
+
+	      //TOP
+	      //E
+	      railingVertices[rvPos] = railingVertices[rvPos + 9] = aX;
+	      railingVertices[rvPos + 1] = railingVertices[rvPos + 10] = aY;
+	      railingVertices[rvPos + 2] = railingVertices[rvPos + 11] = eZ;
+	      //A
+	      railingVertices[rvPos + 3] = aX;
+	      railingVertices[rvPos + 4] = aY;
+	      railingVertices[rvPos + 5] = aZ;
+	      //C
+	      railingVertices[rvPos + 6] = railingVertices[rvPos + 12] = cX;
+	      railingVertices[rvPos + 7] = railingVertices[rvPos + 13] = aY;
+	      railingVertices[rvPos + 8] = railingVertices[rvPos + 14] = aZ;
+	      //G
+	      railingVertices[rvPos + 15] = cX;
+	      railingVertices[rvPos + 16] = aY;
+	      railingVertices[rvPos + 17] = eZ;
+
+	      rvPos = rvPos + 18;
+
+	      //BOTTOM
+	      //B
+	      railingVertices[rvPos] = railingVertices[rvPos + 9] = aX;
+	      railingVertices[rvPos + 1] = railingVertices[rvPos + 10] = bY;
+	      railingVertices[rvPos + 2] = railingVertices[rvPos + 11] = aZ;
+	      //F
+	      railingVertices[rvPos + 3] = aX;
+	      railingVertices[rvPos + 4] = bY;
+	      railingVertices[rvPos + 5] = eZ;
+	      //H
+	      railingVertices[rvPos + 6] = railingVertices[rvPos + 12] = cX;
+	      railingVertices[rvPos + 7] = railingVertices[rvPos + 13] = bY;
+	      railingVertices[rvPos + 8] = railingVertices[rvPos + 14] = eZ;
+	      //D
+	      railingVertices[rvPos + 15] = cX;
+	      railingVertices[rvPos + 16] = bY;
+	      railingVertices[rvPos + 17] = aZ;
+
+	      rvPos = rvPos + 18;
+
+	      //FRONT
+	      //A
+	      railingVertices[rvPos] = railingVertices[rvPos + 9] = aX;
+	      railingVertices[rvPos + 1] = railingVertices[rvPos + 10] = aY;
+	      railingVertices[rvPos + 2] = railingVertices[rvPos + 11] = aZ;
+	      //B
+	      railingVertices[rvPos + 3] = aX;
+	      railingVertices[rvPos + 4] = bY;
+	      railingVertices[rvPos + 5] = aZ;
+	      //D
+	      railingVertices[rvPos + 6] = railingVertices[rvPos + 12] = cX;
+	      railingVertices[rvPos + 7] = railingVertices[rvPos + 13] = bY;
+	      railingVertices[rvPos + 8] = railingVertices[rvPos + 14] = aZ;
+	      //C
+	      railingVertices[rvPos + 15] = cX;
+	      railingVertices[rvPos + 16] = aY;
+	      railingVertices[rvPos + 17] = aZ;
+
+	      rvPos = rvPos + 18;
+
+	      //LEFT
+	      //E
+	      railingVertices[rvPos] = railingVertices[rvPos + 9] = aX;
+	      railingVertices[rvPos + 1] = railingVertices[rvPos + 10] = aY;
+	      railingVertices[rvPos + 2] = railingVertices[rvPos + 11] = eZ;
+	      //F
+	      railingVertices[rvPos + 3] = aX;
+	      railingVertices[rvPos + 4] = bY;
+	      railingVertices[rvPos + 5] = eZ;
+	      //B
+	      railingVertices[rvPos + 6] = railingVertices[rvPos + 12] = aX;
+	      railingVertices[rvPos + 7] = railingVertices[rvPos + 13] = bY;
+	      railingVertices[rvPos + 8] = railingVertices[rvPos + 14] = aZ;
+	      //A
+	      railingVertices[rvPos + 15] = aX;
+	      railingVertices[rvPos + 16] = aY;
+	      railingVertices[rvPos + 17] = aZ;
+
+	      rvPos = rvPos + 18;
+
+	      //RIGHT
+	      //C
+	      railingVertices[rvPos] = railingVertices[rvPos + 9] = cX;
+	      railingVertices[rvPos + 1] = railingVertices[rvPos + 10] = aY;
+	      railingVertices[rvPos + 2] = railingVertices[rvPos + 11] = aZ;
+	      //D
+	      railingVertices[rvPos + 3] = cX;
+	      railingVertices[rvPos + 4] = bY;
+	      railingVertices[rvPos + 5] = aZ;
+	      //H
+	      railingVertices[rvPos + 6] = railingVertices[rvPos + 12] = cX;
+	      railingVertices[rvPos + 7] = railingVertices[rvPos + 13] = bY;
+	      railingVertices[rvPos + 8] = railingVertices[rvPos + 14] = eZ;
+	      //G
+	      railingVertices[rvPos + 15] = cX;
+	      railingVertices[rvPos + 16] = aY;
+	      railingVertices[rvPos + 17] = eZ;
+
+	      rvPos = rvPos + 18;
+
+	      //BACK
+	      //G
+	      railingVertices[rvPos] = railingVertices[rvPos + 9] = cX;
+	      railingVertices[rvPos + 1] = railingVertices[rvPos + 10] = aY;
+	      railingVertices[rvPos + 2] = railingVertices[rvPos + 11] = eZ;
+	      //H
+	      railingVertices[rvPos + 3] = cX;
+	      railingVertices[rvPos + 4] = bY;
+	      railingVertices[rvPos + 5] = eZ;
+	      //F
+	      railingVertices[rvPos + 6] = railingVertices[rvPos + 12] = aX;
+	      railingVertices[rvPos + 7] = railingVertices[rvPos + 13] = bY;
+	      railingVertices[rvPos + 8] = railingVertices[rvPos + 14] = eZ;
+	      //E
+	      railingVertices[rvPos + 15] = aX;
+	      railingVertices[rvPos + 16] = aY;
+	      railingVertices[rvPos + 17] = eZ;
+
+	      rvPos = rvPos + 18;
+
+	      yCursor += a.pailing + segmentHeight;
+	    }
+
+	    return {
+	      railing: {
+	        positions: new Float32Array(railingVertices),
+	        normals: getNormalsBuffer.flat(railingVertices),
+	        material: 'railing'
+	      }
+	    }
+	  }
+	};
+
+	// dependencies
+
+	var stairsComponent = {
+
+	  schema: getSchema('stairs'),
+
+	  init: function () {},
+
+	  updateSchema: updateSchema,
+
+	  update: function (oldData) {
+	    var this_ = this;
+	    var data = this_.data;
+
+	    // remove old mesh
+	    this.remove();
+
+	    // get defaults and
+	    this.attributes = cloneDeep_1(data);
+
+	    // get meshes and materials from el3d modules
+	    var meshes = this.generateMeshes3d();
+
+	    // clean up empty meshes to prevent errors
+	    var meshKeys = Object.keys(meshes);
+	    meshKeys.forEach(key => {
+	      if (!meshes[key].positions || !meshes[key].positions.length) {
+	        // console.warn('no vertices for mesh', key)
+	        delete meshes[key];
+	      }
+	    });
+
+	    // setup materials
+	    // defaults
+	    var materials = {
+	      steps: 'basic-wall',
+	      tread: 'wood_parquet_oak',
+	      railing: {
+	        colorDiffuse: [0.85, 0.85, 0.85]
+	      }
+	    };
+
+	    // check for adapted materials
+	    var materialKeys = Object.keys(data).filter(function(key) {
+	      return key.indexOf('material_') > -1
+	    });
+	    // add materials to instance
+	    materialKeys.forEach(function(key) {
+	      var mesh = key.replace('material_', '');
+	      materials[mesh] = data[key];
+	    });
+
+	    // fetch materials from mat library
+	    Object.keys(materials).forEach(mat => {
+	      materials[mat] = getMaterial(materials[mat]);
+	    });
+
+	    // construct data3d object
+	    var data3d = {
+	      meshes: meshes,
+	      materials: materials
+	    };
+
+	    // create new one
+	    this_.mesh = new THREE.Object3D();
+	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
+
+	    // update view
+	    this_.data3dView.set(data3d);
+	    this_.el.setObject3D('mesh', this_.mesh);
+	    // emit event
+	    this_.el.emit('mesh-updated');
+	  },
+
+	  remove: function () {
+	    if (this.data3dView) {
+	      this.data3dView.destroy();
+	      this.data3dView = null;
+	    }
+	    if (this.mesh) {
+	      this.el.removeObject3D('mesh');
+	      this.mesh = null;
+	    }
+	  },
+
+	  generateMeshes3d: function () {
+	    var a = this.attributes;
+
+	    // settings for step ratio
+	    var stepRatioMax = 2.6,
+	      stepRatioMin = 1.15,
+
+	      // internals
+	      stepsVertices = [],
+	      svPos = 0,
+	      treadVertices = [],
+	      tvPos = 0,
+	      railingVertices = [],
+	      rvPos = 0,
+
+	      // internal settings
+	      handrailThickness = 0.02,
+	      stairWidth = a.w,
+	      stairLength = a.l,
+	      flipStair = a.circulation === 'left',
+	      stepWidth = a.stepWidth,
+	      stairWell = 0.3,
+	      nosing = 0.02,
+	      riserExt = a.stepThickness;
+
+	    var aX, aY, aZ, bY, cX, cY, cZ, dY, eX, eY, eZ, fX, fZ, gZ, hX, hZ, // BASE
+	      kX, kY, kZ, lY, mX, mZ, oX, oZ, qX, qZ, // TREAD
+	      runA, runB, runC, // RUN
+	      stepNumber, calcRiser, tread, calcTread, stepsLength;
+
+	    // STAIR Configurations
+
+	    if (a.stairType === 'straight') {
+	      // Straight
+
+	      // reset stairWidth
+	      a.w = stepWidth;
+	      stepWidth = a.w;
+	      a.circulation = 'right';
+
+	      if ((a.l/ a.h)<=stepRatioMin) a.l = a.h*stepRatioMin;
+	      if ((a.l/ a.h)>=stepRatioMax) a.l = a.h*stepRatioMax;
+	      stairLength = a.l;
+	      calcTread = ((stairLength/a.h + 1.2321)/0.10357)/100;
+	      stepNumber = Math.round(stairLength/calcTread);
+	      calcRiser = a.h/stepNumber;
+	      tread = stairLength/stepNumber;
+
+	      runA = stepNumber;
+
+	      _straightRun(0, 0, 0, runA, tread);
+
+	    } else if (a.stairType === 'straightLanding') {
+	      // Straight + Platform
+
+	      var platformLength = 1;
+
+	      // reset stairWidth
+	      a.w = a.stepWidth;
+	      stepWidth = a.w;
+	      a.circulation = 'right';
+
+	      if (((a.l-platformLength) / a.h)<stepRatioMin) a.l = a.h*stepRatioMin + platformLength;
+	      if (((a.l-platformLength) / a.h)>stepRatioMax) a.l = a.h*stepRatioMax + platformLength;
+	      stepsLength = a.l-platformLength;
+	      calcTread = ((stepsLength / a.h + 1.2321)/0.10357)/100;
+	      stepNumber = Math.round(stepsLength/calcTread);
+	      calcRiser = a.h/stepNumber;
+	      tread = stepsLength/stepNumber;
+
+	      runA = Math.ceil(stepNumber/2);
+	      runB = stepNumber - runA;
+
+	      _straightRun(0, 0, 0, runA, tread);
+	      _platform(runA*tread, runA*calcRiser, 0, stepWidth, platformLength);
+	      _straightRun(runA*tread+platformLength, runA*calcRiser, 0, runB, tread);
+
+	    } else if (a.stairType === 'lShaped') {
+	      // L-Shaped
+
+	      if (a.w<stepWidth+0.3) a.w=stepWidth+0.3;
+	      if (a.l<stepWidth+0.3) a.l=stepWidth+0.3;
+	      stepsLength = a.l + a.w - (2*stepWidth);
+
+	      calcTread = ((stepsLength / a.h + 1.2321)/0.10357)/100;
+	      stepNumber = Math.round(stepsLength/calcTread);
+	      calcRiser = a.h/stepNumber;
+	      tread = stepsLength/stepNumber;
+
+	      runA = Math.floor((a.l-stepWidth)/tread);
+	      runB = stepNumber - runA;
+
+	      if (!flipStair) {
+	        _straightRun(0, 0, 0, runA, (a.l-stepWidth)/runA);
+	        _platform(a.l-stepWidth, runA*calcRiser, 0, stepWidth, stepWidth);
+	        _straightRun(a.l, runA*calcRiser, stepWidth, runB, tread = (a.w-stepWidth)/runB, 90);
+	      } else {
+	        _straightRun(0, 0, a.w-stepWidth, runA, (a.l-stepWidth)/runA);
+	        _platform(a.l, runA*calcRiser, a.w-stepWidth, stepWidth, stepWidth, 90);
+	        _straightRun(a.l-stepWidth, runA*calcRiser, a.w-stepWidth, runB, tread = (a.w-stepWidth)/runB, -90);
+	      }
+
+	    } else if (a.stairType === 'halfLanding') {
+	      // Half Landing
+
+	      if (a.w<stepWidth*2+0.05) a.w=stepWidth*2+0.05;
+	      stairWidth = a.w;
+	      //stepsLength = (a.l-stepWidth)
+
+	      if (((a.l-stepWidth)*2 / a.h)<stepRatioMin) a.l = a.h/2*stepRatioMin + stepWidth;
+	      if (((a.l-stepWidth)*2 / a.h)>stepRatioMax) a.l = a.h/2*stepRatioMax + stepWidth;
+	      stepsLength = a.l-stepWidth;
+
+	      calcTread = ((stepsLength / (a.h/2) + 1.2321)/0.10357)/100;
+	      stepNumber = Math.round(stepsLength/calcTread);
+	      calcRiser = (a.h/2)/stepNumber;
+	      tread = stepsLength/stepNumber;
+
+	      runA = stepNumber;
+	      runB = stepNumber;
+	      if (!flipStair) {
+	        _straightRun(0, 0, 0, runA, tread);
+	        _platform(runA * tread, runA * calcRiser, 0, stairWidth, stepWidth);
+	        _straightRun(runA * tread, runA * calcRiser, stairWidth, runB, tread, 180);
+	      } else {
+	        _straightRun(0, 0, stairWidth - stepWidth, runA, tread);
+	        _platform(runA * tread, runA * calcRiser, 0, stairWidth, stepWidth);
+	        _straightRun(runA * tread, runA * calcRiser, stepWidth, runB, tread, 180);
+	      }
+
+	    } else if (a.stairType === '2QuarterLanding') {
+	      // 2 Quarter Landing
+
+	      if (a.w<stepWidth*2+0.3) a.w=stepWidth*2+0.3;
+	      if (a.l<stepWidth+0.3) a.l=stepWidth+0.3;
+	      stairWidth = a.w;
+	      stepsLength = (a.l-stepWidth)*2+a.w-stepWidth*2;
+
+	      calcTread = ((stepsLength / a.h + 1.2321)/0.10357)/100;
+	      stepNumber = Math.round(stepsLength/calcTread);
+	      calcRiser = a.h/stepNumber;
+	      tread = stepsLength/stepNumber;
+
+	      runA = Math.round((a.l-stepWidth)/tread);
+	      runC = runA;
+	      runB = stepNumber - runA*2;
+
+	      // maintain full Length by altering tread Length for runA & runC
+	      tread = (a.l-stepWidth)/runA;
+
+	      // Workaround for misconfiguration
+	      if (runB < 1 && stairWidth > stepWidth * 2) {
+	        runB = 1;
+	        runC = runC - 1;
+	      }
+
+	      if (!flipStair) {
+	        _straightRun(0, 0, 0, runA, (a.l - stepWidth) / runA);
+	        _platform(a.l - stepWidth, runA * calcRiser, 0, stepWidth, stepWidth);
+	        _straightRun(a.l, runA * calcRiser, stepWidth, runB, (a.w - stepWidth * 2) / runB, 90);
+	        _platform(a.l, (runA + runB) * calcRiser, stairWidth - stepWidth, stepWidth, stepWidth, 90);
+	        _straightRun(runA * tread, (runA + runB) * calcRiser, stairWidth, runC, (a.l - stepWidth) / runA, 180);
+	      } else {
+	        _straightRun(0, 0, stairWidth - stepWidth, runA, (a.l - stepWidth) / runA);
+	        _platform(a.l - stepWidth, (runA + runB) * calcRiser, 0, stepWidth, stepWidth);
+	        _straightRun(a.l - stepWidth, runA * calcRiser, stairWidth - stepWidth, runB, (a.w - stepWidth * 2) / runB, -90);
+	        _platform(a.l, runA * calcRiser, stairWidth - stepWidth, stepWidth, stepWidth, 90);
+	        _straightRun(runA * tread, (runA + runB) * calcRiser, stepWidth, runC, (a.l - stepWidth) / runA, 180);
+	      }
+
+	    } else if (a.stairType === 'winder') {
+	      // Winder
+
+	      if (a.w<stepWidth+stairWell+0.5) a.w=stepWidth+stairWell+0.5;
+	      if (a.l<stepWidth+stairWell+0.5) a.l=stepWidth+stairWell+0.5;
+
+	      stepsLength = a.l + a.w - stepWidth;
+	      calcTread = ((stepsLength / a.h + 1.2321)/0.10357)/100;
+	      stepNumber = Math.round(stepsLength/calcTread);
+	      calcRiser = a.h/stepNumber;
+	      tread = stepsLength/stepNumber;
+
+	      //console.log("Winder")
+	      runB = 2*Math.round((stepWidth/2+stairWell)/tread);
+	      runA = Math.round((a.l-stepWidth-stairWell)/tread);
+	      runC = stepNumber - runA - runB;
+
+	      if (!flipStair) {
+	        _straightRun(0, 0, 0, runA, (a.l - stepWidth - stairWell) / runA);
+	        _winder(a.l - stepWidth - stairWell, runA * calcRiser, 0, runB);
+	        if (runC > 0) _straightRun(a.l, (runA + runB) * calcRiser, stepWidth + stairWell, runC, (a.w - stepWidth - stairWell) / runC, 90);
+	      } else {
+	        _straightRun(0, 0, a.w-stepWidth, runA, (a.l - stepWidth - stairWell) / runA);
+	        _winder(a.l - stepWidth - stairWell, runA * calcRiser, a.w-stepWidth, runB, 0, flipStair);
+	        if (runC > 0) _straightRun(a.l - stepWidth, (runA + runB) * calcRiser, a.w - stepWidth - stairWell, runC, (a.w - stepWidth - stairWell) / runC, -90);
+	      }
+
+	    } else if (a.stairType === 'doubleWinder') {
+	      // Double Winder
+
+	      if (a.w<(stepWidth+0.15)*2) a.w=(stepWidth+0.15)*2;
+	      if (a.l<stepWidth+stairWell) a.l=stepWidth+stairWell;
+
+	      stepsLength = a.l*2 + a.w - stepWidth*2;
+	      calcTread = ((stepsLength / a.h + 1.2321)/0.10357)/100;
+	      stepNumber = Math.round(stepsLength/calcTread);
+	      calcRiser = a.h/stepNumber;
+	      tread = stepsLength/stepNumber;
+
+	      runB = 4*Math.round((stepWidth/2+stairWell)/tread);
+	      runC = Math.round((a.w-(stepWidth+stairWell)*2)/tread);
+	      runA = Math.round((stepNumber - runB - runC) / 2);
+
+	      if (runA < 1) {
+	        stairWell = a.l-stepWidth;
+	        runA = 0;
+	      }
+	      if (runC < 1) {
+	        stairWell = a.w/2-stepWidth;
+	        runC = 0;
+	      }
+
+	      if (!flipStair) {
+	        if (runA > 0) _straightRun(0, 0, 0, runA, (a.l - stepWidth - stairWell) / runA);
+	        _winder(a.l - stepWidth - stairWell, runA * calcRiser, 0, runB / 2);
+	        if (runC > 0) _straightRun(a.l, (runA + runB / 2) * calcRiser, stepWidth + stairWell, runC, (a.w - (stepWidth + stairWell) * 2) / runC, 90);
+	        _winder(a.l, (runA + runB / 2 + runC) * calcRiser, a.w - stepWidth - stairWell, runB / 2, 90);
+	        if (runA > 0) _straightRun(a.l - stepWidth - stairWell, (runA + runB + runC) * calcRiser, a.w, runA, (a.l - stepWidth - stairWell) / runA, 180);
+	      } else {
+	        if (runA > 0) _straightRun(0, 0, a.w - stepWidth, runA, (a.l - stepWidth - stairWell) / runA);
+	        _winder(a.l - stepWidth - stairWell, runA * calcRiser, a.w - stepWidth, runB / 2, 0, flipStair);
+	        if (runC > 0) _straightRun(a.l - stepWidth, (runA + runB / 2) * calcRiser, a.w - stepWidth - stairWell, runC, (a.w - (stepWidth + stairWell) * 2) / runC, -90);
+	        _winder(a.l - stepWidth, (runA + runB / 2 + runC) * calcRiser, stepWidth + stairWell, runB / 2, -90, flipStair);
+	        if (runA > 0) _straightRun(a.l - stepWidth - stairWell, (runA + runB + runC) * calcRiser, stepWidth, runA, (a.l - stepWidth - stairWell) / runA, 180);
+	      }
+
+	    } else if (a.stairType === 'spiral') {
+	      // Spiral
+
+	      stairWidth = a.w;
+
+	      if (stairWidth < stepWidth) {
+	        stairWidth = stepWidth;
+	        a.w = stepWidth;
+	      }
+
+	      if ((a.l/ a.h)<=stepRatioMin) a.l = a.h*stepRatioMin;
+	      if ((a.l/ a.h)>=stepRatioMax) a.l = a.h*stepRatioMax;
+	      stairLength = a.l;
+	      calcTread = ((stairLength/a.h + 1.2321)/0.10357)/100;
+	      stepNumber = Math.round(stairLength/calcTread);
+	      calcRiser = a.h/stepNumber;
+	      tread = stairLength/stepNumber;
+
+	      runA = stepNumber;
+
+	      _spiralRun(0, 0, 0, runA, flipStair);
+
+	    }
+
+	    // Geometry Generation Functions
+
+	    function _straightRun(xCursor, yCursor, zCursor, stepNumber, tread, angle) {
+	      ////// BASE
+	      var vs, ve, ts, te, rs, re, xRotate, i,
+	        offsetX = xCursor,
+	        offsetZ = zCursor;
+
+	      vs = stepsVertices.length;
+	      ts = treadVertices.length;
+	      rs = railingVertices.length;
+
+	      // Left Railing
+	      if (a.railing === 'left'||a.railing === 'both') _railing(xCursor, yCursor+calcRiser, zCursor+handrailThickness+0.01, xCursor+stepNumber*tread, yCursor+stepNumber*calcRiser+calcRiser, zCursor+handrailThickness+0.01);
+	      if (a.railing === 'right'||a.railing === 'both') _railing(xCursor, yCursor+calcRiser, zCursor+stepWidth-0.01, xCursor+stepNumber*tread, yCursor+stepNumber*calcRiser+calcRiser, zCursor+stepWidth-0.01);
+
+	      for (var k = 0; k < stepNumber; k++) {
+
+	        // F----I
+	        // |\   |\
+	        // G \  H \
+	        // |\ A----D
+	        // J \|    |
+	        //    B    C
+	        //    |  /
+	        //    E
+
+	        aX = xCursor;
+	        aY = yCursor + calcRiser - a.treadHeight;
+	        aZ = zCursor + stepWidth;
+	        bY = yCursor;
+	        cX = xCursor + tread;
+	        cY = yCursor + calcRiser - riserExt;
+	        cZ = aZ;
+	        eY = yCursor - riserExt;
+	        fX = aX;
+	        fZ = zCursor;
+	        hX = cX;
+	        hZ = fZ;
+
+	        _step(aX, aY, aZ, bY, cY, cX, cZ, eY, fX, fZ, hX, hZ);
+
+	        xCursor += tread;
+	        yCursor += calcRiser;
+	      }
+
+	      ve = stepsVertices.length;
+	      te = treadVertices.length;
+	      re = railingVertices.length;
+
+	      if (angle) {
+
+	        var cosAngle = Math.cos(angle / 180 * Math.PI),
+	          sinAngle = Math.sin(angle / 180 * Math.PI);
+
+	        for (i=vs;i<ve-2; i = i + 3){
+	          xRotate=stepsVertices[i]-offsetX;
+	          stepsVertices[i+2]=stepsVertices[i+2]-offsetZ;
+	          stepsVertices[i]=xRotate*cosAngle-stepsVertices[i+2]*sinAngle+offsetX;
+	          stepsVertices[i+2]=stepsVertices[i+2]*cosAngle+xRotate*sinAngle+offsetZ;
+	        }
+	        for (i=ts;i<te-2; i = i + 3){
+	          xRotate=treadVertices[i]-offsetX;
+	          treadVertices[i+2]=treadVertices[i+2]-offsetZ;
+	          treadVertices[i]=xRotate*cosAngle-treadVertices[i+2]*sinAngle+offsetX;
+	          treadVertices[i+2]=treadVertices[i+2]*cosAngle+xRotate*sinAngle+offsetZ;
+	        }
+	        for (i=rs;i<re-2; i = i + 3){
+	          xRotate=railingVertices[i]-offsetX;
+	          railingVertices[i+2]=railingVertices[i+2]-offsetZ;
+	          railingVertices[i]=xRotate*cosAngle-railingVertices[i+2]*sinAngle+offsetX;
+	          railingVertices[i+2]=railingVertices[i+2]*cosAngle+xRotate*sinAngle+offsetZ;
+	        }
+	      }
+
+	    }
+
+	    function _platform(xCursor, yCursor, zCursor, width, length, angle) {
+
+	      // F-------I
+	      // |\      |\
+	      // G \-----H \
+	      //  \ A-------D
+	      //   \|      \|
+	      //    B-------C
+
+	      var platformExt = length,
+	        vs, ve, ts, te, rs, re, xRotate, i,
+	        offsetX = xCursor,
+	        offsetZ = zCursor;
+
+	      vs = stepsVertices.length;
+	      ts = treadVertices.length;
+	      rs = railingVertices.length;
+
+	      aX = xCursor;
+	      aY = yCursor - a.treadHeight;
+	      aZ = zCursor+ width;
+	      bY = yCursor - riserExt;
+	      //cY = yCursor - riserExt
+	      cX = xCursor + platformExt;
+	      eX = aX;
+	      eY = yCursor - riserExt;
+	      fZ = zCursor;
+
+	      // Straight Platform Railing
+	      if (a.stairType === 'straightLanding') {
+	        if (a.railing === 'left'||a.railing === 'both') _railing(xCursor, yCursor+calcRiser, zCursor+handrailThickness+0.01, xCursor+length, yCursor+calcRiser, zCursor+handrailThickness+0.01);
+	        if (a.railing === 'right'||a.railing === 'both') _railing(xCursor, yCursor+calcRiser, zCursor+width-0.01, xCursor+length, yCursor+calcRiser, zCursor+width-0.01);
+	      }
+
+	      // L-Shape Platform Railing
+	      if (a.stairType === 'lShaped'||a.stairType === '2QuarterLanding') {
+	        if ((a.railing === 'left' && !flipStair) || (a.railing === 'right' && flipStair) || a.railing === 'both') {
+	          _railing(xCursor, yCursor+calcRiser, zCursor+handrailThickness+0.01, xCursor+length-handrailThickness-0.01, yCursor+calcRiser, zCursor+handrailThickness+0.01, 0, true);
+	          _railing(xCursor+length-handrailThickness-0.01, yCursor+calcRiser, zCursor+0.01, xCursor+length+width-handrailThickness-0.02, yCursor+calcRiser, zCursor+0.01, 90, true);
+	        }
+	      }
+
+	      // Half Landing Platform Railing
+	      if (a.stairType === 'halfLanding' ){
+	        if ((a.railing === 'left' && !flipStair) || (a.railing === 'right' && flipStair) || a.railing === 'both') {
+	          _railing(xCursor, yCursor+calcRiser, zCursor+handrailThickness+0.01, xCursor+length-handrailThickness-0.01, yCursor+calcRiser, zCursor+handrailThickness+0.01, 0, true);
+	          _railing(xCursor+length-handrailThickness-0.01, yCursor+calcRiser, zCursor+0.01, xCursor+length+width-handrailThickness*2-0.03, yCursor+calcRiser, zCursor+0.01, 90, true);
+	          _railing(xCursor+length-0.01, yCursor+calcRiser, zCursor+width-0.01-handrailThickness, xCursor+length+length-handrailThickness, yCursor+calcRiser, zCursor+width-0.01-handrailThickness, 180, true);
+	        }
+	        if ((a.railing === 'left' && flipStair) || (a.railing === 'right' && !flipStair) || a.railing === 'both') {
+	          _railing(xCursor, yCursor+calcRiser, zCursor+stepWidth-0.01-handrailThickness, xCursor+width-stepWidth*2+(0.01+handrailThickness)*2, yCursor+calcRiser, zCursor+stepWidth-0.01-handrailThickness, 90);
+	        }
+	      }
+
+	      // Platform Base
+
+	      if (a.stairType === 'halfLanding' && stairWell) {
+	        // FRONT
+	        //F
+	        stepsVertices[svPos] = stepsVertices[svPos + 9] = aX;
+	        stepsVertices[svPos + 1] = stepsVertices[svPos + 10] = aY;
+	        stepsVertices[svPos + 2] = stepsVertices[svPos + 11] = fZ + stepWidth;
+	        //G
+	        stepsVertices[svPos + 3] = aX;
+	        stepsVertices[svPos + 4] = bY;
+	        stepsVertices[svPos + 5] = fZ + stepWidth;
+	        //B
+	        stepsVertices[svPos + 6] = stepsVertices[svPos + 12] = aX;
+	        stepsVertices[svPos + 7] = stepsVertices[svPos + 13] = bY;
+	        stepsVertices[svPos + 8] = stepsVertices[svPos + 14] = aZ - stepWidth;
+	        //A
+	        stepsVertices[svPos + 15] = aX;
+	        stepsVertices[svPos + 16] = aY;
+	        stepsVertices[svPos + 17] = aZ - stepWidth;
+
+	        svPos += 18;
+	      }
+
+	      if (a.stairType === 'lShaped'||a.stairType === 'halfLanding' ||a.stairType === '2QuarterLanding') {
+	        // BACK
+	        //D
+	        stepsVertices[svPos] = stepsVertices[svPos + 9] = cX;
+	        stepsVertices[svPos + 1] = stepsVertices[svPos + 10] = aY;
+	        stepsVertices[svPos + 2] = stepsVertices[svPos + 11] = aZ;
+	        //C
+	        stepsVertices[svPos + 3] = cX;
+	        stepsVertices[svPos + 4] = bY;
+	        stepsVertices[svPos + 5] = aZ;
+	        //H
+	        stepsVertices[svPos + 6] = stepsVertices[svPos + 12] = cX;
+	        stepsVertices[svPos + 7] = stepsVertices[svPos + 13] = bY;
+	        stepsVertices[svPos + 8] = stepsVertices[svPos + 14] = fZ;
+	        //I
+	        stepsVertices[svPos + 15] = cX;
+	        stepsVertices[svPos + 16] = aY;
+	        stepsVertices[svPos + 17] = fZ;
+
+	        svPos += 18;
+	      }
+
+
+
+	      // RIGHT
+	      //A
+	      stepsVertices[svPos] = stepsVertices[svPos + 9] = aX;
+	      stepsVertices[svPos + 1] = stepsVertices[svPos + 10] = aY;
+	      stepsVertices[svPos + 2] = stepsVertices[svPos + 11] = aZ;
+	      //B
+	      stepsVertices[svPos + 3] = aX;
+	      stepsVertices[svPos + 4] = bY;
+	      stepsVertices[svPos + 5] = aZ;
+	      //C
+	      stepsVertices[svPos + 6] = stepsVertices[svPos + 12] = cX;
+	      stepsVertices[svPos + 7] = stepsVertices[svPos + 13] = bY;
+	      stepsVertices[svPos + 8] = stepsVertices[svPos + 14] = aZ;
+	      //D
+	      stepsVertices[svPos + 15] = cX;
+	      stepsVertices[svPos + 16] = aY;
+	      stepsVertices[svPos + 17] = aZ;
+
+	      svPos += 18;
+
+	      // LEFT
+	      //I
+	      stepsVertices[svPos] = stepsVertices[svPos + 9] = cX;
+	      stepsVertices[svPos + 1] = stepsVertices[svPos + 10] = aY;
+	      stepsVertices[svPos + 2] = stepsVertices[svPos + 11] = fZ;
+	      //H
+	      stepsVertices[svPos + 3] = cX;
+	      stepsVertices[svPos + 4] = bY;
+	      stepsVertices[svPos + 5] = fZ;
+	      //G
+	      stepsVertices[svPos + 6] = stepsVertices[svPos + 12] = aX;
+	      stepsVertices[svPos + 7] = stepsVertices[svPos + 13] = bY;
+	      stepsVertices[svPos + 8] = stepsVertices[svPos + 14] = fZ;
+	      //F
+	      stepsVertices[svPos + 15] = aX;
+	      stepsVertices[svPos + 16] = aY;
+	      stepsVertices[svPos + 17] = fZ;
+
+	      svPos += 18;
+
+	      // BOTTOM
+	      //C
+	      stepsVertices[svPos] = stepsVertices[svPos + 9] = cX;
+	      stepsVertices[svPos + 1] = stepsVertices[svPos + 10] = bY;
+	      stepsVertices[svPos + 2] = stepsVertices[svPos + 11] = aZ;
+	      //B
+	      stepsVertices[svPos + 3] = aX;
+	      stepsVertices[svPos + 4] = bY;
+	      stepsVertices[svPos + 5] = aZ;
+	      //G
+	      stepsVertices[svPos + 6] = stepsVertices[svPos + 12] = aX;
+	      stepsVertices[svPos + 7] = stepsVertices[svPos + 13] = bY;
+	      stepsVertices[svPos + 8] = stepsVertices[svPos + 14] = fZ;
+	      //H
+	      stepsVertices[svPos + 15] = cX;
+	      stepsVertices[svPos + 16] = bY;
+	      stepsVertices[svPos + 17] = fZ;
+
+	      svPos += 18;
+
+	      if (!a.treadHeight) {
+	        // TOP
+	        //A
+	        stepsVertices[svPos] = stepsVertices[svPos + 9] = aX;
+	        stepsVertices[svPos + 1] = stepsVertices[svPos + 10] = aY;
+	        stepsVertices[svPos + 2] = stepsVertices[svPos + 11] = aZ;
+	        //D
+	        stepsVertices[svPos + 3] = cX;
+	        stepsVertices[svPos + 4] = aY;
+	        stepsVertices[svPos + 5] = aZ;
+	        //I
+	        stepsVertices[svPos + 6] = stepsVertices[svPos + 12] = cX;
+	        stepsVertices[svPos + 7] = stepsVertices[svPos + 13] = aY;
+	        stepsVertices[svPos + 8] = stepsVertices[svPos + 14] = fZ;
+	        //F
+	        stepsVertices[svPos + 15] = aX;
+	        stepsVertices[svPos + 16] = aY;
+	        stepsVertices[svPos + 17] = fZ;
+
+	        svPos += 18;
+	      }
+	      if (a.treadHeight > 0) {
+
+	        // O----R
+	        // P\---Q\
+	        //  \\   \\
+	        //   \K----N
+	        //    L----M
+
+	        kX = aX;
+	        kY = aY + a.treadHeight;
+	        kZ = zCursor+ width;
+	        lY = aY;
+	        mX = aX + platformExt;
+	        oZ = zCursor;
+
+	        if (a.stairType === 'lShaped'||a.stairType === 'halfLanding' ||a.stairType === '2QuarterLanding') {
+
+	          // BACK
+	          //M
+	          treadVertices[tvPos] = treadVertices[tvPos + 9] = mX;
+	          treadVertices[tvPos + 1] = treadVertices[tvPos + 10] = kY;
+	          treadVertices[tvPos + 2] = treadVertices[tvPos + 11] = kZ;
+	          //N
+	          treadVertices[tvPos + 3] = mX;
+	          treadVertices[tvPos + 4] = lY;
+	          treadVertices[tvPos + 5] = kZ;
+	          //Q
+	          treadVertices[tvPos + 6] = treadVertices[tvPos + 12] = mX;
+	          treadVertices[tvPos + 7] = treadVertices[tvPos + 13] = lY;
+	          treadVertices[tvPos + 8] = treadVertices[tvPos + 14] = oZ;
+	          //R
+	          treadVertices[tvPos + 15] = mX;
+	          treadVertices[tvPos + 16] = kY;
+	          treadVertices[tvPos + 17] = oZ;
+
+	          tvPos += 18;
+	        }
+
+	        // TOP
+	        //R
+	        treadVertices[tvPos] = treadVertices[tvPos + 9] = mX;
+	        treadVertices[tvPos + 1] = treadVertices[tvPos + 10] = kY;
+	        treadVertices[tvPos + 2] = treadVertices[tvPos + 11] = oZ;
+	        //O
+	        treadVertices[tvPos + 3] = kX;
+	        treadVertices[tvPos + 4] = kY;
+	        treadVertices[tvPos + 5] = oZ;
+	        //K
+	        treadVertices[tvPos + 6] = treadVertices[tvPos + 12] = kX;
+	        treadVertices[tvPos + 7] = treadVertices[tvPos + 13] = kY;
+	        treadVertices[tvPos + 8] = treadVertices[tvPos + 14] = kZ;
+	        //N
+	        treadVertices[tvPos + 15] = mX;
+	        treadVertices[tvPos + 16] = kY;
+	        treadVertices[tvPos + 17] = kZ;
+
+	        tvPos += 18;
+	        // RIGHT
+	        //K
+	        treadVertices[tvPos] = treadVertices[tvPos + 9] = kX;
+	        treadVertices[tvPos + 1] = treadVertices[tvPos + 10] = kY;
+	        treadVertices[tvPos + 2] = treadVertices[tvPos + 11] = kZ;
+	        //L
+	        treadVertices[tvPos + 3] = kX;
+	        treadVertices[tvPos + 4] = lY;
+	        treadVertices[tvPos + 5] = kZ;
+	        //M
+	        treadVertices[tvPos + 6] = treadVertices[tvPos + 12] = mX;
+	        treadVertices[tvPos + 7] = treadVertices[tvPos + 13] = lY;
+	        treadVertices[tvPos + 8] = treadVertices[tvPos + 14] = kZ;
+	        //N
+	        treadVertices[tvPos + 15] = mX;
+	        treadVertices[tvPos + 16] = kY;
+	        treadVertices[tvPos + 17] = kZ;
+
+	        tvPos += 18;
+	        // FRONT
+	        //O
+	        treadVertices[tvPos] = treadVertices[tvPos + 9] = kX;
+	        treadVertices[tvPos + 1] = treadVertices[tvPos + 10] = kY;
+	        treadVertices[tvPos + 2] = treadVertices[tvPos + 11] = oZ;
+	        //P
+	        treadVertices[tvPos + 3] = kX;
+	        treadVertices[tvPos + 4] = lY;
+	        treadVertices[tvPos + 5] = oZ;
+	        //L
+	        treadVertices[tvPos + 6] = treadVertices[tvPos + 12] = kX;
+	        treadVertices[tvPos + 7] = treadVertices[tvPos + 13] = lY;
+	        treadVertices[tvPos + 8] = treadVertices[tvPos + 14] = kZ;
+	        //K
+	        treadVertices[tvPos + 15] = kX;
+	        treadVertices[tvPos + 16] = kY;
+	        treadVertices[tvPos + 17] = kZ;
+
+	        tvPos += 18;
+
+	        // LEFT
+	        //R
+	        treadVertices[tvPos] = treadVertices[tvPos + 9] = mX;
+	        treadVertices[tvPos + 1] = treadVertices[tvPos + 10] = kY;
+	        treadVertices[tvPos + 2] = treadVertices[tvPos + 11] = oZ;
+	        //Q
+	        treadVertices[tvPos + 3] = mX;
+	        treadVertices[tvPos + 4] = lY;
+	        treadVertices[tvPos + 5] = oZ;
+	        //P
+	        treadVertices[tvPos + 6] = treadVertices[tvPos + 12] = kX;
+	        treadVertices[tvPos + 7] = treadVertices[tvPos + 13] = lY;
+	        treadVertices[tvPos + 8] = treadVertices[tvPos + 14] = oZ;
+	        //O
+	        treadVertices[tvPos + 15] = kX;
+	        treadVertices[tvPos + 16] = kY;
+	        treadVertices[tvPos + 17] = oZ;
+
+	        tvPos += 18;
+	        // Show Back and Bottom Face if Stair is not massive
+	        /*
+	         if (a.construction !== 0) {
+
+	         // BACK
+	         //N
+	         treadVertices[tvPos] = treadVertices[tvPos + 9] = mX
+	         treadVertices[tvPos + 1] = treadVertices[tvPos + 10] = kY
+	         treadVertices[tvPos + 2] = treadVertices[tvPos + 11] = kZ
+	         //M
+	         treadVertices[tvPos + 3] = mX
+	         treadVertices[tvPos + 4] = lY
+	         treadVertices[tvPos + 5] = kZ
+	         //Q
+	         treadVertices[tvPos + 6] = treadVertices[tvPos + 12] = mX
+	         treadVertices[tvPos + 7] = treadVertices[tvPos + 13] = lY
+	         treadVertices[tvPos + 8] = treadVertices[tvPos + 14] = oZ
+	         //R
+	         treadVertices[tvPos + 15] = mX
+	         treadVertices[tvPos + 16] = kY
+	         treadVertices[tvPos + 17] = oZ
+
+	         tvPos += 18
+
+	         // BOTTOM
+	         //M
+	         treadVertices[tvPos] = treadVertices[tvPos + 9] = mX
+	         treadVertices[tvPos + 1] = treadVertices[tvPos + 10] = lY
+	         treadVertices[tvPos + 2] = treadVertices[tvPos + 11] = kZ
+	         //L
+	         treadVertices[tvPos + 3] = kX
+	         treadVertices[tvPos + 4] = lY
+	         treadVertices[tvPos + 5] = kZ
+	         //P
+	         treadVertices[tvPos + 6] = treadVertices[tvPos + 12] = kX
+	         treadVertices[tvPos + 7] = treadVertices[tvPos + 13] = lY
+	         treadVertices[tvPos + 8] = treadVertices[tvPos + 14] = oZ
+	         //Q
+	         treadVertices[tvPos + 15] = mX
+	         treadVertices[tvPos + 16] = lY
+	         treadVertices[tvPos + 17] = oZ
+
+	         tvPos += 18
+	         } */
+
+	        ve = stepsVertices.length;
+	        te = treadVertices.length;
+	        re = railingVertices.length;
+
+	        if (angle) {
+	          var cosAngle = Math.cos(angle / 180 * Math.PI),
+	            sinAngle = Math.sin(angle / 180 * Math.PI);
+
+	          for (i=vs;i<ve-2; i = i + 3){
+	            xRotate=stepsVertices[i]-offsetX;
+	            stepsVertices[i+2]=stepsVertices[i+2]-offsetZ;
+	            stepsVertices[i]=xRotate*cosAngle-stepsVertices[i+2]*sinAngle+offsetX;
+	            stepsVertices[i+2]=stepsVertices[i+2]*cosAngle+xRotate*sinAngle+offsetZ;
+	          }
+	          for (i=ts;i<te-2; i = i + 3){
+	            xRotate=treadVertices[i]-offsetX;
+	            treadVertices[i+2]=treadVertices[i+2]-offsetZ;
+	            treadVertices[i]=xRotate*cosAngle-treadVertices[i+2]*sinAngle+offsetX;
+	            treadVertices[i+2]=treadVertices[i+2]*cosAngle+xRotate*sinAngle+offsetZ;
+	          }
+	          for (i=rs;i<re-2; i = i + 3){
+	            xRotate=railingVertices[i]-offsetX;
+	            railingVertices[i+2]=railingVertices[i+2]-offsetZ;
+	            railingVertices[i]=xRotate*cosAngle-railingVertices[i+2]*sinAngle+offsetX;
+	            railingVertices[i+2]=railingVertices[i+2]*cosAngle+xRotate*sinAngle+offsetZ;
+	          }
+	        }
+	      }
+	    }
+
+	    function _step(aX, aY, aZ, bY, cY, cX, cZ, eY, fX, fZ, hX, hZ) {
+	      // F----I
+	      // |\   |\
+	      // G \  H \
+	      // L\ A----D
+	      // J \|    |
+	      //    B    C
+	      //    K  /
+	      //    E
+
+	      ///// BASE
+
+	      // add extra face to create a watertight mesh
+	      var kY = bY - a.treadHeight;
+
+	      if (aY >= a.h-calcRiser) {
+	        // BACK > LAST STEP
+
+	        //D
+	        stepsVertices[svPos] = stepsVertices[svPos + 9] = cX;
+	        stepsVertices[svPos + 1] = stepsVertices[svPos + 10] = aY;
+	        stepsVertices[svPos + 2] = stepsVertices[svPos + 11] = cZ;
+	        //C
+	        stepsVertices[svPos + 3] = cX;
+	        stepsVertices[svPos + 4] = cY;
+	        stepsVertices[svPos + 5] = cZ;
+	        //H
+	        stepsVertices[svPos + 6] = stepsVertices[svPos + 12] = hX;
+	        stepsVertices[svPos + 7] = stepsVertices[svPos + 13] = cY;
+	        stepsVertices[svPos + 8] = stepsVertices[svPos + 14] = hZ;
+	        //I
+	        stepsVertices[svPos + 15] = hX;
+	        stepsVertices[svPos + 16] = aY;
+	        stepsVertices[svPos + 17] = hZ;
+
+	        svPos += 18;
+	      }
+
+	      if (!a.treadHeight) {
+	        // TOP
+
+	        //I
+	        stepsVertices[svPos] = stepsVertices[svPos + 9] = hX;
+	        stepsVertices[svPos + 1] = stepsVertices[svPos + 10] = aY;
+	        stepsVertices[svPos + 2] = stepsVertices[svPos + 11] = hZ;
+	        //F
+	        stepsVertices[svPos + 3] = fX;
+	        stepsVertices[svPos + 4] = aY;
+	        stepsVertices[svPos + 5] = fZ;
+	        //A
+	        stepsVertices[svPos + 6] = stepsVertices[svPos + 12] = aX;
+	        stepsVertices[svPos + 7] = stepsVertices[svPos + 13] = aY;
+	        stepsVertices[svPos + 8] = stepsVertices[svPos + 14] = aZ;
+	        //D
+	        stepsVertices[svPos + 15] = cX;
+	        stepsVertices[svPos + 16] = aY;
+	        stepsVertices[svPos + 17] = cZ;
+
+	        svPos += 18;
+	      }
+
+	      // SIDE RIGHT
+	      //A
+	      stepsVertices[svPos] = stepsVertices[svPos + 9] = aX;
+	      stepsVertices[svPos + 1] = stepsVertices[svPos + 10] = aY;
+	      stepsVertices[svPos + 2] = stepsVertices[svPos + 11] = aZ;
+	      //B
+	      stepsVertices[svPos + 3] = aX;
+	      stepsVertices[svPos + 4] = bY;
+	      stepsVertices[svPos + 5] = aZ;
+	      //C
+	      stepsVertices[svPos + 6] = stepsVertices[svPos + 12] = cX;
+	      stepsVertices[svPos + 7] = stepsVertices[svPos + 13] = cY;
+	      stepsVertices[svPos + 8] = stepsVertices[svPos + 14] = cZ;
+	      //D
+	      stepsVertices[svPos + 15] = cX;
+	      stepsVertices[svPos + 16] = aY;
+	      stepsVertices[svPos + 17] = cZ;
+
+	      svPos += 18;
+
+	      if (bY === kY) {
+	        //B
+	        stepsVertices[svPos] = aX;
+	        stepsVertices[svPos + 1] = bY;
+	        stepsVertices[svPos + 2] = aZ;
+	        //E
+	        stepsVertices[svPos + 3] = aX;
+	        stepsVertices[svPos + 4] = eY;
+	        stepsVertices[svPos + 5] = aZ;
+	        //C
+	        stepsVertices[svPos + 6] = cX;
+	        stepsVertices[svPos + 7] = cY;
+	        stepsVertices[svPos + 8] = cZ;
+
+	        svPos += 9;
+	      } else {
+	        //C
+	        stepsVertices[svPos] = stepsVertices[svPos + 9] = cX;
+	        stepsVertices[svPos + 1] = stepsVertices[svPos + 10] = cY;
+	        stepsVertices[svPos + 2] = stepsVertices[svPos + 11] = cZ;
+	        //B
+	        stepsVertices[svPos + 3] = aX;
+	        stepsVertices[svPos + 4] = bY;
+	        stepsVertices[svPos + 5] = aZ;
+	        //K
+	        stepsVertices[svPos + 6] = stepsVertices[svPos + 12] = aX;
+	        stepsVertices[svPos + 7] = stepsVertices[svPos + 13] = kY;
+	        stepsVertices[svPos + 8] = stepsVertices[svPos + 14] = aZ;
+	        //E
+	        stepsVertices[svPos + 15] = aX;
+	        stepsVertices[svPos + 16] = eY;
+	        stepsVertices[svPos + 17] = aZ;
+
+	        svPos += 18;
+	      }
+
+	      //Front
+	      //F
+	      stepsVertices[svPos] = stepsVertices[svPos + 9] = fX;
+	      stepsVertices[svPos + 1] = stepsVertices[svPos + 10] = aY;
+	      stepsVertices[svPos + 2] = stepsVertices[svPos + 11] = fZ;
+	      //G
+	      stepsVertices[svPos + 3] = fX;
+	      stepsVertices[svPos + 4] = bY;
+	      stepsVertices[svPos + 5] = fZ;
+	      //B
+	      stepsVertices[svPos + 6] = stepsVertices[svPos + 12] = aX;
+	      stepsVertices[svPos + 7] = stepsVertices[svPos + 13] = bY;
+	      stepsVertices[svPos + 8] = stepsVertices[svPos + 14] = aZ;
+	      //A
+	      stepsVertices[svPos + 15] = aX;
+	      stepsVertices[svPos + 16] = aY;
+	      stepsVertices[svPos + 17] = aZ;
+
+	      svPos += 18;
+
+	      //SIDE LEFT
+	      //I
+	      stepsVertices[svPos] = stepsVertices[svPos + 9] = hX;
+	      stepsVertices[svPos + 1] = stepsVertices[svPos + 10] = aY;
+	      stepsVertices[svPos + 2] = stepsVertices[svPos + 11] = hZ;
+	      //H
+	      stepsVertices[svPos + 3] = hX;
+	      stepsVertices[svPos + 4] = cY;
+	      stepsVertices[svPos + 5] = hZ;
+	      //G
+	      stepsVertices[svPos + 6] = stepsVertices[svPos + 12] = fX;
+	      stepsVertices[svPos + 7] = stepsVertices[svPos + 13] = bY;
+	      stepsVertices[svPos + 8] = stepsVertices[svPos + 14] = fZ;
+	      //F
+	      stepsVertices[svPos + 15] = fX;
+	      stepsVertices[svPos + 16] = aY;
+	      stepsVertices[svPos + 17] = fZ;
+
+	      svPos += 18;
+
+	      if (bY === kY) {
+	        //H
+	        stepsVertices[svPos] = hX;
+	        stepsVertices[svPos + 1] = cY;
+	        stepsVertices[svPos + 2] = hZ;
+	        //J
+	        stepsVertices[svPos + 3] = fX;
+	        stepsVertices[svPos + 4] = eY;
+	        stepsVertices[svPos + 5] = fZ;
+	        //G
+	        stepsVertices[svPos + 6] = fX;
+	        stepsVertices[svPos + 7] = bY;
+	        stepsVertices[svPos + 8] = fZ;
+
+	        svPos += 9;
+	      } else {
+	        //H
+	        stepsVertices[svPos] = stepsVertices[svPos + 9] = hX;
+	        stepsVertices[svPos + 1] = stepsVertices[svPos + 10] = cY;
+	        stepsVertices[svPos + 2] = stepsVertices[svPos + 11] = hZ;
+	        //J
+	        stepsVertices[svPos + 3] = fX;
+	        stepsVertices[svPos + 4] = eY;
+	        stepsVertices[svPos + 5] = fZ;
+	        //L
+	        stepsVertices[svPos + 6] = stepsVertices[svPos + 12] = fX;
+	        stepsVertices[svPos + 7] = stepsVertices[svPos + 13] = kY;
+	        stepsVertices[svPos + 8] = stepsVertices[svPos + 14] = fZ;
+	        //G
+	        stepsVertices[svPos + 15] = fX;
+	        stepsVertices[svPos + 16] = bY;
+	        stepsVertices[svPos + 17] = fZ;
+
+	        svPos += 18;
+	      }
+
+	      // BOTTOM
+
+	      //H
+	      stepsVertices[svPos] = stepsVertices[svPos + 9] = hX;
+	      stepsVertices[svPos + 1] = stepsVertices[svPos + 10] = cY;
+	      stepsVertices[svPos + 2] = stepsVertices[svPos + 11] = hZ;
+	      //C
+	      stepsVertices[svPos + 3] = cX;
+	      stepsVertices[svPos + 4] = cY;
+	      stepsVertices[svPos + 5] = cZ;
+	      //E
+	      stepsVertices[svPos + 6] = stepsVertices[svPos + 12] = aX;
+	      stepsVertices[svPos + 7] = stepsVertices[svPos + 13] = eY;
+	      stepsVertices[svPos + 8] = stepsVertices[svPos + 14] = aZ;
+	      //J
+	      stepsVertices[svPos + 15] = fX;
+	      stepsVertices[svPos + 16] = eY;
+	      stepsVertices[svPos + 17] = fZ;
+
+	      svPos += 18;
+
+	      if (a.treadHeight) {
+	        // TREAD
+
+	        // O----R
+	        // P\---Q\
+	        //  \\   \\
+	        //   \K----N
+	        //    L----M
+
+	        kX = aX - nosing;
+	        kY = aY + a.treadHeight;
+	        kZ = aZ;
+	        lY = aY;
+	        mX = cX;
+	        mZ = cZ;
+	        oX = fX - nosing;
+	        oZ = fZ;
+	        qX = hX;
+	        qZ = hZ;
+
+	        if (kX!==oX&&kZ!==oZ) {
+	          var radAngle = Math.atan2(kZ - oZ, kX-oX);
+	          var degAngle = Math.round(radAngle * 180 / Math.PI * 100)/100;
+	          if (a.stairType === 'winder' || a.stairType === 'doubleWinder' ){
+	            if (degAngle >= 135) {
+	              kX = aX;
+	              kZ = aZ - nosing;
+	              oX = fX;
+	              oZ = fZ - nosing;
+	            }
+	            if (degAngle <= 45 ) { //>= 45 && degAngle < 90) {
+	              kX = aX;
+	              kZ = aZ + nosing;
+	              oX = fX;
+	              oZ = fZ + nosing;
+	            }
+	          } else if (a.stairType === 'spiral') {
+	            kX = aX - nosing*Math.cos(radAngle-Math.PI/2);
+	            kZ = aZ - nosing*Math.sin(radAngle-Math.PI/2);
+	            oX = fX - nosing*Math.cos(radAngle-Math.PI/2);
+	            oZ = fZ - nosing*Math.sin(radAngle-Math.PI/2);
+	          }
+	        }
+
+	        if (aY >= a.h-calcRiser) {
+	          // BACK > LAST STEP
+
+	          //N
+	          treadVertices[tvPos] = treadVertices[tvPos + 9] = mX;
+	          treadVertices[tvPos + 1] = treadVertices[tvPos + 10] = kY;
+	          treadVertices[tvPos + 2] = treadVertices[tvPos + 11] = mZ;
+	          //M
+	          treadVertices[tvPos + 3] = mX;
+	          treadVertices[tvPos + 4] = lY;
+	          treadVertices[tvPos + 5] = mZ;
+	          //Q
+	          treadVertices[tvPos + 6] = treadVertices[tvPos + 12] = qX;
+	          treadVertices[tvPos + 7] = treadVertices[tvPos + 13] = lY;
+	          treadVertices[tvPos + 8] = treadVertices[tvPos + 14] = qZ;
+	          //R
+	          treadVertices[tvPos + 15] = qX;
+	          treadVertices[tvPos + 16] = kY;
+	          treadVertices[tvPos + 17] = qZ;
+
+	          tvPos += 18;
+	        }
+
+	        // TOP
+	        //R
+	        treadVertices[tvPos] = treadVertices[tvPos + 9] = qX;
+	        treadVertices[tvPos + 1] = treadVertices[tvPos + 10] = kY;
+	        treadVertices[tvPos + 2] = treadVertices[tvPos + 11] = qZ;
+	        //O
+	        treadVertices[tvPos + 3] = oX;
+	        treadVertices[tvPos + 4] = kY;
+	        treadVertices[tvPos + 5] = oZ;
+	        //K
+	        treadVertices[tvPos + 6] = treadVertices[tvPos + 12] = kX;
+	        treadVertices[tvPos + 7] = treadVertices[tvPos + 13] = kY;
+	        treadVertices[tvPos + 8] = treadVertices[tvPos + 14] = kZ;
+	        //N
+	        treadVertices[tvPos + 15] = mX;
+	        treadVertices[tvPos + 16] = kY;
+	        treadVertices[tvPos + 17] = mZ;
+
+	        tvPos += 18;
+	        // RIGHT
+	        //K
+	        treadVertices[tvPos] = treadVertices[tvPos + 9] = kX;
+	        treadVertices[tvPos + 1] = treadVertices[tvPos + 10] = kY;
+	        treadVertices[tvPos + 2] = treadVertices[tvPos + 11] = kZ;
+	        //L
+	        treadVertices[tvPos + 3] = kX;
+	        treadVertices[tvPos + 4] = lY;
+	        treadVertices[tvPos + 5] = kZ;
+	        //M
+	        treadVertices[tvPos + 6] = treadVertices[tvPos + 12] = mX;
+	        treadVertices[tvPos + 7] = treadVertices[tvPos + 13] = lY;
+	        treadVertices[tvPos + 8] = treadVertices[tvPos + 14] = mZ;
+	        //N
+	        treadVertices[tvPos + 15] = mX;
+	        treadVertices[tvPos + 16] = kY;
+	        treadVertices[tvPos + 17] = mZ;
+
+	        tvPos += 18;
+	        // FRONT
+	        //O
+	        treadVertices[tvPos] = treadVertices[tvPos + 9] = oX;
+	        treadVertices[tvPos + 1] = treadVertices[tvPos + 10] = kY;
+	        treadVertices[tvPos + 2] = treadVertices[tvPos + 11] = oZ;
+	        //P
+	        treadVertices[tvPos + 3] = oX;
+	        treadVertices[tvPos + 4] = lY;
+	        treadVertices[tvPos + 5] = oZ;
+	        //L
+	        treadVertices[tvPos + 6] = treadVertices[tvPos + 12] = kX;
+	        treadVertices[tvPos + 7] = treadVertices[tvPos + 13] = lY;
+	        treadVertices[tvPos + 8] = treadVertices[tvPos + 14] = kZ;
+	        //K
+	        treadVertices[tvPos + 15] = kX;
+	        treadVertices[tvPos + 16] = kY;
+	        treadVertices[tvPos + 17] = kZ;
+
+	        tvPos += 18;
+
+	        // LEFT
+	        //R
+	        treadVertices[tvPos] = treadVertices[tvPos + 9] = qX;
+	        treadVertices[tvPos + 1] = treadVertices[tvPos + 10] = kY;
+	        treadVertices[tvPos + 2] = treadVertices[tvPos + 11] = qZ;
+	        //Q
+	        treadVertices[tvPos + 3] = qX;
+	        treadVertices[tvPos + 4] = lY;
+	        treadVertices[tvPos + 5] = qZ;
+	        //P
+	        treadVertices[tvPos + 6] = treadVertices[tvPos + 12] = oX;
+	        treadVertices[tvPos + 7] = treadVertices[tvPos + 13] = lY;
+	        treadVertices[tvPos + 8] = treadVertices[tvPos + 14] = oZ;
+	        //O
+	        treadVertices[tvPos + 15] = oX;
+	        treadVertices[tvPos + 16] = kY;
+	        treadVertices[tvPos + 17] = oZ;
+
+	        tvPos += 18;
+
+	      }
+	    }
+
+	    function _winder(xCursor, yCursor, zCursor, stepNumber, angle, flip) {
+
+	      var vs, ve, ts, te, rs, re, xRotate, i,
+	        offsetX = xCursor,
+	        offsetZ = zCursor;
+
+	      vs = stepsVertices.length;
+	      ts = treadVertices.length;
+	      rs = railingVertices.length;
+
+	      var winderOffset = stairWell;
+
+	      var treadWinderNum = stepNumber/2;
+
+	      var treadWinderMax = (stepWidth+winderOffset)/treadWinderNum;
+	      var treadWinderMin = winderOffset/treadWinderNum;
+
+	      var stepMin = 0;
+	      var stepMax = 0;
+
+	      // Railing adapted to stair direction
+	      if (!flip) {
+	        if (a.railing === 'left' || a.railing === 'both') _railing(xCursor, yCursor + calcRiser, zCursor + handrailThickness + 0.01, xCursor + treadWinderNum * treadWinderMax - 0.01, yCursor + treadWinderNum * calcRiser + calcRiser, zCursor + handrailThickness + 0.01, 0, true);
+	        if (a.railing === 'right' || a.railing === 'both') _railing(xCursor, yCursor + calcRiser, zCursor + stepWidth - 0.01, xCursor + treadWinderNum * treadWinderMin, yCursor + treadWinderNum * calcRiser + calcRiser, zCursor + stepWidth - 0.01, 0, true);
+	      } else {
+	        if (a.railing === 'left' || a.railing === 'both') _railing(xCursor, yCursor + calcRiser, zCursor + handrailThickness + 0.01, xCursor + treadWinderNum * treadWinderMin, yCursor + treadWinderNum * calcRiser + calcRiser, zCursor + handrailThickness + 0.01, 0, true);
+	        if (a.railing === 'right' || a.railing === 'both') _railing(xCursor, yCursor + calcRiser, zCursor + stepWidth - 0.01, xCursor + treadWinderNum * treadWinderMax - 0.01, yCursor + treadWinderNum * calcRiser + calcRiser, zCursor + stepWidth - 0.01, 0, true);
+	      }
+
+	      for (var c=0; c<treadWinderNum; c++){
+
+	        // F----I
+	        // |\   |\
+	        // G \  H \
+	        // |\ A----D
+	        // J \|    |
+	        //    B    C
+	        //    |  /
+	        //    E
+
+	        aX = flip ? xCursor + stepMax : xCursor + stepMin;
+	        aY = yCursor + calcRiser - a.treadHeight;
+	        aZ = zCursor + stepWidth;
+	        bY = yCursor;
+	        cY = yCursor + calcRiser - riserExt;
+	        cX = flip ? xCursor + stepMax + treadWinderMax : xCursor + stepMin + treadWinderMin;
+	        cZ = aZ;
+	        fX = flip ? xCursor + stepMin : xCursor + stepMax;
+	        eY = yCursor - riserExt;
+	        fZ = zCursor;
+	        hX = flip ? xCursor + stepMin + treadWinderMin : xCursor + stepMax + treadWinderMax;
+	        hZ = fZ;
+
+	        _step(aX, aY, aZ, bY, cY, cX, cZ, eY, fX, fZ, hX, hZ);
+
+	        yCursor += calcRiser;
+	        stepMin += treadWinderMin;
+	        stepMax += treadWinderMax;
+
+	      }
+	      xCursor += stepMin;
+
+	      stepMin = 0;
+	      stepMax = 0;
+
+	      // Railing adapted to stair direction
+	      if (!flip) {
+	        if (a.railing === 'left'||a.railing === 'both') _railing(offsetX+treadWinderNum*treadWinderMax-handrailThickness-0.01, yCursor+calcRiser, zCursor+0.01, offsetX+treadWinderNum*treadWinderMax*2-handrailThickness-0.01, yCursor+treadWinderNum*calcRiser+calcRiser, zCursor+0.01, 90, true);
+	        if (a.railing === 'right'||a.railing === 'both') _railing(xCursor+0.01, yCursor+calcRiser, zCursor+stepWidth-0.01, xCursor+treadWinderNum*treadWinderMin+0.01, yCursor+treadWinderNum*calcRiser+calcRiser, zCursor+stepWidth-0.01, 90, true);
+	      } else {
+	        if (a.railing === 'left'||a.railing === 'both') _railing(xCursor+0.01, yCursor+calcRiser, zCursor+0.01, xCursor+treadWinderNum*treadWinderMin+0.01, yCursor+treadWinderNum*calcRiser+calcRiser, zCursor+0.01, -90, true);
+	        if (a.railing === 'right'||a.railing === 'both') _railing(offsetX+treadWinderNum*treadWinderMax-handrailThickness-0.01, yCursor+calcRiser, zCursor+stepWidth-0.01, offsetX+treadWinderNum*treadWinderMax*2-handrailThickness-0.01, yCursor+treadWinderNum*calcRiser+calcRiser, zCursor+stepWidth-0.01, -90, true);
+	      }
+
+	      for (var c=0; c<treadWinderNum; c++){
+
+	        // F----I
+	        // |\   |\
+	        // G \  H \
+	        // |\ A----D
+	        // J \|    |
+	        //    B    C
+	        //    |  /
+	        //    E
+
+	        if (!flip) {
+	          aX = xCursor;
+	          aY = yCursor + calcRiser - a.treadHeight;
+	          aZ = zCursor + stepWidth + stepMin;
+	          bY = yCursor;
+	          cY = yCursor + calcRiser - riserExt;
+	          cX = aX;
+	          cZ = aZ + treadWinderMin;
+	          eY = yCursor - riserExt;
+	          fX = xCursor + stepWidth;
+	          fZ = zCursor + stepMax;
+	          hX = fX;
+	          hZ = zCursor + stepMax + treadWinderMax;
+	        } else {
+	          aX = xCursor + stepWidth;
+	          aY = yCursor + calcRiser - a.treadHeight;
+	          aZ = zCursor + stepWidth - stepMax;
+	          bY = yCursor;
+	          cY = yCursor + calcRiser - riserExt;
+	          cX = aX;
+	          cZ = aZ - treadWinderMax;
+	          eY = yCursor - riserExt;
+	          fX = xCursor;
+	          fZ = zCursor - stepMin;
+	          hX = fX;
+	          hZ = fZ - treadWinderMin;
+	        }
+
+	        _step(aX, aY, aZ, bY, cY, cX, cZ, eY, fX, fZ, hX, hZ);
+
+	        yCursor += calcRiser;
+	        stepMin += treadWinderMin;
+	        stepMax += treadWinderMax;
+
+	      }
+
+	      ve = stepsVertices.length;
+	      te = treadVertices.length;
+	      re = railingVertices.length;
+
+	      if (angle) {
+	        var cosAngle = Math.cos(angle / 180 * Math.PI),
+	          sinAngle = Math.sin(angle / 180 * Math.PI);
+
+	        for (i=vs;i<ve-2; i = i + 3){
+	          xRotate=stepsVertices[i]-offsetX;
+	          stepsVertices[i+2]=stepsVertices[i+2]-offsetZ;
+	          stepsVertices[i]=xRotate*cosAngle-stepsVertices[i+2]*sinAngle+offsetX;
+	          stepsVertices[i+2]=stepsVertices[i+2]*cosAngle+xRotate*sinAngle+offsetZ;
+	        }
+	        for (i=ts;i<te-2; i = i + 3){
+	          xRotate=treadVertices[i]-offsetX;
+	          treadVertices[i+2]=treadVertices[i+2]-offsetZ;
+	          treadVertices[i]=xRotate*cosAngle-treadVertices[i+2]*sinAngle+offsetX;
+	          treadVertices[i+2]=treadVertices[i+2]*cosAngle+xRotate*sinAngle+offsetZ;
+	        }
+	        for (i=rs;i<re-2; i = i + 3){
+	          xRotate=railingVertices[i]-offsetX;
+	          railingVertices[i+2]=railingVertices[i+2]-offsetZ;
+	          railingVertices[i]=xRotate*cosAngle-railingVertices[i+2]*sinAngle+offsetX;
+	          railingVertices[i+2]=railingVertices[i+2]*cosAngle+xRotate*sinAngle+offsetZ;
+	        }
+	      }
+
+	    }
+
+	    function _spiralRun(xCursor, yCursor, zCursor, stepNumber, flip) {
+
+	      var innerRadius = stairWidth-stepWidth;
+
+	      var stepAngle = tread / (innerRadius+stepWidth/2);
+	      var rotAngle = 0;
+
+	      var outerStepDist = Math.sqrt(Math.pow((Math.sin(rotAngle)*(innerRadius+stepWidth)-Math.sin(rotAngle+stepAngle)*(innerRadius+stepWidth)), 2)+Math.pow((Math.cos(rotAngle)*(innerRadius+stepWidth)-Math.cos(rotAngle+stepAngle)*(innerRadius+stepWidth)), 2));
+	      var innerStepDist = Math.sqrt(Math.pow((Math.sin(rotAngle)*(innerRadius)-Math.sin(rotAngle+stepAngle)*(innerRadius)), 2)+Math.pow((Math.cos(rotAngle)*(innerRadius)-Math.cos(rotAngle+stepAngle)*(innerRadius)), 2));
+
+	      if (!flip) {
+	        rotAngle = Math.PI;
+	        stepAngle = -stepAngle;
+	        zCursor = zCursor + stairWidth;
+	      }
+
+	      for (var c=0; c<stepNumber; c++){
+
+	        // F----I
+	        // |\   |\
+	        // G \  H \
+	        // |\ A----D
+	        // J \|    |
+	        //    B    C
+	        //    |  /
+	        //    E
+	        if (flip) {
+	          aX = xCursor + Math.sin(rotAngle) * (innerRadius + stepWidth);
+	          aY = yCursor + calcRiser - a.treadHeight;
+	          aZ = zCursor + Math.cos(rotAngle) * (innerRadius + stepWidth);
+	          bY = yCursor;
+	          cY = yCursor + calcRiser - riserExt;
+	          cX = xCursor + Math.sin(rotAngle + stepAngle) * (innerRadius + stepWidth);
+	          cZ = zCursor + Math.cos(rotAngle + stepAngle) * (innerRadius + stepWidth);
+	          eY = yCursor - riserExt;
+	          fX = xCursor + Math.sin(rotAngle) * (innerRadius);
+	          fZ = zCursor + Math.cos(rotAngle) * (innerRadius);
+	          hX = xCursor + Math.sin(rotAngle + stepAngle) * (innerRadius);
+	          hZ = zCursor + Math.cos(rotAngle + stepAngle) * (innerRadius);
+	        } else {
+	          aX = xCursor + Math.sin(rotAngle) * (innerRadius);
+	          aY = yCursor + calcRiser - a.treadHeight;
+	          aZ = zCursor + Math.cos(rotAngle) * (innerRadius);
+	          bY = yCursor;
+	          cY = yCursor + calcRiser - riserExt;
+	          cX = xCursor + Math.sin(rotAngle + stepAngle) * (innerRadius);
+	          cZ = zCursor + Math.cos(rotAngle + stepAngle) * (innerRadius);
+	          eY = yCursor - riserExt;
+	          fX = xCursor + Math.sin(rotAngle) * (innerRadius + stepWidth);
+	          fZ = zCursor + Math.cos(rotAngle) * (innerRadius + stepWidth);
+	          hX = xCursor + Math.sin(rotAngle + stepAngle) * (innerRadius + stepWidth);
+	          hZ = zCursor + Math.cos(rotAngle + stepAngle) * (innerRadius + stepWidth);
+	        }
+
+	        //var outerStepDist = Math.sqrt((aX-cX)*(aX-cX)+(aZ-cZ)*(aZ-cZ))
+
+	        _step(aX, aY, aZ, bY, cY, cX, cZ, eY, fX, fZ, hX, hZ);
+
+	        var openEnd = c<stepNumber-1;
+	        var railingAngle = flip ? (rotAngle+stepAngle/2)/Math.PI*(-180) : (rotAngle+stepAngle/2)/Math.PI*(-180)+180;
+	        if (flip) {
+	          if (stepWidth < stairWidth) {
+	            if (a.railing === 'left' || a.railing === 'both') _railing(fX, yCursor + calcRiser, fZ, fX + innerStepDist, yCursor + calcRiser * 2, fZ, railingAngle, openEnd);
+	          }
+	          if (a.railing === 'right'||a.railing === 'both') _railing(aX, yCursor+calcRiser, aZ, aX+outerStepDist, yCursor+calcRiser*2, aZ, railingAngle , openEnd);
+	        } else {
+	          if (a.railing === 'left' || a.railing === 'both') _railing(fX, yCursor + calcRiser, fZ, fX + outerStepDist, yCursor + calcRiser * 2, fZ, railingAngle, openEnd);
+	          if (stepWidth < stairWidth) {
+	            if (a.railing === 'right'||a.railing === 'both') _railing(aX, yCursor+calcRiser, aZ, aX+innerStepDist, yCursor+calcRiser*2, aZ, railingAngle , openEnd);
+	          }
+	        }
+
+	        yCursor += calcRiser;
+	        rotAngle += stepAngle;
+
+
+	      }
+
+	    }
+
+	    function _railing(x1, y1, z1, x2, y2, z2, angle, openEnd){
+
+	      var i, xCursor, yCursor, zCursor, handrailNum, handrailStep, handrailHeight, handrailStart, railingHeight ,vertBarDist, pailing, vertBarHeight, vertBarStart, rs, re, xRotate,
+	        aX, aY, aZ, bY, cX, cY, cZ, dY, eZ, fZ, gZ;
+
+	      rs = railingVertices.length;
+	      railingHeight = 0.9;
+
+	      // calculate height for inclined Handrail
+
+	      var t = handrailThickness * (y2-y1) / Math.abs(x2-x1),
+	        calcHandrailThickness = Math.sqrt(handrailThickness * handrailThickness + t*t);
+
+	      //'Vertical Bars': 1,
+	      //'Horizontal Bars': 2,
+	      //'Filling': 3,
+	      //'Handrail only': 4
+
+	      if (a.railingType === 'verticalBars') {
+	        handrailNum = 2;
+	        handrailStart = 0.05;
+	        handrailStep = railingHeight-handrailStart;
+	        vertBarHeight = railingHeight-handrailStart;
+	        vertBarDist = 0.12;
+	        vertBarStart = handrailStart;
+	        pailing = 0.02;
+	      }
+	      else if (a.railingType === 'horizontalBars') {
+	        handrailNum = 4;
+	        handrailStart = 0.05;
+	        handrailStep = (railingHeight-handrailStart)/handrailNum;
+	        vertBarDist = 0.9;
+	        vertBarHeight = railingHeight;
+	        vertBarStart = 0;
+	        pailing = 0.02;
+	      }
+	      else if (a.railingType === 'filling') {
+	        handrailNum = 1;
+	        handrailStart = 0.05;
+	        handrailHeight = railingHeight-handrailStart;
+	        vertBarDist = 0.9;
+	        vertBarHeight = handrailStart;
+	        vertBarStart = 0;
+	        pailing = 0.02;
+	      }
+	      else if (a.railingType === 'handrailOnly') {
+	        handrailNum = 1;
+	        handrailStart = railingHeight;
+	        vertBarDist = 0.9;
+	        vertBarHeight = railingHeight;
+	        vertBarStart = 0;
+	        pailing = 0.02;
+	      }
+
+	      // Vertical Bars
+
+	      if (a.railingType !== 'filling') {
+	        var handrailLength = openEnd ? Math.abs(x2-x1-pailing)+handrailThickness : Math.abs(x2-x1-pailing),
+	          segments = Math.floor(handrailLength/vertBarDist),
+	          xStep = handrailLength/segments,
+	          yStep = (y2-y1)/segments;
+
+	        segments = openEnd&&segments>1 ? segments - 1 : segments;
+
+
+	        // FRONT VIEW VERTICES
+	        //   E-----G
+	        //  /|    /|
+	        // A-----C |
+	        // | |   | |
+	        // | F---|-H
+	        // |/    |/
+	        // B-----D
+
+
+	        xCursor = x1;
+	        yCursor = y1;
+	        zCursor = z1;
+
+	        for(i=0; i<=segments; i++) {
+
+	          aX = xCursor;
+	          aY = yCursor+vertBarStart+vertBarHeight;
+	          aZ = zCursor;
+	          bY = a.railingType !== 'verticalBars' ? yCursor+vertBarStart-calcRiser : yCursor+vertBarStart+calcHandrailThickness;
+	          cX = xCursor + pailing;
+	          cY = aY + t;
+	          dY = bY + t;
+	          fZ = zCursor - pailing;
+
+	          //FRONT
+	          //A
+	          railingVertices[rvPos] = railingVertices[rvPos + 9] = aX;
+	          railingVertices[rvPos + 1] = railingVertices[rvPos + 10] = aY;
+	          railingVertices[rvPos + 2] = railingVertices[rvPos + 11] = aZ;
+	          //B
+	          railingVertices[rvPos + 3] = aX;
+	          railingVertices[rvPos + 4] = bY;
+	          railingVertices[rvPos + 5] = aZ;
+	          //D
+	          railingVertices[rvPos + 6] = railingVertices[rvPos + 12] = cX;
+	          railingVertices[rvPos + 7] = railingVertices[rvPos + 13] = dY;
+	          railingVertices[rvPos + 8] = railingVertices[rvPos + 14] = aZ;
+	          //C
+	          railingVertices[rvPos + 15] = cX;
+	          railingVertices[rvPos + 16] = cY;
+	          railingVertices[rvPos + 17] = aZ;
+
+	          rvPos = rvPos + 18;
+
+	          //LEFT
+	          //E
+	          railingVertices[rvPos] = railingVertices[rvPos + 9] = aX;
+	          railingVertices[rvPos + 1] = railingVertices[rvPos + 10] = aY;
+	          railingVertices[rvPos + 2] = railingVertices[rvPos + 11] = fZ;
+	          //F
+	          railingVertices[rvPos + 3] = aX;
+	          railingVertices[rvPos + 4] = bY;
+	          railingVertices[rvPos + 5] = fZ;
+	          //B
+	          railingVertices[rvPos + 6] = railingVertices[rvPos + 12] = aX;
+	          railingVertices[rvPos + 7] = railingVertices[rvPos + 13] = bY;
+	          railingVertices[rvPos + 8] = railingVertices[rvPos + 14] = aZ;
+	          //A
+	          railingVertices[rvPos + 15] = aX;
+	          railingVertices[rvPos + 16] = aY;
+	          railingVertices[rvPos + 17] = aZ;
+
+	          rvPos = rvPos + 18;
+
+	          //RIGHT
+	          //C
+	          railingVertices[rvPos] = railingVertices[rvPos + 9] = cX;
+	          railingVertices[rvPos + 1] = railingVertices[rvPos + 10] = cY;
+	          railingVertices[rvPos + 2] = railingVertices[rvPos + 11] = aZ;
+	          //D
+	          railingVertices[rvPos + 3] = cX;
+	          railingVertices[rvPos + 4] = dY;
+	          railingVertices[rvPos + 5] = aZ;
+	          //H
+	          railingVertices[rvPos + 6] = railingVertices[rvPos + 12] = cX;
+	          railingVertices[rvPos + 7] = railingVertices[rvPos + 13] = dY;
+	          railingVertices[rvPos + 8] = railingVertices[rvPos + 14] = fZ;
+	          //G
+	          railingVertices[rvPos + 15] = cX;
+	          railingVertices[rvPos + 16] = cY;
+	          railingVertices[rvPos + 17] = fZ;
+
+	          rvPos = rvPos + 18;
+
+	          //BACK
+	          //G
+	          railingVertices[rvPos] = railingVertices[rvPos + 9] = cX;
+	          railingVertices[rvPos + 1] = railingVertices[rvPos + 10] = cY;
+	          railingVertices[rvPos + 2] = railingVertices[rvPos + 11] = fZ;
+	          //H
+	          railingVertices[rvPos + 3] = cX;
+	          railingVertices[rvPos + 4] = dY;
+	          railingVertices[rvPos + 5] = fZ;
+	          //F
+	          railingVertices[rvPos + 6] = railingVertices[rvPos + 12] = aX;
+	          railingVertices[rvPos + 7] = railingVertices[rvPos + 13] = bY;
+	          railingVertices[rvPos + 8] = railingVertices[rvPos + 14] = fZ;
+	          //E
+	          railingVertices[rvPos + 15] = aX;
+	          railingVertices[rvPos + 16] = aY;
+	          railingVertices[rvPos + 17] = fZ;
+
+	          rvPos = rvPos + 18;
+
+	          xCursor += xStep;
+	          yCursor += yStep;
+	        }
+	      }
+
+	      yCursor = handrailStart;
+
+	      for(i=0; i<handrailNum; i++) {
+	        // FRONT VIEW VERTICES
+	        //   E----------G
+	        //  /|         /|
+	        // A----------C |
+	        // | F--------|-H
+	        // |/         |/
+	        // B----------D
+
+	        aX = x1;
+	        aY = a.railingType === 'filling' ? yCursor+y1+handrailHeight : yCursor+y1+calcHandrailThickness;
+	        aZ = z1;
+	        bY = yCursor+y1;
+	        cX = x2;
+	        cY = a.railingType === 'filling' ? yCursor+y2+handrailHeight : yCursor+y2+calcHandrailThickness;
+	        cZ = z2;
+	        dY = yCursor+y2;
+	        gZ = z2 - handrailThickness;
+	        eZ = z1 - handrailThickness;
+
+	        //TOP
+	        //E
+	        railingVertices[rvPos] = railingVertices[rvPos + 9] = aX;
+	        railingVertices[rvPos + 1] = railingVertices[rvPos + 10] = aY;
+	        railingVertices[rvPos + 2] = railingVertices[rvPos + 11] = eZ;
+	        //A
+	        railingVertices[rvPos + 3] = aX;
+	        railingVertices[rvPos + 4] = aY;
+	        railingVertices[rvPos + 5] = aZ;
+	        //C
+	        railingVertices[rvPos + 6] = railingVertices[rvPos + 12] = cX;
+	        railingVertices[rvPos + 7] = railingVertices[rvPos + 13] = cY;
+	        railingVertices[rvPos + 8] = railingVertices[rvPos + 14] = cZ;
+	        //G
+	        railingVertices[rvPos + 15] = cX;
+	        railingVertices[rvPos + 16] = cY;
+	        railingVertices[rvPos + 17] = gZ;
+
+	        rvPos = rvPos + 18;
+
+	        //BOTTOM
+	        //B
+	        railingVertices[rvPos] = railingVertices[rvPos + 9] = aX;
+	        railingVertices[rvPos + 1] = railingVertices[rvPos + 10] = bY;
+	        railingVertices[rvPos + 2] = railingVertices[rvPos + 11] = aZ;
+	        //F
+	        railingVertices[rvPos + 3] = aX;
+	        railingVertices[rvPos + 4] = bY;
+	        railingVertices[rvPos + 5] = eZ;
+	        //H
+	        railingVertices[rvPos + 6] = railingVertices[rvPos + 12] = cX;
+	        railingVertices[rvPos + 7] = railingVertices[rvPos + 13] = dY;
+	        railingVertices[rvPos + 8] = railingVertices[rvPos + 14] = gZ;
+	        //D
+	        railingVertices[rvPos + 15] = cX;
+	        railingVertices[rvPos + 16] = cY;
+	        railingVertices[rvPos + 17] = cZ;
+
+	        rvPos = rvPos + 18;
+
+	        //FRONT
+	        //A
+	        railingVertices[rvPos] = railingVertices[rvPos + 9] = aX;
+	        railingVertices[rvPos + 1] = railingVertices[rvPos + 10] = aY;
+	        railingVertices[rvPos + 2] = railingVertices[rvPos + 11] = aZ;
+	        //B
+	        railingVertices[rvPos + 3] = aX;
+	        railingVertices[rvPos + 4] = bY;
+	        railingVertices[rvPos + 5] = aZ;
+	        //D
+	        railingVertices[rvPos + 6] = railingVertices[rvPos + 12] = cX;
+	        railingVertices[rvPos + 7] = railingVertices[rvPos + 13] = dY;
+	        railingVertices[rvPos + 8] = railingVertices[rvPos + 14] = cZ;
+	        //C
+	        railingVertices[rvPos + 15] = cX;
+	        railingVertices[rvPos + 16] = cY;
+	        railingVertices[rvPos + 17] = cZ;
+
+	        rvPos = rvPos + 18;
+
+	        //LEFT
+	        //E
+	        railingVertices[rvPos] = railingVertices[rvPos + 9] = aX;
+	        railingVertices[rvPos + 1] = railingVertices[rvPos + 10] = aY;
+	        railingVertices[rvPos + 2] = railingVertices[rvPos + 11] = eZ;
+	        //F
+	        railingVertices[rvPos + 3] = aX;
+	        railingVertices[rvPos + 4] = bY;
+	        railingVertices[rvPos + 5] = eZ;
+	        //B
+	        railingVertices[rvPos + 6] = railingVertices[rvPos + 12] = aX;
+	        railingVertices[rvPos + 7] = railingVertices[rvPos + 13] = bY;
+	        railingVertices[rvPos + 8] = railingVertices[rvPos + 14] = aZ;
+	        //A
+	        railingVertices[rvPos + 15] = aX;
+	        railingVertices[rvPos + 16] = aY;
+	        railingVertices[rvPos + 17] = aZ;
+
+	        rvPos = rvPos + 18;
+
+	        //RIGHT
+	        //C
+	        railingVertices[rvPos] = railingVertices[rvPos + 9] = cX;
+	        railingVertices[rvPos + 1] = railingVertices[rvPos + 10] = cY;
+	        railingVertices[rvPos + 2] = railingVertices[rvPos + 11] = cZ;
+	        //D
+	        railingVertices[rvPos + 3] = cX;
+	        railingVertices[rvPos + 4] = dY;
+	        railingVertices[rvPos + 5] = cZ;
+	        //H
+	        railingVertices[rvPos + 6] = railingVertices[rvPos + 12] = cX;
+	        railingVertices[rvPos + 7] = railingVertices[rvPos + 13] = dY;
+	        railingVertices[rvPos + 8] = railingVertices[rvPos + 14] = gZ;
+	        //G
+	        railingVertices[rvPos + 15] = cX;
+	        railingVertices[rvPos + 16] = cY;
+	        railingVertices[rvPos + 17] = gZ;
+
+	        rvPos = rvPos + 18;
+
+	        //BACK
+	        //G
+	        railingVertices[rvPos] = railingVertices[rvPos + 9] = cX;
+	        railingVertices[rvPos + 1] = railingVertices[rvPos + 10] = cY;
+	        railingVertices[rvPos + 2] = railingVertices[rvPos + 11] = gZ;
+	        //H
+	        railingVertices[rvPos + 3] = cX;
+	        railingVertices[rvPos + 4] = dY;
+	        railingVertices[rvPos + 5] = gZ;
+	        //F
+	        railingVertices[rvPos + 6] = railingVertices[rvPos + 12] = aX;
+	        railingVertices[rvPos + 7] = railingVertices[rvPos + 13] = bY;
+	        railingVertices[rvPos + 8] = railingVertices[rvPos + 14] = eZ;
+	        //E
+	        railingVertices[rvPos + 15] = aX;
+	        railingVertices[rvPos + 16] = aY;
+	        railingVertices[rvPos + 17] = eZ;
+
+	        rvPos = rvPos + 18;
+
+	        yCursor += handrailStep;
+	      }
+
+	      re = railingVertices.length;
+
+	      if (angle) {
+	        var cosAngle = Math.cos(angle / 180 * Math.PI),
+	          sinAngle = Math.sin(angle / 180 * Math.PI);
+
+	        for (i=rs;i<re-2; i = i + 3){
+	          xRotate=railingVertices[i]-x1;
+	          railingVertices[i+2]=railingVertices[i+2]-z1;
+	          railingVertices[i]=xRotate*cosAngle-railingVertices[i+2]*sinAngle+x1;
+	          railingVertices[i+2]=railingVertices[i+2]*cosAngle+xRotate*sinAngle+z1;
+	        }
+	      }
+	    }
+
+	    return {
+	      steps: {
+	        positions: new Float32Array(stepsVertices),
+	        normals: getNormalsBuffer.flat(stepsVertices),
+	        uvs: getUvsBuffer.architectural(stepsVertices),
+	        material: 'steps'
+	      },
+	      tread: {
+	        positions: new Float32Array(treadVertices),
+	        normals: getNormalsBuffer.flat(treadVertices),
+	        uvs: getUvsBuffer.architectural(treadVertices),
+	        material: 'tread'
+	      },
+	      railing: {
+	        positions: new Float32Array(railingVertices),
+	        normals: getNormalsBuffer.flat(railingVertices),
+	        material: 'railing'
+	      }
+	    }
+	  }
+	};
+
+	// dependencies
+
+	var wallComponent = {
+
+	  schema: getSchema('wall'),
+
+	  init: function () {
+	    var this_ = this;
+	    // avoid simultanous update calls
+	    this.throttledUpdate = AFRAME.utils.throttle(this.update, 10, this);
+	    // bind event listeners for child elements
+	    this.updateChildren();
+	    // listen for added or removed children
+	    this.el.addEventListener('child-attached', function(evt) {
+	      // wait for a bit to make sure the child component is set up
+	      setTimeout(function() {
+	        this_.throttledUpdate();
+	        this_.updateChildren();
+	      }, 10);
+	    });
+	    this.el.addEventListener('child-detached', function(evt) {
+	      setTimeout(function() {
+	        this_.throttledUpdate();
+	      }, 10);
+	    });
+	  },
+
+	  updateChildren: function() {
+	    var this_ = this;
+	    var children = this.el.children;
+	    // listen to children, for updated positions
+	    if (children && children.length) {
+	      for (var i = 0; i < children.length; i++) {
+	        children[i].addEventListener('componentchanged', function() {
+	          setTimeout(function() {
+	            // FIXME: we need to wait till the new data is actually available
+	            this_.throttledUpdate();
+	          }, 20);
+	        });
+	      }
+	    }
+	  },
+
+	  updateSchema: updateSchema,
+
+	  update: function (oldData) {
+	    var this_ = this;
+	    var data = this_.data;
+
+	    if (!oldData || this.data.w !== oldData.w || this.data.controlLine !== oldData.controlLine ) {
+	      this.el.emit('wall-changed', {w: this.data.w, controlLine: this.data.controlLine});
+	    }
+
+	    // remove old mesh
+	    this.remove();
+
+	    // get defaults and
+	    this.attributes = cloneDeep_1(data);
+
+	    // get children for walls
+	    var children = this_.el.children;
+	    this.attributes.children = [];
+	    for (var i = 0; i < children.length; i++) {
+	      var c = children[i].getAttribute('io3d-window') || children[i].getAttribute('io3d-door');
+	      if (c) {
+	        if (children[i].getAttribute('io3d-window')) c.type = 'window';
+	        else if (children[i].getAttribute('io3d-door')) c.type = 'door';
+	        var pos = children[i].getAttribute('position');
+	        Object.keys(pos).forEach(p => {
+	          c[p] = pos[p];
+	        });
+	        this.attributes.children.push(c);
+	      } else console.log('invalid child');
+	    }
+	    // this.attributes.children = this.attributes.children.map(c => mapAttributes(cloneDeep(getType.get(c.type).params), c))
+
+	    // get meshes and materials from el3d modules
+	    var meshes = this.generateMeshes3d();
+
+	    // clean up empty meshes to prevent errors
+	    var meshKeys = Object.keys(meshes);
+	    meshKeys.forEach(key => {
+	      if (!meshes[key].positions || !meshes[key].positions.length) {
+	        // console.warn('no vertices for mesh', key)
+	        delete meshes[key];
+	      }
+	    });
+
+	    // setup materials
+	    // defaults
+	    var materials = {
+	      front: 'default_plaster_001', //'basic-wall',
+	      back: 'default_plaster_001', //'basic-wall',
+	      base: {
+	        colorDiffuse: [ 0.95, 0.95, 0.95 ]
+	      },
+	      top: 'wall_top'
+	    };
+
+	    // check for adapted materials
+	    var materialKeys = Object.keys(data).filter(function(key) {
+	      return key.indexOf('material_') > -1
+	    });
+	    // add materials to instance
+	    materialKeys.forEach(function(key) {
+	      var mesh = key.replace('material_', '');
+	      materials[mesh] = data[key];
+	    });
+
+	    // fetch materials from mat library
+	    Object.keys(materials).forEach(mat => {
+	      materials[mat] = getMaterial(materials[mat]);
+	    });
+
+	    // construct data3d object
+	    var data3d = {
+	      meshes: meshes,
+	      materials: materials
+	    };
+
+	    // create new one
+	    this_.mesh = new THREE.Object3D();
+	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
+
+	    // update view
+	    this_.data3dView.set(data3d);
+	    this_.el.setObject3D('mesh', this_.mesh);
+	    // emit event
+	    this_.el.emit('mesh-updated');
+	  },
+
+	  remove: function () {
+	    if (this.data3dView) {
+	      this.data3dView.destroy();
+	      this.data3dView = null;
+	    }
+	    if (this.mesh) {
+	      this.el.removeObject3D('mesh');
+	      this.mesh = null;
+	    }
+	  },
+
+	  generateMeshes3d: function () {
+	    var a = this.attributes;
+
+	    // get children
+	    var children = a.children;
+	    children = sortBy_1(children, function (model) {
+	      if (model.a !== undefined) {
+	        return model.a.x
+	      } else {
+	        return model.x
+	      }
+	    });
+
+	    // geometry
+	    var baseHeightFront = a.frontHasBase ? a.baseHeight : 0,
+	      baseHeightBack = a.backHasBase ? a.baseHeight : 0,
+	      // walls are drawn along their controlLine
+	      controlLine = a.controlLine ? a.controlLine : 'back',
+
+	      baseVertices = [],
+	      baseVerticesPointer = 0,
+	      frontVertices = [],
+	      frontVerticesPointer = 0,
+	      frontUvs = [],
+	      frontUvsPointer = 0,
+	      backVertices = [],
+	      backVerticesPointer = 0,
+	      backUvs = [],
+	      backUvsPointer = 0,
+	      topVertices = [],
+	      topVerticesPointer = 0,
+
+	      pointer = 0,
+
+	      al = a.l,
+	      // wall width
+	      aw = a.w,
+	      // back position
+	      azb = controlLine === 'front' ? -aw : controlLine === 'center' ? -aw / 2 : 0,
+	      // front position
+	      azf = azb + aw,
+	      ah = a.h,
+
+	      c, cPrev, cNext, cx, cy, cz, cl, cw, ch, _y1, _y2, _yf, _yb;
+
+	    for (var i = 0, l = children.length; i < l; i++) {
+
+	      c = (children[ i ].a) ? children[ i ].a : children[ i ]; // children attributes
+	      cPrev = children[ i - 1 ] ? children[ i - 1 ].a : null; // previous children attributes
+	      cNext = children[ i + 1 ] ? children[ i + 1 ].a : null; // next children attributes
+
+	      cx = c.x;
+	      cy = c.y;
+	      cl = c.l;
+	      cw = c.w;
+	      ch = c.h;
+	      cz = c.side === 'front' ? azf : c.side === 'center' ? azb + aw / 2 : azb;
+
+	      // wall before children
+
+	      if (pointer < cx) {
+
+	        // front quad vertices
+	        frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	        frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = baseHeightFront;
+	        frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = azf;
+	        frontVertices[ frontVerticesPointer + 3 ] = cx;
+	        frontVertices[ frontVerticesPointer + 4 ] = baseHeightFront;
+	        frontVertices[ frontVerticesPointer + 5 ] = azf;
+	        frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = cx;
+	        frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = ah;
+	        frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = azf;
+	        frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	        frontVertices[ frontVerticesPointer + 16 ] = ah;
+	        frontVertices[ frontVerticesPointer + 17 ] = azf;
+	        frontVerticesPointer += 18;
+	        // front quad uvs
+	        frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = pointer;
+	        frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = baseHeightFront;
+	        frontUvs[ frontUvsPointer + 2 ] = cx;
+	        frontUvs[ frontUvsPointer + 3 ] = baseHeightFront;
+	        frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = cx;
+	        frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = ah;
+	        frontUvs[ frontUvsPointer + 10 ] = pointer;
+	        frontUvs[ frontUvsPointer + 11 ] = ah;
+	        frontUvsPointer += 12;
+
+	        // front baseboard quad vertices
+	        if (baseHeightFront) {
+	          baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	          baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	          baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = azf;
+	          baseVertices[ baseVerticesPointer + 3 ] = cx;
+	          baseVertices[ baseVerticesPointer + 4 ] = 0;
+	          baseVertices[ baseVerticesPointer + 5 ] = azf;
+	          baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = cx;
+	          baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = baseHeightFront;
+	          baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = azf;
+	          baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	          baseVertices[ baseVerticesPointer + 16 ] = baseHeightFront;
+	          baseVertices[ baseVerticesPointer + 17 ] = azf;
+	          baseVerticesPointer += 18;
+	        }
+
+	        // back quad vertices
+	        backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer;
+	        backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = ah;
+	        backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = azb;
+	        backVertices[ backVerticesPointer + 3 ] = cx;
+	        backVertices[ backVerticesPointer + 4 ] = ah;
+	        backVertices[ backVerticesPointer + 5 ] = azb;
+	        backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = cx;
+	        backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = baseHeightBack;
+	        backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = azb;
+	        backVertices[ backVerticesPointer + 15 ] = pointer;
+	        backVertices[ backVerticesPointer + 16 ] = baseHeightBack;
+	        backVertices[ backVerticesPointer + 17 ] = azb;
+	        backVerticesPointer += 18;
+	        // back quad uvs
+	        backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = pointer;
+	        backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = ah;
+	        backUvs[ backUvsPointer + 2 ] = cx;
+	        backUvs[ backUvsPointer + 3 ] = ah;
+	        backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = cx;
+	        backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = baseHeightBack;
+	        backUvs[ backUvsPointer + 10 ] = pointer;
+	        backUvs[ backUvsPointer + 11 ] = baseHeightBack;
+	        backUvsPointer += 12;
+
+	        // back baseboard quad vertices
+	        if (baseHeightBack) {
+	          baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	          baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = baseHeightBack;
+	          baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = azb;
+	          baseVertices[ baseVerticesPointer + 3 ] = cx;
+	          baseVertices[ baseVerticesPointer + 4 ] = baseHeightBack;
+	          baseVertices[ baseVerticesPointer + 5 ] = azb;
+	          baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = cx;
+	          baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = 0;
+	          baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = azb;
+	          baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	          baseVertices[ baseVerticesPointer + 16 ] = 0;
+	          baseVertices[ baseVerticesPointer + 17 ] = azb;
+	          baseVerticesPointer += 18;
+	        }
+
+	        // top quad vertices
+	        topVertices[ topVerticesPointer ] = topVertices[ topVerticesPointer + 9 ] = pointer;
+	        topVertices[ topVerticesPointer + 1 ] = topVertices[ topVerticesPointer + 10 ] = ah;
+	        topVertices[ topVerticesPointer + 2 ] = topVertices[ topVerticesPointer + 11 ] = azf;
+	        topVertices[ topVerticesPointer + 3 ] = cx;
+	        topVertices[ topVerticesPointer + 4 ] = ah;
+	        topVertices[ topVerticesPointer + 5 ] = azf;
+	        topVertices[ topVerticesPointer + 6 ] = topVertices[ topVerticesPointer + 12 ] = cx;
+	        topVertices[ topVerticesPointer + 7 ] = topVertices[ topVerticesPointer + 13 ] = ah;
+	        topVertices[ topVerticesPointer + 8 ] = topVertices[ topVerticesPointer + 14 ] = azb;
+	        topVertices[ topVerticesPointer + 15 ] = pointer;
+	        topVertices[ topVerticesPointer + 16 ] = ah;
+	        topVertices[ topVerticesPointer + 17 ] = azb;
+	        topVerticesPointer += 18;
+
+	        if (pointer === 0) {
+	          // start face of the wall if there are openings in the wall
+	          // react to wall controlLine position
+	          if (azf > 0) {
+	            // left side quad vertices
+	            frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = baseHeightFront;
+	            frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = 0;
+	            frontVertices[ frontVerticesPointer + 3 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 4 ] = baseHeightFront;
+	            frontVertices[ frontVerticesPointer + 5 ] = azf;
+	            frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = ah;
+	            frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = azf;
+	            frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 16 ] = ah;
+	            frontVertices[ frontVerticesPointer + 17 ] = 0;
+	            frontVerticesPointer += 18;
+	            // left side quad uvs
+	            frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = 0;
+	            frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = baseHeightFront;
+	            frontUvs[ frontUvsPointer + 2 ] = azf;
+	            frontUvs[ frontUvsPointer + 3 ] = baseHeightFront;
+	            frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = azf;
+	            frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = ah;
+	            frontUvs[ frontUvsPointer + 10 ] = 0;
+	            frontUvs[ frontUvsPointer + 11 ] = ah;
+	            frontUvsPointer += 12;
+
+	            // left side baseboard quad vertrices
+	            if (baseHeightFront) {
+	              baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	              baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = 0;
+	              baseVertices[ baseVerticesPointer + 3 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 4 ] = 0;
+	              baseVertices[ baseVerticesPointer + 5 ] = azf;
+	              baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = baseHeightFront;
+	              baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = azf;
+	              baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 16 ] = baseHeightFront;
+	              baseVertices[ baseVerticesPointer + 17 ] = 0;
+	              baseVerticesPointer += 18;
+	            }
+	          }
+	          if (azb < 0) {
+	            // left side quad vertices
+	            backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer;
+	            backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = baseHeightBack;
+	            backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = azb;
+	            backVertices[ backVerticesPointer + 3 ] = pointer;
+	            backVertices[ backVerticesPointer + 4 ] = baseHeightBack;
+	            backVertices[ backVerticesPointer + 5 ] = 0;
+	            backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = pointer;
+	            backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = ah;
+	            backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = 0;
+	            backVertices[ backVerticesPointer + 15 ] = pointer;
+	            backVertices[ backVerticesPointer + 16 ] = ah;
+	            backVertices[ backVerticesPointer + 17 ] = azb;
+	            backVerticesPointer += 18;
+	            // left side quad uvs
+	            backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = 0;
+	            backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = baseHeightBack;
+	            backUvs[ backUvsPointer + 2 ] = azb;
+	            backUvs[ backUvsPointer + 3 ] = baseHeightBack;
+	            backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = azb;
+	            backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = ah;
+	            backUvs[ backUvsPointer + 10 ] = 0;
+	            backUvs[ backUvsPointer + 11 ] = ah;
+	            backUvsPointer += 12;
+
+	            // left side baseboard quad vertrices
+	            if (baseHeightBack) {
+	              baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	              baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = azb;
+	              baseVertices[ baseVerticesPointer + 3 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 4 ] = 0;
+	              baseVertices[ baseVerticesPointer + 5 ] = 0;
+	              baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = baseHeightBack;
+	              baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = 0;
+	              baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 16 ] = baseHeightBack;
+	              baseVertices[ baseVerticesPointer + 17 ] = azb;
+	              baseVerticesPointer += 18;
+	            }
+	          }
+	        }
+	      }
+
+	      // move pointer position
+	      pointer = cx;
+
+	      // wall below children
+	      if (cy > 0) {
+	        var baseHeightBackBelow = baseHeightBack > c.y ? c.y : baseHeightBack;
+	        var baseHeightFrontBelow = baseHeightFront > c.y ? c.y : baseHeightFront;
+
+	        if (c.y > baseHeightFront){
+	          // front quad vertices
+	          frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = baseHeightFront;
+	          frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = azf;
+	          frontVertices[ frontVerticesPointer + 3 ] = pointer + cl;
+	          frontVertices[ frontVerticesPointer + 4 ] = baseHeightFront;
+	          frontVertices[ frontVerticesPointer + 5 ] = azf;
+	          frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer + cl;
+	          frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = cy;
+	          frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = azf;
+	          frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 16 ] = cy;
+	          frontVertices[ frontVerticesPointer + 17 ] = azf;
+	          frontVerticesPointer += 18;
+	          // front quad uvs
+	          frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = pointer;
+	          frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = baseHeightFront;
+	          frontUvs[ frontUvsPointer + 2 ] = pointer + cl;
+	          frontUvs[ frontUvsPointer + 3 ] = baseHeightFront;
+	          frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = pointer + cl;
+	          frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = cy;
+	          frontUvs[ frontUvsPointer + 10 ] = pointer;
+	          frontUvs[ frontUvsPointer + 11 ] = cy;
+	          frontUvsPointer += 12;
+	        }
+
+	        if (baseHeightFront) {
+	          // front baseboard quad vertices
+	          baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	          baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	          baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = azf;
+	          baseVertices[ baseVerticesPointer + 3 ] = pointer + cl;
+	          baseVertices[ baseVerticesPointer + 4 ] = 0;
+	          baseVertices[ baseVerticesPointer + 5 ] = azf;
+	          baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer + cl;
+	          baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = baseHeightFrontBelow;
+	          baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = azf;
+	          baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	          baseVertices[ baseVerticesPointer + 16 ] = baseHeightFrontBelow;
+	          baseVertices[ baseVerticesPointer + 17 ] = azf;
+	          baseVerticesPointer += 18;
+	        }
+
+	        if (c.y>baseHeightBack){
+	          // back quad vertices
+	          backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer;
+	          backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = cy;
+	          backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = azb;
+	          backVertices[ backVerticesPointer + 3 ] = pointer + cl;
+	          backVertices[ backVerticesPointer + 4 ] = cy;
+	          backVertices[ backVerticesPointer + 5 ] = azb;
+	          backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = pointer + cl;
+	          backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = baseHeightBack;
+	          backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = azb;
+	          backVertices[ backVerticesPointer + 15 ] = pointer;
+	          backVertices[ backVerticesPointer + 16 ] = baseHeightBack;
+	          backVertices[ backVerticesPointer + 17 ] = azb;
+	          backVerticesPointer += 18;
+	          // back quad uvs
+	          backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = pointer;
+	          backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = cy;
+	          backUvs[ backUvsPointer + 2 ] = pointer + cl;
+	          backUvs[ backUvsPointer + 3 ] = cy;
+	          backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = pointer + cl;
+	          backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = baseHeightBack;
+	          backUvs[ backUvsPointer + 10 ] = pointer;
+	          backUvs[ backUvsPointer + 11 ] = baseHeightBack;
+	          backUvsPointer += 12;
+	        }
+
+	        if (baseHeightBack) {
+	          // back base quad vertices
+	          baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	          baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = baseHeightBackBelow;
+	          baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = azb;
+	          baseVertices[ baseVerticesPointer + 3 ] = pointer + cl;
+	          baseVertices[ baseVerticesPointer + 4 ] = baseHeightBackBelow;
+	          baseVertices[ baseVerticesPointer + 5 ] = azb;
+	          baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer + cl;
+	          baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = 0;
+	          baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = azb;
+	          baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	          baseVertices[ baseVerticesPointer + 16 ] = 0;
+	          baseVertices[ baseVerticesPointer + 17 ] = azb;
+	          baseVerticesPointer += 18;
+	        }
+
+	        // top quad vertices below opening
+	        // react to opening z-position
+	        if (azf > cz) {
+	          if (c.y > baseHeightFront) {
+	            // baseboard lower than opening
+	            frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = cy;
+	            frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = azf;
+	            frontVertices[ frontVerticesPointer + 3 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 4 ] = cy;
+	            frontVertices[ frontVerticesPointer + 5 ] = azf;
+	            frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = cy;
+	            frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = cz;
+	            frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 16 ] = cy;
+	            frontVertices[ frontVerticesPointer + 17 ] = cz;
+	            frontVerticesPointer += 18;
+	            // top quad uvs
+	            frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = pointer;
+	            frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = aw;
+	            frontUvs[ frontUvsPointer + 2 ] = pointer + cl;
+	            frontUvs[ frontUvsPointer + 3 ] = aw;
+	            frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = pointer + cl;
+	            frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = 0;
+	            frontUvs[ frontUvsPointer + 10 ] = pointer;
+	            frontUvs[ frontUvsPointer + 11 ] = 0;
+	            frontUvsPointer += 12;
+	          } else {
+	            // draw baseboard
+	            baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = cy;
+	            baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = azf;
+	            baseVertices[ baseVerticesPointer + 3 ] = pointer + cl;
+	            baseVertices[ baseVerticesPointer + 4 ] = cy;
+	            baseVertices[ baseVerticesPointer + 5 ] = azf;
+	            baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer + cl;
+	            baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = cy;
+	            baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = cz;
+	            baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 16 ] = cy;
+	            baseVertices[ baseVerticesPointer + 17 ] = cz;
+	            baseVerticesPointer += 18;
+	          }
+
+	        }
+	        if (cz > azb) {
+	          if (c.y > baseHeightBack) {
+	            // baseboard lower than opening
+	            // top quad vertices
+	            backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer;
+	            backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = cy;
+	            backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = cz;
+	            backVertices[ backVerticesPointer + 3 ] = pointer + cl;
+	            backVertices[ backVerticesPointer + 4 ] = cy;
+	            backVertices[ backVerticesPointer + 5 ] = cz;
+	            backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = pointer + cl;
+	            backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = cy;
+	            backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = azb;
+	            backVertices[ backVerticesPointer + 15 ] = pointer;
+	            backVertices[ backVerticesPointer + 16 ] = cy;
+	            backVertices[ backVerticesPointer + 17 ] = azb;
+	            backVerticesPointer += 18;
+	            // top quad uvs
+	            backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = pointer;
+	            backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = aw;
+	            backUvs[ backUvsPointer + 2 ] = pointer + cl;
+	            backUvs[ backUvsPointer + 3 ] = aw;
+	            backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = pointer + cl;
+	            backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = 0;
+	            backUvs[ backUvsPointer + 10 ] = pointer;
+	            backUvs[ backUvsPointer + 11 ] = 0;
+	            backUvsPointer += 12;
+	          } else {
+	            // draw baseboard
+	            baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = cy;
+	            baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = cz;
+	            baseVertices[ baseVerticesPointer + 3 ] = pointer + cl;
+	            baseVertices[ baseVerticesPointer + 4 ] = cy;
+	            baseVertices[ baseVerticesPointer + 5 ] = cz;
+	            baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer + cl;
+	            baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = cy;
+	            baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = azb;
+	            baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 16 ] = cy;
+	            baseVertices[ baseVerticesPointer + 17 ] = azb;
+	            baseVerticesPointer += 18;
+	          }
+	        }
+	        // left side below opening
+	        if (pointer <= 0) {
+	          // start face of the wall if opening is at x = 0
+	          // left side quad vertices below opening
+	          // react to opening z-position
+	          if (azf > cz) {
+	            if (c.y > baseHeightFront) {
+	              frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	              frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = baseHeightFront;
+	              frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = cz;
+	              frontVertices[ frontVerticesPointer + 3 ] = pointer;
+	              frontVertices[ frontVerticesPointer + 4 ] = baseHeightFront;
+	              frontVertices[ frontVerticesPointer + 5 ] = azf;
+	              frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer;
+	              frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = cy;
+	              frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = azf;
+	              frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	              frontVertices[ frontVerticesPointer + 16 ] = cy;
+	              frontVertices[ frontVerticesPointer + 17 ] = cz;
+	              frontVerticesPointer += 18;
+	              // left side quad uvs
+	              frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = 0;
+	              frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = baseHeightFront;
+	              frontUvs[ frontUvsPointer + 2 ] = aw;
+	              frontUvs[ frontUvsPointer + 3 ] = baseHeightFront;
+	              frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = aw;
+	              frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = cy;
+	              frontUvs[ frontUvsPointer + 10 ] = 0;
+	              frontUvs[ frontUvsPointer + 11 ] = cy;
+	              frontUvsPointer += 12;
+	            }
+	            // left side baseboard quad vertices
+	            if (baseHeightFront) {
+	              baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	              baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = cz;
+	              baseVertices[ baseVerticesPointer + 3 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 4 ] = 0;
+	              baseVertices[ baseVerticesPointer + 5 ] = azf;
+	              baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = baseHeightFrontBelow;
+	              baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = azf;
+	              baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 16 ] = baseHeightFrontBelow;
+	              baseVertices[ baseVerticesPointer + 17 ] = cz;
+	              baseVerticesPointer += 18;
+	            }
+	          }
+	          if (cz > azb) {
+	            if (c.y > baseHeightBack) {
+	              backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer;
+	              backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = baseHeightBack;
+	              backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = azb;
+	              backVertices[ backVerticesPointer + 3 ] = pointer;
+	              backVertices[ backVerticesPointer + 4 ] = baseHeightBack;
+	              backVertices[ backVerticesPointer + 5 ] = cz;
+	              backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = pointer;
+	              backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = cy;
+	              backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = cz;
+	              backVertices[ backVerticesPointer + 15 ] = pointer;
+	              backVertices[ backVerticesPointer + 16 ] = cy;
+	              backVertices[ backVerticesPointer + 17 ] = azb;
+	              backVerticesPointer += 18;
+	              // left side quad uvs
+	              backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = 0;
+	              backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = baseHeightBack;
+	              backUvs[ backUvsPointer + 2 ] = aw;
+	              backUvs[ backUvsPointer + 3 ] = baseHeightBack;
+	              backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = aw;
+	              backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = cy;
+	              backUvs[ backUvsPointer + 10 ] = 0;
+	              backUvs[ backUvsPointer + 11 ] = cy;
+	              backUvsPointer += 12;
+	            }
+	            // left side baseboard quad vertices
+	            if (baseHeightBack) {
+	              baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	              baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = azb;
+	              baseVertices[ baseVerticesPointer + 3 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 4 ] = 0;
+	              baseVertices[ baseVerticesPointer + 5 ] = cz;
+	              baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = baseHeightBackBelow;
+	              baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = cz;
+	              baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 16 ] = baseHeightBackBelow;
+	              baseVertices[ baseVerticesPointer + 17 ] = azb;
+	              baseVerticesPointer += 18;
+	            }
+	          }
+	        } else if (cPrev && cx === round$1(cPrev.x + cPrev.l) && cPrev.y < cy) {
+	          // adjacent to a window
+	          _yf = cy > baseHeightFront ? baseHeightFront : cy;
+	          _yb = cy > baseHeightBack ? baseHeightBack : cy;
+	          // left side quad vertices
+	          // if previous opening is higher
+	          if (azf > cz) {
+	            // react to opening z-position
+	            if (c.y > baseHeightFront) {
+	              frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	              frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = _yf;
+	              frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = cz;
+	              frontVertices[ frontVerticesPointer + 3 ] = pointer;
+	              frontVertices[ frontVerticesPointer + 4 ] = _yf;
+	              frontVertices[ frontVerticesPointer + 5 ] = azf;
+	              frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer;
+	              frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = cy;
+	              frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = azf;
+	              frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	              frontVertices[ frontVerticesPointer + 16 ] = cy;
+	              frontVertices[ frontVerticesPointer + 17 ] = cz;
+	              frontVerticesPointer += 18;
+	              // left side quad uvs
+	              frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = 0;
+	              frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = _yf;
+	              frontUvs[ frontUvsPointer + 2 ] = aw;
+	              frontUvs[ frontUvsPointer + 3 ] = _yf;
+	              frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = aw;
+	              frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = cy;
+	              frontUvs[ frontUvsPointer + 10 ] = 0;
+	              frontUvs[ frontUvsPointer + 11 ] = cy;
+	              frontUvsPointer += 12;
+	            }
+	            // left side base quad vertices
+	            if (baseHeightFront && cPrev.y < baseHeightFront) {
+	              baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = cPrev.y;
+	              baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = cz;
+	              baseVertices[ baseVerticesPointer + 3 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 4 ] = cPrev.y;
+	              baseVertices[ baseVerticesPointer + 5 ] = azf;
+	              baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = _yf;
+	              baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = azf;
+	              baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 16 ] = _yf;
+	              baseVertices[ baseVerticesPointer + 17 ] = cz;
+	              baseVerticesPointer += 18;
+	            }
+	          }
+	          if (cz > azb) {
+	            if ( c.y > baseHeightBack) {
+	              backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer;
+	              backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = _yb;
+	              backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = azb;
+	              backVertices[ backVerticesPointer + 3 ] = pointer;
+	              backVertices[ backVerticesPointer + 4 ] = _yb;
+	              backVertices[ backVerticesPointer + 5 ] = cz;
+	              backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = pointer;
+	              backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = cy;
+	              backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = cz;
+	              backVertices[ backVerticesPointer + 15 ] = pointer;
+	              backVertices[ backVerticesPointer + 16 ] = cy;
+	              backVertices[ backVerticesPointer + 17 ] = azb;
+	              backVerticesPointer += 18;
+	              // left side quad uvs
+	              backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = 0;
+	              backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = _yb;
+	              backUvs[ backUvsPointer + 2 ] = aw;
+	              backUvs[ backUvsPointer + 3 ] = _yb;
+	              backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = aw;
+	              backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = cy;
+	              backUvs[ backUvsPointer + 10 ] = 0;
+	              backUvs[ backUvsPointer + 11 ] = cy;
+	              backUvsPointer += 12;
+	            }
+	            // left side base quad vertices
+	            if (baseHeightBack && cPrev.y < baseHeightBack) {
+	              baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = cPrev.y;
+	              baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = azb;
+	              baseVertices[ baseVerticesPointer + 3 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 4 ] = cPrev.y;
+	              baseVertices[ baseVerticesPointer + 5 ] = cz;
+	              baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = _yb;
+	              baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = cz;
+	              baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 16 ] = _yb;
+	              baseVertices[ baseVerticesPointer + 17 ] = azb;
+	              baseVerticesPointer += 18;
+	            }
+	          }
+	        }
+
+	        // right side below opening
+	        // end face of the wall if opening hits end of wall
+	        if (round$1(pointer + cl) >= al) {
+	          // right side quad vertices
+	          if (azf > cz) {
+	            if (c.y > baseHeightFront) {
+	              // react to opening z-position
+	              frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer + cl;
+	              frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = baseHeightFront;
+	              frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = azf;
+	              frontVertices[ frontVerticesPointer + 3 ] = pointer + cl;
+	              frontVertices[ frontVerticesPointer + 4 ] = baseHeightFront;
+	              frontVertices[ frontVerticesPointer + 5 ] = cz;
+	              frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer + cl;
+	              frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = cy;
+	              frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = cz;
+	              frontVertices[ frontVerticesPointer + 15 ] = pointer + cl;
+	              frontVertices[ frontVerticesPointer + 16 ] = cy;
+	              frontVertices[ frontVerticesPointer + 17 ] = azf;
+	              frontVerticesPointer += 18;
+	              // right side quad uvs
+	              frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = aw;
+	              frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = baseHeightFront;
+	              frontUvs[ frontUvsPointer + 2 ] = 0;
+	              frontUvs[ frontUvsPointer + 3 ] = baseHeightFront;
+	              frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = 0;
+	              frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = cy;
+	              frontUvs[ frontUvsPointer + 10 ] = aw;
+	              frontUvs[ frontUvsPointer + 11 ] = cy;
+	              frontUvsPointer += 12;
+	            }
+	            if (baseHeightFront) {
+	              // right side base quad vertices
+	              baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	              baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = azf;
+	              baseVertices[ baseVerticesPointer + 3 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 4 ] = 0;
+	              baseVertices[ baseVerticesPointer + 5 ] = cz;
+	              baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = baseHeightFrontBelow;
+	              baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = cz;
+	              baseVertices[ baseVerticesPointer + 15 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 16 ] = baseHeightFrontBelow;
+	              baseVertices[ baseVerticesPointer + 17 ] = azf;
+	              baseVerticesPointer += 18;
+	            }
+	          }
+
+	          if (cz > azb) {
+	            if (c.y > baseHeightBack) {
+	              backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer + cl;
+	              backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = baseHeightBack;
+	              backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = cz;
+	              backVertices[ backVerticesPointer + 3 ] = pointer + cl;
+	              backVertices[ backVerticesPointer + 4 ] = baseHeightBack;
+	              backVertices[ backVerticesPointer + 5 ] = azb;
+	              backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = pointer + cl;
+	              backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = cy;
+	              backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = azb;
+	              backVertices[ backVerticesPointer + 15 ] = pointer + cl;
+	              backVertices[ backVerticesPointer + 16 ] = cy;
+	              backVertices[ backVerticesPointer + 17 ] = cz;
+	              backVerticesPointer += 18;
+	              // right side quad uvs
+	              backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = aw;
+	              backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = baseHeightBack;
+	              backUvs[ backUvsPointer + 2 ] = 0;
+	              backUvs[ backUvsPointer + 3 ] = baseHeightBack;
+	              backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = 0;
+	              backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = cy;
+	              backUvs[ backUvsPointer + 10 ] = aw;
+	              backUvs[ backUvsPointer + 11 ] = cy;
+	              backUvsPointer += 12;
+	            }
+	            if (baseHeightBack) {
+	              // right side base quad vertices
+	              baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	              baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = cz;
+	              baseVertices[ baseVerticesPointer + 3 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 4 ] = 0;
+	              baseVertices[ baseVerticesPointer + 5 ] = azb;
+	              baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = baseHeightBackBelow;
+	              baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = azb;
+	              baseVertices[ baseVerticesPointer + 15 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 16 ] = baseHeightBackBelow;
+	              baseVertices[ baseVerticesPointer + 17 ] = cz;
+	              baseVerticesPointer += 18;
+	            }
+	          }
+	        } else if (cNext && round$1(cx + cl) === cNext.x && cNext.y < cy) {
+	          // adjacent to a window
+	          // right side quad vertices
+	          // if next window is higher
+	          _yf = cy > baseHeightFront ? baseHeightFront : cy;
+	          _yb = cy > baseHeightBack ? baseHeightBack : cy;
+	          // react to opening z-position
+	          if (azf > cz) {
+	            if (c.y > baseHeightFront) {
+	              frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer + cl;
+	              frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = cy;
+	              frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = azf;
+	              frontVertices[ frontVerticesPointer + 3 ] = pointer + cl;
+	              frontVertices[ frontVerticesPointer + 4 ] = _yf;
+	              frontVertices[ frontVerticesPointer + 5 ] = azf;
+	              frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer + cl;
+	              frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = _yf;
+	              frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = cz;
+	              frontVertices[ frontVerticesPointer + 15 ] = pointer + cl;
+	              frontVertices[ frontVerticesPointer + 16 ] = cy;
+	              frontVertices[ frontVerticesPointer + 17 ] = cz;
+	              frontVerticesPointer += 18;
+	              // right side quad uvs
+	              frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = aw;
+	              frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = cy;
+	              frontUvs[ frontUvsPointer + 2 ] = aw;
+	              frontUvs[ frontUvsPointer + 3 ] = _yf;
+	              frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = 0;
+	              frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = _yf;
+	              frontUvs[ frontUvsPointer + 10 ] = 0;
+	              frontUvs[ frontUvsPointer + 11 ] = cy;
+	              frontUvsPointer += 12;
+	            }
+	            // add baseboard
+	            if (baseHeightFront && cNext.y < baseHeightFront) {
+	              // right side base quad vertices
+	              baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = _yf;
+	              baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = azf;
+	              baseVertices[ baseVerticesPointer + 3 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 4 ] = cNext.y;
+	              baseVertices[ baseVerticesPointer + 5 ] = azf;
+	              baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = cNext.y;
+	              baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = cz;
+	              baseVertices[ baseVerticesPointer + 15 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 16 ] = _yf;
+	              baseVertices[ baseVerticesPointer + 17 ] = cz;
+	              baseVerticesPointer += 18;
+	            }
+	          }
+	          if (cz > azb) {
+	            if (c.y > baseHeightBack) {
+	              backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer + cl;
+	              backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = cy;
+	              backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = cz;
+	              backVertices[ backVerticesPointer + 3 ] = pointer + cl;
+	              backVertices[ backVerticesPointer + 4 ] = _yb;
+	              backVertices[ backVerticesPointer + 5 ] = cz;
+	              backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = pointer + cl;
+	              backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = _yb;
+	              backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = azb;
+	              backVertices[ backVerticesPointer + 15 ] = pointer + cl;
+	              backVertices[ backVerticesPointer + 16 ] = cy;
+	              backVertices[ backVerticesPointer + 17 ] = azb;
+	              backVerticesPointer += 18;
+	              // right side quad uvs
+	              backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = aw;
+	              backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = cy;
+	              backUvs[ backUvsPointer + 2 ] = aw;
+	              backUvs[ backUvsPointer + 3 ] = _yb;
+	              backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = 0;
+	              backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = _yb;
+	              backUvs[ backUvsPointer + 10 ] = 0;
+	              backUvs[ backUvsPointer + 11 ] = cy;
+	              backUvsPointer += 12;
+	            }
+	            // add baseboard
+	            if (baseHeightBack && cNext.y < baseHeightBack) {
+	              // right side base quad vertices
+	              baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = _yb;
+	              baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = cz;
+	              baseVertices[ baseVerticesPointer + 3 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 4 ] = cNext.y;
+	              baseVertices[ baseVerticesPointer + 5 ] = cz;
+	              baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = cNext.y;
+	              baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = azb;
+	              baseVertices[ baseVerticesPointer + 15 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 16 ] = _yb;
+	              baseVertices[ baseVerticesPointer + 17 ] = azb;
+	              baseVerticesPointer += 18;
+	            }
+	          }
+	        }
+	      }
+
+	      // wall left of children
+	      if (cx > 0) {
+
+	        if (!cPrev || cx !== round$1(cPrev.x + cPrev.l)) {
+
+	          _yf = Math.max(baseHeightFront, cy);
+	          _yb = Math.max(baseHeightBack, cy);
+	          _y2 = Math.max(baseHeightFront || baseHeightBack, cy + ch);
+	          // react to opening z-position
+	          // left side quad vertices
+	          if (azf > cz) {
+	            frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = _yf;
+	            frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = azf;
+	            frontVertices[ frontVerticesPointer + 3 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 4 ] = _yf;
+	            frontVertices[ frontVerticesPointer + 5 ] = cz;
+	            frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = _y2;
+	            frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = cz;
+	            frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 16 ] = _y2;
+	            frontVertices[ frontVerticesPointer + 17 ] = azf;
+	            frontVerticesPointer += 18;
+	            // left side quad uvs
+	            frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = aw;
+	            frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = _yf;
+	            frontUvs[ frontUvsPointer + 2 ] = 0;
+	            frontUvs[ frontUvsPointer + 3 ] = _yf;
+	            frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = 0;
+	            frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = _y2;
+	            frontUvs[ frontUvsPointer + 10 ] = aw;
+	            frontUvs[ frontUvsPointer + 11 ] = _y2;
+	            frontUvsPointer += 12;
+
+	            if (baseHeightFront && cy < baseHeightFront) {
+	              // left side base quad vertices
+	              baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = cy;
+	              baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = azf;
+	              baseVertices[ baseVerticesPointer + 3 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 4 ] = cy;
+	              baseVertices[ baseVerticesPointer + 5 ] = cz;
+	              baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = _yf;
+	              baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = cz;
+	              baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 16 ] = _yf;
+	              baseVertices[ baseVerticesPointer + 17 ] = azf;
+	              baseVerticesPointer += 18;
+	            }
+	          }
+	          if (cz > azb) {
+	            // left side quad vertices
+	            backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer;
+	            backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = _yb;
+	            backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = cz;
+	            backVertices[ backVerticesPointer + 3 ] = pointer;
+	            backVertices[ backVerticesPointer + 4 ] = _yb;
+	            backVertices[ backVerticesPointer + 5 ] = azb;
+	            backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = pointer;
+	            backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = _y2;
+	            backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = azb;
+	            backVertices[ backVerticesPointer + 15 ] = pointer;
+	            backVertices[ backVerticesPointer + 16 ] = _y2;
+	            backVertices[ backVerticesPointer + 17 ] = cz;
+	            backVerticesPointer += 18;
+	            // left side quad uvs
+	            backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = aw;
+	            backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = _yb;
+	            backUvs[ backUvsPointer + 2 ] = 0;
+	            backUvs[ backUvsPointer + 3 ] = _yb;
+	            backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = 0;
+	            backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = _y2;
+	            backUvs[ backUvsPointer + 10 ] = aw;
+	            backUvs[ backUvsPointer + 11 ] = _y2;
+	            backUvsPointer += 12;
+
+	            if (baseHeightBack && cy < baseHeightBack) {
+	              // left side base quad vertices
+	              baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = cy;
+	              baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = cz;
+	              baseVertices[ baseVerticesPointer + 3 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 4 ] = cy;
+	              baseVertices[ baseVerticesPointer + 5 ] = azb;
+	              baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = _yb;
+	              baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = azb;
+	              baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	              baseVertices[ baseVerticesPointer + 16 ] = _yb;
+	              baseVertices[ baseVerticesPointer + 17 ] = cz;
+	              baseVerticesPointer += 18;
+	            }
+	          }
+	        }
+	      }
+
+	      // wall right of children
+	      if (cx + cl < al) {
+
+	        if (!cNext || round$1(cx + cl) !== cNext.x) {
+
+	          _yf = Math.max(baseHeightFront, cy);
+	          _yb = Math.max(baseHeightBack, cy);
+	          _y2 = Math.max(baseHeightFront || baseHeightBack, cy + ch);
+	          // react to opening z-position
+	          if (azf > cz) {
+	            // right side quad vertices
+	            frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = _yf;
+	            frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = cz;
+	            frontVertices[ frontVerticesPointer + 3 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 4 ] = _yf;
+	            frontVertices[ frontVerticesPointer + 5 ] = azf;
+	            frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = _y2;
+	            frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = azf;
+	            frontVertices[ frontVerticesPointer + 15 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 16 ] = _y2;
+	            frontVertices[ frontVerticesPointer + 17 ] = cz;
+	            frontVerticesPointer += 18;
+	            // right side quad uvs
+	            frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = 0;
+	            frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = _yf;
+	            frontUvs[ frontUvsPointer + 2 ] = aw;
+	            frontUvs[ frontUvsPointer + 3 ] = _yf;
+	            frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = aw;
+	            frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = _y2;
+	            frontUvs[ frontUvsPointer + 10 ] = 0;
+	            frontUvs[ frontUvsPointer + 11 ] = _y2;
+	            frontUvsPointer += 12;
+
+	            if (baseHeightFront && cy < baseHeightFront) {
+	              // right side baseboard quad vertices
+	              baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = cy;
+	              baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = cz;
+	              baseVertices[ baseVerticesPointer + 3 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 4 ] = cy;
+	              baseVertices[ baseVerticesPointer + 5 ] = azf;
+	              baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = _yf;
+	              baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = azf;
+	              baseVertices[ baseVerticesPointer + 15 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 16 ] = _yf;
+	              baseVertices[ baseVerticesPointer + 17 ] = cz;
+	              baseVerticesPointer += 18;
+	            }
+	          }
+	          if (cz > azb) {
+	            // right side quad vertices
+	            backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer + cl;
+	            backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = _yb;
+	            backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = azb;
+	            backVertices[ backVerticesPointer + 3 ] = pointer + cl;
+	            backVertices[ backVerticesPointer + 4 ] = _yb;
+	            backVertices[ backVerticesPointer + 5 ] = cz;
+	            backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = pointer + cl;
+	            backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = _y2;
+	            backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = cz;
+	            backVertices[ backVerticesPointer + 15 ] = pointer + cl;
+	            backVertices[ backVerticesPointer + 16 ] = _y2;
+	            backVertices[ backVerticesPointer + 17 ] = azb;
+	            backVerticesPointer += 18;
+	            // right side quad uvs
+	            backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = 0;
+	            backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = _yb;
+	            backUvs[ backUvsPointer + 2 ] = aw;
+	            backUvs[ backUvsPointer + 3 ] = _yb;
+	            backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = aw;
+	            backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = _y2;
+	            backUvs[ backUvsPointer + 10 ] = 0;
+	            backUvs[ backUvsPointer + 11 ] = _y2;
+	            backUvsPointer += 12;
+
+	            if (baseHeightBack && cy < baseHeightBack) {
+	              // right side baseboard quad vertices
+	              baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = cy;
+	              baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = azb;
+	              baseVertices[ baseVerticesPointer + 3 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 4 ] = cy;
+	              baseVertices[ baseVerticesPointer + 5 ] = cz;
+	              baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = _yb;
+	              baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = cz;
+	              baseVertices[ baseVerticesPointer + 15 ] = pointer + cl;
+	              baseVertices[ baseVerticesPointer + 16 ] = _yb;
+	              baseVertices[ baseVerticesPointer + 17 ] = azb;
+	              baseVerticesPointer += 18;
+	            }
+	          }
+	        }
+	      }
+
+	      // wall above children
+	      if (round$1(cy + ch) < ah) {
+
+	        // front quad vertices
+	        frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	        frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = cy + ch;
+	        frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = azf;
+	        frontVertices[ frontVerticesPointer + 3 ] = pointer + cl;
+	        frontVertices[ frontVerticesPointer + 4 ] = cy + ch;
+	        frontVertices[ frontVerticesPointer + 5 ] = azf;
+	        frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer + cl;
+	        frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = ah;
+	        frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = azf;
+	        frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	        frontVertices[ frontVerticesPointer + 16 ] = ah;
+	        frontVertices[ frontVerticesPointer + 17 ] = azf;
+	        frontVerticesPointer += 18;
+	        // front quad uvs
+	        frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = pointer;
+	        frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = cy + ch;
+	        frontUvs[ frontUvsPointer + 2 ] = pointer + cl;
+	        frontUvs[ frontUvsPointer + 3 ] = cy + ch;
+	        frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = pointer + cl;
+	        frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = ah;
+	        frontUvs[ frontUvsPointer + 10 ] = pointer;
+	        frontUvs[ frontUvsPointer + 11 ] = ah;
+	        frontUvsPointer += 12;
+
+	        // back quad vertices
+	        backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer;
+	        backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = ah;
+	        backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = azb;
+	        backVertices[ backVerticesPointer + 3 ] = pointer + cl;
+	        backVertices[ backVerticesPointer + 4 ] = ah;
+	        backVertices[ backVerticesPointer + 5 ] = azb;
+	        backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = pointer + cl;
+	        backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = cy + ch;
+	        backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = azb;
+	        backVertices[ backVerticesPointer + 15 ] = pointer;
+	        backVertices[ backVerticesPointer + 16 ] = cy + ch;
+	        backVertices[ backVerticesPointer + 17 ] = azb;
+	        backVerticesPointer += 18;
+	        // back quad uvs
+	        backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = pointer;
+	        backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = ah;
+	        backUvs[ backUvsPointer + 2 ] = pointer + cl;
+	        backUvs[ backUvsPointer + 3 ] = ah;
+	        backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = pointer + cl;
+	        backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = cy + ch;
+	        backUvs[ backUvsPointer + 10 ] = pointer;
+	        backUvs[ backUvsPointer + 11 ] = cy + ch;
+	        backUvsPointer += 12;
+
+	        // top quad vertices
+	        topVertices[ topVerticesPointer ] = topVertices[ topVerticesPointer + 9 ] = pointer;
+	        topVertices[ topVerticesPointer + 1 ] = topVertices[ topVerticesPointer + 10 ] = ah;
+	        topVertices[ topVerticesPointer + 2 ] = topVertices[ topVerticesPointer + 11 ] = azf;
+	        topVertices[ topVerticesPointer + 3 ] = pointer + cl;
+	        topVertices[ topVerticesPointer + 4 ] = ah;
+	        topVertices[ topVerticesPointer + 5 ] = azf;
+	        topVertices[ topVerticesPointer + 6 ] = topVertices[ topVerticesPointer + 12 ] = pointer + cl;
+	        topVertices[ topVerticesPointer + 7 ] = topVertices[ topVerticesPointer + 13 ] = ah;
+	        topVertices[ topVerticesPointer + 8 ] = topVertices[ topVerticesPointer + 14 ] = azb;
+	        topVertices[ topVerticesPointer + 15 ] = pointer;
+	        topVertices[ topVerticesPointer + 16 ] = ah;
+	        topVertices[ topVerticesPointer + 17 ] = azb;
+	        topVerticesPointer += 18;
+
+	        // react to opening z-position
+	        if (azf > cz) {
+	          // below quad vertices
+	          frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = cy + ch;
+	          frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = cz;
+	          frontVertices[ frontVerticesPointer + 3 ] = pointer + cl;
+	          frontVertices[ frontVerticesPointer + 4 ] = cy + ch;
+	          frontVertices[ frontVerticesPointer + 5 ] = cz;
+	          frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer + cl;
+	          frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = cy + ch;
+	          frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = azf;
+	          frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 16 ] = cy + ch;
+	          frontVertices[ frontVerticesPointer + 17 ] = azf;
+	          frontVerticesPointer += 18;
+	          // below quad uvs
+	          frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = pointer;
+	          frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = 0;
+	          frontUvs[ frontUvsPointer + 2 ] = pointer + cl;
+	          frontUvs[ frontUvsPointer + 3 ] = 0;
+	          frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = pointer + cl;
+	          frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = aw;
+	          frontUvs[ frontUvsPointer + 10 ] = pointer;
+	          frontUvs[ frontUvsPointer + 11 ] = aw;
+	          frontUvsPointer += 12;
+	        }
+	        if (cz > azb) {
+	          // below quad vertices
+	          backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer;
+	          backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = cy + ch;
+	          backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = azb;
+	          backVertices[ backVerticesPointer + 3 ] = pointer + cl;
+	          backVertices[ backVerticesPointer + 4 ] = cy + ch;
+	          backVertices[ backVerticesPointer + 5 ] = azb;
+	          backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = pointer + cl;
+	          backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = cy + ch;
+	          backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = cz;
+	          backVertices[ backVerticesPointer + 15 ] = pointer;
+	          backVertices[ backVerticesPointer + 16 ] = cy + ch;
+	          backVertices[ backVerticesPointer + 17 ] = cz;
+	          backVerticesPointer += 18;
+	          // below quad uvs
+	          backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = pointer;
+	          backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = 0;
+	          backUvs[ backUvsPointer + 2 ] = pointer + cl;
+	          backUvs[ backUvsPointer + 3 ] = 0;
+	          backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = pointer + cl;
+	          backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = aw;
+	          backUvs[ backUvsPointer + 10 ] = pointer;
+	          backUvs[ backUvsPointer + 11 ] = aw;
+	          backUvsPointer += 12;
+	        }
+
+	        if (pointer <= 0) {
+	          // left side quad vertices
+	          // react to opening z-position
+	          if (azf > cz) {
+	            frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = cy + ch;
+	            frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = cz;
+	            frontVertices[ frontVerticesPointer + 3 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 4 ] = cy + ch;
+	            frontVertices[ frontVerticesPointer + 5 ] = azf;
+	            frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = ah;
+	            frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = azf;
+	            frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 16 ] = ah;
+	            frontVertices[ frontVerticesPointer + 17 ] = cz;
+	            frontVerticesPointer += 18;
+	            // left side quad uvs
+	            frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = 0;
+	            frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = cy + ch;
+	            frontUvs[ frontUvsPointer + 2 ] = aw;
+	            frontUvs[ frontUvsPointer + 3 ] = cy + ch;
+	            frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = aw;
+	            frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = ah;
+	            frontUvs[ frontUvsPointer + 10 ] = 0;
+	            frontUvs[ frontUvsPointer + 11 ] = ah;
+	            frontUvsPointer += 12;
+
+	          }
+	          if (cz > azb) {
+	            backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer;
+	            backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = cy + ch;
+	            backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = azb;
+	            backVertices[ backVerticesPointer + 3 ] = pointer;
+	            backVertices[ backVerticesPointer + 4 ] = cy + ch;
+	            backVertices[ backVerticesPointer + 5 ] = cz;
+	            backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = pointer;
+	            backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = ah;
+	            backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = cz;
+	            backVertices[ backVerticesPointer + 15 ] = pointer;
+	            backVertices[ backVerticesPointer + 16 ] = ah;
+	            backVertices[ backVerticesPointer + 17 ] = azb;
+	            backVerticesPointer += 18;
+	            // left side quad uvs
+	            backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = 0;
+	            backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = cy + ch;
+	            backUvs[ backUvsPointer + 2 ] = aw;
+	            backUvs[ backUvsPointer + 3 ] = cy + ch;
+	            backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = aw;
+	            backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = ah;
+	            backUvs[ backUvsPointer + 10 ] = 0;
+	            backUvs[ backUvsPointer + 11 ] = ah;
+	            backUvsPointer += 12;
+	          }
+	        } else if (cPrev && cx === round$1(cPrev.x + cPrev.l) && round$1(cPrev.y + cPrev.h) > round$1(cy + ch)) {
+
+	          // adjacent windows
+	          // left side quad vertices
+	          // react to opening z-position
+	          if (azf > cz) {
+	            frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = cy + ch;
+	            frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = cz;
+	            frontVertices[ frontVerticesPointer + 3 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 4 ] = cy + ch;
+	            frontVertices[ frontVerticesPointer + 5 ] = azf;
+	            frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = cPrev.y + cPrev.h;
+	            frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = azf;
+	            frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	            frontVertices[ frontVerticesPointer + 16 ] = cPrev.y + cPrev.h;
+	            frontVertices[ frontVerticesPointer + 17 ] = cz;
+	            frontVerticesPointer += 18;
+	            // left side quad uvs
+	            frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = 0;
+	            frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = cy + ch;
+	            frontUvs[ frontUvsPointer + 2 ] = aw;
+	            frontUvs[ frontUvsPointer + 3 ] = cy + ch;
+	            frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = aw;
+	            frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = cPrev.y + cPrev.h;
+	            frontUvs[ frontUvsPointer + 10 ] = 0;
+	            frontUvs[ frontUvsPointer + 11 ] = cPrev.y + cPrev.h;
+	            frontUvsPointer += 12;
+	          }
+	          if (cz > azb){
+	            backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer;
+	            backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = cy + ch;
+	            backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = azb;
+	            backVertices[ backVerticesPointer + 3 ] = pointer;
+	            backVertices[ backVerticesPointer + 4 ] = cy + ch;
+	            backVertices[ backVerticesPointer + 5 ] = cz;
+	            backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = pointer;
+	            backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = cPrev.y + cPrev.h;
+	            backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = cz;
+	            backVertices[ backVerticesPointer + 15 ] = pointer;
+	            backVertices[ backVerticesPointer + 16 ] = cPrev.y + cPrev.h;
+	            backVertices[ backVerticesPointer + 17 ] = azb;
+	            backVerticesPointer += 18;
+	            // left side quad uvs
+	            backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = 0;
+	            backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = cy + ch;
+	            backUvs[ backUvsPointer + 2 ] = aw;
+	            backUvs[ backUvsPointer + 3 ] = cy + ch;
+	            backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = aw;
+	            backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = cPrev.y + cPrev.h;
+	            backUvs[ backUvsPointer + 10 ] = 0;
+	            backUvs[ backUvsPointer + 11 ] = cPrev.y + cPrev.h;
+	            backUvsPointer += 12;
+	          }
+	        }
+
+	        if (round$1(pointer + cl) >= al) {
+	          // wall ending with opening
+	          // top, right side quad vertices
+	          // react to opening z-position
+	          if (azf > cz) {
+	            frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = cy + ch;
+	            frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = azf;
+	            frontVertices[ frontVerticesPointer + 3 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 4 ] = cy + ch;
+	            frontVertices[ frontVerticesPointer + 5 ] = cz;
+	            frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = ah;
+	            frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = cz;
+	            frontVertices[ frontVerticesPointer + 15 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 16 ] = ah;
+	            frontVertices[ frontVerticesPointer + 17 ] = azf;
+	            frontVerticesPointer += 18;
+	            // right side quad uvs
+	            frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = aw;
+	            frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = cy + ch;
+	            frontUvs[ frontUvsPointer + 2 ] = 0;
+	            frontUvs[ frontUvsPointer + 3 ] = cy + ch;
+	            frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = 0;
+	            frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = ah;
+	            frontUvs[ frontUvsPointer + 10 ] = aw;
+	            frontUvs[ frontUvsPointer + 11 ] = ah;
+	            frontUvsPointer += 12;
+	          }
+	          if (cz > azb){
+	            backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer + cl;
+	            backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = cy + ch;
+	            backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = cz;
+	            backVertices[ backVerticesPointer + 3 ] = pointer + cl;
+	            backVertices[ backVerticesPointer + 4 ] = cy + ch;
+	            backVertices[ backVerticesPointer + 5 ] = azb;
+	            backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = pointer + cl;
+	            backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = ah;
+	            backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = azb;
+	            backVertices[ backVerticesPointer + 15 ] = pointer + cl;
+	            backVertices[ backVerticesPointer + 16 ] = ah;
+	            backVertices[ backVerticesPointer + 17 ] = cz;
+	            backVerticesPointer += 18;
+	            // right side quad uvs
+	            backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = aw;
+	            backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = cy + ch;
+	            backUvs[ backUvsPointer + 2 ] = 0;
+	            backUvs[ backUvsPointer + 3 ] = cy + ch;
+	            backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = 0;
+	            backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = ah;
+	            backUvs[ backUvsPointer + 10 ] = aw;
+	            backUvs[ backUvsPointer + 11 ] = ah;
+	            backUvsPointer += 12;
+	          }
+
+	        } else if (cNext && round$1(cx + cl) === cNext.x && round$1(cNext.y + cNext.h) > round$1(cy + ch)) {
+	          // adjacent windows
+	          // right side quad vertices top
+	          // react to opening z-position
+	          if (azf > cz) {
+	            frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = cy + ch;
+	            frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = azf;
+	            frontVertices[ frontVerticesPointer + 3 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 4 ] = cy + ch;
+	            frontVertices[ frontVerticesPointer + 5 ] = cz;
+	            frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = cNext.y + cNext.h;
+	            frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = cz;
+	            frontVertices[ frontVerticesPointer + 15 ] = pointer + cl;
+	            frontVertices[ frontVerticesPointer + 16 ] = cNext.y + cNext.h;
+	            frontVertices[ frontVerticesPointer + 17 ] = azf;
+	            frontVerticesPointer += 18;
+	            // right side quad uvs
+	            frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = aw;
+	            frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = cy + ch;
+	            frontUvs[ frontUvsPointer + 2 ] = 0;
+	            frontUvs[ frontUvsPointer + 3 ] = cy + ch;
+	            frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = 0;
+	            frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = cNext.y + cNext.h;
+	            frontUvs[ frontUvsPointer + 10 ] = aw;
+	            frontUvs[ frontUvsPointer + 11 ] = cNext.y + cNext.h;
+	            frontUvsPointer += 12;
+	          }
+	          if (cz > azb){
+	            backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer + cl;
+	            backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = cy + ch;
+	            backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = cz;
+	            backVertices[ backVerticesPointer + 3 ] = pointer + cl;
+	            backVertices[ backVerticesPointer + 4 ] = cy + ch;
+	            backVertices[ backVerticesPointer + 5 ] = azb;
+	            backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = pointer + cl;
+	            backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = cNext.y + cNext.h;
+	            backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = azb;
+	            backVertices[ backVerticesPointer + 15 ] = pointer + cl;
+	            backVertices[ backVerticesPointer + 16 ] = cNext.y + cNext.h;
+	            backVertices[ backVerticesPointer + 17 ] = cz;
+	            backVerticesPointer += 18;
+	            // right side quad uvs
+	            backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = aw;
+	            backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = cy + ch;
+	            backUvs[ backUvsPointer + 2 ] = 0;
+	            backUvs[ backUvsPointer + 3 ] = cy + ch;
+	            backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = 0;
+	            backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = cNext.y + cNext.h;
+	            backUvs[ backUvsPointer + 10 ] = aw;
+	            backUvs[ backUvsPointer + 11 ] = cNext.y + cNext.h;
+	            backUvsPointer += 12;
+	          }
+
+	        }
+	      }
+
+	      pointer += cl; // set new pointer position
+
+	    }
+
+	    // wall after last children ( or the only wall if there is no children )
+	    if (pointer < al) {
+
+	      // front quad vertices
+	      frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	      frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = baseHeightFront;
+	      frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = azf;
+	      frontVertices[ frontVerticesPointer + 3 ] = al;
+	      frontVertices[ frontVerticesPointer + 4 ] = baseHeightFront;
+	      frontVertices[ frontVerticesPointer + 5 ] = azf;
+	      frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = al;
+	      frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = ah;
+	      frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = azf;
+	      frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	      frontVertices[ frontVerticesPointer + 16 ] = ah;
+	      frontVertices[ frontVerticesPointer + 17 ] = azf;
+	      frontVerticesPointer += 18;
+	      // front quad uvs
+	      frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = pointer;
+	      frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = baseHeightFront;
+	      frontUvs[ frontUvsPointer + 2 ] = al;
+	      frontUvs[ frontUvsPointer + 3 ] = baseHeightFront;
+	      frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = al;
+	      frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = ah;
+	      frontUvs[ frontUvsPointer + 10 ] = pointer;
+	      frontUvs[ frontUvsPointer + 11 ] = ah;
+	      frontUvsPointer += 12;
+
+	      if (baseHeightFront) {
+	        // front baseboard vertices
+	        baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	        baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	        baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = azf;
+	        baseVertices[ baseVerticesPointer + 3 ] = al;
+	        baseVertices[ baseVerticesPointer + 4 ] = 0;
+	        baseVertices[ baseVerticesPointer + 5 ] = azf;
+	        baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = al;
+	        baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = baseHeightFront;
+	        baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = azf;
+	        baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	        baseVertices[ baseVerticesPointer + 16 ] = baseHeightFront;
+	        baseVertices[ baseVerticesPointer + 17 ] = azf;
+	        baseVerticesPointer += 18;
+	      }
+
+	      // back quad vertices
+	      backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer;
+	      backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = ah;
+	      backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = azb;
+	      backVertices[ backVerticesPointer + 3 ] = al;
+	      backVertices[ backVerticesPointer + 4 ] = ah;
+	      backVertices[ backVerticesPointer + 5 ] = azb;
+	      backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = al;
+	      backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = baseHeightBack;
+	      backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = azb;
+	      backVertices[ backVerticesPointer + 15 ] = pointer;
+	      backVertices[ backVerticesPointer + 16 ] = baseHeightBack;
+	      backVertices[ backVerticesPointer + 17 ] = azb;
+	      backVerticesPointer += 18;
+	      // back quad uvs
+	      backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = pointer;
+	      backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = ah;
+	      backUvs[ backUvsPointer + 2 ] = al;
+	      backUvs[ backUvsPointer + 3 ] = ah;
+	      backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = al;
+	      backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = baseHeightBack;
+	      backUvs[ backUvsPointer + 10 ] = pointer;
+	      backUvs[ backUvsPointer + 11 ] = baseHeightBack;
+	      backUvsPointer += 12;
+
+	      if (baseHeightBack) {
+	        // back baseboard vertices
+	        baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	        baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = baseHeightBack;
+	        baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = azb;
+	        baseVertices[ baseVerticesPointer + 3 ] = al;
+	        baseVertices[ baseVerticesPointer + 4 ] = baseHeightBack;
+	        baseVertices[ baseVerticesPointer + 5 ] = azb;
+	        baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = al;
+	        baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = 0;
+	        baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = azb;
+	        baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	        baseVertices[ baseVerticesPointer + 16 ] = 0;
+	        baseVertices[ baseVerticesPointer + 17 ] = azb;
+	        baseVerticesPointer += 18;
+	      }
+
+	      // top quad vertices
+	      topVertices[ topVerticesPointer ] = topVertices[ topVerticesPointer + 9 ] = pointer;
+	      topVertices[ topVerticesPointer + 1 ] = topVertices[ topVerticesPointer + 10 ] = ah;
+	      topVertices[ topVerticesPointer + 2 ] = topVertices[ topVerticesPointer + 11 ] = azf;
+	      topVertices[ topVerticesPointer + 3 ] = al;
+	      topVertices[ topVerticesPointer + 4 ] = ah;
+	      topVertices[ topVerticesPointer + 5 ] = azf;
+	      topVertices[ topVerticesPointer + 6 ] = topVertices[ topVerticesPointer + 12 ] = al;
+	      topVertices[ topVerticesPointer + 7 ] = topVertices[ topVerticesPointer + 13 ] = ah;
+	      topVertices[ topVerticesPointer + 8 ] = topVertices[ topVerticesPointer + 14 ] = azb;
+	      topVertices[ topVerticesPointer + 15 ] = pointer;
+	      topVertices[ topVerticesPointer + 16 ] = ah;
+	      topVertices[ topVerticesPointer + 17 ] = azb;
+	      topVerticesPointer += 18;
+
+	      if (pointer === 0) {
+	        // start face for a wall without openings
+	        // left side quad vertices
+	        // react to wall controlLine position
+	        if (azf > 0) {
+	          frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = baseHeightFront;
+	          frontVertices[ frontVerticesPointer + 2 ] = frontVertices[ frontVerticesPointer + 11 ] = 0;
+	          frontVertices[ frontVerticesPointer + 3 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 4 ] = baseHeightFront;
+	          frontVertices[ frontVerticesPointer + 5 ] = azf;
+	          frontVertices[ frontVerticesPointer + 6 ] = frontVertices[ frontVerticesPointer + 12 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 7 ] = frontVertices[ frontVerticesPointer + 13 ] = ah;
+	          frontVertices[ frontVerticesPointer + 8 ] = frontVertices[ frontVerticesPointer + 14 ] = azf;
+	          frontVertices[ frontVerticesPointer + 15 ] = pointer;
+	          frontVertices[ frontVerticesPointer + 16 ] = ah;
+	          frontVertices[ frontVerticesPointer + 17 ] = 0;
+	          frontVerticesPointer += 18;
+	          // left side quad uvs
+	          frontUvs[ frontUvsPointer ] = frontUvs[ frontUvsPointer + 6 ] = 0;
+	          frontUvs[ frontUvsPointer + 1 ] = frontUvs[ frontUvsPointer + 7 ] = baseHeightFront;
+	          frontUvs[ frontUvsPointer + 2 ] = azf;
+	          frontUvs[ frontUvsPointer + 3 ] = baseHeightFront;
+	          frontUvs[ frontUvsPointer + 4 ] = frontUvs[ frontUvsPointer + 8 ] = azf;
+	          frontUvs[ frontUvsPointer + 5 ] = frontUvs[ frontUvsPointer + 9 ] = ah;
+	          frontUvs[ frontUvsPointer + 10 ] = 0;
+	          frontUvs[ frontUvsPointer + 11 ] = ah;
+	          frontUvsPointer += 12;
+
+	          if (baseHeightFront) {
+	            // left side baseboard quad vertices
+	            baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	            baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = 0;
+	            baseVertices[ baseVerticesPointer + 3 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 4 ] = 0;
+	            baseVertices[ baseVerticesPointer + 5 ] = azf;
+	            baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = baseHeightFront;
+	            baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = azf;
+	            baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 16 ] = baseHeightFront;
+	            baseVertices[ baseVerticesPointer + 17 ] = 0;
+	            baseVerticesPointer += 18;
+	          }
+	        }
+	        if (azb < 0) {
+	          backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = pointer;
+	          backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = baseHeightBack;
+	          backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = azb;
+	          backVertices[ backVerticesPointer + 3 ] = pointer;
+	          backVertices[ backVerticesPointer + 4 ] = baseHeightBack;
+	          backVertices[ backVerticesPointer + 5 ] = 0;
+	          backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = pointer;
+	          backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = ah;
+	          backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = 0;
+	          backVertices[ backVerticesPointer + 15 ] = pointer;
+	          backVertices[ backVerticesPointer + 16 ] = ah;
+	          backVertices[ backVerticesPointer + 17 ] = azb;
+	          backVerticesPointer += 18;
+	          // left side quad uvs
+	          backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = 0;
+	          backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = baseHeightBack;
+	          backUvs[ backUvsPointer + 2 ] = azb;
+	          backUvs[ backUvsPointer + 3 ] = baseHeightBack;
+	          backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = azb;
+	          backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = ah;
+	          backUvs[ backUvsPointer + 10 ] = 0;
+	          backUvs[ backUvsPointer + 11 ] = ah;
+	          backUvsPointer += 12;
+
+	          if (baseHeightBack) {
+	            // left side baseboard quad vertices
+	            baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	            baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = azb;
+	            baseVertices[ baseVerticesPointer + 3 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 4 ] = 0;
+	            baseVertices[ baseVerticesPointer + 5 ] = 0;
+	            baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = baseHeightBack;
+	            baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = 0;
+	            baseVertices[ baseVerticesPointer + 15 ] = pointer;
+	            baseVertices[ baseVerticesPointer + 16 ] = baseHeightBack;
+	            baseVertices[ baseVerticesPointer + 17 ] = azb;
+	            baseVerticesPointer += 18;
+	          }
+	        }
+	      }
+
+	      // end of the wall - full height face
+	      // react to wall controlLine position
+	      if (azf > 0) {
+	        // right side quad vertices
+	        frontVertices[frontVerticesPointer] = frontVertices[frontVerticesPointer + 9] = al;
+	        frontVertices[frontVerticesPointer + 1] = frontVertices[frontVerticesPointer + 10] = baseHeightFront;
+	        frontVertices[frontVerticesPointer + 2] = frontVertices[frontVerticesPointer + 11] = azf;
+	        frontVertices[frontVerticesPointer + 3] = al;
+	        frontVertices[frontVerticesPointer + 4] = baseHeightFront;
+	        frontVertices[frontVerticesPointer + 5] = 0;
+	        frontVertices[frontVerticesPointer + 6] = frontVertices[frontVerticesPointer + 12] = al;
+	        frontVertices[frontVerticesPointer + 7] = frontVertices[frontVerticesPointer + 13] = ah;
+	        frontVertices[frontVerticesPointer + 8] = frontVertices[frontVerticesPointer + 14] = 0;
+	        frontVertices[frontVerticesPointer + 15] = al;
+	        frontVertices[frontVerticesPointer + 16] = ah;
+	        frontVertices[frontVerticesPointer + 17] = azf;
+	        frontVerticesPointer += 18;
+	        // right side quad uvs
+	        frontUvs[frontUvsPointer] = frontUvs[frontUvsPointer + 6] = azf;
+	        frontUvs[frontUvsPointer + 1] = frontUvs[frontUvsPointer + 7] = baseHeightFront;
+	        frontUvs[frontUvsPointer + 2] = 0;
+	        frontUvs[frontUvsPointer + 3] = baseHeightFront;
+	        frontUvs[frontUvsPointer + 4] = frontUvs[frontUvsPointer + 8] = 0;
+	        frontUvs[frontUvsPointer + 5] = frontUvs[frontUvsPointer + 9] = ah;
+	        frontUvs[frontUvsPointer + 10] = azf;
+	        frontUvs[frontUvsPointer + 11] = ah;
+	        frontUvsPointer += 12;
+
+	        if (baseHeightFront) {
+	          // right side baseboard quad
+	          baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = al;
+	          baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	          baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = azf;
+	          baseVertices[ baseVerticesPointer + 3 ] = al;
+	          baseVertices[ baseVerticesPointer + 4 ] = 0;
+	          baseVertices[ baseVerticesPointer + 5 ] = 0;
+	          baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = al;
+	          baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = baseHeightFront;
+	          baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = 0;
+	          baseVertices[ baseVerticesPointer + 15 ] = al;
+	          baseVertices[ baseVerticesPointer + 16 ] = baseHeightFront;
+	          baseVertices[ baseVerticesPointer + 17 ] = azf;
+	          baseVerticesPointer += 18;
+	        }
+	      }
+	      if (azb < 0) {
+	        // right side quad vertices
+	        backVertices[ backVerticesPointer ] = backVertices[ backVerticesPointer + 9 ] = al;
+	        backVertices[ backVerticesPointer + 1 ] = backVertices[ backVerticesPointer + 10 ] = baseHeightBack;
+	        backVertices[ backVerticesPointer + 2 ] = backVertices[ backVerticesPointer + 11 ] = 0;
+	        backVertices[ backVerticesPointer + 3 ] = al;
+	        backVertices[ backVerticesPointer + 4 ] = baseHeightBack;
+	        backVertices[ backVerticesPointer + 5 ] = azb;
+	        backVertices[ backVerticesPointer + 6 ] = backVertices[ backVerticesPointer + 12 ] = al;
+	        backVertices[ backVerticesPointer + 7 ] = backVertices[ backVerticesPointer + 13 ] = ah;
+	        backVertices[ backVerticesPointer + 8 ] = backVertices[ backVerticesPointer + 14 ] = azb;
+	        backVertices[ backVerticesPointer + 15 ] = al;
+	        backVertices[ backVerticesPointer + 16 ] = ah;
+	        backVertices[ backVerticesPointer + 17 ] = 0;
+	        backVerticesPointer += 18;
+	        // right side quad uvs
+	        backUvs[ backUvsPointer ] = backUvs[ backUvsPointer + 6 ] = azb;
+	        backUvs[ backUvsPointer + 1 ] = backUvs[ backUvsPointer + 7 ] = baseHeightBack;
+	        backUvs[ backUvsPointer + 2 ] = 0;
+	        backUvs[ backUvsPointer + 3 ] = baseHeightBack;
+	        backUvs[ backUvsPointer + 4 ] = backUvs[ backUvsPointer + 8 ] = 0;
+	        backUvs[ backUvsPointer + 5 ] = backUvs[ backUvsPointer + 9 ] = ah;
+	        backUvs[ backUvsPointer + 10 ] = azb;
+	        backUvs[ backUvsPointer + 11 ] = ah;
+	        backUvsPointer += 12;
+
+	        if (baseHeightBack) {
+	          // right side baseboard quad
+	          baseVertices[ baseVerticesPointer ] = baseVertices[ baseVerticesPointer + 9 ] = al;
+	          baseVertices[ baseVerticesPointer + 1 ] = baseVertices[ baseVerticesPointer + 10 ] = 0;
+	          baseVertices[ baseVerticesPointer + 2 ] = baseVertices[ baseVerticesPointer + 11 ] = 0;
+	          baseVertices[ baseVerticesPointer + 3 ] = al;
+	          baseVertices[ baseVerticesPointer + 4 ] = 0;
+	          baseVertices[ baseVerticesPointer + 5 ] = azb;
+	          baseVertices[ baseVerticesPointer + 6 ] = baseVertices[ baseVerticesPointer + 12 ] = al;
+	          baseVertices[ baseVerticesPointer + 7 ] = baseVertices[ baseVerticesPointer + 13 ] = baseHeightBack;
+	          baseVertices[ baseVerticesPointer + 8 ] = baseVertices[ baseVerticesPointer + 14 ] = azb;
+	          baseVertices[ baseVerticesPointer + 15 ] = al;
+	          baseVertices[ baseVerticesPointer + 16 ] = baseHeightBack;
+	          baseVertices[ baseVerticesPointer + 17 ] = 0;
+	          baseVerticesPointer += 18;
+	        }
+	      }
+	    }
+
+	    return {
+	      front: {
+	        positions: new Float32Array(frontVertices),
+	        normals: getNormalsBuffer.flat(frontVertices),
+	        uvs: new Float32Array(frontUvs),
+	        material: 'front'
+	      },
+	      back: {
+	        positions: new Float32Array(backVertices),
+	        normals: getNormalsBuffer.flat(backVertices),
+	        uvs: new Float32Array(backUvs),
+	        material: 'back'
+	      },
+	      top: {
+	        positions: new Float32Array(topVertices),
+	        normals: getNormalsBuffer.flat(topVertices),
+	        material: 'top'
+	      },
+	      base: {
+	        positions: new Float32Array(baseVertices),
+	        normals: getNormalsBuffer.flat(baseVertices),
+	        uvs: getUvsBuffer.architectural(baseVertices),
+	        material: 'base'
+	      }
+	    }
+	  }
+	};
+
+	// helpers
+
+	function round$1 (x) {
+	  return Math.round(x * 1000000) / 1000000
+	}
+
+	// dependencies
+
+	var windowComponent = {
+
+	  schema: getSchema('window'),
+
+	  init: function () {
+	    var this_ = this;
+	    // listen to wall parent for updated geometry
+	    this.el.parentEl.addEventListener('wall-changed', this.updateFromWall);
+	    // FIXME: check for parent initially - we need to wait till it is available
+	    setTimeout(function() {
+	      this_.updateFromWall();
+	    }, 20);
+	  },
+
+	  updateFromWall: function(evt) {
+	    // if we have no event yet we need to get the attributes directly
+	    if (!evt) {
+	      var wallAttributes = this.el.parentEl.getAttribute('io3d-wall');
+	      if (wallAttributes) {
+	        // let's make sure we deal with an object
+	        if (typeof wallAttributes === 'string') wallAttributes = AFRAME.utils.styleParser.parse(wallAttributes);
+	        this.wallWidth = wallAttributes.w;
+	        this.wallControlLine = wallAttributes.controlLine;
+	      }
+	    } else {
+	      this.wallWidth = evt.detail.w;
+	      this.wallControlLine = evt.detail.controlLine;
+	    }
+	    this.update();
+	  },
+
+	  updateSchema: updateSchema,
+
+	  update: function (oldData) {
+	    var this_ = this;
+	    var data = this_.data;
+
+	    // remove old mesh
+	    this.remove();
+
+	    // get defaults and
+	    this.attributes = cloneDeep_1(data);
+
+	    // get meshes and materials from el3d modules
+	    var meshes = this.generateMeshes3d();
+
+	    // remove glass mesh if needed
+	    var deleteGlass = data.hideGlass === 'true';
+	    if (deleteGlass) delete meshes.glass;
+
+	    // clean up empty meshes to prevent errors
+	    var meshKeys = Object.keys(meshes);
+	    meshKeys.forEach(key => {
+	      if (!meshes[key].positions || !meshes[key].positions.length) {
+	        // console.warn('no vertices for mesh', key)
+	        delete meshes[key];
+	      }
+	    });
+
+	    // setup materials
+	    // defaults
+	    var materials = {
+	      frame: {
+	        colorDiffuse: [0.85, 0.85, 0.85]
+	      },
+	      glass: 'glass'
+	    };
+
+	    // check for adapted materials
+	    var materialKeys = Object.keys(data).filter(function(key) {
+	      return key.indexOf('material_') > -1
+	    });
+	    // add materials to instance
+	    var props = {};
+	    materialKeys.forEach(function(key) {
+	      props[key] = {
+	        type: 'string'
+	      };
+
+	      var mesh = key.replace('material_', '');
+	      materials[mesh] = data[key];
+	    });
+
+	    this_.extendSchema(props);
+
+	    // fetch materials from mat library
+	    Object.keys(materials).forEach(mat => {
+	      materials[mat] = getMaterial(materials[mat]);
+	    });
+
+	    // construct data3d object
+	    var data3d = {
+	      meshes: meshes,
+	      materials: materials
+	    };
+
+	    // create new one
+	    this_.mesh = new THREE.Object3D();
+	    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh});
+
+	    // update view
+	    this_.data3dView.set(data3d);
+	    this_.el.setObject3D('mesh', this_.mesh);
+	    // emit event
+	    this_.el.emit('mesh-updated');
+	  },
+
+	  remove: function () {
+	    this.el.parentEl.removeEventListener('wall-changed', this.updateFromWall);
+	    if (this.data3dView) {
+	      this.data3dView.destroy();
+	      this.data3dView = null;
+	    }
+	    if (this.mesh) {
+	      this.el.removeObject3D('mesh');
+	      this.mesh = null;
+	    }
+	  },
+
+	  generateMeshes3d: function () {
+	    var a = this.attributes;
+	    var wallWidth = a.w || 0.15;
+	    var wallControlLine = 'back';
+	    // get parent wall attributes
+	    if (this.wallWidth || this.wallControlLine) {
+	      wallWidth = this.wallWidth;
+	      wallControlLine = this.wallControlLine;
+	    }
+
+	    var wallBackPos = wallControlLine === 'front' ? -wallWidth : wallControlLine === 'center' ? -wallWidth / 2 : 0;
+	    var wallFrontPos = wallWidth + wallBackPos;
+
+	    var rowRatios = a.rowRatios;
+	    var columnRatios = a.columnRatios;
+	    var frameLength = a.frameLength;
+	    var frameWidth = a.frameWidth;
+	    var framePosition = a.side;
+
+	    // set frame position within wall
+	    var frameBackPos, frameFrontPos;
+	    if (framePosition === 'front') frameBackPos = wallFrontPos - frameWidth;
+	    else if (framePosition === 'center') frameBackPos = wallBackPos + wallWidth / 2 - frameWidth / 2;
+	    else frameBackPos = wallBackPos;
+	    frameFrontPos = frameBackPos + frameWidth;
+
+	    // internals
+
+	    // initial cursor positions (yCursor at the top, xCursor at the left)
+	    var yCursor = a.h;
+	    var xCursor = 0;
+
+	    var evenFrameHeight = a.h - frameLength;
+	    var evenFrameLength = a.l - frameLength;
+
+	    var rLen = rowRatios.length;
+	    var cLen;
+
+	    var rowSegments = 0;
+	    var columnSegments = [];
+
+	    var frameFacesCount = rLen * 4 + 18;
+	    var glassFacesCount = 0;
+
+	    for (var r = 0; r < rLen; r++) {
+	      rowSegments += rowRatios[ r ];
+	      if (!columnRatios[ r ]) columnRatios[ r ] = [ 1 ];
+	      columnSegments[ r ] = 0;
+	      cLen = columnRatios[ r ].length;
+	      frameFacesCount += (cLen - 1) * 4 + cLen * 8;
+	      glassFacesCount += cLen * 4;
+	      for (var c = 0; c < cLen; c++) {
+	        columnSegments[ r ] += columnRatios[ r ][ c ];
+	      }
+	    }
+
+	    var segmentLength;
+	    var segmentHeight = evenFrameHeight / rowSegments;
+
+	    var frameVertices = new Float32Array(frameFacesCount * 9);
+	    var fvPos = 0;
+
+	    var glassVertices = new Float32Array(glassFacesCount * 9);
+	    var gvPos = 0;
+
+	    // iterate
+	    for (var r = 0; r < rLen; r++) {
+
+	      cLen = columnRatios[ r ].length;
+	      segmentLength = evenFrameLength / columnSegments[ r ];
+
+	      // horizontal bar quad
+
+	      frameVertices[ fvPos ] = frameLength;
+	      frameVertices[ fvPos + 1 ] = yCursor;
+	      frameVertices[ fvPos + 2 ] = frameBackPos;
+	      frameVertices[ fvPos + 3 ] = evenFrameLength;
+	      frameVertices[ fvPos + 4 ] = yCursor - frameLength;
+	      frameVertices[ fvPos + 5 ] = frameBackPos;
+	      frameVertices[ fvPos + 6 ] = frameLength;
+	      frameVertices[ fvPos + 7 ] = yCursor - frameLength;
+	      frameVertices[ fvPos + 8 ] = frameBackPos;
+
+	      frameVertices[ fvPos + 9 ] = evenFrameLength;
+	      frameVertices[ fvPos + 10 ] = yCursor - frameLength;
+	      frameVertices[ fvPos + 11 ] = frameBackPos;
+	      frameVertices[ fvPos + 12 ] = frameLength;
+	      frameVertices[ fvPos + 13 ] = yCursor;
+	      frameVertices[ fvPos + 14 ] = frameBackPos;
+	      frameVertices[ fvPos + 15 ] = evenFrameLength;
+	      frameVertices[ fvPos + 16 ] = yCursor;
+	      frameVertices[ fvPos + 17 ] = frameBackPos;
+
+	      frameVertices[ fvPos + 18 ] = frameLength;
+	      frameVertices[ fvPos + 19 ] = yCursor;
+	      frameVertices[ fvPos + 20 ] = frameFrontPos;
+	      frameVertices[ fvPos + 21 ] = frameLength;
+	      frameVertices[ fvPos + 22 ] = yCursor - frameLength;
+	      frameVertices[ fvPos + 23 ] = frameFrontPos;
+	      frameVertices[ fvPos + 24 ] = evenFrameLength;
+	      frameVertices[ fvPos + 25 ] = yCursor - frameLength;
+	      frameVertices[ fvPos + 26 ] = frameFrontPos;
+
+	      frameVertices[ fvPos + 27 ] = evenFrameLength;
+	      frameVertices[ fvPos + 28 ] = yCursor - frameLength;
+	      frameVertices[ fvPos + 29 ] = frameFrontPos;
+	      frameVertices[ fvPos + 30 ] = evenFrameLength;
+	      frameVertices[ fvPos + 31 ] = yCursor;
+	      frameVertices[ fvPos + 32 ] = frameFrontPos;
+	      frameVertices[ fvPos + 33 ] = frameLength;
+	      frameVertices[ fvPos + 34 ] = yCursor;
+	      frameVertices[ fvPos + 35 ] = frameFrontPos;
+
+	      fvPos += 36;
+	      yCursor -= frameLength;
+
+	      // vertical bars
+
+	      for (var c = 0; c < cLen - 1; c++) {
+
+	        // move xCursor to the right
+	        xCursor += segmentLength * columnRatios[ r ][ c ];
+
+	        // vertical bar quad
+
+	        frameVertices[ fvPos ] = xCursor;
+	        frameVertices[ fvPos + 1 ] = yCursor;
+	        frameVertices[ fvPos + 2 ] = frameBackPos;
+	        frameVertices[ fvPos + 3 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 5 ] = frameBackPos;
+	        frameVertices[ fvPos + 6 ] = xCursor;
+	        frameVertices[ fvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 8 ] = frameBackPos;
+
+	        frameVertices[ fvPos + 9 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 10 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 11 ] = frameBackPos;
+	        frameVertices[ fvPos + 12 ] = xCursor;
+	        frameVertices[ fvPos + 13 ] = yCursor;
+	        frameVertices[ fvPos + 14 ] = frameBackPos;
+	        frameVertices[ fvPos + 15 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 16 ] = yCursor;
+	        frameVertices[ fvPos + 17 ] = frameBackPos;
+
+	        frameVertices[ fvPos + 18 ] = xCursor;
+	        frameVertices[ fvPos + 19 ] = yCursor;
+	        frameVertices[ fvPos + 20 ] = frameFrontPos;
+	        frameVertices[ fvPos + 21 ] = xCursor;
+	        frameVertices[ fvPos + 22 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 23 ] = frameFrontPos;
+	        frameVertices[ fvPos + 24 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 25 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 26 ] = frameFrontPos;
+
+	        frameVertices[ fvPos + 27 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 28 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 29 ] = frameFrontPos;
+	        frameVertices[ fvPos + 30 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 31 ] = yCursor;
+	        frameVertices[ fvPos + 32 ] = frameFrontPos;
+	        frameVertices[ fvPos + 33 ] = xCursor;
+	        frameVertices[ fvPos + 34 ] = yCursor;
+	        frameVertices[ fvPos + 35 ] = frameFrontPos;
+
+	        fvPos += 36;
+
+	      }
+
+	      // glass & extrusions
+	      xCursor = 0;
+	      for (var c = 0; c < cLen; c++) {
+
+	        // glass quad
+
+	        glassVertices[ gvPos ] = xCursor + frameLength;
+	        glassVertices[ gvPos + 1 ] = yCursor;
+	        glassVertices[ gvPos + 2 ] = frameBackPos;
+	        glassVertices[ gvPos + 3 ] = xCursor + frameLength;
+	        glassVertices[ gvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        glassVertices[ gvPos + 5 ] = frameBackPos;
+	        glassVertices[ gvPos + 6 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        glassVertices[ gvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        glassVertices[ gvPos + 8 ] = frameBackPos;
+
+	        glassVertices[ gvPos + 9 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        glassVertices[ gvPos + 10 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        glassVertices[ gvPos + 11 ] = frameBackPos;
+	        glassVertices[ gvPos + 12 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        glassVertices[ gvPos + 13 ] = yCursor;
+	        glassVertices[ gvPos + 14 ] = frameBackPos;
+	        glassVertices[ gvPos + 15 ] = xCursor + frameLength;
+	        glassVertices[ gvPos + 16 ] = yCursor;
+	        glassVertices[ gvPos + 17 ] = frameBackPos;
+
+	        gvPos += 18;
+
+	        glassVertices[ gvPos ] = xCursor + frameLength;
+	        glassVertices[ gvPos + 1 ] = yCursor;
+	        glassVertices[ gvPos + 2 ] = frameBackPos;
+	        glassVertices[ gvPos + 3 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        glassVertices[ gvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        glassVertices[ gvPos + 5 ] = frameBackPos;
+	        glassVertices[ gvPos + 6 ] = xCursor + frameLength;
+	        glassVertices[ gvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        glassVertices[ gvPos + 8 ] = frameBackPos;
+
+	        glassVertices[ gvPos + 9 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        glassVertices[ gvPos + 10 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        glassVertices[ gvPos + 11 ] = frameBackPos;
+	        glassVertices[ gvPos + 12 ] = xCursor + frameLength;
+	        glassVertices[ gvPos + 13 ] = yCursor;
+	        glassVertices[ gvPos + 14 ] = frameBackPos;
+	        glassVertices[ gvPos + 15 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        glassVertices[ gvPos + 16 ] = yCursor;
+	        glassVertices[ gvPos + 17 ] = frameBackPos;
+
+	        gvPos += 18;
+
+	        // left side extrusion
+
+	        frameVertices[ fvPos ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 1 ] = yCursor;
+	        frameVertices[ fvPos + 2 ] = frameBackPos;
+	        frameVertices[ fvPos + 3 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 5 ] = frameFrontPos;
+	        frameVertices[ fvPos + 6 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 8 ] = frameBackPos;
+
+	        frameVertices[ fvPos + 9 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 10 ] = yCursor;
+	        frameVertices[ fvPos + 11 ] = frameBackPos;
+	        frameVertices[ fvPos + 12 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 13 ] = yCursor;
+	        frameVertices[ fvPos + 14 ] = frameFrontPos;
+	        frameVertices[ fvPos + 15 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 16 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 17 ] = frameFrontPos;
+
+	        fvPos += 18;
+
+	        // bottom side extrusion
+
+	        frameVertices[ fvPos ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 1 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 2 ] = frameBackPos;
+	        frameVertices[ fvPos + 3 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        frameVertices[ fvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 5 ] = frameFrontPos;
+	        frameVertices[ fvPos + 6 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        frameVertices[ fvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 8 ] = frameBackPos;
+
+	        frameVertices[ fvPos + 9 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 10 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 11 ] = frameBackPos;
+	        frameVertices[ fvPos + 12 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 13 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 14 ] = frameFrontPos;
+	        frameVertices[ fvPos + 15 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        frameVertices[ fvPos + 16 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 17 ] = frameFrontPos;
+
+	        fvPos += 18;
+
+	        // top side extrusion
+
+	        frameVertices[ fvPos ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 1 ] = yCursor;
+	        frameVertices[ fvPos + 2 ] = frameBackPos;
+	        frameVertices[ fvPos + 3 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        frameVertices[ fvPos + 4 ] = yCursor;
+	        frameVertices[ fvPos + 5 ] = frameBackPos;
+	        frameVertices[ fvPos + 6 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        frameVertices[ fvPos + 7 ] = yCursor;
+	        frameVertices[ fvPos + 8 ] = frameFrontPos;
+
+	        frameVertices[ fvPos + 9 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 10 ] = yCursor;
+	        frameVertices[ fvPos + 11 ] = frameBackPos;
+	        frameVertices[ fvPos + 12 ] = xCursor + segmentLength * columnRatios[ r ][ c ];
+	        frameVertices[ fvPos + 13 ] = yCursor;
+	        frameVertices[ fvPos + 14 ] = frameFrontPos;
+	        frameVertices[ fvPos + 15 ] = xCursor + frameLength;
+	        frameVertices[ fvPos + 16 ] = yCursor;
+	        frameVertices[ fvPos + 17 ] = frameFrontPos;
+
+	        fvPos += 18;
+
+	        // move xCursor to the right
+	        xCursor += segmentLength * columnRatios[ r ][ c ];
+
+	        // right side extrusion
+
+	        frameVertices[ fvPos ] = xCursor;
+	        frameVertices[ fvPos + 1 ] = yCursor;
+	        frameVertices[ fvPos + 2 ] = frameBackPos;
+	        frameVertices[ fvPos + 3 ] = xCursor;
+	        frameVertices[ fvPos + 4 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 5 ] = frameBackPos;
+	        frameVertices[ fvPos + 6 ] = xCursor;
+	        frameVertices[ fvPos + 7 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 8 ] = frameFrontPos;
+
+	        frameVertices[ fvPos + 9 ] = xCursor;
+	        frameVertices[ fvPos + 10 ] = yCursor;
+	        frameVertices[ fvPos + 11 ] = frameBackPos;
+	        frameVertices[ fvPos + 12 ] = xCursor;
+	        frameVertices[ fvPos + 13 ] = yCursor - segmentHeight * rowRatios[ r ] + frameLength;
+	        frameVertices[ fvPos + 14 ] = frameFrontPos;
+	        frameVertices[ fvPos + 15 ] = xCursor;
+	        frameVertices[ fvPos + 16 ] = yCursor;
+	        frameVertices[ fvPos + 17 ] = frameFrontPos;
+
+	        fvPos += 18;
+
+	      }
+
+	      // reset xCursor, move yCursor downwards
+	      xCursor = 0;
+	      yCursor -= segmentHeight * rowRatios[ r ] - frameLength;
+
+	    }
+
+	    // add last horizontal frame bar quad
+
+	    frameVertices[ fvPos ] = frameLength;
+	    frameVertices[ fvPos + 1 ] = yCursor;
+	    frameVertices[ fvPos + 2 ] = frameBackPos;
+	    frameVertices[ fvPos + 3 ] = evenFrameLength;
+	    frameVertices[ fvPos + 4 ] = yCursor - frameLength;
+	    frameVertices[ fvPos + 5 ] = frameBackPos;
+	    frameVertices[ fvPos + 6 ] = frameLength;
+	    frameVertices[ fvPos + 7 ] = yCursor - frameLength;
+	    frameVertices[ fvPos + 8 ] = frameBackPos;
+
+	    frameVertices[ fvPos + 9 ] = evenFrameLength;
+	    frameVertices[ fvPos + 10 ] = yCursor - frameLength;
+	    frameVertices[ fvPos + 11 ] = frameBackPos;
+	    frameVertices[ fvPos + 12 ] = frameLength;
+	    frameVertices[ fvPos + 13 ] = yCursor;
+	    frameVertices[ fvPos + 14 ] = frameBackPos;
+	    frameVertices[ fvPos + 15 ] = evenFrameLength;
+	    frameVertices[ fvPos + 16 ] = yCursor;
+	    frameVertices[ fvPos + 17 ] = frameBackPos;
+
+	    frameVertices[ fvPos + 18 ] = frameLength;
+	    frameVertices[ fvPos + 19 ] = yCursor;
+	    frameVertices[ fvPos + 20 ] = frameFrontPos;
+	    frameVertices[ fvPos + 21 ] = frameLength;
+	    frameVertices[ fvPos + 22 ] = yCursor - frameLength;
+	    frameVertices[ fvPos + 23 ] = frameFrontPos;
+	    frameVertices[ fvPos + 24 ] = evenFrameLength;
+	    frameVertices[ fvPos + 25 ] = yCursor - frameLength;
+	    frameVertices[ fvPos + 26 ] = frameFrontPos;
+
+	    frameVertices[ fvPos + 27 ] = evenFrameLength;
+	    frameVertices[ fvPos + 28 ] = yCursor - frameLength;
+	    frameVertices[ fvPos + 29 ] = frameFrontPos;
+	    frameVertices[ fvPos + 30 ] = evenFrameLength;
+	    frameVertices[ fvPos + 31 ] = yCursor;
+	    frameVertices[ fvPos + 32 ] = frameFrontPos;
+	    frameVertices[ fvPos + 33 ] = frameLength;
+	    frameVertices[ fvPos + 34 ] = yCursor;
+	    frameVertices[ fvPos + 35 ] = frameFrontPos;
+
+	    fvPos += 36;
+
+	    // add left frame side quad
+
+	    frameVertices[ fvPos ] = 0;
+	    frameVertices[ fvPos + 1 ] = a.h;
+	    frameVertices[ fvPos + 2 ] = frameBackPos;
+	    frameVertices[ fvPos + 3 ] = frameLength;
+	    frameVertices[ fvPos + 4 ] = 0;
+	    frameVertices[ fvPos + 5 ] = frameBackPos;
+	    frameVertices[ fvPos + 6 ] = 0;
+	    frameVertices[ fvPos + 7 ] = 0;
+	    frameVertices[ fvPos + 8 ] = frameBackPos;
+
+	    frameVertices[ fvPos + 9 ] = frameLength;
+	    frameVertices[ fvPos + 10 ] = 0;
+	    frameVertices[ fvPos + 11 ] = frameBackPos;
+	    frameVertices[ fvPos + 12 ] = 0;
+	    frameVertices[ fvPos + 13 ] = a.h;
+	    frameVertices[ fvPos + 14 ] = frameBackPos;
+	    frameVertices[ fvPos + 15 ] = frameLength;
+	    frameVertices[ fvPos + 16 ] = a.h;
+	    frameVertices[ fvPos + 17 ] = frameBackPos;
+
+	    frameVertices[ fvPos + 18 ] = 0;
+	    frameVertices[ fvPos + 19 ] = a.h;
+	    frameVertices[ fvPos + 20 ] = frameFrontPos;
+	    frameVertices[ fvPos + 21 ] = 0;
+	    frameVertices[ fvPos + 22 ] = 0;
+	    frameVertices[ fvPos + 23 ] = frameFrontPos;
+	    frameVertices[ fvPos + 24 ] = frameLength;
+	    frameVertices[ fvPos + 25 ] = 0;
+	    frameVertices[ fvPos + 26 ] = frameFrontPos;
+
+	    frameVertices[ fvPos + 27 ] = frameLength;
+	    frameVertices[ fvPos + 28 ] = 0;
+	    frameVertices[ fvPos + 29 ] = frameFrontPos;
+	    frameVertices[ fvPos + 30 ] = frameLength;
+	    frameVertices[ fvPos + 31 ] = a.h;
+	    frameVertices[ fvPos + 32 ] = frameFrontPos;
+	    frameVertices[ fvPos + 33 ] = 0;
+	    frameVertices[ fvPos + 34 ] = a.h;
+	    frameVertices[ fvPos + 35 ] = frameFrontPos;
+
+	    fvPos += 36;
+
+	    // add right frame side quad
+
+	    frameVertices[ fvPos ] = evenFrameLength;
+	    frameVertices[ fvPos + 1 ] = a.h;
+	    frameVertices[ fvPos + 2 ] = frameBackPos;
+	    frameVertices[ fvPos + 3 ] = a.l;
+	    frameVertices[ fvPos + 4 ] = 0;
+	    frameVertices[ fvPos + 5 ] = frameBackPos;
+	    frameVertices[ fvPos + 6 ] = evenFrameLength;
+	    frameVertices[ fvPos + 7 ] = 0;
+	    frameVertices[ fvPos + 8 ] = frameBackPos;
+
+	    frameVertices[ fvPos + 9 ] = a.l;
+	    frameVertices[ fvPos + 10 ] = 0;
+	    frameVertices[ fvPos + 11 ] = frameBackPos;
+	    frameVertices[ fvPos + 12 ] = evenFrameLength;
+	    frameVertices[ fvPos + 13 ] = a.h;
+	    frameVertices[ fvPos + 14 ] = frameBackPos;
+	    frameVertices[ fvPos + 15 ] = a.l;
+	    frameVertices[ fvPos + 16 ] = a.h;
+	    frameVertices[ fvPos + 17 ] = frameBackPos;
+
+	    frameVertices[ fvPos + 18 ] = evenFrameLength;
+	    frameVertices[ fvPos + 19 ] = a.h;
+	    frameVertices[ fvPos + 20 ] = frameFrontPos;
+	    frameVertices[ fvPos + 21 ] = evenFrameLength;
+	    frameVertices[ fvPos + 22 ] = 0;
+	    frameVertices[ fvPos + 23 ] = frameFrontPos;
+	    frameVertices[ fvPos + 24 ] = a.l;
+	    frameVertices[ fvPos + 25 ] = 0;
+	    frameVertices[ fvPos + 26 ] = frameFrontPos;
+
+	    frameVertices[ fvPos + 27 ] = a.l;
+	    frameVertices[ fvPos + 28 ] = 0;
+	    frameVertices[ fvPos + 29 ] = frameFrontPos;
+	    frameVertices[ fvPos + 30 ] = a.l;
+	    frameVertices[ fvPos + 31 ] = a.h;
+	    frameVertices[ fvPos + 32 ] = frameFrontPos;
+	    frameVertices[ fvPos + 33 ] = evenFrameLength;
+	    frameVertices[ fvPos + 34 ] = a.h;
+	    frameVertices[ fvPos + 35 ] = frameFrontPos;
+
+	    fvPos += 36;
+
+	    // add right outer side squad
+
+	    frameVertices[ fvPos ] = a.l;
+	    frameVertices[ fvPos + 1 ] = a.h;
+	    frameVertices[ fvPos + 2 ] = frameBackPos;
+	    frameVertices[ fvPos + 3 ] = a.l;
+	    frameVertices[ fvPos + 4 ] = 0;
+	    frameVertices[ fvPos + 5 ] = frameFrontPos;
+	    frameVertices[ fvPos + 6 ] = a.l;
+	    frameVertices[ fvPos + 7 ] = 0;
+	    frameVertices[ fvPos + 8 ] = frameBackPos;
+
+	    frameVertices[ fvPos + 9 ] = a.l;
+	    frameVertices[ fvPos + 10 ] = a.h;
+	    frameVertices[ fvPos + 11 ] = frameBackPos;
+	    frameVertices[ fvPos + 12 ] = a.l;
+	    frameVertices[ fvPos + 13 ] = a.h;
+	    frameVertices[ fvPos + 14 ] = frameFrontPos;
+	    frameVertices[ fvPos + 15 ] = a.l;
+	    frameVertices[ fvPos + 16 ] = 0;
+	    frameVertices[ fvPos + 17 ] = frameFrontPos;
+
+	    fvPos += 18;
+
+	    // add right outer side squad
+
+	    frameVertices[ fvPos ] = 0;
+	    frameVertices[ fvPos + 1 ] = a.h;
+	    frameVertices[ fvPos + 2 ] = frameBackPos;
+	    frameVertices[ fvPos + 3 ] = 0;
+	    frameVertices[ fvPos + 4 ] = 0;
+	    frameVertices[ fvPos + 5 ] = frameBackPos;
+	    frameVertices[ fvPos + 6 ] = 0;
+	    frameVertices[ fvPos + 7 ] = 0;
+	    frameVertices[ fvPos + 8 ] = frameFrontPos;
+
+	    frameVertices[ fvPos + 9 ] = 0;
+	    frameVertices[ fvPos + 10 ] = a.h;
+	    frameVertices[ fvPos + 11 ] = frameBackPos;
+	    frameVertices[ fvPos + 12 ] = 0;
+	    frameVertices[ fvPos + 13 ] = 0;
+	    frameVertices[ fvPos + 14 ] = frameFrontPos;
+	    frameVertices[ fvPos + 15 ] = 0;
+	    frameVertices[ fvPos + 16 ] = a.h;
+	    frameVertices[ fvPos + 17 ] = frameFrontPos;
+
+	    fvPos += 18;
+
+	    // add top outer side squad
+
+	    frameVertices[ fvPos ] = 0;
+	    frameVertices[ fvPos + 1 ] = a.h;
+	    frameVertices[ fvPos + 2 ] = frameBackPos;
+	    frameVertices[ fvPos + 3 ] = a.l;
+	    frameVertices[ fvPos + 4 ] = a.h;
+	    frameVertices[ fvPos + 5 ] = frameFrontPos;
+	    frameVertices[ fvPos + 6 ] = a.l;
+	    frameVertices[ fvPos + 7 ] = a.h;
+	    frameVertices[ fvPos + 8 ] = frameBackPos;
+
+	    frameVertices[ fvPos + 9 ] = a.l;
+	    frameVertices[ fvPos + 10 ] = a.h;
+	    frameVertices[ fvPos + 11 ] = frameFrontPos;
+	    frameVertices[ fvPos + 12 ] = 0;
+	    frameVertices[ fvPos + 13 ] = a.h;
+	    frameVertices[ fvPos + 14 ] = frameBackPos;
+	    frameVertices[ fvPos + 15 ] = 0;
+	    frameVertices[ fvPos + 16 ] = a.h;
+	    frameVertices[ fvPos + 17 ] = frameFrontPos;
+
+	    // return meshes
+	    return {
+	      frame: {
+	        positions: frameVertices,
+	        normals: getNormalsBuffer.flat(frameVertices),
+	        material: 'frame'
+	      },
+	      glass: {
+	        positions: glassVertices,
+	        normals: getNormalsBuffer.flat(glassVertices),
+	        material: 'glass'
+	      }
+	    }
+	  }
+	};
+
 	// internals
 
 	var INSPECTOR_PLUGINS_URL = 'https://dist.3d.io/3dio-inspector-plugins/0.x.x/3dio-inspector-plugins.js';
@@ -19679,10 +35013,10 @@
 	var concurrentRequests = 0;
 	var concurrentPerQueue = {};
 	var queueName;
-	for (var i$1 = 0, l = queuesLength; i$1 < l; i$1++) {
-	  queueName = queuesByPriority[i$1];
+	for (var i$2 = 0, l = queuesLength; i$2 < l; i$2++) {
+	  queueName = queuesByPriority[i$2];
 	  queues[queueName] = [];
-	  queueFences[queueName] = queueFences[i$1];
+	  queueFences[queueName] = queueFences[i$2];
 	  queueInfo[queueName] = {requestCount: 0};
 	  concurrentPerQueue[queueName] = 0;
 	}
@@ -19766,7 +35100,7 @@
 	  info: queueInfo
 	};
 
-	var cache = new PromiseCache();
+	var cache$1 = new PromiseCache();
 
 	var fetchTextureByType = {
 	  '.dds': fetchDdsTexture,
@@ -19784,7 +35118,7 @@
 	  var cacheKey = url;
 
 	  // try cache
-	  var promiseFromCache = cache.get(cacheKey);
+	  var promiseFromCache = cache$1.get(cacheKey);
 	  if (promiseFromCache) return promiseFromCache
 
 	  // get file extension
@@ -19814,7 +35148,7 @@
 	  });
 
 	  // add to cache
-	  cache.add(cacheKey, promise);
+	  cache$1.add(cacheKey, promise);
 
 	  return promise
 
@@ -21037,6 +36371,7 @@
 	});
 
 	// components
+	// architectural tookit
 	// other
 	// dependency check (for node.js compatibility)
 
@@ -21050,11 +36385,22 @@
 	}, function registerComponents () {
 
 	  // register components
-
 	  AFRAME.registerComponent('io3d-data3d', data3dComponent);
 	  AFRAME.registerComponent('io3d-furniture', furnitureComponent);
 	  AFRAME.registerComponent('tour', tourComponent);
 	  AFRAME.registerComponent('io3d-lighting', lightingComponent);
+	  AFRAME.registerComponent('io3d-minimap', minimapComponent);
+	  // architectural tookit
+	  AFRAME.registerComponent('io3d-closet', closetComponent);
+	  AFRAME.registerComponent('io3d-column', columnComponent);
+	  AFRAME.registerComponent('io3d-door', doorComponent);
+	  AFRAME.registerComponent('io3d-floor', floorComponent);
+	  AFRAME.registerComponent('io3d-kitchen', kitchenComponent);
+	  AFRAME.registerComponent('io3d-polyfloor', polyFloorComponent);
+	  AFRAME.registerComponent('io3d-railing', railingComponent);
+	  AFRAME.registerComponent('io3d-stairs', stairsComponent);
+	  AFRAME.registerComponent('io3d-wall', wallComponent);
+	  AFRAME.registerComponent('io3d-window', windowComponent);
 	  // check if gblock component has already been registered
 	  if (AFRAME.components.gblock) {
 	    // legacy warning in case gblock has been registered using https://github.com/archilogic-com/aframe-gblock/
@@ -21137,8 +36483,7 @@
 	  // API
 	  options = options || {};
 	  var limit = options.limit || 50;
-	  // TODO: add this param once #251 https://github.com/archilogic-com/services/issues/251 is resolved
-	  //var offset = options.offset || 0
+	  var offset = options.offset || 0;
 
 	  // internals
 	  var apiErrorCount = 0;
@@ -21149,9 +36494,8 @@
 	      // only published furniture & let's make sure we don't have trailing or double spaces
 	      query: 'isPublished:true ' + query.trim().replace(/\s+/g, ' ')
 	    },
-	    limit: 500
-	    // TODO: add this param once #251 https://github.com/archilogic-com/services/issues/251 is resolved
-	    //offset: offset
+	    limit: 500,
+	    offset: offset
 	  };
 
 	  // extract dimension queries for range search
@@ -21202,1302 +36546,6 @@
 	  })
 	}
 
-	// from https://github.com/jbgutierrez/path-parse
-	// Split a filename into [root, dir, basename, ext], unix version
-	// 'root' is just a slash, or nothing.
-	var splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
-
-	function parsePath (path) {
-	  if (typeof path !== 'string') {
-	    throw new TypeError(
-	      "Parameter 'path' must be a string, not " + typeof path
-	    );
-	  }
-	  var allParts = splitPathRe.exec(path).slice(1);
-	  if (!allParts || allParts.length !== 4) {
-	    throw new TypeError("Invalid path '" + path + "'");
-	  }
-	  allParts[2] = allParts[2] || '';
-	  allParts[3] = allParts[3] || '';
-
-	  return {
-	    root: allParts[0],
-	    dir: allParts[0] + allParts[1].slice(0, -1),
-	    base: allParts[2],
-	    ext: allParts[3],
-	    name: allParts[2].slice(0, allParts[2].length - allParts[3].length)
-	  }
-	}
-
-	var path = {
-	  parse: parsePath
-	};
-
-	// source: https://github.com/petkaantonov/urlparser
-	// modified for browser compatibility
-
-	/*
-	 Copyright (c) 2014 Petka Antonov
-
-	 Permission is hereby granted, free of charge, to any person obtaining a copy
-	 of this software and associated documentation files (the "Software"), to deal
-	 in the Software without restriction, including without limitation the rights
-	 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-	 copies of the Software, and to permit persons to whom the Software is
-	 furnished to do so, subject to the following conditions:
-
-	 The above copyright notice and this permission notice shall be included in
-	 all copies or substantial portions of the Software.
-
-	 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-	 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-	 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
-	 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-	 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-	 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-	 THE SOFTWARE.
-	 */
-	function Url() {
-	  //For more efficient internal representation and laziness.
-	  //The non-underscore versions of these properties are accessor functions
-	  //defined on the prototype.
-	  this._protocol = null;
-	  this._href = "";
-	  this._port = -1;
-	  this._query = null;
-
-	  this.auth = null;
-	  this.slashes = null;
-	  this.host = null;
-	  this.hostname = null;
-	  this.hash = null;
-	  this.search = null;
-	  this.pathname = null;
-
-	  this._prependSlash = false;
-	}
-
-	Url.prototype.parse =
-	  function Url$parse(str, parseQueryString, hostDenotesSlash, disableAutoEscapeChars) {
-	    if (typeof str !== "string") {
-	      throw new TypeError("Parameter 'url' must be a string, not " +
-	        typeof str);
-	    }
-
-	    // check for relative URL in a browser
-	    if(typeof window !== 'undefined' && !str.match(/^[^:]+:\/\//) && str.substr(0, 2) !== '//') {
-	      if(str[0] === '/') str = str.slice(1);
-	      str = window.location.protocol + '//' + window.location.host + window.location.pathname + str;
-	      console.error('mutated', str);
-	    }
-
-	    if (str.substr(0,2) === '//' && typeof window !== 'undefined' && window.location && window.location.protocol) {
-	      str = window.location.protocol + str;
-	    }
-	    var start = 0;
-	    var end = str.length - 1;
-
-	    //Trim leading and trailing ws
-	    while (str.charCodeAt(start) <= 0x20 /*' '*/) start++;
-	    while (str.charCodeAt(end) <= 0x20 /*' '*/) end--;
-
-	    start = this._parseProtocol(str, start, end);
-
-	    //Javascript doesn't have host
-	    if (this._protocol !== "javascript") {
-	      start = this._parseHost(str, start, end, hostDenotesSlash);
-	      var proto = this._protocol;
-	      if (!this.hostname &&
-	        (this.slashes || (proto && !slashProtocols[proto]))) {
-	        this.hostname = this.host = "";
-	      }
-	    }
-
-	    if (start <= end) {
-	      var ch = str.charCodeAt(start);
-
-	      if (ch === 0x2F /*'/'*/ || ch === 0x5C /*'\'*/) {
-	        this._parsePath(str, start, end, disableAutoEscapeChars);
-	      }
-	      else if (ch === 0x3F /*'?'*/) {
-	        this._parseQuery(str, start, end, disableAutoEscapeChars);
-	      }
-	      else if (ch === 0x23 /*'#'*/) {
-	        this._parseHash(str, start, end, disableAutoEscapeChars);
-	      }
-	      else if (this._protocol !== "javascript") {
-	        this._parsePath(str, start, end, disableAutoEscapeChars);
-	      }
-	      else { //For javascript the pathname is just the rest of it
-	        this.pathname = str.slice(start, end + 1 );
-	      }
-
-	    }
-
-	    if (!this.pathname && this.hostname &&
-	      this._slashProtocols[this._protocol]) {
-	      this.pathname = "/";
-	    }
-
-	    if (parseQueryString) {
-	      var search = this.search;
-	      if (search == null) {
-	        search = this.search = "";
-	      }
-	      if (search.charCodeAt(0) === 0x3F /*'?'*/) {
-	        search = search.slice(1);
-	      }
-	      //This calls a setter function, there is no .query data property
-	      this.query = Url.queryString.parse(search);
-	    }
-	  };
-
-	Url.prototype.resolve = function Url$resolve(relative) {
-	  return this.resolveObject(Url.parse(relative, false, true)).format();
-	};
-
-	Url.prototype.format = function Url$format() {
-	  var auth = this.auth || "";
-
-	  if (auth) {
-	    auth = encodeURIComponent(auth);
-	    auth = auth.replace(/%3A/i, ":");
-	    auth += "@";
-	  }
-
-	  var protocol = this.protocol || "";
-	  var pathname = this.pathname || "";
-	  var hash = this.hash || "";
-	  var search = this.search || "";
-	  var query = "";
-	  var hostname = this.hostname || "";
-	  var port = this.port || "";
-	  var host = false;
-	  var scheme = "";
-
-	  //Cache the result of the getter function
-	  var q = this.query;
-	  if (q && typeof q === "object") {
-	    query = Url.queryString.stringify(q);
-	  }
-
-	  if (!search) {
-	    search = query ? "?" + query : "";
-	  }
-
-	  if (protocol && protocol.charCodeAt(protocol.length - 1) !== 0x3A /*':'*/)
-	    protocol += ":";
-
-	  if (this.host) {
-	    host = auth + this.host;
-	  }
-	  else if (hostname) {
-	    var ip6 = hostname.indexOf(":") > -1;
-	    if (ip6) hostname = "[" + hostname + "]";
-	    host = auth + hostname + (port ? ":" + port : "");
-	  }
-
-	  var slashes = this.slashes ||
-	    ((!protocol ||
-	    slashProtocols[protocol]) && host !== false);
-
-
-	  if (protocol) scheme = protocol + (slashes ? "//" : "");
-	  else if (slashes) scheme = "//";
-
-	  if (slashes && pathname && pathname.charCodeAt(0) !== 0x2F /*'/'*/) {
-	    pathname = "/" + pathname;
-	  }
-	  if (search && search.charCodeAt(0) !== 0x3F /*'?'*/)
-	    search = "?" + search;
-	  if (hash && hash.charCodeAt(0) !== 0x23 /*'#'*/)
-	    hash = "#" + hash;
-
-	  pathname = escapePathName(pathname);
-	  search = escapeSearch(search);
-
-	  return scheme + (host === false ? "" : host) + pathname + search + hash;
-	};
-
-	Url.prototype.resolveObject = function Url$resolveObject(relative) {
-	  if (typeof relative === "string")
-	    relative = Url.parse(relative, false, true);
-
-	  var result = this._clone();
-
-	  // hash is always overridden, no matter what.
-	  // even href="" will remove it.
-	  result.hash = relative.hash;
-
-	  // if the relative url is empty, then there"s nothing left to do here.
-	  if (!relative.href) {
-	    result._href = "";
-	    return result;
-	  }
-
-	  // hrefs like //foo/bar always cut to the protocol.
-	  if (relative.slashes && !relative._protocol) {
-	    relative._copyPropsTo(result, true);
-
-	    if (slashProtocols[result._protocol] &&
-	      result.hostname && !result.pathname) {
-	      result.pathname = "/";
-	    }
-	    result._href = "";
-	    return result;
-	  }
-
-	  if (relative._protocol && relative._protocol !== result._protocol) {
-	    // if it"s a known url protocol, then changing
-	    // the protocol does weird things
-	    // first, if it"s not file:, then we MUST have a host,
-	    // and if there was a path
-	    // to begin with, then we MUST have a path.
-	    // if it is file:, then the host is dropped,
-	    // because that"s known to be hostless.
-	    // anything else is assumed to be absolute.
-	    if (!slashProtocols[relative._protocol]) {
-	      relative._copyPropsTo(result, false);
-	      result._href = "";
-	      return result;
-	    }
-
-	    result._protocol = relative._protocol;
-	    if (!relative.host && relative._protocol !== "javascript") {
-	      var relPath = (relative.pathname || "").split("/");
-	      while (relPath.length && !(relative.host = relPath.shift()));
-	      if (!relative.host) relative.host = "";
-	      if (!relative.hostname) relative.hostname = "";
-	      if (relPath[0] !== "") relPath.unshift("");
-	      if (relPath.length < 2) relPath.unshift("");
-	      result.pathname = relPath.join("/");
-	    } else {
-	      result.pathname = relative.pathname;
-	    }
-
-	    result.search = relative.search;
-	    result.host = relative.host || "";
-	    result.auth = relative.auth;
-	    result.hostname = relative.hostname || relative.host;
-	    result._port = relative._port;
-	    result.slashes = result.slashes || relative.slashes;
-	    result._href = "";
-	    return result;
-	  }
-
-	  var isSourceAbs =
-	    (result.pathname && result.pathname.charCodeAt(0) === 0x2F /*'/'*/);
-	  var isRelAbs = (
-	    relative.host ||
-	    (relative.pathname &&
-	    relative.pathname.charCodeAt(0) === 0x2F /*'/'*/)
-	  );
-	  var mustEndAbs = (isRelAbs || isSourceAbs ||
-	  (result.host && relative.pathname));
-
-	  var removeAllDots = mustEndAbs;
-
-	  var srcPath = result.pathname && result.pathname.split("/") || [];
-	  var relPath = relative.pathname && relative.pathname.split("/") || [];
-	  var psychotic = result._protocol && !slashProtocols[result._protocol];
-
-	  // if the url is a non-slashed url, then relative
-	  // links like ../.. should be able
-	  // to crawl up to the hostname, as well.  This is strange.
-	  // result.protocol has already been set by now.
-	  // Later on, put the first path part into the host field.
-	  if (psychotic) {
-	    result.hostname = "";
-	    result._port = -1;
-	    if (result.host) {
-	      if (srcPath[0] === "") srcPath[0] = result.host;
-	      else srcPath.unshift(result.host);
-	    }
-	    result.host = "";
-	    if (relative._protocol) {
-	      relative.hostname = "";
-	      relative._port = -1;
-	      if (relative.host) {
-	        if (relPath[0] === "") relPath[0] = relative.host;
-	        else relPath.unshift(relative.host);
-	      }
-	      relative.host = "";
-	    }
-	    mustEndAbs = mustEndAbs && (relPath[0] === "" || srcPath[0] === "");
-	  }
-
-	  if (isRelAbs) {
-	    // it"s absolute.
-	    result.host = relative.host ?
-	      relative.host : result.host;
-	    result.hostname = relative.hostname ?
-	      relative.hostname : result.hostname;
-	    result.search = relative.search;
-	    srcPath = relPath;
-	    // fall through to the dot-handling below.
-	  } else if (relPath.length) {
-	    // it"s relative
-	    // throw away the existing file, and take the new path instead.
-	    if (!srcPath) srcPath = [];
-	    srcPath.pop();
-	    srcPath = srcPath.concat(relPath);
-	    result.search = relative.search;
-	  } else if (relative.search) {
-	    // just pull out the search.
-	    // like href="?foo".
-	    // Put this after the other two cases because it simplifies the booleans
-	    if (psychotic) {
-	      result.hostname = result.host = srcPath.shift();
-	      //occationaly the auth can get stuck only in host
-	      //this especialy happens in cases like
-	      //url.resolveObject("mailto:local1@domain1", "local2@domain2")
-	      var authInHost = result.host && result.host.indexOf("@") > 0 ?
-	        result.host.split("@") : false;
-	      if (authInHost) {
-	        result.auth = authInHost.shift();
-	        result.host = result.hostname = authInHost.shift();
-	      }
-	    }
-	    result.search = relative.search;
-	    result._href = "";
-	    return result;
-	  }
-
-	  if (!srcPath.length) {
-	    // no path at all.  easy.
-	    // we"ve already handled the other stuff above.
-	    result.pathname = null;
-	    result._href = "";
-	    return result;
-	  }
-
-	  // if a url ENDs in . or .., then it must get a trailing slash.
-	  // however, if it ends in anything else non-slashy,
-	  // then it must NOT get a trailing slash.
-	  var last = srcPath.slice(-1)[0];
-	  var hasTrailingSlash = (
-	  (result.host || relative.host) && (last === "." || last === "..") ||
-	  last === "");
-
-	  // strip single dots, resolve double dots to parent dir
-	  // if the path tries to go above the root, `up` ends up > 0
-	  var up = 0;
-	  for (var i = srcPath.length; i >= 0; i--) {
-	    last = srcPath[i];
-	    if (last === ".") {
-	      srcPath.splice(i, 1);
-	    } else if (last === "..") {
-	      srcPath.splice(i, 1);
-	      up++;
-	    } else if (up) {
-	      srcPath.splice(i, 1);
-	      up--;
-	    }
-	  }
-
-	  // if the path is allowed to go above the root, restore leading ..s
-	  if (!mustEndAbs && !removeAllDots) {
-	    for (; up--; up) {
-	      srcPath.unshift("..");
-	    }
-	  }
-
-	  if (mustEndAbs && srcPath[0] !== "" &&
-	    (!srcPath[0] || srcPath[0].charCodeAt(0) !== 0x2F /*'/'*/)) {
-	    srcPath.unshift("");
-	  }
-
-	  if (hasTrailingSlash && (srcPath.join("/").substr(-1) !== "/")) {
-	    srcPath.push("");
-	  }
-
-	  var isAbsolute = srcPath[0] === "" ||
-	    (srcPath[0] && srcPath[0].charCodeAt(0) === 0x2F /*'/'*/);
-
-	  // put the host back
-	  if (psychotic) {
-	    result.hostname = result.host = isAbsolute ? "" :
-	      srcPath.length ? srcPath.shift() : "";
-	    //occationaly the auth can get stuck only in host
-	    //this especialy happens in cases like
-	    //url.resolveObject("mailto:local1@domain1", "local2@domain2")
-	    var authInHost = result.host && result.host.indexOf("@") > 0 ?
-	      result.host.split("@") : false;
-	    if (authInHost) {
-	      result.auth = authInHost.shift();
-	      result.host = result.hostname = authInHost.shift();
-	    }
-	  }
-
-	  mustEndAbs = mustEndAbs || (result.host && srcPath.length);
-
-	  if (mustEndAbs && !isAbsolute) {
-	    srcPath.unshift("");
-	  }
-
-	  result.pathname = srcPath.length === 0 ? null : srcPath.join("/");
-	  result.auth = relative.auth || result.auth;
-	  result.slashes = result.slashes || relative.slashes;
-	  result._href = "";
-	  return result;
-	};
-
-	var escapePathName = Url.prototype._escapePathName =
-	  function Url$_escapePathName(pathname) {
-	    if (!containsCharacter2(pathname, 0x23 /*'#'*/, 0x3F /*'?'*/)) {
-	      return pathname;
-	    }
-	    //Avoid closure creation to keep this inlinable
-	    return _escapePath(pathname);
-	  };
-
-	var escapeSearch = Url.prototype._escapeSearch =
-	  function Url$_escapeSearch(search) {
-	    if (!containsCharacter2(search, 0x23 /*'#'*/, -1)) return search;
-	    //Avoid closure creation to keep this inlinable
-	    return _escapeSearch(search);
-	  };
-
-	Url.prototype._parseProtocol = function Url$_parseProtocol(str, start, end) {
-	  var doLowerCase = false;
-	  var protocolCharacters = this._protocolCharacters;
-
-	  for (var i = start; i <= end; ++i) {
-	    var ch = str.charCodeAt(i);
-
-	    if (ch === 0x3A /*':'*/) {
-	      var protocol = str.slice(start, i);
-	      if (doLowerCase) protocol = protocol.toLowerCase();
-	      this._protocol = protocol;
-	      return i + 1;
-	    }
-	    else if (protocolCharacters[ch] === 1) {
-	      if (ch < 0x61 /*'a'*/)
-	        doLowerCase = true;
-	    }
-	    else {
-	      return start;
-	    }
-
-	  }
-	  return start;
-	};
-
-	Url.prototype._parseAuth = function Url$_parseAuth(str, start, end, decode) {
-	  var auth = str.slice(start, end + 1);
-	  if (decode) {
-	    auth = decodeURIComponent(auth);
-	  }
-	  this.auth = auth;
-	};
-
-	Url.prototype._parsePort = function Url$_parsePort(str, start, end) {
-	  //Internal format is integer for more efficient parsing
-	  //and for efficient trimming of leading zeros
-	  var port = 0;
-	  //Distinguish between :0 and : (no port number at all)
-	  var hadChars = false;
-	  var validPort = true;
-
-	  for (var i = start; i <= end; ++i) {
-	    var ch = str.charCodeAt(i);
-
-	    if (0x30 /*'0'*/ <= ch && ch <= 0x39 /*'9'*/) {
-	      port = (10 * port) + (ch - 0x30 /*'0'*/);
-	      hadChars = true;
-	    }
-	    else {
-	      validPort = false;
-	      if (ch === 0x5C/*'\'*/ || ch === 0x2F/*'/'*/) {
-	        validPort = true;
-	      }
-	      break;
-	    }
-
-	  }
-	  if ((port === 0 && !hadChars) || !validPort) {
-	    if (!validPort) {
-	      this._port = -2;
-	    }
-	    return 0;
-	  }
-
-	  this._port = port;
-	  return i - start;
-	};
-
-	Url.prototype._parseHost =
-	  function Url$_parseHost(str, start, end, slashesDenoteHost) {
-	    var hostEndingCharacters = this._hostEndingCharacters;
-	    var first = str.charCodeAt(start);
-	    var second = str.charCodeAt(start + 1);
-	    if ((first === 0x2F /*'/'*/ || first === 0x5C /*'\'*/) &&
-	      (second === 0x2F /*'/'*/ || second === 0x5C /*'\'*/)) {
-	      this.slashes = true;
-
-	      //The string starts with //
-	      if (start === 0) {
-	        //The string is just "//"
-	        if (end < 2) return start;
-	        //If slashes do not denote host and there is no auth,
-	        //there is no host when the string starts with //
-	        var hasAuth =
-	          containsCharacter(str, 0x40 /*'@'*/, 2, hostEndingCharacters);
-	        if (!hasAuth && !slashesDenoteHost) {
-	          this.slashes = null;
-	          return start;
-	        }
-	      }
-	      //There is a host that starts after the //
-	      start += 2;
-	    }
-	    //If there is no slashes, there is no hostname if
-	    //1. there was no protocol at all
-	    else if (!this._protocol ||
-	      //2. there was a protocol that requires slashes
-	      //e.g. in 'http:asd' 'asd' is not a hostname
-	      slashProtocols[this._protocol]
-	    ) {
-	      return start;
-	    }
-
-	    var doLowerCase = false;
-	    var idna = false;
-	    var hostNameStart = start;
-	    var hostNameEnd = end;
-	    var lastCh = -1;
-	    var portLength = 0;
-	    var charsAfterDot = 0;
-	    var authNeedsDecoding = false;
-
-	    var j = -1;
-
-	    //Find the last occurrence of an @-sign until hostending character is met
-	    //also mark if decoding is needed for the auth portion
-	    for (var i = start; i <= end; ++i) {
-	      var ch = str.charCodeAt(i);
-
-	      if (ch === 0x40 /*'@'*/) {
-	        j = i;
-	      }
-	      //This check is very, very cheap. Unneeded decodeURIComponent is very
-	      //very expensive
-	      else if (ch === 0x25 /*'%'*/) {
-	        authNeedsDecoding = true;
-	      }
-	      else if (hostEndingCharacters[ch] === 1) {
-	        break;
-	      }
-	    }
-
-	    //@-sign was found at index j, everything to the left from it
-	    //is auth part
-	    if (j > -1) {
-	      this._parseAuth(str, start, j - 1, authNeedsDecoding);
-	      //hostname starts after the last @-sign
-	      start = hostNameStart = j + 1;
-	    }
-
-	    //Host name is starting with a [
-	    if (str.charCodeAt(start) === 0x5B /*'['*/) {
-	      for (var i = start + 1; i <= end; ++i) {
-	        var ch = str.charCodeAt(i);
-
-	        //Assume valid IP6 is between the brackets
-	        if (ch === 0x5D /*']'*/) {
-	          if (str.charCodeAt(i + 1) === 0x3A /*':'*/) {
-	            portLength = this._parsePort(str, i + 2, end) + 1;
-	          }
-	          var hostname = str.slice(start + 1, i).toLowerCase();
-	          this.hostname = hostname;
-	          this.host = this._port > 0 ?
-	            "[" + hostname + "]:" + this._port :
-	            "[" + hostname + "]";
-	          this.pathname = "/";
-	          return i + portLength + 1;
-	        }
-	      }
-	      //Empty hostname, [ starts a path
-	      return start;
-	    }
-
-	    for (var i = start; i <= end; ++i) {
-	      if (charsAfterDot > 62) {
-	        this.hostname = this.host = str.slice(start, i);
-	        return i;
-	      }
-	      var ch = str.charCodeAt(i);
-
-	      if (ch === 0x3A /*':'*/) {
-	        portLength = this._parsePort(str, i + 1, end) + 1;
-	        hostNameEnd = i - 1;
-	        break;
-	      }
-	      else if (ch < 0x61 /*'a'*/) {
-	        if (ch === 0x2E /*'.'*/) {
-	          //Node.js ignores this error
-	          /*
-	           if (lastCh === DOT || lastCh === -1) {
-	           this.hostname = this.host = "";
-	           return start;
-	           }
-	           */
-	          charsAfterDot = -1;
-	        }
-	        else if (0x41 /*'A'*/ <= ch && ch <= 0x5A /*'Z'*/) {
-	          doLowerCase = true;
-	        }
-	        //Valid characters other than ASCII letters -, _, +, 0-9
-	        else if (!(ch === 0x2D /*'-'*/ ||
-	          ch === 0x5F /*'_'*/ ||
-	          ch === 0x2B /*'+'*/ ||
-	          (0x30 /*'0'*/ <= ch && ch <= 0x39 /*'9'*/))
-	        ) {
-	          if (hostEndingCharacters[ch] === 0 &&
-	            this._noPrependSlashHostEnders[ch] === 0) {
-	            this._prependSlash = true;
-	          }
-	          hostNameEnd = i - 1;
-	          break;
-	        }
-	      }
-	      else if (ch >= 0x7B /*'{'*/) {
-	        if (ch <= 0x7E /*'~'*/) {
-	          if (this._noPrependSlashHostEnders[ch] === 0) {
-	            this._prependSlash = true;
-	          }
-	          hostNameEnd = i - 1;
-	          break;
-	        }
-	        idna = true;
-	      }
-	      lastCh = ch;
-	      charsAfterDot++;
-	    }
-
-	    //Node.js ignores this error
-	    /*
-	     if (lastCh === DOT) {
-	     hostNameEnd--;
-	     }
-	     */
-
-	    if (hostNameEnd + 1 !== start &&
-	      hostNameEnd - hostNameStart <= 256) {
-	      var hostname = str.slice(hostNameStart, hostNameEnd + 1);
-	      if (doLowerCase) hostname = hostname.toLowerCase();
-	      this.hostname = hostname;
-	      this.host = this._port > 0 ? hostname + ":" + this._port : hostname;
-	    }
-
-	    return hostNameEnd + 1 + portLength;
-
-	  };
-
-	Url.prototype._copyPropsTo = function Url$_copyPropsTo(input, noProtocol) {
-	  if (!noProtocol) {
-	    input._protocol = this._protocol;
-	  }
-	  input._href = this._href;
-	  input._port = this._port;
-	  input._prependSlash = this._prependSlash;
-	  input.auth = this.auth;
-	  input.slashes = this.slashes;
-	  input.host = this.host;
-	  input.hostname = this.hostname;
-	  input.hash = this.hash;
-	  input.search = this.search;
-	  input.pathname = this.pathname;
-	};
-
-	Url.prototype._clone = function Url$_clone() {
-	  var ret = new Url();
-	  ret._protocol = this._protocol;
-	  ret._href = this._href;
-	  ret._port = this._port;
-	  ret._prependSlash = this._prependSlash;
-	  ret.auth = this.auth;
-	  ret.slashes = this.slashes;
-	  ret.host = this.host;
-	  ret.hostname = this.hostname;
-	  ret.hash = this.hash;
-	  ret.search = this.search;
-	  ret.pathname = this.pathname;
-	  return ret;
-	};
-
-	Url.prototype._getComponentEscaped =
-	  function Url$_getComponentEscaped(str, start, end, isAfterQuery) {
-	    var cur = start;
-	    var i = start;
-	    var ret = "";
-	    var autoEscapeMap = isAfterQuery ?
-	      this._afterQueryAutoEscapeMap : this._autoEscapeMap;
-	    for (; i <= end; ++i) {
-	      var ch = str.charCodeAt(i);
-	      var escaped = autoEscapeMap[ch];
-
-	      if (escaped !== "" && escaped !== undefined) {
-	        if (cur < i) ret += str.slice(cur, i);
-	        ret += escaped;
-	        cur = i + 1;
-	      }
-	    }
-	    if (cur < i + 1) ret += str.slice(cur, i);
-	    return ret;
-	  };
-
-	Url.prototype._parsePath =
-	  function Url$_parsePath(str, start, end, disableAutoEscapeChars) {
-	    var pathStart = start;
-	    var pathEnd = end;
-	    var escape = false;
-	    var autoEscapeCharacters = this._autoEscapeCharacters;
-	    var prePath = this._port === -2 ? "/:" : "";
-
-	    for (var i = start; i <= end; ++i) {
-	      var ch = str.charCodeAt(i);
-	      if (ch === 0x23 /*'#'*/) {
-	        this._parseHash(str, i, end, disableAutoEscapeChars);
-	        pathEnd = i - 1;
-	        break;
-	      }
-	      else if (ch === 0x3F /*'?'*/) {
-	        this._parseQuery(str, i, end, disableAutoEscapeChars);
-	        pathEnd = i - 1;
-	        break;
-	      }
-	      else if (!disableAutoEscapeChars && !escape && autoEscapeCharacters[ch] === 1) {
-	        escape = true;
-	      }
-	    }
-
-	    if (pathStart > pathEnd) {
-	      this.pathname = prePath === "" ? "/" : prePath;
-	      return;
-	    }
-
-	    var path;
-	    if (escape) {
-	      path = this._getComponentEscaped(str, pathStart, pathEnd, false);
-	    }
-	    else {
-	      path = str.slice(pathStart, pathEnd + 1);
-	    }
-	    this.pathname = prePath === ""
-	      ? (this._prependSlash ? "/" + path : path)
-	      : prePath + path;
-	  };
-
-	Url.prototype._parseQuery = function Url$_parseQuery(str, start, end, disableAutoEscapeChars) {
-	  var queryStart = start;
-	  var queryEnd = end;
-	  var escape = false;
-	  var autoEscapeCharacters = this._autoEscapeCharacters;
-
-	  for (var i = start; i <= end; ++i) {
-	    var ch = str.charCodeAt(i);
-
-	    if (ch === 0x23 /*'#'*/) {
-	      this._parseHash(str, i, end, disableAutoEscapeChars);
-	      queryEnd = i - 1;
-	      break;
-	    }
-	    else if (!disableAutoEscapeChars && !escape && autoEscapeCharacters[ch] === 1) {
-	      escape = true;
-	    }
-	  }
-
-	  if (queryStart > queryEnd) {
-	    this.search = "";
-	    return;
-	  }
-
-	  var query;
-	  if (escape) {
-	    query = this._getComponentEscaped(str, queryStart, queryEnd, true);
-	  }
-	  else {
-	    query = str.slice(queryStart, queryEnd + 1);
-	  }
-	  this.search = query;
-	};
-
-	Url.prototype._parseHash = function Url$_parseHash(str, start, end, disableAutoEscapeChars) {
-	  if (start > end) {
-	    this.hash = "";
-	    return;
-	  }
-
-	  this.hash = disableAutoEscapeChars ?
-	    str.slice(start, end + 1) : this._getComponentEscaped(str, start, end, true);
-	};
-
-	Object.defineProperty(Url.prototype, "port", {
-	  get: function() {
-	    if (this._port >= 0) {
-	      return ("" + this._port);
-	    }
-	    return null;
-	  },
-	  set: function(v) {
-	    if (v == null) {
-	      this._port = -1;
-	    }
-	    else {
-	      this._port = parseInt(v, 10);
-	    }
-	  }
-	});
-
-	Object.defineProperty(Url.prototype, "query", {
-	  get: function() {
-	    var query = this._query;
-	    if (query != null) {
-	      return query;
-	    }
-	    var search = this.search;
-
-	    if (search) {
-	      if (search.charCodeAt(0) === 0x3F /*'?'*/) {
-	        search = search.slice(1);
-	      }
-	      if (search !== "") {
-	        this._query = search;
-	        return search;
-	      }
-	    }
-	    return search;
-	  },
-	  set: function(v) {
-	    this._query = v;
-	  }
-	});
-
-	Object.defineProperty(Url.prototype, "path", {
-	  get: function() {
-	    var p = this.pathname || "";
-	    var s = this.search || "";
-	    if (p || s) {
-	      return p + s;
-	    }
-	    return (p == null && s) ? ("/" + s) : null;
-	  },
-	  set: function() {}
-	});
-
-	Object.defineProperty(Url.prototype, "protocol", {
-	  get: function() {
-	    var proto = this._protocol;
-	    return proto ? proto + ":" : proto;
-	  },
-	  set: function(v) {
-	    if (typeof v === "string") {
-	      var end = v.length - 1;
-	      if (v.charCodeAt(end) === 0x3A /*':'*/) {
-	        this._protocol = v.slice(0, end);
-	      }
-	      else {
-	        this._protocol = v;
-	      }
-	    }
-	    else if (v == null) {
-	      this._protocol = null;
-	    }
-	  }
-	});
-
-	Object.defineProperty(Url.prototype, "href", {
-	  get: function() {
-	    var href = this._href;
-	    if (!href) {
-	      href = this._href = this.format();
-	    }
-	    return href;
-	  },
-	  set: function(v) {
-	    this._href = v;
-	  }
-	});
-
-	Url.parse = function Url$Parse(str, parseQueryString, hostDenotesSlash, disableAutoEscapeChars) {
-	  if (str instanceof Url) return str;
-	  var ret = new Url();
-	  ret.parse(str, !!parseQueryString, !!hostDenotesSlash, !!disableAutoEscapeChars);
-	  return ret;
-	};
-
-	Url.format = function Url$Format(obj) {
-	  if (typeof obj === "string") {
-	    obj = Url.parse(obj);
-	  }
-	  if (!(obj instanceof Url)) {
-	    return Url.prototype.format.call(obj);
-	  }
-	  return obj.format();
-	};
-
-	Url.resolve = function Url$Resolve(source, relative) {
-	  return Url.parse(source, false, true).resolve(relative);
-	};
-
-	Url.resolveObject = function Url$ResolveObject(source, relative) {
-	  if (!source) return relative;
-	  return Url.parse(source, false, true).resolveObject(relative);
-	};
-
-	function _escapePath(pathname) {
-	  return pathname.replace(/[?#]/g, function(match) {
-	    return encodeURIComponent(match);
-	  });
-	}
-
-	function _escapeSearch(search) {
-	  return search.replace(/#/g, function(match) {
-	    return encodeURIComponent(match);
-	  });
-	}
-
-	//Search `char1` (integer code for a character) in `string`
-	//starting from `fromIndex` and ending at `string.length - 1`
-	//or when a stop character is found
-	function containsCharacter(string, char1, fromIndex, stopCharacterTable) {
-	  var len = string.length;
-	  for (var i = fromIndex; i < len; ++i) {
-	    var ch = string.charCodeAt(i);
-
-	    if (ch === char1) {
-	      return true;
-	    }
-	    else if (stopCharacterTable[ch] === 1) {
-	      return false;
-	    }
-	  }
-	  return false;
-	}
-
-	//See if `char1` or `char2` (integer codes for characters)
-	//is contained in `string`
-	function containsCharacter2(string, char1, char2) {
-	  for (var i = 0, len = string.length; i < len; ++i) {
-	    var ch = string.charCodeAt(i);
-	    if (ch === char1 || ch === char2) return true;
-	  }
-	  return false;
-	}
-
-	//Makes an array of 128 uint8's which represent boolean values.
-	//Spec is an array of ascii code points or ascii code point ranges
-	//ranges are expressed as [start, end]
-
-	//Create a table with the characters 0x30-0x39 (decimals '0' - '9') and
-	//0x7A (lowercaseletter 'z') as `true`:
-	//
-	//var a = makeAsciiTable([[0x30, 0x39], 0x7A]);
-	//a[0x30]; //1
-	//a[0x15]; //0
-	//a[0x35]; //1
-	function makeAsciiTable(spec) {
-	  var ret = new Uint8Array(128);
-	  spec.forEach(function(item){
-	    if (typeof item === "number") {
-	      ret[item] = 1;
-	    }
-	    else {
-	      var start = item[0];
-	      var end = item[1];
-	      for (var j = start; j <= end; ++j) {
-	        ret[j] = 1;
-	      }
-	    }
-	  });
-
-	  return ret;
-	}
-
-
-	var autoEscape = ["<", ">", "\"", "`", " ", "\r", "\n",
-	  "\t", "{", "}", "|", "\\", "^", "`", "'"];
-
-	var autoEscapeMap = new Array(128);
-
-
-
-	for (var i$2 = 0, len = autoEscapeMap.length; i$2 < len; ++i$2) {
-	  autoEscapeMap[i$2] = "";
-	}
-
-	for (var i$2 = 0, len = autoEscape.length; i$2 < len; ++i$2) {
-	  var c = autoEscape[i$2];
-	  var esc = encodeURIComponent(c);
-	  if (esc === c) {
-	    esc = escape(c);
-	  }
-	  autoEscapeMap[c.charCodeAt(0)] = esc;
-	}
-	var afterQueryAutoEscapeMap = autoEscapeMap.slice();
-	autoEscapeMap[0x5C /*'\'*/] = "/";
-
-	var slashProtocols = Url.prototype._slashProtocols = {
-	  http: true,
-	  https: true,
-	  gopher: true,
-	  file: true,
-	  ftp: true,
-
-	  "http:": true,
-	  "https:": true,
-	  "gopher:": true,
-	  "file:": true,
-	  "ftp:": true
-	};
-
-	Url.prototype._protocolCharacters = makeAsciiTable([
-	  [0x61 /*'a'*/, 0x7A /*'z'*/],
-	  [0x41 /*'A'*/, 0x5A /*'Z'*/],
-	  0x2E /*'.'*/, 0x2B /*'+'*/, 0x2D /*'-'*/
-	]);
-
-	Url.prototype._hostEndingCharacters = makeAsciiTable([
-	  0x23 /*'#'*/, 0x3F /*'?'*/, 0x2F /*'/'*/, 0x5C /*'\'*/
-	]);
-
-	Url.prototype._autoEscapeCharacters = makeAsciiTable(
-	  autoEscape.map(function(v) {
-	    return v.charCodeAt(0);
-	  })
-	);
-
-	//If these characters end a host name, the path will not be prepended a /
-	Url.prototype._noPrependSlashHostEnders = makeAsciiTable(
-	  [
-	    "<", ">", "'", "`", " ", "\r",
-	    "\n", "\t", "{", "}", "|",
-	    "^", "`", "\"", "%", ";"
-	  ].map(function(v) {
-	    return v.charCodeAt(0);
-	  })
-	);
-
-	Url.prototype._autoEscapeMap = autoEscapeMap;
-	Url.prototype._afterQueryAutoEscapeMap = afterQueryAutoEscapeMap;
-
-	// constants
-	var IS_URL = new RegExp('^http:\\/\\/.*$|^https:\\/\\/.*$');
-
-	// configs
-
-	var HEADER_BYTE_LENGTH = 16;
-	var MAGIC_NUMBER = 0x41443344; // AD3D encoded as ASCII characters in hex
-	var VERSION = 1;
-	var TEXTURE_PATH_KEYS = [
-	  // source
-	  'mapDiffuseSource',
-	  'mapSpecularSource',
-	  'mapNormalSource',
-	  'mapAlphaSource',
-	  'mapLightSource',
-	  // hi-res
-	  'mapDiffuse',
-	  'mapSpecular',
-	  'mapNormal',
-	  'mapAlpha',
-	  'mapLight',
-	  // preview
-	  'mapDiffusePreview',
-	  'mapSpecularPreview',
-	  'mapNormalPreview',
-	  'mapAlphaPreview',
-	  'mapLightPreview'
-	];
-
-	// public methods
-
-	function decodeBinary (buffer, options) {
-
-	  // API
-	  options = options || {};
-	  var url = options.url;
-
-	  var parsedUrl, rootDir, origin;
-
-	  if (url) {
-	    parsedUrl = Url.parse(url);
-	    rootDir = path.parse(parsedUrl.path || parsedUrl.pathname || '').dir;
-	    origin = parsedUrl.protocol + '//' + parsedUrl.host;
-	  }
-
-	  // check buffer type
-	  if (!buffer) {
-	    return bluebird_1.reject('Missing buffer parameter.')
-	  } else if (typeof Buffer !== 'undefined' && buffer instanceof Buffer) {
-	    // convert node buffer to arrayBuffer
-	    buffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
-	  }
-
-	  // internals
-	  var headerArray = new Int32Array(buffer, 0, HEADER_BYTE_LENGTH / 4);
-	  var magicNumber = headerArray[0];
-	  var version = headerArray[1];
-	  var structureByteLength = headerArray[2];
-	  var payloadByteLength = headerArray[3];
-	  var expectedFileByteLength = HEADER_BYTE_LENGTH + structureByteLength + payloadByteLength;
-
-	  // validation warnings
-
-	  if (magicNumber !== MAGIC_NUMBER) {
-	    console.error('File header error: Wrong magic number. File is probably not data3d buffer format.');
-	  }
-	  if (version !== VERSION) {
-	    console.error('File header error: Wrong version number: ' + version + '. Parser supports version: ' + VERSION);
-	  }
-
-	  // validation errors
-
-	  if (buffer.byteLength !== expectedFileByteLength) {
-	    var errorMessage = 'Can not parse Data3d buffer. Wrong buffer size: ' + buffer.byteLength + ' Expected: ' + expectedFileByteLength;
-	    console.error(errorMessage);
-	    return bluebird_1.reject(errorMessage)
-	  }
-
-	  // parse structure info
-
-	  var structureArray = new Uint16Array(buffer, HEADER_BYTE_LENGTH, structureByteLength / 2);
-	  var structureString = decodeTextArray.utf16(structureArray);
-	  var structure;
-	  try {
-	    structure = JSON.parse(structureString);
-	  } catch (e) {
-	    return bluebird_1.reject(e)
-	  }
-
-
-	  // add geometry arrays to data3d
-
-	  var payloadByteOffset = HEADER_BYTE_LENGTH + structureByteLength;
-	  traverseData3d(structure.data3d, function (data3d) {
-
-	    // map typed arrays to payload area in file buffer
-	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url);
-
-	    //  convert relative material keys into absolute one
-	    if (origin && data3d.materials) convertTextureKeys(data3d, origin, rootDir);
-
-	  });
-
-	  return bluebird_1.resolve(structure.data3d)
-
-	}
-
-	function convertTextureKeys (data3d, origin, rootDir) {
-
-	  var i, l, i2, l2, m, materialKeys = data3d.materialKeys || Object.keys(data3d.materials || {}), texturePathKey;
-
-	  for (i = 0, l = materialKeys.length; i < l; i++) {
-	    m = data3d.materials[materialKeys[i]];
-
-	    // hi-res textures
-	    for (i2 = 0, l2 = TEXTURE_PATH_KEYS.length; i2 < l2; i2++) {
-	      texturePathKey = TEXTURE_PATH_KEYS[i2];
-
-	      if (m[texturePathKey]) {
-	        if (IS_URL.test(m[texturePathKey])) {
-	          // is full URL already
-	          m[texturePathKey] = m[texturePathKey];
-	        } else if (m[texturePathKey].substring(0,5) === '/http') {
-	          // FIXME: prevent leading slashes being added to absolute paths
-	          m[texturePathKey] = m[texturePathKey].substring(1);
-	        } else if (m[texturePathKey][0] === '/') {
-	          // absolute path
-	          m[texturePathKey] = origin + m[texturePathKey];
-	        } else {
-	          // relative path
-	          m[texturePathKey] = origin + rootDir +'/'+ m[texturePathKey];
-	        }
-	      }
-	    }
-
-	  }
-
-	}
-
-	function mapArraysToBuffer (data3d, buffer, payloadByteOffset, url) {
-
-	  var mesh, i, l, meshKeys = data3d.meshKeys || Object.keys(data3d.meshes || {});
-
-	  for (i = 0, l = meshKeys.length; i < l; i++) {
-	    mesh = data3d.meshes[meshKeys[i]];
-
-	    // map arrays to meshes
-	    if (mesh.positionsOffset !== undefined && mesh.positionsLength !== undefined) {
-	      mesh.positions = new Float32Array(buffer, payloadByteOffset + mesh.positionsOffset * 4, mesh.positionsLength);
-	      delete mesh.positionsOffset;
-	      delete mesh.positionsLength;
-	    }
-	    if (mesh.normalsOffset !== undefined && mesh.normalsLength !== undefined) {
-	      mesh.normals = new Float32Array(buffer, payloadByteOffset + mesh.normalsOffset * 4, mesh.normalsLength);
-	      delete mesh.normalsOffset;
-	      delete mesh.normalsLength;
-	    }
-	    if (mesh.uvsOffset !== undefined && mesh.uvsLength !== undefined) {
-	      mesh.uvs = new Float32Array(buffer, payloadByteOffset + mesh.uvsOffset * 4, mesh.uvsLength);
-	      delete mesh.uvsOffset;
-	      delete mesh.uvsLength;
-	    }
-	    if (mesh.uvsLightmapOffset !== undefined && mesh.uvsLightmapLength !== undefined) {
-	      mesh.uvsLightmap = new Float32Array(buffer, payloadByteOffset + mesh.uvsLightmapOffset * 4, mesh.uvsLightmapLength);
-	      delete mesh.uvsLightmapOffset;
-	      delete mesh.uvsLightmapLength;
-	    }
-
-	    // add cache key
-	    if (url) mesh.cacheKey = url + ':' + meshKeys[i];
-
-	  }
-
-	}
-
-	function traverseData3d (data3d, callback) {
-
-	  callback(data3d);
-
-	  if (data3d.children) {
-	    for (var i = 0, l = data3d.children.length; i < l; i++) {
-	      traverseData3d(data3d.children[i], callback);
-	    }
-	  }
-
-	}
-
-	// private shared
-
-	var cache$1 = new PromiseCache();
-
-	// main
-
-	function loadData3d (url, options) {
-
-	  // prevent loading of unsupported formats
-	  if (url.indexOf('data3d.buffer') < 0) return Promise.reject(url + ' no data3d')
-	  // try cache
-	  var cacheKey = url;
-	  var promiseFromCache = cache$1.get(cacheKey);
-	  if (promiseFromCache) return promiseFromCache
-
-	  // fetch
-	  var promise = fetch$1(url, options).then(function(res){
-	    return res.arrayBuffer()
-	  }).then(function(buffer){
-	    return decodeBinary(buffer, { url: url })
-	  });
-
-	  // add to cache
-	  cache$1.add(cacheKey, promise);
-
-	  return promise
-
-	}
-
 	function getFurniture (id) {
 	  // we need to call furniture info first in order to obtain data3d URL
 	  return getFurnitureInfo(id).then(function(info){
@@ -22534,630 +36582,23 @@
 	  getData3dStorageId: getFurnitureData3dStorageId
 	};
 
-	var generic = {
-	  params: {
-	    type: {
-	      type: 'string',
-	      possibleValues: [
-	        'box',
-	        'camera-bookmark',
-	        'closet',
-	        'curtain',
-	        'door',
-	        'floor',
-	        'floorplan',
-	        'group',
-	        'interior',
-	        'kitchen',
-	        'level',
-	        'plan',
-	        'polybox',
-	        'polyfloor',
-	        'railing',
-	        'stairs',
-	        'tag',
-	        'wall',
-	        'window',
-	      ],
-	      optional: false
-	    },
-	    x: { // x position in meters
-	      type: 'number',
-	      defaultValue: 0,
-	      optional: true
-	    },
-	    y: { // y position in meters
-	      type: 'number',
-	      defaultValue: 0,
-	      optional: true
-	    },
-	    z: { // z position in meters
-	      type: 'number',
-	      defaultValue: 0,
-	      optional: true
-	    },
-	    ry: { // y rotation in angle degrees
-	      type: 'number',
-	      defaultValue: 0,
-	      optional: true
-	    },
-	    children: {
-	      //type: 'array-with-objects',
-	      type: 'array',
-	      defaultValue: [],
-	      optional: true
-	    },
-	    id: {
-	      type: 'string',
-	      optional: true
-	    }
+	function getParamValueType (value, target) {
+	  if (target === 'int' && isInt(value)) {
+	    return 'int'
 	  }
-	};
-
-	var box = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      defaultValue: 1,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 1,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      defaultValue: 1,
-	      optional: false,
-	      min: 0.01
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var cameraBookmark = {
-	  params: {
-	    distance: {
-	      type: 'number'
-	    }
+	  if (Array.isArray(value)) {
+	    // TODO: add support for more sophisticated array types
+	    // array-with-objects, array-with-numbers, array-with-arrays-with-numbers
+	    return 'array'
+	  } else {
+	    return typeof value
 	  }
-	};
+	}
 
-	var closet = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      defaultValue: 0.6,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 2.4,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      defaultValue: 1.8,
-	      optional: false,
-	      min: 0.01
-	    },
-	    baseboard: {
-	      type: 'number',
-	      defaultValue: 0.1,
-	      optional: true,
-	      min: 0.01
-	    },
-	    doorWidth: {
-	      type: 'number',
-	      defaultValue: 0.02,
-	      optional: true,
-	      min: 0.01
-	    },
-	    handleLength: {
-	      type: 'number',
-	      defaultValue: 0.02,
-	      optional: true,
-	      min: 0.01
-	    },
-	    handleWidth: {
-	      type: 'number',
-	      defaultValue: 0.02,
-	      optional: true,
-	      min: 0.01
-	    },
-	    handleHeight: {
-	      type: 'number',
-	      defaultValue: 0.3,
-	      optional: true,
-	      min: 0.01
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var curtain = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      defaultValue: 0.2,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 2.4,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      defaultValue: 1.8,
-	      optional: false,
-	      min: 0.01
-	    },
-	    folds: {
-	      type: 'number',
-	      defaultValue: 14,
-	      optional: true,
-	      min: 0.01
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var door = {
-	  params: {
-	    v: {
-	      type: 'number',
-	      defaultValue: 3,
-	      possibleValues: [3],
-	      optional: false
-	    },
-	    w: { // width in meters
-	      type: 'number',
-	      defaultValue: 0.05,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 2,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      defaultValue: 0.9,
-	      optional: false,
-	      min: 0.01
-	    },
-	    frameLength: { // in meters
-	      type: 'number',
-	      defaultValue: 0.05,
-	      optional: true,
-	      min: 0.01
-	    },
-	    frameOffset: { // in meters
-	      type: 'number',
-	      defaultValue: 0,
-	      optional: true
-	    },
-	    leafWidth: { // in meters
-	      type: 'number',
-	      defaultValue: 0.03,
-	      optional: true
-	    },
-	    leafOffset: { // in meters
-	      type: 'number',
-	      defaultValue: 0.005,
-	      optional: true
-	    },
-	    doorType: {
-	      type: 'string',
-	      defaultValue: 'singleSwing',
-	      optional: false,
-	      possibleValues: ['singleSwing', 'doubleSwing', 'swingFix', 'swingDoubleFix', 'doubleSwingDoubleFix', 'slidingDoor', 'opening']
-	    },
-	    fixLeafRatio: { // in meters
-	      type: 'number',
-	      defaultValue: 0.3,
-	      optional: true
-	    },
-	    doorAngle: { // in angle degrees
-	      type: 'number',
-	      defaultValue: 92,
-	      optional: true
-	    },
-	    hinge: {
-	      type: 'string',
-	      defaultValue: 'right',
-	      optional: false,
-	      possibleValues: ['right', 'left']
-	    },
-	    side: {
-	      type: 'string',
-	      defaultValue: 'back',
-	      optional: false,
-	      possibleValues: ['front', 'back']
-	    },
-	    thresholdHeight: {
-	      type: 'number',
-	      defaultValue: 0.01,
-	      optional: true
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var floor = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01
-	    },
-	    hasCeiling: { // in meters
-	      type: 'boolean',
-	      optional: false
-	    },
-	    hCeiling: { // in meters
-	      type: 'number',
-	      optional: false
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var floorplan = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01
-	    },
-	    file: {
-	      type: 'string',
-	      optional: false
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var group = {
-	  params: {
-	    src: {
-	      type: 'string',
-	      optional: true
-	    }
-	  },
-	  possibleChildrenTypes: ['interior', 'object', 'wall', 'box', 'group', 'polybox']
-	};
-
-	var interior = {
-	  params: {
-	    src: {
-	      type: 'string',
-	      optional: false
-	    }
-	  },
-	  possibleChildrenTypes: ['interior', 'object', 'tag']
-	};
-
-	var kitchen = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      defaultValue: 0.6,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 2.4,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      defaultValue: 1.8,
-	      optional: false,
-	      min: 0.01
-	    }
-	    // TODO: add all the default values
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var level$1 = {
-	  params: {},
-	  possibleChildrenTypes: [
-	    'box',
-	    'closet',
-	    'curtain',
-	    'floor',
-	    'floorplan',
-	    'group',
-	    'interior',
-	    'kitchen',
-	    'object',
-	    'polybox',
-	    'polyfloor',
-	    'railing',
-	    'stairs',
-	    'tag',
-	    'wall'
-	  ]
-	};
-
-	var object = {
-	  params: {
-	    object: {
-	      type: 'string',
-	      optional: false
-	    },
-	    sourceScale: {
-	      type: 'number',
-	      optional: true
-	    }
-	  },
-	  possibleChildrenTypes: ['interior']
-	};
-
-	var plan = {
-	  params: {
-	    modelDisplayName: {
-	      type: 'string',
-	      optional: false
-	    },
-	    v: {
-	      type: 'number',
-	      possibleValues: [1],
-	      optional: false
-	    }
-	  },
-	  possibleChildrenTypes: ['level', 'camera-bookmark']
-	};
-
-	var polybox = {
-	  params: {
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 1,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    polygon: {
-	      //type: 'array-with-arrays-with-numbers',
-	      type: 'array',
-	      optional: false
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var polyfloor = {
-	  params: {
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 0.2,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    polygon: {
-	      //type: 'array-with-arrays-with-numbers',
-	      type: 'array',
-	      optional: false
-	    },
-	    hasCeiling: { // in meters
-	      type: 'boolean',
-	      optional: false
-	    },
-	    hCeiling: { // in meters
-	      type: 'number',
-	      optional: false
-	    },
-	    usage: { // in meters
-	      type: 'string',
-	      optional: true
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var railing = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01
-	    },
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var stairs = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      defaultValue: 1.2,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 2.4,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      defaultValue: 4,
-	      optional: false,
-	      min: 0.01
-	    },
-	    stepWidth: {
-	      type: 'number',
-	      defaultValue: 1.2,
-	      optional: true,
-	      min: 0.01
-	    },
-	    stairType: {
-	      type: 'string',
-	      defaultValue: 'straight',
-	      optional: true,
-	      min: 0.01
-	    }
-	    // TODO: add all default values
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var tag = {
-	  params: {
-	    title: {
-	      type: 'string',
-	      optional: false
-	    },
-	    notes: {
-	      type: 'string',
-	      optional: true
-	    },
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	var wall = {
-	  params: {
-	    w: { // width in meters
-	      type: 'number',
-	      defaultValue: 0.15,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 2.4,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      defaultValue: 1,
-	      optional: false,
-	      min: 0.01
-	    },
-	    baseHeight: {type: 'number', optional: true, defaultValue: 0},
-	    frontHasBase: {type: 'boolean', optional: true, defaultValue: false},
-	    backHasBase: {type: 'boolean', optional: true, defaultValue: false}
-	  },
-	  possibleChildrenTypes: ['window', 'door']
-	};
-
-	var window$1 = {
-	  params: {
-	    h: { // height in meters
-	      type: 'number',
-	      defaultValue: 1.5,
-	      optional: false,
-	      min: 0.01 // 1cm
-	    },
-	    l: { // length in meters
-	      type: 'number',
-	      optional: false,
-	      min: 0.01
-	    },
-	    rowRatios: { // in meters
-	      //type: 'array-with-numbers',
-	      type: 'array',
-	      optional: true
-	    },
-	    columnRatios: { // in meters
-	      //type: 'array-with-arrays-with-numbers',
-	      type: 'array',
-	      optional: true
-	    },
-	    frameLength: { // in meters
-	      type: 'number',
-	      optional: true,
-	      min: 0.01
-	    },
-	    frameWidth: { // in meters
-	      type: 'number',
-	      optional: true,
-	      min: 0.01
-	    },
-	    y: {
-	      defaultValue: 0.9,
-	    }
-	  },
-	  possibleChildrenTypes: []
-	};
-
-	// import sceneStructure types
-	function getDefaultsByType() {
-	  var types = {
-	    box: box,
-	    'camera-bookmark': cameraBookmark,
-	    closet: closet,
-	    curtain: curtain,
-	    door: door,
-	    floor: floor,
-	    floorplan: floorplan,
-	    group: group,
-	    interior: interior,
-	    kitchen: kitchen,
-	    level: level$1,
-	    object: object,
-	    plan: plan,
-	    polybox: polybox,
-	    polyfloor: polyfloor,
-	    railing: railing,
-	    stairs: stairs,
-	    tag: tag,
-	    wall: wall,
-	    window: window$1
-	  };
-
-	  var typeSpecificValidations = {};
-
-	  Object.keys(types).forEach(function(key) {
-	    typeSpecificValidations[key] = {
-	      params: defaults_1({}, generic.params, types[key].params),
-	      possibleChildrenTypes: types[key].possibleChildrenTypes
-	    };
-	  });
-
-	  return typeSpecificValidations
+	function isInt(value) {
+	  return !isNaN(value) &&
+	    parseInt(Number(value)) == value &&
+	    !isNaN(parseInt(value, 10));
 	}
 
 	function applyDefaults(element3d) {
@@ -23167,11 +36608,28 @@
 	  var defaultParams = typeSpecificDefaults[element3d.type].params;
 
 	  Object.keys(defaultParams).forEach(function (key) {
-	    if (!element3d[key]) {
+	    var defaultVal = defaultParams[key].defaultValue;
+	    // check if type is valid
+	    if (element3d[key]) {
+	      var paramType = defaultParams[key].type;
+	      var elParamType = getParamValueType(element3d[key], paramType);
+	      // check if type is valid
+	      if (paramType !== elParamType) {
+	        // try to fix integers
+	        if (paramType === 'int' && parseInt(element3d[key])) element3d[key] = parseInt(element3d[key]);
+	        // try to fix floats
+	        else if (paramType === 'number' && parseFloat(element3d[key])) element3d[key] = parseFloat(element3d[key]);
+	        // set default
+	        else if (defaultVal !== undefined) element3d[key] = defaultVal;
+	        else delete element3d[key];
+	      }
+	    }
+	    // apply default
+	    if (element3d[key] === undefined) {
 	      // id needs to be generated hence no defaultValue
 	      if (key === 'id') element3d[key] = uuid.generate();
 	      // apply default value
-	      else if (defaultParams[key].defaultValue !== undefined) element3d[key] = defaultParams[key].defaultValue;
+	      else if (defaultVal !== undefined) element3d[key] = defaultVal;
 	    }
 	  });
 	  return element3d
@@ -23183,7 +36641,7 @@
 	  if (!knownParameters[element3d.type]) return
 
 	  var params = knownParameters[element3d.type].params;
-	  var possibleChildren = knownParameters[element3d.type].possibleChildrenTypes;
+	  var possibleChildren = knownParameters[element3d.type].childrenTypes;
 	  // remove invalid params
 	  Object.keys(element3d).forEach(function(key) {
 	    if (!params[key]) {
@@ -23230,6 +36688,7 @@
 	    options = options || {},
 	    spaceId = options.spaceId,
 	    label = options.label,
+	    tags = options.tags || ['generic'],
 	    spaceLabels = {};
 
 	  // make sure we're having a plan and a level object
@@ -23251,8 +36710,8 @@
 	      var params = {
 	        floors: spaceLabels,
 	        modelStructure: result,
-	        maxResults: 1,
-	        tags: ['generic']
+	        maxResults: 3,
+	        tags: tags
 	      };
 
 	      // do the actual home staging api call
@@ -23325,7 +36784,7 @@
 	      // get sceneStructure from Furniture API -> info on type and possible children
 	      var sceneStructure = JSON.parse(furniture.modelStructure);
 	      // combine data from both API calls to turn result into full sceneStructure
-	      sceneStructure = defaults_1({}, group, sceneStructure);
+	      sceneStructure = defaults_1$1({}, group, sceneStructure);
 	      return bluebird_1.resolve(sceneStructure)
 	    })
 	}
@@ -23514,28 +36973,78 @@
 	  return offset
 	}
 
-	function getSceneStructureFromAframeElements(el) {
+	const types = getDefaultsByType();
+
+	function getSceneStructureFromAframeElements$1(el) {
 	  if (!isValidElement(el)) {
 	    console.error('element is not an "a-entity" DOM element');
+	    return
 	  }
+
 	  var
 	    position = el.getAttribute('position'),
 	    rotation = el.getAttribute('rotation'),
-	    furnitureInfo = el.getAttribute('io3d-furniture'),
-	    furnitureUuid = el.getAttribute('io3d-uuid'),
-	    sceneStructure;
+	    id = el.getAttribute('io3d-uuid'),
+	    children= [];
 
-	  sceneStructure = {
-	    x: position.x,
-	    y: position.y,
-	    z: position.z,
-	    ry: rotation.y,
-	    type: 'interior',
-	    src: '!' + furnitureInfo.id,
-	    id: furnitureUuid || uuid.generate()
-	  };
+	  if (typeof position === 'string') position = AFRAME.utils.coordinates.parse(position);
+	  if (typeof rotation === 'string') rotation = AFRAME.utils.coordinates.parse(rotation);
+	  var typeData = checkType(el);
+
+	  var childNodes = el.children;
+	  if (childNodes && childNodes.length) {
+	    for (var i = 0; i < childNodes.length; i++) {
+	      var node = getSceneStructureFromAframeElements$1(childNodes[i]);
+	      if (node) children.push(node);
+	    }
+	  }
+
+	  var sceneStructure = defaults_1$1(typeData, {
+	    x: parseFloat(position.x),
+	    y: parseFloat(position.y),
+	    z: parseFloat(position.z),
+	    ry: parseFloat(rotation.y),
+	    children: children,
+	    id: id || uuid.generate()
+	  });
 
 	  return sceneStructure
+	}
+
+	function checkType(el) {
+	  var elComponents = Object.keys(el.components);
+	  var data = {};
+	  // find component type match
+	  Object.keys(types).forEach(function(type) {
+	    if (types[type].aframeComponent) {
+	      var aframeName = types[type].aframeComponent.name;
+	      if (elComponents.indexOf(aframeName) > -1) {
+	        data = el.getAttribute(aframeName);
+	        data.type = type;
+	      }
+	    }
+	  });
+	  // map materials
+	  Object.keys(data).forEach(function(key) {
+	    if (key.indexOf('material_') > -1 ) {
+	      if (!data.materials) data.materials = {};
+	      var meshName = key.replace('material_', '');
+	      data.materials[meshName] = data[key];
+	      delete data[key];
+	    }
+	  });
+	  if (data.type === 'interior') {
+	    data.src = '!' + data.id;
+	    delete data.id;
+	  }
+	  if (data.type === 'polyfloor') {
+	    var _poly = [], poly = data.polygon;
+	    for (var i = 0; i < poly.length; i += 2) {
+	      _poly.push([parseFloat(poly[i]), parseFloat(poly[i + 1])]);
+	    }
+	    data.polygon = _poly;
+	  }
+	  return data
 	}
 
 
@@ -23663,12 +37172,23 @@
 	}
 
 	var validTypes = [
-	  'interior',
+	  'closet',
+	  'column',
+	  'door',
+	  'floor',
 	  'group',
+	  'interior',
+	  'kitchen',
 	  'level',
+	  'object',
 	  'plan',
-	  'object'
+	  'polyfloor',
+	  'railing',
+	  'wall',
+	  'window'
 	];
+
+	var noIo3dComponents = ['plan', 'level', 'group'];
 
 	function toAframeElements(sceneStructure, options) {
 	  if (!sceneStructure) {
@@ -23702,6 +37222,7 @@
 	function getAframeElementsFromSceneStructure(sceneStructure, parent) {
 	  var collection = parent ? null : []; // use collection or parent
 	  sceneStructure.forEach(function(element3d) {
+	    // check if type is supported in aframe
 	    if (validTypes.indexOf(element3d.type) > -1) {
 	      // get html attributes from element3d objects
 	      var el = addEntity({
@@ -23727,6 +37248,44 @@
 
 	  // map type specific attributes
 	  // camera-bookmarks and bakedModel are handled separately
+	  var type = element3d.type;
+	  var validParams = getDefaultsByType(type).params;
+	  // support for old material definitions
+	  // TODO: this should be cleaned up in the database
+	  var elKeys = Object.keys(element3d);
+	  elKeys.forEach(function(key) {
+	    if (key.indexOf('Material') > -1) {
+	      if (!element3d.materials) element3d.materials = {};
+	      element3d.materials[key.replace('Material', '')] = element3d[key];
+	      delete element3d[key];
+	    }
+	    else if (key === 'material' && type === 'floor') {
+	      if (!element3d.materials) element3d.materials = {};
+	      element3d.materials.top = element3d[key];
+	    }
+	  });
+
+	  var paramKeys = Object.keys(validParams);
+
+	  // plan, level, group don't have their own component
+	  var skipComponent = noIo3dComponents.indexOf(type) > -1;
+	  if (!skipComponent) {
+	    attributes['io3d-' + type] = '';
+
+	    paramKeys.forEach(function(param) {
+	      if (element3d[param] !== undefined && !validParams[param].skipInAframe) {
+	        // materials have to be serialized
+	        if (param === 'materials') attributes['io3d-' + type] += stringifyMaterials(element3d.materials);
+	        // polygons have to be serialized
+	        else if (param === 'polygon') attributes['io3d-' + type] += param + ': ' + JSON.stringify(element3d.polygon) + '; ';
+	        // stringify window segmentation arrays
+	        else if (param === 'columnRatios' || param === 'rowRatios') attributes['io3d-' + type] += param + ': ' + JSON.stringify(element3d[param]) + '; ';
+	        // skip plan and level and map all remaining params
+	        else if (type !== 'plan' && type !== 'level') attributes['io3d-' + type] += param + ': ' + element3d[param] + '; ';
+	      }
+	    });
+	  }
+
 	  switch (element3d.type) {
 	    case 'plan':
 	      attributes['class'] = 'io3d-scene';
@@ -23738,36 +37297,48 @@
 	      attributes['class'] = 'io3d-group';
 	      break
 	    case 'interior':
-	      attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1);
-	      // apply custom material settings for furniture items
-	      if (element3d.materials) {
-	        var mats = element3d.materials;
-	        // materials can be saved as arrays
-	        if (Array.isArray(mats)) {
-	          var matObj = {};
-	          mats.forEach(function (mat) {
-	            if (mat.mesh && mat.material) matObj[mat.mesh] = mat.material;
-	          });
-	          mats = matObj;
+	      if (element3d.src) {
+	        attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1);
+	        // apply custom material settings for furniture items
+	        if (element3d.materials) {
+	          var mats = element3d.materials;
+	          // materials can be saved as arrays
+	          if (Array.isArray(mats)) {
+	            var matObj = {};
+	            mats.forEach(function (mat) {
+	              if (mat.mesh && mat.material) matObj[mat.mesh] = mat.material;
+	            });
+	            mats = matObj;
+	          }
+	          // apply alternative material setting to io3d-furniture attribute
+	          if (typeof mats === 'object') {
+	            Object.keys(mats).forEach(function (mesh) {
+	              if (mesh && mats[mesh]) attributes['io3d-furniture'] += '; material_' + mesh.replace(/\s/g, '_') + ':' + mats[mesh];
+	            });
+	          }
 	        }
-	        // apply alternative material setting to io3d-furniture attribute
-	        if (typeof mats === 'object') {
-	          Object.keys(mats).forEach(function (mesh) {
-	            if (mesh && mats[mesh]) attributes['io3d-furniture'] += '; material_' + mesh.replace(/\s/g, '_') + ':' + mats[mesh];
-	          });
-	        }
-	      }
-	      attributes['shadow'] = 'cast: true; receive: false';
-	    break
+	        attributes['shadow'] = 'cast: true; receive: false';
+	      } else console.warn('unsupported interior type');
+	      break
 	    case 'object':
 	      attributes['io3d-data3d'] = 'key: ' + element3d.object;
 	      attributes['shadow'] = 'cast: true; receive: true';
-	    break
+	      break
 	  }
 
 	  // and generic attributes that apply for all nodes
+	  // check for custom scale
+	  if (element3d.sourceScale && element3d.sourceScale !== 1) attributes.scale = element3d.sourceScale + ' ' + element3d.sourceScale + ' ' + element3d.sourceScale;
+	  // check for axis flipping of source file
+	  if (element3d.flipYZ) element3d.rx = element3d.rx ? element3d.rx -= 90 : -90;
 	  // toggle visibility
 	  if (element3d.bake && element3d.bakeStatus === 'done') attributes.visible = false;
+	  if (element3d.visible && !element3d.visible.bird && !element3d.visible.person && !element3d.visible.floorplan) attributes.visible = false;
+	  // make sure we have a valid position
+	  element3d.x = element3d.x || 0;
+	  element3d.y = element3d.y || 0;
+	  element3d.z = element3d.z || 0;
+	  element3d.ry = element3d.ry|| 0;
 	  // stringify location objects
 	  attributes.position = element3d.x + ' ' + element3d.y + ' ' + element3d.z;
 	  attributes.rotation = (element3d.rx || 0) + ' ' + element3d.ry + ' 0';
@@ -23963,6 +37534,20 @@
 	  return result
 	}
 
+	function stringifyMaterials (materials) {
+	  var matStr = '';
+	  var matKeys = Object.keys(materials);
+	  matKeys.forEach(function (key) {
+	    // currently only library materials are supported
+	    if (typeof materials[key] === 'string') {
+	      matStr += 'material_' + key + ':' + materials[key] + '; ';
+	    } else if (typeof materials[key] === 'object' && materials[key].mesh && materials[key].material) {
+	      matStr += 'material_' + materials[key].mesh + ':' + materials[key].material + '; ';
+	    }
+	  });
+	  return matStr
+	}
+
 	// consumes sceneStructure or DOM elements
 	// replaces furniture Ids and adjusts positioning
 	// outputs input type
@@ -23978,7 +37563,7 @@
 	  var isDomElement = isElement$1(input);
 	  if (isDomElement) {
 	    // convert to sceneStructure
-	    input = getSceneStructureFromAframeElements(input);
+	    input = getSceneStructureFromAframeElements$1(input);
 	  }
 
 	  return normalizeSceneStructure(input)
@@ -24022,7 +37607,7 @@
 	    if (element3d.type === 'interior' && element3d.src && typeof element3d.src === 'string') collection[element3d.src.substring(1)] = true;
 	    // recursively search through scene structure
 	    if (element3d.children && element3d.children.length) {
-	      collection = defaults_1({}, collection, getIdsFromSceneStructure (element3d.children));
+	      collection = defaults_1$1({}, collection, getIdsFromSceneStructure (element3d.children));
 	    }
 	  });
 	  return collection
@@ -24883,224 +38468,19 @@
 	  // TODO: check whether input is string (html style) or number (threejs style)
 	  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 	  return result ? [
-	    round( parseInt(result[1],16)/255, 0.001 ),
-	    round( parseInt(result[2],16)/255, 0.001 ),
-	    round( parseInt(result[3],16)/255, 0.001 )
+	    round$2( parseInt(result[1],16)/255, 0.001 ),
+	    round$2( parseInt(result[2],16)/255, 0.001 ),
+	    round$2( parseInt(result[3],16)/255, 0.001 )
 	  ] : null
 	}
 
 	// helpers
 
-	function round(value, step) {
+	function round$2(value, step) {
 	  step || (step = 1.0);
 	  var inv = 1.0 / step;
 	  return Math.round(value * inv) / inv
 	}
-
-	// methods
-
-	function projectAxisY (v) {
-
-	  var uvs = new Float32Array(v.length / 1.5);
-	  var uvPos = 0;
-
-	  var i, l;
-	  for (i = 0, l = v.length; i < l; i += 9) {
-
-	    uvs[uvPos] = v[i + 2];
-	    uvs[uvPos + 1] = v[i];
-	    uvs[uvPos + 2] = v[i + 5];
-	    uvs[uvPos + 3] = v[i + 3];
-	    uvs[uvPos + 4] = v[i + 8];
-	    uvs[uvPos + 5] = v[i + 6];
-	    uvPos += 6;
-
-	  }
-
-	  return uvs
-
-	}
-	projectAxisY.title = 'Project Top Down';
-
-	function architectural (v) {
-
-	  var uvs = new Float32Array(v.length / 1.5);
-	  var uvPos = 0;
-
-	  var i, l, n, components;
-	  for (i = 0, l = v.length; i < l; i += 9) {
-
-	    // calculate face normal
-	    // cross product (a-b) x (c-b)
-	    n = [
-	      (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]),
-	      (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]),
-	      (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3])
-	    ];
-
-	    // normals should be absolute
-	    if (n[0] < 0) {
-	      n[0] *= -1;
-	    }
-	    if (n[1] < 0) {
-	      n[1] *= -1;
-	    }
-	    if (n[2] < 0) {
-	      n[2] *= -1;
-	    }
-
-	    // highest first?
-	    components = [1, 0, 2].sort(function (a, b) {
-	      return n[a] - n[b]
-	    });
-
-	    uvs[uvPos] = v[i + components[1]];
-	    uvs[uvPos + 1] = v[i + components[0]];
-	    uvs[uvPos + 2] = v[i + 3 + components[1]];
-	    uvs[uvPos + 3] = v[i + 3 + components[0]];
-	    uvs[uvPos + 4] = v[i + 6 + components[1]];
-	    uvs[uvPos + 5] = v[i + 6 + components[0]];
-	    uvPos += 6;
-
-	  }
-
-	  return uvs
-
-	}
-	architectural.title = 'Architectural';
-
-	// API
-
-	var getUvsBuffer = {
-	  architectural: architectural,
-	  projectAxisY: projectAxisY
-	};
-
-	var DEBUG = true;
-
-	// methods
-
-	function flat (v) {
-	  // calculate normals for flat shading
-	  var n = new Float32Array(v.length);
-	  var i, l, crx, cry, crz, invScalar;
-	  var hasFaultyTrigons = false;
-	  for (i = 0, l = v.length; i < l; i += 9) {
-	    // cross product (a-b) x (c-b)
-	    crx = (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]);
-	    cry = (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]);
-	    crz = (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3]);
-	    // normalize
-	    invScalar = 1 / Math.sqrt(crx * crx + cry * cry + crz * crz);
-	    // Fallback for trigons that don't span an area
-	    if (invScalar === Infinity) {
-	      invScalar = 0;
-	      hasFaultyTrigons = true;
-	    }
-	    // set normals
-	    n[i] = n[i + 3] = n[i + 6] = crx * invScalar;
-	    n[i + 1] = n[i + 4] = n[i + 7] = cry * invScalar;
-	    n[i + 2] = n[i + 5] = n[i + 8] = crz * invScalar;
-
-	  }
-	  if (DEBUG && hasFaultyTrigons) console.error('Geometry contains trigons that don\'t span an area.');
-	  return n
-	}
-	flat.title = 'Flat';
-
-	function smooth (v) {
-
-	  // output
-
-	  var normals = new Float32Array(v.length);
-
-	  // internals
-
-	  var hash, hashes = [], vertexRelatedNormals = {}, faceNormals, averageNormal;
-	  var n;
-	  var crx, cry, crz, invScalar;
-	  var hasFaultyTrigons = false;
-	  var i, l, i2, l2;
-
-	  ////////// 1. connect vertices to faces
-
-	  // go face by face
-	  for (i = 0, l = v.length; i < l; i += 9) {
-
-	    // calculate face normal
-	    // cross product (a-b) x (c-b)
-	    crx = (v[i + 7] - v[i + 4]) * (v[i + 2] - v[i + 5]) - (v[i + 8] - v[i + 5]) * (v[i + 1] - v[i + 4]);
-	    cry = (v[i + 8] - v[i + 5]) * (v[i] - v[i + 3]) - (v[i + 6] - v[i + 3]) * (v[i + 2] - v[i + 5]);
-	    crz = (v[i + 6] - v[i + 3]) * (v[i + 1] - v[i + 4]) - (v[i + 7] - v[i + 4]) * (v[i] - v[i + 3]);
-	    // normalize
-	    invScalar = 1 / Math.sqrt(crx * crx + cry * cry + crz * crz);
-	    if (invScalar === Infinity) {
-	      hasFaultyTrigons = true;
-	      invScalar = 0;
-	    }
-	    // set normals
-	    n = [crx * invScalar, cry * invScalar, crz * invScalar];
-
-	    for (i2 = 0, l2 = 9; i2 < l2; i2 += 3) {
-	      hash = v[i + i2] + '_' + v[i + i2 + 1] + '_' + v[i + i2 + 2];
-	      if (!vertexRelatedNormals[hash]) {
-	        vertexRelatedNormals[hash] = {
-	          faceNormals: [n]
-	        };
-	        hashes[hashes.length] = hash;
-	      } else {
-	        vertexRelatedNormals[hash].faceNormals.push(n);
-	      }
-	    }
-	  }
-
-	  ////////// 2. calculate average normals from related face normals
-
-	  var avx, avy, avz;
-	  for (i = 0, l = hashes.length; i < l; i++) {
-	    hash = hashes[i];
-	    faceNormals = vertexRelatedNormals[hash].faceNormals;
-	    avx = 0;
-	    avy = 0;
-	    avz = 0;
-	    for (i2 = 0, l2 = faceNormals.length; i2 < l2; i2++) {
-	      avx += faceNormals[i2][0];
-	      avy += faceNormals[i2][1];
-	      avz += faceNormals[i2][2];
-	    }
-	    // normalize
-	    invScalar = 1 / Math.sqrt(avx * avx + avy * avy + avz * avz);
-	    if (invScalar === Infinity) {
-	      hasFaultyTrigons = true;
-	      invScalar = 0;
-	    }
-	    // set average normal
-	    vertexRelatedNormals[hash].averageNormal = [avx * invScalar, avy * invScalar, avz * invScalar];
-	  }
-
-	  ////////// 3. apply average normals to vertices
-
-	  for (i = 0, l = v.length; i < l; i += 3) {
-	    hash = v[i] + '_' + v[i + 1] + '_' + v[i + 2];
-	    averageNormal = vertexRelatedNormals[hash].averageNormal;
-	    normals[i] = averageNormal[0];
-	    normals[i + 1] = averageNormal[1];
-	    normals[i + 2] = averageNormal[2];
-	  }
-
-	  // return
-	  if (DEBUG && hasFaultyTrigons) console.error('Shade Smooth: Geometry contains trigons that don\'t span an area.');
-	  return normals
-
-	}
-	smooth.title = 'Smooth';
-
-	// API
-
-	var getNormalsBuffer = {
-	  flat: flat,
-	  smooth: smooth,
-	};
 
 	// placeholder
 	function normalizeMaterials(x) { return x; }
@@ -26786,7 +40166,6 @@
 	            var hash = md5(array.join('-'));
 
 	            if (!arrayDataCache[hash]) {
-	              console.log('adding to cache: '+hash);
 	              // add to cache
 	              arrayDataCache[hash] = {
 	                offset: payloadLength,
@@ -26796,8 +40175,6 @@
 	              payloadArrays[payloadArrays.length] = array;
 	              // increase payload offset
 	              payloadLength += array.length;
-	            } else {
-	              console.log('loading from cache: '+hash);
 	            }
 
 	            // remember offset and length
@@ -27248,7 +40625,7 @@
 
 	    // validate if children types are correct
 	    if (parentType) {
-	      var validChild = typeSpecificValidations[parentType].possibleChildrenTypes.indexOf(sourceElement3d.type) > -1;
+	      var validChild = typeSpecificValidations[parentType].childrenTypes.indexOf(sourceElement3d.type) > -1;
 	      if (!validChild)  {
 	        result.isValid = false;
 	        var message = '"' + sourceElement3d.type + '" is invalid child for "' + parentType + '"';
@@ -27304,7 +40681,7 @@
 	    if (value !== undefined) {
 
 	      // check type
-	      var paramValueType = getParamValueType(value);
+	      var paramValueType = getParamValueType(value, v.type);
 	      if (v.type !== paramValueType) {
 	        isValid = false;
 	        var message = 'Parameter "' + paramName + '" is of type "' + paramValueType + '" but should be type "' + v.type + '"';
@@ -27364,13 +40741,328 @@
 
 	}
 
-	function getParamValueType (value) {
-	  if (Array.isArray(value)) {
-	    // TODO: add support for more sophisticated array types
-	    // array-with-objects, array-with-numbers, array-with-arrays-with-numbers
-	    return 'array'
-	  } else {
-	    return typeof value
+	function exportSvg (args) {
+	  if (!args.sceneStructure || typeof args.sceneStructure !== 'object') {
+	    return Promise.reject('Svg export failed: invalid input')
+	  }
+	  return callService('Scene.exportSvg', {arguments: args})
+	    .catch(function(error) {
+	      console.error(error);
+	      return Promise.reject('Svg export failed: check console for details')
+	    })
+	}
+
+	function snapWalls(walls) {
+
+	  // config
+	  var maxWallWidth = 0.4;
+	  var minWallDimRatio = 1.2;
+
+	  // find all walls in level
+	  var wallData = [];
+	  var snappedWalls = [];
+
+	  // compute points and vectors for each wall
+	  for (var i = 0; i < walls.length; i++) {
+	    wallData.push({
+	      wall: walls[i],
+	      data: getWallData(walls[i])
+	    });
+	  }
+
+	  var basePoint, endPoint, connectedWalls = 0;
+	  var maxDistance = 0.2, isWithinMaxDistance = false;
+
+	  // main loop to cycle through all walls and do the snapping
+	  for (var i = 0; i < wallData.length; i++) {
+
+	    // get maximum snapping distance from wall width
+	    maxDistance = wallData[i].wall.w <= 0.5 ? wallData[i].wall.w : 0.2;//* 0.5
+	    // avoid to short walls
+	    if ((wallData[i].wall.l / wallData[i].wall.w) < minWallDimRatio) continue
+	    // avoid weird snapping with thick walls
+	    if (wallData[i].wall.w >= maxWallWidth) continue
+	    // map wall 1 end points
+	    basePoint = wallData[i].data.p1;
+	    endPoint = wallData[i].data.p2;
+
+	    // find walls to snap with
+	    for (var j = i + 1; j < wallData.length; j++) {
+	      // avoid weird snapping with thick walls
+	      if (wallData[j].wall.w >= maxWallWidth) continue
+	      // skip same wall
+	      if (i === j) continue
+
+	      if (distance(basePoint, wallData[j].data.p1) <= maxDistance) isWithinMaxDistance = true;
+	      else if (distance(basePoint, wallData[j].data.p2) <= maxDistance) isWithinMaxDistance = true;
+	      else if (distance(endPoint, wallData[j].data.p1) <= maxDistance) isWithinMaxDistance = true;
+	      else if (distance(endPoint, wallData[j].data.p2) <= maxDistance) isWithinMaxDistance = true;
+
+	      if (isWithinMaxDistance) {
+	        // do the wall snapping
+	        snappedWalls = connectWall(wallData[i], wallData[j]);
+	        // update the computed wall data
+	        wallData[i].wall = snappedWalls ? snappedWalls[0] : wallData[i].wall;
+	        wallData[j].wall = snappedWalls ? snappedWalls[1] : wallData[j].wall;
+
+	        wallData[i].data = getWallData(wallData[i].wall);
+	        wallData[j].data = getWallData(wallData[j].wall);
+	        connectedWalls += 1;
+	      }
+	      isWithinMaxDistance = false;
+	    }
+	  }
+
+	  // get snapped walls
+	  snappedWalls = [];
+	  for (var i = 0; i < wallData.length; i++) {
+	    snappedWalls.push(wallData[i].wall);
+	  }
+
+	  return snappedWalls
+
+	  function connectWall (firstWall, secondWall) {
+
+	    // get Walls
+	    var walls = [firstWall.wall, secondWall.wall];
+	    var data = [firstWall.data, secondWall.data];
+
+	    var angle0 = walls[0].ry <= 180 ? walls[0].ry : walls[0].ry - 180,
+	      angle1 = walls[1].ry <= 180 ? walls[1].ry : walls[1].ry - 180,
+	      angleDiff = Math.abs(parseInt(angle0) - parseInt(angle1));
+
+	    // stop for quasi parallel walls
+	    if (angleDiff < 1) return
+
+	    var count = 2;
+
+	    // map points and vectors
+	    var p1 = [data[0].p1, data[1].p1],
+	      p2 = [data[0].p2, data[1].p2],
+	      p3 = [data[0].p3, data[1].p3],
+	      p4 = [data[0].p4, data[1].p4],
+	      v = [data[0].v, data[1].v],
+	      u = [],
+	      w = [data[0].w, data[1].w];
+
+	    var pA, pB0, pB0S, pB1, pB1S, pC, pC0, pC1, dA1, dA2, dA = [], dC = [], base = [], pBase = [], pSnap, far = [];
+	    var alpha, beta, i;
+
+	    // compute Intersection candidates
+
+	    // Base Line Intersection
+	    pA = intersection(p1[0], p2[0], p1[1], p2[1]);
+
+	    // Basel Line 0, Support Line 1 Intersection
+	    pB0 = intersection(p1[0], p2[0], p3[1], p4[1]);
+	    // projection to wall 1
+	    pB0S = subtract(pB0, w[1]);
+	    // Support Line 0, Basel Line 1 Intersection
+	    pB1 = intersection(p3[0], p4[0], p1[1], p2[1]);
+	    // projection to wall 0
+	    pB1S = subtract(pB1, w[0]);
+	    // Support Line Intersection
+	    pC = intersection(p3[0], p4[0], p3[1], p4[1]);
+	    pC0 = subtract(pC, w[0]);
+	    pC1 = subtract(pC, w[1]);
+
+	    for (i = 0; i < count; i++) {
+
+	      dA1 = distance(p1[i], pA);
+	      dA2 = distance(p2[i], pA);
+
+	      // check if base point is next to intersection or opposite
+	      if (dA2 > dA1) {
+	        dA[i] = dA2;
+	        pBase[i] = {
+	          x: p2[i].x,
+	          z: p2[i].z
+	        };
+	        // base point is next to intersection
+	        base[i] = false;
+	        far[i] = dA1 > 20;
+	      } else {
+	        dA[i] = dA1;
+	        pBase[i] = {
+	          x: p1[i].x,
+	          z: p1[i].z
+	        };
+	        // base point is opposite to intersection
+	        base[i] = true;
+	        far[i] = dA2 > 20;
+	      }
+
+	      u[i] = {
+	        x: (pBase[i].x - pA.x) / dA[i],
+	        z: (pBase[i].z - pA.z) / dA[i]
+	      };
+	      dC[i] = i < 1 ? distance(pBase[i], pC0) : distance(pBase[i], pC1);
+	    }
+
+	    if (far[0] && far[1]) {
+	      console.log('intersection too far away');
+	      return
+	    }
+
+	    // relative angle between wall vectors
+	    alpha = angle(v[0], v[1]);
+	    // relative angle between direction corrected wall vectors
+	    beta = angle(u[0], u[1]);
+
+	    if (beta < 10) {
+	      console.log('angle too small');
+	      return
+	    }
+
+	    //if (singleConnect) count = 1
+
+	    for (i = 0; i < count; i++) {
+	      // choose proper intersection points
+	      if (Math.round(alpha) >= 88 && Math.round(alpha) <= 92) {
+
+	        // choose intersection by base point orientation
+	        if (base[0] === base[1]) {
+	          if (dC[0] < dA[0]) {
+	            if (alpha > 90) {
+	              pSnap = i < 1 ? pB0 : pC1;
+	            } else {
+	              pSnap = i < 1 ? pC0 : pC1;
+	            }
+	          } else {
+	            if (alpha > 90) {
+	              pSnap = i < 1 ? pB1S : pA;
+	            } else {
+	              pSnap = pA;
+	            }
+	          }
+	        }
+	        else {
+	          if (dC[0] < dA[0]) {
+	            pSnap = i < 1 ? pB0 : pB0S;
+	          } else {
+	            pSnap = i < 1 ? pB1S : pB1;
+	          }
+	        }
+	      }
+	      else if (alpha < 90) {
+	        if (beta <= 90) {
+	          pSnap = pA;
+	        } else if (dC[0] < dA[0]) {
+	          pSnap = pA;
+	        } else if (dC[0] > dA[0]) {
+	          pSnap = i < 1 ? pC0 : pC1;
+	        }
+	      } else {
+	        if (beta <= 90) {
+	          pSnap = i < 1 ? pB0 : pB0S;
+	        } else if (dC[0] < dA[0]) {
+	          pSnap = i < 1 ? pB1S : pB1;
+	        } else if (dC[0] > dA[0]) {
+	          pSnap = i < 1 ? pB0 : pB0S;
+	        }
+
+	      }
+
+	      var oldLength = walls[i].l;
+	      if (!pSnap) {
+	        console.log('pSnap failed');
+	        return
+	      }
+	      var newLength = distance(pBase[i], pSnap);
+
+	      // check and prevent irregular wall length changes
+	      if (Math.abs(newLength - oldLength) > 0.5) {
+	        console.log('delta', rnd(newLength - oldLength), 'new', rnd(newLength), 'old', rnd(oldLength));
+	        return
+	      }
+
+	      // if basePoint is opposite to intersection adjust length
+	      if (base[i]) {
+	        walls[i].l = newLength;
+
+	        // if basePoint is next to intersection adjust length and shift wall
+	      } else {
+	        walls[i].x = pSnap.x;
+	        walls[i].z = pSnap.z;
+	        walls[i].l = newLength;
+	        var c = walls[i].children;
+
+	        if (c.length > 0) {
+	          for (var t = 0; t < c.length; t++) {
+	            var newPos = c[t].x - oldLength + newLength;
+	            c[t].x = newPos;
+	          }
+	        }
+	      }
+
+	    }
+	    return walls
+	  }
+
+	  ////////////////
+	  // helpers
+	  ////////////////
+
+	  // get wall points
+	  function getWallData (wall) {
+	    var wallAngle, p1, p2, p3, p4, v, w;
+	    wallAngle = wall.ry / 180 * Math.PI,
+	      // width vector
+	      w = {
+	        x: -wall.w * Math.cos(wallAngle + Math.PI / 2),
+	        z: wall.w * Math.sin(wallAngle + Math.PI / 2)
+	      },
+	      // Base Line Points
+	      p1 = {
+	        x: wall.x,
+	        z: wall.z
+	      },
+	      p2 = {
+	        x: wall.x + wall.l * Math.cos(wallAngle),
+	        z: wall.z - wall.l * Math.sin(wallAngle)
+	      },
+	      // Support Line Points
+	      p3 = {
+	        x: wall.x + w.x,
+	        z: wall.z + w.z
+	      },
+	      p4 = {
+	        x: p2.x + w.x,
+	        z: p2.z + w.z
+	      },
+	      // normalized wall vector
+	      v = {
+	        x: (p2.x - p1.x) / wall.l,
+	        z: (p2.z - p1.z) / wall.l
+	      };
+	    return {wallAngle: wallAngle, p1: p1, p2: p2, w: w, p3: p3, p4: p4, v: v}
+	  }
+
+	  // angle between vector v and u
+	  function angle (v, u) {
+	    return Math.round(((Math.acos(v.x * u.x + v.z * u.z)) * 180 / Math.PI) * 10) / 10
+	  }
+
+	  // intersections line p and q
+	  function intersection (p1, p2, q1, q2) {
+	    return {
+	      x: ((q2.x - q1.x) * (p2.x * p1.z - p1.x * p2.z) - (p2.x - p1.x) * (q2.x * q1.z - q1.x * q2.z)) / ((q2.z - q1.z) * (p2.x - p1.x) - (p2.z - p1.z) * (q2.x - q1.x)),
+	      z: ((p1.z - p2.z) * (q2.x * q1.z - q1.x * q2.z) - (q1.z - q2.z) * (p2.x * p1.z - p1.x * p2.z)) / ((q2.z - q1.z) * (p2.x - p1.x) - (p2.z - p1.z) * (q2.x - q1.x)),
+	    }
+	  }
+
+	  // distance between points
+	  function distance (p, q) {
+	    return Math.sqrt(Math.pow((p.x - q.x), 2) + Math.pow((p.z - q.z), 2))
+	  }
+
+	  // subtract two vectors
+	  function subtract (p, q) {
+	    return {x: p.x - q.x, z: p.z - q.z}
+	  }
+
+	  function rnd (a) {
+	    return Math.round(a * 100) / 100
 	  }
 	}
 
@@ -27382,7 +41074,10 @@
 	  validateSceneStructure: validateSceneStructure,
 	  normalizeSceneStructure: normalizeSceneStructure,
 	  getHtmlFromSceneStructure: getHtmlFromSceneStructure,
-	  getAframeElementsFromSceneStructure: toAframeElements
+	  getAframeElementsFromSceneStructure: toAframeElements,
+	  getSceneStructureFromAframeElements: getSceneStructureFromAframeElements$1,
+	  snapWalls: snapWalls,
+	  exportSvg: exportSvg
 	};
 
 	function getHtml() {

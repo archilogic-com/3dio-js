@@ -54,6 +54,11 @@ test('Scene: invalid children', t => {
     l: 2,
     h: 1,
     w: 0.1,
+    id: "2335fa98-2c0c-4168-8cde-9b2347789029",
+    x: 0,
+    y: 0,
+    z: 0,
+    ry: 0,
     children: [
       {
         type: 'wall',
@@ -76,13 +81,21 @@ test('Scene: test valid scene structure', t => {
     l: 2,
     h: 1,
     w: 0.1,
+    x: 0,
+    y: 0,
+    z: 0,
+    ry: 0,
+    id: "a3ad7e08-66f9-40ce-a480-827220f8c52b",
     children: [
       {
         type: 'window',
         x: 0.8,
         y: 0.5,
+        z: 0,
+        ry: 0,
         l: 0.5,
-        h: 1
+        h: 1,
+        id: "177f8aee-dbc6-4398-b9a7-f7b820eb9fa9"
       }
     ]
   }
@@ -203,4 +216,35 @@ test('Scene: normalize nested scene structure object', t => {
       // invalid child removed
       t.true(result.children[0].children.length === 0)
   })
+})
+
+test('Scene: normalize numbers', t => {
+  const sceneStructure = {
+    type: 'wall',
+    l: '2.12'
+  }
+
+  return io3d.scene.normalizeSceneStructure(sceneStructure)
+    .then(result => {
+      // invalid type adapted
+      t.is(typeof result.l, 'number')
+      // value preserved
+      t.is(result.l, 2.12)
+    })
+})
+
+
+test('Scene: normalize integers', t => {
+  const sceneStructure = {
+    type: 'kitchen',
+    highCabinetLeft: '2.12'
+  }
+
+  return io3d.scene.normalizeSceneStructure(sceneStructure)
+    .then(result => {
+      // invalid type adapted
+      t.is(typeof result.highCabinetLeft, 'number')
+      // value preserved
+      t.is(result.highCabinetLeft, 2)
+    })
 })

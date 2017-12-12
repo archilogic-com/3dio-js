@@ -6,6 +6,18 @@ import furnitureComponent from './aframe/component/furniture.js'
 import tourComponent from './aframe/component/tour.js'
 import gBlockComponent from './aframe/component/gblock.js'
 import lightingComponent from './aframe/component/lighting.js'
+import minimapComponent from './aframe/component/minimap.js'
+// architectural tookit
+import closetComponent from './aframe/component/architecture-toolkit/closet.js'
+import columnComponent from './aframe/component/architecture-toolkit/column.js'
+import doorComponent from './aframe/component/architecture-toolkit/door.js'
+import floorComponent from './aframe/component/architecture-toolkit/floor.js'
+import kitchenComponent from './aframe/component/architecture-toolkit/kitchen.js'
+import polyFloorComponent from './aframe/component/architecture-toolkit/polyfloor.js'
+import railingComponent from './aframe/component/architecture-toolkit/railing.js'
+import stairsComponent from './aframe/component/architecture-toolkit/stairs.js'
+import wallComponent from './aframe/component/architecture-toolkit/wall.js'
+import windowComponent from './aframe/component/architecture-toolkit/window.js'
 // other
 import inspectorPluginsLauncher from './aframe/inspector-plugins-launcher.js'
 import Data3dView from './aframe/three/data3d-view.js'
@@ -22,11 +34,22 @@ checkDependencies({
 }, function registerComponents () {
 
   // register components
-
   AFRAME.registerComponent('io3d-data3d', data3dComponent)
   AFRAME.registerComponent('io3d-furniture', furnitureComponent)
   AFRAME.registerComponent('tour', tourComponent)
   AFRAME.registerComponent('io3d-lighting', lightingComponent)
+  AFRAME.registerComponent('io3d-minimap', minimapComponent)
+  // architectural tookit
+  AFRAME.registerComponent('io3d-closet', closetComponent)
+  AFRAME.registerComponent('io3d-column', columnComponent)
+  AFRAME.registerComponent('io3d-door', doorComponent)
+  AFRAME.registerComponent('io3d-floor', floorComponent)
+  AFRAME.registerComponent('io3d-kitchen', kitchenComponent)
+  AFRAME.registerComponent('io3d-polyfloor', polyFloorComponent)
+  AFRAME.registerComponent('io3d-railing', railingComponent)
+  AFRAME.registerComponent('io3d-stairs', stairsComponent)
+  AFRAME.registerComponent('io3d-wall', wallComponent)
+  AFRAME.registerComponent('io3d-window', windowComponent)
   // check if gblock component has already been registered
   if (AFRAME.components.gblock) {
     // legacy warning in case gblock has been registered using https://github.com/archilogic-com/aframe-gblock/

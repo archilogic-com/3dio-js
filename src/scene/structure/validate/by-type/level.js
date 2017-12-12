@@ -1,8 +1,10 @@
 export default  {
+  description: 'node equivalent to a building storey',
   params: {},
-  possibleChildrenTypes: [
+  childrenTypes: [
     'box',
     'closet',
+    'column',
     'curtain',
     'floor',
     'floorplan',
@@ -16,5 +18,6 @@ export default  {
     'stairs',
     'tag',
     'wall'
-  ]
+  ],
+  parentTypes: ['plan']
 }

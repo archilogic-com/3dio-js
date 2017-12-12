@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate svg floor plan</title>
+    <meta name="description" content="3d.io residential interior scene with dynamic lighting and realtime shadows">
+    <!-- 3dio library. distributed via 'npm run dist' in https://github.com/archilogic-com/3dio-js -->
+    <script src="../../build/3dio.js"></script>
+</head>
+<body>
+<input id="scene-id-input" style="width: 300px"/>
+<label for="plan-style">Style:</label>
+<select id="plan-style">
+    <option value="architectural">architectural</option>
+    <option value="lines">lines</option>
+</select>
+<br><br>
+<div id="fishy"></div>
+<!-- 3d scene -->
+<div id="svg">
+</div>
+<script>
+  // TODO: remove once scene apis are deployed to production
+  io3d.config({
+    servicesUrl: 'https://testing.archilogic.com/api/v2'
+  })
+  const sceneId = '10174380-c84e-4f97-9f53-6418d62bf9f2' //'a7eef213-5676-47ba-86f2-4f078af281cd' //'a5a4cb55-4e6e-4db5-93f6-cd68971e5183'
+  const svgEl = document.querySelector('#svg')
+  const inputEl = document.querySelector('#scene-id-input')
+  const planStyleEl = document.querySelector('#plan-style')
+
+  planStyleEl.addEventListener('change', generateSvg)
+  inputEl.addEventListener('input', generateSvg)
+
+  inputEl.value = sceneId
+
+  generateSvg()
+
+  function generateSvg(e) {
+    const style = planStyleEl.value || 'architectural'
+    const _sceneId = inputEl.value || sceneId
+    if (!io3d.utils.uuid.validate(_sceneId)) {
+      io3d.ui.message('no valid id', 1000, 'warning')
+      return
+    }
+    io3d.scene.getStructure(_sceneId)
+      .then(sceneStructure => {
+        return io3d.scene.exportSvg({sceneStructure, options: {style}})
+      })
+      .then(svgString => {
+        svgEl.innerHTML = svgString
+      })
+  }
+</script>
+</body>
+</html>

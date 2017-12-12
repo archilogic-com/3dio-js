@@ -1,14 +1,20 @@
 export default  {
+  description: 'highest node in hierarchy, contains levels',
   params: {
     modelDisplayName: {
       type: 'string',
-      optional: false
+      optional: true,
+      skipInAframe: true,
+      description: 'name of the scene'
     },
     v: {
       type: 'number',
-      possibleValues: [1],
-      optional: false
+      defaultValue: 1,
+      optional: true,
+      skipInAframe: true,
+      description: 'version'
     }
   },
-  possibleChildrenTypes: ['level', 'camera-bookmark']
+  childrenTypes: ['level', 'camera-bookmark'],
+  parentTypes: []
 }

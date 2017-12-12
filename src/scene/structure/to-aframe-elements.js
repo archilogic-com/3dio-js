@@ -1,14 +1,26 @@
 import runtime from '../../core/runtime.js'
 import poll from '../../utils/poll.js'
 import getFromStorage from '../../storage/get.js'
+import getDefaultsByType from './validate/get-defaults-by-type'
 
 var validTypes = [
-  'interior',
+  'closet',
+  'column',
+  'door',
+  'floor',
   'group',
+  'interior',
+  'kitchen',
   'level',
+  'object',
   'plan',
-  'object'
+  'polyfloor',
+  'railing',
+  'wall',
+  'window'
 ]
+
+var noIo3dComponents = ['plan', 'level', 'group']
 
 export default function toAframeElements(sceneStructure, options) {
   if (!sceneStructure) {
@@ -42,6 +54,7 @@ export default function toAframeElements(sceneStructure, options) {
 function getAframeElementsFromSceneStructure(sceneStructure, parent) {
   var collection = parent ? null : [] // use collection or parent
   sceneStructure.forEach(function(element3d) {
+    // check if type is supported in aframe
     if (validTypes.indexOf(element3d.type) > -1) {
       // get html attributes from element3d objects
       var el = addEntity({
@@ -67,6 +80,44 @@ function getAttributes(element3d) {
 
   // map type specific attributes
   // camera-bookmarks and bakedModel are handled separately
+  var type = element3d.type
+  var validParams = getDefaultsByType(type).params
+  // support for old material definitions
+  // TODO: this should be cleaned up in the database
+  var elKeys = Object.keys(element3d)
+  elKeys.forEach(function(key) {
+    if (key.indexOf('Material') > -1) {
+      if (!element3d.materials) element3d.materials = {}
+      element3d.materials[key.replace('Material', '')] = element3d[key]
+      delete element3d[key]
+    }
+    else if (key === 'material' && type === 'floor') {
+      if (!element3d.materials) element3d.materials = {}
+      element3d.materials.top = element3d[key]
+    }
+  })
+
+  var paramKeys = Object.keys(validParams)
+
+  // plan, level, group don't have their own component
+  var skipComponent = noIo3dComponents.indexOf(type) > -1
+  if (!skipComponent) {
+    attributes['io3d-' + type] = ''
+
+    paramKeys.forEach(function(param) {
+      if (element3d[param] !== undefined && !validParams[param].skipInAframe) {
+        // materials have to be serialized
+        if (param === 'materials') attributes['io3d-' + type] += stringifyMaterials(element3d.materials)
+        // polygons have to be serialized
+        else if (param === 'polygon') attributes['io3d-' + type] += param + ': ' + JSON.stringify(element3d.polygon) + '; '
+        // stringify window segmentation arrays
+        else if (param === 'columnRatios' || param === 'rowRatios') attributes['io3d-' + type] += param + ': ' + JSON.stringify(element3d[param]) + '; '
+        // skip plan and level and map all remaining params
+        else if (type !== 'plan' && type !== 'level') attributes['io3d-' + type] += param + ': ' + element3d[param] + '; '
+      }
+    })
+  }
+
   switch (element3d.type) {
     case 'plan':
       attributes['class'] = 'io3d-scene'
@@ -78,36 +129,48 @@ function getAttributes(element3d) {
       attributes['class'] = 'io3d-group'
       break
     case 'interior':
-      attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1)
-      // apply custom material settings for furniture items
-      if (element3d.materials) {
-        var mats = element3d.materials
-        // materials can be saved as arrays
-        if (Array.isArray(mats)) {
-          var matObj = {}
-          mats.forEach(function (mat) {
-            if (mat.mesh && mat.material) matObj[mat.mesh] = mat.material
-          })
-          mats = matObj
+      if (element3d.src) {
+        attributes['io3d-furniture'] = 'id: ' + element3d.src.substring(1)
+        // apply custom material settings for furniture items
+        if (element3d.materials) {
+          var mats = element3d.materials
+          // materials can be saved as arrays
+          if (Array.isArray(mats)) {
+            var matObj = {}
+            mats.forEach(function (mat) {
+              if (mat.mesh && mat.material) matObj[mat.mesh] = mat.material
+            })
+            mats = matObj
+          }
+          // apply alternative material setting to io3d-furniture attribute
+          if (typeof mats === 'object') {
+            Object.keys(mats).forEach(function (mesh) {
+              if (mesh && mats[mesh]) attributes['io3d-furniture'] += '; material_' + mesh.replace(/\s/g, '_') + ':' + mats[mesh]
+            })
+          }
         }
-        // apply alternative material setting to io3d-furniture attribute
-        if (typeof mats === 'object') {
-          Object.keys(mats).forEach(function (mesh) {
-            if (mesh && mats[mesh]) attributes['io3d-furniture'] += '; material_' + mesh.replace(/\s/g, '_') + ':' + mats[mesh]
-          })
-        }
-      }
-      attributes['shadow'] = 'cast: true; receive: false'
-    break
+        attributes['shadow'] = 'cast: true; receive: false'
+      } else console.warn('unsupported interior type')
+      break
     case 'object':
       attributes['io3d-data3d'] = 'key: ' + element3d.object
       attributes['shadow'] = 'cast: true; receive: true'
-    break
+      break
   }
 
   // and generic attributes that apply for all nodes
+  // check for custom scale
+  if (element3d.sourceScale && element3d.sourceScale !== 1) attributes.scale = element3d.sourceScale + ' ' + element3d.sourceScale + ' ' + element3d.sourceScale
+  // check for axis flipping of source file
+  if (element3d.flipYZ) element3d.rx = element3d.rx ? element3d.rx -= 90 : -90
   // toggle visibility
   if (element3d.bake && element3d.bakeStatus === 'done') attributes.visible = false
+  if (element3d.visible && !element3d.visible.bird && !element3d.visible.person && !element3d.visible.floorplan) attributes.visible = false
+  // make sure we have a valid position
+  element3d.x = element3d.x || 0
+  element3d.y = element3d.y || 0
+  element3d.z = element3d.z || 0
+  element3d.ry = element3d.ry|| 0
   // stringify location objects
   attributes.position = element3d.x + ' ' + element3d.y + ' ' + element3d.z
   attributes.rotation = (element3d.rx || 0) + ' ' + element3d.ry + ' 0'
@@ -301,6 +364,20 @@ function flattenSceneStructure(sceneStructure, parent) {
     })
   }
   return result
+}
+
+function stringifyMaterials (materials) {
+  var matStr = ''
+  var matKeys = Object.keys(materials)
+  matKeys.forEach(function (key) {
+    // currently only library materials are supported
+    if (typeof materials[key] === 'string') {
+      matStr += 'material_' + key + ':' + materials[key] + '; '
+    } else if (typeof materials[key] === 'object' && materials[key].mesh && materials[key].material) {
+      matStr += 'material_' + materials[key].mesh + ':' + materials[key].material + '; '
+    }
+  })
+  return matStr
 }
 
 function deg2rad(x) { return x * (Math.PI / 180) }

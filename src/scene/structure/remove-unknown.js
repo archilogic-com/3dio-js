@@ -6,7 +6,7 @@ export default function removeUnknown(element3d) {
   if (!knownParameters[element3d.type]) return
 
   var params = knownParameters[element3d.type].params
-  var possibleChildren = knownParameters[element3d.type].possibleChildrenTypes
+  var possibleChildren = knownParameters[element3d.type].childrenTypes
   // remove invalid params
   Object.keys(element3d).forEach(function(key) {
     if (!params[key]) {
