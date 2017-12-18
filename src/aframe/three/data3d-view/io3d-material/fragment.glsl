@@ -18,6 +18,7 @@ uniform float opacity;
 	uniform float lightMapIntensity;
 	uniform float lightMapExposure;
 	uniform float lightMapFalloff;
+	uniform float lightMapSaturation;
 #endif
 
 #include <normalmap_pars_fragment>
@@ -163,10 +164,14 @@ void main() {
         vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );
 
         #ifdef USE_LIGHTMAP
-
+            // Compute lightmap with saturation
+            const vec3 W = vec3(0.2125, 0.7154, 0.0721); // ITU-R grayscale conversion // vs NTSC vec3(0.299, 0.587, 0.114
+            vec3 col_lightMap = texture2D( lightMap, vUv2 ).xyz;
+            vec3 bw_lightMap = vec3(dot(col_lightMap, W));
+            vec3 sat_lightMap = vec3(mix(bw_lightMap, col_lightMap, lightMapSaturation));
             // compute the light value
             vec3 unit = vec3(1.0);
-            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);
+            vec3 light = 2.0 * (sat_lightMap - lightMapExposure * unit);
             // compute the light intensity modifier
             vec3 modifier = -lightMapFalloff * light * light + unit;
             // apply light

@@ -25,7 +25,8 @@ var LO_RES_TEXTURE_TYPES = {
 
 var DEFAULT_LIGHT_MAP_INTENSITY = 1.2
 var DEFAULT_LIGHT_MAP_EXPOSURE = 0.6
-var DEFAULT_LIGHT_MAP_FALLOFF = 0
+var DEFAULT_LIGHT_MAP_FALLOFF = 0.0
+var DEFAULT_LIGHT_MAP_SATURATION = 1.0
 
 // RepeatWrapping: 1000 / ClampToEdgeWrapping: 1001 / MirroredRepeatWrapping: 1002
 
@@ -43,6 +44,7 @@ export default function setMaterial (args) {
   var onFirstTextureSetLoaded = args.onFirstTextureSetLoaded
   var lightMapIntensity = args.lightMapIntensity
   var lightMapExposure = args.lightMapExposure
+  var lightMapSaturation = args.lightMapSaturation
 
 
   material3d.userData = material3d.userData || {}
@@ -185,9 +187,11 @@ export default function setMaterial (args) {
     material3d.lightMapIntensity = (lmi >= 0.0) ? lmi : 0.0
     material3d.lightMapExposure = lme
     material3d.lightMapFalloff = (_attributes.mapLightFalloff !== undefined) ? _attributes.mapLightFalloff : DEFAULT_LIGHT_MAP_FALLOFF
+    material3d.lightMapSaturation = (lightMapSaturation !== undefined) ? lightMapSaturation : DEFAULT_LIGHT_MAP_SATURATION
     material3d.uniforms.lightMapIntensity.value = material3d.lightMapIntensity
     material3d.uniforms.lightMapExposure.value = material3d.lightMapExposure
     material3d.uniforms.lightMapFalloff.value = material3d.lightMapFalloff
+    material3d.uniforms.lightMapSaturation.value = material3d.lightMapSaturation
   }
 
   // shadows

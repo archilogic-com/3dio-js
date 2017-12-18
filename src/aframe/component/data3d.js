@@ -34,6 +34,16 @@ export default {
         }
         return -100.0 // = fallback to value from data3d file
       }
+    },
+    lightMapSaturation: {
+      type: 'float',
+      default: 1.0,
+      parse: function (value) {
+        if (parseFloat(value)) {
+          return parseFloat(value)
+        }
+        return 1.0
+      }
     }
   },
 
@@ -47,6 +57,7 @@ export default {
     var scene = this_.data.scene
     var lightMapIntensity = this_.data.lightMapIntensity
     var lightMapExposure = this_.data.lightMapExposure
+    var lightMapSaturation = this_.data.lightMapSaturation
 
     if(scene !== '') {
       callService('Model.read', {arguments: { resourceId: scene}}).then(function onResult(result) {
@@ -98,6 +109,7 @@ export default {
       this_.data3dView.set(data3d, {
         lightMapIntensity: lightMapIntensity,
         lightMapExposure: lightMapExposure,
+        lightMapSaturation: lightMapSaturation,
         loadingQueuePrefix: 'architecture'
       })
       this_.el.setObject3D('mesh', this_.mesh)

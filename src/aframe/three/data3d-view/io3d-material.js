@@ -11,7 +11,8 @@ export default checkDependencies ({
 
   var DEFAULT_LIGHT_MAP_INTENSITY = 1.2
   var DEFAULT_LIGHT_MAP_EXPOSURE = 0.6
-  var DEFAULT_LIGHT_MAP_FALLOFF = 0
+  var DEFAULT_LIGHT_MAP_FALLOFF = 0.0
+  var DEFAULT_LIGHT_MAP_SATURATION = 1.0
   var DEFAULT_NORMAL_MAP_FACTOR = new THREE.Vector2(0.8, 0.8)
 
   // main
@@ -22,6 +23,7 @@ export default checkDependencies ({
     var params = params || {}
     this.lightMapExposure = params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE
     this.lightMapFalloff = params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF
+    this.lightMapSaturation = params.lightMapSaturation || DEFAULT_LIGHT_MAP_SATURATION
 
     this.uniforms = THREE.UniformsUtils.merge( [
       THREE.UniformsLib[ "lights" ],
@@ -34,6 +36,7 @@ export default checkDependencies ({
         lightMapIntensity: { value: params.lightMapIntensity || DEFAULT_LIGHT_MAP_INTENSITY },
         lightMapFalloff: { value: params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF },
         lightMapExposure: { value: params.lightMapExposure || DEFAULT_LIGHT_MAP_EXPOSURE },
+        lightMapSaturation: { value: params.lightMapSaturation || DEFAULT_LIGHT_MAP_SATURATION },
         normalMap: { value: params.normalMap || null },
         normalScale: { value: params.normalScale || DEFAULT_NORMAL_MAP_FACTOR },
         shininess: { value: params.shininess || 1.0 },
