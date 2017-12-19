@@ -165,8 +165,8 @@ void main() {
 
         #ifdef USE_LIGHTMAP
             // Compute lightmap with saturation
-            const vec3 W = vec3(0.2125, 0.7154, 0.0721); // ITU-R grayscale conversion // vs NTSC vec3(0.299, 0.587, 0.114
-            vec3 col_lightMap = texture2D( lightMap, vUv2 ).xyz;
+            const vec3 W = vec3(0.2125, 0.7154, 0.0721); // ITU-R grayscale conversion
+            vec3 col_lightMap = texture2D( lightMap, vUv2 ).rgb;
             vec3 bw_lightMap = vec3(dot(col_lightMap, W));
             vec3 sat_lightMap = vec3(mix(bw_lightMap, col_lightMap, lightMapSaturation));
             // compute the light value
