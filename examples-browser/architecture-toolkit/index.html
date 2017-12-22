@@ -41,18 +41,17 @@
             rotation="0 0 0"></a-entity>
   <a-entity id="room" shadow="cast:true"
              animation="property: rotation;
-                        dur: 2000;
+                        dur: 3000;
                         to: 0 360 0;
                         startEvents:start;
                         restartEvents:turn;
                         easing: easeInOutQuad">
-    <a-entity id="wall-1" io3d-wall="l:4.85; w:0.2; h:2.5; material_front:bricks_clean_white; material_back:bricks_clean_white" position="2.3 0 2.5" rotation="0 180 0">
+    <a-entity id="wall-1" io3d-wall="l:5; w:0.2; h:2.5; material_front:bricks_clean_white; material_back:bricks_clean_white" position="2.5 0 2.5" rotation="0 180 0">
     </a-entity>
-    <a-entity id="wall-2" io3d-wall="l:5; w:0.2; h:2.5; material_front:bricks_clean_white; material_back:bricks_clean_white" position="2.5 0 -2.5" rotation="0 270 0">
-      <a-entity id="door" io3d-door="l:0.8; side: front; doorAngle: 12" position="0.2 0 0"></a-entity>
+    <a-entity id="wall-2" io3d-wall="l:5; w:0.2; h:2.5; material_front:bricks_clean_white; material_back:bricks_clean_white" position="2.5 0 -2.5" rotation="0 270 0" io3d-uuid="a4f2c5d3-213e-4d0f-8cf2-96e9261a8131">
+      <a-entity id="door" io3d-door="l:0.8; h:2.2; side: front; doorAngle: 12" position="0.2 0 0"></a-entity>
       <a-entity id="window" io3d-window="h:1.2; l:1.6; hideGlass:true" position="1.2 1 0"></a-entity>
     </a-entity>
-    <a-entity id="table" io3d-furniture="id:bf9cba0a-0e94-44c5-8d28-10fdb0f7fcde"></a-entity>
     <a-entity id="kitchen" io3d-kitchen="l:4.2; material_kitchen:cabinet_paint_blue" position="2.3 0 2.3" rotation="0 180 0"></a-entity>
     <a-entity id="floor" io3d-polyfloor="polygon:[[-2.5,2.3],[2.3,2.3],[2.3,-2.5],[-2.5,-2.5]]; hCeiling:2.5; material_top: wood_parquet_oak_stained"></a-entity>
     <a-entity visible="false" io3d-wall="l:4.8; w:0.2; h:2.5" position="-2.5 0 -2.5"></a-entity>
@@ -73,41 +72,45 @@
   const bodyEl = document.querySelector('body')
   const floorEl = document.querySelector('#floor')
   let kitchenEl = document.querySelector('#kitchen')
-  const doorEl = document.querySelector('#door')
-  const windowEl = document.querySelector('#window')
+  let doorEl = document.querySelector('#door')
   const sunEl = document.querySelector('#sun')
   const spotEl = document.querySelector('#spot')
   const cubeEl = document.querySelector('#cube')
   const skyEl = document.querySelector('a-sky')
+  const wallEl = document.querySelector('#wall-2')
   const header = document.querySelector('#header')
 
-  let roomType = 'dining'
-  let addedElements = [document.querySelector('#table')]
+  let addedElements = []
   let removeKitchen = false
   let isProcessing = false
+  let wallSetup = []
 
-  function furnish(label) {
+  // furnishing the room
+  function furnish(label, sceneStructure) {
     roomEl = document.querySelector('#room')
-    var sceneStructure = io3d.scene.getSceneStructureFromAframeElements(roomEl)
     let _addedElements = addedElements
+
+    // remove the existing furniture at half the rotation
     setTimeout(() => {
       _addedElements.forEach(el => {
         el.parentNode.removeChild(el)
       })
-    }, 1000)
-    addedElements = []
+    }, 1500)
 
-    if (removeKitchen) sceneStructure.children = sceneStructure.children.filter(c => c.type !== 'kitchen')
+    addedElements = []
     isProcessing = true
+
+    // get furnishings from home staging ai
+    // https://3d.io/docs/api/1/home-staging-ai.html
     io3d.staging.getFurnishings(sceneStructure.children, {label})
       .then(result => {
-//        console.log('furniture', result)
+        // exchange generic furniture with real products
         if (result) return io3d.staging.replaceFurniture(result)
       })
       .then(result => {
         isProcessing = false
         cubeEl.setAttribute('visible', false)
-//        console.log(result)
+        // convert scene Structure to A-frame elements for display
         let elements = io3d.scene.getAframeElementsFromSceneStructure(result)
         elements.forEach(el => {
           roomEl.appendChild(el)
@@ -117,19 +120,24 @@
       .catch(console.error)
   }
 
+  // initial spin
   setTimeout(() => {
-    roomType = setRoom()
-    furnish(roomType)
+    let roomType = setRoom()
+    let scene = getSceneStructure()
+    furnish(roomType, scene)
     roomEl.emit('start')
   }, 1000)
 
+  // spin after user click
   bodyEl.addEventListener('click', () => {
     if (isProcessing) return
-    roomType = setRoom()
-    furnish(roomType)
+    let roomType = setRoom()
+    let scene = getSceneStructure()
+    furnish(roomType, scene)
     roomEl.emit('turn')
   })
 
+  // set room type and lighting
   function setRoom() {
     const lights = ['sun', 'spot']
     const rooms = ['living', 'dining', 'bedroom']
@@ -139,6 +147,7 @@
     if (room !== 'dining') removeKitchen = true
     else removeKitchen = false
 
+    // wait for half the rotation to change the 3d scene
     setTimeout(() => {
       // set processing cube
       if (isProcessing) cubeEl.setAttribute('visible', true)
@@ -155,12 +164,13 @@
       else kitchenEl.setAttribute('visible', true)
 
       // adapt architectural elements
-      magic()
+      setRndAttributes()
 
-    }, 1000)
+    }, 1500)
     return room
   }
 
+  // attributes for 'random' room generation
   const floorAttr = {
     material_top: [
       'wood_parquet_oak',
@@ -171,21 +181,32 @@
       'tiles-dark-large'
     ]
   }
-
   const doorAttr = {
     doorAngle: [15, 60, 110],
     hinge: ['left', 'right'],
     doorType: ['singleSwing', 'doubleSwing', 'slidingDoor']
   }
-
+  const wallSetups = [
+    [
+      {type: 'window', x: 0.3, l: 2.2, h: 1.4, y: 0.8},
+      {type: 'door', x: 3, l: 0.9, h: 2.2, side: 'front'},
+    ], [
+      {type: 'door', x: 1, l: 0.9, h: 2.2, side: 'front'},
+      {type: 'window', x: 2.5, l: 1.4, h: 1.3, y: 0.8}
+    ], [
+      {type: 'window', x: 0.5, l: 1, h: 2.3, y: 0.1},
+      {type: 'window', x: 1.7, l: 1, h: 2.3, y: 0.1},
+      {type: 'window', x: 2.9, l: 1, h: 2.3, y: 0.1}
+    ]
+  ]
   const windowAttr = {
     side: ['front', 'center', 'back'],
-    h: [1, 1.2],
-    l: [1.2, 2, 1.5],
     rowRatios: [[1], [1,2], [1, 1]],
     columnRatios: [[[1]], [[1], [1, 3]], [[1, 4, 1]], [[1, 1], [1, 1]]]
   }
-
+  const wallAttr = {
+    material_front: ['default_plaster_001', 'bricks_clean_orange', 'bricks_white', 'concrete_board', 'cabinet_wood_fir_wall']
+  }
   const kitchenAttr = {
     wallCabinet: [false, true],
     highCabinetLeft: [0, 1, 2],
@@ -193,14 +214,49 @@
     material_kitchen: ['cabinet_paint_creme', 'cabinet_paint_grey', 'cabinet_paint_brick', 'cabinet_paint_anthrazit']
   }
 
-  function magic () {
+  // get sceneStructure ready for processing, before actually showing it
+  function getSceneStructure() {
+    // scene content
+    let sceneStructure = io3d.scene.getSceneStructureFromAframeElements(roomEl)
+    // pick new wall configuration
+    wallSetup = pickRnd(wallSetups)
+    // apply new wallSetup to wall 2
+    sceneStructure.children = sceneStructure.children.map(c => {
+      if (c.id === 'a4f2c5d3-213e-4d0f-8cf2-96e9261a8131') c.children = wallSetup
+      return c
+    })
+    // remove kitchen for rooms other than dining
+    if (removeKitchen) sceneStructure.children = sceneStructure.children.filter(c => c.type !== 'kitchen')
+    return sceneStructure
+  }
+
+  // adapt 3d scene with random attributes
+  function setRndAttributes () {
+    // update wall children
+    let wallElements = io3d.scene.getAframeElementsFromSceneStructure(wallSetup)
+    while (wallEl.firstChild) {
+      wallEl.removeChild(wallEl.firstChild)
+    }
+    wallElements.forEach(el => {
+      wallEl.appendChild(el)
+    })
+
+    // get new attributes
     let newFloorAttr = rndAttr(floorAttr)
     let newDoorAttr = rndAttr(doorAttr)
+    let newWindowAttr = rndAttr(windowAttr)
+    let newWallAttr = rndAttr(wallAttr)
     newDoorAttr['material_threshold'] = newFloorAttr['material_top']
+
+    // apply attributes
     floorEl.setAttribute('io3d-polyfloor', newFloorAttr)
     kitchenEl.setAttribute('io3d-kitchen', rndAttr(kitchenAttr))
-    doorEl.setAttribute('io3d-door', newDoorAttr)
-    windowEl.setAttribute('io3d-window', rndAttr(windowAttr))
+    doorEl = document.querySelector('[io3d-door]')
+    if (doorEl) doorEl.setAttribute('io3d-door', newDoorAttr)
+    let wallEls = document.querySelectorAll('[io3d-wall]')
+    wallEls.forEach(el => el.setAttribute('io3d-wall', newWallAttr))
+    let windowEls = document.querySelectorAll('[io3d-window]')
+    windowEls.forEach(el => el.setAttribute('io3d-window', newWindowAttr))
 
     // set sky and font
     let skyHue = Math.floor(Math.random() * 18) * 20
