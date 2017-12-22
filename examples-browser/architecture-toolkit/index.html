@@ -57,6 +57,12 @@
     <a-entity id="floor" io3d-polyfloor="polygon:[[-2.5,2.3],[2.3,2.3],[2.3,-2.5],[-2.5,-2.5]]; hCeiling:2.5; material_top: wood_parquet_oak_stained"></a-entity>
     <a-entity visible="false" io3d-wall="l:4.8; w:0.2; h:2.5" position="-2.5 0 -2.5"></a-entity>
     <a-entity visible="false" io3d-wall="l:5; w:0.2; h:2.5" position="-2.5 0 -2.5" rotation="0 270 0"></a-entity>
+    <a-box id="cube" position="0 1 0" depth="0.3" width="0.3" height="0.3" color="#f05"
+           animation="property: rotation;
+                     dur: 5000;
+                     to: 360 360 0;
+                     easing: linear;
+                     loop: true;"></a-box>
   </a-entity>
   <!-- Camera -->
   <a-entity id="camera" camera="fov:0.1; zoom: 0.01; near: 20" position="-25 25 -25" rotation="-34 225 0"  wasd-controls="acceleration:8;easing:5;" look-controls="enabled:false" ></a-entity>
@@ -71,12 +77,14 @@
   const windowEl = document.querySelector('#window')
   const sunEl = document.querySelector('#sun')
   const spotEl = document.querySelector('#spot')
+  const cubeEl = document.querySelector('#cube')
   const skyEl = document.querySelector('a-sky')
   const header = document.querySelector('#header')
 
   let roomType = 'dining'
   let addedElements = [document.querySelector('#table')]
   let removeKitchen = false
+  let isProcessing = false
 
   function furnish(label) {
     roomEl = document.querySelector('#room')
@@ -90,12 +98,15 @@
     addedElements = []
 
     if (removeKitchen) sceneStructure.children = sceneStructure.children.filter(c => c.type !== 'kitchen')
+    isProcessing = true
     io3d.staging.getFurnishings(sceneStructure.children, {label})
       .then(result => {
 //        console.log('furniture', result)
         if (result) return io3d.staging.replaceFurniture(result)
       })
       .then(result => {
+        isProcessing = false
+        cubeEl.setAttribute('visible', false)
 //        console.log(result)
         let elements = io3d.scene.getAframeElementsFromSceneStructure(result)
         elements.forEach(el => {
@@ -113,6 +124,7 @@
   }, 1000)
 
   bodyEl.addEventListener('click', () => {
+    if (isProcessing) return
     roomType = setRoom()
     furnish(roomType)
     roomEl.emit('turn')
@@ -128,6 +140,8 @@
     else removeKitchen = false
 
     setTimeout(() => {
+      // set processing cube
+      if (isProcessing) cubeEl.setAttribute('visible', true)
       // set lights
       if (light === 'spot') {
         spotEl.setAttribute('visible', true)

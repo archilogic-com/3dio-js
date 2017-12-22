@@ -8,7 +8,7 @@ const types = getDefaults()
 
 function getSceneStructureFromAframeElements(el) {
   if (!isValidElement(el)) {
-    console.error('element is not an "a-entity" DOM element')
+    console.warn('element is not an "a-entity" DOM element')
     return
   }
 
