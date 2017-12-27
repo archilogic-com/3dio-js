@@ -2,16 +2,29 @@ import { name, version, homepage } from '../../package.json'
 import Logger from 'js-logger'
 import './polyfills.js'
 import runtime from './runtime.js'
+// fixme: metro bundler workaround for react-native
+const requireAlias = require
 
 // Bootstrap logger
 Logger.useDefaults()
 
 // print header to console in browser environment
 if (runtime.isBrowser) {
-  console.log(homepage+' '+version+' (@'+GIT_BRANCH+' #'+GIT_COMMIT.substr(0,7)+' '+BUILD_DATE+')' )
+  console.log(
+    homepage +
+      ' ' +
+      version +
+      ' (@' +
+      GIT_BRANCH +
+      ' #' +
+      GIT_COMMIT.substr(0, 7) +
+      ' ' +
+      BUILD_DATE +
+      ')'
+  )
 }
 
 // global dependencies
 
 // three.js
-if (runtime.isNode) global.THREE = require('three')
+if (runtime.isNode) global.THREE = requireAlias('three')

@@ -1,5 +1,5 @@
 import runtime from './runtime.js'
-
+import now from 'performance-now'
 // Promise API polyfill for IE11
 import 'bluebird/js/browser/bluebird.js'
 
@@ -21,21 +21,25 @@ if (!console.time || !console.timeEnd) {
 // from https://raw.githubusercontent.com/mrdoob/three.js/dev/src/polyfills.js
 
 if (Number.EPSILON === undefined) {
-  Number.EPSILON = Math.pow(2, -52);
+  Number.EPSILON = Math.pow(2, -52)
 }
 
 if (Number.isInteger === undefined) {
   // Missing in IE
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger
-  Number.isInteger = function (value) {
-    return typeof value === 'number' && isFinite(value) && Math.floor(value) === value
+  Number.isInteger = function(value) {
+    return (
+      typeof value === 'number' &&
+      isFinite(value) &&
+      Math.floor(value) === value
+    )
   }
 }
 
 if (Math.sign === undefined) {
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sign
-  Math.sign = function (x) {
-    return ( x < 0 ) ? -1 : ( x > 0 ) ? 1 : +x
+  Math.sign = function(x) {
+    return x < 0 ? -1 : x > 0 ? 1 : +x
   }
 }
 
@@ -43,7 +47,7 @@ if (Function.prototype.name === undefined) {
   // Missing in IE
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
   Object.defineProperty(Function.prototype, 'name', {
-    get: function () {
+    get: function() {
       return this.toString().match(/^\s*function\s*([^\(\s]*)/)[1]
     }
   })
@@ -52,9 +56,9 @@ if (Function.prototype.name === undefined) {
 if (Object.assign === undefined) {
   // Missing in IE
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
-  (function () {
-    Object.assign = function (target) {
-      'use strict';
+  ;(function() {
+    Object.assign = function(target) {
+      'use strict'
       if (target === undefined || target === null) {
         throw new TypeError('Cannot convert undefined or null to object')
       }
@@ -76,7 +80,6 @@ if (Object.assign === undefined) {
 
 // performance.now()
 if (runtime.isBrowser) {
-
   // browser polyfill
   // inspired by:
   // https://gist.github.com/paulirish/5438650
@@ -85,19 +88,17 @@ if (runtime.isBrowser) {
   if (!window.performance) {
     window.performance = {}
   }
-  if (!window.performance.now){
-    var navigationStart = performance.timing ? performance.timing.navigationStart : null
+  if (!window.performance.now) {
+    var navigationStart = performance.timing
+      ? performance.timing.navigationStart
+      : null
     var nowOffset = navigationStart || Date.now()
-    window.performance.now = function now(){
+    window.performance.now = function now() {
       return Date.now() - nowOffset
     }
   }
-
 } else {
-
-  // node: use module
-  global.performance = {
-    now: require('performance-now')
-  }
-
+  // node: use
+  // metro-bundler doesn't seem to allow explicit assigning like global.performance=now
+  Object.assign(global, { performance: now })
 }

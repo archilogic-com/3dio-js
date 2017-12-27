@@ -1,16 +1,17 @@
 import runtime from '../../core/runtime.js'
 
-export default (function(){
+// fixme: metro bundler workaround for react-native
+const requireAlias = require
 
-  if (runtime.isNode) {
-    return require('node-fetch')
-  } else if (typeof fetch !== 'undefined') {
+export default (function() {
+  if (typeof fetch !== 'undefined') {
     return fetch
+  } else if (runtime.isNode) {
+    return requireAlias('node-fetch')
   } else {
     console.warn('Missing global fetch API.')
     return function() {
       throw new Error('Missing global fetch API.')
     }
   }
-
 })()
