@@ -3,6 +3,9 @@ import fetchScript from '../io/fetch-script.js'
 import readFile from './read.js'
 import getMimeTypeFromFileName from './get-mime-type-from-filename.js'
 
+// fixme: metro bundler workaround for react-native
+const requireAlias = require
+
 // API
 
 var gzip = {
@@ -18,53 +21,59 @@ export default gzip
 
 var PAKO_LIB = {
   deflate: {
-    url: 'https://cdnjs.cloudflare.com/ajax/libs/pako/1.0.5/pako_deflate.min.js',
+    url:
+      'https://cdnjs.cloudflare.com/ajax/libs/pako/1.0.5/pako_deflate.min.js',
     module: 'pako/deflate'
   },
   inflate: {
-    url: 'https://cdnjs.cloudflare.com/ajax/libs/pako/1.0.5/pako_inflate.min.js',
+    url:
+      'https://cdnjs.cloudflare.com/ajax/libs/pako/1.0.5/pako_inflate.min.js',
     module: 'pako/inflate'
   }
 }
 
 // methods
 
-function inflate (input) {
-  return loadInflateLib().then(function (pakoInflate) {
+function inflate(input) {
+  return loadInflateLib().then(function(pakoInflate) {
     return pakoInflate.ungzip(input)
   })
 }
 
-function inflateFile (gzippedFile) {
-  return loadInflateLib().then(function (pakoInflate) {
+function inflateFile(gzippedFile) {
+  return loadInflateLib().then(function(pakoInflate) {
     return readFile(gzippedFile, 'arrayBuffer')
       .then(pakoInflate.ungzip)
-      .then(function(arrayBuffer){
-        var file = new Blob([ arrayBuffer ], { type: getMimeTypeFromFileName(gzippedFile.name) })
+      .then(function(arrayBuffer) {
+        var file = new Blob([arrayBuffer], {
+          type: getMimeTypeFromFileName(gzippedFile.name)
+        })
         // remove '.gz.' tag from filename
         if (gzippedFile.name) {
-          file.name = gzippedFile.name.replace('.gz.','.')
+          file.name = gzippedFile.name.replace('.gz.', '.')
         }
         return file
       })
   })
 }
 
-function deflate (input) {
-  return loadDeflateLib().then(function (pakoDeflate) {
+function deflate(input) {
+  return loadDeflateLib().then(function(pakoDeflate) {
     return pakoDeflate.gzip(input)
   })
 }
 
-function deflateFile (file) {
-  return loadDeflateLib().then(function (pakoDeflate) {
+function deflateFile(file) {
+  return loadDeflateLib().then(function(pakoDeflate) {
     return readFile(file, 'arrayBuffer')
       .then(pakoDeflate.gzip)
-      .then(function(arrayBuffer){
-        var gzippedFile = new Blob([ arrayBuffer ], { type: 'application/x-gzip' })
+      .then(function(arrayBuffer) {
+        var gzippedFile = new Blob([arrayBuffer], {
+          type: 'application/x-gzip'
+        })
         // add '.gz.' tag to filename
         if (file.name) {
-          gzippedFile.name = file.name.replace('.','.gz.')
+          gzippedFile.name = file.name.replace('.', '.gz.')
         }
         return gzippedFile
       })
@@ -73,10 +82,14 @@ function deflateFile (file) {
 
 // helpers
 
-function loadDeflateLib () {
-  return runtime.isBrowser ? fetchScript(PAKO_LIB.deflate.url) : Promise.resolve(require(PAKO_LIB.deflate.module))
+function loadDeflateLib() {
+  return runtime.isBrowser
+    ? fetchScript(PAKO_LIB.deflate.url)
+    : Promise.resolve(requireAlias(PAKO_LIB.deflate.module))
 }
 
-function loadInflateLib () {
-  return runtime.isBrowser ? fetchScript(PAKO_LIB.inflate.url) : Promise.resolve(require(PAKO_LIB.inflate.module))
+function loadInflateLib() {
+  return runtime.isBrowser
+    ? fetchScript(PAKO_LIB.inflate.url)
+    : Promise.resolve(requireAlias(PAKO_LIB.inflate.module))
 }
