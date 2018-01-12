@@ -60,7 +60,9 @@ export default function createFileDropUi (args) {
   function dropFiles (event) {
     if (dragOverCssClass) mainEl.classList.remove(dragOverCssClass)
     preventBrowserDefaults(event)
-    getFilesFromDragAndDropEvent(event).then(function (files) {
+    getFilesFromDragAndDropEvent(event, {
+      checkExtension: upload ? true : false // check extension only when uploading files
+    }).then(function (files) {
       handleFileInput(files, event)
     }).catch(console.error)
   }
