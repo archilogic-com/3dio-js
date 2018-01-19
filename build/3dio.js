@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.0.12
- * @date 2017/12/06 12:51
- * @branch master
- * @commit 5c928bc65ec7a802fb83a8c930cce699959e5fa8
+ * @version 1.0.14
+ * @date 2018/01/19 10:53
+ * @branch 1.0.x
+ * @commit 95775deaa71c6966bedd473c58e630d7821ccbc7
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2017/12/06 12:51', GIT_BRANCH = 'master', GIT_COMMIT = '5c928bc65ec7a802fb83a8c930cce699959e5fa8'
+	var BUILD_DATE='2018/01/19 10:53', GIT_BRANCH = '1.0.x', GIT_COMMIT = '95775deaa71c6966bedd473c58e630d7821ccbc7'
 
 	var name = "3dio";
-	var version = "1.0.12";
+	var version = "1.0.14";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d", "aframe", "cardboard", "components", "oculus", "vive", "rift", "vr", "WebVR", "WegGL", "three", "three.js", "3D model", "api", "visualization", "furniture", "real estate", "interior", "building", "architecture", "3d.io"];
 	var homepage = "https://3d.io";
@@ -19699,6 +19699,9 @@
 	  Io3dMaterial.prototype = Object.create(THREE.ShaderMaterial.prototype);
 	  Io3dMaterial.prototype.constructor = Io3dMaterial;
 
+	  // FIXME: This is a workaround for missing shadows with Radeon cards, consult #38 for details
+	  Io3dMaterial.prototype.isShaderMaterial = false;
+
 	  return Io3dMaterial;
 	});
 
@@ -20383,6 +20386,9 @@
 	  return arr[0] === '' ? arr.slice(1) : arr;
 	}
 
+	var dimRange = ['lengthMin', 'lengthMax', 'widthMin', 'widthMax', 'heightMin', 'heightMax'];
+	var dimFix = ['length', 'width', 'height'];
+
 	function searchFurniture(query, options) {
 
 	  // API
@@ -20393,17 +20399,46 @@
 
 	  // internals
 	  var apiErrorCount = 0;
+	  var reg;
+
+	  var params = {
+	    searchQuery: {
+	      // only published furniture & let's make sure we don't have trailing or double spaces
+	      query: 'isPublished:true ' + query.trim().replace(/\s+/g, ' ')
+	    },
+	    limit: 500
+	    // TODO: add this param once #251 https://github.com/archilogic-com/services/issues/251 is resolved
+	    //offset: offset
+
+
+	    // extract dimension queries for range search
+	  };dimRange.forEach(function iteratee(key) {
+	    reg = new RegExp(key + ':([0-9.*]+)');
+	    if (reg.test(params.searchQuery.query)) {
+	      // set range queries
+	      params.searchQuery[key] = parseFloat(reg.exec(params.searchQuery.query)[1]);
+	      // cleanup search query
+	      params.searchQuery.query = params.searchQuery.query.replace(reg.exec(params.searchQuery.query)[0], '').trim();
+	    }
+	  });
+
+	  // extract dimension queries for precise search
+	  dimFix.forEach(function iteratee(key) {
+	    reg = new RegExp(key + ':([0-9.*]+)');
+	    var margin = 0.04;
+	    if (reg.test(params.searchQuery.query)) {
+	      var dim = parseFloat(reg.exec(params.searchQuery.query)[1]);
+	      // set range queries
+	      params.searchQuery[key + 'Min'] = dim > margin ? dim - margin : dim;
+	      params.searchQuery[key + 'Max'] = dim + margin;
+	      // cleanup search query
+	      params.searchQuery.query = params.searchQuery.query.replace(reg.exec(params.searchQuery.query)[0], '').trim();
+	    }
+	  });
+
 	  // call API
 	  function callApi() {
-	    // let's make sure we don't have trailing or double spaces
-	    query = 'isPublished:true ' + query;
-	    query = query.trim().replace(/\s+/g, ' ');
-	    return callService('Product.search', {
-	      searchQuery: { query: query },
-	      limit: limit
-	      // TODO: add this param once #251 https://github.com/archilogic-com/services/issues/251 is resolved
-	      //offset: offset
-	    }).then(function onSuccess(rawResults) {
+	    return callService('Product.search', params).then(function onSuccess(rawResults) {
 	      apiErrorCount = 0;
 	      // normalize furniture data coming from server side endpoint
 	      return rawResults.map(normalizeFurnitureInfo);
