@@ -79,7 +79,6 @@ function handleIncomingMessage (event) {
 function sendHttpRequest (rpcRequest, secretApiKey, publishableApiKey) {
 
   var isTrustedOrigin = ( runtime.isBrowser && window.location.href.match(/^[^\:]+:\/\/([^\.]+\.)?(3d\.io|archilogic.com|localhost)(:\d+)?\//) )
-  var sendCredentials = runtime.isBrowser && navigator.doNotTrack === '0' && isTrustedOrigin
   var headers = { 'Content-Type': 'application/json' }
   if (secretApiKey) headers['X-Secret-Key'] = secretApiKey
   if (publishableApiKey) headers['X-Publishable-Key'] = publishableApiKey
@@ -89,7 +88,7 @@ function sendHttpRequest (rpcRequest, secretApiKey, publishableApiKey) {
     body: JSON.stringify(rpcRequest.message),
     method: 'POST',
     headers: headers,
-    credentials: (sendCredentials ? 'include' : 'omit' ) //TODO: Find a way to allow this more broadly yet safely
+    credentials: (isTrustedOrigin ? 'include' : 'omit' ) //TODO: Find a way to allow this more broadly yet safely
   }).then(function (response) {
     return response.text().then(function onParsingSuccess(body){
       // try to parse JSON in any case because valid JSON-RPC2 errors do have error status too
