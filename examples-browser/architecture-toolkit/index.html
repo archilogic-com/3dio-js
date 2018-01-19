@@ -140,7 +140,7 @@
   // set room type and lighting
   function setRoom() {
     const lights = ['sun', 'spot']
-    const rooms = ['living', 'dining', 'bedroom']
+    const rooms = ['living', 'dining', 'bedroom', 'dining_living', 'homeOffice']
     let room = pickRnd(rooms)
     let light = pickRnd(lights)
 
@@ -205,7 +205,7 @@
     columnRatios: [[[1]], [[1], [1, 3]], [[1, 4, 1]], [[1, 1], [1, 1]]]
   }
   const wallAttr = {
-    material_front: ['default_plaster_001', 'bricks_clean_orange', 'bricks_white', 'concrete_board', 'cabinet_wood_fir_wall']
+    material_front: ['default_plaster_001', 'memphis_pattern', 'bricks_clean_orange', 'zigzag', 'bricks_white', 'concrete_board', 'cabinet_wood_fir_wall']
   }
   const kitchenAttr = {
     wallCabinet: [false, true],

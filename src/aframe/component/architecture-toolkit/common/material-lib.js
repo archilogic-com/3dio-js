@@ -1397,6 +1397,38 @@ export default {
       "mapNormalSource": "archilogic/tex/0f2f5fcd5532a2acfbe1b62e93b1e2da.source.jpg"
     }
   },
+  "zigzag": {
+    "meta": {
+      "displayName": "Zigzag",
+      "category": "wall",
+      "showInMenu": true
+    },
+    "attributes": {
+      "size": [1.973, 2.4],
+      "colorDiffuse": [1, 1, 1],
+      "colorSpecular": [0.098, 0.098, 0.098],
+      "specularCoef": 2,
+      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/b19a4ce5f2e8a3dbaf6d58120086edbf.lo-res.jpg",
+      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/b19a4ce5f2e8a3dbaf6d58120086edbf.hi-res.gz.dds",
+      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/b19a4ce5f2e8a3dbaf6d58120086edbf.source.jpg"
+    }
+  },
+  "memphis_pattern": {
+    "meta": {
+      "displayName": "Memphis Pattern",
+      "category": "wall",
+      "showInMenu": true
+    },
+    "attributes": {
+      "size": [1.5, 1.5],
+      "colorDiffuse": [1, 1, 1],
+      "colorSpecular": [1, 1, 1],
+      "specularCoef": 2,
+      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/bba1d78f6d773cd467ca042dd06f9d13.lo-res.jpg",
+      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/bba1d78f6d773cd467ca042dd06f9d13.hi-res.gz.dds",
+      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/bba1d78f6d773cd467ca042dd06f9d13.source.jpg"
+    }
+  },
   "floor_vintage_timber_2": {
     "meta": {
       "displayName": "Planks Stained",
