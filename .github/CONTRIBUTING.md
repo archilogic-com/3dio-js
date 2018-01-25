@@ -11,12 +11,23 @@ In case you find something that is a bug, read on :-)
 ## Found a bug?
 
 Please provide the following information:
-* **How to Reproduce**<br>
-  Describe in a few steps the actions to make the bug appear. Please provide a URL or a code snippet if available so that we know where to start from. This information is crucial for us in order to reproduce the bug and localize it.
-* **Actual Result**<br>
-  Describe the bug in a few words. You can also attach a screenshot / screenshot of the errors in your browser console if these are relevant.  
-* **Expected Result**<br>
+* **How to Reproduce**
+  Describe in a few steps the actions to make the bug appear.
+  Provide a code snippet or a URL of with an example ([App Creator](https://appcreator.3d.io) or [glitch](https://glitch.com/))
+
+* **Actual Result**
+  Describe the bug in a few words.
+  Attach a screen shot of the graphical or console error if these are relevant.
+
+* **Expected Result**
   Describe what you would expect to happen.
+
+* **Notes**
+  Share relevant details to your setup
+  Which OS is affected?
+  Which Browsers are affected?
+  What devices are affected?
+  What build are you using?
 
 ## Missing something?
 
