@@ -3,7 +3,7 @@ Please read the [contribution guidelines](CONTRIBUTING.md) before submitting an 
 This form is for bug reports and feature requests only.
 If you have a question on how to use 3D.io or the products, please direct these to [Stack Overflow](https://stackoverflow.com/questions/tagged/aframe%20and%203d.io%20or%20archilogic). It's the best way to reach us.
 
-##### Bug Report Template
+### Bug Report Template
 
 **How to Reproduce**
 - Describe in a few steps the actions to make the bug appear.
@@ -23,7 +23,7 @@ If you have a question on how to use 3D.io or the products, please direct these 
 - What devices are affected?
 - What build are you using?
 
-##### Feature Request Template
+### Feature Request Template
 Please note by far the quickest way to get a new feature is to file a Pull Request.
 
 **Scope**
