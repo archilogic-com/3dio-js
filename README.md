@@ -81,4 +81,4 @@ Install local dev environment:
 
     `npm start`
 
-Please follow our [Contribution guidelines](CONTRIBUTING.md)
+Please follow our [Contribution guidelines](.github/CONTRIBUTING.md)
