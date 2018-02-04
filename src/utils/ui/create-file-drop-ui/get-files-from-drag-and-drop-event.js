@@ -17,6 +17,7 @@ export default function getFilesFromDragAndDropEvent (event, options) {
   // API
   options = options || {}
   var warningCallback = options.onWarning || function () {}
+  var checkExtension = options.checkExtension !== undefined ? options.checkExtension : true
 
   // internals
   var result
@@ -28,7 +29,7 @@ export default function getFilesFromDragAndDropEvent (event, options) {
     // get files with directories
     //http://code.flickr.net/2012/12/10/drag-n-drop/
     result = getFlatFileArrayFromItems(dataTransfer.items).then(function (files) {
-      return removeRootDir(filterValidFiles(files, warningCallback))
+      return removeRootDir(filterValidFiles(files, checkExtension, warningCallback))
     })
 
   } else if (dataTransfer.files) {
@@ -47,7 +48,7 @@ export default function getFilesFromDragAndDropEvent (event, options) {
         file.name = _file.name
         files.push(file)
       }
-      result = Promise.resolve(filterValidFiles(files, warningCallback))
+      result = Promise.resolve(filterValidFiles(files, checkExtension, warningCallback))
 
     }
 
@@ -63,7 +64,7 @@ export default function getFilesFromDragAndDropEvent (event, options) {
 
 // private methods
 
-function filterValidFiles (_files, warningCallback) {
+function filterValidFiles (_files, checkExtension, warningCallback) {
   var file, fileName, extension, hasValidExtension, filteredFiles = []
   for (var i = 0, l = _files.length; i < l; i++) {
     file = _files[i]
@@ -80,7 +81,7 @@ function filterValidFiles (_files, warningCallback) {
         warningCallback('File ' + fileName + ' has no extension and will be ignored.')
       } else {
         hasValidExtension = EXTENSION_WHITE_LIST.indexOf(extension) > -1
-        if (!hasValidExtension) {
+        if (checkExtension && !hasValidExtension) {
           console.error('File ' + fileName + ' is not supported and will be ignored.')
           warningCallback('File ' + fileName + ' is not supported and will be ignored.')
         } else {

@@ -52,6 +52,9 @@ export default checkDependencies ({
   Io3dMaterial.prototype = Object.create(THREE.ShaderMaterial.prototype)
   Io3dMaterial.prototype.constructor = Io3dMaterial
 
+  // FIXME: This is a workaround for missing shadows with Radeon cards, consult #38 for details
+  Io3dMaterial.prototype.isShaderMaterial = false
+
   return Io3dMaterial
 
 })

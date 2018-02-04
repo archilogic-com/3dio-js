@@ -1,7 +1,7 @@
 // Login another user
 
-var user1 = {name: 'gertrud', password: 'afgshgrtecsru6ez5dt'}
-var user2 = {name: 'bernhard', password: '6FYUGiF4ZMwt7fEoqLid'}
+var user1 = {email: 'gertrud', password: 'afgshgrtecsru6ez5dt'}
+var user2 = {email: 'bernhard', password: '6FYUGiF4ZMwt7fEoqLid'}
 
 io3d.configs({
   logLevel: 'debug'

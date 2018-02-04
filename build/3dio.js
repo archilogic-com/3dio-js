@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.1.1
- * @date 2018/01/05 23:44
+ * @version 1.1.5
+ * @date 2018/02/04 17:04
  * @branch master
- * @commit ab142eb2ba762db5d41571bbfbe65b5e95319604
+ * @commit 193946c7f11f28f90b06cc398b2c95084f97a7f3
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2018/01/05 23:44', GIT_BRANCH = 'master', GIT_COMMIT = 'ab142eb2ba762db5d41571bbfbe65b5e95319604'
+	var BUILD_DATE='2018/02/04 17:04', GIT_BRANCH = 'master', GIT_COMMIT = '193946c7f11f28f90b06cc398b2c95084f97a7f3'
 
 	var name = "3dio";
-	var version = "1.1.1";
+	var version = "1.1.5";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d","aframe","cardboard","components","oculus","vive","rift","vr","WebVR","WegGL","three","three.js","3D model","api","visualization","furniture","real estate","interior","building","architecture","3d.io"];
 	var homepage = "https://3d.io";
@@ -22225,6 +22225,38 @@
 	      "mapNormalSource": "archilogic/tex/0f2f5fcd5532a2acfbe1b62e93b1e2da.source.jpg"
 	    }
 	  },
+	  "zigzag": {
+	    "meta": {
+	      "displayName": "Zigzag",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1.973, 2.4],
+	      "colorDiffuse": [1, 1, 1],
+	      "colorSpecular": [0.098, 0.098, 0.098],
+	      "specularCoef": 2,
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/b19a4ce5f2e8a3dbaf6d58120086edbf.lo-res.jpg",
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/b19a4ce5f2e8a3dbaf6d58120086edbf.hi-res.gz.dds",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/b19a4ce5f2e8a3dbaf6d58120086edbf.source.jpg"
+	    }
+	  },
+	  "memphis_pattern": {
+	    "meta": {
+	      "displayName": "Memphis Pattern",
+	      "category": "wall",
+	      "showInMenu": true
+	    },
+	    "attributes": {
+	      "size": [1.5, 1.5],
+	      "colorDiffuse": [1, 1, 1],
+	      "colorSpecular": [1, 1, 1],
+	      "specularCoef": 2,
+	      "mapDiffusePreview": "/535e624259ee6b0200000484/textures/uploads/bba1d78f6d773cd467ca042dd06f9d13.lo-res.jpg",
+	      "mapDiffuse": "/535e624259ee6b0200000484/textures/uploads/bba1d78f6d773cd467ca042dd06f9d13.hi-res.gz.dds",
+	      "mapDiffuseSource": "/535e624259ee6b0200000484/textures/uploads/bba1d78f6d773cd467ca042dd06f9d13.source.jpg"
+	    }
+	  },
 	  "floor_vintage_timber_2": {
 	    "meta": {
 	      "displayName": "Planks Stained",
@@ -35827,6 +35859,9 @@
 	  Io3dMaterial.prototype = Object.create(THREE.ShaderMaterial.prototype);
 	  Io3dMaterial.prototype.constructor = Io3dMaterial;
 
+	  // FIXME: This is a workaround for missing shadows with Radeon cards, consult #38 for details
+	  Io3dMaterial.prototype.isShaderMaterial = false;
+
 	  return Io3dMaterial
 
 	});
@@ -41726,6 +41761,7 @@
 	  // API
 	  options = options || {};
 	  var warningCallback = options.onWarning || function () {};
+	  var checkExtension = options.checkExtension !== undefined ? options.checkExtension : true;
 
 	  // internals
 	  var result;
@@ -41737,7 +41773,7 @@
 	    // get files with directories
 	    //http://code.flickr.net/2012/12/10/drag-n-drop/
 	    result = getFlatFileArrayFromItems(dataTransfer.items).then(function (files) {
-	      return removeRootDir(filterValidFiles(files, warningCallback))
+	      return removeRootDir(filterValidFiles(files, checkExtension, warningCallback))
 	    });
 
 	  } else if (dataTransfer.files) {
@@ -41756,7 +41792,7 @@
 	        file.name = _file.name;
 	        files.push(file);
 	      }
-	      result = Promise.resolve(filterValidFiles(files, warningCallback));
+	      result = Promise.resolve(filterValidFiles(files, checkExtension, warningCallback));
 
 	    }
 
@@ -41772,7 +41808,7 @@
 
 	// private methods
 
-	function filterValidFiles (_files, warningCallback) {
+	function filterValidFiles (_files, checkExtension, warningCallback) {
 	  var file, fileName, extension, hasValidExtension, filteredFiles = [];
 	  for (var i = 0, l = _files.length; i < l; i++) {
 	    file = _files[i];
@@ -41789,7 +41825,7 @@
 	        warningCallback('File ' + fileName + ' has no extension and will be ignored.');
 	      } else {
 	        hasValidExtension = EXTENSION_WHITE_LIST.indexOf(extension) > -1;
-	        if (!hasValidExtension) {
+	        if (checkExtension && !hasValidExtension) {
 	          console.error('File ' + fileName + ' is not supported and will be ignored.');
 	          warningCallback('File ' + fileName + ' is not supported and will be ignored.');
 	        } else {
@@ -41947,7 +41983,9 @@
 	  function dropFiles (event) {
 	    if (dragOverCssClass) mainEl.classList.remove(dragOverCssClass);
 	    preventBrowserDefaults(event);
-	    getFilesFromDragAndDropEvent(event).then(function (files) {
+	    getFilesFromDragAndDropEvent(event, {
+	      checkExtension: upload ? true : false // check extension only when uploading files
+	    }).then(function (files) {
 	      handleFileInput(files, event);
 	    }).catch(console.error);
 	  }
