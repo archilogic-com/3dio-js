@@ -75,7 +75,7 @@ function getAframeElementsFromSceneStructure(sceneStructure, parent) {
 }
 
 // get html attributes from element3d params
-function getAttributes(element3d) {
+export const getAttributes = function(element3d) {
   var attributes = {}
 
   // map type specific attributes
@@ -208,7 +208,7 @@ function createBakedElement(parentElem, element3d) {
 }
 
 // creates a camera and tour-waypoints from scene structure
-function parseCameraBookmarks(sceneStructure, planRoot) {
+export const parseCameraBookmarks = function (sceneStructure, planRoot) {
   var bookmarks = flattenSceneStructure(sceneStructure[0]).filter(function (element) { return element.type === 'camera-bookmark' })
   if (bookmarks.length === 0) return
 
