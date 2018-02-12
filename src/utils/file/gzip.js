@@ -3,16 +3,13 @@ import fetchScript from '../io/fetch-script.js'
 import readFile from './read.js'
 import getMimeTypeFromFileName from './get-mime-type-from-filename.js'
 
-// fixme: metro bundler workaround for react-native
-const requireAlias = require
-
 // API
 
 var gzip = {
   inflate: inflate,
   inflateFile: inflateFile,
   deflate: deflate,
-  deflateFile: deflateFile
+  deflateFile: deflateFile,
 }
 
 export default gzip
@@ -85,11 +82,11 @@ function deflateFile(file) {
 function loadDeflateLib() {
   return runtime.isBrowser
     ? fetchScript(PAKO_LIB.deflate.url)
-    : Promise.resolve(requireAlias(PAKO_LIB.deflate.module))
+    : Promise.resolve(runtime.require(PAKO_LIB.deflate.module))
 }
 
 function loadInflateLib() {
   return runtime.isBrowser
     ? fetchScript(PAKO_LIB.inflate.url)
-    : Promise.resolve(requireAlias(PAKO_LIB.inflate.module))
+    : Promise.resolve(runtime.require(PAKO_LIB.inflate.module))
 }
