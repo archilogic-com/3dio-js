@@ -2,7 +2,7 @@ import floor from '../../../../src/aframe/component/architecture-toolkit/floor.j
 import applyDefaults from '../../../../src/scene/structure/apply-defaults.js';
 
 // mock runtime module to prevent from tests blowing up
-jest.mock('../../../../src/core/runtime.js', () => ({isBrowser: false, isNode: true}))
+jest.mock('../../../../src/core/runtime.js', () => ({isBrowser: false, isNode: true, require: require}))
 
 test('get floor data3d', () => {
   const el3d = applyDefaults({type: 'floor'})
