@@ -58,7 +58,7 @@ var runtime = {
     gitCommitHash: GIT_COMMIT.substr(0, 7),
     buildDate: BUILD_DATE,
     license: packageJson.license
-  }
+  },
 
   require: getDynamicRequire()
 
@@ -74,7 +74,7 @@ function assertBrowser(message) {
 
 // work around for react-native's metro bundler dynamic require check, see https://github.com/facebook/metro/issues/65
 function getDynamicRequire() {
-  return isNode || isReactNative ? require : null
+  return isNode || isReactNative ? require.bind(require) : null
 }
 
 function getWebGlInfo () {
