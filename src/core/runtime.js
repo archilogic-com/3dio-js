@@ -74,7 +74,7 @@ function assertBrowser(message) {
 
 // work around for react-native's metro bundler dynamic require check, see https://github.com/facebook/metro/issues/65
 function getDynamicRequire() {
-  return isNode || isReactNative ? require.bind(require) : null
+  return typeof require !== 'undefined' ? require.bind(require) : null
 }
 
 function getWebGlInfo () {
