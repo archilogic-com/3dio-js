@@ -39,8 +39,8 @@
     "dev-browser": "gulp dev-browser",
     "dev-node": "gulp dev-node",
     "jshint": "gulp jshint",
-    "test": "gulp test",
-    "build": "gulp build",
+    "test": "jest --coverage",
+    "build": "jest && gulp build",
     "release": "gulp release"
   },
   "dependencies": {
@@ -56,7 +56,8 @@
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
-    "ava": "^0.22.0",
+    "babel-core": "^6.26.0",
+    "babel-jest": "^22.2.0",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-runtime": "^6.26.0",
@@ -64,17 +65,18 @@
     "confirm-cli": "^0.4.0",
     "del": "^3.0.0",
     "gulp": "github:gulpjs/gulp#4.0",
-    "gulp-ava": "^0.18.0",
     "gulp-git": "^2.4.2",
     "gulp-gzip": "^1.4.0",
     "gulp-jshint": "^2.0.4",
     "gulp-less": "^3.3.2",
     "gulp-s3": "^0.11.0",
     "gulp-watch": "^4.3.11",
+    "jest": "^22.2.1",
     "jshint": "^2.9.5",
     "jshint-stylish": "^2.2.1",
     "lite-server": "^2.3.0",
     "moment": "^2.19.0",
+    "regenerator-runtime": "^0.11.1",
     "rollup": "^0.41.6",
     "rollup-plugin-babel": "^3.0.2",
     "rollup-plugin-commonjs": "^8.2.1",
@@ -83,5 +85,13 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "through2": "^2.0.3",
     "uglify-js": "^3.1.3"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}",
+      "!**/node_modules/**",
+      "!**/vendor/**"
+    ],
+    "testMatch": [ "**/test/**/*.js", "**/__tests__/**/*.js?(x)", "**/?(*.)(spec|test).js?(x)" ]
   }
 }

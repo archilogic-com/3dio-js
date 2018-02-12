@@ -7,7 +7,6 @@ const through2 = require('through2')
 const UglifyJS = require('uglify-js')
 const build = require('./build.js')
 const jshint = require('./jshint.js')
-const test = require('./test.js')
 const packageInfo = require('../package.json')
 const preamble = require('./preamble.js')
 const execSync = require('child_process').execSync
@@ -43,7 +42,6 @@ const release = gulp.series(
   checkBranchName,
   npmCheckVersion,
   jshint,
-  test,
   setBabelEnv,
   build,
   unsetBabelEnv,
