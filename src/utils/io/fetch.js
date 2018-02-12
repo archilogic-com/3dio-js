@@ -1,14 +1,18 @@
 import runtime from '../../core/runtime.js'
 
-export default (function() {
-  if (typeof fetch !== 'undefined') {
+export default (function(){
+
+  if (runtime.isNode) {
+    // overwrite whatwg-fetch polyfill
+    global.fetch = runtime.require('node-fetch')
+    return global.fetch
+  } else if (typeof fetch !== 'undefined') {
     return fetch
-  } else if (runtime.isNode) {
-    return runtime.require('node-fetch')
   } else {
     console.warn('Missing global fetch API.')
     return function() {
       throw new Error('Missing global fetch API.')
     }
   }
+
 })()
