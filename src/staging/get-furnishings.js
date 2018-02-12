@@ -48,7 +48,7 @@ export default function furnish (sceneStructure, options) {
 }
 
 // completes sceneStructure with plan and level object
-function normalizeInput(input) {
+export const normalizeInput = function (input) {
   if (input.type !== 'plan') {
     if (Array.isArray(input)) {
       if (input[0].type !== 'level') {
@@ -81,7 +81,7 @@ function normalizeInput(input) {
   return normalizeSceneStructure(input)
 }
 
-function getSceneStructureFromFurnishingResult(result) {
+export const getSceneStructureFromFurnishingResult = function (result) {
   // assumes that only one space is furnished at a time
   var spaceId = Object.keys(result.furnishings)[0]
 
@@ -99,7 +99,7 @@ function getSceneStructureFromFurnishingResult(result) {
 }
 
 // combine data from staging API with data from furniture API
-function getFurnitureGroupData(group) {
+export const getFurnitureGroupData = function (group) {
   var id = group.src.substring(1)
   // get raw data from Furniture API
   return callService('Product.read', { arguments: id})
