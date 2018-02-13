@@ -5,7 +5,8 @@ import { getAttributes, parseCameraBookmarks } from '../../../src/scene/structur
 jest.mock('../../../src/core/runtime.js', () => ({
   isBrowser: false, 
   assertBrowser: () => {}, 
-  isNode: true
+  isNode: true,
+  require: require
 }))
 
 test('sceneStructure to a-entity', () => {

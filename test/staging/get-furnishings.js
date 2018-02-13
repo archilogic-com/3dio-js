@@ -5,7 +5,7 @@ import {
 } from '../../src/staging/get-furnishings'
 
 // mock runtime module to prevent from tests blowing up
-jest.mock('../../src/core/runtime.js', () => ({isBrowser: false, isNode: true}))
+jest.mock('../../src/core/runtime.js', () => ({isBrowser: false, isNode: true, require: require}))
 
 test('normalize sceneStructure input for home staging', async () => {
   const sceneStructure = [{

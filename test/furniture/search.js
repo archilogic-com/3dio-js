@@ -3,7 +3,7 @@ import getInfo from '../../src/furniture/get-info'
 import get from '../../src/furniture/get'
 
 // mock runtime module to prevent from tests blowing up
-jest.mock('../../src/core/runtime.js', () => ({isBrowser: false, isNode: true}))
+jest.mock('../../src/core/runtime.js', () => ({isBrowser: false, isNode: true, require: require}))
 
 test('Furniture: search for chairs', async () => {
   const result = await search('chair')

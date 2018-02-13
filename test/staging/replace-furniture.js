@@ -1,7 +1,7 @@
 import replaceFurniture from '../../src/staging/replace-furniture'
 
 // mock runtime module to prevent from tests blowing up
-jest.mock('../../src/core/runtime.js', () => ({isBrowser: false, isNode: true}))
+jest.mock('../../src/core/runtime.js', () => ({isBrowser: false, isNode: true, require: require}))
 
 // replace furniture
 test('Replace furniture items', async () => {
