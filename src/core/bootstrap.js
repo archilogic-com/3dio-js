@@ -25,4 +25,6 @@ if (runtime.isBrowser) {
 // global dependencies
 
 // three.js
-if (runtime.isNode) global.THREE = runtime.require('three')
+// FIXME: use require alias after #126 is resolved
+//if (runtime.isNode) global.THREE = runtime.require('three')
+if (runtime.isNode) global.THREE = require('three')
