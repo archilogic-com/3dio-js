@@ -97,7 +97,7 @@ if (runtime.isBrowser) {
 
   // node: use module
   global.performance = {
-    now: require('performance-now')
+    now: runtime.require('performance-now')
   }
 
 }

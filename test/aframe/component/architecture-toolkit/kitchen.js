@@ -2,11 +2,10 @@ import kitchen from '../../../../src/aframe/component/architecture-toolkit/kitch
 import applyDefaults from '../../../../src/scene/structure/apply-defaults.js';
 
 // mock runtime module to prevent from tests blowing up
-jest.mock('../../../../src/core/runtime.js', () => ({isBrowser: false, isNode: true}))
+jest.mock('../../../../src/core/runtime.js', () => ({isBrowser: false, isNode: true, require: require }))
 
 test('get kitchen data3d', async () => {
   let el3d = applyDefaults({type: 'kitchen'})
-
   kitchen.attributes = el3d
   kitchen.materials = {}
   // kitchen mesh generation is async because of external dependencies

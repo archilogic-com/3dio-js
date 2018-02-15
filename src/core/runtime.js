@@ -10,6 +10,10 @@ var isNode = !!(
   && typeof process !== 'undefined'
   && Object.prototype.toString.call(process) === '[object process]'
 )
+// detect react native environment
+var isReactNative = !!(
+  typeof navigator !== 'undefined' && navigator.product === 'ReactNative'
+)
 var isBrowser = !isNode && typeof window !== 'undefined' && Object.prototype.toString.call(window) === '[object Window]'
 // detect whether webgl is available
 var webGlInfo = getWebGlInfo()
@@ -26,6 +30,7 @@ var runtime = {
 
   isDebugMode: false,
   isNode: isNode,
+  isReactNative: isReactNative,
 
   // browser specific
 
@@ -50,10 +55,12 @@ var runtime = {
     homepage: packageJson.homepage,
     githubRepository: packageJson.repository,
     gitBranchName: GIT_BRANCH,
-    gitCommitHash: GIT_COMMIT.substr(0,7),
+    gitCommitHash: GIT_COMMIT.substr(0, 7),
     buildDate: BUILD_DATE,
     license: packageJson.license
-  }
+  },
+
+  require: getDynamicRequire()
 
 }
 
@@ -63,6 +70,11 @@ export default runtime
 
 function assertBrowser(message) {
   if (!isBrowser) throw (message || 'Sorry this feature requires a browser environment.')
+}
+
+// work around for react-native's metro bundler dynamic require check, see https://github.com/facebook/metro/issues/65
+function getDynamicRequire() {
+  return typeof require !== 'undefined' ? require.bind(require) : null
 }
 
 function getWebGlInfo () {
