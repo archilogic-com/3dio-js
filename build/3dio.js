@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.1.6
- * @date 2018/02/15 14:11
+ * @version 1.1.7
+ * @date 2018/02/15 15:07
  * @branch master
- * @commit c4f88dc5340cefc1cebc63dbdb036622f57311d3
+ * @commit 0ba72b8ad98a5bba5ec5435890e775fc4b10fb99
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2018/02/15 14:11', GIT_BRANCH = 'master', GIT_COMMIT = 'c4f88dc5340cefc1cebc63dbdb036622f57311d3'
+	var BUILD_DATE='2018/02/15 15:07', GIT_BRANCH = 'master', GIT_COMMIT = '0ba72b8ad98a5bba5ec5435890e775fc4b10fb99'
 
 	var name = "3dio";
-	var version = "1.1.6";
+	var version = "1.1.7";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d", "aframe", "cardboard", "components", "oculus", "vive", "rift", "vr", "WebVR", "WegGL", "three", "three.js", "3D model", "api", "visualization", "furniture", "real estate", "interior", "building", "architecture", "3d.io"];
 	var homepage = "https://3d.io";
@@ -7274,7 +7274,9 @@
 
 	  // node: use module
 	  global.performance = {
-	    now: runtime.require('performance-now')
+	    // FIXME: use require alias after #126 is resolved
+	    //now: runtime.require('performance-now')
+	    now: require('performance-now')
 	  };
 	}
 
@@ -7557,7 +7559,9 @@
 	// global dependencies
 
 	// three.js
-	if (runtime.isNode) global.THREE = runtime.require('three');
+	// FIXME: use require alias after #126 is resolved
+	//if (runtime.isNode) global.THREE = runtime.require('three')
+	if (runtime.isNode) global.THREE = require('three');
 
 	// default configs values
 
@@ -7697,7 +7701,9 @@
 
 	  if (runtime.isNode) {
 	    // overwrite whatwg-fetch polyfill
-	    global.fetch = runtime.require('node-fetch');
+	    // FIXME: use require alias after #126 is resolved
+	    //global.fetch = runtime.require('node-fetch')
+	    global.fetch = require('node-fetch');
 	    return global.fetch;
 	  } else if (typeof fetch !== 'undefined') {
 	    return fetch;
@@ -36693,7 +36699,9 @@
 
 	var FormData_;
 	if (runtime.isNode) {
-	  FormData_ = runtime.require('form-data');
+	  // FIXME: use require alias after #126 is resolved
+	  //FormData_ = runtime.require('form-data')
+	  FormData_ = require('form-data');
 	} else if (typeof FormData !== 'undefined') {
 	  FormData_ = FormData;
 	} else {
@@ -38732,11 +38740,15 @@
 	// helpers
 
 	function loadDeflateLib() {
-	  return runtime.isBrowser ? fetchScript(PAKO_LIB.deflate.url) : Promise.resolve(runtime.require(PAKO_LIB.deflate.module));
+	  // FIXME: use require alias after #126 is resolved
+	  //return runtime.isBrowser ? fetchScript(PAKO_LIB.deflate.url) : Promise.resolve(runtime.require(PAKO_LIB.deflate.module))
+	  return runtime.isBrowser ? fetchScript(PAKO_LIB.deflate.url) : Promise.resolve(require(PAKO_LIB.deflate.module));
 	}
 
 	function loadInflateLib() {
-	  return runtime.isBrowser ? fetchScript(PAKO_LIB.inflate.url) : Promise.resolve(runtime.require(PAKO_LIB.inflate.module));
+	  // FIXME: use require alias after #126 is resolved
+	  //return runtime.isBrowser ? fetchScript(PAKO_LIB.inflate.url) : Promise.resolve(runtime.require(PAKO_LIB.inflate.module))
+	  return runtime.isBrowser ? fetchScript(PAKO_LIB.inflate.url) : Promise.resolve(require(PAKO_LIB.inflate.module));
 	}
 
 	/**
