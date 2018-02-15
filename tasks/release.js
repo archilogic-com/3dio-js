@@ -86,13 +86,19 @@ function checkBranchName () {
   }
 }
 
+let rememberBabelEnv = {}
+
 function setBabelEnv () {
+  rememberBabelEnv.ROLLUP_USE_BABEL = process.env.ROLLUP_USE_BABEL
+  rememberBabelEnv.BABEL_ENV = process.env.BABEL_ENV
   process.env.ROLLUP_USE_BABEL = true
+  process.env.BABEL_ENV = 'production'
   return Promise.resolve()
 }
 
 function unsetBabelEnv () {
-  process.env.ROLLUP_USE_BABEL = false
+  process.env.ROLLUP_USE_BABEL = rememberBabelEnv.ROLLUP_USE_BABEL
+  process.env.BABEL_ENV = rememberBabelEnv.BABEL_ENV
   return Promise.resolve()
 }
 
@@ -220,6 +226,12 @@ function s3Upload () {
 }
 
 // helpers
+
+function handleError(error) {
+  console.error(error.stack || error)
+  // return rejected promise to cancel promise chain
+  return Promise.reject(error)
+}
 
 function read (path_) {
   return fs.readFileSync(path_, `utf8`)

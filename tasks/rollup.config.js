@@ -57,6 +57,11 @@ export default {
     (function(){
       if (process.env.ROLLUP_USE_BABEL) {
         // use babel
+        if (!process.env.BABEL_ENV) {
+          // By API specs Babel will fallback to "development"
+          // https://babeljs.io/docs/usage/api/
+          console.warn('"BABEL_ENV" env variable not set. Babel default fallback = "development"')
+        }
         return babel()
       } else {
         // return empty plugin doing nothing

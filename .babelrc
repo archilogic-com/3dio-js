@@ -5,6 +5,11 @@
         "es2015"
       ]
     },
+    "development": {
+      "presets": [
+        "es2015"
+      ]
+    },
     "production": {
       "presets": [
         [
