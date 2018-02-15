@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path')
 const gulp = require('gulp')
 const del = require('del')
 const gzip = require('gulp-gzip')
@@ -29,9 +30,9 @@ const awsConfig = {
   secret: process.env.AWS_SECRET_ACCESS_KEY
 }
 const awsDir = {
-  version: `3dio-js/${version}/`,
-  latestMinor: `3dio-js/${getLatestMinor(version)}/`,
-  latestPatch: `3dio-js/${getLatestPatch(version)}/`
+  version: path.join('3dio-js', version),
+  latestMinor: path.join('3dio-js', getLatestMinor(version)),
+  latestPatch: path.join('3dio-js', getLatestPatch(version))
 }
 
 // tasks
@@ -97,19 +98,19 @@ function unsetBabelEnv () {
 
 function cleanDestDir () {
   return del([destDir]).then(function () {
-    fs.mkdirSync(process.cwd() + `/${destDir}`, 0o744)
-    fs.mkdirSync(process.cwd() + `/${destDir}/${version}`, 0o744)
+    fs.mkdirSync(path.join(process.cwd(), destDir), 0o744)
+    fs.mkdirSync(path.join(process.cwd(), destDir, version), 0o744)
   })
 }
 
 function copyBuildToDist () {
   return gulp
-    .src(`${srcDir}/**`)
-    .pipe(gulp.dest(`${destDir}/${version}`))
+    .src(path.join(srcDir, '/**'))
+    .pipe(gulp.dest(path.join(destDir, version)))
 }
 
 function uglify () {
-  return gulp.src(srcDir + '/*.js').pipe(through2.obj((inputFile, enc, cb) => {
+  return gulp.src(path.join(srcDir, '/*.js')).pipe(through2.obj((inputFile, enc, cb) => {
     // process files only
     if (!inputFile.isBuffer()) return
     // get filename without extension
@@ -122,15 +123,19 @@ function uglify () {
       compress: {dead_code: true, toplevel: true, passes: 3},
       output: {preamble: preamble.text, beautify: false},
       sourceMap: {
-        content: read(`${srcDir}/${sourceBasename}.js.map`),
+        content: read(path.join(srcDir, `${targetBasename}.js.map`)),
         url: `${targetBasename}.min.js.map`
       }
     })
     if (ugly.warnings) console.log('UGLIFY WARNINGS: ', ugly.warnings)
     if (ugly.error) return Promise.reject(ugly.error)
     // write files
-    fs.writeFileSync(`${cwd}/${destDir}/${version}/${targetBasename}.min.js.map`, ugly.map)
-    fs.writeFileSync(`${cwd}/${destDir}/${version}/${targetBasename}.min.js`, ugly.code)
+    fs.writeFileSync(
+      path.join(cwd, destDir, version, `${targetBasename}.min.js.map`),
+      ugly.map)
+    fs.writeFileSync(
+      path.join(cwd, destDir, version, `${targetBasename}.min.js`),
+      ugly.code)
     // gulp callback
     cb()
   }))
@@ -150,8 +155,12 @@ function gitTag () {
 }
 
 function gitCommit () {
-  return gulp.src(['build/*', 'package.json', 'package-lock.json'])
-    .pipe(git.commit(gitCommitMessage))
+  // commit build and package.json with updated version number
+  return gulp.src([
+    path.join(srcDir, '*'),
+    'package.json',
+    'package-lock.json'
+  ]).pipe(git.commit(gitCommitMessage))
 }
 
 function gitPush () {
@@ -178,7 +187,7 @@ function npmPublish () {
 }
 
 function s3Upload () {
-  return gulp.src(`${destDir}/${version}/**/**`)
+  return gulp.src(path.join(destDir, version, '*'))
     .pipe(gzip({
       append: false, // do not append .gz extension
       threshold: false, // no file size treshold because all files will have gzip headers
@@ -212,8 +221,8 @@ function s3Upload () {
 
 // helpers
 
-function read (path) {
-  return fs.readFileSync(path, `utf8`)
+function read (path_) {
+  return fs.readFileSync(path_, `utf8`)
 }
 
 function getLatestMinor (version) {
