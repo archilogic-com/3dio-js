@@ -34,6 +34,10 @@ const awsDir = {
   latestMinor: path.join('3dio-js', getLatestMinor(version)),
   latestPatch: path.join('3dio-js', getLatestPatch(version))
 }
+// set CDN cache time for all specific distribution files (file names i.e. "1.0.3")
+const cdnCacheMaxAge = 365 * 24 * 60 * 60 // 1 Year
+// set CDN cache time for "latest" distribution files (file names: "1.x.x" and "1.0.x")
+const cdnCacheMaxAgeLatest = 5 * 60 // 5 Min
 
 // tasks
 
@@ -53,7 +57,8 @@ const release = gulp.series(
   gitCommit,
   gitPush,
   npmPublish,
-  s3Upload
+  s3Upload,
+  releaseInfo
 )
 
 function checkLocalEnv() {
@@ -203,7 +208,7 @@ function s3Upload () {
       uploadPath: awsDir.version,
       headers: {
         'Content-Encoding': 'gzip',
-        'Cache-Control': 'max-age=' + (60*60*24*365) // 1 year
+        'Cache-Control': 'max-age=' + cdnCacheMaxAge
       },
       failOnError: true
     }))
@@ -211,7 +216,7 @@ function s3Upload () {
       uploadPath: awsDir.latestMinor,
       headers: {
         'Content-Encoding': 'gzip',
-        'Cache-Control': 'max-age=' + (60*5) // 5 minutes
+        'Cache-Control': 'max-age=' + cdnCacheMaxAgeLatest
       },
       failOnError: true
     }))
@@ -219,7 +224,7 @@ function s3Upload () {
       uploadPath: awsDir.latestPatch,
       headers: {
         'Content-Encoding': 'gzip',
-        'Cache-Control': 'max-age=' + (60*5) // 5 minutes
+        'Cache-Control': 'max-age=' + cdnCacheMaxAgeLatest
       },
       failOnError: true
     }))
@@ -256,6 +261,12 @@ function getAppendix (version) {
     appendix = version.split('-').slice(1).join('-')
   }
   return appendix
+}
+
+function releaseInfo() {
+  console.log(`🎉 SUCCESS! 🎉
+⚠️ PLEASE NOTE: "${getLatestMinor(version)}" and "${getLatestMinor(version)}" will become effective after CDN cache expires in ${cdnCacheMaxAgeLatest / 60} minutes.`)
+  return Promise.resolve()
 }
 
 // export
