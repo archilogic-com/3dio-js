@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.1.5
- * @date 2018/01/19 13:14
+ * @version 1.1.6
+ * @date 2018/02/15 14:11
  * @branch master
- * @commit 533a10f8ca5de2a76779b07f298123b5ff5d6e85
+ * @commit c4f88dc5340cefc1cebc63dbdb036622f57311d3
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2018/01/19 13:14', GIT_BRANCH = 'master', GIT_COMMIT = '533a10f8ca5de2a76779b07f298123b5ff5d6e85'
+	var BUILD_DATE='2018/02/15 14:11', GIT_BRANCH = 'master', GIT_COMMIT = 'c4f88dc5340cefc1cebc63dbdb036622f57311d3'
 
 	var name = "3dio";
-	var version = "1.1.5";
+	var version = "1.1.6";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d", "aframe", "cardboard", "components", "oculus", "vive", "rift", "vr", "WebVR", "WegGL", "three", "three.js", "3D model", "api", "visualization", "furniture", "real estate", "interior", "building", "architecture", "3d.io"];
 	var homepage = "https://3d.io";
@@ -29,9 +29,10 @@
 	var license = "MIT";
 	var author = { "name": "archilogic", "email": "dev.rocks@archilogic.com", "url": "https://archilogic.com" };
 	var main = "index.js";
-	var scripts = { "start": "gulp dev-browser", "dev-browser": "gulp dev-browser", "dev-node": "gulp dev-node", "jshint": "gulp jshint", "test": "gulp test", "build": "gulp build", "release": "gulp release" };
+	var scripts = { "start": "gulp dev-browser", "dev-browser": "gulp dev-browser", "dev-node": "gulp dev-node", "jshint": "gulp jshint", "test": "jest --coverage", "build": "jest && gulp build", "release": "gulp release" };
 	var dependencies = { "bluebird": "^3.5.1", "form-data": "^2.3.1", "js-logger": "^1.4.1", "lodash": "^4.17.4", "node-fetch": "2.0.0-alpha.8", "pako": "^1.0.5", "performance-now": "^2.1.0", "rxjs": "^5.4.3", "three": "^0.85.2", "whatwg-fetch": "^2.0.3" };
-	var devDependencies = { "ava": "^0.22.0", "babel-plugin-external-helpers": "^6.22.0", "babel-preset-es2015": "^6.24.1", "babel-runtime": "^6.26.0", "chalk": "^2.1.0", "confirm-cli": "^0.4.0", "del": "^3.0.0", "gulp": "github:gulpjs/gulp#4.0", "gulp-ava": "^0.18.0", "gulp-git": "^2.4.2", "gulp-gzip": "^1.4.0", "gulp-jshint": "^2.0.4", "gulp-less": "^3.3.2", "gulp-s3": "^0.11.0", "gulp-watch": "^4.3.11", "jshint": "^2.9.5", "jshint-stylish": "^2.2.1", "lite-server": "^2.3.0", "moment": "^2.19.0", "rollup": "^0.41.6", "rollup-plugin-babel": "^3.0.2", "rollup-plugin-commonjs": "^8.2.1", "rollup-plugin-json": "^2.3.0", "rollup-plugin-less": "^0.1.3", "rollup-plugin-node-resolve": "^3.0.0", "through2": "^2.0.3", "uglify-js": "^3.1.3" };
+	var devDependencies = { "babel-core": "^6.26.0", "babel-jest": "^22.2.0", "babel-plugin-external-helpers": "^6.22.0", "babel-preset-env": "^1.6.1", "babel-preset-es2015": "^6.24.1", "babel-runtime": "^6.26.0", "chalk": "^2.1.0", "confirm-cli": "^0.4.0", "del": "^3.0.0", "gulp": "github:gulpjs/gulp#4.0", "gulp-git": "^2.4.2", "gulp-gzip": "^1.4.0", "gulp-jshint": "^2.0.4", "gulp-less": "^3.3.2", "gulp-s3": "0.11.0", "gulp-watch": "^4.3.11", "jest": "^22.2.1", "jshint": "^2.9.5", "jshint-stylish": "^2.2.1", "lite-server": "^2.3.0", "moment": "^2.19.0", "regenerator-runtime": "^0.11.1", "rollup": "^0.41.6", "rollup-plugin-babel": "^3.0.2", "rollup-plugin-commonjs": "^8.2.1", "rollup-plugin-json": "^2.3.0", "rollup-plugin-less": "^0.1.3", "rollup-plugin-node-resolve": "^3.0.0", "through2": "^2.0.3", "uglify-js": "^3.1.3" };
+	var jest = { "collectCoverageFrom": ["src/**/*.{js,jsx}", "!**/node_modules/**", "!**/vendor/**"], "testMatch": ["**/test/**/*.js", "**/__tests__/**/*.js?(x)", "**/?(*.)(spec|test).js?(x)"] };
 	var packageJson = {
 		name: name,
 		version: version,
@@ -44,7 +45,8 @@
 		main: main,
 		scripts: scripts,
 		dependencies: dependencies,
-		devDependencies: devDependencies
+		devDependencies: devDependencies,
+		jest: jest
 	};
 
 	/**
@@ -219,6 +221,70 @@
 	  return typeof obj;
 	} : function (obj) {
 	  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+	};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	var toConsumableArray = function (arr) {
+	  if (Array.isArray(arr)) {
+	    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+	    return arr2;
+	  } else {
+	    return Array.from(arr);
+	  }
 	};
 
 	function isObject(x) {
@@ -502,6 +568,8 @@
 	};
 
 	var rxSubscriber = createCommonjsModule(function (module, exports) {
+	  "use strict";
+
 	  var _Symbol = root.root.Symbol;
 	  exports.rxSubscriber = typeof _Symbol === 'function' && typeof _Symbol.for === 'function' ? _Symbol.for('rxSubscriber') : '@@rxSubscriber';
 	  /**
@@ -510,9 +578,6 @@
 	  exports.$$rxSubscriber = exports.rxSubscriber;
 	  
 	});
-
-	var rxSubscriber_1 = rxSubscriber.rxSubscriber;
-	var rxSubscriber_2 = rxSubscriber.$$rxSubscriber;
 
 	var __extends$2 = commonjsGlobal && commonjsGlobal.__extends || function (d, b) {
 	    for (var p in b) {
@@ -800,6 +865,8 @@
 	};
 
 	var observable = createCommonjsModule(function (module, exports) {
+	    "use strict";
+
 	    function getSymbolObservable(context) {
 	        var $$observable;
 	        var _Symbol = context.Symbol;
@@ -823,10 +890,6 @@
 	    exports.$$observable = exports.observable;
 	    
 	});
-
-	var observable_1 = observable.getSymbolObservable;
-	var observable_2 = observable.observable;
-	var observable_3 = observable.$$observable;
 
 	/* tslint:disable:no-empty */
 
@@ -1479,6 +1542,8 @@
 	var isNode = !!(
 	// detect node environment
 	typeof module !== 'undefined' && module.exports && typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]');
+	// detect react native environment
+	var isReactNative = !!(typeof navigator !== 'undefined' && navigator.product === 'ReactNative');
 	var isBrowser = !isNode && typeof window !== 'undefined' && Object.prototype.toString.call(window) === '[object Window]';
 	// detect whether webgl is available
 	var webGlInfo = getWebGlInfo();
@@ -1495,6 +1560,7 @@
 
 	  isDebugMode: false,
 	  isNode: isNode,
+	  isReactNative: isReactNative,
 
 	  // browser specific
 
@@ -1522,7 +1588,9 @@
 	    gitCommitHash: GIT_COMMIT.substr(0, 7),
 	    buildDate: BUILD_DATE,
 	    license: packageJson.license
-	  }
+	  },
+
+	  require: getDynamicRequire()
 
 	};
 
@@ -1530,6 +1598,11 @@
 
 	function assertBrowser(message) {
 	  if (!isBrowser) throw message || 'Sorry this feature requires a browser environment.';
+	}
+
+	// work around for react-native's metro bundler dynamic require check, see https://github.com/facebook/metro/issues/65
+	function getDynamicRequire() {
+	  return typeof require !== 'undefined' ? require.bind(require) : null;
 	}
 
 	function getWebGlInfo() {
@@ -1647,7 +1720,7 @@
 	    !function (e) {
 	        module.exports = e();
 	    }(function () {
-	        return function e(t, n, r) {
+	        var define, module, exports;return function e(t, n, r) {
 	            function s(o, u) {
 	                if (!n[o]) {
 	                    if (!t[o]) {
@@ -1660,6 +1733,8 @@
 	                s(r[o]);
 	            }return s;
 	        }({ 1: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise) {
 	                    var SomePromiseArray = Promise._SomePromiseArray;
 	                    function any(promises) {
@@ -1680,6 +1755,8 @@
 	                    };
 	                };
 	            }, {}], 2: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                var firstLineError;
 	                try {
 	                    throw new Error();
@@ -1845,6 +1922,8 @@
 	                module.exports = Async;
 	                module.exports.firstLineError = firstLineError;
 	            }, { "./queue": 26, "./schedule": 29, "./util": 36 }], 3: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, INTERNAL, tryConvertToPromise, debug) {
 	                    var calledBind = false;
 	                    var rejectThis = function rejectThis(_, e) {
@@ -1911,6 +1990,8 @@
 	                    };
 	                };
 	            }, {}], 4: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                var old;
 	                if (typeof Promise !== "undefined") old = Promise;
 	                function noConflict() {
@@ -1923,6 +2004,8 @@
 	                bluebird.noConflict = noConflict;
 	                module.exports = bluebird;
 	            }, { "./promise": 22 }], 5: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                var cr = Object.create;
 	                if (cr) {
 	                    var callerCache = cr(null);
@@ -1935,6 +2018,7 @@
 	                    var canEvaluate = util.canEvaluate;
 	                    var isIdentifier = util.isIdentifier;
 
+	                    var getMethodCaller;
 	                    var getGetter;
 	                    function ensureMethod(obj, methodName) {
 	                        var fn;
@@ -1982,6 +2066,8 @@
 	                    };
 	                };
 	            }, { "./util": 36 }], 6: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, PromiseArray, apiRejection, debug) {
 	                    var util = _dereq_("./util");
 	                    var tryCatch = util.tryCatch;
@@ -2109,6 +2195,8 @@
 	                    };
 	                };
 	            }, { "./util": 36 }], 7: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (NEXT_FILTER) {
 	                    var util = _dereq_("./util");
 	                    var getKeys = _dereq_("./es5").keys;
@@ -2150,6 +2238,8 @@
 	                    return catchFilter;
 	                };
 	            }, { "./es5": 13, "./util": 36 }], 8: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise) {
 	                    var longStackTraces = false;
 	                    var contextStack = [];
@@ -2221,6 +2311,8 @@
 	                    return Context;
 	                };
 	            }, {}], 9: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, Context) {
 	                    var getDomain = Promise._getDomain;
 	                    var async = Promise._async;
@@ -3097,6 +3189,8 @@
 	                    };
 	                };
 	            }, { "./errors": 12, "./util": 36 }], 10: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise) {
 	                    function returner() {
 	                        return this.value;
@@ -3141,6 +3235,8 @@
 	                    };
 	                };
 	            }, {}], 11: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, INTERNAL) {
 	                    var PromiseReduce = Promise.reduce;
 	                    var PromiseAll = Promise.all;
@@ -3168,6 +3264,8 @@
 	                    Promise.mapSeries = PromiseMapSeries;
 	                };
 	            }, {}], 12: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                var es5 = _dereq_("./es5");
 	                var Objectfreeze = es5.freeze;
 	                var util = _dereq_("./util");
@@ -3281,6 +3379,8 @@
 	                };
 	            }, { "./es5": 13, "./util": 36 }], 13: [function (_dereq_, module, exports) {
 	                var isES5 = function () {
+	                    "use strict";
+
 	                    return this === undefined;
 	                }();
 
@@ -3358,6 +3458,8 @@
 	                    };
 	                }
 	            }, {}], 14: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, INTERNAL) {
 	                    var PromiseMap = Promise.map;
 
@@ -3370,6 +3472,8 @@
 	                    };
 	                };
 	            }, {}], 15: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, tryConvertToPromise, NEXT_FILTER) {
 	                    var util = _dereq_("./util");
 	                    var CancellationError = Promise.CancellationError;
@@ -3493,6 +3597,8 @@
 	                    return PassThroughHandlerContext;
 	                };
 	            }, { "./catch_filter": 7, "./util": 36 }], 16: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, apiRejection, INTERNAL, tryConvertToPromise, Proxyable, debug) {
 	                    var errors = _dereq_("./errors");
 	                    var TypeError = errors.TypeError;
@@ -3690,11 +3796,15 @@
 	                    };
 	                };
 	            }, { "./errors": 12, "./util": 36 }], 17: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, PromiseArray, tryConvertToPromise, INTERNAL, async, getDomain) {
 	                    var util = _dereq_("./util");
 	                    var canEvaluate = util.canEvaluate;
 	                    var tryCatch = util.tryCatch;
 	                    var errorObj = util.errorObj;
+	                    var reject;
+
 	                    Promise.join = function () {
 	                        var last = arguments.length - 1;
 	                        var fn;
@@ -3711,6 +3821,8 @@
 	                    };
 	                };
 	            }, { "./util": 36 }], 18: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, PromiseArray, apiRejection, tryConvertToPromise, INTERNAL, debug) {
 	                    var getDomain = Promise._getDomain;
 	                    var util = _dereq_("./util");
@@ -3860,6 +3972,8 @@
 	                    };
 	                };
 	            }, { "./util": 36 }], 19: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, INTERNAL, tryConvertToPromise, apiRejection, debug) {
 	                    var util = _dereq_("./util");
 	                    var tryCatch = util.tryCatch;
@@ -3911,6 +4025,8 @@
 	                    };
 	                };
 	            }, { "./util": 36 }], 20: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                var util = _dereq_("./util");
 	                var maybeWrapAsError = util.maybeWrapAsError;
 	                var errors = _dereq_("./errors");
@@ -3961,6 +4077,8 @@
 
 	                module.exports = nodebackForPromise;
 	            }, { "./errors": 12, "./es5": 13, "./util": 36 }], 21: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise) {
 	                    var util = _dereq_("./util");
 	                    var async = Promise._async;
@@ -4009,6 +4127,8 @@
 	                    };
 	                };
 	            }, { "./util": 36 }], 22: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function () {
 	                    var makeSelfResolutionError = function makeSelfResolutionError() {
 	                        return new TypeError('circular promise resolution chain\n\n    See http://goo.gl/MqrFmX\n');
@@ -4743,6 +4863,8 @@
 	                    return Promise;
 	                };
 	            }, { "./any.js": 1, "./async": 2, "./bind": 3, "./call_get.js": 5, "./cancel": 6, "./catch_filter": 7, "./context": 8, "./debuggability": 9, "./direct_resolve": 10, "./each.js": 11, "./errors": 12, "./es5": 13, "./filter.js": 14, "./finally": 15, "./generators.js": 16, "./join": 17, "./map.js": 18, "./method": 19, "./nodeback": 20, "./nodeify.js": 21, "./promise_array": 23, "./promisify.js": 24, "./props.js": 25, "./race.js": 27, "./reduce.js": 28, "./settle.js": 30, "./some.js": 31, "./synchronous_inspection": 32, "./thenables": 33, "./timers.js": 34, "./using.js": 35, "./util": 36 }], 23: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, INTERNAL, tryConvertToPromise, apiRejection, Proxyable) {
 	                    var util = _dereq_("./util");
 	                    var isArray = util.isArray;
@@ -4922,6 +5044,8 @@
 	                    return PromiseArray;
 	                };
 	            }, { "./util": 36 }], 24: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, INTERNAL) {
 	                    var THIS = {};
 	                    var util = _dereq_("./util");
@@ -5089,6 +5213,8 @@
 	                    };
 	                };
 	            }, { "./errors": 12, "./nodeback": 20, "./util": 36 }], 25: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, PromiseArray, tryConvertToPromise, apiRejection) {
 	                    var util = _dereq_("./util");
 	                    var isObject = util.isObject;
@@ -5205,6 +5331,8 @@
 	                    };
 	                };
 	            }, { "./es5": 13, "./util": 36 }], 26: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                function arrayMove(src, srcIndex, dst, dstIndex, len) {
 	                    for (var j = 0; j < len; ++j) {
 	                        dst[j + dstIndex] = src[j + srcIndex];
@@ -5278,6 +5406,8 @@
 
 	                module.exports = Queue;
 	            }, {}], 27: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, INTERNAL, tryConvertToPromise, apiRejection) {
 	                    var util = _dereq_("./util");
 
@@ -5324,6 +5454,8 @@
 	                    };
 	                };
 	            }, { "./util": 36 }], 28: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, PromiseArray, apiRejection, tryConvertToPromise, INTERNAL, debug) {
 	                    var getDomain = Promise._getDomain;
 	                    var util = _dereq_("./util");
@@ -5481,6 +5613,8 @@
 	                    }
 	                };
 	            }, { "./util": 36 }], 29: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                var util = _dereq_("./util");
 	                var schedule;
 	                var noAsyncScheduler = function noAsyncScheduler() {
@@ -5540,6 +5674,8 @@
 	                }
 	                module.exports = schedule;
 	            }, { "./util": 36 }], 30: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, PromiseArray, debug) {
 	                    var PromiseInspection = Promise.PromiseInspection;
 	                    var util = _dereq_("./util");
@@ -5582,6 +5718,8 @@
 	                    };
 	                };
 	            }, { "./util": 36 }], 31: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, PromiseArray, apiRejection) {
 	                    var util = _dereq_("./util");
 	                    var RangeError = _dereq_("./errors").RangeError;
@@ -5724,6 +5862,8 @@
 	                    Promise._SomePromiseArray = SomePromiseArray;
 	                };
 	            }, { "./errors": 12, "./util": 36 }], 32: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise) {
 	                    function PromiseInspection(promise) {
 	                        if (promise !== undefined) {
@@ -5824,6 +5964,8 @@
 	                    Promise.PromiseInspection = PromiseInspection;
 	                };
 	            }, {}], 33: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, INTERNAL) {
 	                    var util = _dereq_("./util");
 	                    var errorObj = util.errorObj;
@@ -5904,6 +6046,8 @@
 	                    return tryConvertToPromise;
 	                };
 	            }, { "./util": 36 }], 34: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, INTERNAL, debug) {
 	                    var util = _dereq_("./util");
 	                    var TimeoutError = Promise.TimeoutError;
@@ -5997,6 +6141,8 @@
 	                    };
 	                };
 	            }, { "./util": 36 }], 35: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                module.exports = function (Promise, apiRejection, tryConvertToPromise, createContext, INTERNAL, debug) {
 	                    var util = _dereq_("./util");
 	                    var TypeError = _dereq_("./errors").TypeError;
@@ -6208,6 +6354,8 @@
 	                    };
 	                };
 	            }, { "./errors": 12, "./util": 36 }], 36: [function (_dereq_, module, exports) {
+	                "use strict";
+
 	                var es5 = _dereq_("./es5");
 	                var canEvaluate = typeof navigator == "undefined";
 
@@ -6383,7 +6531,12 @@
 
 	                function toFastProperties(obj) {
 	                    /*jshint -W027,-W055,-W031*/
-	                    return obj;
+	                    function FakeConstructor() {}
+	                    FakeConstructor.prototype = obj;
+	                    var l = 8;
+	                    while (l--) {
+	                        new FakeConstructor();
+	                    }return obj;
 	                    eval(obj);
 	                }
 
@@ -6571,6 +6724,8 @@
 	});
 
 	(function (self) {
+	  'use strict';
+
 	  if (self.fetch) {
 	    return;
 	  }
@@ -7076,6 +7231,8 @@
 	  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
 	  (function () {
 	    Object.assign = function (target) {
+	      'use strict';
+
 	      if (target === undefined || target === null) {
 	        throw new TypeError('Cannot convert undefined or null to object');
 	      }
@@ -7117,7 +7274,7 @@
 
 	  // node: use module
 	  global.performance = {
-	    now: require('performance-now')
+	    now: runtime.require('performance-now')
 	  };
 	}
 
@@ -7128,6 +7285,10 @@
 	  * js-logger may be freely distributed under the MIT license.
 	  */
 		(function (global) {
+			"use strict";
+
+			// Top level module for the global, static logger instance.
+
 			var Logger = {};
 
 			// For those that are at home that are keeping score.
@@ -7396,7 +7557,7 @@
 	// global dependencies
 
 	// three.js
-	if (runtime.isNode) global.THREE = require('three');
+	if (runtime.isNode) global.THREE = runtime.require('three');
 
 	// default configs values
 
@@ -7485,7 +7646,7 @@
 	    libUrl = document.currentScript.getAttribute('src');
 	  } else {
 	    // browsers not supporting currentScript
-	    var src;
+	    var src, libSearch;
 	    var scripts = document.getElementsByTagName('script');
 	    var libNameRegex = new RegExp('(\/3dio\.js|\/3dio\.min\.js)');
 	    // iterating backwarts as the last script is most likely the current one
@@ -7535,7 +7696,9 @@
 	var fetch$1 = (function () {
 
 	  if (runtime.isNode) {
-	    return require('node-fetch');
+	    // overwrite whatwg-fetch polyfill
+	    global.fetch = runtime.require('node-fetch');
+	    return global.fetch;
 	  } else if (typeof fetch !== 'undefined') {
 	    return fetch;
 	  } else {
@@ -7548,6 +7711,8 @@
 
 	var es5 = createCommonjsModule(function (module) {
 	    var isES5 = function () {
+	        "use strict";
+
 	        return this === undefined;
 	    }();
 
@@ -7625,16 +7790,6 @@
 	        };
 	    }
 	});
-
-	var es5_1 = es5.freeze;
-	var es5_2 = es5.defineProperty;
-	var es5_3 = es5.getDescriptor;
-	var es5_4 = es5.keys;
-	var es5_5 = es5.names;
-	var es5_6 = es5.getPrototypeOf;
-	var es5_7 = es5.isArray;
-	var es5_8 = es5.isES5;
-	var es5_9 = es5.propertyIsWritable;
 
 	var canEvaluate = typeof navigator == "undefined";
 
@@ -7810,7 +7965,12 @@
 
 	function toFastProperties(obj) {
 	    /*jshint -W027,-W055,-W031*/
-	    return obj;
+	    function FakeConstructor() {}
+	    FakeConstructor.prototype = obj;
+	    var l = 8;
+	    while (l--) {
+	        new FakeConstructor();
+	    }return obj;
 	    eval(obj);
 	}
 
@@ -8398,9 +8558,9 @@
 	};
 
 	var thenables = function thenables(Promise, INTERNAL) {
-	    var util$$2 = util;
-	    var errorObj = util$$2.errorObj;
-	    var isObject = util$$2.isObject;
+	    var util$$1 = util;
+	    var errorObj = util$$1.errorObj;
+	    var isObject = util$$1.isObject;
 
 	    function tryConvertToPromise(obj, context) {
 	        if (isObject(obj)) {
@@ -8452,7 +8612,7 @@
 	        promise._captureStackTrace();
 	        if (context) context._popContext();
 	        var synchronous = true;
-	        var result = util$$2.tryCatch(then).call(x, resolve, reject);
+	        var result = util$$1.tryCatch(then).call(x, resolve, reject);
 	        synchronous = false;
 
 	        if (promise && result === errorObj) {
@@ -8478,7 +8638,9 @@
 	};
 
 	var promise_array = function promise_array(Promise, INTERNAL, tryConvertToPromise, apiRejection, Proxyable) {
-	    var util$$2 = util;
+	    var util$$1 = util;
+	    var isArray = util$$1.isArray;
+
 	    function toResolutionValue(val) {
 	        switch (val) {
 	            case -2:
@@ -8501,7 +8663,7 @@
 	        this._totalResolved = 0;
 	        this._init(undefined, -2);
 	    }
-	    util$$2.inherits(PromiseArray, Proxyable);
+	    util$$1.inherits(PromiseArray, Proxyable);
 
 	    PromiseArray.prototype.length = function () {
 	        return this._length;
@@ -8530,9 +8692,9 @@
 	                return this._cancel();
 	            }
 	        }
-	        values = util$$2.asArray(values);
+	        values = util$$1.asArray(values);
 	        if (values === null) {
-	            var err = apiRejection("expecting an array or an iterable object but got " + util$$2.classString(values)).reason();
+	            var err = apiRejection("expecting an array or an iterable object but got " + util$$1.classString(values)).reason();
 	            this._promise._rejectCallback(err, false);
 	            return;
 	        }
@@ -8729,8 +8891,8 @@
 	    var getDomain = Promise._getDomain;
 	    var async = Promise._async;
 	    var Warning = errors.Warning;
-	    var util$$2 = util;
-	    var canAttachTrace = util$$2.canAttachTrace;
+	    var util$$1 = util;
+	    var canAttachTrace = util$$1.canAttachTrace;
 	    var unhandledRejectionHandled;
 	    var possiblyUnhandledRejection;
 	    var bluebirdFramePattern = /[\\\/]bluebird[\\\/]js[\\\/](release|debug|instrumented)/;
@@ -8740,13 +8902,13 @@
 	    var formatStack = null;
 	    var indentStackFrames = false;
 	    var printWarning;
-	    var debugging = !!(util$$2.env("BLUEBIRD_DEBUG") != 0 && (false || util$$2.env("BLUEBIRD_DEBUG") || util$$2.env("NODE_ENV") === "development"));
+	    var debugging = !!(util$$1.env("BLUEBIRD_DEBUG") != 0 && (false || util$$1.env("BLUEBIRD_DEBUG") || util$$1.env("NODE_ENV") === "development"));
 
-	    var warnings = !!(util$$2.env("BLUEBIRD_WARNINGS") != 0 && (debugging || util$$2.env("BLUEBIRD_WARNINGS")));
+	    var warnings = !!(util$$1.env("BLUEBIRD_WARNINGS") != 0 && (debugging || util$$1.env("BLUEBIRD_WARNINGS")));
 
-	    var longStackTraces = !!(util$$2.env("BLUEBIRD_LONG_STACK_TRACES") != 0 && (debugging || util$$2.env("BLUEBIRD_LONG_STACK_TRACES")));
+	    var longStackTraces = !!(util$$1.env("BLUEBIRD_LONG_STACK_TRACES") != 0 && (debugging || util$$1.env("BLUEBIRD_LONG_STACK_TRACES")));
 
-	    var wForgottenReturn = util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 && (warnings || !!util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
+	    var wForgottenReturn = util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 && (warnings || !!util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
 
 	    Promise.prototype.suppressUnhandledRejections = function () {
 	        var target = this._target();
@@ -8816,12 +8978,12 @@
 
 	    Promise.onPossiblyUnhandledRejection = function (fn) {
 	        var domain = getDomain();
-	        possiblyUnhandledRejection = typeof fn === "function" ? domain === null ? fn : util$$2.domainBind(domain, fn) : undefined;
+	        possiblyUnhandledRejection = typeof fn === "function" ? domain === null ? fn : util$$1.domainBind(domain, fn) : undefined;
 	    };
 
 	    Promise.onUnhandledRejectionHandled = function (fn) {
 	        var domain = getDomain();
-	        unhandledRejectionHandled = typeof fn === "function" ? domain === null ? fn : util$$2.domainBind(domain, fn) : undefined;
+	        unhandledRejectionHandled = typeof fn === "function" ? domain === null ? fn : util$$1.domainBind(domain, fn) : undefined;
 	    };
 
 	    var disableLongStackTraces = function disableLongStackTraces() {};
@@ -8858,32 +9020,32 @@
 	        try {
 	            if (typeof CustomEvent === "function") {
 	                var event = new CustomEvent("CustomEvent");
-	                util$$2.global.dispatchEvent(event);
+	                util$$1.global.dispatchEvent(event);
 	                return function (name, event) {
 	                    var domEvent = new CustomEvent(name.toLowerCase(), {
 	                        detail: event,
 	                        cancelable: true
 	                    });
-	                    return !util$$2.global.dispatchEvent(domEvent);
+	                    return !util$$1.global.dispatchEvent(domEvent);
 	                };
 	            } else if (typeof Event === "function") {
 	                var event = new Event("CustomEvent");
-	                util$$2.global.dispatchEvent(event);
+	                util$$1.global.dispatchEvent(event);
 	                return function (name, event) {
 	                    var domEvent = new Event(name.toLowerCase(), {
 	                        cancelable: true
 	                    });
 	                    domEvent.detail = event;
-	                    return !util$$2.global.dispatchEvent(domEvent);
+	                    return !util$$1.global.dispatchEvent(domEvent);
 	                };
 	            } else {
 	                var event = document.createEvent("CustomEvent");
 	                event.initCustomEvent("testingtheevent", false, true, {});
-	                util$$2.global.dispatchEvent(event);
+	                util$$1.global.dispatchEvent(event);
 	                return function (name, event) {
 	                    var domEvent = document.createEvent("CustomEvent");
 	                    domEvent.initCustomEvent(name.toLowerCase(), false, true, event);
-	                    return !util$$2.global.dispatchEvent(domEvent);
+	                    return !util$$1.global.dispatchEvent(domEvent);
 	                };
 	            }
 	        } catch (e) {}
@@ -8893,21 +9055,21 @@
 	    }();
 
 	    var fireGlobalEvent = function () {
-	        if (util$$2.isNode) {
+	        if (util$$1.isNode) {
 	            return function () {
 	                return process.emit.apply(process, arguments);
 	            };
 	        } else {
-	            if (!util$$2.global) {
+	            if (!util$$1.global) {
 	                return function () {
 	                    return false;
 	                };
 	            }
 	            return function (name) {
 	                var methodName = "on" + name.toLowerCase();
-	                var method = util$$2.global[methodName];
+	                var method = util$$1.global[methodName];
 	                if (!method) return false;
-	                method.apply(util$$2.global, [].slice.call(arguments, 1));
+	                method.apply(util$$1.global, [].slice.call(arguments, 1));
 	                return true;
 	            };
 	        }
@@ -8969,7 +9131,7 @@
 	            config.warnings = !!warningsOption;
 	            wForgottenReturn = config.warnings;
 
-	            if (util$$2.isObject(warningsOption)) {
+	            if (util$$1.isObject(warningsOption)) {
 	                if ("wForgottenReturn" in warningsOption) {
 	                    wForgottenReturn = !!warningsOption.wForgottenReturn;
 	                }
@@ -9032,7 +9194,7 @@
 	        try {
 	            executor(resolve, reject, function (onCancel) {
 	                if (typeof onCancel !== "function") {
-	                    throw new TypeError("onCancel must be a function, got: " + util$$2.toString(onCancel));
+	                    throw new TypeError("onCancel must be a function, got: " + util$$1.toString(onCancel));
 	                }
 	                promise._attachCancellationCallback(onCancel);
 	            });
@@ -9046,7 +9208,7 @@
 
 	        var previousOnCancel = this._onCancel();
 	        if (previousOnCancel !== undefined) {
-	            if (util$$2.isArray(previousOnCancel)) {
+	            if (util$$1.isArray(previousOnCancel)) {
 	                previousOnCancel.push(onCancel);
 	            } else {
 	                this._setOnCancel([previousOnCancel, onCancel]);
@@ -9118,8 +9280,8 @@
 	                trace.attachExtraTrace(error);
 	            } else if (!error.__stackCleaned__) {
 	                var parsed = parseStackAndMessage(error);
-	                util$$2.notEnumerableProp(error, "stack", parsed.message + "\n" + parsed.stack.join("\n"));
-	                util$$2.notEnumerableProp(error, "__stackCleaned__", true);
+	                util$$1.notEnumerableProp(error, "stack", parsed.message + "\n" + parsed.stack.join("\n"));
+	                util$$1.notEnumerableProp(error, "__stackCleaned__", true);
 	            }
 	        }
 	    }
@@ -9279,7 +9441,7 @@
 	    function formatAndLogError(error, title, isSoft) {
 	        if (typeof console !== "undefined") {
 	            var message;
-	            if (util$$2.isObject(error)) {
+	            if (util$$1.isObject(error)) {
 	                var stack = error.stack;
 	                message = title + formatStack(stack, error);
 	            } else {
@@ -9322,7 +9484,7 @@
 	        if (typeof obj === "function") {
 	            str = "[function " + (obj.name || "anonymous") + "]";
 	        } else {
-	            str = obj && typeof obj.toString === "function" ? obj.toString() : util$$2.toString(obj);
+	            str = obj && typeof obj.toString === "function" ? obj.toString() : util$$1.toString(obj);
 	            var ruselessToString = /\[object [a-zA-Z0-9$_]+\]/;
 	            if (ruselessToString.test(str)) {
 	                try {
@@ -9410,7 +9572,7 @@
 	        captureStackTrace(this, CapturedTrace);
 	        if (length > 32) this.uncycle();
 	    }
-	    util$$2.inherits(CapturedTrace, Error);
+	    util$$1.inherits(CapturedTrace, Error);
 	    Context.CapturedTrace = CapturedTrace;
 
 	    CapturedTrace.prototype.uncycle = function () {
@@ -9474,8 +9636,8 @@
 	        }
 	        removeCommonRoots(stacks);
 	        removeDuplicateOrEmptyJumps(stacks);
-	        util$$2.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
-	        util$$2.notEnumerableProp(error, "__stackCleaned__", true);
+	        util$$1.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
+	        util$$1.notEnumerableProp(error, "__stackCleaned__", true);
 	    };
 
 	    var captureStackTrace = function stackDetection() {
@@ -9551,12 +9713,12 @@
 	        printWarning = function printWarning(message) {
 	            console.warn(message);
 	        };
-	        if (util$$2.isNode && process.stderr.isTTY) {
+	        if (util$$1.isNode && process.stderr.isTTY) {
 	            printWarning = function printWarning(message, isSoft) {
 	                var color = isSoft ? '\x1B[33m' : '\x1B[31m';
 	                console.warn(color + message + '\x1B[0m\n');
 	            };
-	        } else if (!util$$2.isNode && typeof new Error().stack === "string") {
+	        } else if (!util$$1.isNode && typeof new Error().stack === "string") {
 	            printWarning = function printWarning(message, isSoft) {
 	                console.warn("%c" + message, isSoft ? "color: darkorange" : "color: red");
 	            };
@@ -9602,10 +9764,10 @@
 	};
 
 	var catch_filter = function catch_filter(NEXT_FILTER) {
-	    var util$$2 = util;
+	    var util$$1 = util;
 	    var getKeys = es5.keys;
-	    var tryCatch = util$$2.tryCatch;
-	    var errorObj = util$$2.errorObj;
+	    var tryCatch = util$$1.tryCatch;
+	    var errorObj = util$$1.errorObj;
 
 	    function catchFilter(instances, cb, promise) {
 	        return function (e) {
@@ -9624,7 +9786,7 @@
 	                    } else if (matchesPredicate) {
 	                        return tryCatch(cb).call(boundTo, e);
 	                    }
-	                } else if (util$$2.isObject(e)) {
+	                } else if (util$$1.isObject(e)) {
 	                    var keys = getKeys(item);
 	                    for (var j = 0; j < keys.length; ++j) {
 	                        var key = keys[j];
@@ -9643,9 +9805,9 @@
 	};
 
 	var _finally = function _finally(Promise, tryConvertToPromise, NEXT_FILTER) {
-	    var util$$2 = util;
+	    var util$$1 = util;
 	    var CancellationError = Promise.CancellationError;
-	    var errorObj = util$$2.errorObj;
+	    var errorObj = util$$1.errorObj;
 	    var catchFilter = catch_filter(NEXT_FILTER);
 
 	    function PassThroughHandlerContext(promise, type, handler) {
@@ -9750,10 +9912,10 @@
 	                i;
 	            for (i = 0; i < len - 1; ++i) {
 	                var item = arguments[i];
-	                if (util$$2.isObject(item)) {
+	                if (util$$1.isObject(item)) {
 	                    catchInstances[j++] = item;
 	                } else {
-	                    return Promise.reject(new TypeError("tapCatch statement predicate: " + "expecting an object but got " + util$$2.classString(item)));
+	                    return Promise.reject(new TypeError("tapCatch statement predicate: " + "expecting an object but got " + util$$1.classString(item)));
 	                }
 	            }
 	            catchInstances.length = j;
@@ -9816,12 +9978,12 @@
 	var nodeback = nodebackForPromise;
 
 	var method = function method(Promise, INTERNAL, tryConvertToPromise, apiRejection, debug) {
-	    var util$$2 = util;
-	    var tryCatch = util$$2.tryCatch;
+	    var util$$1 = util;
+	    var tryCatch = util$$1.tryCatch;
 
 	    Promise.method = function (fn) {
 	        if (typeof fn !== "function") {
-	            throw new Promise.TypeError("expecting a function but got " + util$$2.classString(fn));
+	            throw new Promise.TypeError("expecting a function but got " + util$$1.classString(fn));
 	        }
 	        return function () {
 	            var ret = new Promise(INTERNAL);
@@ -9837,7 +9999,7 @@
 
 	    Promise.attempt = Promise["try"] = function (fn) {
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
 	        }
 	        var ret = new Promise(INTERNAL);
 	        ret._captureStackTrace();
@@ -9847,7 +10009,7 @@
 	            debug.deprecated("calling Promise.try with more than 1 argument");
 	            var arg = arguments[1];
 	            var ctx = arguments[2];
-	            value = util$$2.isArray(arg) ? tryCatch(fn).apply(ctx, arg) : tryCatch(fn).call(ctx, arg);
+	            value = util$$1.isArray(arg) ? tryCatch(fn).apply(ctx, arg) : tryCatch(fn).call(ctx, arg);
 	        } else {
 	            value = tryCatch(fn)();
 	        }
@@ -9858,7 +10020,7 @@
 	    };
 
 	    Promise.prototype._resolveFromSyncValue = function (value) {
-	        if (value === util$$2.errorObj) {
+	        if (value === util$$1.errorObj) {
 	            this._rejectCallback(value.e, false);
 	        } else {
 	            this._resolveCallback(value, true);
@@ -9933,9 +10095,9 @@
 	};
 
 	var cancel = function cancel(Promise, PromiseArray, apiRejection, debug) {
-	    var util$$2 = util;
-	    var tryCatch = util$$2.tryCatch;
-	    var errorObj = util$$2.errorObj;
+	    var util$$1 = util;
+	    var tryCatch = util$$1.tryCatch;
+	    var errorObj = util$$1.errorObj;
 	    var async = Promise._async;
 
 	    Promise.prototype["break"] = Promise.prototype.cancel = function () {
@@ -10022,7 +10184,7 @@
 	    };
 
 	    Promise.prototype._doInvokeOnCancel = function (onCancelCallback, internalOnly) {
-	        if (util$$2.isArray(onCancelCallback)) {
+	        if (util$$1.isArray(onCancelCallback)) {
 	            for (var i = 0; i < onCancelCallback.length; ++i) {
 	                this._doInvokeOnCancel(onCancelCallback[i], internalOnly);
 	            }
@@ -10204,10 +10366,10 @@
 	};
 
 	var join = function join(Promise, PromiseArray, tryConvertToPromise, INTERNAL, async, getDomain) {
-	    var util$$2 = util;
-	    var canEvaluate = util$$2.canEvaluate;
-	    var tryCatch = util$$2.tryCatch;
-	    var errorObj = util$$2.errorObj;
+	    var util$$1 = util;
+	    var canEvaluate = util$$1.canEvaluate;
+	    var tryCatch = util$$1.tryCatch;
+	    var errorObj = util$$1.errorObj;
 	    var reject;
 
 	    {
@@ -10344,7 +10506,7 @@
 	                        if (holder.asyncNeeded) {
 	                            var domain = getDomain();
 	                            if (domain !== null) {
-	                                holder.fn = util$$2.domainBind(domain, holder.fn);
+	                                holder.fn = util$$1.domainBind(domain, holder.fn);
 	                            }
 	                        }
 	                        ret._setAsyncGuaranteed();
@@ -10365,23 +10527,23 @@
 
 	var map = function map(Promise, PromiseArray, apiRejection, tryConvertToPromise, INTERNAL, debug) {
 	    var getDomain = Promise._getDomain;
-	    var util$$2 = util;
-	    var tryCatch = util$$2.tryCatch;
-	    var errorObj = util$$2.errorObj;
+	    var util$$1 = util;
+	    var tryCatch = util$$1.tryCatch;
+	    var errorObj = util$$1.errorObj;
 	    var async = Promise._async;
 
 	    function MappingPromiseArray(promises, fn, limit, _filter) {
 	        this.constructor$(promises);
 	        this._promise._captureStackTrace();
 	        var domain = getDomain();
-	        this._callback = domain === null ? fn : util$$2.domainBind(domain, fn);
+	        this._callback = domain === null ? fn : util$$1.domainBind(domain, fn);
 	        this._preservedValues = _filter === INTERNAL ? new Array(this.length()) : null;
 	        this._limit = limit;
 	        this._inFlight = 0;
 	        this._queue = [];
 	        async.invoke(this._asyncInit, this, undefined);
 	    }
-	    util$$2.inherits(MappingPromiseArray, PromiseArray);
+	    util$$1.inherits(MappingPromiseArray, PromiseArray);
 
 	    MappingPromiseArray.prototype._asyncInit = function () {
 	        this._init$(undefined, -2);
@@ -10485,18 +10647,18 @@
 
 	    function map(promises, fn, options, _filter) {
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
 	        }
 
 	        var limit = 0;
 	        if (options !== undefined) {
 	            if ((typeof options === 'undefined' ? 'undefined' : _typeof(options)) === "object" && options !== null) {
 	                if (typeof options.concurrency !== "number") {
-	                    return Promise.reject(new TypeError("'concurrency' must be a number but it is " + util$$2.classString(options.concurrency)));
+	                    return Promise.reject(new TypeError("'concurrency' must be a number but it is " + util$$1.classString(options.concurrency)));
 	                }
 	                limit = options.concurrency;
 	            } else {
-	                return Promise.reject(new TypeError("options argument must be an object but it is " + util$$2.classString(options)));
+	                return Promise.reject(new TypeError("options argument must be an object but it is " + util$$1.classString(options)));
 	            }
 	        }
 	        limit = typeof limit === "number" && isFinite(limit) && limit >= 1 ? limit : 0;
@@ -10520,9 +10682,9 @@
 	}
 
 	var call_get = function call_get(Promise) {
-	    var util$$2 = util;
-	    var canEvaluate = util$$2.canEvaluate;
-	    var isIdentifier = util$$2.isIdentifier;
+	    var util$$1 = util;
+	    var canEvaluate = util$$1.canEvaluate;
+	    var isIdentifier = util$$1.isIdentifier;
 
 	    var getMethodCaller;
 	    var getGetter;
@@ -10584,7 +10746,7 @@
 	        var fn;
 	        if (obj != null) fn = obj[methodName];
 	        if (typeof fn !== "function") {
-	            var message = "Object " + util$$2.classString(obj) + " has no method '" + util$$2.toString(methodName) + "'";
+	            var message = "Object " + util$$1.classString(obj) + " has no method '" + util$$1.toString(methodName) + "'";
 	            throw new Promise.TypeError(message);
 	        }
 	        return fn;
@@ -10637,11 +10799,11 @@
 	};
 
 	var using = function using(Promise, apiRejection, tryConvertToPromise, createContext, INTERNAL, debug) {
-	    var util$$2 = util;
+	    var util$$1 = util;
 	    var TypeError = errors.TypeError;
 	    var inherits = util.inherits;
-	    var errorObj = util$$2.errorObj;
-	    var tryCatch = util$$2.tryCatch;
+	    var errorObj = util$$1.errorObj;
+	    var tryCatch = util$$1.tryCatch;
 	    var NULL = {};
 
 	    function thrower(e) {
@@ -10755,7 +10917,7 @@
 	        if (len < 2) return apiRejection("you must pass at least 2 arguments to Promise.using");
 	        var fn = arguments[len - 1];
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
 	        }
 	        var input;
 	        var spreadArgs = true;
@@ -10848,7 +11010,7 @@
 	};
 
 	var timers$1 = function timers(Promise, INTERNAL, debug) {
-	    var util$$2 = util;
+	    var util$$1 = util;
 	    var TimeoutError = Promise.TimeoutError;
 
 	    function HandleWrapper(handle) {
@@ -10899,7 +11061,7 @@
 	        } else {
 	            err = new TimeoutError(message);
 	        }
-	        util$$2.markAsOriginatingFromRejection(err);
+	        util$$1.markAsOriginatingFromRejection(err);
 	        promise._attachExtraTrace(err);
 	        promise._reject(err);
 
@@ -10941,11 +11103,11 @@
 	};
 
 	var generators = function generators(Promise, apiRejection, INTERNAL, tryConvertToPromise, Proxyable, debug) {
-	    var errors$$2 = errors;
-	    var TypeError = errors$$2.TypeError;
-	    var util$$2 = util;
-	    var errorObj = util$$2.errorObj;
-	    var tryCatch = util$$2.tryCatch;
+	    var errors$$1 = errors;
+	    var TypeError = errors$$1.TypeError;
+	    var util$$1 = util;
+	    var errorObj = util$$1.errorObj;
+	    var tryCatch = util$$1.tryCatch;
 	    var yieldHandlers = [];
 
 	    function promiseFromYieldHandler(value, yieldHandlers, traceParent) {
@@ -10986,7 +11148,7 @@
 	        this._yieldedPromise = null;
 	        this._cancellationPhase = false;
 	    }
-	    util$$2.inherits(PromiseSpawn, Proxyable);
+	    util$$1.inherits(PromiseSpawn, Proxyable);
 
 	    PromiseSpawn.prototype._isResolved = function () {
 	        return this._promise === null;
@@ -11120,7 +11282,7 @@
 
 	    Promise.coroutine.addYieldHandler = function (fn) {
 	        if (typeof fn !== "function") {
-	            throw new TypeError("expecting a function but got " + util$$2.classString(fn));
+	            throw new TypeError("expecting a function but got " + util$$1.classString(fn));
 	        }
 	        yieldHandlers.push(fn);
 	    };
@@ -11138,14 +11300,14 @@
 	};
 
 	var nodeify = function nodeify(Promise) {
-	    var util$$2 = util;
+	    var util$$1 = util;
 	    var async = Promise._async;
-	    var tryCatch = util$$2.tryCatch;
-	    var errorObj = util$$2.errorObj;
+	    var tryCatch = util$$1.tryCatch;
+	    var errorObj = util$$1.errorObj;
 
 	    function spreadAdapter(val, nodeback) {
 	        var promise = this;
-	        if (!util$$2.isArray(val)) return successAdapter.call(promise, val, nodeback);
+	        if (!util$$1.isArray(val)) return successAdapter.call(promise, val, nodeback);
 	        var ret = tryCatch(nodeback).apply(promise._boundValue(), [null].concat(val));
 	        if (ret === errorObj) {
 	            async.throwLater(ret.e);
@@ -11187,11 +11349,11 @@
 
 	var promisify = function promisify(Promise, INTERNAL) {
 	    var THIS = {};
-	    var util$$2 = util;
+	    var util$$1 = util;
 	    var nodebackForPromise = nodeback;
-	    var withAppended = util$$2.withAppended;
-	    var maybeWrapAsError = util$$2.maybeWrapAsError;
-	    var canEvaluate = util$$2.canEvaluate;
+	    var withAppended = util$$1.withAppended;
+	    var maybeWrapAsError = util$$1.maybeWrapAsError;
+	    var canEvaluate = util$$1.canEvaluate;
 	    var TypeError = errors.TypeError;
 	    var defaultSuffix = "Async";
 	    var defaultPromisified = { __isPromisified__: true };
@@ -11199,7 +11361,7 @@
 	    var noCopyPropsPattern = new RegExp("^(?:" + noCopyProps.join("|") + ")$");
 
 	    var defaultFilter = function defaultFilter(name) {
-	        return util$$2.isIdentifier(name) && name.charAt(0) !== "_" && name !== "constructor";
+	        return util$$1.isIdentifier(name) && name.charAt(0) !== "_" && name !== "constructor";
 	    };
 
 	    function propsFilter(key) {
@@ -11215,7 +11377,7 @@
 	    }
 
 	    function hasPromisified(obj, key, suffix) {
-	        var val = util$$2.getDataPropertyOrDefault(obj, key + suffix, defaultPromisified);
+	        var val = util$$1.getDataPropertyOrDefault(obj, key + suffix, defaultPromisified);
 	        return val ? isPromisified(val) : false;
 	    }
 	    function checkValid(ret, suffix, suffixRegexp) {
@@ -11233,7 +11395,7 @@
 	    }
 
 	    function promisifiableMethods(obj, suffix, suffixRegexp, filter) {
-	        var keys = util$$2.inheritedDataKeys(obj);
+	        var keys = util$$1.inheritedDataKeys(obj);
 	        var ret = [];
 	        for (var i = 0; i < keys.length; ++i) {
 	            var key = keys[i];
@@ -11266,11 +11428,11 @@
 	        };
 
 	        var argumentSequence = function argumentSequence(argumentCount) {
-	            return util$$2.filledRange(argumentCount, "_arg", "");
+	            return util$$1.filledRange(argumentCount, "_arg", "");
 	        };
 
 	        var parameterDeclaration = function parameterDeclaration(parameterCount) {
-	            return util$$2.filledRange(Math.max(parameterCount, 3), "_arg", "");
+	            return util$$1.filledRange(Math.max(parameterCount, 3), "_arg", "");
 	        };
 
 	        var parameterCount = function parameterCount(fn) {
@@ -11340,7 +11502,7 @@
         return ret;                                                          \n\
     ".replace("[CodeForSwitchCase]", generateArgumentSwitchCase()).replace("[GetFunctionCode]", getFunctionCode);
 	            body = body.replace("Parameters", parameterDeclaration(newParameterCount));
-	            return new Function("Promise", "fn", "receiver", "withAppended", "maybeWrapAsError", "nodebackForPromise", "tryCatch", "errorObj", "notEnumerableProp", "INTERNAL", body)(Promise, fn, receiver, withAppended, maybeWrapAsError, nodebackForPromise, util$$2.tryCatch, util$$2.errorObj, util$$2.notEnumerableProp, INTERNAL);
+	            return new Function("Promise", "fn", "receiver", "withAppended", "maybeWrapAsError", "nodebackForPromise", "tryCatch", "errorObj", "notEnumerableProp", "INTERNAL", body)(Promise, fn, receiver, withAppended, maybeWrapAsError, nodebackForPromise, util$$1.tryCatch, util$$1.errorObj, util$$1.notEnumerableProp, INTERNAL);
 	        };
 	    }
 
@@ -11367,7 +11529,7 @@
 	            if (!promise._isFateSealed()) promise._setAsyncGuaranteed();
 	            return promise;
 	        }
-	        util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
+	        util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
 	        return promisified;
 	    }
 
@@ -11387,11 +11549,11 @@
 	                var promisified = promisifier(fn, function () {
 	                    return makeNodePromisified(key, THIS, key, fn, suffix, multiArgs);
 	                });
-	                util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
+	                util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
 	                obj[promisifiedKey] = promisified;
 	            }
 	        }
-	        util$$2.toFastProperties(obj);
+	        util$$1.toFastProperties(obj);
 	        return obj;
 	    }
 
@@ -11401,7 +11563,7 @@
 
 	    Promise.promisify = function (fn, options) {
 	        if (typeof fn !== "function") {
-	            throw new TypeError("expecting a function but got " + util$$2.classString(fn));
+	            throw new TypeError("expecting a function but got " + util$$1.classString(fn));
 	        }
 	        if (isPromisified(fn)) {
 	            return fn;
@@ -11410,7 +11572,7 @@
 	        var receiver = options.context === undefined ? THIS : options.context;
 	        var multiArgs = !!options.multiArgs;
 	        var ret = promisify(fn, receiver, multiArgs);
-	        util$$2.copyDescriptors(fn, ret, propsFilter);
+	        util$$1.copyDescriptors(fn, ret, propsFilter);
 	        return ret;
 	    };
 
@@ -11427,14 +11589,14 @@
 	        var promisifier = options.promisifier;
 	        if (typeof promisifier !== "function") promisifier = makeNodePromisified;
 
-	        if (!util$$2.isIdentifier(suffix)) {
+	        if (!util$$1.isIdentifier(suffix)) {
 	            throw new RangeError('suffix must be a valid identifier\n\n    See http://goo.gl/MqrFmX\n');
 	        }
 
-	        var keys = util$$2.inheritedDataKeys(target);
+	        var keys = util$$1.inheritedDataKeys(target);
 	        for (var i = 0; i < keys.length; ++i) {
 	            var value = target[keys[i]];
-	            if (keys[i] !== "constructor" && util$$2.isClass(value)) {
+	            if (keys[i] !== "constructor" && util$$1.isClass(value)) {
 	                promisifyAll(value.prototype, suffix, filter, promisifier, multiArgs);
 	                promisifyAll(value, suffix, filter, promisifier, multiArgs);
 	            }
@@ -11445,9 +11607,9 @@
 	};
 
 	var props = function props(Promise, PromiseArray, tryConvertToPromise, apiRejection) {
-	    var util$$2 = util;
-	    var isObject = util$$2.isObject;
-	    var es5$$2 = es5;
+	    var util$$1 = util;
+	    var isObject = util$$1.isObject;
+	    var es5$$1 = es5;
 	    var Es6Map;
 	    if (typeof Map === "function") Es6Map = Map;
 
@@ -11488,7 +11650,7 @@
 	            entries = mapToEntries(obj);
 	            isMap = true;
 	        } else {
-	            var keys = es5$$2.keys(obj);
+	            var keys = es5$$1.keys(obj);
 	            var len = keys.length;
 	            entries = new Array(len * 2);
 	            for (var i = 0; i < len; ++i) {
@@ -11501,7 +11663,7 @@
 	        this._isMap = isMap;
 	        this._init$(undefined, isMap ? -6 : -3);
 	    }
-	    util$$2.inherits(PropertiesPromiseArray, PromiseArray);
+	    util$$1.inherits(PropertiesPromiseArray, PromiseArray);
 
 	    PropertiesPromiseArray.prototype._init = function () {};
 
@@ -11561,7 +11723,7 @@
 	};
 
 	var race = function race(Promise, INTERNAL, tryConvertToPromise, apiRejection) {
-	    var util$$2 = util;
+	    var util$$1 = util;
 
 	    var raceLater = function raceLater(promise) {
 	        return promise.then(function (array) {
@@ -11575,8 +11737,8 @@
 	        if (maybePromise instanceof Promise) {
 	            return raceLater(maybePromise);
 	        } else {
-	            promises = util$$2.asArray(promises);
-	            if (promises === null) return apiRejection("expecting an array or an iterable object but got " + util$$2.classString(promises));
+	            promises = util$$1.asArray(promises);
+	            if (promises === null) return apiRejection("expecting an array or an iterable object but got " + util$$1.classString(promises));
 	        }
 
 	        var ret = new Promise(INTERNAL);
@@ -11608,13 +11770,13 @@
 
 	var reduce = function reduce(Promise, PromiseArray, apiRejection, tryConvertToPromise, INTERNAL, debug) {
 	    var getDomain = Promise._getDomain;
-	    var util$$2 = util;
-	    var tryCatch = util$$2.tryCatch;
+	    var util$$1 = util;
+	    var tryCatch = util$$1.tryCatch;
 
 	    function ReductionPromiseArray(promises, fn, initialValue, _each) {
 	        this.constructor$(promises);
 	        var domain = getDomain();
-	        this._fn = domain === null ? fn : util$$2.domainBind(domain, fn);
+	        this._fn = domain === null ? fn : util$$1.domainBind(domain, fn);
 	        if (initialValue !== undefined) {
 	            initialValue = Promise.resolve(initialValue);
 	            initialValue._attachCancellationCallback(this);
@@ -11631,7 +11793,7 @@
 	        this._promise._captureStackTrace();
 	        this._init$(undefined, -5);
 	    }
-	    util$$2.inherits(ReductionPromiseArray, PromiseArray);
+	    util$$1.inherits(ReductionPromiseArray, PromiseArray);
 
 	    ReductionPromiseArray.prototype._gotAccum = function (accum) {
 	        if (this._eachValues !== undefined && this._eachValues !== null && accum !== INTERNAL) {
@@ -11725,7 +11887,7 @@
 
 	    function reduce(promises, fn, initialValue, _each) {
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
 	        }
 	        var array = new ReductionPromiseArray(promises, fn, initialValue, _each);
 	        return array.promise();
@@ -11765,12 +11927,12 @@
 
 	var settle = function settle(Promise, PromiseArray, debug) {
 	    var PromiseInspection = Promise.PromiseInspection;
-	    var util$$2 = util;
+	    var util$$1 = util;
 
 	    function SettledPromiseArray(values) {
 	        this.constructor$(values);
 	    }
-	    util$$2.inherits(SettledPromiseArray, PromiseArray);
+	    util$$1.inherits(SettledPromiseArray, PromiseArray);
 
 	    SettledPromiseArray.prototype._promiseResolved = function (index, inspection) {
 	        this._values[index] = inspection;
@@ -11806,10 +11968,10 @@
 	};
 
 	var some = function some(Promise, PromiseArray, apiRejection) {
-	    var util$$2 = util;
+	    var util$$1 = util;
 	    var RangeError = errors.RangeError;
 	    var AggregateError = errors.AggregateError;
-	    var isArray = util$$2.isArray;
+	    var isArray = util$$1.isArray;
 	    var CANCELLATION = {};
 
 	    function SomePromiseArray(values) {
@@ -11818,7 +11980,7 @@
 	        this._unwrap = false;
 	        this._initialized = false;
 	    }
-	    util$$2.inherits(SomePromiseArray, PromiseArray);
+	    util$$1.inherits(SomePromiseArray, PromiseArray);
 
 	    SomePromiseArray.prototype._init = function () {
 	        if (!this._initialized) {
@@ -12007,6 +12169,8 @@
 	};
 
 	var promise = createCommonjsModule(function (module) {
+	    "use strict";
+
 	    module.exports = function () {
 	        var makeSelfResolutionError = function makeSelfResolutionError() {
 	            return new TypeError('circular promise resolution chain\n\n    See http://goo.gl/MqrFmX\n');
@@ -12056,6 +12220,7 @@
 	        /*jshint unused:false*/
 	        var createContext = Context.create;
 	        var debug = debuggability(Promise, Context);
+	        var CapturedTrace = debug.CapturedTrace;
 	        var PassThroughHandlerContext = _finally(Promise, tryConvertToPromise, NEXT_FILTER);
 	        var catchFilter = catch_filter(NEXT_FILTER);
 	        var nodebackForPromise = nodeback;
@@ -16244,7 +16409,7 @@
 	  return _apply(assignInWith_1, undefined, args);
 	});
 
-	var defaults_1 = defaults$2;
+	var defaults_1$1 = defaults$2;
 
 	var tourComponent = {
 	  schema: {
@@ -16346,8 +16511,8 @@
 
 	    this._isPlaying = false;
 	    // apply changes to current camera position
-	    var pos = defaults_1({}, posChange, clone_1(this.el.getAttribute('position')));
-	    var rot = defaults_1({}, rotChange, clone_1(this.el.getAttribute('rotation')));
+	    var pos = defaults_1$1({}, posChange, clone_1(this.el.getAttribute('position')));
+	    var rot = defaults_1$1({}, rotChange, clone_1(this.el.getAttribute('rotation')));
 
 	    var target = {
 	      position: pos,
@@ -18113,9 +18278,9 @@
 	  }
 	}
 
-	var fragmentShader = { "text": "uniform vec3 u_color;\nuniform float u_metallic;\nuniform float u_roughness;\nuniform vec3 u_light0Pos;\nuniform vec3 u_light0Color;\nuniform vec3 u_light1Pos;\nuniform vec3 u_light1Color;\nuniform mat4 u_modelMatrix;\nuniform sampler2D u_reflectionCube;\nuniform sampler2D u_reflectionCubeBlur;", "base64": "data:text/plain;base64,dW5pZm9ybSB2ZWMzIHVfY29sb3I7CnVuaWZvcm0gZmxvYXQgdV9tZXRhbGxpYzsKdW5pZm9ybSBmbG9hdCB1X3JvdWdobmVzczsKdW5pZm9ybSB2ZWMzIHVfbGlnaHQwUG9zOwp1bmlmb3JtIHZlYzMgdV9saWdodDBDb2xvcjsKdW5pZm9ybSB2ZWMzIHVfbGlnaHQxUG9zOwp1bmlmb3JtIHZlYzMgdV9saWdodDFDb2xvcjsKdW5pZm9ybSBtYXQ0IHVfbW9kZWxNYXRyaXg7CnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmU7CnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmVCbHVyOw==" };
+	var fragmentShader = { "text": "uniform vec3 u_color;\r\nuniform float u_metallic;\r\nuniform float u_roughness;\r\nuniform vec3 u_light0Pos;\r\nuniform vec3 u_light0Color;\r\nuniform vec3 u_light1Pos;\r\nuniform vec3 u_light1Color;\r\nuniform mat4 u_modelMatrix;\r\nuniform sampler2D u_reflectionCube;\r\nuniform sampler2D u_reflectionCubeBlur;", "base64": "data:text/plain;base64,dW5pZm9ybSB2ZWMzIHVfY29sb3I7DQp1bmlmb3JtIGZsb2F0IHVfbWV0YWxsaWM7DQp1bmlmb3JtIGZsb2F0IHVfcm91Z2huZXNzOw0KdW5pZm9ybSB2ZWMzIHVfbGlnaHQwUG9zOw0KdW5pZm9ybSB2ZWMzIHVfbGlnaHQwQ29sb3I7DQp1bmlmb3JtIHZlYzMgdV9saWdodDFQb3M7DQp1bmlmb3JtIHZlYzMgdV9saWdodDFDb2xvcjsNCnVuaWZvcm0gbWF0NCB1X21vZGVsTWF0cml4Ow0KdW5pZm9ybSBzYW1wbGVyMkQgdV9yZWZsZWN0aW9uQ3ViZTsNCnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmVCbHVyOw==" };
 
-	var vertexShader = { "text": "varying vec3 v_normal;\nvarying vec3 v_position;\nvarying vec3 v_binormal;\nvarying vec3 v_tangent;\n", "base64": "data:text/plain;base64,dmFyeWluZyB2ZWMzIHZfbm9ybWFsOwp2YXJ5aW5nIHZlYzMgdl9wb3NpdGlvbjsKdmFyeWluZyB2ZWMzIHZfYmlub3JtYWw7CnZhcnlpbmcgdmVjMyB2X3RhbmdlbnQ7Cg==" };
+	var vertexShader = { "text": "varying vec3 v_normal;\r\nvarying vec3 v_position;\r\nvarying vec3 v_binormal;\r\nvarying vec3 v_tangent;\r\n", "base64": "data:text/plain;base64,dmFyeWluZyB2ZWMzIHZfbm9ybWFsOw0KdmFyeWluZyB2ZWMzIHZfcG9zaXRpb247DQp2YXJ5aW5nIHZlYzMgdl9iaW5vcm1hbDsNCnZhcnlpbmcgdmVjMyB2X3RhbmdlbnQ7DQo=" };
 
 	// TODO: Replace placeholder shaders by original ones (requires fixing projection matrix)
 	// configs
@@ -18595,6 +18760,8 @@
 	      var polygonStr = '';
 
 	      var style1 = 'fill:rgba(248, 248, 250, 0.8); stroke:rgba(48, 48, 50, 0.8); stroke-width:0.5;';
+	      var style2 = 'fill:rgba(255, 127, 80, 0.8);';
+
 	      spaces.forEach(function (space) {
 	        var pointStr = '';
 	        // get the polygon data for each space
@@ -19820,7 +19987,7 @@
 
 	  if (type && types[type]) {
 	    return {
-	      params: defaults_1({}, generic.params, types[type].params),
+	      params: defaults_1$1({}, generic.params, types[type].params),
 	      childrenTypes: types[type].childrenTypes,
 	      parentTypes: types[type].parentTypes,
 	      aframeComponent: types[type].aframeComponent
@@ -19831,7 +19998,7 @@
 	    Object.keys(types).forEach(function (key) {
 	      generic.type = key;
 	      typeSpecificValidations[key] = {
-	        params: defaults_1({}, generic.params, types[key].params),
+	        params: defaults_1$1({}, generic.params, types[key].params),
 	        childrenTypes: types[key].childrenTypes,
 	        parentTypes: types[key].parentTypes,
 	        aframeComponent: types[key].aframeComponent
@@ -26123,8 +26290,10 @@
 	    }
 
 	  var doLowerCase = false;
+	  var idna = false;
 	  var hostNameStart = start;
 	  var hostNameEnd = end;
+	  var lastCh = -1;
 	  var portLength = 0;
 	  var charsAfterDot = 0;
 	  var authNeedsDecoding = false;
@@ -26217,8 +26386,9 @@
 	            hostNameEnd = i - 1;
 	            break;
 	          }
-	        
+	        idna = true;
 	      }
+	    lastCh = ch;
 	    charsAfterDot++;
 	  }
 
@@ -26617,12 +26787,12 @@
 
 	  // API
 	  options = options || {};
-	  var url$$1 = options.url;
+	  var url = options.url;
 
 	  var parsedUrl, rootDir, origin;
 
-	  if (url$$1) {
-	    parsedUrl = Url.parse(url$$1);
+	  if (url) {
+	    parsedUrl = Url.parse(url);
 	    rootDir = path.parse(parsedUrl.path || parsedUrl.pathname || '').dir;
 	    origin = parsedUrl.protocol + '//' + parsedUrl.host;
 	  }
@@ -26677,7 +26847,7 @@
 	  traverseData3d(structure.data3d, function (data3d) {
 
 	    // map typed arrays to payload area in file buffer
-	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url$$1);
+	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url);
 
 	    //  convert relative material keys into absolute one
 	    if (origin && data3d.materials) convertTextureKeys(data3d, origin, rootDir);
@@ -26722,7 +26892,7 @@
 	  }
 	}
 
-	function mapArraysToBuffer(data3d, buffer, payloadByteOffset, url$$1) {
+	function mapArraysToBuffer(data3d, buffer, payloadByteOffset, url) {
 
 	  var mesh,
 	      i,
@@ -26755,7 +26925,7 @@
 	    }
 
 	    // add cache key
-	    if (url$$1) mesh.cacheKey = url$$1 + ':' + meshKeys[i];
+	    if (url) mesh.cacheKey = url + ':' + meshKeys[i];
 	  }
 	}
 
@@ -29765,6 +29935,7 @@
 	      bY = yCursor - riserExt;
 	      //cY = yCursor - riserExt
 	      cX = xCursor + platformExt;
+	      eX = aX;
 	      eY = yCursor - riserExt;
 	      fZ = zCursor;
 
@@ -33643,7 +33814,13 @@
 	  var off_BBitMask = 25;
 	  var off_ABitMask = 26;
 
+	  var off_caps = 27;
 	  var off_caps2 = 28;
+	  var off_caps3 = 29;
+	  var off_caps4 = 30;
+
+	  // Parse header
+
 	  var header = new Int32Array(buffer, 0, headerLengthInt);
 
 	  if (header[off_magic] !== DDS_MAGIC) {
@@ -33932,6 +34109,7 @@
 
 	var queues = {};
 	var queueFences = {};
+	var queuesChanged = false;
 	var queueInfo = {};
 	var queuesLength = queuesByPriority.length;
 	var concurrentRequests = 0;
@@ -33960,6 +34138,8 @@
 	  concurrentPerQueue[queueName] += 1;
 	  concurrentRequests++;
 	  // set flag
+	  queuesChanged = true;
+	  // Start request
 	  var queue = queues[queueName];
 	  var request = queue.shift();
 	  request.start();
@@ -34006,6 +34186,7 @@
 	  info.timeLastFinished = performance.now() / 1000;
 	  concurrentPerQueue[queueName] -= 1;
 	  concurrentRequests -= 1;
+	  queuesChanged = true;
 	  processQueue();
 	}
 
@@ -34607,7 +34788,7 @@
 
 	var fragmentShader$1 = { "text": "uniform vec3 color;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapExposure;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\n#include <shadowmap_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( color, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #ifdef FLAT_SHADED\n      vec3 fdx = vec3( dFdx( vViewPosition.x ), dFdx( vViewPosition.y ), dFdx( vViewPosition.z ) );\n      vec3 fdy = vec3( dFdy( vViewPosition.x ), dFdy( vViewPosition.y ), dFdy( vViewPosition.z ) );\n      vec3 normal = normalize( cross( fdx, fdy ) );\n    #else\n      vec3 normal = normalize( vNormal );\n      #ifdef DOUBLE_SIDED\n        normal = normal * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n      #endif\n    #endif\n    #ifdef USE_NORMALMAP\n      normal = perturbNormal2Arb( -vViewPosition, normal );\n    #elif defined( USE_BUMPMAP )\n      normal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );\n    #endif\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}", "base64": "data:text/plain;base64,dW5pZm9ybSB2ZWMzIGNvbG9yOwp1bmlmb3JtIHZlYzMgZW1pc3NpdmU7CnVuaWZvcm0gdmVjMyBzcGVjdWxhcjsKdW5pZm9ybSBmbG9hdCBzaGluaW5lc3M7CnVuaWZvcm0gZmxvYXQgb3BhY2l0eTsKI2luY2x1ZGUgPGNvbW1vbj4KI2luY2x1ZGUgPHBhY2tpbmc+CiNpbmNsdWRlIDx1dl9wYXJzX2ZyYWdtZW50PgojaW5jbHVkZSA8dXYyX3BhcnNfZnJhZ21lbnQ+CiNpbmNsdWRlIDxtYXBfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPGFscGhhbWFwX3BhcnNfZnJhZ21lbnQ+CiNpZmRlZiBVU0VfTElHSFRNQVAKCXVuaWZvcm0gc2FtcGxlcjJEIGxpZ2h0TWFwOwoJdW5pZm9ybSBmbG9hdCBsaWdodE1hcEludGVuc2l0eTsKCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBFeHBvc3VyZTsKCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBGYWxsb2ZmOwojZW5kaWYKI2luY2x1ZGUgPG5vcm1hbG1hcF9wYXJzX2ZyYWdtZW50PgojaW5jbHVkZSA8c3BlY3VsYXJtYXBfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPGJzZGZzPgojaW5jbHVkZSA8bGlnaHRzX3BhcnM+CiNpbmNsdWRlIDxsaWdodHNfcGhvbmdfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPHNoYWRvd21hcF9wYXJzX2ZyYWdtZW50Pgp2b2lkIG1haW4oKSB7CiAgICB2ZWM0IGRpZmZ1c2VDb2xvciA9IHZlYzQoIGNvbG9yLCBvcGFjaXR5ICk7CiAgICBSZWZsZWN0ZWRMaWdodCByZWZsZWN0ZWRMaWdodCA9IFJlZmxlY3RlZExpZ2h0KCB2ZWMzKCAwLjAgKSwgdmVjMyggMC4wICksIHZlYzMoIDAuMCApLCB2ZWMzKCAwLjAgKSApOwogICAgdmVjMyB0b3RhbEVtaXNzaXZlUmFkaWFuY2UgPSBlbWlzc2l2ZTsKICAgICNpbmNsdWRlIDxtYXBfZnJhZ21lbnQ+CiAgICAjaW5jbHVkZSA8YWxwaGFtYXBfZnJhZ21lbnQ+CiAgICAjaW5jbHVkZSA8YWxwaGF0ZXN0X2ZyYWdtZW50PgogICAgI2luY2x1ZGUgPHNwZWN1bGFybWFwX2ZyYWdtZW50PgogICAgI2lmZGVmIEZMQVRfU0hBREVECiAgICAgIHZlYzMgZmR4ID0gdmVjMyggZEZkeCggdlZpZXdQb3NpdGlvbi54ICksIGRGZHgoIHZWaWV3UG9zaXRpb24ueSApLCBkRmR4KCB2Vmlld1Bvc2l0aW9uLnogKSApOwogICAgICB2ZWMzIGZkeSA9IHZlYzMoIGRGZHkoIHZWaWV3UG9zaXRpb24ueCApLCBkRmR5KCB2Vmlld1Bvc2l0aW9uLnkgKSwgZEZkeSggdlZpZXdQb3NpdGlvbi56ICkgKTsKICAgICAgdmVjMyBub3JtYWwgPSBub3JtYWxpemUoIGNyb3NzKCBmZHgsIGZkeSApICk7CiAgICAjZWxzZQogICAgICB2ZWMzIG5vcm1hbCA9IG5vcm1hbGl6ZSggdk5vcm1hbCApOwogICAgICAjaWZkZWYgRE9VQkxFX1NJREVECiAgICAgICAgbm9ybWFsID0gbm9ybWFsICogKCBmbG9hdCggZ2xfRnJvbnRGYWNpbmcgKSAqIDIuMCAtIDEuMCApOwogICAgICAjZW5kaWYKICAgICNlbmRpZgogICAgI2lmZGVmIFVTRV9OT1JNQUxNQVAKICAgICAgbm9ybWFsID0gcGVydHVyYk5vcm1hbDJBcmIoIC12Vmlld1Bvc2l0aW9uLCBub3JtYWwgKTsKICAgICNlbGlmIGRlZmluZWQoIFVTRV9CVU1QTUFQICkKICAgICAgbm9ybWFsID0gcGVydHVyYk5vcm1hbEFyYiggLXZWaWV3UG9zaXRpb24sIG5vcm1hbCwgZEhkeHlfZndkKCkgKTsKICAgICNlbmRpZgogICAgI2luY2x1ZGUgPGxpZ2h0c19waG9uZ19mcmFnbWVudD4KICAgIEdlb21ldHJpY0NvbnRleHQgZ2VvbWV0cnk7CiAgICBnZW9tZXRyeS5wb3NpdGlvbiA9IC0gdlZpZXdQb3NpdGlvbjsKICAgIGdlb21ldHJ5Lm5vcm1hbCA9IG5vcm1hbDsKICAgIGdlb21ldHJ5LnZpZXdEaXIgPSBub3JtYWxpemUoIHZWaWV3UG9zaXRpb24gKTsKICAgIEluY2lkZW50TGlnaHQgZGlyZWN0TGlnaHQ7CiAgICAjaWYgKCBOVU1fUE9JTlRfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdCApCiAgICAgICAgUG9pbnRMaWdodCBwb2ludExpZ2h0OwogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9QT0lOVF9MSUdIVFM7IGkgKysgKSB7CiAgICAgICAgICAgIHBvaW50TGlnaHQgPSBwb2ludExpZ2h0c1sgaSBdOwogICAgICAgICAgICBnZXRQb2ludERpcmVjdExpZ2h0SXJyYWRpYW5jZSggcG9pbnRMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7CiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQCiAgICAgICAgICAgIGRpcmVjdExpZ2h0LmNvbG9yICo9IGFsbCggYnZlYzIoIHBvaW50TGlnaHQuc2hhZG93LCBkaXJlY3RMaWdodC52aXNpYmxlICkgKSA/IGdldFBvaW50U2hhZG93KCBwb2ludFNoYWRvd01hcFsgaSBdLCBwb2ludExpZ2h0LnNoYWRvd01hcFNpemUsIHBvaW50TGlnaHQuc2hhZG93QmlhcywgcG9pbnRMaWdodC5zaGFkb3dSYWRpdXMsIHZQb2ludFNoYWRvd0Nvb3JkWyBpIF0gKSA6IDEuMDsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIFJFX0RpcmVjdCggZGlyZWN0TGlnaHQsIGdlb21ldHJ5LCBtYXRlcmlhbCwgcmVmbGVjdGVkTGlnaHQgKTsKICAgICAgICB9CiAgICAjZW5kaWYKICAgICNpZiAoIE5VTV9TUE9UX0xJR0hUUyA+IDAgKSAmJiBkZWZpbmVkKCBSRV9EaXJlY3QgKQogICAgICAgIFNwb3RMaWdodCBzcG90TGlnaHQ7CiAgICAgICAgZm9yICggaW50IGkgPSAwOyBpIDwgTlVNX1NQT1RfTElHSFRTOyBpICsrICkgewogICAgICAgICAgICBzcG90TGlnaHQgPSBzcG90TGlnaHRzWyBpIF07CiAgICAgICAgICAgIGdldFNwb3REaXJlY3RMaWdodElycmFkaWFuY2UoIHNwb3RMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7CiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQCiAgICAgICAgICAgIGRpcmVjdExpZ2h0LmNvbG9yICo9IGFsbCggYnZlYzIoIHNwb3RMaWdodC5zaGFkb3csIGRpcmVjdExpZ2h0LnZpc2libGUgKSApID8gZ2V0U2hhZG93KCBzcG90U2hhZG93TWFwWyBpIF0sIHNwb3RMaWdodC5zaGFkb3dNYXBTaXplLCBzcG90TGlnaHQuc2hhZG93Qmlhcywgc3BvdExpZ2h0LnNoYWRvd1JhZGl1cywgdlNwb3RTaGFkb3dDb29yZFsgaSBdICkgOiAxLjA7CiAgICAgICAgICAgICNlbmRpZgogICAgICAgICAgICBSRV9EaXJlY3QoIGRpcmVjdExpZ2h0LCBnZW9tZXRyeSwgbWF0ZXJpYWwsIHJlZmxlY3RlZExpZ2h0ICk7CiAgICAgICAgfQogICAgI2VuZGlmCiAgICAjaWYgKCBOVU1fRElSX0xJR0hUUyA+IDAgKSAmJiBkZWZpbmVkKCBSRV9EaXJlY3QgKQogICAgICAgIERpcmVjdGlvbmFsTGlnaHQgZGlyZWN0aW9uYWxMaWdodDsKICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fRElSX0xJR0hUUzsgaSArKyApIHsKICAgICAgICAgICAgZGlyZWN0aW9uYWxMaWdodCA9IGRpcmVjdGlvbmFsTGlnaHRzWyBpIF07CiAgICAgICAgICAgIGdldERpcmVjdGlvbmFsRGlyZWN0TGlnaHRJcnJhZGlhbmNlKCBkaXJlY3Rpb25hbExpZ2h0LCBnZW9tZXRyeSwgZGlyZWN0TGlnaHQgKTsKICAgICAgICAgICAgI2lmZGVmIFVTRV9TSEFET1dNQVAKICAgICAgICAgICAgZGlyZWN0TGlnaHQuY29sb3IgKj0gYWxsKCBidmVjMiggZGlyZWN0aW9uYWxMaWdodC5zaGFkb3csIGRpcmVjdExpZ2h0LnZpc2libGUgKSApID8gZ2V0U2hhZG93KCBkaXJlY3Rpb25hbFNoYWRvd01hcFsgaSBdLCBkaXJlY3Rpb25hbExpZ2h0LnNoYWRvd01hcFNpemUsIGRpcmVjdGlvbmFsTGlnaHQuc2hhZG93QmlhcywgZGlyZWN0aW9uYWxMaWdodC5zaGFkb3dSYWRpdXMsIHZEaXJlY3Rpb25hbFNoYWRvd0Nvb3JkWyBpIF0gKSA6IDEuMDsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIFJFX0RpcmVjdCggZGlyZWN0TGlnaHQsIGdlb21ldHJ5LCBtYXRlcmlhbCwgcmVmbGVjdGVkTGlnaHQgKTsKICAgICAgICB9CiAgICAjZW5kaWYKICAgICNpZiAoIE5VTV9SRUNUX0FSRUFfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdF9SZWN0QXJlYSApCiAgICAgICAgUmVjdEFyZWFMaWdodCByZWN0QXJlYUxpZ2h0OwogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9SRUNUX0FSRUFfTElHSFRTOyBpICsrICkgewogICAgICAgICAgICByZWN0QXJlYUxpZ2h0ID0gcmVjdEFyZWFMaWdodHNbIGkgXTsKICAgICAgICAgICAgUkVfRGlyZWN0X1JlY3RBcmVhKCByZWN0QXJlYUxpZ2h0LCBnZW9tZXRyeSwgbWF0ZXJpYWwsIHJlZmxlY3RlZExpZ2h0ICk7CiAgICAgICAgfQogICAgI2VuZGlmCiAgICAjaWYgZGVmaW5lZCggUkVfSW5kaXJlY3REaWZmdXNlICkKICAgICAgICB2ZWMzIGlycmFkaWFuY2UgPSBnZXRBbWJpZW50TGlnaHRJcnJhZGlhbmNlKCBhbWJpZW50TGlnaHRDb2xvciApOwogICAgICAgICNpZmRlZiBVU0VfTElHSFRNQVAKICAgICAgICAgICAgdmVjMyB1bml0ID0gdmVjMygxLjApOwogICAgICAgICAgICB2ZWMzIGxpZ2h0ID0gMi4wICogKHRleHR1cmUyRCggbGlnaHRNYXAsIHZVdjIgKS54eXogLSBsaWdodE1hcEV4cG9zdXJlICogdW5pdCk7CiAgICAgICAgICAgIHZlYzMgbW9kaWZpZXIgPSAtbGlnaHRNYXBGYWxsb2ZmICogbGlnaHQgKiBsaWdodCArIHVuaXQ7CiAgICAgICAgICAgIHZlYzMgbGlnaHRNYXBJcnJhZGlhbmNlID0gbGlnaHQgKiBtb2RpZmllciAqIGxpZ2h0TWFwSW50ZW5zaXR5OwogICAgICAgICAgICAjaWZuZGVmIFBIWVNJQ0FMTFlfQ09SUkVDVF9MSUdIVFMKICAgICAgICAgICAgICAgIGxpZ2h0TWFwSXJyYWRpYW5jZSAqPSBQSTsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIGlycmFkaWFuY2UgKz0gbGlnaHRNYXBJcnJhZGlhbmNlOwogICAgICAgICNlbmRpZgogICAgICAgICNpZiAoIE5VTV9IRU1JX0xJR0hUUyA+IDAgKQogICAgICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fSEVNSV9MSUdIVFM7IGkgKysgKSB7CiAgICAgICAgICAgICAgICBpcnJhZGlhbmNlICs9IGdldEhlbWlzcGhlcmVMaWdodElycmFkaWFuY2UoIGhlbWlzcGhlcmVMaWdodHNbIGkgXSwgZ2VvbWV0cnkgKTsKICAgICAgICAgICAgfQogICAgICAgICNlbmRpZgogICAgICAgIFJFX0luZGlyZWN0RGlmZnVzZSggaXJyYWRpYW5jZSwgZ2VvbWV0cnksIG1hdGVyaWFsLCByZWZsZWN0ZWRMaWdodCApOwogICAgI2VuZGlmCiAgICB2ZWMzIG91dGdvaW5nTGlnaHQgPSByZWZsZWN0ZWRMaWdodC5kaXJlY3REaWZmdXNlICsgcmVmbGVjdGVkTGlnaHQuaW5kaXJlY3REaWZmdXNlICsgcmVmbGVjdGVkTGlnaHQuZGlyZWN0U3BlY3VsYXIgKyByZWZsZWN0ZWRMaWdodC5pbmRpcmVjdFNwZWN1bGFyICsgdG90YWxFbWlzc2l2ZVJhZGlhbmNlOwogICAgZ2xfRnJhZ0NvbG9yID0gdmVjNCggb3V0Z29pbmdMaWdodCwgZGlmZnVzZUNvbG9yLmEgKTsKfQ==" };
 
-	var vertexShader$1 = { "text": "varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}", "base64": "data:text/plain;base64,dmFyeWluZyB2ZWMzIHZWaWV3UG9zaXRpb247CiNpZm5kZWYgRkxBVF9TSEFERUQKCXZhcnlpbmcgdmVjMyB2Tm9ybWFsOwojZW5kaWYKI2luY2x1ZGUgPHV2X3BhcnNfdmVydGV4PgojaW5jbHVkZSA8dXYyX3BhcnNfdmVydGV4PgojaW5jbHVkZSA8c2hhZG93bWFwX3BhcnNfdmVydGV4Pgp2b2lkIG1haW4oKQp7CiAgI2luY2x1ZGUgPHV2X3ZlcnRleD4KICAjaW5jbHVkZSA8dXYyX3ZlcnRleD4KICAjaW5jbHVkZSA8YmVnaW5ub3JtYWxfdmVydGV4PgogICNpbmNsdWRlIDxkZWZhdWx0bm9ybWFsX3ZlcnRleD4KICAjaWZuZGVmIEZMQVRfU0hBREVECiAgCXZOb3JtYWwgPSBub3JtYWxpemUoIHRyYW5zZm9ybWVkTm9ybWFsICk7CiAgI2VuZGlmCiAgI2luY2x1ZGUgPGJlZ2luX3ZlcnRleD4KICAjaW5jbHVkZSA8cHJvamVjdF92ZXJ0ZXg+CiAgdlZpZXdQb3NpdGlvbiA9IC0gbXZQb3NpdGlvbi54eXo7CiAgI2luY2x1ZGUgPHdvcmxkcG9zX3ZlcnRleD4KICAjaW5jbHVkZSA8c2hhZG93bWFwX3ZlcnRleD4KfQ==" };
+	var vertexShader$1 = { "text": "varying vec3 vViewPosition;\r\n\r\n#ifndef FLAT_SHADED\r\n\tvarying vec3 vNormal;\r\n#endif\r\n\r\n#include <uv_pars_vertex>\r\n#include <uv2_pars_vertex>\r\n#include <shadowmap_pars_vertex>\r\n\r\nvoid main()\r\n{\r\n//  vUv = uv;\r\n  #include <uv_vertex>\r\n  #include <uv2_vertex>\r\n\r\n  #include <beginnormal_vertex>\r\n  #include <defaultnormal_vertex>\r\n\r\n  #ifndef FLAT_SHADED\r\n    // Normal computed with derivatives when FLAT_SHADED\r\n  \tvNormal = normalize( transformedNormal );\r\n  #endif\r\n\r\n  #include <begin_vertex>\r\n  #include <project_vertex>\r\n\r\n  vViewPosition = - mvPosition.xyz;\r\n\r\n  #include <worldpos_vertex>\r\n  #include <shadowmap_vertex>\r\n\r\n}", "base64": "data:text/plain;base64,dmFyeWluZyB2ZWMzIHZWaWV3UG9zaXRpb247DQoNCiNpZm5kZWYgRkxBVF9TSEFERUQNCgl2YXJ5aW5nIHZlYzMgdk5vcm1hbDsNCiNlbmRpZg0KDQojaW5jbHVkZSA8dXZfcGFyc192ZXJ0ZXg+DQojaW5jbHVkZSA8dXYyX3BhcnNfdmVydGV4Pg0KI2luY2x1ZGUgPHNoYWRvd21hcF9wYXJzX3ZlcnRleD4NCg0Kdm9pZCBtYWluKCkNCnsNCi8vICB2VXYgPSB1djsNCiAgI2luY2x1ZGUgPHV2X3ZlcnRleD4NCiAgI2luY2x1ZGUgPHV2Ml92ZXJ0ZXg+DQoNCiAgI2luY2x1ZGUgPGJlZ2lubm9ybWFsX3ZlcnRleD4NCiAgI2luY2x1ZGUgPGRlZmF1bHRub3JtYWxfdmVydGV4Pg0KDQogICNpZm5kZWYgRkxBVF9TSEFERUQNCiAgICAvLyBOb3JtYWwgY29tcHV0ZWQgd2l0aCBkZXJpdmF0aXZlcyB3aGVuIEZMQVRfU0hBREVEDQogIAl2Tm9ybWFsID0gbm9ybWFsaXplKCB0cmFuc2Zvcm1lZE5vcm1hbCApOw0KICAjZW5kaWYNCg0KICAjaW5jbHVkZSA8YmVnaW5fdmVydGV4Pg0KICAjaW5jbHVkZSA8cHJvamVjdF92ZXJ0ZXg+DQoNCiAgdlZpZXdQb3NpdGlvbiA9IC0gbXZQb3NpdGlvbi54eXo7DQoNCiAgI2luY2x1ZGUgPHdvcmxkcG9zX3ZlcnRleD4NCiAgI2luY2x1ZGUgPHNoYWRvd21hcF92ZXJ0ZXg+DQoNCn0=" };
 
 	var Io3dMaterial = checkDependencies({
 	  three: true,
@@ -35374,7 +35555,7 @@
 	      // only published furniture & let's make sure we don't have trailing or double spaces
 	      query: 'isPublished:true ' + query.trim().replace(/\s+/g, ' ')
 	    },
-	    limit: 500
+	    limit: limit
 	    // TODO: add this param once #251 https://github.com/archilogic-com/services/issues/251 is resolved
 	    //offset: offset
 
@@ -35596,7 +35777,7 @@
 	}
 
 	// completes sceneStructure with plan and level object
-	function normalizeInput(input) {
+	var normalizeInput = function normalizeInput(input) {
 	  if (input.type !== 'plan') {
 	    if (Array.isArray(input)) {
 	      if (input[0].type !== 'level') {
@@ -35627,9 +35808,9 @@
 	    }
 	  }
 	  return normalizeSceneStructure(input);
-	}
+	};
 
-	function getSceneStructureFromFurnishingResult(result) {
+	var getSceneStructureFromFurnishingResult = function getSceneStructureFromFurnishingResult(result) {
 	  // assumes that only one space is furnished at a time
 	  var spaceId = Object.keys(result.furnishings)[0];
 
@@ -35643,20 +35824,20 @@
 
 	  // get normailzed sceneStructure for each furniture group
 	  return bluebird_1.map(groups, getFurnitureGroupData).then(normalizeSceneStructure);
-	}
+	};
 
 	// combine data from staging API with data from furniture API
-	function getFurnitureGroupData(group) {
+	var getFurnitureGroupData = function getFurnitureGroupData(group) {
 	  var id = group.src.substring(1);
 	  // get raw data from Furniture API
 	  return callService('Product.read', { arguments: id }).then(function (furniture) {
 	    // get sceneStructure from Furniture API -> info on type and possible children
 	    var sceneStructure = JSON.parse(furniture.modelStructure);
 	    // combine data from both API calls to turn result into full sceneStructure
-	    sceneStructure = defaults_1({}, group, sceneStructure);
+	    sceneStructure = defaults_1$1({}, group, sceneStructure);
 	    return bluebird_1.resolve(sceneStructure);
 	  });
-	}
+	};
 
 	var config = {
 	  default_margin: 0.05,
@@ -35802,43 +35983,43 @@
 
 	var types = getDefaultsByType();
 
-	function getSceneStructureFromAframeElements$1(el) {
+	function getSceneStructureFromAframeElements(el) {
 	  if (!isValidElement(el)) {
 	    console.warn('element is not an "a-entity" DOM element');
 	    return;
 	  }
 
-	  var position = el.getAttribute('position'),
-	      rotation = el.getAttribute('rotation'),
+	  var position = el.getAttribute('position') || { x: 0, y: 0, z: 0 },
+	      rotation = el.getAttribute('rotation') || { x: 0, y: 0, z: 0 },
 	      id = el.getAttribute('io3d-uuid'),
 	      children = [];
 
-	  if (typeof position === 'string') position = AFRAME.utils.coordinates.parse(position);
-	  if (typeof rotation === 'string') rotation = AFRAME.utils.coordinates.parse(rotation);
+	  if (typeof position === 'string') position = stringToCoordinate(position);
+	  if (typeof rotation === 'string') rotation = stringToCoordinate(rotation);
 	  var typeData = checkType(el);
 
 	  var childNodes = el.children;
 	  if (childNodes && childNodes.length) {
 	    for (var i = 0; i < childNodes.length; i++) {
-	      var node = getSceneStructureFromAframeElements$1(childNodes[i]);
+	      var node = getSceneStructureFromAframeElements(childNodes[i]);
 	      if (node) children.push(node);
 	    }
 	  }
 
-	  var sceneStructure = defaults_1(typeData, {
+	  var sceneStructure = defaults_1$1({
 	    x: parseFloat(position.x),
 	    y: parseFloat(position.y),
 	    z: parseFloat(position.z),
 	    ry: parseFloat(rotation.y),
 	    children: children,
 	    id: id || uuid.generate()
-	  });
+	  }, typeData);
 
 	  return sceneStructure;
 	}
 
-	function checkType(el) {
-	  var elComponents = Object.keys(el.components);
+	var checkType = function checkType(el) {
+	  var elComponents = el.getAttributeNames(); // Object.keys(el.components)
 	  var data = {};
 	  // find component type match
 	  Object.keys(types).forEach(function (type) {
@@ -35846,7 +36027,7 @@
 	      var aframeName = types[type].aframeComponent.name;
 	      if (elComponents.indexOf(aframeName) > -1) {
 	        data = el.getAttribute(aframeName);
-	        data.type = type;
+	        if (typeof data === 'string') data = parseComponent(data, type);else data.type = type;
 	      }
 	    }
 	  });
@@ -35869,7 +36050,7 @@
 	    });
 	  }
 	  return data;
-	}
+	};
 
 	// Returns true if it is a DOM element with nodeName a-entity
 	// https://stackoverflow.com/a/384380/2835973
@@ -35877,6 +36058,31 @@
 	  return (typeof HTMLElement === 'undefined' ? 'undefined' : _typeof(HTMLElement)) === "object" ? o instanceof HTMLElement : //DOM2
 	  o && (typeof o === 'undefined' ? 'undefined' : _typeof(o)) === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName === "string" && o.nodeName.toLowerCase() === 'a-entity';
 	}
+
+	var stringToCoordinate = function stringToCoordinate(string) {
+	  var axis = ['x', 'y', 'z'];
+	  var arr = string.split(' ').map(function (v, i) {
+	    var obj = {};
+	    obj[axis[i]] = parseFloat(v);
+	    return obj;
+	  });
+	  return arr.reduce(function (a, b) {
+	    return Object.assign(a, b);
+	  }, {});
+	};
+
+	var parseComponent = function parseComponent(str, type) {
+	  var arr = str.split(';').map(function (v) {
+	    return v.split(':');
+	  }).map(function (v) {
+	    var obj = {};
+	    obj[v[0].trim()] = v[1].trim();
+	    return obj;
+	  });
+	  var el3d = defaults_1$1.apply(undefined, toConsumableArray(arr));
+	  el3d.type = type;
+	  return applyDefaults(el3d);
+	};
 
 	function poll(callback, options) {
 
@@ -36050,7 +36256,7 @@
 	}
 
 	// get html attributes from element3d params
-	function getAttributes(element3d) {
+	var getAttributes = function getAttributes(element3d) {
 	  var attributes = {};
 
 	  // map type specific attributes
@@ -36151,7 +36357,7 @@
 	  attributes['io3d-uuid'] = element3d.id;
 
 	  return attributes;
-	}
+	};
 
 	// creates a child for a baked model in the current element
 	function createBakedElement(parentElem, element3d) {
@@ -36180,7 +36386,7 @@
 	}
 
 	// creates a camera and tour-waypoints from scene structure
-	function parseCameraBookmarks(sceneStructure, planRoot) {
+	var parseCameraBookmarks = function parseCameraBookmarks(sceneStructure, planRoot) {
 	  var bookmarks = flattenSceneStructure(sceneStructure[0]).filter(function (element) {
 	    return element.type === 'camera-bookmark';
 	  });
@@ -36231,7 +36437,7 @@
 	  });
 
 	  return camera;
-	}
+	};
 
 	function sphericalToCartesian(element) {
 	  // Rotate look-at point on the XZ plane around parent's center
@@ -36367,7 +36573,7 @@
 	  var isDomElement = isElement$1(input);
 	  if (isDomElement) {
 	    // convert to sceneStructure
-	    input = getSceneStructureFromAframeElements$1(input);
+	    input = getSceneStructureFromAframeElements(input);
 	  }
 
 	  return normalizeSceneStructure(input).then(function (sceneStructure) {
@@ -36408,7 +36614,7 @@
 	    if (element3d.type === 'interior' && element3d.src && typeof element3d.src === 'string') collection[element3d.src.substring(1)] = true;
 	    // recursively search through scene structure
 	    if (element3d.children && element3d.children.length) {
-	      collection = defaults_1({}, collection, getIdsFromSceneStructure(element3d.children));
+	      collection = defaults_1$1({}, collection, getIdsFromSceneStructure(element3d.children));
 	    }
 	  });
 	  return collection;
@@ -36487,7 +36693,7 @@
 
 	var FormData_;
 	if (runtime.isNode) {
-	  FormData_ = require('form-data');
+	  FormData_ = runtime.require('form-data');
 	} else if (typeof FormData !== 'undefined') {
 	  FormData_ = FormData;
 	} else {
@@ -36933,6 +37139,9 @@
 	  return result;
 	}
 
+	// configs
+
+	var ANONYMOUS_USER_ID = 'anonymous-uploads';
 	var KEY_USER_ID_PLACEHOLDER = '{{userId}}';
 
 	// main
@@ -37014,6 +37223,7 @@
 	        return '/' + session.user.id + '/' + uploadFolder + '/' + fileName;
 	      } else {
 	        // construct anonymous key
+	        var k = '/' + ANONYMOUS_USER_ID + '/' + uploadFolder + '/' + fileName;
 	        return null;
 	      }
 	    }
@@ -38522,11 +38732,11 @@
 	// helpers
 
 	function loadDeflateLib() {
-	  return runtime.isBrowser ? fetchScript(PAKO_LIB.deflate.url) : Promise.resolve(require(PAKO_LIB.deflate.module));
+	  return runtime.isBrowser ? fetchScript(PAKO_LIB.deflate.url) : Promise.resolve(runtime.require(PAKO_LIB.deflate.module));
 	}
 
 	function loadInflateLib() {
-	  return runtime.isBrowser ? fetchScript(PAKO_LIB.inflate.url) : Promise.resolve(require(PAKO_LIB.inflate.module));
+	  return runtime.isBrowser ? fetchScript(PAKO_LIB.inflate.url) : Promise.resolve(runtime.require(PAKO_LIB.inflate.module));
 	}
 
 	/**
@@ -38716,7 +38926,11 @@
 	}
 
 	if (md5('hello') != '5d41402abc4b2a76b9719d911017c592') {
-	  
+	  var _add = function _add(x, y) {
+	    var lsw = (x & 0xFFFF) + (y & 0xFFFF),
+	        msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+	    return msw << 16 | lsw & 0xFFFF;
+	  };
 	}
 
 	// API
@@ -39405,7 +39619,8 @@
 	  }
 
 	  var basePoint,
-	      endPoint;
+	      endPoint,
+	      connectedWalls = 0;
 	  var maxDistance = 0.2,
 	      isWithinMaxDistance = false;
 
@@ -39440,7 +39655,7 @@
 
 	        wallData[i].data = getWallData(wallData[i].wall);
 	        wallData[j].data = getWallData(wallData[j].wall);
-	        
+	        connectedWalls += 1;
 	      }
 	      isWithinMaxDistance = false;
 	    }
@@ -39648,22 +39863,30 @@
 	  // get wall points
 	  function getWallData(wall) {
 	    var wallAngle, p1, p2, p3, p4, v, w;
-	    wallAngle = wall.ry / 180 * Math.PI, w = {
+	    wallAngle = wall.ry / 180 * Math.PI,
+	    // width vector
+	    w = {
 	      x: -wall.w * Math.cos(wallAngle + Math.PI / 2),
 	      z: wall.w * Math.sin(wallAngle + Math.PI / 2)
-	    }, p1 = {
+	    },
+	    // Base Line Points
+	    p1 = {
 	      x: wall.x,
 	      z: wall.z
 	    }, p2 = {
 	      x: wall.x + wall.l * Math.cos(wallAngle),
 	      z: wall.z - wall.l * Math.sin(wallAngle)
-	    }, p3 = {
+	    },
+	    // Support Line Points
+	    p3 = {
 	      x: wall.x + w.x,
 	      z: wall.z + w.z
 	    }, p4 = {
 	      x: p2.x + w.x,
 	      z: p2.z + w.z
-	    }, v = {
+	    },
+	    // normalized wall vector
+	    v = {
 	      x: (p2.x - p1.x) / wall.l,
 	      z: (p2.z - p1.z) / wall.l
 	    };
@@ -39707,7 +39930,7 @@
 	  normalizeSceneStructure: normalizeSceneStructure,
 	  getHtmlFromSceneStructure: getHtmlFromSceneStructure,
 	  getAframeElementsFromSceneStructure: toAframeElements,
-	  getSceneStructureFromAframeElements: getSceneStructureFromAframeElements$1,
+	  getSceneStructureFromAframeElements: getSceneStructureFromAframeElements,
 	  snapWalls: snapWalls,
 	  exportSvg: exportSvg
 	};
@@ -39887,36 +40110,36 @@
 
 	// main
 	function getModifier(modifier) {
-	  return function modifyModel(storageId, options) {
+	    return function modifyModel(storageId, options) {
 
-	    // API
-	    options = options || {};
+	        // API
+	        options = options || {};
 
-	    var modifySettings = {};
-	    if (options.ratio) modifySettings.ratio = options.ratio;
-	    if (options.subdivisions) modifySettings.subdivisions = options.subdivisions;
+	        var modifySettings = {};
+	        if (options.ratio) modifySettings.ratio = options.ratio;
+	        if (options.subdivisions) modifySettings.subdivisions = options.subdivisions;
 
-	    var modifyParams = {
-	      method: 'modify'.concat('.', modifier),
-	      params: {
-	        inputFileKey: storageId
-	      }
+	        var modifyParams = {
+	            method: 'modify'.concat('.', modifier),
+	            params: {
+	                inputFileKey: storageId
+	            }
+	        };
+
+	        if (Object.keys(modifySettings).length > 0) {
+	            modifyParams.params.settings = JSON.stringify(modifySettings);
+	        }
+
+	        return callService('Processing.task.enqueue', modifyParams);
 	    };
-
-	    if (Object.keys(modifySettings).length > 0) {
-	      modifyParams.params.settings = JSON.stringify(modifySettings);
-	    }
-
-	    return callService('Processing.task.enqueue', modifyParams);
-	  };
 	}
 
 	// expose api
 
 	var modifyModel = {
-	  collisionObject: getModifier('collisionObject'),
-	  consolidateFaceSides: getModifier('consolidateFaceSides'),
-	  origami: getModifier('origami')
+	    collisionObject: getModifier('collisionObject'),
+	    consolidateFaceSides: getModifier('consolidateFaceSides'),
+	    origami: getModifier('origami')
 	};
 
 	var modify = {
@@ -39931,26 +40154,26 @@
 	}
 
 	function getTextureUrls(data3d) {
-	  var materialUrls = [];
-	  Object.keys(data3d.materials).forEach(function cacheMaterial(materialKey) {
-	    var material = data3d.materials[materialKey];
-	    if (material.mapDiffuse) materialUrls.push(material.mapDiffuse);
-	    if (material.mapDiffusePreview) materialUrls.push(material.mapDiffusePreview);
+	    var materialUrls = [];
+	    Object.keys(data3d.materials).forEach(function cacheMaterial(materialKey) {
+	        var material = data3d.materials[materialKey];
+	        if (material.mapDiffuse) materialUrls.push(material.mapDiffuse);
+	        if (material.mapDiffusePreview) materialUrls.push(material.mapDiffusePreview);
 
-	    if (material.mapNormal) materialUrls.push(material.mapNormal);
-	    if (material.mapNormalPreview) materialUrls.push(material.mapNormalPreview);
+	        if (material.mapNormal) materialUrls.push(material.mapNormal);
+	        if (material.mapNormalPreview) materialUrls.push(material.mapNormalPreview);
 
-	    if (material.mapSpecular) materialUrls.push(material.mapSpecular);
-	    if (material.mapSpecularPreview) materialUrls.push(material.mapSpecularPreview);
+	        if (material.mapSpecular) materialUrls.push(material.mapSpecular);
+	        if (material.mapSpecularPreview) materialUrls.push(material.mapSpecularPreview);
 
-	    if (material.mapAlpha) materialUrls.push(material.mapAlpha);
-	    if (material.mapAlphaPreview) materialUrls.push(material.mapAlphaPreview);
+	        if (material.mapAlpha) materialUrls.push(material.mapAlpha);
+	        if (material.mapAlphaPreview) materialUrls.push(material.mapAlphaPreview);
 
-	    if (material.mapLight) materialUrls.push(material.mapLight);
-	    if (material.mapLightPreview) materialUrls.push(material.mapLightPreview);
-	  });
+	        if (material.mapLight) materialUrls.push(material.mapLight);
+	        if (material.mapLightPreview) materialUrls.push(material.mapLightPreview);
+	    });
 
-	  return materialUrls;
+	    return materialUrls;
 	}
 
 	function storeInCache(url, cacheName) {
@@ -40664,142 +40887,142 @@
 	// main
 
 	function createResetPasswordUi(credentials, options) {
-	  runtime.assertBrowser();
-	  return new bluebird_1(function (resolve, reject) {
+	    runtime.assertBrowser();
+	    return new bluebird_1(function (resolve, reject) {
 
-	    credentials = credentials || {};
-	    var email = credentials.email;
+	        credentials = credentials || {};
+	        var email = credentials.email;
 
-	    // overlay
-	    var overlay = createOverlay().show();
+	        // overlay
+	        var overlay = createOverlay().show();
 
-	    // DOM
+	        // DOM
 
-	    el('<div>', {
-	      text: 'x',
-	      class: 'button close-button',
-	      click: function onCancel() {
-	        destroy(function () {
-	          reject('User canceled action.');
-	        });
-	      }
-	    }).appendTo(overlay.mainEl);
+	        el('<div>', {
+	            text: 'x',
+	            class: 'button close-button',
+	            click: function onCancel() {
+	                destroy(function () {
+	                    reject('User canceled action.');
+	                });
+	            }
+	        }).appendTo(overlay.mainEl);
 
-	    // centered content
+	        // centered content
 
-	    var centerEl = el('<div>', { style: CSS_WIDTH$2 }).appendTo(overlay.centerEl);
+	        var centerEl = el('<div>', { style: CSS_WIDTH$2 }).appendTo(overlay.centerEl);
 
-	    // tab with email input
+	        // tab with email input
 
-	    var emailTabEl = el('<div>').appendTo(centerEl);
+	        var emailTabEl = el('<div>').appendTo(centerEl);
 
-	    el('<h1>', { text: 'Reset Password' }).appendTo(emailTabEl);
+	        el('<h1>', { text: 'Reset Password' }).appendTo(emailTabEl);
 
-	    el('<p>', { text: 'email:', class: 'hint' }).appendTo(emailTabEl);
-	    var emailEl = el('<input>', { type: 'text' }).appendTo(emailTabEl);
-	    if (email) emailEl.val(email);
-	    emailEl.focus();
-	    function onEmailElKeyDown(e) {
-	      if (e.which === 13) onConfirm();
-	    }
-	    emailEl.addEventListener('keydown', onEmailElKeyDown);
-	    emailEl.addEventListener('input', updateGoButton);
+	        el('<p>', { text: 'email:', class: 'hint' }).appendTo(emailTabEl);
+	        var emailEl = el('<input>', { type: 'text' }).appendTo(emailTabEl);
+	        if (email) emailEl.val(email);
+	        emailEl.focus();
+	        function onEmailElKeyDown(e) {
+	            if (e.which === 13) onConfirm();
+	        }
+	        emailEl.addEventListener('keydown', onEmailElKeyDown);
+	        emailEl.addEventListener('input', updateGoButton);
 
-	    var goButtonEl = el('<div>', {
-	      text: 'go',
-	      class: 'button',
-	      click: onConfirm
-	    }).appendTo(emailTabEl);
+	        var goButtonEl = el('<div>', {
+	            text: 'go',
+	            class: 'button',
+	            click: onConfirm
+	        }).appendTo(emailTabEl);
 
-	    // tab with loading screen
+	        // tab with loading screen
 
-	    var loadingTabEl = el('<div>', {
-	      text: '...'
-	    }).appendTo(centerEl).hide();
+	        var loadingTabEl = el('<div>', {
+	            text: '...'
+	        }).appendTo(centerEl).hide();
 
-	    // tab with action message
+	        // tab with action message
 
-	    var requestSentTabEl = el('<div>').hide().appendTo(centerEl);
+	        var requestSentTabEl = el('<div>').hide().appendTo(centerEl);
 
-	    el('<p>', {
-	      html: 'Check your email for<br>support@archilogic.com<br>and follow instructions.'
-	    }).appendTo(requestSentTabEl);
+	        el('<p>', {
+	            html: 'Check your email for<br>support@archilogic.com<br>and follow instructions.'
+	        }).appendTo(requestSentTabEl);
 
-	    var goButton2El = el('<div>', {
-	      text: 'ok',
-	      class: 'button',
-	      click: function click() {
-	        destroy(function () {
-	          resolve();
-	        });
-	      }
-	    }).appendTo(requestSentTabEl);
+	        var goButton2El = el('<div>', {
+	            text: 'ok',
+	            class: 'button',
+	            click: function click() {
+	                destroy(function () {
+	                    resolve();
+	                });
+	            }
+	        }).appendTo(requestSentTabEl);
 
-	    // stuff at the bottom
+	        // stuff at the bottom
 
-	    var bottomEl = el('<div>', {
-	      text: 'Resend activation email.',
-	      style: CSS_WIDTH$2,
-	      class: 'clickable',
-	      click: function click() {
-	        destroy(function () {
-	          createSignUpUi({ email: emailEl.val() }, { resendActivation: true }).then(resolve, reject);
-	        });
-	      }
-	    }).appendTo(overlay.bottomEl);
+	        var bottomEl = el('<div>', {
+	            text: 'Resend activation email.',
+	            style: CSS_WIDTH$2,
+	            class: 'clickable',
+	            click: function click() {
+	                destroy(function () {
+	                    createSignUpUi({ email: emailEl.val() }, { resendActivation: true }).then(resolve, reject);
+	                });
+	            }
+	        }).appendTo(overlay.bottomEl);
 
-	    var bottomEl = el('<div>', {
-	      text: 'Already have an account? Log in.',
-	      style: CSS_WIDTH$2,
-	      class: 'clickable',
-	      click: function click() {
-	        destroy(function () {
-	          createLogInUi({ email: emailEl.val() }).then(resolve, reject);
-	        });
-	      }
-	    }).appendTo(overlay.bottomEl);
+	        var bottomEl = el('<div>', {
+	            text: 'Already have an account? Log in.',
+	            style: CSS_WIDTH$2,
+	            class: 'clickable',
+	            click: function click() {
+	                destroy(function () {
+	                    createLogInUi({ email: emailEl.val() }).then(resolve, reject);
+	                });
+	            }
+	        }).appendTo(overlay.bottomEl);
 
-	    // register ESC key
+	        // register ESC key
 
-	    function onKeyDown(e) {
-	      // ESC
-	      if (e.keyCode === 27) {
-	        destroy(function () {
-	          reject('User canceled action.');
-	        });
-	      }
-	    }
-	    document.body.addEventListener('keydown', onKeyDown);
+	        function onKeyDown(e) {
+	            // ESC
+	            if (e.keyCode === 27) {
+	                destroy(function () {
+	                    reject('User canceled action.');
+	                });
+	            }
+	        }
+	        document.body.addEventListener('keydown', onKeyDown);
 
-	    // methods
+	        // methods
 
-	    function updateGoButton() {
-	      // highlight button if email has entry
-	      emailEl.val() !== '' ? goButtonEl.addClass('button-highlighted') : goButtonEl.removeClass('button-highlighted');
-	    }
-	    updateGoButton();
+	        function updateGoButton() {
+	            // highlight button if email has entry
+	            emailEl.val() !== '' ? goButtonEl.addClass('button-highlighted') : goButtonEl.removeClass('button-highlighted');
+	        }
+	        updateGoButton();
 
-	    function onConfirm() {
-	      //FIXME: check email field not empty
-	      // show loading screen
-	      emailTabEl.hide();
-	      loadingTabEl.show();
-	      requestPasswordReset({ email: emailEl.val() }).then(function () {
-	        // show tab saying that email has been sent
-	        loadingTabEl.hide();
-	        requestSentTabEl.show();
-	      }).then();
-	    }
+	        function onConfirm() {
+	            //FIXME: check email field not empty
+	            // show loading screen
+	            emailTabEl.hide();
+	            loadingTabEl.show();
+	            requestPasswordReset({ email: emailEl.val() }).then(function () {
+	                // show tab saying that email has been sent
+	                loadingTabEl.hide();
+	                requestSentTabEl.show();
+	            }).then();
+	        }
 
-	    function destroy(callback) {
-	      // unbind events
-	      document.body.removeEventListener('keydown', onKeyDown);
-	      emailEl.removeEventListener('keydown', onEmailElKeyDown);
-	      emailEl.removeEventListener('input', updateGoButton);
-	      // remove DOM elements
-	      overlay.destroy(callback);
-	    }
-	  });
+	        function destroy(callback) {
+	            // unbind events
+	            document.body.removeEventListener('keydown', onKeyDown);
+	            emailEl.removeEventListener('keydown', onEmailElKeyDown);
+	            emailEl.removeEventListener('input', updateGoButton);
+	            // remove DOM elements
+	            overlay.destroy(callback);
+	        }
+	    });
 	}
 
 	// configs
