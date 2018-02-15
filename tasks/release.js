@@ -265,7 +265,7 @@ function getAppendix (version) {
 
 function releaseInfo() {
   console.log(`🎉 SUCCESS! 🎉
-⚠️ PLEASE NOTE: "${getLatestMinor(version)}" and "${getLatestMinor(version)}" will become effective after CDN cache expires in ${cdnCacheMaxAgeLatest / 60} minutes.`)
+⚠️ PLEASE NOTE: "${getLatestMinor(version)}" and "${getLatestPatch(version)}" will become effective after CDN cache expires in ${cdnCacheMaxAgeLatest / 60} minutes.`)
   return Promise.resolve()
 }
 
