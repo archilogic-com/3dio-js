@@ -97,9 +97,7 @@ if (runtime.isBrowser) {
 
   // node: use module
   global.performance = {
-    // FIXME: use require alias after #126 is resolved
-    //now: runtime.require('performance-now')
-    now: require('performance-now')
+    now: runtime.require('performance-now')
   }
 
 }
