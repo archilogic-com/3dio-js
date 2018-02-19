@@ -95,10 +95,13 @@ if (runtime.isBrowser) {
   }
 } else if (runtime.isReactNative) {
   // react-native polyfill
-  // badly documented at: https://github.com/facebook/react-native/blob/master/Libraries/Utilities/PerformanceLogger.js
+  // undocumented but found here: https://github.com/facebook/react-native/blob/master/Libraries/Utilities/PerformanceLogger.js
   if (!global.performance) {
     global.performance = {
-      now: global.nativePerformanceNow
+      now: global.nativePerformanceNow 
+    }
+    if (!global.performance.now) {
+      throw new Error('Missing global performance-now polyfill')
     }
   }
 }
