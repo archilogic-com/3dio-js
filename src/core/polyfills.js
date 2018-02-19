@@ -76,7 +76,6 @@ if (Object.assign === undefined) {
 
 // performance.now()
 if (runtime.isBrowser) {
-
   // browser polyfill
   // inspired by:
   // https://gist.github.com/paulirish/5438650
@@ -85,19 +84,27 @@ if (runtime.isBrowser) {
   if (!window.performance) {
     window.performance = {}
   }
-  if (!window.performance.now){
-    var navigationStart = performance.timing ? performance.timing.navigationStart : null
+  if (!window.performance.now) {
+    var navigationStart = performance.timing
+      ? performance.timing.navigationStart
+      : null
     var nowOffset = navigationStart || Date.now()
-    window.performance.now = function now(){
+    window.performance.now = function now() {
       return Date.now() - nowOffset
     }
   }
-
-} else {
-
+} else if (runtime.isReactNative) {
+  // react-native polyfill
+  // badly documented at: https://github.com/facebook/react-native/blob/master/Libraries/Utilities/PerformanceLogger.js
+  if (!global.performance) {
+    global.performance = {
+      now: global.nativePerformanceNow
+    }
+  }
+}
+else {
   // node: use module
   global.performance = {
     now: runtime.require('performance-now')
   }
-
 }
