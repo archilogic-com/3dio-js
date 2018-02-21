@@ -74,13 +74,9 @@ function deflateFile (file) {
 // helpers
 
 function loadDeflateLib () {
-  // FIXME: use require alias after #126 is resolved
-  //return runtime.isBrowser ? fetchScript(PAKO_LIB.deflate.url) : Promise.resolve(runtime.require(PAKO_LIB.deflate.module))
-  return runtime.isBrowser ? fetchScript(PAKO_LIB.deflate.url) : Promise.resolve(require(PAKO_LIB.deflate.module))
+  return runtime.isBrowser ? fetchScript(PAKO_LIB.deflate.url) : Promise.resolve(runtime.require(PAKO_LIB.deflate.module))
 }
 
 function loadInflateLib () {
-  // FIXME: use require alias after #126 is resolved
-  //return runtime.isBrowser ? fetchScript(PAKO_LIB.inflate.url) : Promise.resolve(runtime.require(PAKO_LIB.inflate.module))
-  return runtime.isBrowser ? fetchScript(PAKO_LIB.inflate.url) : Promise.resolve(require(PAKO_LIB.inflate.module))
+  return runtime.isBrowser ? fetchScript(PAKO_LIB.inflate.url) : Promise.resolve(runtime.require(PAKO_LIB.inflate.module))
 }

@@ -76,7 +76,6 @@ if (Object.assign === undefined) {
 
 // performance.now()
 if (runtime.isBrowser) {
-
   // browser polyfill
   // inspired by:
   // https://gist.github.com/paulirish/5438650
@@ -85,21 +84,30 @@ if (runtime.isBrowser) {
   if (!window.performance) {
     window.performance = {}
   }
-  if (!window.performance.now){
-    var navigationStart = performance.timing ? performance.timing.navigationStart : null
+  if (!window.performance.now) {
+    var navigationStart = performance.timing
+      ? performance.timing.navigationStart
+      : null
     var nowOffset = navigationStart || Date.now()
-    window.performance.now = function now(){
+    window.performance.now = function now() {
       return Date.now() - nowOffset
     }
   }
-
-} else {
-
+} else if (runtime.isReactNative) {
+  // react-native polyfill
+  // undocumented but found here: https://github.com/facebook/react-native/blob/master/Libraries/Utilities/PerformanceLogger.js
+  if (!global.performance) {
+    global.performance = {
+      now: global.nativePerformanceNow 
+    }
+    if (!global.performance.now) {
+      throw new Error('Missing global performance-now polyfill')
+    }
+  }
+}
+else {
   // node: use module
   global.performance = {
-    // FIXME: use require alias after #126 is resolved
-    //now: runtime.require('performance-now')
-    now: require('performance-now')
+    now: runtime.require('performance-now')
   }
-
 }
