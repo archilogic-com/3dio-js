@@ -74,9 +74,18 @@ function assertBrowser(message) {
 
 // work around for react-native's metro bundler dynamic require check, see https://github.com/facebook/metro/issues/65
 function getDynamicRequire() {
-  return typeof global !== undefined && typeof global.require === 'function'
-    ? global.require
-    : null
+  if (typeof global !== 'undefined' && typeof global.require === 'function') {
+    // react-native
+    return global.require
+  } else if (typeof require === 'function') {
+    // node and compatible
+    return require
+  } else {
+    return function throwRequireNotAvailableError(){
+      throw new Error('"require" function not available in this context. Help us to improve '+
+        '3dio.js by reporting this issue: https://github.com/archilogic-com/3dio-js/issues/new')
+    }
+  }
 }
 
 function getWebGlInfo () {
