@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.1.7
- * @date 2018/02/15 15:07
+ * @version 1.1.8
+ * @date 2018/02/22 02:41
  * @branch master
- * @commit 0ba72b8ad98a5bba5ec5435890e775fc4b10fb99
+ * @commit 64153678b1a91d71bb941028d1d24a5f43edf093
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2018/02/15 15:07', GIT_BRANCH = 'master', GIT_COMMIT = '0ba72b8ad98a5bba5ec5435890e775fc4b10fb99'
+	var BUILD_DATE='2018/02/22 02:41', GIT_BRANCH = 'master', GIT_COMMIT = '64153678b1a91d71bb941028d1d24a5f43edf093'
 
 	var name = "3dio";
-	var version = "1.1.7";
+	var version = "1.1.8";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d", "aframe", "cardboard", "components", "oculus", "vive", "rift", "vr", "WebVR", "WegGL", "three", "three.js", "3D model", "api", "visualization", "furniture", "real estate", "interior", "building", "architecture", "3d.io"];
 	var homepage = "https://3d.io";
@@ -1602,7 +1602,17 @@
 
 	// work around for react-native's metro bundler dynamic require check, see https://github.com/facebook/metro/issues/65
 	function getDynamicRequire() {
-	  return typeof require !== 'undefined' ? require.bind(require) : null;
+	  if (typeof global !== 'undefined' && typeof global.require === 'function') {
+	    // react-native
+	    return global.require;
+	  } else if (typeof require === 'function') {
+	    // node and compatible
+	    return require;
+	  } else {
+	    return function throwRequireNotAvailableError() {
+	      throw new Error('"require" function not available in this context. Help us to improve ' + '3dio.js by reporting this issue: https://github.com/archilogic-com/3dio-js/issues/new');
+	    };
+	  }
 	}
 
 	function getWebGlInfo() {
@@ -7254,7 +7264,6 @@
 
 	// performance.now()
 	if (runtime.isBrowser) {
-
 	  // browser polyfill
 	  // inspired by:
 	  // https://gist.github.com/paulirish/5438650
@@ -7270,13 +7279,21 @@
 	      return Date.now() - nowOffset;
 	    };
 	  }
+	} else if (runtime.isReactNative) {
+	  // react-native polyfill
+	  // undocumented but found here: https://github.com/facebook/react-native/blob/master/Libraries/Utilities/PerformanceLogger.js
+	  if (!global.performance) {
+	    global.performance = {
+	      now: global.nativePerformanceNow
+	    };
+	    if (!global.performance.now) {
+	      throw new Error('Missing global performance-now polyfill');
+	    }
+	  }
 	} else {
-
 	  // node: use module
 	  global.performance = {
-	    // FIXME: use require alias after #126 is resolved
-	    //now: runtime.require('performance-now')
-	    now: require('performance-now')
+	    now: runtime.require('performance-now')
 	  };
 	}
 
@@ -7559,9 +7576,7 @@
 	// global dependencies
 
 	// three.js
-	// FIXME: use require alias after #126 is resolved
-	//if (runtime.isNode) global.THREE = runtime.require('three')
-	if (runtime.isNode) global.THREE = require('three');
+	if (runtime.isNode) global.THREE = runtime.require('three');
 
 	// default configs values
 
@@ -7701,9 +7716,7 @@
 
 	  if (runtime.isNode) {
 	    // overwrite whatwg-fetch polyfill
-	    // FIXME: use require alias after #126 is resolved
-	    //global.fetch = runtime.require('node-fetch')
-	    global.fetch = require('node-fetch');
+	    global.fetch = runtime.require('node-fetch');
 	    return global.fetch;
 	  } else if (typeof fetch !== 'undefined') {
 	    return fetch;
@@ -36699,9 +36712,7 @@
 
 	var FormData_;
 	if (runtime.isNode) {
-	  // FIXME: use require alias after #126 is resolved
-	  //FormData_ = runtime.require('form-data')
-	  FormData_ = require('form-data');
+	  FormData_ = runtime.require('form-data');
 	} else if (typeof FormData !== 'undefined') {
 	  FormData_ = FormData;
 	} else {
@@ -38740,15 +38751,11 @@
 	// helpers
 
 	function loadDeflateLib() {
-	  // FIXME: use require alias after #126 is resolved
-	  //return runtime.isBrowser ? fetchScript(PAKO_LIB.deflate.url) : Promise.resolve(runtime.require(PAKO_LIB.deflate.module))
-	  return runtime.isBrowser ? fetchScript(PAKO_LIB.deflate.url) : Promise.resolve(require(PAKO_LIB.deflate.module));
+	  return runtime.isBrowser ? fetchScript(PAKO_LIB.deflate.url) : Promise.resolve(runtime.require(PAKO_LIB.deflate.module));
 	}
 
 	function loadInflateLib() {
-	  // FIXME: use require alias after #126 is resolved
-	  //return runtime.isBrowser ? fetchScript(PAKO_LIB.inflate.url) : Promise.resolve(runtime.require(PAKO_LIB.inflate.module))
-	  return runtime.isBrowser ? fetchScript(PAKO_LIB.inflate.url) : Promise.resolve(require(PAKO_LIB.inflate.module));
+	  return runtime.isBrowser ? fetchScript(PAKO_LIB.inflate.url) : Promise.resolve(runtime.require(PAKO_LIB.inflate.module));
 	}
 
 	/**
