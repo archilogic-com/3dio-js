@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title>tiny room generator</title>
+  <meta name="description" content="3d.io interior scene with dynamic lighting and realtime shadows">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- boilerplate libs -->
-  <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+  <!-- aframe libs -->
+  <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
+  <script src="https://threejs.org/examples/js/exporters/GLTFExporter.js"></script>
   <script src="https://unpkg.com/aframe-animation-component@3.2.5/dist/aframe-animation-component.min.js"></script>
   <!-- 3dio lib -->
   <script src="../../../build/3dio.js"></script>
@@ -12,81 +15,174 @@
     * {
       font-family: 'Lato', sans-serif;
     }
+    body {
+      background: #fd8;
+    }
     #header {
       font-size: 120px;
+      pointer-events: none;
       position: absolute;
       z-index: 3000;
       font-weight: 700;
       text-transform: uppercase;
       color: #a0f;
-      opacity: 0.5;
+      opacity: 0.3;
       left: 20px;
+    }
+    .btn	{
+      position: absolute;
+      z-index: 3000;
+      right: 10px;
+      top: 10px;
+      background: transparent;
+      opacity: 0.5;
+      font-size: 16px;
+      padding: 5px 20px;
+      border: 1px solid black;
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+      transition: opacity 300ms ease;
+    }
+    .btn:hover	{
+      opacity: 1;
     }
   </style>
 </head>
 <body>
 <!-- 2D -->
+<button class="btn" id="gltf-btn">download gltf</button>
 <div id="header">3d.io<br>archi<br>tectu<br>ralto<br>olkit</div>
 <!-- 3D -->
 <a-scene vr-mode-ui="enabled:false" shadow="type: pcfsoft">
-  <a-entity visible="false"
-            id="sun"
-            light="type:directional; castShadow:true; intensity: 0.8; color:#ffd; shadowMapHeight:1024; shadowMapWidth:1024; shadowCameraTop: 4; shadowCameraLeft: -3.5; shadowCameraRight: 3.5; shadowCameraBottom: -2.5;"
-            position="3 2 -3"></a-entity>
-  <a-entity light="type:hemisphere; groundColor: #cef; color: #fed; intensity:0.8"
-            position="3 0 -3"></a-entity>
-  <a-entity id="spot"
-            light="type:spot; castShadow:true; color: #fa5; angle: 80; intensity: 0.6; penumbra: 0.2; target: #floor; shadowMapHeight:1024; shadowMapWidth:1024"
-            position="0 2.3 0"
-            rotation="0 0 0"></a-entity>
+  <!-- light setups --> 
+  <a-entity visible="false" id="sun"> 
+    <a-entity light="type:directional; castShadow:true; intensity: 0.8; color:#ffd; shadowMapHeight:1024; shadowMapWidth:1024; shadowCameraTop: 4; shadowCameraLeft: -3.5; shadowCameraRight: 3.5; shadowCameraBottom: -2.5;" 
+              position="-3 2 3"></a-entity> 
+    <a-entity light="type:hemisphere; groundColor: #cef; color: #fed; intensity:0.8" 
+              position="-3 0 3"></a-entity> 
+  </a-entity> 
+  <a-entity visible="false" id="sun2"> 
+    <a-entity light="type:directional; castShadow:true; intensity: 1.5; color:#f95; shadowMapHeight:1024; shadowMapWidth:1024; shadowCameraTop: 4; shadowCameraLeft: -3.5; shadowCameraRight: 3.5; shadowCameraBottom: -2.5;" 
+              position="-5 2 2"></a-entity> 
+    <a-entity light="type:hemisphere; groundColor: #acd; color: #fed; intensity:0.6" 
+              position="-4 0 3"></a-entity> 
+  </a-entity> 
+  <a-entity visible="true" id="spot"> 
+    <a-entity light="type:spot; castShadow:true; color: #fa5; angle: 80; intensity: 0.8; penumbra: 0.2; target: #floor; shadowMapHeight:1024; shadowMapWidth:1024" 
+              position="0 2.3 0" 
+              rotation="0 0 0"></a-entity> 
+    <a-entity light="type:hemisphere; groundColor: #cef; color: #fed; intensity:0.5" 
+              position="3 0 -3"></a-entity> 
+  </a-entity> 
+  <!-- room --> 
   <a-entity id="room" shadow="cast:true"
+             rotation="0 180 0"
              animation="property: rotation;
                         dur: 3000;
-                        to: 0 360 0;
+                        to: 0 540 0;
                         startEvents:start;
                         restartEvents:turn;
                         easing: easeInOutQuad">
-    <a-entity id="wall-1" io3d-wall="l:5; w:0.2; h:2.5; material_front:bricks_clean_white; material_back:bricks_clean_white" position="2.5 0 2.5" rotation="0 180 0">
-    </a-entity>
-    <a-entity id="wall-2" io3d-wall="l:5; w:0.2; h:2.5; material_front:bricks_clean_white; material_back:bricks_clean_white" position="2.5 0 -2.5" rotation="0 270 0" io3d-uuid="a4f2c5d3-213e-4d0f-8cf2-96e9261a8131">
+    <a-entity id="wall-1" io3d-wall="l:5; w:0.2; h:2.5; material_front:bricks_clean_white; material_back:basic_wall" position="2.5 0 2.5" rotation="0 180 0"></a-entity>
+    <a-entity id="wall-2" io3d-wall="l:5; w:0.2; h:2.5; material_front:bricks_clean_white; material_back:basic_wall" position="2.5 0 -2.5" rotation="0 270 0" io3d-uuid="a4f2c5d3-213e-4d0f-8cf2-96e9261a8131">
       <a-entity id="door" io3d-door="l:0.8; h:2.2; side: front; doorAngle: 12" position="0.2 0 0"></a-entity>
       <a-entity id="window" io3d-window="h:1.2; l:1.6; hideGlass:true" position="1.2 1 0"></a-entity>
     </a-entity>
-    <a-entity id="kitchen" io3d-kitchen="l:4.2; material_kitchen:cabinet_paint_blue" position="2.3 0 2.3" rotation="0 180 0"></a-entity>
-    <a-entity id="floor" io3d-polyfloor="polygon:[[-2.5,2.3],[2.3,2.3],[2.3,-2.5],[-2.5,-2.5]]; hCeiling:2.5; material_top: wood_parquet_oak_stained"></a-entity>
+    <a-entity id="kitchen" io3d-kitchen="l:4.2; sinkPos: 3; cooktopPos:5; ovenPos: 5; material_kitchen:cabinet_paint_blue" position="2.3 0 2.3" rotation="0 180 0"></a-entity>
+    <a-entity id="floor" io3d-polyfloor="polygon:[[-2.5,2.3],[2.3,2.3],[2.3,-2.5],[-2.5,-2.5]]; hCeiling:2.5; material_top: wood_parquet_oak_stained;"></a-entity>
+    <!-- <a-entity io3d-curtain="l:0.5" position="2.25 0 -1.9" rotation="0 -90 0"></a-entity> -->
+    <!-- <a-entity id="pic" io3d-pic="" position="1.5 0 2.2" rotation="0 -180 0"></a-entity> -->
     <a-entity visible="false" io3d-wall="l:4.8; w:0.2; h:2.5" position="-2.5 0 -2.5"></a-entity>
     <a-entity visible="false" io3d-wall="l:5; w:0.2; h:2.5" position="-2.5 0 -2.5" rotation="0 270 0"></a-entity>
-    <a-box id="cube" position="0 1 0" depth="0.3" width="0.3" height="0.3" color="#f05"
-           animation="property: rotation;
-                     dur: 5000;
-                     to: 360 360 0;
-                     easing: linear;
-                     loop: true;"></a-box>
+    <a-entity id="cube" position="0 1 0" 
+              animation="property: rotation; 
+                      dur: 5000;
+                      to: 360 360 0;
+                      easing: linear;
+                      loop: true;"> 
+      <a-box depth="0.15" width="0.15" height="0.15" color="#f09" position="0.1 0 0"></a-box> 
+      <a-box depth="0.15" width="0.15" height="0.15" color="#f09" position="-0.1 0 0"></a-box> 
+    </a-entity>
   </a-entity>
   <!-- Camera -->
-  <a-entity id="camera" camera="fov:0.1; zoom: 0.01; near: 20" position="-25 25 -25" rotation="-34 225 0"  wasd-controls="acceleration:8;easing:5;" look-controls="enabled:false" ></a-entity>
-  <a-sky color="#fd8"></a-sky>
+  <a-entity id="camera" camera="fov:0.1; zoom: 0.01; near: 20" position="25 25 25" rotation="-34 45 0"  wasd-controls="acceleration:8;easing:5;" look-controls="enabled:false" ></a-entity>
+  <a-entity id="cursor" cursor="rayOrigin: mouse"></a-entity>
+  <!--a-sky color="#fd8"></a-sky-->
 </a-scene>
 <script>
+  io3d.config({
+    // home staging need api keys
+    // get yours from https://3d.io
+    // publishableApiKey: ''
+  })
+  const sceneEl = document.querySelector('a-scene')
   let roomEl = document.querySelector('#room')
-  const bodyEl = document.querySelector('body')
   const floorEl = document.querySelector('#floor')
   let kitchenEl = document.querySelector('#kitchen')
   let doorEl = document.querySelector('#door')
+  let picEl = document.querySelector('#pic')
   const sunEl = document.querySelector('#sun')
+  const sunEl2 = document.querySelector('#sun2')
   const spotEl = document.querySelector('#spot')
   const cubeEl = document.querySelector('#cube')
-  const skyEl = document.querySelector('a-sky')
+  const cursorEl = document.querySelector('#cursor')
   const wallEl = document.querySelector('#wall-2')
   const header = document.querySelector('#header')
+  // download helper
+	var link = document.createElement( 'a' )
 
   let addedElements = []
   let removeKitchen = false
   let isProcessing = false
   let wallSetup = []
+  
+  const styles = [
+    'nordic',
+    'urban industrial',
+    'minimal',
+    ''
+  ]
+
+  // furniture items that are too heavy to be uploaded to facebook
+  const idBlackList = {
+    '5a89675e-cd66-4d84-a455-a9c1f15a6495': 'adc5034d-8007-4bac-bb18-65f6799a31d9', // drop chairs in different colors
+    '0e524f65-8e52-4ce2-9055-2bdaa3504503': 'adc5034d-8007-4bac-bb18-65f6799a31d9', // replace with grand prix
+    '097f03fe-1947-40ee-a176-45106c51460f': '9e4def76-8cb1-4ee0-8ead-a4f1213e1082',
+    '9d78888d-72df-4762-afec-8334da5e2396': '9e4def76-8cb1-4ee0-8ead-a4f1213e1082',
+    'c4af7f4e-cd4d-45f5-8b31-1aaa903d539e': '9e4def76-8cb1-4ee0-8ead-a4f1213e1082',
+    '06de72ae-ceaf-4c5e-8375-04e37f26db91': 'ec546718-d5a8-4e0d-889f-3d51dc37c2e1'  // fat fat replace with hay cube
+  }
+  
+  // start the magic once aframe is ready
+  sceneEl.addEventListener('loaded', function () {
+
+    // initial spin
+    setTimeout(() => {
+      createTinyRoom('start')
+      io3d.utils.ui.message('click objects to change them, click the background to create a new scene', 4000)
+    }, 1000)
+    
+    // spin after user click
+ 	  sceneEl.addEventListener('click', () => {
+      if (isProcessing || !elementClick()) return
+      // trigger update when not in inspector
+      if (sceneEl.isPlaying) createTinyRoom('turn')
+    })
+    
+    cursorEl.addEventListener('click', elementClick)
+  })
+    
+  function createTinyRoom(state) {
+    let style = pickRnd(styles)
+    let roomType = setRoom(style)
+    let scene = getSceneStructure()
+    furnish(roomType, scene, style)
+    roomEl.emit(state)
+  }
 
   // furnishing the room
-  function furnish(label, sceneStructure) {
+  function furnish(label, sceneStructure, style) {
     roomEl = document.querySelector('#room')
     let _addedElements = addedElements
 
@@ -99,15 +195,17 @@
 
     addedElements = []
     isProcessing = true
-
+		console.log('furniture style: ', style)
     // get furnishings from home staging ai
     // https://3d.io/docs/api/1/home-staging-ai.html
     io3d.staging.getFurnishings(sceneStructure.children, {label})
       .then(result => {
         // exchange generic furniture with real products
-        if (result) return io3d.staging.replaceFurniture(result)
+        if (result) return io3d.staging.replaceFurniture(result, {query: style})
       })
       .then(result => {
+        result = checkBlackListed(result)
+        getFreeWall(result)
         isProcessing = false
         cubeEl.setAttribute('visible', false)
         // convert scene Structure to A-frame elements for display
@@ -120,27 +218,10 @@
       .catch(console.error)
   }
 
-  // initial spin
-  setTimeout(() => {
-    let roomType = setRoom()
-    let scene = getSceneStructure()
-    furnish(roomType, scene)
-    roomEl.emit('start')
-  }, 1000)
-
-  // spin after user click
-  bodyEl.addEventListener('click', () => {
-    if (isProcessing) return
-    let roomType = setRoom()
-    let scene = getSceneStructure()
-    furnish(roomType, scene)
-    roomEl.emit('turn')
-  })
-
   // set room type and lighting
   function setRoom() {
-    const lights = ['sun', 'spot']
-    const rooms = ['living', 'dining', 'bedroom', 'dining_living', 'homeOffice']
+    const lights = [sunEl, spotEl, sunEl2] 
+    const rooms = ['living', 'dining', 'dining_living', 'bedroom', 'homeOffice', 'dining'] 
     let room = pickRnd(rooms)
     let light = pickRnd(lights)
 
@@ -152,13 +233,8 @@
       // set processing cube
       if (isProcessing) cubeEl.setAttribute('visible', true)
       // set lights
-      if (light === 'spot') {
-        spotEl.setAttribute('visible', true)
-        sunEl.setAttribute('visible', false)
-      } else {
-        spotEl.setAttribute('visible', false)
-        sunEl.setAttribute('visible', true)
-      }
+      lights.forEach(el => el.setAttribute('visible', false)) 
+      light.setAttribute('visible', true) 
       // toggle kitchen
       if (room !== 'dining') kitchenEl.setAttribute('visible', false)
       else kitchenEl.setAttribute('visible', true)
@@ -168,6 +244,22 @@
 
     }, 1500)
     return room
+  }
+
+  function checkBlackListed (sceneStructure) {
+    sceneStructure.forEach(el => {
+      if (el.type === 'group' && el.children.length) {
+        el.children = checkBlackListed(el.children)
+      }
+      else if (el.type === 'interior') {
+        const id = el.src.substring(1)
+        if (Object.keys(idBlackList).includes(id)) {
+          console.log('blacklisted el exchanged', id)
+          el.src = '!' + idBlackList[id]
+        }
+      }
+    })
+    return sceneStructure
   }
 
   // attributes for 'random' room generation
@@ -182,21 +274,28 @@
     ]
   }
   const doorAttr = {
-    doorAngle: [15, 60, 110],
+    doorAngle: [25, 60, 100],
     hinge: ['left', 'right'],
-    doorType: ['singleSwing', 'doubleSwing', 'slidingDoor']
+    doorType: ['singleSwing', 'slidingDoor']
+  }
+  const picAttr = {
+    picType: ['poster', 'framed', 'canvas'],
+    picFormat: ['portrait', 'panorama']
   }
   const wallSetups = [
     [
-      {type: 'window', x: 0.3, l: 2.2, h: 1.4, y: 0.8},
+      {type: 'window', x: 1.6, l: 2.4, h: 2, y: 0.2, hideGlass:true}
+    ],
+    [
+      {type: 'window', x: 0.3, l: 2.2, h: 1.4, y: 0.8, hideGlass:true},
       {type: 'door', x: 3, l: 0.9, h: 2.2, side: 'front'},
     ], [
       {type: 'door', x: 1, l: 0.9, h: 2.2, side: 'front'},
-      {type: 'window', x: 2.5, l: 1.4, h: 1.3, y: 0.8}
+      {type: 'window', x: 2.5, l: 1.4, h: 1.3, y: 0.8, hideGlass:true}
     ], [
-      {type: 'window', x: 0.5, l: 1, h: 2.3, y: 0.1},
-      {type: 'window', x: 1.7, l: 1, h: 2.3, y: 0.1},
-      {type: 'window', x: 2.9, l: 1, h: 2.3, y: 0.1}
+      {type: 'window', x: 0.5, l: 1, h: 2.3, y: 0.1, hideGlass:true},
+      {type: 'window', x: 1.7, l: 1, h: 2.3, y: 0.1, hideGlass:true},
+      {type: 'window', x: 2.9, l: 1, h: 2.3, y: 0.1, hideGlass:true}
     ]
   ]
   const windowAttr = {
@@ -205,13 +304,22 @@
     columnRatios: [[[1]], [[1], [1, 3]], [[1, 4, 1]], [[1, 1], [1, 1]]]
   }
   const wallAttr = {
-    material_front: ['default_plaster_001', 'memphis_pattern', 'bricks_clean_orange', 'zigzag', 'bricks_white', 'concrete_board', 'cabinet_wood_fir_wall']
+    material_front: [
+      'default_plaster_001', 
+      'bricks_yellow', 
+      //'zigzag', 
+      'bricks_white', 
+      // 'concrete_board', 
+      // 'memphis_pattern', 
+      'cabinet_wood_fir_wall'
+    ]
   }
   const kitchenAttr = {
     wallCabinet: [false, true],
     highCabinetLeft: [0, 1, 2],
     cabinetType: ['none', 'style1', 'style2'],
-    material_kitchen: ['cabinet_paint_creme', 'cabinet_paint_grey', 'cabinet_paint_brick', 'cabinet_paint_anthrazit']
+    material_kitchen: ['cabinet_paint_creme', 'cabinet_paint_grey', 'cabinet_paint_brick', 'cabinet_paint_anthrazit'],
+    l: [4.2, 3.6]
   }
 
   // get sceneStructure ready for processing, before actually showing it
@@ -258,10 +366,10 @@
     let windowEls = document.querySelectorAll('[io3d-window]')
     windowEls.forEach(el => el.setAttribute('io3d-window', newWindowAttr))
 
-    // set sky and font
+    // set background and font
     let skyHue = Math.floor(Math.random() * 18) * 20
     let fontHue = skyHue + 180 > 360 ? skyHue + 180 - 360 : skyHue + 180
-    skyEl.setAttribute('color', `hsl(${skyHue}, 50%, 80%)`)
+    document.querySelector('body').style.background = `hsl(${skyHue}, 50%, 80%)`
     header.style.color = `hsl(${fontHue}, 90%, 40%)`
   }
 
@@ -276,10 +384,395 @@
     return _att
   }
 
+  function getFreeWall(sceneStructure) {
+    const minFreeWallSegment = 0.4
+    const elements = getData(sceneStructure)
+    document.querySelectorAll('.helper').forEach(el => el.parentNode.removeChild(el))
+
+    var promises = []
+    elements.forEach(el => {
+      promises.push(io3d.furniture.getInfo(el.src.substring(1)))
+    })
+    Promise.all(promises)
+      .then(data => {
+        walls = [
+          {
+            wall: [-2.5, 2.5],
+            full: [], 
+            above: []
+          },
+          {
+            wall: [-2.5, 2.5],
+            full: [], 
+            above: []
+          },
+        ]
+        let kitchen = document.querySelector('[io3d-kitchen]')
+        if (kitchen.getAttribute('visible')) {
+          let el3d = kitchen.getAttribute('io3d-kitchen')
+          if (el3d.wallCabinet) {
+            walls[0].full.push([2.3 - el3d.l, 2.3])
+            walls[1].full.push([2.4 - el3d.w, 2.5])
+          } else {
+            walls[0].full.push([2.3 - (5 * 0.6), 2.3 - (4 * 0.6)])
+          }
+          if (el3d.highCabinetLeft > 0) {
+            walls[0].full.push([2.3 - (0.6 * el3d.highCabinetLeft), 2.3])
+            walls[1].full.push([2.4 - el3d.w, 2.5])
+          }
+        }
+        let windows = document.querySelectorAll('[io3d-window]').forEach(el => {
+          let el3d = el.getAttribute('io3d-window')
+          let pos = el.getAttribute('position')
+          walls[1].full.push([-2.5 + pos.x, -2.5 + pos.x + el3d.l])
+        })
+        let doors = document.querySelectorAll('[io3d-door]').forEach(el => {
+          let el3d = el.getAttribute('io3d-door')
+          let pos = el.getAttribute('position')
+          walls[1].full.push([-2.5 + pos.x, -2.5 + pos.x + el3d.l])
+        })
+        let carpetTable = {}
+        data.forEach((d, i) => {
+          const el3d = elements[i]
+          const placeAbove = d.tags.includes('sofa') 
+                            || d.tags.includes('double bed')
+                            || d.tags.includes('sideboard')
+                            || ( d.categories.includes('tables') && d.boundingBox.height > 0.6 )
+          if (d.categories.includes('tables') && d.boundingBox.height > 0.6) {
+            carpetTable = el3d
+            carpetTable.boundingPoints = d.boundingPoints
+            carpetTable.boundingBox = d.boundingBox
+          }
+          const isTooHigh = d.boundingBox.height + el3d.y > 1
+          const closeToWall1 = elements[i].z > 2 + d.boundingPoints.min[2]
+          const closeToWall2 = elements[i].x > 2 + d.boundingPoints.min[2]
+          const pMin = io3d.scene.applyParentLocation({x: d.boundingPoints.min[0], y: d.boundingPoints.min[1], z: d.boundingPoints.min[2]}, el3d)
+          const pMax = io3d.scene.applyParentLocation({x: d.boundingPoints.max[0], y: d.boundingPoints.max[1], z: d.boundingPoints.max[2]}, el3d)
+          const center = {
+            x: el3d.x + d.boundingBox.length / 2 + d.boundingPoints.min[0],
+            y: el3d.y + d.boundingBox.height / 2,
+            z: el3d.z + d.boundingBox.width / 2 + d.boundingPoints.min[2],
+          }
+          // const el = document.createElement('a-box')
+          // el.classList.add('helper')
+          // el.setAttribute('position', center)
+          // el.setAttribute('width', d.boundingBox.length)
+          // el.setAttribute('material', 'opacity: 0.5')
+          // el.setAttribute('depth', d.boundingBox.width)
+          // el.setAttribute('height', d.boundingBox.height)
+          // el.setAttribute('rotation', `0 ${el3d.ry} 0`)
+          // if (isTooHigh && (closeToWall1 || closeToWall2)) {
+          //   el.setAttribute('color', 'red')
+          //   console.log(i, placeAbove, isTooHigh, closeToWall1, closeToWall2, d.tags, elements[i].x, elements[i].z, d.boundingPoints)
+          // }
+          // if (placeAbove && (closeToWall1 || closeToWall2)) {
+          //   el.setAttribute('color', 'orange')
+          //   console.log(i, placeAbove, isTooHigh, closeToWall1, closeToWall2, d.tags, elements[i].x, elements[i].z, d.boundingPoints)
+          // }
+          // roomEl.appendChild(el)
+          // x
+          if (closeToWall1 && isTooHigh) walls[0].full.push([pMin.x, pMax.x].sort((a,b) => a > b ? 1 : -1))
+          if (closeToWall1 && placeAbove) walls[0].above.push(center.x)
+          // z
+          if (closeToWall2 && isTooHigh) walls[1].full.push([pMin.z, pMax.z].sort((a,b) => a > b ? 1 : -1))
+          if (closeToWall2 && placeAbove) walls[1].above.push(center.z)
+          
+        })
+        walls.forEach((w, wi) => {
+          if (w.full.length) {
+            w.free = []
+            w.full = w.full.sort((a, b) => a[0]-b[0] || a[1]-b[1] )
+            w.full = combineArr(w.full)
+            w.full.forEach((f, i) => {
+              var a = i === 0 ? -2.5 : w.full[i - 1][1]
+              var b = f[0]
+              if (b - a > minFreeWallSegment) w.free.push([a, b])
+            })
+            if (2.5 - w.full[w.full.length - 1][1] > minFreeWallSegment) w.free.push([w.full[w.full.length - 1][1], 2.5])
+          } else w.free = [[-2.5, 2.5]]
+
+          // // debug helper
+          // w.free.forEach(arr => {
+          //   const el = document.createElement('a-box')
+          //   el.classList.add('helper')
+          //   let pos = wi === 0 ? {x: arr[0] + (arr[1] - arr[0]) /2, y: 1.5, z: 2.2} : {z: arr[0] + (arr[1] - arr[0]) /2, y: 1.5, x: 2.2}
+          //   el.setAttribute('position', pos)
+          //   el.setAttribute('width', arr[1] - arr[0])
+          //   el.setAttribute('material', 'opacity: 0.2; color: green')
+          //   el.setAttribute('depth', 0.1)
+          //   el.setAttribute('height', 1)
+          //   roomEl.appendChild(el)
+          //   el.setAttribute('rotation', `0 ${(wi === 0 ? 0 : 90)} 0`)
+          // })
+          
+          // place pictures above sofas, sideboards and tables
+          w.above.forEach(a => {
+            // only place where there is free space
+            const match = w.free.some(f => f[0] < a && f[1] > a)
+            if (!a || !match) return
+            let pos = wi === 0 ? `${a} 0 2.29` : `2.29 0 ${a}`
+            placePic(pos, `0 ${(wi === 0 ? 180 : -90)} 0`)
+          })
+          // place pictures in remaining areas
+          if (!w.above.length) {
+            w.free.forEach(f => {
+
+              let width = f[1] - f[0]
+              let place = Math.floor(Math.random() * 2.5) > 0
+
+              let pos = f[0] + width / 2
+              pos = wi === 0 ? `${pos} 0 2.29` : `2.29 0 ${pos}`
+
+              // place random pictures
+              if (width > 0.6 && width < 1.8 && !place) placePic(pos, `0 ${(wi === 0 ? 180 : -90)} 0`, width)
+              // place a curtain
+              else if (wi === 1 && width < 0.6) placeCurtain(`2.3 0 ${f[0]}`, '0 -90 0', width)
+            })
+          }
+        })
+
+        function placeCurtain(pos, rot, width) {
+          const el = document.createElement('a-entity')
+          el.setAttribute('io3d-curtain', {l: width})
+          el.setAttribute('position', pos)
+          el.setAttribute('rotation', rot)
+          roomEl.appendChild(el)
+          addedElements.push(el)
+        }
+
+        function placePic(pos, rot, width) {
+          const el = document.createElement('a-entity')
+          let newAttr = rndAttr(picAttr)
+          newAttr.h = 1.6
+          const maxWidth = newAttr.picFormat === 'panorama' ? 1.2 : 0.9
+          if (width) newAttr.picSize = width / 2 < maxWidth ? width / 2 : maxWidth
+          el.setAttribute('io3d-pic', newAttr)
+          el.setAttribute('position', pos)
+          el.setAttribute('rotation', rot)
+          roomEl.appendChild(el)
+          addedElements.push(el)
+        }
+        // place a carpet in teh room
+        io3d.furniture.search('carpet widthMin:2 lengthMax:3')
+          .then(results => {
+            const el = document.createElement('a-entity')
+            let rndCarpet = pickRnd(results)
+            let boundingPoints = rndCarpet.boundingPoints
+            let ry = carpetTable.ry ? carpetTable.ry + 90 : 0
+            let pos = {x: carpetTable.x || 0, y: 0, z: carpetTable.z  || 0}
+            const rot = {x: 0, y: ry, z: 0}
+            const isRotated = Math.round(ry) === 90 || Math.round(ry) === 270
+            console.log(isRotated, Math.round(ry))
+            const posX = isRotated ? 2 : 0
+            const posZ = isRotated ? 0 : 2
+            if (boundingPoints.min[posX] + pos.x < -2.5) {
+              console.log('move posx -', boundingPoints.min[posX] + pos.x + 2.5)
+              pos.x -= boundingPoints.min[posX] + pos.x + 2.5
+            }
+            if (boundingPoints.min[posZ] + pos.z < -2.5) {
+              console.log('move posz -', boundingPoints.min[posZ] + pos.z + 2.5)
+              pos.z -= boundingPoints.min[posZ] + pos.z + 2.5
+            }
+            if (boundingPoints.max[posX] + pos.x > 2.5) {
+              console.log('move posx +', boundingPoints.max[posX] + pos.x - 2.5)
+              pos.x -= boundingPoints.max[posX] + pos.x - 2.5
+            }
+            if (boundingPoints.max[posZ] + pos.z > 2.5) {
+              console.log('move posz +', boundingPoints.max[posZ] + pos.z - 2.5)
+              pos.z -= boundingPoints.max[posZ] + pos.z - 2.5
+            }
+            el.setAttribute('io3d-furniture', `id: ${rndCarpet.id}`)
+            el.setAttribute('position', pos)
+            el.setAttribute('rotation', {x: 0, y: carpetTable.ry + 90, z: 0})
+            roomEl.appendChild(el)
+            addedElements.push(el)
+          })
+        // place table details on the table
+        if (carpetTable.src) {
+          io3d.furniture.search('table detail')
+            .then(results => {
+              const el = document.createElement('a-entity')
+              let rndDetail = pickRnd(results)
+              el.setAttribute('io3d-furniture', `id: ${rndDetail.id}`)
+              el.setAttribute('position', {x: carpetTable.x, y: carpetTable.boundingBox.height, z: carpetTable.z})
+              roomEl.appendChild(el)
+              addedElements.push(el)
+            })
+        }  
+
+        // console.log(walls)
+      })
+    
+    function getData(els, parent) {
+      let _elements = []
+      els.forEach(el => {
+        if (el.type === 'group') _elements = _elements.concat(getData(el.children, el))
+        else if (el.type === 'interior') {
+          let _el = el
+          if (parent) _el = io3d.scene.applyParentLocation(el, parent)
+          _elements.push(_el)
+        }
+      })
+      return _elements
+    }
+  }
+
   function pickRnd(arr) {
     return arr[Math.floor(Math.random() * arr.length)]
+  }
+
+  function combineArr(numbers) {
+    return numbers.reduce(function(combined, next) {
+      if (!combined.length || combined[combined.length-1][1] < next[0]) combined.push(next);
+      else {
+        var prev = combined.pop();
+        combined.push([prev[0], Math.max(prev[1], next[1])]);
+      }
+      return combined;
+    }, []);
+  }
+  
+  function elementClick() {
+    let el = cursor.components.raycaster.intersectedEls[0]
+    if (!el) return true
+    const isFurniture = el.getAttribute('io3d-furniture')
+    const isWall = el.getAttribute('io3d-wall')
+    const isFloor = el.getAttribute('io3d-polyfloor')
+    const isKitchen = el.getAttribute('io3d-kitchen')
+    const isPic = el.getAttribute('io3d-pic')
+    if (isFurniture && !isProcessing) {
+      isProcessing = true
+      const el3d = io3d.scene.getSceneStructureFromAframeElements(el)
+      io3d.staging.replaceFurniture(el3d)
+        .then(result => {
+          console.log(result)
+          // FIXME
+          if (!result || result.src.substring(1) === 'undefined') return
+          el.setAttribute('position', `${result.x} ${result.y} ${result.z}`)
+          el.setAttribute('io3d-furniture', `id: ${result.src.substring(1)}`)
+          isProcessing = false
+        })
+        .catch(error => {
+          console.error(error)
+          isProcessing = false
+        })
+    } else if (isWall) {
+      let newAttr = rndAttr(wallAttr)
+      document.querySelectorAll('[io3d-wall]').forEach(el => el.setAttribute('io3d-wall', newAttr))
+    } else if (isFloor) {
+      let newAttr = rndAttr(floorAttr)
+      el.setAttribute('io3d-polyfloor', newAttr)
+    } else if (isPic) {
+      let newAttr = rndAttr(picAttr)
+      el.setAttribute('io3d-pic', newAttr)
+    } else if (isKitchen) {
+      let newAttr = rndAttr(kitchenAttr)
+      el.setAttribute('io3d-kitchen', newAttr)
+    } else return true //console.log('click')
+  }
+  
+  // gltf export
+  document.querySelector('#gltf-btn').addEventListener('click', () => {
+    convertMats ( sceneEl.object3D )  
+		setTimeout(() => { exportGLTF ( sceneEl.object3D ) },100)
+  })
+  
+  // recursively search object3D scene for incompatible materials and convert them
+  function convertMats ( input ) {
+    input.children.forEach(node => {
+      if (node.children && node.children.length) convertMats(node)
+      if (node.type === 'Mesh') {
+        const mat = node.material
+        const el = node.el
+        const data3d = el && el.data3d
+        const data3dMat = data3d && data3d.materials[mat.name]
+
+        if (mat.type === 'ShaderMaterial') {
+          const color = mat.color
+          const specular = mat.specular
+          let textures = [ 
+            'map',
+            // 'normalMap', // no low-res texture equivalent
+            // 'specularMap' // 3mb max file size
+          ] 
+          let options = {
+            name: mat.name,
+            color: new THREE.Color( color.r, color.g, color.b ), //mat.color,
+            // metalness: 0, //mat.specular
+            shininess: mat.shininess,
+            specular: new THREE.Color( specular.r, specular.g, specular.b ),
+            //roughness: Math.sqrt( 2 / ( 2 + mat.shininess)),
+            opacity: mat.opacity,
+            transparent: mat.opacity < 1 ? true : false,
+            wireframe: false
+          }
+          // fetch and create textures
+          textures.forEach(tex => {
+            if (mat[tex]) {
+              // fetch hi-res
+              // if (data3dMat) fileKey = data3dMat.mapDiffuseSource
+              let fileKey = mat[tex] && mat[tex].url
+
+              // fetch low-res jpg textures -> dds not supported by gltf exporter
+              if (/hi-res/.test(fileKey)) fileKey = fileKey.replace('hi-res.gz.dds', 'lo-res.jpg')
+              else if (/high_res/.test(fileKey)) fileKey = fileKey.replace('high_res.gz.dds', 'low_res.jpg')
+              else if (/regular/.test(fileKey)) fileKey = fileKey.replace('regular.gz.dds', 'preview.jpg')
+
+              // if (/\.dds$/.test(fileKey)) texture = new THREE.DDSLoader().load(fileKey, (t) => {console.log('loaded dds', t) })
+              // DDS currently not supported by gltf exporter
+              let texture = new THREE.TextureLoader().load(fileKey)
+              texture.wrapS = THREE.RepeatWrapping;
+              texture.wrapT = THREE.RepeatWrapping;
+              options[tex] = texture
+            }
+          })
+          let basicMaterial = new THREE.MeshPhongMaterial( options );
+          node.material = basicMaterial
+        }
+      }
+    })
+  }
+  function exportGLTF( input ) {
+
+    var gltfExporter = new THREE.GLTFExporter();
+    var options = {
+      trs: false,
+      onlyVisible: true,
+      truncateDrawRange: true,
+      binary: true, // glb format for facebook
+      forceIndices: true // necessary for fb gltf viewer
+    };
+    gltfExporter.parse( input, function( result ) {
+      if ( result instanceof ArrayBuffer ) {
+        const fileSize = result.byteLength / 1000000
+        console.log( 'fileSize', fileSize );
+        if ( fileSize > 3.1 ) {
+          io3d.utils.ui.message('file size is over 3mb, try replacing detailed chairs', 4000)
+        } else {
+          io3d.utils.ui.message('hurray =), now drag the file into your facebook timeline to create your first 3d post', 4000)
+        }
+        saveArrayBuffer( result, 'tiny-room.glb' );
+      } else {
+        var output = JSON.stringify( result, null, 2 );
+        // console.log( output );
+        saveString( output, 'tiny-room.gltf' );
+      }
+    }, options );
+  }
+
+  function save( blob, filename ) {
+    link.href = URL.createObjectURL( blob );
+    link.download = filename;
+    link.click();
+  }
+
+  function saveString( text, filename ) {
+    save( new Blob( [ text ], { type: 'text/plain' } ), filename );
+  }
+
+  function saveArrayBuffer( buffer, filename ) {
+    save( new Blob( [ buffer ], { type: 'application/octet-stream' } ), filename );
   }
 </script>
 </body>
 </html>
-
