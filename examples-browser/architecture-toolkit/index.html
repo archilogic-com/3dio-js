@@ -6,7 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- aframe libs -->
   <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
-  <script src="https://threejs.org/examples/js/exporters/GLTFExporter.js"></script>
+  <!-- gltf exporter -->
+  <script src="https://rawgit.com/mrdoob/three.js/4616af28886df3210c49f9405d5df580f8d9e0c9/examples/js/exporters/GLTFExporter.js"></script>
+  <!-- animation component -->
   <script src="https://unpkg.com/aframe-animation-component@3.2.5/dist/aframe-animation-component.min.js"></script>
   <!-- 3dio lib -->
   <script src="../../../build/3dio.js"></script>
@@ -34,24 +36,71 @@
       z-index: 3000;
       right: 10px;
       top: 10px;
+      font-weight: 700;
       background: transparent;
       opacity: 0.5;
       font-size: 16px;
       padding: 5px 20px;
       border: 1px solid black;
-      border-radius: 3px;
+      border-radius: 5px;
       outline: none;
       cursor: pointer;
       transition: opacity 300ms ease;
     }
+    #info-btn {
+      right: 135px;
+      padding: 5px 13px;
+    }
     .btn:hover	{
       opacity: 1;
+    }
+    #overlay {
+      user-select: none;
+      display: none;
+      position: absolute;
+      z-index: 10000;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      letter-spacing: 1px;
+      line-height: 1.5;
+      text-align: center;
+      background: rgba(0,0,0,0.7);
+      padding: 30px;
+      color: white;
+      font-size: 20px;
+    }
+    #overlay a {
+      color: white;
+    }
+    .container {
+      width: 500px;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 30px;
+    }
+    canvas {
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 <!-- 2D -->
-<button class="btn" id="gltf-btn">download gltf</button>
+<button class="btn" id="info-btn">i</button>
+<button class="btn" id="gltf-btn">download</button>
+<div id="overlay">
+  <div class="container">
+    <h1>create your own unique room<br>and share it in 3d on facebook</h1>
+    <p>this demo creates a randomized square room using <a href="https://3d.io/docs/api/1/architecture-toolkit.html" target="_blank">parametric architectural elements</a> within A-frame</p>
+    <p>a furnishing proposal is then computed on the fly using the 3d.io <a href="https://3d.io/docs/api/1/home-staging-ai.html" target="_blank">home staging AI</a></p>
+    <p>click on elements to change them, click the background to generate a new scene</p>
+    <p>download the scene and drop the file<br>into your facebook timeline</p>
+    <p>brought to you with &#9829; from <a href="https://3d.io/" target="_blank">3d.io</a><br><a href="https://twitter.com/archilogic3d" target="_blank">@Archilogic3D</a></p>
+  </div>
+</div>
 <div id="header">3d.io<br>archi<br>tectu<br>ralto<br>olkit</div>
 <!-- 3D -->
 <a-scene vr-mode-ui="enabled:false" shadow="type: pcfsoft">
@@ -130,7 +179,11 @@
   const wallEl = document.querySelector('#wall-2')
   const header = document.querySelector('#header')
   // download helper
-	var link = document.createElement( 'a' )
+  var link = document.createElement( 'a' )
+  // info overlay
+  const overlay = document.querySelector('#overlay')
+  document.querySelector('#info-btn').addEventListener('click', () => {overlay.style.display = 'block'})
+  overlay.addEventListener('click', () => {overlay.style.display = 'none'})
 
   let addedElements = []
   let removeKitchen = false
@@ -140,18 +193,20 @@
   const styles = [
     'nordic',
     'urban industrial',
-    'minimal',
-    ''
+    'minimal'
   ]
 
-  // furniture items that are too heavy to be uploaded to facebook
+  // furniture items that are too heavy for uploads to facebook
   const idBlackList = {
     '5a89675e-cd66-4d84-a455-a9c1f15a6495': 'adc5034d-8007-4bac-bb18-65f6799a31d9', // drop chairs in different colors
     '0e524f65-8e52-4ce2-9055-2bdaa3504503': 'adc5034d-8007-4bac-bb18-65f6799a31d9', // replace with grand prix
     '097f03fe-1947-40ee-a176-45106c51460f': '9e4def76-8cb1-4ee0-8ead-a4f1213e1082',
     '9d78888d-72df-4762-afec-8334da5e2396': '9e4def76-8cb1-4ee0-8ead-a4f1213e1082',
     'c4af7f4e-cd4d-45f5-8b31-1aaa903d539e': '9e4def76-8cb1-4ee0-8ead-a4f1213e1082',
-    '06de72ae-ceaf-4c5e-8375-04e37f26db91': 'ec546718-d5a8-4e0d-889f-3d51dc37c2e1'  // fat fat replace with hay cube
+    '06de72ae-ceaf-4c5e-8375-04e37f26db91': 'ec546718-d5a8-4e0d-889f-3d51dc37c2e1', // fat fat replace with hay cube
+    '0ce9a52a-ca29-4639-a7db-4c6a2622b937': 'fa35827f-b18f-48bc-bb2c-6a458d1cebba', // floor standing lamps
+    'bdab30be-5a7b-487e-ad0c-e199909aa9be': 'fa35827f-b18f-48bc-bb2c-6a458d1cebba',
+    'b7fa1695-06f8-4fc5-b6d0-3f986137b9a2': 'fa35827f-b18f-48bc-bb2c-6a458d1cebba'
   }
   
   // start the magic once aframe is ready
@@ -172,12 +227,17 @@
     
     cursorEl.addEventListener('click', elementClick)
   })
-    
+  
+  // this is were all it begins =)
   function createTinyRoom(state) {
+    // set style and room function
     let style = pickRnd(styles)
     let roomType = setRoom(style)
+    // get scene structure from the A-frame elements
     let scene = getSceneStructure()
+    // home staging call
     furnish(roomType, scene, style)
+    // emit event for rotation animation
     roomEl.emit(state)
   }
 
@@ -198,14 +258,22 @@
 		console.log('furniture style: ', style)
     // get furnishings from home staging ai
     // https://3d.io/docs/api/1/home-staging-ai.html
-    io3d.staging.getFurnishings(sceneStructure.children, {label})
-      .then(result => {
-        // exchange generic furniture with real products
-        if (result) return io3d.staging.replaceFurniture(result, {query: style})
-      })
-      .then(result => {
-        result = checkBlackListed(result)
+    Promise.all([
+      // make sure we wait at least 1.5 s for half the room turn before adding new items
+      wait(1500),
+      io3d.staging.getFurnishings(sceneStructure.children, {label})
+        .then(result => {
+          // exchange generic furniture with real products
+          if (result) return io3d.staging.replaceFurniture(result, {query: style})
+          else return Promise.reject('staging has no result')
+        })
+    ])
+      .then(results => {
+        // exchange blacklisted items concerning download file size
+        let result = checkBlackListed(results[1])
+        // compute free wall space for pictures and curtains to be placed
         getFreeWall(result)
+
         isProcessing = false
         cubeEl.setAttribute('visible', false)
         // convert scene Structure to A-frame elements for display
@@ -215,7 +283,10 @@
         })
         addedElements = elements
       })
-      .catch(console.error)
+    .catch(err => {
+      console.error(err)
+      isProcessing = false
+    })
   }
 
   // set room type and lighting
@@ -246,6 +317,7 @@
     return room
   }
 
+  // workaround: force exchange furniture items that are too heavy for exporting to fb
   function checkBlackListed (sceneStructure) {
     sceneStructure.forEach(el => {
       if (el.type === 'group' && el.children.length) {
@@ -254,7 +326,7 @@
       else if (el.type === 'interior') {
         const id = el.src.substring(1)
         if (Object.keys(idBlackList).includes(id)) {
-          console.log('blacklisted el exchanged', id)
+          // console.log('blacklisted el exchanged', id)
           el.src = '!' + idBlackList[id]
         }
       }
@@ -373,20 +445,11 @@
     header.style.color = `hsl(${fontHue}, 90%, 40%)`
   }
 
-  function rndAttr(att) {
-    let _att = {}
-    Object.keys(att).forEach(a => {
-      if (a === 'rowRatios' || a === 'columnRatios') {
-        _att[a] = JSON.stringify(pickRnd(att[a]))
-      }
-      else _att[a] = pickRnd(att[a])
-    })
-    return _att
-  }
+  // compute empty wall space from furnishing and spatial structure
 
   function getFreeWall(sceneStructure) {
     const minFreeWallSegment = 0.4
-    const elements = getData(sceneStructure)
+    const elements = flattenElements(sceneStructure)
     document.querySelectorAll('.helper').forEach(el => el.parentNode.removeChild(el))
 
     var promises = []
@@ -444,8 +507,8 @@
             carpetTable.boundingBox = d.boundingBox
           }
           const isTooHigh = d.boundingBox.height + el3d.y > 1
-          const closeToWall1 = elements[i].z > 2 + d.boundingPoints.min[2]
-          const closeToWall2 = elements[i].x > 2 + d.boundingPoints.min[2]
+          const closeToWall1 = el3d.z > 2 + d.boundingPoints.min[2]
+          const closeToWall2 = el3d.x > 2 + d.boundingPoints.min[2]
           const pMin = io3d.scene.applyParentLocation({x: d.boundingPoints.min[0], y: d.boundingPoints.min[1], z: d.boundingPoints.min[2]}, el3d)
           const pMax = io3d.scene.applyParentLocation({x: d.boundingPoints.max[0], y: d.boundingPoints.max[1], z: d.boundingPoints.max[2]}, el3d)
           const center = {
@@ -453,23 +516,6 @@
             y: el3d.y + d.boundingBox.height / 2,
             z: el3d.z + d.boundingBox.width / 2 + d.boundingPoints.min[2],
           }
-          // const el = document.createElement('a-box')
-          // el.classList.add('helper')
-          // el.setAttribute('position', center)
-          // el.setAttribute('width', d.boundingBox.length)
-          // el.setAttribute('material', 'opacity: 0.5')
-          // el.setAttribute('depth', d.boundingBox.width)
-          // el.setAttribute('height', d.boundingBox.height)
-          // el.setAttribute('rotation', `0 ${el3d.ry} 0`)
-          // if (isTooHigh && (closeToWall1 || closeToWall2)) {
-          //   el.setAttribute('color', 'red')
-          //   console.log(i, placeAbove, isTooHigh, closeToWall1, closeToWall2, d.tags, elements[i].x, elements[i].z, d.boundingPoints)
-          // }
-          // if (placeAbove && (closeToWall1 || closeToWall2)) {
-          //   el.setAttribute('color', 'orange')
-          //   console.log(i, placeAbove, isTooHigh, closeToWall1, closeToWall2, d.tags, elements[i].x, elements[i].z, d.boundingPoints)
-          // }
-          // roomEl.appendChild(el)
           // x
           if (closeToWall1 && isTooHigh) walls[0].full.push([pMin.x, pMax.x].sort((a,b) => a > b ? 1 : -1))
           if (closeToWall1 && placeAbove) walls[0].above.push(center.x)
@@ -490,26 +536,16 @@
             })
             if (2.5 - w.full[w.full.length - 1][1] > minFreeWallSegment) w.free.push([w.full[w.full.length - 1][1], 2.5])
           } else w.free = [[-2.5, 2.5]]
-
-          // // debug helper
-          // w.free.forEach(arr => {
-          //   const el = document.createElement('a-box')
-          //   el.classList.add('helper')
-          //   let pos = wi === 0 ? {x: arr[0] + (arr[1] - arr[0]) /2, y: 1.5, z: 2.2} : {z: arr[0] + (arr[1] - arr[0]) /2, y: 1.5, x: 2.2}
-          //   el.setAttribute('position', pos)
-          //   el.setAttribute('width', arr[1] - arr[0])
-          //   el.setAttribute('material', 'opacity: 0.2; color: green')
-          //   el.setAttribute('depth', 0.1)
-          //   el.setAttribute('height', 1)
-          //   roomEl.appendChild(el)
-          //   el.setAttribute('rotation', `0 ${(wi === 0 ? 0 : 90)} 0`)
-          // })
           
+          // remove above markers if there is no free space
+          for (var i = w.above.length; i > 0; i--) {
+            const a = w.above[i - 1]
+            const match = w.free.some(f => f[0] < a && f[1] > a)
+            if (!match) w.above.splice(i - 1, 1)
+          }
           // place pictures above sofas, sideboards and tables
           w.above.forEach(a => {
-            // only place where there is free space
-            const match = w.free.some(f => f[0] < a && f[1] > a)
-            if (!a || !match) return
+            if (!a) return
             let pos = wi === 0 ? `${a} 0 2.29` : `2.29 0 ${a}`
             placePic(pos, `0 ${(wi === 0 ? 180 : -90)} 0`)
           })
@@ -518,13 +554,13 @@
             w.free.forEach(f => {
 
               let width = f[1] - f[0]
-              let place = Math.floor(Math.random() * 2.5) > 0
+              let place = Math.random() > 0.2
 
               let pos = f[0] + width / 2
               pos = wi === 0 ? `${pos} 0 2.29` : `2.29 0 ${pos}`
 
               // place random pictures
-              if (width > 0.6 && width < 1.8 && !place) placePic(pos, `0 ${(wi === 0 ? 180 : -90)} 0`, width)
+              if (width > 0.6 && width < 1.8 && place) placePic(pos, `0 ${(wi === 0 ? 180 : -90)} 0`, width)
               // place a curtain
               else if (wi === 1 && width < 0.6) placeCurtain(`2.3 0 ${f[0]}`, '0 -90 0', width)
             })
@@ -552,7 +588,7 @@
           roomEl.appendChild(el)
           addedElements.push(el)
         }
-        // place a carpet in teh room
+        // place a carpet in the room
         io3d.furniture.search('carpet widthMin:2 lengthMax:3')
           .then(results => {
             const el = document.createElement('a-entity')
@@ -562,25 +598,15 @@
             let pos = {x: carpetTable.x || 0, y: 0, z: carpetTable.z  || 0}
             const rot = {x: 0, y: ry, z: 0}
             const isRotated = Math.round(ry) === 90 || Math.round(ry) === 270
-            console.log(isRotated, Math.round(ry))
             const posX = isRotated ? 2 : 0
             const posZ = isRotated ? 0 : 2
-            if (boundingPoints.min[posX] + pos.x < -2.5) {
-              console.log('move posx -', boundingPoints.min[posX] + pos.x + 2.5)
-              pos.x -= boundingPoints.min[posX] + pos.x + 2.5
-            }
-            if (boundingPoints.min[posZ] + pos.z < -2.5) {
-              console.log('move posz -', boundingPoints.min[posZ] + pos.z + 2.5)
-              pos.z -= boundingPoints.min[posZ] + pos.z + 2.5
-            }
-            if (boundingPoints.max[posX] + pos.x > 2.5) {
-              console.log('move posx +', boundingPoints.max[posX] + pos.x - 2.5)
-              pos.x -= boundingPoints.max[posX] + pos.x - 2.5
-            }
-            if (boundingPoints.max[posZ] + pos.z > 2.5) {
-              console.log('move posz +', boundingPoints.max[posZ] + pos.z - 2.5)
-              pos.z -= boundingPoints.max[posZ] + pos.z - 2.5
-            }
+
+            // adapt carpet position if it overlaps the room
+            if (boundingPoints.min[posX] + pos.x < -2.5) pos.x -= boundingPoints.min[posX] + pos.x + 2.5
+            if (boundingPoints.min[posZ] + pos.z < -2.5) pos.z -= boundingPoints.min[posZ] + pos.z + 2.5
+            if (boundingPoints.max[posX] + pos.x > 2.5) pos.x -= boundingPoints.max[posX] + pos.x - 2.5
+            if (boundingPoints.max[posZ] + pos.z > 2.5) pos.z -= boundingPoints.max[posZ] + pos.z - 2.5
+            
             el.setAttribute('io3d-furniture', `id: ${rndCarpet.id}`)
             el.setAttribute('position', pos)
             el.setAttribute('rotation', {x: 0, y: carpetTable.ry + 90, z: 0})
@@ -602,35 +628,9 @@
 
         // console.log(walls)
       })
-    
-    function getData(els, parent) {
-      let _elements = []
-      els.forEach(el => {
-        if (el.type === 'group') _elements = _elements.concat(getData(el.children, el))
-        else if (el.type === 'interior') {
-          let _el = el
-          if (parent) _el = io3d.scene.applyParentLocation(el, parent)
-          _elements.push(_el)
-        }
-      })
-      return _elements
-    }
   }
 
-  function pickRnd(arr) {
-    return arr[Math.floor(Math.random() * arr.length)]
-  }
-
-  function combineArr(numbers) {
-    return numbers.reduce(function(combined, next) {
-      if (!combined.length || combined[combined.length-1][1] < next[0]) combined.push(next);
-      else {
-        var prev = combined.pop();
-        combined.push([prev[0], Math.max(prev[1], next[1])]);
-      }
-      return combined;
-    }, []);
-  }
+  // 3d scene click handling
   
   function elementClick() {
     let el = cursor.components.raycaster.intersectedEls[0]
@@ -645,7 +645,6 @@
       const el3d = io3d.scene.getSceneStructureFromAframeElements(el)
       io3d.staging.replaceFurniture(el3d)
         .then(result => {
-          console.log(result)
           // FIXME
           if (!result || result.src.substring(1) === 'undefined') return
           el.setAttribute('position', `${result.x} ${result.y} ${result.z}`)
@@ -672,6 +671,7 @@
   }
   
   // gltf export
+
   document.querySelector('#gltf-btn').addEventListener('click', () => {
     convertMats ( sceneEl.object3D )  
 		setTimeout(() => { exportGLTF ( sceneEl.object3D ) },100)
@@ -732,6 +732,8 @@
       }
     })
   }
+
+  // exporting
   function exportGLTF( input ) {
 
     var gltfExporter = new THREE.GLTFExporter();
@@ -760,6 +762,62 @@
     }, options );
   }
 
+  // helper
+
+  function flattenElements(els, parent) {
+    let _els = JSON.parse(JSON.stringify(els))
+    let elements = []
+    _els.forEach(el => {
+      let _el = JSON.parse(JSON.stringify(el))
+      if (el.type === 'interior') {
+        _el.children = [] 
+        if (parent) _el = io3d.scene.applyParentLocation(_el, parent)
+        elements.push(_el)
+      }
+      if (el.children.length) {
+        elements = elements.concat(flattenElements(el.children, _el))
+      } 
+    })
+    return elements
+  }
+
+  // pick random attributes
+  function rndAttr(att) {
+    let _att = {}
+    Object.keys(att).forEach(a => {
+      if (a === 'rowRatios' || a === 'columnRatios') {
+        _att[a] = JSON.stringify(pickRnd(att[a]))
+      }
+      else _att[a] = pickRnd(att[a])
+    })
+    return _att
+  }
+
+  // pick random array item
+  function pickRnd(arr) {
+    return arr[Math.floor(Math.random() * arr.length)]
+  }
+
+  // merge overlapping arrays
+  function combineArr(numbers) {
+    return numbers.reduce(function(combined, next) {
+      if (!combined.length || combined[combined.length-1][1] < next[0]) combined.push(next);
+      else {
+        var prev = combined.pop();
+        combined.push([prev[0], Math.max(prev[1], next[1])]);
+      }
+      return combined;
+    }, []);
+  }
+
+  // simple wait promise
+  function wait(time) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, time)
+    })
+  }
+
+  // download helpers
   function save( blob, filename ) {
     link.href = URL.createObjectURL( blob );
     link.download = filename;
