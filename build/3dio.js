@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.1.8
- * @date 2018/02/26 10:36
- * @branch master
- * @commit 928f5f5a42c143e9709b408b506f22df22a36c26
+ * @date 2018/02/26 13:09
+ * @branch pic-and-curtain
+ * @commit 6f12be0a368e09593d5c76d9242b39ab2e6eb938
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2018/02/26 10:36', GIT_BRANCH = 'master', GIT_COMMIT = '928f5f5a42c143e9709b408b506f22df22a36c26'
+	var BUILD_DATE='2018/02/26 13:09', GIT_BRANCH = 'pic-and-curtain', GIT_COMMIT = '6f12be0a368e09593d5c76d9242b39ab2e6eb938'
 
 	var name = "3dio";
 	var version = "1.1.8";
