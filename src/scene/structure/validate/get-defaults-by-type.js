@@ -13,6 +13,7 @@ import interior from './by-type/interior'
 import kitchen from './by-type/kitchen.js'
 import level from './by-type/level.js'
 import object from './by-type/object.js'
+import pic from './by-type/pic.js'
 import plan from './by-type/plan.js'
 import polybox from './by-type/polybox.js'
 import polyfloor from './by-type/polyfloor.js'
@@ -39,6 +40,7 @@ export default function getDefaultsByType (type) {
     kitchen: kitchen,
     level: level,
     object: object,
+    pic: pic,
     plan: plan,
     polybox: polybox,
     polyfloor: polyfloor,

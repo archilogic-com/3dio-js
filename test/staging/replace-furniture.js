@@ -52,6 +52,7 @@ test('Replace furniture items', async () => {
     && copy.children[2].src !== result.children[2].src
   expect(idsChanged).toBeTruthy()
 })
+
 // replace furniture
 test('Replace furniture items - invalid furnture id', async () => {
   const sceneStructure = {

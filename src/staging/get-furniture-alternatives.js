@@ -18,6 +18,7 @@ var config = {
     'shelf',
     'armchair',
     'sofa',
+    'carpet',
     'chair',
     'plant',
     'sideboard',
@@ -36,6 +37,7 @@ var config = {
     'bathroom',
     'storage',
     'tables',
+    'table detail',
     'seating',
     'L shaped left',
     'L shaped right'
@@ -118,7 +120,7 @@ function verifyResult(result, id, params) {
 function getQuery(params) {
   var info = params.info
   var queries = [config['default_search']]
-  var tags = info.tags.concat(info.categories)
+  var tags = info.tags.concat(info.categories).map(t => t.toLowerCase())
 
   tags = tags.filter(function(tag) {
     // removes blacklisted tags as well as 1P, 2P, ...

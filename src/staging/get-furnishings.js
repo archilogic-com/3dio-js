@@ -12,6 +12,7 @@ export default function furnish (sceneStructure, options) {
     spaceId = options.spaceId,
     label = options.label,
     tags = options.tags || ['generic'],
+    maxResults = options.tags ? 3 : 1, 
     spaceLabels = {}
 
   // make sure we're having a plan and a level object
@@ -33,7 +34,7 @@ export default function furnish (sceneStructure, options) {
       var params = {
         floors: spaceLabels,
         modelStructure: result,
-        maxResults: 3,
+        maxResults: maxResults,
         tags: tags
       }
 

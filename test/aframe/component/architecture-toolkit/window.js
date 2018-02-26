@@ -14,3 +14,14 @@ test('get window data3d', () => {
   expect(data3d.frame.positions).toBeDefined()
   expect(data3d.frame.normals).toBeDefined()
 });
+
+test('get window deleteGlass', () => {
+  let el3d = applyDefaults({type: 'window'})
+  el3d.hideGlass = true
+  window.attributes = el3d
+
+  const data3d = window.generateMeshes3d()
+  // mesh names
+  expect(Object.keys(data3d)).toEqual([ 'frame' ])
+  expect(data3d.glass).not.toBeDefined()
+});

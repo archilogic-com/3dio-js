@@ -54,10 +54,6 @@ export default {
     // get meshes and materials from el3d modules
     var meshes = this.generateMeshes3d()
 
-    // remove glass mesh if needed
-    var deleteGlass = data.hideGlass === 'true'
-    if (deleteGlass) delete meshes.glass
-
     // clean up empty meshes to prevent errors
     var meshKeys = Object.keys(meshes)
     meshKeys.forEach(key => {
@@ -656,7 +652,7 @@ export default {
     frameVertices[ fvPos + 17 ] = frameFrontPos
 
     // return meshes
-    return {
+    let meshes = {
       frame: {
         positions: frameVertices,
         normals: generateNormals.flat(frameVertices),
@@ -668,5 +664,10 @@ export default {
         material: 'glass'
       }
     }
+    // remove glass mesh if needed
+    var deleteGlass = a.hideGlass === true || a.hideGlass === 'true' 
+    if (deleteGlass) delete meshes.glass
+
+    return meshes
   }
 }

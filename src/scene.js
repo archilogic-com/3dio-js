@@ -7,6 +7,7 @@ import getAframeElementsFromSceneStructure from './scene/structure/to-aframe-ele
 import getSceneStructureFromAframeElements from './scene/structure/from-aframe-elements.js'
 import exportSvg from './scene/export-svg.js'
 import snapWalls from './scene/structure/utils/snap-walls.js'
+import applyParentLocation from './scene/structure/utils/apply-parent-location.js'
 
 var scene = {
   getStructure: getStructure,
@@ -19,6 +20,7 @@ var scene = {
   getAframeElementsFromSceneStructure: getAframeElementsFromSceneStructure,
   getSceneStructureFromAframeElements: getSceneStructureFromAframeElements,
   snapWalls: snapWalls,
+  applyParentLocation: applyParentLocation,
   exportSvg: exportSvg
 }
 
