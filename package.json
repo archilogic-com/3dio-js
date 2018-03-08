@@ -76,7 +76,7 @@
     "jshint": "^2.9.5",
     "jshint-stylish": "^2.2.1",
     "lite-server": "^2.3.0",
-    "moment": "^2.19.0",
+    "moment": "^2.19.3",
     "regenerator-runtime": "^0.11.1",
     "rollup": "^0.41.6",
     "rollup-plugin-babel": "^3.0.2",
