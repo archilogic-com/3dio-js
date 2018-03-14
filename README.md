@@ -1,7 +1,7 @@
-<p align="center"><a href="https://3d.io" target="_blank"><img width="280" alt="toolkit for interior apps" src="3dio-logo.png"></a></p>
+<p align="center"><a href="https://app.3d.io/oFXeKW" target="_blank"><img width="280" alt="toolkit for interior apps" src="img/title-pic.gif"></a></p>
 
 <div align="center">
-  <a href="https://3d.io">Site</a>
+  <a href="https://3d.io">Website</a>
   &mdash;
   <a href="https://3d.io/docs/api/1/">Docs</a>
   &mdash;
