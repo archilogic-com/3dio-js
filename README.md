@@ -1,4 +1,4 @@
-<p align="center"><a href="https://app.3d.io/oFXeKW" target="_blank"><img alt="toolkit for interior apps" src="img/title-pic.gif"></a></p>
+<p align="center"><a href="https://app.3d.io/oFXeKW" target="_blank"><img alt="toolkit for interior apps" src="img/title-pic2.gif"></a></p>
 
 <div align="center">
   <a href="https://3d.io">Website</a>
