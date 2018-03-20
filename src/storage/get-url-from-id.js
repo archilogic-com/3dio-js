@@ -44,6 +44,6 @@ export default function getUrlFromStorageId (storageId, options) {
 
   // add to cache
   ID_TO_URL_CACHE[ storageId + cdn + encode ] = url
-  
+
   return url
 }

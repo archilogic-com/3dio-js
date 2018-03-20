@@ -2,9 +2,10 @@
 
 // dependencies
 
-import getMaterial from './common/get-material.js'
+import getMaterial from './common/get-material'
 import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import generateUvs from '../../../utils/data3d/buffer/get-uvs'
+import materialLib from './common/material-lib'
 
 export default function getData3d(attributes) {
     console.log(attributes)
@@ -18,15 +19,13 @@ export default function getData3d(attributes) {
   }
 
 export function generateMaterials3d (materials) {
-    // fetch materials from mat library
-    Object.keys(materials).forEach(mat => {
-      materials[mat] = getMaterial(materials[mat])
+    Object.keys(materials).map(meshName => {
+      if (typeof(materials[meshName])==="string") {
+        materials[meshName]=getMaterial(materials[meshName])
+      }
     })
-    /* check what the editor does
-    string - get from mat-lib
-    object - use directly
-    */
-    Promise.resolve(materials)
+
+    return Promise.resolve(materials)
   }
 
 export function generateMeshes3d(a) {

@@ -21,7 +21,6 @@ export default {
   update: function (oldData) {
     var this_ = this
     var data = this_.data
-
     // remove old mesh
     this.remove()
 
@@ -35,19 +34,17 @@ export default {
     }
 
     // check for adapted materials
-    var materialKeys = Object.keys(data).filter(function(key) {
+    Object.keys(data).filter(function(key) {
       return key.indexOf('material_') > -1
+    }).forEach(function(key) {
+      var matName = key.replace('material_', '')
+      materials[matName] = data[key]
     })
-    // add materials to instance
-    materialKeys.forEach(function(key) {
-      var mesh = key.replace('material_', '')
-      materials[mesh] = data[key]
-    })
-
     attributes.materials = materials
 
     closetData3d(attributes)
     .then(data3d => {
+
       // create new one
       this_.mesh = new THREE.Object3D()
       this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh})
@@ -58,8 +55,6 @@ export default {
       // emit event
       this_.el.emit('mesh-updated');
     })
-
-
   },
 
   remove: function () {
