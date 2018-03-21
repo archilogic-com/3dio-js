@@ -49,19 +49,7 @@ export default {
     // remove old mesh
     this.remove()
 
-    // get defaults and
     let attributes = cloneDeep(data)
-
-    /*
-    // clean up empty meshes to prevent errors
-    var meshKeys = Object.keys(meshes)
-    meshKeys.forEach(key => {
-      if (!meshes[key].positions || !meshes[key].positions.length) {
-        // console.warn('no vertices for mesh', key)
-        delete meshes[key]
-      }
-    })
-    */
 
     // setup materials
     // defaults
