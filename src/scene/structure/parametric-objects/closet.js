@@ -2,17 +2,16 @@
 
 // dependencies
 
-import getMaterials from './common/get-materials'
 
 import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import generateUvs from '../../../utils/data3d/buffer/get-uvs'
-import materialLib from './common/material-lib'
+import getMaterials3d from './common/get-materials'
 
 export default function getData3d(attributes) {
     console.log(attributes)
     return Promise.all([
       generateMeshes3d(attributes),
-      getMaterials(attributes.materials)
+      getMaterials3d(attributes.materials)
     ]).then(results => ({
       meshes: results[0],
       materials: results[1]
