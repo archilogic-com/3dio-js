@@ -3,7 +3,6 @@
 // dependencies
 
 import getSchema from './common/get-schema.js'
-import getMaterial from './common/get-material.js'
 import updateSchema from './common/update-schema.js'
 import cloneDeep from 'lodash/cloneDeep'
 import floorData3d from '../../../scene/structure/parametric-objects/floor'
