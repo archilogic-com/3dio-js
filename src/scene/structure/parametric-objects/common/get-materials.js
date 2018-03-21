@@ -1,7 +1,16 @@
 import cloneDeep from 'lodash/cloneDeep'
 import materialLibrary from './material-lib.js'
 
-export default function getMaterial(material) {
+export default function getMaterials (materials) {
+  Object.keys(materials).map(meshName => {
+    if (typeof(materials[meshName])==="string") {
+      materials[meshName]=getMaterial(materials[meshName])
+    }
+  })
+  return Promise.resolve(materials)
+}
+
+function getMaterial(material) {
   var STORAGE_URL = 'https://storage.3d.io/'
   var mat = materialLibrary[material]
 
