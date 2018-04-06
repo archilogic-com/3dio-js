@@ -75,7 +75,7 @@ export default function getAlternatives(id, options) {
       return verifyResult(result, id, params)
     })
     .catch(function(error) {
-      console.error(error)
+      return Promise.reject(error)
     })
 }
 
@@ -112,7 +112,7 @@ function verifyResult(result, id, params) {
       }
     })
     return Promise.resolve(cleanResult)
-  } else Promise.reject('No alternatives were found')
+  } else return Promise.reject('No alternatives were found')
 }
 
 function getQuery(params) {
