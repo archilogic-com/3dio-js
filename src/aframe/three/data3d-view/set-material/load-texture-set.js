@@ -77,7 +77,7 @@ function disposeIfPossible () {
 // class
 
 export default function loadTextureSet ( queueName, TEXTURE_TYPES, vm, _attributes, material3d, mesh3d, resetTexturesOnLoadStart) {
-  
+
   // new textures
 
   var
@@ -110,7 +110,7 @@ export default function loadTextureSet ( queueName, TEXTURE_TYPES, vm, _attribut
       if (hasUvVertices) {
         hasUv1Textures = true
       } else {
-        console.error('Texture ' + textureS3Key + ' could not be assigned because geometry has no UV vertices.')
+        console.warn('Texture ' + textureS3Key + ' could not be assigned because geometry has no UV vertices.')
         continue
       }
     }
