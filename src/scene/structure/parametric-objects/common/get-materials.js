@@ -2,6 +2,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import materialLibrary from './material-lib.js'
 
 export default function getMaterials (materials) {
+  if (!materials) return Promise.reject('materials is falsy ('+materials+')')
   Object.keys(materials).map(meshName => {
     if (typeof(materials[meshName])==="string") {
       materials[meshName]=getMaterial(materials[meshName])
