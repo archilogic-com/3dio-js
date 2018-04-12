@@ -1083,7 +1083,6 @@ export function generateMeshes3d (a) {
     }
   }
 
-  console.log(leaf)
   return Promise.resolve({
     frame: {
       positions: frameVertices,

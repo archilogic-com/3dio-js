@@ -23,13 +23,11 @@ export default {
   },
 
   updateFromWall: function(evt) {
-    console.log('updateFromWall evt', evt)
     let parentAttributes = {}
     // if we have no event yet we need to get the attributes directly
     if (!evt) {
       var wallAttributes = this.el.parentEl.getAttribute('io3d-wall')
       if (wallAttributes) {
-        console.log(' wallAttributes', wallAttributes)
         // let's make sure we deal with an object
         if (typeof wallAttributes === 'string') wallAttributes = AFRAME.utils.styleParser.parse(wallAttributes)
         parentAttributes.wallWidth = wallAttributes.w
@@ -94,7 +92,6 @@ export default {
     // construct data3d object
     let data3d = await windowData3d(attributes, parentAttributes)
     if (deleteGlass) delete data3d.meshes.glass
-    console.log('data3d', data3d)
 
     // create new one
     this_.mesh = new THREE.Object3D()

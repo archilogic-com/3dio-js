@@ -15,7 +15,6 @@ export default async function getData3d(attributes, parentAttributes) {
 }
 
 export function generateMeshes3d (a, parentAttributes) {
-  console.log('window generateMeshes3d', a, parentAttributes)
 
   var wallWidth = a.w || 0.15
   var wallControlLine = 'back'
