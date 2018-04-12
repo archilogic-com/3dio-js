@@ -11,7 +11,7 @@ export default function getData3d(attributes) {
     console.log(attributes)
     return Promise.all([
       generateMeshes3d(attributes),
-      attributes.materials? getMaterials3d(attributes.materials):[]
+      getMaterials3d(attributes.materials)
     ]).then(results => ({
       meshes: results[0],
       materials: results[1]

@@ -5,7 +5,6 @@ import closet from '../../../../src/scene/structure/parametric-objects/closet'
 jest.mock('../../../../src/core/runtime.js', () => ({isBrowser: false, isNode: true}))
 
 test('get closet data3d', async function() {
-
   const attributes = applyDefaults({type: 'closet'})
   const data3d = await closet(attributes)
   

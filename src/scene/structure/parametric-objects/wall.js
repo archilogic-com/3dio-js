@@ -12,7 +12,7 @@ import loadData3d from '../../../utils/data3d/load'
 export default async function getData3d(attributes) {
   return Promise.all([
     generateMeshes3d(attributes),
-    attributes.materials ? getMaterials3d(attributes.materials): []
+    getMaterials3d(attributes.materials)
   ]).then(results => ({
     meshes: results[0],
     materials: results[1]
