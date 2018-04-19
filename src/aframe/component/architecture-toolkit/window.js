@@ -1,9 +1,7 @@
 'use strict';
 
-// dependencies
-
 import getSchema from './common/get-schema.js'
-import getMaterial from './common/get-material.js'
+import getMaterial from '../../../scene/structure/parametric-objects/common/get-material.js'
 import updateSchema from './common/update-schema.js'
 import cloneDeep from 'lodash/cloneDeep'
 import windowData3d from '../../../scene/structure/parametric-objects/window'

@@ -1,7 +1,5 @@
 'use strict';
 
-// dependencies
-
 import Promise from 'bluebird'
 import getSchema from './common/get-schema.js'
 import updateSchema from './common/update-schema.js'

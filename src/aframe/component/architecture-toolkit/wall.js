@@ -1,14 +1,12 @@
 'use strict';
 
-// dependencies
-
 import getSchema from './common/get-schema.js'
 import updateSchema from './common/update-schema.js'
 import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import generateUvs from '../../../utils/data3d/buffer/get-uvs'
 import cloneDeep from 'lodash/cloneDeep'
 import wallData3d from '../../../scene/structure/parametric-objects/wall'
-import getMaterial from '../../../aframe/component/architecture-toolkit/common/get-material'
+import getMaterial from '../../../scene/structure/parametric-objects/common/get-material.js'
 
 export default {
 
