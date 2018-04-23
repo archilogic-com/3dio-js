@@ -4,7 +4,7 @@ import getSchema from './common/get-schema.js'
 import getMaterial from '../../../scene/structure/parametric-objects/common/get-material.js'
 import updateSchema from './common/update-schema.js'
 import cloneDeep from 'lodash/cloneDeep'
-import windowData3d from '../../../scene/structure/parametric-objects/window'
+import getWindowData3d from '../../../scene/structure/parametric-objects/window'
 import dataToMaterials from './common/data-to-materials'
 
 export default {
@@ -57,7 +57,7 @@ export default {
     attributes.materials = dataToMaterials(data);
 
     // construct data3d object
-    let data3d = await windowData3d(attributes, parentAttributes)
+    let data3d = await getWindowData3d(attributes, parentAttributes)
     if (deleteGlass) delete data3d.meshes.glass
 
     // create new one

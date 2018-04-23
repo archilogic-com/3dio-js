@@ -8,7 +8,7 @@ import getMaterials3d from './common/get-materials'
 
 import loadData3d from '../../../utils/data3d/load'
 
-export default function getData3d(attributes) {
+export default function(attributes) {
   return Promise.all([
     generateMeshes3d(attributes),
     getMaterials3d(attributes.materials, getDefaultMaterials())
@@ -36,6 +36,7 @@ export function getDefaultMaterials(){
 }
 
 function generateMeshes3d (a) {
+  console.log('generateMeshes3d', a)
 
   // external meshes
 
@@ -56,7 +57,7 @@ function generateMeshes3d (a) {
     oven = a.ovenType !== 'none',
     cooktop = a.cooktopType !== 'none',
     microwave = a.microwave,
-    largeCooktop = cooktop && a.cooktopType.slice(-2) === '90',
+    largeCooktop = (cooktop!=='none') && (a.cooktopType.slice(-2) === '90'),
     cabinetType = a.cabinetType
 
   // config

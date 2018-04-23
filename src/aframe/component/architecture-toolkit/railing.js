@@ -5,7 +5,7 @@ import getMaterial from '../../../scene/structure/parametric-objects/common/get-
 import updateSchema from './common/update-schema.js'
 import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import cloneDeep from 'lodash/cloneDeep'
-import wallRailing3d from '../../../scene/structure/parametric-objects/railing'
+import getRailingData3d from '../../../scene/structure/parametric-objects/railing'
 import dataToMaterials from './common/data-to-materials'
 
 export default {
@@ -29,7 +29,7 @@ export default {
     attributes.materials = dataToMaterials(data)
 
     // construct data3d object
-    let data3d = await wallRailing3d(attributes)
+    let data3d = await getRailingData3d(attributes)
 
     // create new one
     this_.mesh = new THREE.Object3D()

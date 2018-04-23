@@ -4,7 +4,7 @@ import generatePolygonBuffer from '../../../utils/data3d/buffer/get-polygon'
 import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import getMaterials3d from './common/get-materials'
 
-export default async function getData3d(attributes, parentAttributes) {
+export default function(attributes, parentAttributes) {
   return Promise.all([
     generateMeshes3d(attributes, parentAttributes),
     getMaterials3d(attributes.materials, getDefaultMaterials())

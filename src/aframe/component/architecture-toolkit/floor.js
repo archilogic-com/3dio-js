@@ -5,7 +5,7 @@
 import getSchema from './common/get-schema.js'
 import updateSchema from './common/update-schema.js'
 import cloneDeep from 'lodash/cloneDeep'
-import floorData3d from '../../../scene/structure/parametric-objects/floor'
+import getFloorData3d from '../../../scene/structure/parametric-objects/floor'
 import dataToMaterials from './common/data-to-materials'
 
 export default {
@@ -29,7 +29,7 @@ export default {
     attributes.materials = dataToMaterials(data)
 
     // construct data3d object
-    var data3d = await floorData3d(attributes)
+    var data3d = await getFloorData3d(attributes)
 
     // create new one
     this_.mesh = new THREE.Object3D()

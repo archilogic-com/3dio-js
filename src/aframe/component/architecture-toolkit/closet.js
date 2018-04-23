@@ -6,7 +6,7 @@ import updateSchema from './common/update-schema.js'
 import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import generateUvs from '../../../utils/data3d/buffer/get-uvs'
 import cloneDeep from 'lodash/cloneDeep'
-import closetData3d from '../../../scene/structure/parametric-objects/closet'
+import getClosetData3d from '../../../scene/structure/parametric-objects/closet'
 import dataToMaterials from './common/data-to-materials'
 
 export default {
@@ -28,7 +28,7 @@ export default {
 
     attributes.materials = dataToMaterials(data)
 
-    closetData3d(attributes)
+    getClosetData3d(attributes)
     .then(data3d => {
 
       // create new one

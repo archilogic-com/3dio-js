@@ -7,7 +7,7 @@ import generatePolygonBuffer from '../../../utils/data3d/buffer/get-polygon'
 import generateExtrusionBuffer from '../../../utils/data3d/buffer/get-extrusion'
 import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import cloneDeep from 'lodash/cloneDeep'
-import polyfloorData3d from '../../../scene/structure/parametric-objects/polyfloor'
+import getPolyfloorData3d from '../../../scene/structure/parametric-objects/polyfloor'
 import dataToMaterials from './common/data-to-materials'
 
 export default {
@@ -31,7 +31,7 @@ export default {
     attributes.materials = dataToMaterials(data)
 
     // construct data3d object
-    var data3d = await polyfloorData3d(attributes)
+    var data3d = await getPolyfloorData3d(attributes)
 
     // create new one
     this_.mesh = new THREE.Object3D()

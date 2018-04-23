@@ -6,7 +6,7 @@ import updateSchema from './common/update-schema.js'
 import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import generateUvs from '../../../utils/data3d/buffer/get-uvs'
 import cloneDeep from 'lodash/cloneDeep'
-import columnData3d from '../../../scene/structure/parametric-objects/column'
+import getColumnData3d from '../../../scene/structure/parametric-objects/column'
 import dataToMaterials from './common/data-to-materials'
 
 export default {
@@ -28,10 +28,10 @@ export default {
     var attributes = cloneDeep(data)
 
     attributes.materials = dataToMaterials(data)
-    
+
     // construct data3d object
 
-    var data3d = columnData3d(attributes)
+    var data3d = getColumnData3d(attributes)
     .then(data3d => {
       // create new one
       this_.mesh = new THREE.Object3D()

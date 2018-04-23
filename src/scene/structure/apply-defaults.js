@@ -35,5 +35,6 @@ export default function applyDefaults(element3d) {
       else if (defaultVal !== undefined) element3d[key] = defaultVal
     }
   })
+
   return element3d
 }

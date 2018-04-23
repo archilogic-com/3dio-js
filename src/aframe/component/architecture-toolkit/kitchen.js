@@ -4,7 +4,7 @@ import Promise from 'bluebird'
 import getSchema from './common/get-schema.js'
 import updateSchema from './common/update-schema.js'
 import cloneDeep from 'lodash/cloneDeep'
-import kitchenData3d from '../../../scene/structure/parametric-objects/kitchen'
+import getKitchenData3d from '../../../scene/structure/parametric-objects/kitchen'
 import dataToMaterials from './common/data-to-materials'
 
 export default {
@@ -28,7 +28,7 @@ export default {
 
     // get meshes and materials
     // promise base because it loads external meshes
-    var data3d = await kitchenData3d(attributes)
+    var data3d = await getKitchenData3d(attributes)
 
     // create new one
     this_.mesh = new THREE.Object3D()

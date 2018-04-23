@@ -9,7 +9,7 @@ import getMaterials3d from './common/get-materials'
 import sortBy from 'lodash/sortBy'
 import loadData3d from '../../../utils/data3d/load'
 
-export default async function getData3d(attributes) {
+export default function(attributes) {
   return Promise.all([
     generateMeshes3d(attributes),
     getMaterials3d(attributes.materials, getDefaultMaterials())

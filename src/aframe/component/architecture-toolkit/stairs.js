@@ -6,7 +6,7 @@ import updateSchema from './common/update-schema.js'
 import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import generateUvs from '../../../utils/data3d/buffer/get-uvs'
 import cloneDeep from 'lodash/cloneDeep'
-import stairsData3d from '../../../scene/structure/parametric-objects/stairs'
+import getStairsData3d from '../../../scene/structure/parametric-objects/stairs'
 import dataToMaterials from './common/data-to-materials'
 
 export default {
@@ -29,7 +29,7 @@ export default {
 
     attributes.materials = dataToMaterials(data)
 
-    var data3d = await stairsData3d(attributes)
+    var data3d = await getStairsData3d(attributes)
 
     // create new one
     this_.mesh = new THREE.Object3D()

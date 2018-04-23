@@ -5,7 +5,7 @@ import updateSchema from './common/update-schema.js'
 import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import generateUvs from '../../../utils/data3d/buffer/get-uvs'
 import cloneDeep from 'lodash/cloneDeep'
-import wallData3d from '../../../scene/structure/parametric-objects/wall'
+import getWallData3d from '../../../scene/structure/parametric-objects/wall'
 import getMaterial from '../../../scene/structure/parametric-objects/common/get-material.js'
 import dataToMaterials from './common/data-to-materials'
 export default {
@@ -86,7 +86,7 @@ export default {
     attributes.materials = dataToMaterials(data)
 
     // get meshes and materials from el3d modules
-    let data3d = await wallData3d(attributes)
+    let data3d = await getWallData3d(attributes)
 
     // create new one
     this_.mesh = new THREE.Object3D()

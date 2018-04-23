@@ -5,7 +5,7 @@ import getMaterial from '../../../scene/structure/parametric-objects/common/get-
 import updateSchema from './common/update-schema.js'
 import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import cloneDeep from 'lodash/cloneDeep'
-import doorData3d from '../../../scene/structure/parametric-objects/door'
+import getDoorData3d from '../../../scene/structure/parametric-objects/door'
 import dataToMaterials from './common/data-to-materials'
 
 export default {
@@ -53,7 +53,7 @@ export default {
     attributes.materials = dataToMaterials(data)
 
     // construct data3d object
-    var data3d = await doorData3d(attributes)
+    var data3d = await getDoorData3d(attributes)
 
     // create new one
     this_.mesh = new THREE.Object3D()

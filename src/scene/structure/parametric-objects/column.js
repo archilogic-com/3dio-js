@@ -6,7 +6,7 @@ import generatePolygonBuffer from '../../../utils/data3d/buffer/get-polygon'
 import generateExtrusionBuffer from '../../../utils/data3d/buffer/get-extrusion'
 import getMaterials3d from './common/get-materials'
 
-export default function getData3d(attributes) {
+export default function(attributes) {
     return Promise.all([
       generateMeshes3d(attributes),
       getMaterials3d(attributes.materials, getDefaultMaterials())
