@@ -25,4 +25,4 @@ if (runtime.isBrowser) {
 // global dependencies
 
 // three.js
-if (runtime.isNode) global.THREE = runtime.require('three')
+if (runtime.isNode) global.THREE = require('three')
