@@ -7,6 +7,7 @@ import updateSchema from './common/update-schema.js'
 import cloneDeep from 'lodash/cloneDeep'
 import getFloorData3d from '../../../scene/structure/parametric-objects/floor'
 import dataToMaterials from './common/data-to-materials'
+import removeEmptyMeshes from './common/remove-empty-meshes'
 
 export default {
 
@@ -30,6 +31,7 @@ export default {
 
     // construct data3d object
     var data3d = await getFloorData3d(attributes)
+    removeEmptyMeshes(data3d.meshes)
 
     // create new one
     this_.mesh = new THREE.Object3D()

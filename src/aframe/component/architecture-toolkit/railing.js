@@ -7,6 +7,7 @@ import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import cloneDeep from 'lodash/cloneDeep'
 import getRailingData3d from '../../../scene/structure/parametric-objects/railing'
 import dataToMaterials from './common/data-to-materials'
+import removeEmptyMeshes from './common/remove-empty-meshes'
 
 export default {
 
@@ -30,6 +31,7 @@ export default {
 
     // construct data3d object
     let data3d = await getRailingData3d(attributes)
+    removeEmptyMeshes(data3d.meshes)
 
     // create new one
     this_.mesh = new THREE.Object3D()

@@ -8,6 +8,7 @@ import generateUvs from '../../../utils/data3d/buffer/get-uvs'
 import cloneDeep from 'lodash/cloneDeep'
 import getStairsData3d from '../../../scene/structure/parametric-objects/stairs'
 import dataToMaterials from './common/data-to-materials'
+import removeEmptyMeshes from './common/remove-empty-meshes'
 
 export default {
 
@@ -30,6 +31,7 @@ export default {
     attributes.materials = dataToMaterials(data)
 
     var data3d = await getStairsData3d(attributes)
+    removeEmptyMeshes(data3d.meshes)
 
     // create new one
     this_.mesh = new THREE.Object3D()

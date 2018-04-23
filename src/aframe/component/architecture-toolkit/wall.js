@@ -8,6 +8,8 @@ import cloneDeep from 'lodash/cloneDeep'
 import getWallData3d from '../../../scene/structure/parametric-objects/wall'
 import getMaterial from '../../../scene/structure/parametric-objects/common/get-material.js'
 import dataToMaterials from './common/data-to-materials'
+import removeEmptyMeshes from './common/remove-empty-meshes'
+
 export default {
 
   schema: getSchema('wall'),
@@ -87,6 +89,7 @@ export default {
 
     // get meshes and materials from el3d modules
     let data3d = await getWallData3d(attributes)
+    removeEmptyMeshes(data3d.meshes)
 
     // create new one
     this_.mesh = new THREE.Object3D()

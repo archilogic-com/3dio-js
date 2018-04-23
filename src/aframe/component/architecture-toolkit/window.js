@@ -6,6 +6,7 @@ import updateSchema from './common/update-schema.js'
 import cloneDeep from 'lodash/cloneDeep'
 import getWindowData3d from '../../../scene/structure/parametric-objects/window'
 import dataToMaterials from './common/data-to-materials'
+import removeEmptyMeshes from './common/remove-empty-meshes'
 
 export default {
 
@@ -58,6 +59,8 @@ export default {
 
     // construct data3d object
     let data3d = await getWindowData3d(attributes, parentAttributes)
+    removeEmptyMeshes(data3d.meshes)
+
     if (deleteGlass) delete data3d.meshes.glass
 
     // create new one

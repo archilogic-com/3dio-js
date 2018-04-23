@@ -6,6 +6,7 @@ import updateSchema from './common/update-schema.js'
 import cloneDeep from 'lodash/cloneDeep'
 import getKitchenData3d from '../../../scene/structure/parametric-objects/kitchen'
 import dataToMaterials from './common/data-to-materials'
+import removeEmptyMeshes from './common/remove-empty-meshes'
 
 export default {
 
@@ -29,6 +30,7 @@ export default {
     // get meshes and materials
     // promise base because it loads external meshes
     var data3d = await getKitchenData3d(attributes)
+    removeEmptyMeshes(data3d.meshes)
 
     // create new one
     this_.mesh = new THREE.Object3D()

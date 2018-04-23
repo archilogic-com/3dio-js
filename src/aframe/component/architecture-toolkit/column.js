@@ -8,6 +8,7 @@ import generateUvs from '../../../utils/data3d/buffer/get-uvs'
 import cloneDeep from 'lodash/cloneDeep'
 import getColumnData3d from '../../../scene/structure/parametric-objects/column'
 import dataToMaterials from './common/data-to-materials'
+import removeEmptyMeshes from './common/remove-empty-meshes'
 
 export default {
 
@@ -17,7 +18,7 @@ export default {
 
   updateSchema: updateSchema,
 
-  update: function (oldData) {
+  update: async function (oldData) {
     var this_ = this
     var data = this_.data
 
@@ -31,19 +32,18 @@ export default {
 
     // construct data3d object
 
-    var data3d = getColumnData3d(attributes)
-    .then(data3d => {
-      // create new one
-      this_.mesh = new THREE.Object3D()
-      this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh})
+    let data3d = await getColumnData3d(attributes)
+    removeEmptyMeshes(data3d.meshes)
 
-      // update view
-      this_.data3dView.set(data3d)
-      this_.el.setObject3D('mesh', this_.mesh)
-      // emit event
-      this_.el.emit('mesh-updated');
-    })
+    // create new one
+    this_.mesh = new THREE.Object3D()
+    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh})
 
+    // update view
+    this_.data3dView.set(data3d)
+    this_.el.setObject3D('mesh', this_.mesh)
+    // emit event
+    this_.el.emit('mesh-updated');
   },
 
   remove: function () {

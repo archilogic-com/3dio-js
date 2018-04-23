@@ -8,6 +8,7 @@ import generateUvs from '../../../utils/data3d/buffer/get-uvs'
 import cloneDeep from 'lodash/cloneDeep'
 import getClosetData3d from '../../../scene/structure/parametric-objects/closet'
 import dataToMaterials from './common/data-to-materials'
+import removeEmptyMeshes from './common/remove-empty-meshes'
 
 export default {
 
@@ -17,7 +18,7 @@ export default {
 
   updateSchema: updateSchema,
 
-  update: function (oldData) {
+  update: async function (oldData) {
     var this_ = this
     var data = this_.data
     // remove old mesh
@@ -28,19 +29,18 @@ export default {
 
     attributes.materials = dataToMaterials(data)
 
-    getClosetData3d(attributes)
-    .then(data3d => {
+    let data3d = await getClosetData3d(attributes)
+    removeEmptyMeshes(data3d.meshes)
 
-      // create new one
-      this_.mesh = new THREE.Object3D()
-      this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh})
+    // create new one
+    this_.mesh = new THREE.Object3D()
+    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh})
 
-      // update view
-      this_.data3dView.set(data3d)
-      this_.el.setObject3D('mesh', this_.mesh)
-      // emit event
-      this_.el.emit('mesh-updated');
-    })
+    // update view
+    this_.data3dView.set(data3d)
+    this_.el.setObject3D('mesh', this_.mesh)
+    // emit event
+    this_.el.emit('mesh-updated');
   },
 
   remove: function () {
