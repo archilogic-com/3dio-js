@@ -1,3 +1,5 @@
+'use strict';
+
 // import sceneStructure types
 import generic from './generic'
 import box from './by-type/box.js'
@@ -71,6 +73,3 @@ export default function getDefaultsByType (type) {
     return typeSpecificValidations
   }
 }
-
-
-

@@ -7,7 +7,7 @@ import generateUvs from '../../../utils/data3d/buffer/get-uvs'
 import cloneDeep from 'lodash/cloneDeep'
 import wallData3d from '../../../scene/structure/parametric-objects/wall'
 import getMaterial from '../../../scene/structure/parametric-objects/common/get-material.js'
-
+import dataToMaterials from './common/data-to-materials'
 export default {
 
   schema: getSchema('wall'),
@@ -31,6 +31,7 @@ export default {
         this_.throttledUpdate()
       }, 10)
     })
+
   },
 
   updateChildren: function() {
@@ -82,35 +83,7 @@ export default {
     }
     // this.attributes.children = this.attributes.children.map(c => mapAttributes(cloneDeep(getType.get(c.type).params), c))
 
-
-    // setup materials
-    // defaults
-    let materials = {
-      front: 'default_plaster_001', //'basic-wall',
-      back: 'default_plaster_001', //'basic-wall',
-      base: {
-        colorDiffuse: [ 0.95, 0.95, 0.95 ]
-      },
-      top: 'wall_top'
-    }
-
-    // check for adapted materials
-    var materialKeys = Object.keys(data).filter(function(key) {
-      return key.indexOf('material_') > -1
-    })
-    // add materials to instance
-    materialKeys.forEach(function(key) {
-      var mesh = key.replace('material_', '')
-      materials[mesh] = data[key]
-    })
-
-    // fetch materials from mat library
-    Object.keys(materials).forEach(mat => {
-      materials[mat] = getMaterial(materials[mat])
-    })
-
-    attributes.materials = materials
-
+    attributes.materials = dataToMaterials(data)
 
     // get meshes and materials from el3d modules
     let data3d = await wallData3d(attributes)

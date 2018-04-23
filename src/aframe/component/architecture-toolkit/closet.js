@@ -7,6 +7,7 @@ import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import generateUvs from '../../../utils/data3d/buffer/get-uvs'
 import cloneDeep from 'lodash/cloneDeep'
 import closetData3d from '../../../scene/structure/parametric-objects/closet'
+import dataToMaterials from './common/data-to-materials'
 
 export default {
 
@@ -25,20 +26,7 @@ export default {
     // get defaults and
     let attributes = cloneDeep(data)
 
-    // setup materials
-    // defaults
-    var materials = {
-      closet: 'cabinet_paint_white'
-    }
-
-    // check for adapted materials
-    Object.keys(data).filter(function(key) {
-      return key.indexOf('material_') > -1
-    }).forEach(function(key) {
-      var matName = key.replace('material_', '')
-      materials[matName] = data[key]
-    })
-    attributes.materials = materials
+    attributes.materials = dataToMaterials(data)
 
     closetData3d(attributes)
     .then(data3d => {

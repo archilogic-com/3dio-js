@@ -5,6 +5,7 @@ import getMaterial from '../../../scene/structure/parametric-objects/common/get-
 import updateSchema from './common/update-schema.js'
 import cloneDeep from 'lodash/cloneDeep'
 import windowData3d from '../../../scene/structure/parametric-objects/window'
+import dataToMaterials from './common/data-to-materials'
 
 export default {
 
@@ -53,39 +54,7 @@ export default {
     // remove glass mesh if needed
     var deleteGlass = data.hideGlass === 'true'
 
-
-    // setup materials
-    // defaults
-    let materials = {
-      frame: {
-        colorDiffuse: [0.85, 0.85, 0.85]
-      },
-      glass: 'glass'
-    }
-
-    // check for adapted materials
-    var materialKeys = Object.keys(data).filter(function(key) {
-      return key.indexOf('material_') > -1
-    })
-    // add materials to instance
-    var props = {}
-    materialKeys.forEach(function(key) {
-      props[key] = {
-        type: 'string'
-      }
-
-      var mesh = key.replace('material_', '')
-      materials[mesh] = data[key]
-    })
-
-    this_.extendSchema(props)
-
-    // fetch materials from mat library
-    Object.keys(materials).forEach(mat => {
-      materials[mat] = getMaterial(materials[mat])
-    })
-
-    attributes.materials = materials;
+    attributes.materials = dataToMaterials(data);
 
     // construct data3d object
     let data3d = await windowData3d(attributes, parentAttributes)

@@ -7,11 +7,24 @@ import getMaterials3d from './common/get-materials'
 export default function getData3d(attributes) {
   return Promise.all([
     generateMeshes3d(attributes),
-    getMaterials3d(attributes.materials)
+    getMaterials3d(attributes.materials, getDefaultMaterials())
   ]).then(results => ({
     meshes: results[0],
     materials: results[1]
   }))
+}
+
+export function getDefaultMaterials(){
+  return {
+      frame: {
+        colorDiffuse: [0.95, 0.95, 0.95],
+        colorSpecular: [0.04, 0.04, 0.04],
+        specularCoef: 30
+      },
+      leaf: 'doorLeaf-flush-white',
+      handle: 'aluminium',
+      threshold: 'wood_parquet_oak'
+    }
 }
 
 export function generateMeshes3d (a) {

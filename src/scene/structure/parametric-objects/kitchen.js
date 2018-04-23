@@ -11,11 +11,28 @@ import loadData3d from '../../../utils/data3d/load'
 export default function getData3d(attributes) {
   return Promise.all([
     generateMeshes3d(attributes),
-    getMaterials3d(attributes.materials)
+    getMaterials3d(attributes.materials, getDefaultMaterials())
   ]).then(results => ({
     meshes: results[0],
     materials: results[1]
   }))
+}
+
+export function getDefaultMaterials(){
+  return {
+    kitchen: 'cabinet_paint_white',
+    counter: 'counter_granite_black',
+    tab: 'chrome',
+    oven: 'oven_miele_60-60',
+    cooktop: 'cooktop_westinghouse_60',
+    microwave: 'microwave_samsung',
+    chrome: 'chrome',
+    black_metal: {
+      "specularCoef": 24,
+      "colorDiffuse": [0.02, 0.02, 0.02],
+      "colorSpecular": [0.7, 0.7, 0.7]
+    }
+  }
 }
 
 function generateMeshes3d (a) {

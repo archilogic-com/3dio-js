@@ -12,11 +12,22 @@ import loadData3d from '../../../utils/data3d/load'
 export default async function getData3d(attributes) {
   return Promise.all([
     generateMeshes3d(attributes),
-    getMaterials3d(attributes.materials)
+    getMaterials3d(attributes.materials, getDefaultMaterials())
   ]).then(results => ({
     meshes: results[0],
     materials: results[1]
   }))
+}
+
+export function getDefaultMaterials(){
+  return {
+    front: 'default_plaster_001', //'basic-wall',
+    back: 'default_plaster_001', //'basic-wall',
+    base: {
+      colorDiffuse: [ 0.95, 0.95, 0.95 ]
+    },
+    top: 'wall_top'
+  }
 }
 
 function generateMeshes3d(a) {
@@ -78,7 +89,6 @@ function generateMeshes3d(a) {
     // wall before children
 
     if (pointer < cx) {
-
       // front quad vertices
       frontVertices[ frontVerticesPointer ] = frontVertices[ frontVerticesPointer + 9 ] = pointer
       frontVertices[ frontVerticesPointer + 1 ] = frontVertices[ frontVerticesPointer + 10 ] = baseHeightFront

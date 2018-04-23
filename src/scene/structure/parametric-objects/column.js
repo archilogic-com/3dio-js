@@ -9,12 +9,19 @@ import getMaterials3d from './common/get-materials'
 export default function getData3d(attributes) {
     return Promise.all([
       generateMeshes3d(attributes),
-      getMaterials3d(attributes.materials)
+      getMaterials3d(attributes.materials, getDefaultMaterials())
     ]).then(results => ({
       meshes: results[0],
       materials: results[1]
     }))
   }
+
+export function getDefaultMaterials(){
+  return {
+    top: 'wall_top',
+    side: 'basic-wall'
+  }
+}
 
 export function generateMeshes3d (a) {
 

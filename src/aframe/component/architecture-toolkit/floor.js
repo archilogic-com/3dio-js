@@ -6,6 +6,7 @@ import getSchema from './common/get-schema.js'
 import updateSchema from './common/update-schema.js'
 import cloneDeep from 'lodash/cloneDeep'
 import floorData3d from '../../../scene/structure/parametric-objects/floor'
+import dataToMaterials from './common/data-to-materials'
 
 export default {
 
@@ -25,25 +26,7 @@ export default {
     // get defaults and
     let attributes = cloneDeep(data)
 
-    // setup materials
-    // defaults
-    var materials = {
-      top: 'wood_parquet_oak',
-      side: 'basic-wall',
-      ceiling: 'basic-ceiling'
-    }
-
-    // check for adapted materials
-    var materialKeys = Object.keys(data).filter(function(key) {
-      return key.indexOf('material_') > -1
-    })
-    // add materials to instance
-    materialKeys.forEach(function(key) {
-      var mesh = key.replace('material_', '')
-      materials[mesh] = data[key]
-    })
-
-    attributes.materials=materials
+    attributes.materials = dataToMaterials(data)
 
     // construct data3d object
     var data3d = await floorData3d(attributes)

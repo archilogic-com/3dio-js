@@ -1,8 +1,15 @@
 import cloneDeep from 'lodash/cloneDeep'
 import materialLibrary from './material-lib.js'
 
-export default function getMaterials (materials) {
-  if (!materials) return Promise.resolve([])
+export default function getMaterials3d (materials, defaults) {
+  if (!defaults) {
+    console.error('No default materials set')
+    defaults={}
+  }
+  if (!materials) return Promise.resolve(cloneDeep(defaults))
+  Object.keys(defaults).forEach(function(d){
+    if (!materials[d]) materials[d]=defaults[d]
+  })
   Object.keys(materials).map(meshName => {
     if (typeof(materials[meshName])==="string") {
       materials[meshName]=getMaterial(materials[meshName])

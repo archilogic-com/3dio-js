@@ -7,11 +7,20 @@ import getMaterials3d from './common/get-materials'
 export default async function getData3d(attributes, parentAttributes) {
   return Promise.all([
     generateMeshes3d(attributes, parentAttributes),
-    attributes.materials ? getMaterials3d(attributes.materials): []
+    getMaterials3d(attributes.materials, getDefaultMaterials())
   ]).then(results => ({
     meshes: results[0],
     materials: results[1]
   }))
+}
+
+export function getDefaultMaterials(){
+  return {
+    frame: {
+      colorDiffuse: [0.85, 0.85, 0.85]
+    },
+    glass: 'glass'
+  }
 }
 
 export function generateMeshes3d (a, parentAttributes) {

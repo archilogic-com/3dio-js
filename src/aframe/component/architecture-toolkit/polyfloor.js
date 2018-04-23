@@ -8,6 +8,7 @@ import generateExtrusionBuffer from '../../../utils/data3d/buffer/get-extrusion'
 import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import cloneDeep from 'lodash/cloneDeep'
 import polyfloorData3d from '../../../scene/structure/parametric-objects/polyfloor'
+import dataToMaterials from './common/data-to-materials'
 
 export default {
 
@@ -27,29 +28,7 @@ export default {
     // get defaults and
     let attributes = cloneDeep(data)
 
-    // setup materials
-    // defaults
-    var materials = {
-      top: 'wood_parquet_oak',
-      side: 'basic-wall',
-      ceiling: 'basic-ceiling'
-    }
-
-    // check for adapted materials
-    var materialKeys = Object.keys(data).filter(function(key) {
-      return key.indexOf('material_') > -1
-    })
-    // add materials to instance
-    materialKeys.forEach(function(key) {
-      var mesh = key.replace('material_', '')
-      materials[mesh] = data[key]
-    })
-
-    // fetch materials from mat library
-    Object.keys(materials).forEach(mat => {
-      materials[mat] = getMaterial(materials[mat])
-    })
-    attributes.materials = materials;
+    attributes.materials = dataToMaterials(data)
 
     // construct data3d object
     var data3d = await polyfloorData3d(attributes)

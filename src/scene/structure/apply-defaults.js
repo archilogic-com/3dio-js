@@ -1,3 +1,5 @@
+'use strict';
+
 import getDefaultsByType from './validate/get-defaults-by-type.js'
 import getParamValueType from './validate/get-param-value-type.js'
 import uuid from '../../utils/uuid'

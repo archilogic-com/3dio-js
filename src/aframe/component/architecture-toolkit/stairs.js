@@ -7,6 +7,7 @@ import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import generateUvs from '../../../utils/data3d/buffer/get-uvs'
 import cloneDeep from 'lodash/cloneDeep'
 import stairsData3d from '../../../scene/structure/parametric-objects/stairs'
+import dataToMaterials from './common/data-to-materials'
 
 export default {
 
@@ -26,33 +27,8 @@ export default {
     // get defaults and
     var attributes = cloneDeep(data)
 
-    // setup materials
-    // defaults
-    var materials = {
-      steps: 'basic-wall',
-      tread: 'wood_parquet_oak',
-      railing: {
-        colorDiffuse: [0.85, 0.85, 0.85]
-      }
-    }
+    attributes.materials = dataToMaterials(data)
 
-    // check for adapted materials
-    var materialKeys = Object.keys(data).filter(function(key) {
-      return key.indexOf('material_') > -1
-    })
-    // add materials to instance
-    materialKeys.forEach(function(key) {
-      var mesh = key.replace('material_', '')
-      materials[mesh] = data[key]
-    })
-
-    // fetch materials from mat library
-    Object.keys(materials).forEach(mat => {
-      materials[mat] = getMaterial(materials[mat])
-    })
-
-    attributes.materials = materials;
-    // construct data3d object
     var data3d = await stairsData3d(attributes)
 
     // create new one
