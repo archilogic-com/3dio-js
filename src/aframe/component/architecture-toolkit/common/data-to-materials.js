@@ -6,11 +6,9 @@ export default function dataToMaterials(data) {
 
   let materials={}
 
-  var materialKeys = Object.keys(data).filter(function(key) {
+  Object.keys(data).filter(function(key) {
     return key.indexOf('material_') > -1
-  })
-
-  materialKeys.forEach(function(key) {
+  }).forEach(function(key) {
     var mesh = key.replace('material_', '')
     materials[mesh] = data[key]
   })

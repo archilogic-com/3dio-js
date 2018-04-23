@@ -22,15 +22,13 @@ export default {
     // remove old mesh
     this.remove()
 
-    // get defaults and
     let attributes = cloneDeep(data)
 
     attributes.materials = dataToMaterials(data)
 
     // get meshes and materials
-    // promised base because it loads external meshes
+    // promise base because it loads external meshes
     var data3d = await kitchenData3d(attributes)
-
 
     // create new one
     this_.mesh = new THREE.Object3D()
