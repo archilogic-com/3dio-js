@@ -23,7 +23,7 @@ export default async function getData3d(attributes) {
 export function getDefaultMaterials(){
   return {
     railing: {
-      colorDiffuse: [0.85, 0.85, 0.0]
+      colorDiffuse: [0.85, 0.85, 0.85]
     }
   }
 }
