@@ -1,4 +1,4 @@
-Please read the [contribution guidelines](CONTRIBUTING.md) before submitting an Issue.
+Please read the [contribution guidelines](/.github/CONTRIBUTING.md) before submitting an Issue.
 
 This form is for bug reports and feature requests only.
 If you have a question on how to use 3D.io or the products, please direct these to [Stack Overflow](https://stackoverflow.com/questions/tagged/aframe%20and%203d.io%20or%20archilogic). It's the best way to reach us.
