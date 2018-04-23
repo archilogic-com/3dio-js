@@ -5,11 +5,13 @@ import generateExtrusionBuffer from '../../../utils/data3d/buffer/get-extrusion'
 import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import generateUvs from '../../../utils/data3d/buffer/get-uvs'
 import getMaterials3d from './common/get-materials'
+import applyDefaultMaterials from './common/apply-default-materials'
 
 import sortBy from 'lodash/sortBy'
 import loadData3d from '../../../utils/data3d/load'
 
 export default function(attributes) {
+  attributes.materials = applyDefaultMaterials(attributes.materials, getDefaultMaterials());
   return Promise.all([
     generateMeshes3d(attributes),
     getMaterials3d(attributes.materials, getDefaultMaterials())
@@ -30,7 +32,7 @@ export function getDefaultMaterials(){
   }
 }
 
-function generateMeshes3d(a) {
+export function generateMeshes3d(a) {
   // get children
   var children = a.children
   children = sortBy(children, function (model) {

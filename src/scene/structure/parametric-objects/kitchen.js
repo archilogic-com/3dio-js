@@ -5,13 +5,15 @@ import generateExtrusionBuffer from '../../../utils/data3d/buffer/get-extrusion'
 import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import generateUvs from '../../../utils/data3d/buffer/get-uvs'
 import getMaterials3d from './common/get-materials'
+import applyDefaultMaterials from './common/apply-default-materials'
 
 import loadData3d from '../../../utils/data3d/load'
 
 export default function(attributes) {
+  attributes.materials = applyDefaultMaterials(attributes.materials, getDefaultMaterials());
   return Promise.all([
     generateMeshes3d(attributes),
-    getMaterials3d(attributes.materials, getDefaultMaterials())
+    getMaterials3d(attributes.materials)
   ]).then(results => ({
     meshes: results[0],
     materials: results[1]
@@ -35,11 +37,9 @@ export function getDefaultMaterials(){
   }
 }
 
-function generateMeshes3d (a) {
-  console.log('generateMeshes3d', a)
+export function generateMeshes3d (a) {
 
   // external meshes
-
   var externalMeshes = {
     singleSink: 'https://storage.3d.io/535e624259ee6b0200000484/170429-0355-60hukz/bf4e4a56-ed95-4b58-a214-4b1a0a84ae0e.gz.data3d.buffer',
     doubleSink: 'https://storage.3d.io/535e624259ee6b0200000484/170429-2156-7ufbnv/df481313-8fb4-48da-bc28-0369b08a2c6a.gz.data3d.buffer',

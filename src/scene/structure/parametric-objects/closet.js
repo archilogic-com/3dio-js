@@ -6,16 +6,18 @@
 import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import generateUvs from '../../../utils/data3d/buffer/get-uvs'
 import getMaterials3d from './common/get-materials'
+import applyDefaultMaterials from './common/apply-default-materials'
 
 export default function(attributes) {
-    return Promise.all([
-      generateMeshes3d(attributes),
-      getMaterials3d(attributes.materials, getDefaultMaterials())
-    ]).then(results => ({
-      meshes: results[0],
-      materials: results[1]
-    }))
-  }
+  attributes.materials = applyDefaultMaterials(attributes.materials, getDefaultMaterials());
+  return Promise.all([
+    generateMeshes3d(attributes),
+    getMaterials3d(attributes.materials, getDefaultMaterials())
+  ]).then(results => ({
+    meshes: results[0],
+    materials: results[1]
+  }))
+}
 
 export function getDefaultMaterials(){
   return {

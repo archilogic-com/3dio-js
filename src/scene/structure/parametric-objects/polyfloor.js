@@ -6,9 +6,10 @@ import generateExtrusionBuffer from '../../../utils/data3d/buffer/get-extrusion'
 import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import cloneDeep from 'lodash/cloneDeep'
 import getMaterials3d from './common/get-materials'
-
+import applyDefaultMaterials from './common/apply-default-materials'
 
 export default function(attributes) {
+  attributes.materials = applyDefaultMaterials(attributes.materials, getDefaultMaterials());
   return Promise.all([
     generateMeshes3d(attributes),
     getMaterials3d(attributes.materials, getDefaultMaterials())

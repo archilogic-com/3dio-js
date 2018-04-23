@@ -3,8 +3,10 @@
 import generatePolygonBuffer from '../../../utils/data3d/buffer/get-polygon'
 import generateNormals from '../../../utils/data3d/buffer/get-normals'
 import getMaterials3d from './common/get-materials'
+import applyDefaultMaterials from './common/apply-default-materials'
 
 export default function(attributes, parentAttributes) {
+  attributes.materials = applyDefaultMaterials(attributes.materials, getDefaultMaterials());
   return Promise.all([
     generateMeshes3d(attributes, parentAttributes),
     getMaterials3d(attributes.materials, getDefaultMaterials())
