@@ -1853,9 +1853,12 @@ export function generateMeshes3d (a) {
 
   // load external meshes
   return Promise.all(
-      meshesToGet.map(async function (obj) {
-        obj.data3d = await loadData3d(obj.key)
-        return obj
+      meshesToGet.map(obj => {
+        return loadData3d(obj.key)
+          .then(data3d => {
+            obj.data3d = data3d
+            return obj
+          })
       })
     )
     .then(function (result) {

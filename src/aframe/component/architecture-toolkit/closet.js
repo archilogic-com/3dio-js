@@ -18,7 +18,7 @@ export default {
 
   updateSchema: updateSchema,
 
-  update: async function (oldData) {
+  update: function (oldData) {
     var this_ = this
     var data = this_.data
     // remove old mesh
@@ -29,18 +29,20 @@ export default {
 
     attributes.materials = dataToMaterials(data)
 
-    let data3d = await getClosetData3d(attributes)
-    removeEmptyMeshes(data3d.meshes)
+    getClosetData3d(attributes)
+    .then(data3d => {
+      removeEmptyMeshes(data3d.meshes)
 
-    // create new one
-    this_.mesh = new THREE.Object3D()
-    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh})
-
-    // update view
-    this_.data3dView.set(data3d)
-    this_.el.setObject3D('mesh', this_.mesh)
-    // emit event
-    this_.el.emit('mesh-updated');
+      // create new one
+      this_.mesh = new THREE.Object3D()
+      this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh})
+  
+      // update view
+      this_.data3dView.set(data3d)
+      this_.el.setObject3D('mesh', this_.mesh)
+      // emit event
+      this_.el.emit('mesh-updated');
+    })
   },
 
   remove: function () {
