@@ -24,25 +24,26 @@ export default {
   },
 
   updateFromWall: function(evt) {
+    let parentAttributes = {}
     // if we have no event yet we need to get the attributes directly
     if (!evt) {
       var wallAttributes = this.el.parentEl.getAttribute('io3d-wall')
       if (wallAttributes) {
         // let's make sure we deal with an object
         if (typeof wallAttributes === 'string') wallAttributes = AFRAME.utils.styleParser.parse(wallAttributes)
-        this.wallWidth = wallAttributes.w
-        this.wallControlLine = wallAttributes.controlLine
+        parentAttributes.w = wallAttributes.w
+        parentAttributes.controlLine = wallAttributes.controlLine
       }
     } else {
-      this.wallWidth = evt.detail.w
-      this.wallControlLine = evt.detail.controlLine
+      parentAttributes.w = evt.detail.w
+      parentAttributes.controlLine = evt.detail.controlLine
     }
-    this.update()
+    this.update(parentAttributes)
   },
 
   updateSchema: updateSchema,
 
-  update: function (oldData) {
+  update: function (parentAttributes) {
     var this_ = this
     var data = this_.data
 
@@ -50,11 +51,12 @@ export default {
     this.remove()
 
     let attributes = cloneDeep(data)
+    attributes.w = this.wallWidth
 
     attributes.materials = dataToMaterials(data)
-
+    
     // construct data3d object
-    getDoorData3d(attributes)
+    getDoorData3d(attributes, parentAttributes)
     .then(data3d => {
       removeEmptyMeshes(data3d.meshes)
 

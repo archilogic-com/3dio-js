@@ -30,12 +30,12 @@ export default {
       if (wallAttributes) {
         // let's make sure we deal with an object
         if (typeof wallAttributes === 'string') wallAttributes = AFRAME.utils.styleParser.parse(wallAttributes)
-        parentAttributes.wallWidth = wallAttributes.w
-        parentAttributes.wallControlLine = wallAttributes.controlLine
+        parentAttributes.w = wallAttributes.w
+        parentAttributes.controlLine = wallAttributes.controlLine
       }
     } else {
-      parentAttributes.wallWidth = evt.detail.w
-      parentAttributes.wallControlLine = evt.detail.controlLine
+      parentAttributes.w = evt.detail.w
+      parentAttributes.controlLine = evt.detail.controlLine
     }
     this.update(parentAttributes)
   },
