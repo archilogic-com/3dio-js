@@ -3,21 +3,26 @@
     "test": {
       "presets": [
         "es2015"
+      ],
+      "plugins": [
+        "transform-async-to-generator"
       ]
     },
     "development": {
       "presets": [
         "es2015"
+      ],
+      "plugins": [
+        "transform-async-to-generator"
       ]
     },
     "production": {
       "presets": [
-        [
-          "es2015", 
-          { "modules": false }]
+        [ "es2015", {"modules": false} ]
       ],
       "plugins": [
-        "external-helpers"
+        "external-helpers",
+        "transform-async-to-generator"
       ]
     }
   }
