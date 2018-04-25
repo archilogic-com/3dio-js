@@ -1,3 +1,5 @@
+'use strict';
+
 export default {
   "basic-floor": {
     "meta": {

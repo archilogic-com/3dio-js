@@ -1,4 +1,4 @@
-var DEBUG = true
+var DEBUG = false
 
 // methods
 

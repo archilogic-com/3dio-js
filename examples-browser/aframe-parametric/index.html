@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href = "style.css" rel = "stylesheet" type = "text/css"/>
+
+  <!-- boilerplate libs -->
+  <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+  <!-- 3dio lib -->
+  <script src="../../../build/3dio.js"></script>
+</head>
+<body>
+
+<!-- 3D -->
+<a-scene io3d-lighting>
+  <!-- data3d files specified by io3d-store-key key or URL -->
+  <!-- object shadow attributes
+       receive - toggle object receives realtime shadow (true or false, valid for entire object)
+       cast - toggle object casts realtime shadow (true or false, valid for entire object)
+       note: realtime shadows require at least one light source that casts shadows
+       note: fallback to material attribute from data3d file if not set
+  -->
+
+  <a-entity io3d-polyfloor="material_top:cabinet_cherry_veneer;material_side:grass-01;material_ceiling:grass-01" position="55 0 0"  rotation="0 0 45" ></a-entity>
+  <a-entity io3d-polyfloor="" rotation="0 180 0" position="55 0 -3"></a-entity>
+
+  <a-entity io3d-stairs="l:5;material_railing:cabinet_cherry_veneer;material_steps:cabinet_cherry_veneer;material_tread:grass-01" position="50 0 0"></a-entity>
+  <a-entity io3d-stairs="" rotation="0 180 0" position="50 0 -3"></a-entity>
+
+  <a-entity io3d-railing="l:5;material_railing:cabinet_cherry_veneer" position="42 0 0"></a-entity>
+  <a-entity io3d-railing="" rotation="0 180 0" position="42 0 -3"></a-entity>
+
+  <a-entity io3d-wall="l:5a; w:0.12;material_top:grass-01;material_front:grass-01;material_back:grass-01" position="35 0 0">
+      <a-entity io3d-window="l:1.5;material_frame:cabinet_cherry_veneer;material_glass:cabinet_cherry_veneer" position="1 0.5 0"a></a-entity>
+  </a-entity>
+  <a-entity io3d-window="l:1.5;material_frame:cabinet_cherry_veneer;material_glass:cabinet_cherry_veneer" position="35 3 0"a></a-entity>
+  <a-entity io3d-window="" rotation="0 180 0" position="35 0 -3"></a-entity>
+
+  <a-entity io3d-wall="material_top:grass-01;material_back:cabinet_cherry_veneer;material_front:cabinet_cherry_veneer; l:5;" position="28 0 0"></a-entity>
+  <a-entity io3d-wall="" position="28 0 3"></a-entity>
+  <a-entity io3d-wall="" rotation="0 180 0" position="28 0 -3"></a-entity>
+
+  <a-entity io3d-kitchen="material_kitchen:cabinet_cherry_veneer;fridge:true;sinkType:single;microwave:microwave_samsung;microwavePos:3;h:5;w:2;cabinetType:style2;extractorType:pyramid;cooktopType:gas90" rotation="0 180 0" position="20 0 5"></a-entity>
+  <a-entity io3d-kitchen="material_kitchen:cabinet_cherry_veneer" rotation="0 180 0" position="20 0 0"></a-entity>
+  <a-entity io3d-kitchen="" rotation="0 180 0" position="20 0 -3"></a-entity>
+
+  <a-entity io3d-floor="material_top:cabinet_cherry_veneer;material_side:grass-01;material_ceiling:grass-01" rotation="0 0 45" position="12 0 -2"></a-entity>
+  <a-entity io3d-floor="" rotation="0 180 0" position="16 0 -3"></a-entity>
+
+  <a-entity io3d-wall="material_back:grass-01;material_front:grass-01;l:5;h:10; w:2" rotation="0 180 0" position="10 0 8">
+    <a-entity io3d-door="material_leaf:cabinet_cherry_veneer;material_front:grass-01;material_threshold:grass-01;material_frame:grass-01;material_handle:grass-01;l: 3; h: 5; w: 1; hinge: left; side: back; v: 3; threshold: true; thresholdHeight: 0.5; doorType: singleSwing; doorAngle: 25;" position="1 0 0"></a-entity>
+  </a-entity>
+  <a-entity io3d-door="material_leaf:cabinet_cherry_veneer;material_front:grass-01;material_threshold:grass-01;material_frame:grass-01;material_handle:grass-01;l: 3; h: 5; w: 1; leafWidth: 0.5; hinge: left; side: back; v: 3; threshold: true; thresholdHeight: 0.5; doorType: singleSwing; doorAngle: 25;" rotation="0 180 0" position="10 0 3"></a-entity>
+  <a-entity io3d-door="material_leaf:cabinet_cherry_veneer;material_front:grass-01;material_frame:grass-01;material_handle:grass-01" rotation="0 180 0" position="10 0 0"></a-entity>
+  <a-entity io3d-door="" rotation="0 180 0" position="10 0 -3"></a-entity>
+
+  <a-entity io3d-closet="baseboard:0.5;doorWidth:0.2;handleLength:0.1;handleWidth:0.2;material_closet:cabinet_cherry_veneer;" rotation="0 180 45" position="5 0 0"></a-entity>
+  <a-entity io3d-closet="" rotation="0 180 0" position="5 0 -3"></a-entity>
+
+  <a-entity io3d-column="" rotation="0 180 0" position="0 0 8"></a-entity>
+  <a-entity io3d-column="material_side:cabinet_cherry_veneer;material_top:grass-01; h:45;shape:circle;l:1"d rotation="0 180 0" position="0 0 5"></a-entity>
+  <a-entity io3d-column="material_side:cabinet_cherry_veneer;material_top:grass-01; h:45;l:1" rotation="0 180 0" position="0 0 3"></a-entity>
+  <a-entity io3d-column="shape:circle;material_side:cabinet_cherry_veneer;material_top:grass-01" rotation="0 180 0" position="0 0 1"></a-entity>
+  <a-entity io3d-column="material_side:cabinet_cherry_veneer;material_top:grass-01" rotation="0 180 0" position="0 0 0"></a-entity>
+  <a-entity io3d-column="" rotation="0 180 0" position="0 0 -3"></a-entity>
+
+
+  <!-- Camera -->
+  <a-entity id="camera" camera="userHeight: 1.6" position="-1.2 1 -5.5" rotation="0 210 0" wasd-controls="acceleration:80;easing:5;" look-controls ></a-entity>
+</a-scene>
+
+<!-- 2D / UI -->
+<div id="buttons">
+  <a href="javascript:window.postMessage('INJECT_AFRAME_INSPECTOR','*');">visual inspector</a>
+</div>
+
+</body>
+</html>

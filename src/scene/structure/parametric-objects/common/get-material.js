@@ -1,7 +1,9 @@
+'use strict';
+
 import cloneDeep from 'lodash/cloneDeep'
 import materialLibrary from './material-lib.js'
 
-export default function getMaterial(material) {
+export default function (material) {
   var STORAGE_URL = 'https://storage.3d.io/'
   var mat = materialLibrary[material]
 

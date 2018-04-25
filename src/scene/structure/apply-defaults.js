@@ -1,3 +1,5 @@
+'use strict';
+
 import getDefaultsByType from './validate/get-defaults-by-type.js'
 import getParamValueType from './validate/get-param-value-type.js'
 import uuid from '../../utils/uuid'
@@ -33,5 +35,6 @@ export default function applyDefaults(element3d) {
       else if (defaultVal !== undefined) element3d[key] = defaultVal
     }
   })
+
   return element3d
 }
