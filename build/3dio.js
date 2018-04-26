@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.1.9
- * @date 2018/04/25 19:50
+ * @version 1.1.10
+ * @date 2018/04/26 11:15
  * @branch master
- * @commit 08eb2fdbee0ccd25836fb254a35b1d9417d3d94b
+ * @commit 9cbcccc282b63d472f0686d3a46f7b1d03079a90
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2018/04/25 19:50', GIT_BRANCH = 'master', GIT_COMMIT = '08eb2fdbee0ccd25836fb254a35b1d9417d3d94b'
+	var BUILD_DATE='2018/04/26 11:15', GIT_BRANCH = 'master', GIT_COMMIT = '9cbcccc282b63d472f0686d3a46f7b1d03079a90'
 
 	var name = "3dio";
-	var version = "1.1.9";
+	var version = "1.1.10";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d", "aframe", "cardboard", "components", "oculus", "vive", "rift", "vr", "WebVR", "WegGL", "three", "three.js", "3D model", "api", "visualization", "furniture", "real estate", "interior", "building", "architecture", "3d.io"];
 	var homepage = "https://3d.io";
@@ -29,9 +29,9 @@
 	var license = "MIT";
 	var author = { "name": "archilogic", "email": "dev.rocks@archilogic.com", "url": "https://archilogic.com" };
 	var main = "index.js";
-	var scripts = { "start": "gulp dev-browser", "dev-browser": "gulp dev-browser", "dev-node": "gulp dev-node", "jshint": "gulp jshint", "test": "jest --coverage", "build": "jest && gulp build", "release": "gulp release" };
+	var scripts = { "start": "gulp dev-browser", "dev-browser": "gulp dev-browser", "dev-node": "gulp dev-node", "jshint": "gulp jshint", "test": "jest --coverage", "build": "jest && gulp build", "release": "jest && gulp release", "testing-release": "jest && gulp testing-release" };
 	var dependencies = { "bluebird": "^3.5.1", "form-data": "^2.3.1", "js-logger": "^1.4.1", "lodash": "^4.17.4", "node-fetch": "2.0.0-alpha.8", "pako": "^1.0.5", "performance-now": "^2.1.0", "rxjs": "^5.4.3", "three": "^0.85.2", "whatwg-fetch": "^2.0.3" };
-	var devDependencies = { "babel-core": "^6.26.0", "babel-jest": "^22.2.0", "babel-plugin-external-helpers": "^6.22.0", "babel-plugin-transform-async-to-generator": "^6.24.1", "babel-preset-env": "^1.6.1", "babel-preset-es2015": "^6.24.1", "babel-runtime": "^6.26.0", "chalk": "^2.1.0", "confirm-cli": "^0.4.0", "del": "^3.0.0", "gulp": "github:gulpjs/gulp#4.0", "gulp-git": "^2.4.2", "gulp-gzip": "^1.4.0", "gulp-jshint": "^2.0.4", "gulp-less": "^3.3.2", "gulp-s3": "0.11.0", "gulp-watch": "^4.3.11", "jest": "^22.2.1", "jshint": "^2.9.5", "jshint-stylish": "^2.2.1", "lite-server": "^2.3.0", "moment": "^2.19.3", "regenerator-runtime": "^0.11.1", "rollup": "^0.41.6", "rollup-plugin-babel": "^3.0.2", "rollup-plugin-commonjs": "^8.2.1", "rollup-plugin-json": "^2.3.0", "rollup-plugin-less": "^0.1.3", "rollup-plugin-node-resolve": "^3.0.0", "through2": "^2.0.3", "uglify-js": "^3.1.3" };
+	var devDependencies = { "babel-core": "^6.26.0", "babel-jest": "^22.2.0", "babel-plugin-external-helpers": "^6.22.0", "babel-preset-env": "^1.6.1", "babel-preset-es2015": "^6.24.1", "babel-runtime": "^6.26.0", "chalk": "^2.1.0", "confirm-cli": "^0.4.0", "del": "^3.0.0", "gulp": "github:gulpjs/gulp#4.0", "gulp-git": "^2.4.2", "gulp-gzip": "^1.4.0", "gulp-jshint": "^2.0.4", "gulp-less": "^3.3.2", "gulp-s3": "0.11.0", "gulp-watch": "^4.3.11", "jest": "^22.2.1", "jshint": "^2.9.5", "jshint-stylish": "^2.2.1", "lite-server": "^2.3.0", "moment": "^2.19.3", "regenerator-runtime": "^0.11.1", "rollup": "^0.41.6", "rollup-plugin-babel": "^3.0.2", "rollup-plugin-commonjs": "^8.2.1", "rollup-plugin-json": "^2.3.0", "rollup-plugin-less": "^0.1.3", "rollup-plugin-node-resolve": "^3.0.0", "through2": "^2.0.3", "uglify-js": "^3.1.3" };
 	var jest = { "collectCoverageFrom": ["src/**/*.{js,jsx}", "!**/node_modules/**", "!**/vendor/**"], "testMatch": ["**/test/**/*.js", "**/__tests__/**/*.js?(x)", "**/?(*.)(spec|test).js?(x)"] };
 	var packageJson = {
 		name: name,
@@ -231,34 +231,7 @@
 
 
 
-	var asyncToGenerator = function (fn) {
-	  return function () {
-	    var gen = fn.apply(this, arguments);
-	    return new Promise(function (resolve, reject) {
-	      function step(key, arg) {
-	        try {
-	          var info = gen[key](arg);
-	          var value = info.value;
-	        } catch (error) {
-	          reject(error);
-	          return;
-	        }
 
-	        if (info.done) {
-	          resolve(value);
-	        } else {
-	          return Promise.resolve(value).then(function (value) {
-	            step("next", value);
-	          }, function (err) {
-	            step("throw", err);
-	          });
-	        }
-	      }
-
-	      return step("next");
-	    });
-	  };
-	};
 
 
 
@@ -1615,9 +1588,7 @@
 	    gitCommitHash: GIT_COMMIT.substr(0, 7),
 	    buildDate: BUILD_DATE,
 	    license: packageJson.license
-	  },
-
-	  require: getDynamicRequire()
+	  }
 
 	};
 
@@ -1625,21 +1596,6 @@
 
 	function assertBrowser(message) {
 	  if (!isBrowser) throw message || 'Sorry this feature requires a browser environment.';
-	}
-
-	// work around for react-native's metro bundler dynamic require check, see https://github.com/facebook/metro/issues/65
-	function getDynamicRequire() {
-	  if (typeof global !== 'undefined' && typeof global.require === 'function') {
-	    // react-native
-	    return global.require;
-	  } else if (typeof require === 'function') {
-	    // node and compatible
-	    return require;
-	  } else {
-	    return function throwRequireNotAvailableError() {
-	      throw new Error('"require" function not available in this context. Help us to improve ' + '3dio.js by reporting this issue: https://github.com/archilogic-com/3dio-js/issues/new');
-	    };
-	  }
 	}
 
 	function getWebGlInfo() {
@@ -7320,7 +7276,7 @@
 	} else {
 	  // node: use module
 	  global.performance = {
-	    now: runtime.require('performance-now')
+	    now: require('performance-now')
 	  };
 	}
 
@@ -7603,7 +7559,7 @@
 	// global dependencies
 
 	// three.js
-	if (runtime.isNode) global.THREE = runtime.require('three');
+	if (runtime.isNode) global.THREE = require('three');
 
 	// default configs values
 
@@ -7743,7 +7699,7 @@
 
 	  if (runtime.isNode) {
 	    // overwrite whatwg-fetch polyfill
-	    global.fetch = runtime.require('node-fetch');
+	    global.fetch = require('node-fetch');
 	    return global.fetch;
 	  } else if (typeof fetch !== 'undefined') {
 	    return fetch;
@@ -23253,57 +23209,31 @@
 
 	  updateSchema: updateSchema,
 
-	  update: function () {
-	    var _ref = asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(oldData) {
-	      var this_, data, attributes, data3d;
-	      return regeneratorRuntime.wrap(function _callee$(_context) {
-	        while (1) {
-	          switch (_context.prev = _context.next) {
-	            case 0:
-	              this_ = this;
-	              data = this_.data;
-	              // remove old mesh
+	  update: function update(oldData) {
+	    var this_ = this;
+	    var data = this_.data;
+	    // remove old mesh
+	    this.remove();
 
-	              this.remove();
+	    // get defaults and
+	    var attributes = cloneDeep_1(data);
 
-	              // get defaults and
-	              attributes = cloneDeep_1(data);
+	    attributes.materials = dataToMaterials(data);
 
+	    getClosetData3d(attributes).then(function (data3d) {
+	      removeEmptyMeshes(data3d.meshes);
 
-	              attributes.materials = dataToMaterials(data);
+	      // create new one
+	      this_.mesh = new THREE.Object3D();
+	      this_.data3dView = new io3d.aFrame.three.Data3dView({ parent: this_.mesh });
 
-	              _context.next = 7;
-	              return getClosetData3d(attributes);
-
-	            case 7:
-	              data3d = _context.sent;
-
-	              removeEmptyMeshes(data3d.meshes);
-
-	              // create new one
-	              this_.mesh = new THREE.Object3D();
-	              this_.data3dView = new io3d.aFrame.three.Data3dView({ parent: this_.mesh });
-
-	              // update view
-	              this_.data3dView.set(data3d);
-	              this_.el.setObject3D('mesh', this_.mesh);
-	              // emit event
-	              this_.el.emit('mesh-updated');
-
-	            case 14:
-	            case 'end':
-	              return _context.stop();
-	          }
-	        }
-	      }, _callee, this);
-	    }));
-
-	    function update(_x) {
-	      return _ref.apply(this, arguments);
-	    }
-
-	    return update;
-	  }(),
+	      // update view
+	      this_.data3dView.set(data3d);
+	      this_.el.setObject3D('mesh', this_.mesh);
+	      // emit event
+	      this_.el.emit('mesh-updated');
+	    });
+	  },
 
 	  remove: function remove() {
 	    if (this.data3dView) {
@@ -24491,60 +24421,34 @@
 
 	  updateSchema: updateSchema,
 
-	  update: function () {
-	    var _ref = asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(oldData) {
-	      var this_, data, attributes, data3d;
-	      return regeneratorRuntime.wrap(function _callee$(_context) {
-	        while (1) {
-	          switch (_context.prev = _context.next) {
-	            case 0:
-	              this_ = this;
-	              data = this_.data;
+	  update: function update(oldData) {
+	    var this_ = this;
+	    var data = this_.data;
 
-	              // remove old mesh
+	    // remove old mesh
+	    this.remove();
 
-	              this.remove();
+	    // get defaults and
+	    var attributes = cloneDeep_1(data);
 
-	              // get defaults and
-	              attributes = cloneDeep_1(data);
+	    attributes.materials = dataToMaterials(data);
 
+	    // construct data3d object
 
-	              attributes.materials = dataToMaterials(data);
+	    getColumnData3d(attributes).then(function (data3d) {
+	      removeEmptyMeshes(data3d.meshes);
 
-	              // construct data3d object
+	      // create new one
+	      this_.mesh = new THREE.Object3D();
+	      this_.data3dView = new io3d.aFrame.three.Data3dView({ parent: this_.mesh });
 
-	              _context.next = 7;
-	              return getColumnData3d(attributes);
-
-	            case 7:
-	              data3d = _context.sent;
-
-	              removeEmptyMeshes(data3d.meshes);
-
-	              // create new one
-	              this_.mesh = new THREE.Object3D();
-	              this_.data3dView = new io3d.aFrame.three.Data3dView({ parent: this_.mesh });
-
-	              // update view
-	              this_.data3dView.set(data3d);
-	              this_.el.setObject3D('mesh', this_.mesh);
-	              // emit event
-	              this_.el.emit('mesh-updated');
-
-	            case 14:
-	            case 'end':
-	              return _context.stop();
-	          }
-	        }
-	      }, _callee, this);
-	    }));
-
-	    function update(_x) {
-	      return _ref.apply(this, arguments);
-	    }
-
-	    return update;
-	  }(),
+	      // update view
+	      this_.data3dView.set(data3d);
+	      this_.el.setObject3D('mesh', this_.mesh);
+	      // emit event
+	      this_.el.emit('mesh-updated');
+	    });
+	  },
 
 	  remove: function remove() {
 	    if (this.data3dView) {
@@ -24559,9 +24463,9 @@
 
 	};
 
-	var getDoorData3d = function (attributes) {
+	var getDoorData3d = function (attributes, parentAttributes) {
 	  attributes.materials = applyDefaultMaterials(attributes.materials, getDefaultMaterials$2());
-	  return Promise.all([generateMeshes3d$2(attributes), getMaterials3d(attributes.materials, getDefaultMaterials$2())]).then(function (results) {
+	  return Promise.all([generateMeshes3d$2(attributes, parentAttributes), getMaterials3d(attributes.materials, getDefaultMaterials$2())]).then(function (results) {
 	    return {
 	      meshes: results[0],
 	      materials: results[1]
@@ -24582,24 +24486,22 @@
 	  };
 	}
 
-	function generateMeshes3d$2(a) {
-
+	function generateMeshes3d$2(a, parentAttributes) {
 	  var wallWidth = a.w || 0.15;
 	  var wallControlLine = 'back';
 
-	  /*
 	  // get parent wall attributes
-	  if (this.wallWidth || this.wallControlLine) {
-	    wallWidth = this.wallWidth
-	    wallControlLine = this.wallControlLine
-	    a.w = wallWidth
-	  }*/
+	  if (parentAttributes && (parentAttributes.w || parentAttributes.controlLine)) {
+	    wallWidth = parentAttributes.w;
+	    wallControlLine = parentAttributes.controlLine;
+	    a.w = wallWidth;
+	  }
 
 	  // definitions
 	  var wallBackPos = wallControlLine === 'front' ? -wallWidth : wallControlLine === 'center' ? -wallWidth / 2 : 0,
 	      wallFrontPos = wallWidth + wallBackPos,
 	      frameLength = a.frameLength,
-	      frameWidth = a.w,
+	      frameWidth = wallWidth,
 	      leafLength = a.l - frameLength * 2,
 	      leafOffset = a.leafOffset,
 	      frameOffset = a.frameOffset,
@@ -25703,76 +25605,52 @@
 	  },
 
 	  updateFromWall: function updateFromWall(evt) {
+	    var parentAttributes = {};
 	    // if we have no event yet we need to get the attributes directly
 	    if (!evt) {
 	      var wallAttributes = this.el.parentEl.getAttribute('io3d-wall');
 	      if (wallAttributes) {
 	        // let's make sure we deal with an object
 	        if (typeof wallAttributes === 'string') wallAttributes = AFRAME.utils.styleParser.parse(wallAttributes);
-	        this.wallWidth = wallAttributes.w;
-	        this.wallControlLine = wallAttributes.controlLine;
+	        parentAttributes.w = wallAttributes.w;
+	        parentAttributes.controlLine = wallAttributes.controlLine;
 	      }
 	    } else {
-	      this.wallWidth = evt.detail.w;
-	      this.wallControlLine = evt.detail.controlLine;
+	      parentAttributes.w = evt.detail.w;
+	      parentAttributes.controlLine = evt.detail.controlLine;
 	    }
-	    this.update();
+	    this.update(parentAttributes);
 	  },
 
 	  updateSchema: updateSchema,
 
-	  update: function () {
-	    var _ref = asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(oldData) {
-	      var this_, data, attributes, data3d;
-	      return regeneratorRuntime.wrap(function _callee$(_context) {
-	        while (1) {
-	          switch (_context.prev = _context.next) {
-	            case 0:
-	              this_ = this;
-	              data = this_.data;
+	  update: function update(parentAttributes) {
+	    var this_ = this;
+	    var data = this_.data;
 
-	              // remove old mesh
+	    // remove old mesh
+	    this.remove();
 
-	              this.remove();
+	    var attributes = cloneDeep_1(data);
+	    attributes.w = this.wallWidth;
 
-	              attributes = cloneDeep_1(data);
+	    attributes.materials = dataToMaterials(data);
 
+	    // construct data3d object
+	    getDoorData3d(attributes, parentAttributes).then(function (data3d) {
+	      removeEmptyMeshes(data3d.meshes);
 
-	              attributes.materials = dataToMaterials(data);
+	      // create new one
+	      this_.mesh = new THREE.Object3D();
+	      this_.data3dView = new io3d.aFrame.three.Data3dView({ parent: this_.mesh });
 
-	              // construct data3d object
-	              _context.next = 7;
-	              return getDoorData3d(attributes);
-
-	            case 7:
-	              data3d = _context.sent;
-
-	              removeEmptyMeshes(data3d.meshes);
-
-	              // create new one
-	              this_.mesh = new THREE.Object3D();
-	              this_.data3dView = new io3d.aFrame.three.Data3dView({ parent: this_.mesh });
-
-	              // update view
-	              this_.data3dView.set(data3d);
-	              this_.el.setObject3D('mesh', this_.mesh);
-	              // emit event
-	              this_.el.emit('mesh-updated');
-
-	            case 14:
-	            case 'end':
-	              return _context.stop();
-	          }
-	        }
-	      }, _callee, this);
-	    }));
-
-	    function update(_x) {
-	      return _ref.apply(this, arguments);
-	    }
-
-	    return update;
-	  }(),
+	      // update view
+	      this_.data3dView.set(data3d);
+	      this_.el.setObject3D('mesh', this_.mesh);
+	      // emit event
+	      this_.el.emit('mesh-updated');
+	    });
+	  },
 
 	  remove: function remove() {
 	    this.el.parentEl.removeEventListener('wall-changed', this.updateFromWall);
@@ -25877,59 +25755,33 @@
 
 	  updateSchema: updateSchema,
 
-	  update: function () {
-	    var _ref = asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(oldData) {
-	      var this_, data, attributes, data3d;
-	      return regeneratorRuntime.wrap(function _callee$(_context) {
-	        while (1) {
-	          switch (_context.prev = _context.next) {
-	            case 0:
-	              this_ = this;
-	              data = this_.data;
+	  update: function update(oldData) {
+	    var this_ = this;
+	    var data = this_.data;
 
-	              // remove old mesh
+	    // remove old mesh
+	    this.remove();
 
-	              this.remove();
+	    // get defaults and
+	    var attributes = cloneDeep_1(data);
 
-	              // get defaults and
-	              attributes = cloneDeep_1(data);
+	    attributes.materials = dataToMaterials(data);
 
+	    // construct data3d object
+	    getFloorData3d(attributes).then(function (data3d) {
+	      removeEmptyMeshes(data3d.meshes);
 
-	              attributes.materials = dataToMaterials(data);
+	      // create new one
+	      this_.mesh = new THREE.Object3D();
+	      this_.data3dView = new io3d.aFrame.three.Data3dView({ parent: this_.mesh });
 
-	              // construct data3d object
-	              _context.next = 7;
-	              return getFloorData3d(attributes);
-
-	            case 7:
-	              data3d = _context.sent;
-
-	              removeEmptyMeshes(data3d.meshes);
-
-	              // create new one
-	              this_.mesh = new THREE.Object3D();
-	              this_.data3dView = new io3d.aFrame.three.Data3dView({ parent: this_.mesh });
-
-	              // update view
-	              this_.data3dView.set(data3d);
-	              this_.el.setObject3D('mesh', this_.mesh);
-	              // emit event
-	              this_.el.emit('mesh-updated');
-
-	            case 14:
-	            case 'end':
-	              return _context.stop();
-	          }
-	        }
-	      }, _callee, this);
-	    }));
-
-	    function update(_x) {
-	      return _ref.apply(this, arguments);
-	    }
-
-	    return update;
-	  }(),
+	      // update view
+	      this_.data3dView.set(data3d);
+	      this_.el.setObject3D('mesh', this_.mesh);
+	      // emit event
+	      this_.el.emit('mesh-updated');
+	    });
+	  },
 
 	  remove: function remove() {
 	    if (this.data3dView) {
@@ -28953,31 +28805,12 @@
 	  if (a.cooktopType === 'gas60' || a.cooktopType === 'gas90') meshesToGet.push({ name: 'cooktop', key: externalMeshes[a.cooktopType] });
 
 	  // load external meshes
-	  return Promise.all(meshesToGet.map(function () {
-	    var _ref = asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(obj) {
-	      return regeneratorRuntime.wrap(function _callee$(_context) {
-	        while (1) {
-	          switch (_context.prev = _context.next) {
-	            case 0:
-	              _context.next = 2;
-	              return loadData3d(obj.key);
-
-	            case 2:
-	              obj.data3d = _context.sent;
-	              return _context.abrupt('return', obj);
-
-	            case 4:
-	            case 'end':
-	              return _context.stop();
-	          }
-	        }
-	      }, _callee, this);
-	    }));
-
-	    return function (_x) {
-	      return _ref.apply(this, arguments);
-	    };
-	  }())).then(function (result) {
+	  return Promise.all(meshesToGet.map(function (obj) {
+	    return loadData3d(obj.key).then(function (data3d) {
+	      obj.data3d = data3d;
+	      return obj;
+	    });
+	  })).then(function (result) {
 	    // get mesh group positions
 	    var sinkX = getElementPos(a.sinkPos) + sinkOffset;
 	    var cooktopX = getElementPos(a.cooktopPos) + elements[a.cooktopPos - 1] / 2;
@@ -29087,59 +28920,33 @@
 
 	  updateSchema: updateSchema,
 
-	  update: function () {
-	    var _ref = asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(oldData) {
-	      var this_, data, attributes, data3d;
-	      return regeneratorRuntime.wrap(function _callee$(_context) {
-	        while (1) {
-	          switch (_context.prev = _context.next) {
-	            case 0:
-	              this_ = this;
-	              data = this_.data;
+	  update: function update(oldData) {
+	    var this_ = this;
+	    var data = this_.data;
 
-	              // remove old mesh
+	    // remove old mesh
+	    this.remove();
 
-	              this.remove();
+	    var attributes = cloneDeep_1(data);
 
-	              attributes = cloneDeep_1(data);
+	    attributes.materials = dataToMaterials(data);
 
+	    // get meshes and materials
+	    // promise base because it loads external meshes
+	    getKitchenData3d(attributes).then(function (data3d) {
+	      removeEmptyMeshes(data3d.meshes);
 
-	              attributes.materials = dataToMaterials(data);
+	      // create new one
+	      this_.mesh = new THREE.Object3D();
+	      this_.data3dView = new io3d.aFrame.three.Data3dView({ parent: this_.mesh });
 
-	              // get meshes and materials
-	              // promise base because it loads external meshes
-	              _context.next = 7;
-	              return getKitchenData3d(attributes);
-
-	            case 7:
-	              data3d = _context.sent;
-
-	              removeEmptyMeshes(data3d.meshes);
-
-	              // create new one
-	              this_.mesh = new THREE.Object3D();
-	              this_.data3dView = new io3d.aFrame.three.Data3dView({ parent: this_.mesh });
-
-	              // update view
-	              this_.data3dView.set(data3d);
-	              this_.el.setObject3D('mesh', this_.mesh);
-	              // emit event
-	              this_.el.emit('mesh-updated');
-
-	            case 14:
-	            case 'end':
-	              return _context.stop();
-	          }
-	        }
-	      }, _callee, this);
-	    }));
-
-	    function update(_x) {
-	      return _ref.apply(this, arguments);
-	    }
-
-	    return update;
-	  }(),
+	      // update view
+	      this_.data3dView.set(data3d);
+	      this_.el.setObject3D('mesh', this_.mesh);
+	      // emit event
+	      this_.el.emit('mesh-updated');
+	    });
+	  },
 
 	  remove: function remove() {
 	    if (this.data3dView) {
@@ -29256,59 +29063,33 @@
 
 	  updateSchema: updateSchema,
 
-	  update: function () {
-	    var _ref = asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(oldData) {
-	      var this_, data, attributes, data3d;
-	      return regeneratorRuntime.wrap(function _callee$(_context) {
-	        while (1) {
-	          switch (_context.prev = _context.next) {
-	            case 0:
-	              this_ = this;
-	              data = this_.data;
+	  update: function update(oldData) {
+	    var this_ = this;
+	    var data = this_.data;
 
-	              // remove old mesh
+	    // remove old mesh
+	    this.remove();
 
-	              this.remove();
+	    // get defaults and
+	    var attributes = cloneDeep_1(data);
 
-	              // get defaults and
-	              attributes = cloneDeep_1(data);
+	    attributes.materials = dataToMaterials(data);
 
+	    // construct data3d object
+	    getPolyfloorData3d(attributes).then(function (data3d) {
+	      removeEmptyMeshes(data3d.meshes);
 
-	              attributes.materials = dataToMaterials(data);
+	      // create new one
+	      this_.mesh = new THREE.Object3D();
+	      this_.data3dView = new io3d.aFrame.three.Data3dView({ parent: this_.mesh });
 
-	              // construct data3d object
-	              _context.next = 7;
-	              return getPolyfloorData3d(attributes);
-
-	            case 7:
-	              data3d = _context.sent;
-
-	              removeEmptyMeshes(data3d.meshes);
-
-	              // create new one
-	              this_.mesh = new THREE.Object3D();
-	              this_.data3dView = new io3d.aFrame.three.Data3dView({ parent: this_.mesh });
-
-	              // update view
-	              this_.data3dView.set(data3d);
-	              this_.el.setObject3D('mesh', this_.mesh);
-	              // emit event
-	              this_.el.emit('mesh-updated');
-
-	            case 14:
-	            case 'end':
-	              return _context.stop();
-	          }
-	        }
-	      }, _callee, this);
-	    }));
-
-	    function update(_x) {
-	      return _ref.apply(this, arguments);
-	    }
-
-	    return update;
-	  }(),
+	      // update view
+	      this_.data3dView.set(data3d);
+	      this_.el.setObject3D('mesh', this_.mesh);
+	      // emit event
+	      this_.el.emit('mesh-updated');
+	    });
+	  },
 
 	  remove: function remove() {
 	    if (this.data3dView) {
@@ -29630,59 +29411,33 @@
 
 	  updateSchema: updateSchema,
 
-	  update: function () {
-	    var _ref = asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(oldData) {
-	      var this_, data, attributes, data3d;
-	      return regeneratorRuntime.wrap(function _callee$(_context) {
-	        while (1) {
-	          switch (_context.prev = _context.next) {
-	            case 0:
-	              this_ = this;
-	              data = this_.data;
+	  update: function update(oldData) {
+	    var this_ = this;
+	    var data = this_.data;
 
-	              // remove old mesh
+	    // remove old mesh
+	    this.remove();
 
-	              this.remove();
+	    // get defaults and
+	    var attributes = cloneDeep_1(data);
 
-	              // get defaults and
-	              attributes = cloneDeep_1(data);
+	    attributes.materials = dataToMaterials(data);
 
+	    // construct data3d object
+	    getRailingData3d(attributes).then(function (data3d) {
+	      removeEmptyMeshes(data3d.meshes);
 
-	              attributes.materials = dataToMaterials(data);
+	      // create new one
+	      this_.mesh = new THREE.Object3D();
+	      this_.data3dView = new io3d.aFrame.three.Data3dView({ parent: this_.mesh });
 
-	              // construct data3d object
-	              _context.next = 7;
-	              return getRailingData3d(attributes);
-
-	            case 7:
-	              data3d = _context.sent;
-
-	              removeEmptyMeshes(data3d.meshes);
-
-	              // create new one
-	              this_.mesh = new THREE.Object3D();
-	              this_.data3dView = new io3d.aFrame.three.Data3dView({ parent: this_.mesh });
-
-	              // update view
-	              this_.data3dView.set(data3d);
-	              this_.el.setObject3D('mesh', this_.mesh);
-	              // emit event
-	              this_.el.emit('mesh-updated');
-
-	            case 14:
-	            case 'end':
-	              return _context.stop();
-	          }
-	        }
-	      }, _callee, this);
-	    }));
-
-	    function update(_x) {
-	      return _ref.apply(this, arguments);
-	    }
-
-	    return update;
-	  }(),
+	      // update view
+	      this_.data3dView.set(data3d);
+	      this_.el.setObject3D('mesh', this_.mesh);
+	      // emit event
+	      this_.el.emit('mesh-updated');
+	    });
+	  },
 
 	  remove: function remove() {
 	    if (this.data3dView) {
@@ -31379,58 +31134,32 @@
 
 	  updateSchema: updateSchema,
 
-	  update: function () {
-	    var _ref = asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(oldData) {
-	      var this_, data, attributes, data3d;
-	      return regeneratorRuntime.wrap(function _callee$(_context) {
-	        while (1) {
-	          switch (_context.prev = _context.next) {
-	            case 0:
-	              this_ = this;
-	              data = this_.data;
+	  update: function update(oldData) {
+	    var this_ = this;
+	    var data = this_.data;
 
-	              // remove old mesh
+	    // remove old mesh
+	    this.remove();
 
-	              this.remove();
+	    // get defaults and
+	    var attributes = cloneDeep_1(data);
 
-	              // get defaults and
-	              attributes = cloneDeep_1(data);
+	    attributes.materials = dataToMaterials(data);
 
+	    getStairsData3d(attributes).then(function (data3d) {
+	      removeEmptyMeshes(data3d.meshes);
 
-	              attributes.materials = dataToMaterials(data);
+	      // create new one
+	      this_.mesh = new THREE.Object3D();
+	      this_.data3dView = new io3d.aFrame.three.Data3dView({ parent: this_.mesh });
 
-	              _context.next = 7;
-	              return getStairsData3d(attributes);
-
-	            case 7:
-	              data3d = _context.sent;
-
-	              removeEmptyMeshes(data3d.meshes);
-
-	              // create new one
-	              this_.mesh = new THREE.Object3D();
-	              this_.data3dView = new io3d.aFrame.three.Data3dView({ parent: this_.mesh });
-
-	              // update view
-	              this_.data3dView.set(data3d);
-	              this_.el.setObject3D('mesh', this_.mesh);
-	              // emit event
-	              this_.el.emit('mesh-updated');
-
-	            case 14:
-	            case 'end':
-	              return _context.stop();
-	          }
-	        }
-	      }, _callee, this);
-	    }));
-
-	    function update(_x) {
-	      return _ref.apply(this, arguments);
-	    }
-
-	    return update;
-	  }(),
+	      // update view
+	      this_.data3dView.set(data3d);
+	      this_.el.setObject3D('mesh', this_.mesh);
+	      // emit event
+	      this_.el.emit('mesh-updated');
+	    });
+	  },
 
 	  remove: function remove() {
 	    if (this.data3dView) {
@@ -33189,82 +32918,53 @@
 
 	  updateSchema: updateSchema,
 
-	  update: function () {
-	    var _ref = asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(oldData) {
-	      var this_, data, attributes, children, i, c, pos, data3d;
-	      return regeneratorRuntime.wrap(function _callee$(_context) {
-	        while (1) {
-	          switch (_context.prev = _context.next) {
-	            case 0:
-	              this_ = this;
-	              data = this_.data;
+	  update: function update(oldData) {
+	    var this_ = this;
+	    var data = this_.data;
 
-
-	              if (!oldData || this.data.w !== oldData.w || this.data.controlLine !== oldData.controlLine) {
-	                this.el.emit('wall-changed', { w: this.data.w, controlLine: this.data.controlLine });
-	              }
-
-	              // remove old mesh
-	              this.remove();
-
-	              // get defaults and
-	              attributes = cloneDeep_1(data);
-
-	              // get children for walls
-
-	              children = this_.el.children;
-
-	              attributes.children = [];
-	              for (i = 0; i < children.length; i++) {
-	                c = children[i].getAttribute('io3d-window') || children[i].getAttribute('io3d-door');
-
-	                if (c) {
-	                  if (children[i].getAttribute('io3d-window')) c.type = 'window';else if (children[i].getAttribute('io3d-door')) c.type = 'door';
-	                  pos = children[i].getAttribute('position');
-
-	                  Object.keys(pos).forEach(function (p) {
-	                    c[p] = pos[p];
-	                  });
-	                  attributes.children.push(c);
-	                } else console.log('invalid child');
-	              }
-	              // this.attributes.children = this.attributes.children.map(c => mapAttributes(cloneDeep(getType.get(c.type).params), c))
-
-	              attributes.materials = dataToMaterials(data);
-
-	              // get meshes and materials from el3d modules
-	              _context.next = 11;
-	              return getWallData3d(attributes);
-
-	            case 11:
-	              data3d = _context.sent;
-
-	              removeEmptyMeshes(data3d.meshes);
-
-	              // create new one
-	              this_.mesh = new THREE.Object3D();
-	              this_.data3dView = new io3d.aFrame.three.Data3dView({ parent: this_.mesh });
-
-	              // update view
-	              this_.data3dView.set(data3d);
-	              this_.el.setObject3D('mesh', this_.mesh);
-	              // emit event
-	              this_.el.emit('mesh-updated');
-
-	            case 18:
-	            case 'end':
-	              return _context.stop();
-	          }
-	        }
-	      }, _callee, this);
-	    }));
-
-	    function update(_x) {
-	      return _ref.apply(this, arguments);
+	    if (!oldData || this.data.w !== oldData.w || this.data.controlLine !== oldData.controlLine) {
+	      this.el.emit('wall-changed', { w: this.data.w, controlLine: this.data.controlLine });
 	    }
 
-	    return update;
-	  }(),
+	    // remove old mesh
+	    this.remove();
+
+	    // get defaults and
+	    var attributes = cloneDeep_1(data);
+
+	    // get children for walls
+	    var children = this_.el.children;
+	    attributes.children = [];
+	    for (var i = 0; i < children.length; i++) {
+	      var c = children[i].getAttribute('io3d-window') || children[i].getAttribute('io3d-door');
+	      if (c) {
+	        if (children[i].getAttribute('io3d-window')) c.type = 'window';else if (children[i].getAttribute('io3d-door')) c.type = 'door';
+	        var pos = children[i].getAttribute('position');
+	        Object.keys(pos).forEach(function (p) {
+	          c[p] = pos[p];
+	        });
+	        attributes.children.push(c);
+	      } else console.log('invalid child');
+	    }
+	    // this.attributes.children = this.attributes.children.map(c => mapAttributes(cloneDeep(getType.get(c.type).params), c))
+
+	    attributes.materials = dataToMaterials(data);
+
+	    // get meshes and materials from el3d modules
+	    getWallData3d(attributes).then(function (data3d) {
+	      removeEmptyMeshes(data3d.meshes);
+
+	      // create new one
+	      this_.mesh = new THREE.Object3D();
+	      this_.data3dView = new io3d.aFrame.three.Data3dView({ parent: this_.mesh });
+
+	      // update view
+	      this_.data3dView.set(data3d);
+	      this_.el.setObject3D('mesh', this_.mesh);
+	      // emit event
+	      this_.el.emit('mesh-updated');
+	    });
+	  },
 
 	  remove: function remove() {
 	    if (this.data3dView) {
@@ -33304,9 +33004,9 @@
 	  var wallControlLine = 'back';
 
 	  // get parent wall attributes
-	  if (parentAttributes && (parentAttributes.wallWidth || parentAttributes.wallControlLine)) {
-	    wallWidth = parentAttributes.wallWidth;
-	    wallControlLine = parentAttributes.wallControlLine;
+	  if (parentAttributes && (parentAttributes.w || parentAttributes.controlLine)) {
+	    wallWidth = parentAttributes.w;
+	    wallControlLine = parentAttributes.controlLine;
 	  }
 
 	  var wallBackPos = wallControlLine === 'front' ? -wallWidth : wallControlLine === 'center' ? -wallWidth / 2 : 0;
@@ -33859,77 +33559,50 @@
 	      if (wallAttributes) {
 	        // let's make sure we deal with an object
 	        if (typeof wallAttributes === 'string') wallAttributes = AFRAME.utils.styleParser.parse(wallAttributes);
-	        parentAttributes.wallWidth = wallAttributes.w;
-	        parentAttributes.wallControlLine = wallAttributes.controlLine;
+	        parentAttributes.w = wallAttributes.w;
+	        parentAttributes.controlLine = wallAttributes.controlLine;
 	      }
 	    } else {
-	      parentAttributes.wallWidth = evt.detail.w;
-	      parentAttributes.wallControlLine = evt.detail.controlLine;
+	      parentAttributes.w = evt.detail.w;
+	      parentAttributes.controlLine = evt.detail.controlLine;
 	    }
 	    this.update(parentAttributes);
 	  },
 
 	  updateSchema: updateSchema,
 
-	  update: function () {
-	    var _ref = asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(parentAttributes) {
-	      var this_, data, attributes, deleteGlass, data3d;
-	      return regeneratorRuntime.wrap(function _callee$(_context) {
-	        while (1) {
-	          switch (_context.prev = _context.next) {
-	            case 0:
-	              this_ = this;
-	              data = this_.data;
+	  update: function update(parentAttributes) {
+	    var this_ = this;
+	    var data = this_.data;
 
-	              // remove old mesh
+	    // remove old mesh
+	    this.remove();
 
-	              this.remove();
+	    // get defaults and
+	    var attributes = cloneDeep_1(data);
 
-	              // get defaults and
-	              attributes = cloneDeep_1(data);
+	    // remove glass mesh if needed
+	    var deleteGlass = data.hideGlass === 'true';
 
-	              // remove glass mesh if needed
+	    attributes.materials = dataToMaterials(data);
 
-	              deleteGlass = data.hideGlass === 'true';
+	    // construct data3d object
+	    getWindowData3d(attributes, parentAttributes).then(function (data3d) {
+	      removeEmptyMeshes(data3d.meshes);
 
+	      if (deleteGlass) delete data3d.meshes.glass;
 
-	              attributes.materials = dataToMaterials(data);
+	      // create new one
+	      this_.mesh = new THREE.Object3D();
+	      this_.data3dView = new io3d.aFrame.three.Data3dView({ parent: this_.mesh });
 
-	              // construct data3d object
-	              _context.next = 8;
-	              return getWindowData3d(attributes, parentAttributes);
-
-	            case 8:
-	              data3d = _context.sent;
-
-	              removeEmptyMeshes(data3d.meshes);
-
-	              if (deleteGlass) delete data3d.meshes.glass;
-
-	              // create new one
-	              this_.mesh = new THREE.Object3D();
-	              this_.data3dView = new io3d.aFrame.three.Data3dView({ parent: this_.mesh });
-
-	              // update view
-	              this_.data3dView.set(data3d);
-	              this_.el.setObject3D('mesh', this_.mesh);
-	              // emit event
-	              this_.el.emit('mesh-updated');
-
-	            case 16:
-	            case 'end':
-	              return _context.stop();
-	          }
-	        }
-	      }, _callee, this);
-	    }));
-
-	    function update(_x) {
-	      return _ref.apply(this, arguments);
-	    }
-
-	    return update;
-	  }(),
+	      // update view
+	      this_.data3dView.set(data3d);
+	      this_.el.setObject3D('mesh', this_.mesh);
+	      // emit event
+	      this_.el.emit('mesh-updated');
+	    });
+	  },
 
 	  remove: function remove() {
 	    this.el.parentEl.removeEventListener('wall-changed', this.updateFromWall);
@@ -36935,7 +36608,7 @@
 
 	var FormData_;
 	if (runtime.isNode) {
-	  FormData_ = runtime.require('form-data');
+	  FormData_ = require('form-data');
 	} else if (typeof FormData !== 'undefined') {
 	  FormData_ = FormData;
 	} else {
@@ -38974,11 +38647,11 @@
 	// helpers
 
 	function loadDeflateLib() {
-	  return runtime.isBrowser ? fetchScript(PAKO_LIB.deflate.url) : Promise.resolve(runtime.require(PAKO_LIB.deflate.module));
+	  return runtime.isBrowser ? fetchScript(PAKO_LIB.deflate.url) : Promise.resolve(require(PAKO_LIB.deflate.module));
 	}
 
 	function loadInflateLib() {
-	  return runtime.isBrowser ? fetchScript(PAKO_LIB.inflate.url) : Promise.resolve(runtime.require(PAKO_LIB.inflate.module));
+	  return runtime.isBrowser ? fetchScript(PAKO_LIB.inflate.url) : Promise.resolve(require(PAKO_LIB.inflate.module));
 	}
 
 	/**

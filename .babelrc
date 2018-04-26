@@ -1,28 +1,27 @@
 {
   "env": {
+    // unit tests
     "test": {
       "presets": [
         "es2015"
-      ],
-      "plugins": [
-        "transform-async-to-generator"
       ]
     },
+    // local development
     "development": {
       "presets": [
-        "es2015"
+        [ "es2015", {"modules": false} ]
       ],
       "plugins": [
-        "transform-async-to-generator"
+        "external-helpers"
       ]
     },
+    // release deployment
     "production": {
       "presets": [
         [ "es2015", {"modules": false} ]
       ],
       "plugins": [
-        "external-helpers",
-        "transform-async-to-generator"
+        "external-helpers"
       ]
     }
   }
