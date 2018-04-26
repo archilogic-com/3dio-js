@@ -15,10 +15,8 @@ jobs:
       - npm run test
       - npm run jshint
       - npm run release-check
-
-jobs:
   include:
     - # release
-      if: branch = production AND type IN (push)
+      if: branch = master AND type IN (push)
       script:
-      - npm run release
+      - echo "OK"
