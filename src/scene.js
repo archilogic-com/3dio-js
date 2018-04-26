@@ -7,7 +7,7 @@ import getAframeElementsFromSceneStructure from './scene/structure/to-aframe-ele
 import getSceneStructureFromAframeElements from './scene/structure/from-aframe-elements.js'
 import exportSvg from './scene/export-svg.js'
 import snapWalls from './scene/structure/utils/snap-walls.js'
-
+import toData3d from './scene/structure/to-data3d.js'
 var scene = {
   getStructure: getStructure,
   getHtml: getHtml,
@@ -19,7 +19,8 @@ var scene = {
   getAframeElementsFromSceneStructure: getAframeElementsFromSceneStructure,
   getSceneStructureFromAframeElements: getSceneStructureFromAframeElements,
   snapWalls: snapWalls,
-  exportSvg: exportSvg
+  exportSvg: exportSvg,
+  toData3d: toData3d
 }
 
 function getHtml() {

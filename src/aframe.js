@@ -17,7 +17,7 @@ import polyFloorComponent from './aframe/component/architecture-toolkit/polyfloo
 import railingComponent from './aframe/component/architecture-toolkit/railing.js'
 import stairsComponent from './aframe/component/architecture-toolkit/stairs.js'
 import wallComponent from './aframe/component/architecture-toolkit/wall.js'
-import windowComponent from './aframe/component/architecture-toolkit/window.js'
+import windowComponent from './aframe/component/architecture-toolkit/window3d.js'
 // other
 import inspectorPluginsLauncher from './aframe/inspector-plugins-launcher.js'
 import Data3dView from './aframe/three/data3d-view.js'

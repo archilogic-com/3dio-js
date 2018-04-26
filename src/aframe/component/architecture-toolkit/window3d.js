@@ -4,7 +4,7 @@ import getSchema from './common/get-schema.js'
 import getMaterial from '../../../scene/structure/parametric-objects/common/get-material.js'
 import updateSchema from './common/update-schema.js'
 import cloneDeep from 'lodash/cloneDeep'
-import getWindowData3d from '../../../scene/structure/parametric-objects/window'
+import getWindowData3d from '../../../scene/structure/parametric-objects/window3d'
 import dataToMaterials from './common/data-to-materials'
 import removeEmptyMeshes from './common/remove-empty-meshes'
 
