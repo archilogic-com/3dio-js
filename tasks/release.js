@@ -61,6 +61,16 @@ const release = gulp.series(
   releaseInfo
 )
 
+const testingRelease = gulp.series(
+  jshint,
+  setBabelEnv,
+  build,
+  unsetBabelEnv,
+  cleanDestDir,
+  copyBuildToDist,
+  uglify
+)
+
 function checkLocalEnv() {
   if(!awsConfig.key || !awsConfig.secret) throw 'ERROR: You need to set $AWS_ACCESS_KEY_ID and $AWS_SECRET_ACCESS_KEY to be able to upload to S3'
   try {
@@ -271,4 +281,4 @@ function releaseInfo() {
 
 // export
 
-module.exports = release
+module.exports = { release, testingRelease }
