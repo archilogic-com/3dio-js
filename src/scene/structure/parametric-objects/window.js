@@ -31,9 +31,9 @@ export function generateMeshes3d (a, parentAttributes) {
   var wallControlLine = 'back'
 
     // get parent wall attributes
-  if (parentAttributes && (parentAttributes.wallWidth || parentAttributes.wallControlLine) ) {
-    wallWidth = parentAttributes.wallWidth
-    wallControlLine = parentAttributes.wallControlLine
+  if (parentAttributes && (parentAttributes.w || parentAttributes.controlLine) ) {
+    wallWidth = parentAttributes.w
+    wallControlLine = parentAttributes.controlLine
   }
 
   var wallBackPos = wallControlLine === 'front' ? -wallWidth : wallControlLine === 'center' ? -wallWidth / 2 : 0

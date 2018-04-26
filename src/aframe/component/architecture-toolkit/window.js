@@ -30,19 +30,19 @@ export default {
       if (wallAttributes) {
         // let's make sure we deal with an object
         if (typeof wallAttributes === 'string') wallAttributes = AFRAME.utils.styleParser.parse(wallAttributes)
-        parentAttributes.wallWidth = wallAttributes.w
-        parentAttributes.wallControlLine = wallAttributes.controlLine
+        parentAttributes.w = wallAttributes.w
+        parentAttributes.controlLine = wallAttributes.controlLine
       }
     } else {
-      parentAttributes.wallWidth = evt.detail.w
-      parentAttributes.wallControlLine = evt.detail.controlLine
+      parentAttributes.w = evt.detail.w
+      parentAttributes.controlLine = evt.detail.controlLine
     }
     this.update(parentAttributes)
   },
 
   updateSchema: updateSchema,
 
-  update: async function (parentAttributes) {
+  update: function (parentAttributes) {
     var this_ = this
     let data = this_.data
 
@@ -58,20 +58,22 @@ export default {
     attributes.materials = dataToMaterials(data);
 
     // construct data3d object
-    let data3d = await getWindowData3d(attributes, parentAttributes)
-    removeEmptyMeshes(data3d.meshes)
+    getWindowData3d(attributes, parentAttributes)
+    .then(data3d => {
+      removeEmptyMeshes(data3d.meshes)
 
-    if (deleteGlass) delete data3d.meshes.glass
+      if (deleteGlass) delete data3d.meshes.glass
 
-    // create new one
-    this_.mesh = new THREE.Object3D()
-    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh})
+      // create new one
+      this_.mesh = new THREE.Object3D()
+      this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh})
 
-    // update view
-    this_.data3dView.set(data3d)
-    this_.el.setObject3D('mesh', this_.mesh)
-    // emit event
-    this_.el.emit('mesh-updated');
+      // update view
+      this_.data3dView.set(data3d)
+      this_.el.setObject3D('mesh', this_.mesh)
+      // emit event
+      this_.el.emit('mesh-updated')
+    })
   },
 
   remove: function () {

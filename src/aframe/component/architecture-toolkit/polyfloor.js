@@ -19,7 +19,7 @@ export default {
 
   updateSchema: updateSchema,
 
-  update: async function (oldData) {
+  update: function (oldData) {
     var this_ = this
     var data = this_.data
 
@@ -32,18 +32,20 @@ export default {
     attributes.materials = dataToMaterials(data)
 
     // construct data3d object
-    var data3d = await getPolyfloorData3d(attributes)
-    removeEmptyMeshes(data3d.meshes)
+    getPolyfloorData3d(attributes)
+    .then(data3d => {
+      removeEmptyMeshes(data3d.meshes)
 
-    // create new one
-    this_.mesh = new THREE.Object3D()
-    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh})
+      // create new one
+      this_.mesh = new THREE.Object3D()
+      this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh})
 
-    // update view
-    this_.data3dView.set(data3d)
-    this_.el.setObject3D('mesh', this_.mesh)
-    // emit event
-    this_.el.emit('mesh-updated');
+      // update view
+      this_.data3dView.set(data3d)
+      this_.el.setObject3D('mesh', this_.mesh)
+      // emit event
+      this_.el.emit('mesh-updated')
+    })
   },
 
   remove: function () {
