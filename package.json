@@ -1,6 +1,6 @@
 {
   "name": "3dio",
-  "version": "1.1.8",
+  "version": "1.2.0",
   "description": "toolkit for interior apps",
   "keywords": [
     "3d",
@@ -40,7 +40,9 @@
     "dev-node": "gulp dev-node",
     "jshint": "gulp jshint",
     "test": "jest --coverage",
-    "build": "jest && gulp build",
+    "dev-build": "gulp dev-build",
+    "release-build": "gulp release-build",
+    "release-check": "jest && gulp jshint && gulp release-build",
     "release": "gulp release"
   },
   "dependencies": {
@@ -93,6 +95,10 @@
       "!**/node_modules/**",
       "!**/vendor/**"
     ],
-    "testMatch": [ "**/test/**/*.js", "**/__tests__/**/*.js?(x)", "**/?(*.)(spec|test).js?(x)" ]
+    "testMatch": [
+      "**/test/**/*.js",
+      "**/__tests__/**/*.js?(x)",
+      "**/?(*.)(spec|test).js?(x)"
+    ]
   }
 }

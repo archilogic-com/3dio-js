@@ -1,0 +1,21 @@
+language: node_js
+node_js:
+  - "7"
+install:
+  - npm install
+cache:
+  directories:
+    - node_modules
+jobs:
+  include:
+
+    - stage: test
+      script: npm run test
+    - stage: jshint
+      script: npm run jshint
+    - stage: build
+      script: npm run release-build
+
+    - if: (branch = production)
+      stage: release
+      script: npm run release

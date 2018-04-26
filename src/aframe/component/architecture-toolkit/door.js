@@ -24,25 +24,26 @@ export default {
   },
 
   updateFromWall: function(evt) {
+    let parentAttributes = {}
     // if we have no event yet we need to get the attributes directly
     if (!evt) {
       var wallAttributes = this.el.parentEl.getAttribute('io3d-wall')
       if (wallAttributes) {
         // let's make sure we deal with an object
         if (typeof wallAttributes === 'string') wallAttributes = AFRAME.utils.styleParser.parse(wallAttributes)
-        this.wallWidth = wallAttributes.w
-        this.wallControlLine = wallAttributes.controlLine
+        parentAttributes.w = wallAttributes.w
+        parentAttributes.controlLine = wallAttributes.controlLine
       }
     } else {
-      this.wallWidth = evt.detail.w
-      this.wallControlLine = evt.detail.controlLine
+      parentAttributes.w = evt.detail.w
+      parentAttributes.controlLine = evt.detail.controlLine
     }
-    this.update()
+    this.update(parentAttributes)
   },
 
   updateSchema: updateSchema,
 
-  update: async function (oldData) {
+  update: function (parentAttributes) {
     var this_ = this
     var data = this_.data
 
@@ -50,22 +51,25 @@ export default {
     this.remove()
 
     let attributes = cloneDeep(data)
+    attributes.w = this.wallWidth
 
     attributes.materials = dataToMaterials(data)
-
+    
     // construct data3d object
-    var data3d = await getDoorData3d(attributes)
-    removeEmptyMeshes(data3d.meshes)
+    getDoorData3d(attributes, parentAttributes)
+    .then(data3d => {
+      removeEmptyMeshes(data3d.meshes)
 
-    // create new one
-    this_.mesh = new THREE.Object3D()
-    this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh})
+      // create new one
+      this_.mesh = new THREE.Object3D()
+      this_.data3dView = new io3d.aFrame.three.Data3dView({parent: this_.mesh})
 
-    // update view
-    this_.data3dView.set(data3d)
-    this_.el.setObject3D('mesh', this_.mesh)
-    // emit event
-    this_.el.emit('mesh-updated');
+      // update view
+      this_.data3dView.set(data3d)
+      this_.el.setObject3D('mesh', this_.mesh)
+      // emit event
+      this_.el.emit('mesh-updated')
+    })
   },
 
   remove: function () {

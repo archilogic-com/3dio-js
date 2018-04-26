@@ -80,8 +80,10 @@ Install local dev environment:
 4. Run local dev server: 
 
     `npm start`
-5. Run tests (jest)
+5. Run tests:
 
     `npm test`
 
 Please follow our [Contribution guidelines](.github/CONTRIBUTING.md)
+
+[![Build Status](https://travis-ci.org/archilogic-com/3dio-js.svg?branch=master)](https://travis-ci.org/archilogic-com/3dio-js)

@@ -5,10 +5,10 @@ import generateUvs from '../../../utils/data3d/buffer/get-uvs'
 import getMaterials3d from './common/get-materials'
 import applyDefaultMaterials from './common/apply-default-materials'
 
-export default function(attributes) {
+export default function(attributes, parentAttributes) {
   attributes.materials = applyDefaultMaterials(attributes.materials, getDefaultMaterials());
   return Promise.all([
-    generateMeshes3d(attributes),
+    generateMeshes3d(attributes, parentAttributes),
     getMaterials3d(attributes.materials, getDefaultMaterials())
   ]).then(results => ({
     meshes: results[0],
@@ -29,26 +29,23 @@ export function getDefaultMaterials(){
     }
 }
 
-export function generateMeshes3d (a) {
-
+export function generateMeshes3d (a, parentAttributes) {
   var wallWidth = a.w || 0.15
   var wallControlLine = 'back'
 
-
-  /*
   // get parent wall attributes
-  if (this.wallWidth || this.wallControlLine) {
-    wallWidth = this.wallWidth
-    wallControlLine = this.wallControlLine
+  if (parentAttributes && (parentAttributes.w || parentAttributes.controlLine)) {
+    wallWidth = parentAttributes.w
+    wallControlLine = parentAttributes.controlLine
     a.w = wallWidth
-  }*/
+  }
 
   // definitions
   var
     wallBackPos = wallControlLine === 'front' ? -wallWidth : wallControlLine === 'center' ? -wallWidth / 2 : 0,
     wallFrontPos = wallWidth + wallBackPos,
     frameLength = a.frameLength,
-    frameWidth = a.w,
+    frameWidth = wallWidth,
     leafLength = a.l - (frameLength * 2),
     leafOffset = a.leafOffset,
     frameOffset = a.frameOffset,
