@@ -25,8 +25,9 @@ export default async function toData3d(sceneStructure, options) {
 
 
 // Float32Array gets encoded as { '0':23, '1':42, ...}, so let's fix that
+// by converting them to normal arrays like this:
 export function stringifyRealArrays(object){
-  return JSON.stringify( data3dStructure, function(key, value) {
+  return JSON.stringify( object, function(key, value) {
     if (value instanceof  Float32Array) {
       return Array.apply([], value)
     } else {
