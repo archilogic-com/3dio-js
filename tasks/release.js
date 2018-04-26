@@ -12,6 +12,10 @@ const packageInfo = require('../package.json')
 const preamble = require('./preamble.js')
 const execSync = require('child_process').execSync
 const git = require('gulp-git')
+const jest = require('jest')
+const spawn = require('child_process').spawn
+const chalk = require('chalk')
+
 
 // internals
 
@@ -42,6 +46,7 @@ const cdnCacheMaxAgeLatest = 5 * 60 // 5 Min
 // tasks
 
 const release = gulp.series(
+  runTests,
   checkLocalEnv,
   checkWorkingDirectoryClean,
   checkBranchName,
@@ -62,6 +67,7 @@ const release = gulp.series(
 )
 
 const testingRelease = gulp.series(
+  runTests,
   jshint,
   setBabelEnv,
   build,
@@ -70,6 +76,21 @@ const testingRelease = gulp.series(
   copyBuildToDist,
   uglify
 )
+
+function runTests() {
+  return new Promise((resolve, reject) => {
+    const ls = spawn('jest', ['--config', path.resolve('./package.json')], {shell: true} )
+    ls.stdout.pipe(process.stdout)
+    ls.stderr.pipe(process.stdout)
+    ls.on('close', (code) => {
+      if (code === 0) {
+        resolve()
+      } else {
+        reject(`Tests Failed: JEST CLI exited with ${code}`)
+      }
+    })
+  })
+}
 
 function checkLocalEnv() {
   if(!awsConfig.key || !awsConfig.secret) throw 'ERROR: You need to set $AWS_ACCESS_KEY_ID and $AWS_SECRET_ACCESS_KEY to be able to upload to S3'
