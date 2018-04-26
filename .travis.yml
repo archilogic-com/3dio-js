@@ -6,17 +6,15 @@ install:
 cache:
   directories:
     - node_modules
-
 jobs:
   include:
     - # release check
-      if: NOT branch = production
+      if: NOT (branch = production)
       script:
-      - npm run test
-      - npm run jshint
-      - npm run release-check
-  include:
+        - npm run test
+        - npm run jshint
+        - npm run release-check
     - # release
-      if: branch = production
+      if: (branch = production)
       script:
-      - npm run release
+        - npm run release
