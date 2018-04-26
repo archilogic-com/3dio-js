@@ -8,30 +8,13 @@ cache:
     - node_modules
 
 jobs:
-
   include:
     - # test 1
       if: NOT branch = production AND type IN (pull_request)
       script:
       - echo "IS NOT production branch"
-
   include:
     - # test 2
       if: branch = production AND type IN (push)
       script:
       - echo "IS production branch"
-
-
-  include:
-    - # release check
-      if: branch != production AND type IN (pull_request)
-      script:
-      - npm run test
-      - npm run jshint
-      - npm run release-check
-
-  include:
-    - # release
-      if: branch = production AND type IN (push)
-      script:
-      - npm run release
