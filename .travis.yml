@@ -10,7 +10,7 @@ cache:
 jobs:
   include:
     - # release check
-      if: NOT branch = production
+      if: branch != production
       script:
       - npm run test
       - npm run jshint
