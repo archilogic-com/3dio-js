@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  - "7"
+install:
+  - npm install
+cache:
+  directories:
+    - node_modules
+script:
+  - npm release-check
