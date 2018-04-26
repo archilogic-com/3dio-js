@@ -85,3 +85,5 @@ Install local dev environment:
     `npm test`
 
 Please follow our [Contribution guidelines](.github/CONTRIBUTING.md)
+
+[![Build Status](https://travis-ci.org/archilogic-com/3dio-js.svg?branch=master)](https://travis-ci.org/archilogic-com/3dio-js)
