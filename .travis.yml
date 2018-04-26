@@ -15,7 +15,6 @@ jobs:
       - npm run test
       - npm run jshint
       - npm run release-check
-  include:
     - # release
       if: branch = production
       script:
