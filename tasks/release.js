@@ -66,7 +66,7 @@ const release = gulp.series(
   releaseInfo
 )
 
-const testingRelease = gulp.series(
+const releaseCheck = gulp.series(
   runTests,
   jshint,
   setBabelEnv,
@@ -302,4 +302,4 @@ function releaseInfo() {
 
 // export
 
-module.exports = { release, testingRelease }
+module.exports = { release, releaseCheck }
