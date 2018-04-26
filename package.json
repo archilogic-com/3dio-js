@@ -40,9 +40,10 @@
     "dev-node": "gulp dev-node",
     "jshint": "gulp jshint",
     "test": "jest --coverage",
-    "build": "jest && gulp build",
-    "release": "gulp release",
-    "release-check": "gulp release-check"
+    "dev-build": "gulp dev-build",
+    "release-build": "gulp release-build",
+    "release-check": "jest && gulp jshint && gulp release-build",
+    "release": "gulp release"
   },
   "dependencies": {
     "bluebird": "^3.5.1",
