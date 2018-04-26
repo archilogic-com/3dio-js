@@ -10,13 +10,13 @@ cache:
 jobs:
   include:
     - # release check
-      if: type IN (pull_request)
+      if: NOT branch = production
       script:
       - npm run test
       - npm run jshint
       - npm run release-check
   include:
     - # release
-      if: branch = production AND type IN (push)
+      if: branch = production
       script:
       - npm run release
