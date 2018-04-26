@@ -80,7 +80,7 @@ Install local dev environment:
 4. Run local dev server: 
 
     `npm start`
-5. Run tests (jest)
+5. Run tests:
 
     `npm test`
 
