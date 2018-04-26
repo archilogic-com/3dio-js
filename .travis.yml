@@ -11,7 +11,7 @@ jobs:
 
   include:
     - # test 1
-      if: branch != production AND type IN (pull_request)
+      if: NOT branch = production AND type IN (pull_request)
       script:
       - echo "IS NOT production branch"
 
