@@ -53,6 +53,26 @@ async function sceneStructreToData3dRec(sceneNode, parent) {
   data3dNode.rotRad = [0,0,0]
   data3dNode.scale = [1,1,1]
 
+  if (sceneNode.sourceScale && sceneNode.sourceScale !== 1) {
+    data3dNode.scale = [ sceneNode.sourceScale, sceneNode.sourceScale, sceneNode.sourceScale ]
+  }
+
+  if (sceneNode.rx) {
+    data3dNode.rotDeg[0] = sceneNode.rx
+    data3dNode.rotDeg[0] = sceneNode.rx * Math.PI / 180
+  }
+  if (sceneNode.ry) {
+    data3dNode.rotDeg[1] = sceneNode.ry
+    data3dNode.rotRad[1] = sceneNode.ry * Math.PI / 180
+  }
+  if (sceneNode.flipYZ){
+    //TODO check if needed and remove
+    element3d.rx = element3d.rx - 90
+  }
+  if (sceneNode.x) data3dNode.position[0] = sceneNode.x
+  if (sceneNode.y) data3dNode.position[1] = sceneNode.y
+  if (sceneNode.z) data3dNode.position[2] = sceneNode.z
+
   // child nodes
   data3dNode.children = await Promise.all(sceneNode.children.map(function(childSceneNode){
     return sceneStructreToData3dRec(childSceneNode)
