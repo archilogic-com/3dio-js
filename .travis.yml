@@ -8,13 +8,14 @@ cache:
     - node_modules
 jobs:
   include:
+
     - stage: test
       script: npm run test
     - stage: jshint
       script: npm run jshint
     - stage: build
-      script: gulp release-build
-    - # release
-      if: (branch = production)
-      script:
-        - npm run release
+      script: npm run release-build
+
+    - if: (branch = production)
+      stage: release
+      script: npm run release

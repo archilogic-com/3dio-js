@@ -45,38 +45,6 @@ const cdnCacheMaxAgeLatest = 5 * 60 // 5 Min
 
 // tasks
 
-const release = gulp.series(
-  runTests,
-  checkLocalEnv,
-  checkWorkingDirectoryClean,
-  checkBranchName,
-  npmCheckVersion,
-  jshint,
-  setBabelEnv,
-  build,
-  unsetBabelEnv,
-  cleanDestDir,
-  copyBuildToDist,
-  uglify,
-  gitTag,
-  gitCommit,
-  gitPush,
-  npmPublish,
-  s3Upload,
-  releaseInfo
-)
-
-const releaseCheck = gulp.series(
-  runTests,
-  jshint,
-  setBabelEnv,
-  build,
-  unsetBabelEnv,
-  cleanDestDir,
-  copyBuildToDist,
-  uglify
-)
-
 const releaseBuild = gulp.series(
   setBabelEnv,
   build,
@@ -84,6 +52,21 @@ const releaseBuild = gulp.series(
   cleanDestDir,
   copyBuildToDist,
   uglify
+)
+
+const release = gulp.series(
+  runTests,
+  checkLocalEnv,
+  checkWorkingDirectoryClean,
+  checkBranchName,
+  npmCheckVersion,
+  releaseBuild,
+  gitTag,
+  gitCommit,
+  gitPush,
+  npmPublish,
+  s3Upload,
+  releaseInfo
 )
 
 function runTests() {
@@ -311,4 +294,4 @@ function releaseInfo() {
 
 // export
 
-module.exports = { release, releaseCheck, releaseBuild }
+module.exports = { release, releaseBuild }
