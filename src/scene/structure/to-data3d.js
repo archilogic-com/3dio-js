@@ -64,6 +64,35 @@ async function sceneStructreToData3dRec(sceneNode, parent) {
     data3dNode.materials = data3dModel.materials
     data3dNode.meshKeys = Object.keys(data3dModel.meshes)
     data3dNode.materialKeys = Object.keys(data3dModel.materials)
+  } else if (sceneNode.type==='object'){
+    console.error("not implemented: object fetching & decoding")
+    /*
+    var key = sceneNode.key || sceneNode.KEY
+    if(scene !== '') {
+      callService('Model.read', {arguments: { resourceId: scene}}).then(function onResult(result) {
+        var level = result.modelStructure.children.filter(function(item) { return item.type === 'level' })[0]
+        if (!level) {
+          console.error('Unable to load data3d from scene ' + scene + ': The scene does not contain data in the expected format. Error was: No level found.')
+          return
+        }
+        if (!level.bakedModelUrl) {
+          console.error('Unable to load data3d from scene ' + scene + ': The scene is not baked. Enable realistic lighting on this scene. Error was: No baked data3d present.')
+          return
+        }
+        var bakedModel = level.bakedModelUrl
+        if (bakedModel.split('.')[bakedModel.split('.').length - 1] !== 'buffer') {
+          console.error('Unable to load data3d from scene ' + scene + ': The scene is not in Data3D format. Disable and enable realistic lighting on this scene. Error was: No buffer3d found.')
+          return
+        }
+        this_.data.key = bakedModel
+        key = bakedModel
+        console.log('Loading scene', key)
+        this_.data.scene = ''
+        this_.update()
+      }).catch(function onApiError(err) {
+        console.error('Unable to load data3d from scene ' + scene + ': The API returned an error. Error was:', err)
+      })
+    }*/
   } else {
     console.warn("unmapped type "+sceneNode.type);
   }
