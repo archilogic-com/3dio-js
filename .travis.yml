@@ -8,12 +8,12 @@ cache:
     - node_modules
 jobs:
   include:
-    - # release check
-      if: NOT (branch = production)
-      script:
-        - npm run test
-        - npm run jshint
-        - npm run release-check
+    - stage: test
+      script: npm run test
+    - stage: jshint
+      script: npm run jshint
+    - stage: build
+      script: gulp release-build
     - # release
       if: (branch = production)
       script:

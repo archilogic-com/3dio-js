@@ -77,6 +77,15 @@ const releaseCheck = gulp.series(
   uglify
 )
 
+const releaseBuild = gulp.series(
+  setBabelEnv,
+  build,
+  unsetBabelEnv,
+  cleanDestDir,
+  copyBuildToDist,
+  uglify
+)
+
 function runTests() {
   return new Promise((resolve, reject) => {
     const ls = spawn('jest', ['--config', path.resolve('./package.json')], {shell: true} )
@@ -302,4 +311,4 @@ function releaseInfo() {
 
 // export
 
-module.exports = { release, releaseCheck }
+module.exports = { release, releaseCheck, releaseBuild }
