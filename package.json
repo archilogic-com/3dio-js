@@ -74,7 +74,7 @@
     "gulp-less": "^3.3.2",
     "gulp-s3": "0.11.0",
     "gulp-watch": "^4.3.11",
-    "jest": "^22.2.1",
+    "jest": "^22.4.3",
     "jshint": "^2.9.5",
     "jshint-stylish": "^2.2.1",
     "lite-server": "^2.3.0",
