@@ -1,5 +1,5 @@
 import applyDefaults from '../../../../src/scene/structure/apply-defaults.js'
-import window3d from '../../../../src/scene/structure/parametric-objects/window'
+import window3d from '../../../../src/scene/structure/parametric-objects/window3d'
 import { isNaN } from 'lodash'
 
 // mock runtime module to prevent from tests blowing up
