@@ -67,10 +67,10 @@ export default function decodeBinary (buffer, options) {
   // validation warnings
 
   if (magicNumber !== MAGIC_NUMBER) {
-    console.error('File header error: Wrong magic number. File is probably not data3d buffer format.')
+    console.error(`File header error: Wrong magic number ${magicNumber}. File '${url}' is probably not data3d buffer format.`)
   }
   if (version !== VERSION) {
-    console.error('File header error: Wrong version number: ' + version + '. Parser supports version: ' + VERSION)
+    console.error(`File header error: Wrong version number ${version}. Parser supports version: ` + VERSION)
   }
 
   // validation errors

@@ -6,7 +6,7 @@ var ID_TO_URL_CACHE = {}
 
 // main
 export default function getUrlFromStorageId (storageId, options) {
-
+  console.log('getUrlFromStorageId', storageId, options)
   // API
   options = options || {}
   var cdn = options.cdn !== undefined ? options.cdn : true
@@ -39,8 +39,14 @@ export default function getUrlFromStorageId (storageId, options) {
     processedStorageId = encodeURIComponent(processedStorageId)
   }
 
+  var domain;
+  if (cdn === true){
+    domain = options.storageDomain || configs.storageDomain
+  } else {
+    domain = options.storageDomainNoCdn || configs.storageDomainNoCdn
+  }
   // compose url
-  var url = 'https://' + (cdn ? configs.storageDomain : configs.storageDomainNoCdn) + '/' + processedStorageId
+  var url = 'https://' + domain + '/' + processedStorageId
 
   // add to cache
   ID_TO_URL_CACHE[ storageId + cdn + encode ] = url

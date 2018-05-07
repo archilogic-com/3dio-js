@@ -8,6 +8,7 @@ import getUrlFromStorageId from './get-url-from-id.js'
 
 export default function getFromStorage (storageId, options) {
 
+  console.log('getFromStorage', storageId, options)
   // WIP: for now, assume that this is only being used for data3d
   options = options || {}
   options.type = options.type || 'data3d' // TODO: support more types
@@ -20,10 +21,7 @@ export default function getFromStorage (storageId, options) {
       return fetch(getUrlFromStorageId(storageId, options)).then(function(response) { return response.json() })
     break
     default:
-      return loadData3d(getUrlFromStorageId(storageId), {
-        queueName: queueName,
-        loadingQueuePrefix: loadingQueuePrefix
-      })
+      return loadData3d(getUrlFromStorageId(storageId, options), options)
     break
   }
 
