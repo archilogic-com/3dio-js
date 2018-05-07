@@ -32,6 +32,7 @@ import wait                         from './utils/wait.js'
 import callService                  from './utils/services/call.js'
 import whenDone                     from './utils/processing/when-done.js'
 import whenHiResTexturesReady       from './utils/processing/when-hi-res-textures-ready.js'
+import getTextureKeys               from './utils/data3d/get-texture-keys.js'
 
 var utils = {
 
@@ -46,7 +47,8 @@ var utils = {
     getInspectorUrl: getData3dInspectorUrl,
     storeInCache: storeInCache,
     removeFromCache: removeFromCache,
-    textureAttributes: textureAttributes
+    textureAttributes: textureAttributes,
+    getTextureKeys: getTextureKeys
   },
   ui: ui,
   auth: auth,

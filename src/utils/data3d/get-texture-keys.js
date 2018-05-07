@@ -12,7 +12,10 @@ export default function getTextureKeys(data3d, options) {
   var cache = {}
 
   // iterate over materials
-  traverseData3d.materials(data3d, function(material) {
+  // TODO refactor
+  let materials = traverseData3d.materials(data3d)
+  console.log('materials', JSON.stringify(materials))
+  Object.keys(materials).map(m=>materials[m]).forEach(function(material){
     var filteredResult, attrName, type, format, textureKey
     // iterate over texture types
     for (var i = 0, l = textureAttributes.names.length; i < l; i++) {

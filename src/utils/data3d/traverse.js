@@ -1,32 +1,28 @@
+import cloneDeep from 'lodash/cloneDeep'
+
 function traverseData3d(data3d, callback) {
-
+  console.log('traverseData3d', data3d._params.type)
   callback(data3d)
-
-  if (data3d.children) for (var i=0, l=data3d.children.length; i<l; i++) traverseData3d(data3d.children[i], callback)
-
+  if (data3d.children) {
+    for (var i=0, l=data3d.children.length; i<l; i++) {
+      traverseData3d(data3d.children[i], callback)
+    }
+  }
 }
 
 // methods
 
-traverseData3d.materials = function traverseMaterials (data3d, callback) {
+traverseData3d.materials = function (data3d) {
+  var materials = []
 
-  ;(function traverseMaterials_(data3d, callback) {
+  traverseData3d(data3d, function(data3dNode){
+    var newMaterials = Object.keys(data3dNode.materials).map( mk => data3dNode.materials[mk] )
+    console.log('traverseData3d.materials', data3d._params.type, JSON.stringify(data3dNode.materials))
 
-    var material
-    var materialKeys = data3d.materialKeys || Object.keys(data3d.materials || {})
-    for (var i = 0; i < materialKeys.length; i++) {
-      material = data3d.materials[ materialKeys[ i ] ]
-      callback(material, data3d)
-    }
+    materials.concat( newMaterials )
+  })
 
-    if (data3d.children) {
-      for (var i=0, l=data3d.children.length; i<l; i++) {
-        traverseMaterials_(data3d.children[i], callback)
-      }
-    }
-
-  })(data3d, callback)
-
+  return materials;
 }
 
 traverseData3d.meshes = function traverseMeshes (data3d, callback) {
