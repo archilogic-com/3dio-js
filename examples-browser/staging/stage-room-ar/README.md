@@ -1,3 +1,12 @@
+---
+
+this demo has been moved to another repo:
+
+repo: https://github.com/archilogic-com/web-xr-homestaging-ai
+demo: https://archilogic-com.github.io/web-xr-homestaging-ai/
+
+---
+
 # Home staging AR Demo
 
 This demo let's you draw a floor plan in AR
