@@ -116,7 +116,6 @@ export function generateMeshes3d (a) {
 
   // check if fridge fits
   if (a.fridge && a.highCabinetLeft < a.fridgePos + 1) {
-    console.log(elementNum - a.highCabinetRight - 1)
     if (a.fridgePos < elementNum - a.highCabinetRight - 1 ) a.highCabinetLeft = a.fridgePos + 1
     else a.fridgePos = a.highCabinetLeft - 1
 

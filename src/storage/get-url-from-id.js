@@ -6,7 +6,6 @@ var ID_TO_URL_CACHE = {}
 
 // main
 export default function getUrlFromStorageId (storageId, options) {
-  console.log('getUrlFromStorageId', storageId, options)
   // API
   options = options || {}
   var cdn = options.cdn !== undefined ? options.cdn : true

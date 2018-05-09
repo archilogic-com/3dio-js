@@ -2,22 +2,18 @@
 
 import cloneDeep from 'lodash/cloneDeep'
 import materialLibrary from './material-lib.js'
-
+import pathUtils from  '../../../../utils/file/path.js'
 export default function (material) {
-  var STORAGE_URL = 'https://storage.3d.io/'
+
   var mat = materialLibrary[material]
 
-  if (!mat) return material
-
+  if (!mat) {
+    console.warn(`Material '${material}' not found in standard library.`)
+    return material
+  }
   var attr = cloneDeep(mat.attributes)
-  Object.keys(attr).forEach(a => {
-    // get textures
-    if (a.indexOf('map') > -1 ) {
-      // fix to prevent double slash
-      if (attr[a][0] === '/') attr[a] = attr[a].substring(1)
-      // get full texture path
-      attr[a] = STORAGE_URL + attr[a]
-    }
+  Object.keys(attr).filter(a=>a.indexOf('map') > -1).forEach(a => {
+    attr[a]=pathUtils.ensureBeginsWithSlash(attr[a])
   })
   return attr
 }

@@ -103,9 +103,7 @@ export default function decodeBinary (buffer, options) {
 
     //  convert relative material keys into absolute one
     if (origin && data3d.materials) convertTextureKeys(data3d, origin, rootDir)
-
   })
-
   return Promise.resolve(structure.data3d)
 
 }

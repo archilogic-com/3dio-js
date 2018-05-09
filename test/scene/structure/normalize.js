@@ -30,7 +30,7 @@ test('Scene: valid types', async () => {
   expect(result.length).toBe(20)
 })
 
-test('Scene: fix invalid children', async () => {
+test('Scene: normalize removes invalid children', async () => {
   const sceneStructure = {
     type: 'wall',
     l: 2,
@@ -45,9 +45,11 @@ test('Scene: fix invalid children', async () => {
       }
     ]
   }
+  expect(await validate(sceneStructure)).toBe( false )
   const result = await normalize(sceneStructure)
-  const { isValid } = await validate(result)
-  expect(isValid).toBe(true)
+  expect(await validate(result)).toBe( true )
+  expect(result.children).toBe( [] )
+
 })
 
 test('Scene: normalize simple scene structure array', async () => {

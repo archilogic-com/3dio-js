@@ -6,9 +6,6 @@ import hexToRgb from '../color/hex-to-rgb.js'
 import generateUvs from './buffer/get-uvs.js'
 import generateNormals from './buffer/get-normals.js'
 
-// placeholder
-function normalizeMaterials(x) { return x; }
-
 // API
 
 var consolidate = consolidateData3d
@@ -293,9 +290,9 @@ function consolidateMaterials(_materials){
   }
 
 }
-  
+
 function consolidateMeshes (meshes, nodeId){
-    
+
     if (!meshes) {
 
       return meshes

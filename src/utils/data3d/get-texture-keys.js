@@ -1,8 +1,7 @@
 import traverseData3d from './traverse.js'
 import textureAttributes from './texture-attributes.js'
-
+import pathUtils from '../file/path.js'
 // main
-
 export default function getTextureKeys(data3d, options) {
   // API
   var options = options || {}
@@ -14,7 +13,6 @@ export default function getTextureKeys(data3d, options) {
   // iterate over materials
   // TODO refactor
   let materials = traverseData3d.materials(data3d)
-  console.log('materials', JSON.stringify(materials))
   Object.keys(materials).map(m=>materials[m]).forEach(function(material){
     var filteredResult, attrName, type, format, textureKey
     // iterate over texture types
@@ -37,6 +35,5 @@ export default function getTextureKeys(data3d, options) {
       if (textureKey) cache[textureKey] = true
     }
   })
-
-  return Object.keys(cache)
+  return Object.keys(cache).map(tk=>pathUtils.ensureBeginsWithSlash(tk))
 }
