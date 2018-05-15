@@ -12,7 +12,7 @@ getSession().catch(function(error) {
 
 // update session state every time when tab becomes visible
 if (runtime.isBrowser) {
-  runtime.isFocused$.subscribe(function(isFocused){
+  runtime.browser.isFocused$.subscribe(function(isFocused){
     if (isFocused) getSession()
   })
 }

@@ -1,10 +1,13 @@
 import runtime from '../core/runtime.js'
 
 export default function checkDependencies (args, target) {
+  if (!runtime.isBrowser){
+      return 
+  }
 
-  if (args.three && !runtime.has.three) {
+  if (args.three && !runtime.browser.has.three) {
     return handleError(args.onError, target, 'Sorry: THREE not available.')
-  } else if (args.aframe && !runtime.has.aframe) {
+  } else if (args.aframe && !runtime.browser.has.aframe) {
     return handleError(args.onError, target, 'Sorry: AFRAME not available.')
   } else {
     return typeof target === 'function' ? target() : target

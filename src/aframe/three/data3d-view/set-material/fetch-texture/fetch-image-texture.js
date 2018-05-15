@@ -1,10 +1,11 @@
 import Promise from 'bluebird'
 import runtime from '../../../../../core/runtime.js'
 
-// internals
-
 // graphic card max supported texture size
-var MAX_TEXTURE_SIZE = runtime.has.webGl ? runtime.webGl.maxTextureSize || 2048 : 2048
+var MAX_TEXTURE_SIZE = 2048
+if (runtime.isBrowser && runtime.browser.has.webGl){
+  runtime.browser.webGl.maxTextureSize
+}
 
 // helpers
 

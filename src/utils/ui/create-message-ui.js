@@ -4,7 +4,7 @@ import Promise from 'bluebird'
 
 // container DOM element
 var mainEl
-if (runtime.isBrowser) runtime.domReady(function(){
+if (runtime.isBrowser) runtime.browser.domReady(function(){
   mainEl = el('<div>',{ class: 'io3d-message-list' }).appendTo('body')
 })
 

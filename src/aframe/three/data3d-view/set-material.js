@@ -224,7 +224,7 @@ export default function setMaterial (args) {
     // hasHiResTextures = _attributes.mapDiffuse || _attributes.mapSpecular || _attributes.mapNormal || _attributes.mapAlpha || _attributes.mapLight,
     // TODO: readd hiResTextures configs
     // hiResTexturesEnabled = !configs.isMobile && vm.viewport.a.hiResTextures && configs.compatibility.webglCompressedTextures
-    hiResTexturesEnabled = !runtime.isMobile && runtime.webGl.supportsDds
+    hiResTexturesEnabled = !runtime.browser.isMobile && runtime.browser.webGl.supportsDds
 
   if (!hiResTexturesEnabled || (hasLoResTextures && !material3d.firstTextureLoaded)) {
     if (loadingQueuePrefix) {
