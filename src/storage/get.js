@@ -1,11 +1,9 @@
-import runtime from '../core/runtime'
 import configs from '../core/configs'
 import loadData3d from '../utils/data3d/load'
 import fetch from '../utils/io/fetch'
 import getUrlFromStorageId from './get-url-from-id.js'
 
 // main
-
 export default function getFromStorage (storageId, options) {
 
   // HACK: for now, assume that this is only being used for data3d
