@@ -72,7 +72,12 @@ function assertBrowser(message) {
 
 function getWebGlInfo () {
 
-  var canvas = typeof document !== 'undefined' ? document.createElement('canvas') : null
+  var canvas
+  if (typeof document !== 'undefined') try {
+    canvas = document.createElement('canvas')
+  } catch (e) {
+    return null
+  }
   if (!canvas) return null
 
   var gl = canvas.getContext('webgl') ||
