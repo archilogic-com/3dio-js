@@ -7,7 +7,7 @@ import getDefaultsByType from './validate/get-defaults-by-type'
 import paramGeneratorsMap from './parametric-objects/common/all'
 import getData3dFromKey from '../../storage/get'
 import getMaterials from './parametric-objects/common/get-materials'
-var noIo3dComponents = ['plan', 'level', 'group']
+import applyDefaults from './apply-defaults.js'
 
 export default async function toData3d(sceneStructure, options) {
   if (!sceneStructure) {
@@ -22,12 +22,11 @@ export default async function toData3d(sceneStructure, options) {
   return data3dStructure
 }
 
-
-
 // recursivly convert sceneStructre
 async function sceneStructreToData3dRec(sceneNode, options) {
 
-  let data3dNode = {}         //TODO replace this with instantiation of new object
+  sceneNode = applyDefaults(sceneNode)
+  let data3dNode = {}
   data3dNode['_params'] = cloneDeep(sceneNode)  //let's not have any weird bugs
 
   data3dNode.position = [0,0,0]
