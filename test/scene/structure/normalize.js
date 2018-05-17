@@ -45,10 +45,12 @@ test('Scene: normalize removes invalid children', async () => {
       }
     ]
   }
-  expect(await validate(sceneStructure)).toBe( false )
+  let invalidError = await validate(sceneStructure)
+  expect(invalidError).toHaveProperty( 'errors' )
+  expect(invalidError.errors[0]).toHaveProperty( 'code', 3 )
   const result = await normalize(sceneStructure)
-  expect(await validate(result)).toBe( true )
-  expect(result.children).toBe( [] )
+  expect(await validate(result)).toHaveProperty('isValid', true )
+  expect(result).toHaveProperty('children', [] )
 
 })
 
