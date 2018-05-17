@@ -22,6 +22,7 @@ export default {
   floor: floor,
   kitchen: kitchen,
   polyfloor: polyfloor,
+  stairs: stairs,
   railing: railing,
   wall: wall,
   window3d: window3d,
