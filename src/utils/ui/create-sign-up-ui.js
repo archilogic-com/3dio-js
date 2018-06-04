@@ -79,6 +79,9 @@ export default function createSignUpUi (credentials, options) {
 
     el('<p>', { text:'email:', class:'hint' }).appendTo(emailTabEl)
     var emailEl = el('<input>',{ type: 'text' }).appendTo(emailTabEl)
+    var checkboxEl = el('<div>', {style: 'margin-top: 20px;' }).appendTo(emailTabEl)
+    el('<label>',{ text: 'Keep me up to date about 3d.io' }).appendTo(checkboxEl)
+    var emailOptInEl = el('<input>',{ type: 'checkbox', style: 'margin-left: 20px;', id: 'email-opt-in'}).appendTo(checkboxEl)
     if (email) emailEl.val(email)
     emailEl.focus()
     function onEmailElKeyDown (e) {
@@ -145,7 +148,7 @@ export default function createSignUpUi (credentials, options) {
             return resendActivationEmail({ email: emailEl.val() })
           } else {
             // sign up
-            return signUp({ email: emailEl.val() })
+            return signUp({ email: emailEl.val(), emailOptIn: emailOptInEl.checked })
           }
         })
         .then(function(){

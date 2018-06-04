@@ -9,13 +9,15 @@ import log from 'js-logger'
  * @param {object} args
  * @param {string} args.email
  * @param {string} args.password (optional)
+ * @param {string} args.emailOptIn (optional)
  */
 export default function signUp (args) {
 
   var credentials = {
     email: args.email,
     password: args.password || uuid.generate(),
-    accountSetup: '3dio'
+    accountSetup: '3dio',
+    emailOptIn: args.emailOptIn || false
   }
 
   // log out first
