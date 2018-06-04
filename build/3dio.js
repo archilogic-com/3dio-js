@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 1.2.0
- * @date 2018/04/26 13:54
+ * @version 1.2.1
+ * @date 2018/06/04 20:49
  * @branch master
- * @commit cbfe991d6edf7433144e610a42a1f1fd9885dd40
+ * @commit 224cf51552410470bc5acb305b93b6ebc4bc2231
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2018/04/26 13:54', GIT_BRANCH = 'master', GIT_COMMIT = 'cbfe991d6edf7433144e610a42a1f1fd9885dd40'
+	var BUILD_DATE='2018/06/04 20:49', GIT_BRANCH = 'master', GIT_COMMIT = '224cf51552410470bc5acb305b93b6ebc4bc2231'
 
 	var name = "3dio";
-	var version = "1.2.0";
+	var version = "1.2.1";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d", "aframe", "cardboard", "components", "oculus", "vive", "rift", "vr", "WebVR", "WegGL", "three", "three.js", "3D model", "api", "visualization", "furniture", "real estate", "interior", "building", "architecture", "3d.io"];
 	var homepage = "https://3d.io";
@@ -29,9 +29,9 @@
 	var license = "MIT";
 	var author = { "name": "archilogic", "email": "dev.rocks@archilogic.com", "url": "https://archilogic.com" };
 	var main = "index.js";
-	var scripts = { "start": "gulp dev-browser", "dev-browser": "gulp dev-browser", "dev-node": "gulp dev-node", "jshint": "gulp jshint", "test": "jest --coverage", "build": "jest && gulp build", "release": "gulp release", "release-check": "gulp release-check" };
+	var scripts = { "start": "gulp dev-browser", "dev-browser": "gulp dev-browser", "dev-node": "gulp dev-node", "jshint": "gulp jshint", "test": "jest --coverage", "dev-build": "gulp dev-build", "release-build": "gulp release-build", "release-check": "jest && gulp jshint && gulp release-build", "release": "gulp release" };
 	var dependencies = { "bluebird": "^3.5.1", "form-data": "^2.3.1", "js-logger": "^1.4.1", "lodash": "^4.17.4", "node-fetch": "2.0.0-alpha.8", "pako": "^1.0.5", "performance-now": "^2.1.0", "rxjs": "^5.4.3", "three": "^0.85.2", "whatwg-fetch": "^2.0.3" };
-	var devDependencies = { "babel-core": "^6.26.0", "babel-jest": "^22.2.0", "babel-plugin-external-helpers": "^6.22.0", "babel-preset-env": "^1.6.1", "babel-preset-es2015": "^6.24.1", "babel-runtime": "^6.26.0", "chalk": "^2.1.0", "confirm-cli": "^0.4.0", "del": "^3.0.0", "gulp": "github:gulpjs/gulp#4.0", "gulp-git": "^2.4.2", "gulp-gzip": "^1.4.0", "gulp-jshint": "^2.0.4", "gulp-less": "^3.3.2", "gulp-s3": "0.11.0", "gulp-watch": "^4.3.11", "jest": "^22.2.1", "jshint": "^2.9.5", "jshint-stylish": "^2.2.1", "lite-server": "^2.3.0", "moment": "^2.19.3", "regenerator-runtime": "^0.11.1", "rollup": "^0.41.6", "rollup-plugin-babel": "^3.0.2", "rollup-plugin-commonjs": "^8.2.1", "rollup-plugin-json": "^2.3.0", "rollup-plugin-less": "^0.1.3", "rollup-plugin-node-resolve": "^3.0.0", "through2": "^2.0.3", "uglify-js": "^3.1.3" };
+	var devDependencies = { "babel-core": "^6.26.0", "babel-jest": "^22.2.0", "babel-plugin-external-helpers": "^6.22.0", "babel-preset-env": "^1.6.1", "babel-preset-es2015": "^6.24.1", "babel-runtime": "^6.26.0", "chalk": "^2.1.0", "confirm-cli": "^0.4.0", "del": "^3.0.0", "gulp": "github:gulpjs/gulp#4.0", "gulp-git": "^2.4.2", "gulp-gzip": "^1.4.0", "gulp-jshint": "^2.0.4", "gulp-less": "^3.3.2", "gulp-s3": "0.11.0", "gulp-watch": "^4.3.11", "jest": "^22.4.3", "jshint": "^2.9.5", "jshint-stylish": "^2.2.1", "lite-server": "^2.3.0", "moment": "^2.19.3", "regenerator-runtime": "^0.11.1", "rollup": "^0.41.6", "rollup-plugin-babel": "^3.0.2", "rollup-plugin-commonjs": "^8.2.1", "rollup-plugin-json": "^2.3.0", "rollup-plugin-less": "^0.1.3", "rollup-plugin-node-resolve": "^3.0.0", "through2": "^2.0.3", "uglify-js": "^3.1.3" };
 	var jest = { "collectCoverageFrom": ["src/**/*.{js,jsx}", "!**/node_modules/**", "!**/vendor/**"], "testMatch": ["**/test/**/*.js", "**/__tests__/**/*.js?(x)", "**/?(*.)(spec|test).js?(x)"] };
 	var packageJson = {
 		name: name,
@@ -1600,7 +1600,12 @@
 
 	function getWebGlInfo() {
 
-	  var canvas = typeof document !== 'undefined' ? document.createElement('canvas') : null;
+	  var canvas;
+	  if (typeof document !== 'undefined') try {
+	    canvas = document.createElement('canvas');
+	  } catch (e) {
+	    return null;
+	  }
 	  if (!canvas) return null;
 
 	  var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl') || canvas.getContext('webgl', { antialias: false }) || canvas.getContext('experimental-webgl', { antialias: false });
@@ -8560,9 +8565,9 @@
 	};
 
 	var thenables = function thenables(Promise, INTERNAL) {
-	    var util$$1 = util;
-	    var errorObj = util$$1.errorObj;
-	    var isObject = util$$1.isObject;
+	    var util$$2 = util;
+	    var errorObj = util$$2.errorObj;
+	    var isObject = util$$2.isObject;
 
 	    function tryConvertToPromise(obj, context) {
 	        if (isObject(obj)) {
@@ -8614,7 +8619,7 @@
 	        promise._captureStackTrace();
 	        if (context) context._popContext();
 	        var synchronous = true;
-	        var result = util$$1.tryCatch(then).call(x, resolve, reject);
+	        var result = util$$2.tryCatch(then).call(x, resolve, reject);
 	        synchronous = false;
 
 	        if (promise && result === errorObj) {
@@ -8640,8 +8645,8 @@
 	};
 
 	var promise_array = function promise_array(Promise, INTERNAL, tryConvertToPromise, apiRejection, Proxyable) {
-	    var util$$1 = util;
-	    var isArray = util$$1.isArray;
+	    var util$$2 = util;
+	    var isArray = util$$2.isArray;
 
 	    function toResolutionValue(val) {
 	        switch (val) {
@@ -8665,7 +8670,7 @@
 	        this._totalResolved = 0;
 	        this._init(undefined, -2);
 	    }
-	    util$$1.inherits(PromiseArray, Proxyable);
+	    util$$2.inherits(PromiseArray, Proxyable);
 
 	    PromiseArray.prototype.length = function () {
 	        return this._length;
@@ -8694,9 +8699,9 @@
 	                return this._cancel();
 	            }
 	        }
-	        values = util$$1.asArray(values);
+	        values = util$$2.asArray(values);
 	        if (values === null) {
-	            var err = apiRejection("expecting an array or an iterable object but got " + util$$1.classString(values)).reason();
+	            var err = apiRejection("expecting an array or an iterable object but got " + util$$2.classString(values)).reason();
 	            this._promise._rejectCallback(err, false);
 	            return;
 	        }
@@ -8893,8 +8898,8 @@
 	    var getDomain = Promise._getDomain;
 	    var async = Promise._async;
 	    var Warning = errors.Warning;
-	    var util$$1 = util;
-	    var canAttachTrace = util$$1.canAttachTrace;
+	    var util$$2 = util;
+	    var canAttachTrace = util$$2.canAttachTrace;
 	    var unhandledRejectionHandled;
 	    var possiblyUnhandledRejection;
 	    var bluebirdFramePattern = /[\\\/]bluebird[\\\/]js[\\\/](release|debug|instrumented)/;
@@ -8904,13 +8909,13 @@
 	    var formatStack = null;
 	    var indentStackFrames = false;
 	    var printWarning;
-	    var debugging = !!(util$$1.env("BLUEBIRD_DEBUG") != 0 && (false || util$$1.env("BLUEBIRD_DEBUG") || util$$1.env("NODE_ENV") === "development"));
+	    var debugging = !!(util$$2.env("BLUEBIRD_DEBUG") != 0 && (false || util$$2.env("BLUEBIRD_DEBUG") || util$$2.env("NODE_ENV") === "development"));
 
-	    var warnings = !!(util$$1.env("BLUEBIRD_WARNINGS") != 0 && (debugging || util$$1.env("BLUEBIRD_WARNINGS")));
+	    var warnings = !!(util$$2.env("BLUEBIRD_WARNINGS") != 0 && (debugging || util$$2.env("BLUEBIRD_WARNINGS")));
 
-	    var longStackTraces = !!(util$$1.env("BLUEBIRD_LONG_STACK_TRACES") != 0 && (debugging || util$$1.env("BLUEBIRD_LONG_STACK_TRACES")));
+	    var longStackTraces = !!(util$$2.env("BLUEBIRD_LONG_STACK_TRACES") != 0 && (debugging || util$$2.env("BLUEBIRD_LONG_STACK_TRACES")));
 
-	    var wForgottenReturn = util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 && (warnings || !!util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
+	    var wForgottenReturn = util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 && (warnings || !!util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
 
 	    Promise.prototype.suppressUnhandledRejections = function () {
 	        var target = this._target();
@@ -8980,12 +8985,12 @@
 
 	    Promise.onPossiblyUnhandledRejection = function (fn) {
 	        var domain = getDomain();
-	        possiblyUnhandledRejection = typeof fn === "function" ? domain === null ? fn : util$$1.domainBind(domain, fn) : undefined;
+	        possiblyUnhandledRejection = typeof fn === "function" ? domain === null ? fn : util$$2.domainBind(domain, fn) : undefined;
 	    };
 
 	    Promise.onUnhandledRejectionHandled = function (fn) {
 	        var domain = getDomain();
-	        unhandledRejectionHandled = typeof fn === "function" ? domain === null ? fn : util$$1.domainBind(domain, fn) : undefined;
+	        unhandledRejectionHandled = typeof fn === "function" ? domain === null ? fn : util$$2.domainBind(domain, fn) : undefined;
 	    };
 
 	    var disableLongStackTraces = function disableLongStackTraces() {};
@@ -9022,32 +9027,32 @@
 	        try {
 	            if (typeof CustomEvent === "function") {
 	                var event = new CustomEvent("CustomEvent");
-	                util$$1.global.dispatchEvent(event);
+	                util$$2.global.dispatchEvent(event);
 	                return function (name, event) {
 	                    var domEvent = new CustomEvent(name.toLowerCase(), {
 	                        detail: event,
 	                        cancelable: true
 	                    });
-	                    return !util$$1.global.dispatchEvent(domEvent);
+	                    return !util$$2.global.dispatchEvent(domEvent);
 	                };
 	            } else if (typeof Event === "function") {
 	                var event = new Event("CustomEvent");
-	                util$$1.global.dispatchEvent(event);
+	                util$$2.global.dispatchEvent(event);
 	                return function (name, event) {
 	                    var domEvent = new Event(name.toLowerCase(), {
 	                        cancelable: true
 	                    });
 	                    domEvent.detail = event;
-	                    return !util$$1.global.dispatchEvent(domEvent);
+	                    return !util$$2.global.dispatchEvent(domEvent);
 	                };
 	            } else {
 	                var event = document.createEvent("CustomEvent");
 	                event.initCustomEvent("testingtheevent", false, true, {});
-	                util$$1.global.dispatchEvent(event);
+	                util$$2.global.dispatchEvent(event);
 	                return function (name, event) {
 	                    var domEvent = document.createEvent("CustomEvent");
 	                    domEvent.initCustomEvent(name.toLowerCase(), false, true, event);
-	                    return !util$$1.global.dispatchEvent(domEvent);
+	                    return !util$$2.global.dispatchEvent(domEvent);
 	                };
 	            }
 	        } catch (e) {}
@@ -9057,21 +9062,21 @@
 	    }();
 
 	    var fireGlobalEvent = function () {
-	        if (util$$1.isNode) {
+	        if (util$$2.isNode) {
 	            return function () {
 	                return process.emit.apply(process, arguments);
 	            };
 	        } else {
-	            if (!util$$1.global) {
+	            if (!util$$2.global) {
 	                return function () {
 	                    return false;
 	                };
 	            }
 	            return function (name) {
 	                var methodName = "on" + name.toLowerCase();
-	                var method = util$$1.global[methodName];
+	                var method = util$$2.global[methodName];
 	                if (!method) return false;
-	                method.apply(util$$1.global, [].slice.call(arguments, 1));
+	                method.apply(util$$2.global, [].slice.call(arguments, 1));
 	                return true;
 	            };
 	        }
@@ -9133,7 +9138,7 @@
 	            config.warnings = !!warningsOption;
 	            wForgottenReturn = config.warnings;
 
-	            if (util$$1.isObject(warningsOption)) {
+	            if (util$$2.isObject(warningsOption)) {
 	                if ("wForgottenReturn" in warningsOption) {
 	                    wForgottenReturn = !!warningsOption.wForgottenReturn;
 	                }
@@ -9196,7 +9201,7 @@
 	        try {
 	            executor(resolve, reject, function (onCancel) {
 	                if (typeof onCancel !== "function") {
-	                    throw new TypeError("onCancel must be a function, got: " + util$$1.toString(onCancel));
+	                    throw new TypeError("onCancel must be a function, got: " + util$$2.toString(onCancel));
 	                }
 	                promise._attachCancellationCallback(onCancel);
 	            });
@@ -9210,7 +9215,7 @@
 
 	        var previousOnCancel = this._onCancel();
 	        if (previousOnCancel !== undefined) {
-	            if (util$$1.isArray(previousOnCancel)) {
+	            if (util$$2.isArray(previousOnCancel)) {
 	                previousOnCancel.push(onCancel);
 	            } else {
 	                this._setOnCancel([previousOnCancel, onCancel]);
@@ -9282,8 +9287,8 @@
 	                trace.attachExtraTrace(error);
 	            } else if (!error.__stackCleaned__) {
 	                var parsed = parseStackAndMessage(error);
-	                util$$1.notEnumerableProp(error, "stack", parsed.message + "\n" + parsed.stack.join("\n"));
-	                util$$1.notEnumerableProp(error, "__stackCleaned__", true);
+	                util$$2.notEnumerableProp(error, "stack", parsed.message + "\n" + parsed.stack.join("\n"));
+	                util$$2.notEnumerableProp(error, "__stackCleaned__", true);
 	            }
 	        }
 	    }
@@ -9443,7 +9448,7 @@
 	    function formatAndLogError(error, title, isSoft) {
 	        if (typeof console !== "undefined") {
 	            var message;
-	            if (util$$1.isObject(error)) {
+	            if (util$$2.isObject(error)) {
 	                var stack = error.stack;
 	                message = title + formatStack(stack, error);
 	            } else {
@@ -9486,7 +9491,7 @@
 	        if (typeof obj === "function") {
 	            str = "[function " + (obj.name || "anonymous") + "]";
 	        } else {
-	            str = obj && typeof obj.toString === "function" ? obj.toString() : util$$1.toString(obj);
+	            str = obj && typeof obj.toString === "function" ? obj.toString() : util$$2.toString(obj);
 	            var ruselessToString = /\[object [a-zA-Z0-9$_]+\]/;
 	            if (ruselessToString.test(str)) {
 	                try {
@@ -9574,7 +9579,7 @@
 	        captureStackTrace(this, CapturedTrace);
 	        if (length > 32) this.uncycle();
 	    }
-	    util$$1.inherits(CapturedTrace, Error);
+	    util$$2.inherits(CapturedTrace, Error);
 	    Context.CapturedTrace = CapturedTrace;
 
 	    CapturedTrace.prototype.uncycle = function () {
@@ -9638,8 +9643,8 @@
 	        }
 	        removeCommonRoots(stacks);
 	        removeDuplicateOrEmptyJumps(stacks);
-	        util$$1.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
-	        util$$1.notEnumerableProp(error, "__stackCleaned__", true);
+	        util$$2.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
+	        util$$2.notEnumerableProp(error, "__stackCleaned__", true);
 	    };
 
 	    var captureStackTrace = function stackDetection() {
@@ -9715,12 +9720,12 @@
 	        printWarning = function printWarning(message) {
 	            console.warn(message);
 	        };
-	        if (util$$1.isNode && process.stderr.isTTY) {
+	        if (util$$2.isNode && process.stderr.isTTY) {
 	            printWarning = function printWarning(message, isSoft) {
 	                var color = isSoft ? '\x1B[33m' : '\x1B[31m';
 	                console.warn(color + message + '\x1B[0m\n');
 	            };
-	        } else if (!util$$1.isNode && typeof new Error().stack === "string") {
+	        } else if (!util$$2.isNode && typeof new Error().stack === "string") {
 	            printWarning = function printWarning(message, isSoft) {
 	                console.warn("%c" + message, isSoft ? "color: darkorange" : "color: red");
 	            };
@@ -9766,10 +9771,10 @@
 	};
 
 	var catch_filter = function catch_filter(NEXT_FILTER) {
-	    var util$$1 = util;
+	    var util$$2 = util;
 	    var getKeys = es5.keys;
-	    var tryCatch = util$$1.tryCatch;
-	    var errorObj = util$$1.errorObj;
+	    var tryCatch = util$$2.tryCatch;
+	    var errorObj = util$$2.errorObj;
 
 	    function catchFilter(instances, cb, promise) {
 	        return function (e) {
@@ -9788,7 +9793,7 @@
 	                    } else if (matchesPredicate) {
 	                        return tryCatch(cb).call(boundTo, e);
 	                    }
-	                } else if (util$$1.isObject(e)) {
+	                } else if (util$$2.isObject(e)) {
 	                    var keys = getKeys(item);
 	                    for (var j = 0; j < keys.length; ++j) {
 	                        var key = keys[j];
@@ -9807,9 +9812,9 @@
 	};
 
 	var _finally = function _finally(Promise, tryConvertToPromise, NEXT_FILTER) {
-	    var util$$1 = util;
+	    var util$$2 = util;
 	    var CancellationError = Promise.CancellationError;
-	    var errorObj = util$$1.errorObj;
+	    var errorObj = util$$2.errorObj;
 	    var catchFilter = catch_filter(NEXT_FILTER);
 
 	    function PassThroughHandlerContext(promise, type, handler) {
@@ -9914,10 +9919,10 @@
 	                i;
 	            for (i = 0; i < len - 1; ++i) {
 	                var item = arguments[i];
-	                if (util$$1.isObject(item)) {
+	                if (util$$2.isObject(item)) {
 	                    catchInstances[j++] = item;
 	                } else {
-	                    return Promise.reject(new TypeError("tapCatch statement predicate: " + "expecting an object but got " + util$$1.classString(item)));
+	                    return Promise.reject(new TypeError("tapCatch statement predicate: " + "expecting an object but got " + util$$2.classString(item)));
 	                }
 	            }
 	            catchInstances.length = j;
@@ -9980,12 +9985,12 @@
 	var nodeback = nodebackForPromise;
 
 	var method = function method(Promise, INTERNAL, tryConvertToPromise, apiRejection, debug) {
-	    var util$$1 = util;
-	    var tryCatch = util$$1.tryCatch;
+	    var util$$2 = util;
+	    var tryCatch = util$$2.tryCatch;
 
 	    Promise.method = function (fn) {
 	        if (typeof fn !== "function") {
-	            throw new Promise.TypeError("expecting a function but got " + util$$1.classString(fn));
+	            throw new Promise.TypeError("expecting a function but got " + util$$2.classString(fn));
 	        }
 	        return function () {
 	            var ret = new Promise(INTERNAL);
@@ -10001,7 +10006,7 @@
 
 	    Promise.attempt = Promise["try"] = function (fn) {
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	        }
 	        var ret = new Promise(INTERNAL);
 	        ret._captureStackTrace();
@@ -10011,7 +10016,7 @@
 	            debug.deprecated("calling Promise.try with more than 1 argument");
 	            var arg = arguments[1];
 	            var ctx = arguments[2];
-	            value = util$$1.isArray(arg) ? tryCatch(fn).apply(ctx, arg) : tryCatch(fn).call(ctx, arg);
+	            value = util$$2.isArray(arg) ? tryCatch(fn).apply(ctx, arg) : tryCatch(fn).call(ctx, arg);
 	        } else {
 	            value = tryCatch(fn)();
 	        }
@@ -10022,7 +10027,7 @@
 	    };
 
 	    Promise.prototype._resolveFromSyncValue = function (value) {
-	        if (value === util$$1.errorObj) {
+	        if (value === util$$2.errorObj) {
 	            this._rejectCallback(value.e, false);
 	        } else {
 	            this._resolveCallback(value, true);
@@ -10097,9 +10102,9 @@
 	};
 
 	var cancel = function cancel(Promise, PromiseArray, apiRejection, debug) {
-	    var util$$1 = util;
-	    var tryCatch = util$$1.tryCatch;
-	    var errorObj = util$$1.errorObj;
+	    var util$$2 = util;
+	    var tryCatch = util$$2.tryCatch;
+	    var errorObj = util$$2.errorObj;
 	    var async = Promise._async;
 
 	    Promise.prototype["break"] = Promise.prototype.cancel = function () {
@@ -10186,7 +10191,7 @@
 	    };
 
 	    Promise.prototype._doInvokeOnCancel = function (onCancelCallback, internalOnly) {
-	        if (util$$1.isArray(onCancelCallback)) {
+	        if (util$$2.isArray(onCancelCallback)) {
 	            for (var i = 0; i < onCancelCallback.length; ++i) {
 	                this._doInvokeOnCancel(onCancelCallback[i], internalOnly);
 	            }
@@ -10368,10 +10373,10 @@
 	};
 
 	var join = function join(Promise, PromiseArray, tryConvertToPromise, INTERNAL, async, getDomain) {
-	    var util$$1 = util;
-	    var canEvaluate = util$$1.canEvaluate;
-	    var tryCatch = util$$1.tryCatch;
-	    var errorObj = util$$1.errorObj;
+	    var util$$2 = util;
+	    var canEvaluate = util$$2.canEvaluate;
+	    var tryCatch = util$$2.tryCatch;
+	    var errorObj = util$$2.errorObj;
 	    var reject;
 
 	    {
@@ -10508,7 +10513,7 @@
 	                        if (holder.asyncNeeded) {
 	                            var domain = getDomain();
 	                            if (domain !== null) {
-	                                holder.fn = util$$1.domainBind(domain, holder.fn);
+	                                holder.fn = util$$2.domainBind(domain, holder.fn);
 	                            }
 	                        }
 	                        ret._setAsyncGuaranteed();
@@ -10529,23 +10534,23 @@
 
 	var map = function map(Promise, PromiseArray, apiRejection, tryConvertToPromise, INTERNAL, debug) {
 	    var getDomain = Promise._getDomain;
-	    var util$$1 = util;
-	    var tryCatch = util$$1.tryCatch;
-	    var errorObj = util$$1.errorObj;
+	    var util$$2 = util;
+	    var tryCatch = util$$2.tryCatch;
+	    var errorObj = util$$2.errorObj;
 	    var async = Promise._async;
 
 	    function MappingPromiseArray(promises, fn, limit, _filter) {
 	        this.constructor$(promises);
 	        this._promise._captureStackTrace();
 	        var domain = getDomain();
-	        this._callback = domain === null ? fn : util$$1.domainBind(domain, fn);
+	        this._callback = domain === null ? fn : util$$2.domainBind(domain, fn);
 	        this._preservedValues = _filter === INTERNAL ? new Array(this.length()) : null;
 	        this._limit = limit;
 	        this._inFlight = 0;
 	        this._queue = [];
 	        async.invoke(this._asyncInit, this, undefined);
 	    }
-	    util$$1.inherits(MappingPromiseArray, PromiseArray);
+	    util$$2.inherits(MappingPromiseArray, PromiseArray);
 
 	    MappingPromiseArray.prototype._asyncInit = function () {
 	        this._init$(undefined, -2);
@@ -10649,18 +10654,18 @@
 
 	    function map(promises, fn, options, _filter) {
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	        }
 
 	        var limit = 0;
 	        if (options !== undefined) {
 	            if ((typeof options === 'undefined' ? 'undefined' : _typeof(options)) === "object" && options !== null) {
 	                if (typeof options.concurrency !== "number") {
-	                    return Promise.reject(new TypeError("'concurrency' must be a number but it is " + util$$1.classString(options.concurrency)));
+	                    return Promise.reject(new TypeError("'concurrency' must be a number but it is " + util$$2.classString(options.concurrency)));
 	                }
 	                limit = options.concurrency;
 	            } else {
-	                return Promise.reject(new TypeError("options argument must be an object but it is " + util$$1.classString(options)));
+	                return Promise.reject(new TypeError("options argument must be an object but it is " + util$$2.classString(options)));
 	            }
 	        }
 	        limit = typeof limit === "number" && isFinite(limit) && limit >= 1 ? limit : 0;
@@ -10684,9 +10689,9 @@
 	}
 
 	var call_get = function call_get(Promise) {
-	    var util$$1 = util;
-	    var canEvaluate = util$$1.canEvaluate;
-	    var isIdentifier = util$$1.isIdentifier;
+	    var util$$2 = util;
+	    var canEvaluate = util$$2.canEvaluate;
+	    var isIdentifier = util$$2.isIdentifier;
 
 	    var getMethodCaller;
 	    var getGetter;
@@ -10748,7 +10753,7 @@
 	        var fn;
 	        if (obj != null) fn = obj[methodName];
 	        if (typeof fn !== "function") {
-	            var message = "Object " + util$$1.classString(obj) + " has no method '" + util$$1.toString(methodName) + "'";
+	            var message = "Object " + util$$2.classString(obj) + " has no method '" + util$$2.toString(methodName) + "'";
 	            throw new Promise.TypeError(message);
 	        }
 	        return fn;
@@ -10801,11 +10806,11 @@
 	};
 
 	var using = function using(Promise, apiRejection, tryConvertToPromise, createContext, INTERNAL, debug) {
-	    var util$$1 = util;
+	    var util$$2 = util;
 	    var TypeError = errors.TypeError;
 	    var inherits = util.inherits;
-	    var errorObj = util$$1.errorObj;
-	    var tryCatch = util$$1.tryCatch;
+	    var errorObj = util$$2.errorObj;
+	    var tryCatch = util$$2.tryCatch;
 	    var NULL = {};
 
 	    function thrower(e) {
@@ -10919,7 +10924,7 @@
 	        if (len < 2) return apiRejection("you must pass at least 2 arguments to Promise.using");
 	        var fn = arguments[len - 1];
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	        }
 	        var input;
 	        var spreadArgs = true;
@@ -11012,7 +11017,7 @@
 	};
 
 	var timers$1 = function timers(Promise, INTERNAL, debug) {
-	    var util$$1 = util;
+	    var util$$2 = util;
 	    var TimeoutError = Promise.TimeoutError;
 
 	    function HandleWrapper(handle) {
@@ -11063,7 +11068,7 @@
 	        } else {
 	            err = new TimeoutError(message);
 	        }
-	        util$$1.markAsOriginatingFromRejection(err);
+	        util$$2.markAsOriginatingFromRejection(err);
 	        promise._attachExtraTrace(err);
 	        promise._reject(err);
 
@@ -11105,11 +11110,11 @@
 	};
 
 	var generators = function generators(Promise, apiRejection, INTERNAL, tryConvertToPromise, Proxyable, debug) {
-	    var errors$$1 = errors;
-	    var TypeError = errors$$1.TypeError;
-	    var util$$1 = util;
-	    var errorObj = util$$1.errorObj;
-	    var tryCatch = util$$1.tryCatch;
+	    var errors$$2 = errors;
+	    var TypeError = errors$$2.TypeError;
+	    var util$$2 = util;
+	    var errorObj = util$$2.errorObj;
+	    var tryCatch = util$$2.tryCatch;
 	    var yieldHandlers = [];
 
 	    function promiseFromYieldHandler(value, yieldHandlers, traceParent) {
@@ -11150,7 +11155,7 @@
 	        this._yieldedPromise = null;
 	        this._cancellationPhase = false;
 	    }
-	    util$$1.inherits(PromiseSpawn, Proxyable);
+	    util$$2.inherits(PromiseSpawn, Proxyable);
 
 	    PromiseSpawn.prototype._isResolved = function () {
 	        return this._promise === null;
@@ -11284,7 +11289,7 @@
 
 	    Promise.coroutine.addYieldHandler = function (fn) {
 	        if (typeof fn !== "function") {
-	            throw new TypeError("expecting a function but got " + util$$1.classString(fn));
+	            throw new TypeError("expecting a function but got " + util$$2.classString(fn));
 	        }
 	        yieldHandlers.push(fn);
 	    };
@@ -11302,14 +11307,14 @@
 	};
 
 	var nodeify = function nodeify(Promise) {
-	    var util$$1 = util;
+	    var util$$2 = util;
 	    var async = Promise._async;
-	    var tryCatch = util$$1.tryCatch;
-	    var errorObj = util$$1.errorObj;
+	    var tryCatch = util$$2.tryCatch;
+	    var errorObj = util$$2.errorObj;
 
 	    function spreadAdapter(val, nodeback) {
 	        var promise = this;
-	        if (!util$$1.isArray(val)) return successAdapter.call(promise, val, nodeback);
+	        if (!util$$2.isArray(val)) return successAdapter.call(promise, val, nodeback);
 	        var ret = tryCatch(nodeback).apply(promise._boundValue(), [null].concat(val));
 	        if (ret === errorObj) {
 	            async.throwLater(ret.e);
@@ -11351,11 +11356,11 @@
 
 	var promisify = function promisify(Promise, INTERNAL) {
 	    var THIS = {};
-	    var util$$1 = util;
+	    var util$$2 = util;
 	    var nodebackForPromise = nodeback;
-	    var withAppended = util$$1.withAppended;
-	    var maybeWrapAsError = util$$1.maybeWrapAsError;
-	    var canEvaluate = util$$1.canEvaluate;
+	    var withAppended = util$$2.withAppended;
+	    var maybeWrapAsError = util$$2.maybeWrapAsError;
+	    var canEvaluate = util$$2.canEvaluate;
 	    var TypeError = errors.TypeError;
 	    var defaultSuffix = "Async";
 	    var defaultPromisified = { __isPromisified__: true };
@@ -11363,7 +11368,7 @@
 	    var noCopyPropsPattern = new RegExp("^(?:" + noCopyProps.join("|") + ")$");
 
 	    var defaultFilter = function defaultFilter(name) {
-	        return util$$1.isIdentifier(name) && name.charAt(0) !== "_" && name !== "constructor";
+	        return util$$2.isIdentifier(name) && name.charAt(0) !== "_" && name !== "constructor";
 	    };
 
 	    function propsFilter(key) {
@@ -11379,7 +11384,7 @@
 	    }
 
 	    function hasPromisified(obj, key, suffix) {
-	        var val = util$$1.getDataPropertyOrDefault(obj, key + suffix, defaultPromisified);
+	        var val = util$$2.getDataPropertyOrDefault(obj, key + suffix, defaultPromisified);
 	        return val ? isPromisified(val) : false;
 	    }
 	    function checkValid(ret, suffix, suffixRegexp) {
@@ -11397,7 +11402,7 @@
 	    }
 
 	    function promisifiableMethods(obj, suffix, suffixRegexp, filter) {
-	        var keys = util$$1.inheritedDataKeys(obj);
+	        var keys = util$$2.inheritedDataKeys(obj);
 	        var ret = [];
 	        for (var i = 0; i < keys.length; ++i) {
 	            var key = keys[i];
@@ -11430,11 +11435,11 @@
 	        };
 
 	        var argumentSequence = function argumentSequence(argumentCount) {
-	            return util$$1.filledRange(argumentCount, "_arg", "");
+	            return util$$2.filledRange(argumentCount, "_arg", "");
 	        };
 
 	        var parameterDeclaration = function parameterDeclaration(parameterCount) {
-	            return util$$1.filledRange(Math.max(parameterCount, 3), "_arg", "");
+	            return util$$2.filledRange(Math.max(parameterCount, 3), "_arg", "");
 	        };
 
 	        var parameterCount = function parameterCount(fn) {
@@ -11504,7 +11509,7 @@
         return ret;                                                          \n\
     ".replace("[CodeForSwitchCase]", generateArgumentSwitchCase()).replace("[GetFunctionCode]", getFunctionCode);
 	            body = body.replace("Parameters", parameterDeclaration(newParameterCount));
-	            return new Function("Promise", "fn", "receiver", "withAppended", "maybeWrapAsError", "nodebackForPromise", "tryCatch", "errorObj", "notEnumerableProp", "INTERNAL", body)(Promise, fn, receiver, withAppended, maybeWrapAsError, nodebackForPromise, util$$1.tryCatch, util$$1.errorObj, util$$1.notEnumerableProp, INTERNAL);
+	            return new Function("Promise", "fn", "receiver", "withAppended", "maybeWrapAsError", "nodebackForPromise", "tryCatch", "errorObj", "notEnumerableProp", "INTERNAL", body)(Promise, fn, receiver, withAppended, maybeWrapAsError, nodebackForPromise, util$$2.tryCatch, util$$2.errorObj, util$$2.notEnumerableProp, INTERNAL);
 	        };
 	    }
 
@@ -11531,7 +11536,7 @@
 	            if (!promise._isFateSealed()) promise._setAsyncGuaranteed();
 	            return promise;
 	        }
-	        util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
+	        util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
 	        return promisified;
 	    }
 
@@ -11551,11 +11556,11 @@
 	                var promisified = promisifier(fn, function () {
 	                    return makeNodePromisified(key, THIS, key, fn, suffix, multiArgs);
 	                });
-	                util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
+	                util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
 	                obj[promisifiedKey] = promisified;
 	            }
 	        }
-	        util$$1.toFastProperties(obj);
+	        util$$2.toFastProperties(obj);
 	        return obj;
 	    }
 
@@ -11565,7 +11570,7 @@
 
 	    Promise.promisify = function (fn, options) {
 	        if (typeof fn !== "function") {
-	            throw new TypeError("expecting a function but got " + util$$1.classString(fn));
+	            throw new TypeError("expecting a function but got " + util$$2.classString(fn));
 	        }
 	        if (isPromisified(fn)) {
 	            return fn;
@@ -11574,7 +11579,7 @@
 	        var receiver = options.context === undefined ? THIS : options.context;
 	        var multiArgs = !!options.multiArgs;
 	        var ret = promisify(fn, receiver, multiArgs);
-	        util$$1.copyDescriptors(fn, ret, propsFilter);
+	        util$$2.copyDescriptors(fn, ret, propsFilter);
 	        return ret;
 	    };
 
@@ -11591,14 +11596,14 @@
 	        var promisifier = options.promisifier;
 	        if (typeof promisifier !== "function") promisifier = makeNodePromisified;
 
-	        if (!util$$1.isIdentifier(suffix)) {
+	        if (!util$$2.isIdentifier(suffix)) {
 	            throw new RangeError('suffix must be a valid identifier\n\n    See http://goo.gl/MqrFmX\n');
 	        }
 
-	        var keys = util$$1.inheritedDataKeys(target);
+	        var keys = util$$2.inheritedDataKeys(target);
 	        for (var i = 0; i < keys.length; ++i) {
 	            var value = target[keys[i]];
-	            if (keys[i] !== "constructor" && util$$1.isClass(value)) {
+	            if (keys[i] !== "constructor" && util$$2.isClass(value)) {
 	                promisifyAll(value.prototype, suffix, filter, promisifier, multiArgs);
 	                promisifyAll(value, suffix, filter, promisifier, multiArgs);
 	            }
@@ -11609,9 +11614,9 @@
 	};
 
 	var props = function props(Promise, PromiseArray, tryConvertToPromise, apiRejection) {
-	    var util$$1 = util;
-	    var isObject = util$$1.isObject;
-	    var es5$$1 = es5;
+	    var util$$2 = util;
+	    var isObject = util$$2.isObject;
+	    var es5$$2 = es5;
 	    var Es6Map;
 	    if (typeof Map === "function") Es6Map = Map;
 
@@ -11652,7 +11657,7 @@
 	            entries = mapToEntries(obj);
 	            isMap = true;
 	        } else {
-	            var keys = es5$$1.keys(obj);
+	            var keys = es5$$2.keys(obj);
 	            var len = keys.length;
 	            entries = new Array(len * 2);
 	            for (var i = 0; i < len; ++i) {
@@ -11665,7 +11670,7 @@
 	        this._isMap = isMap;
 	        this._init$(undefined, isMap ? -6 : -3);
 	    }
-	    util$$1.inherits(PropertiesPromiseArray, PromiseArray);
+	    util$$2.inherits(PropertiesPromiseArray, PromiseArray);
 
 	    PropertiesPromiseArray.prototype._init = function () {};
 
@@ -11725,7 +11730,7 @@
 	};
 
 	var race = function race(Promise, INTERNAL, tryConvertToPromise, apiRejection) {
-	    var util$$1 = util;
+	    var util$$2 = util;
 
 	    var raceLater = function raceLater(promise) {
 	        return promise.then(function (array) {
@@ -11739,8 +11744,8 @@
 	        if (maybePromise instanceof Promise) {
 	            return raceLater(maybePromise);
 	        } else {
-	            promises = util$$1.asArray(promises);
-	            if (promises === null) return apiRejection("expecting an array or an iterable object but got " + util$$1.classString(promises));
+	            promises = util$$2.asArray(promises);
+	            if (promises === null) return apiRejection("expecting an array or an iterable object but got " + util$$2.classString(promises));
 	        }
 
 	        var ret = new Promise(INTERNAL);
@@ -11772,13 +11777,13 @@
 
 	var reduce = function reduce(Promise, PromiseArray, apiRejection, tryConvertToPromise, INTERNAL, debug) {
 	    var getDomain = Promise._getDomain;
-	    var util$$1 = util;
-	    var tryCatch = util$$1.tryCatch;
+	    var util$$2 = util;
+	    var tryCatch = util$$2.tryCatch;
 
 	    function ReductionPromiseArray(promises, fn, initialValue, _each) {
 	        this.constructor$(promises);
 	        var domain = getDomain();
-	        this._fn = domain === null ? fn : util$$1.domainBind(domain, fn);
+	        this._fn = domain === null ? fn : util$$2.domainBind(domain, fn);
 	        if (initialValue !== undefined) {
 	            initialValue = Promise.resolve(initialValue);
 	            initialValue._attachCancellationCallback(this);
@@ -11795,7 +11800,7 @@
 	        this._promise._captureStackTrace();
 	        this._init$(undefined, -5);
 	    }
-	    util$$1.inherits(ReductionPromiseArray, PromiseArray);
+	    util$$2.inherits(ReductionPromiseArray, PromiseArray);
 
 	    ReductionPromiseArray.prototype._gotAccum = function (accum) {
 	        if (this._eachValues !== undefined && this._eachValues !== null && accum !== INTERNAL) {
@@ -11889,7 +11894,7 @@
 
 	    function reduce(promises, fn, initialValue, _each) {
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
 	        }
 	        var array = new ReductionPromiseArray(promises, fn, initialValue, _each);
 	        return array.promise();
@@ -11929,12 +11934,12 @@
 
 	var settle = function settle(Promise, PromiseArray, debug) {
 	    var PromiseInspection = Promise.PromiseInspection;
-	    var util$$1 = util;
+	    var util$$2 = util;
 
 	    function SettledPromiseArray(values) {
 	        this.constructor$(values);
 	    }
-	    util$$1.inherits(SettledPromiseArray, PromiseArray);
+	    util$$2.inherits(SettledPromiseArray, PromiseArray);
 
 	    SettledPromiseArray.prototype._promiseResolved = function (index, inspection) {
 	        this._values[index] = inspection;
@@ -11970,10 +11975,10 @@
 	};
 
 	var some = function some(Promise, PromiseArray, apiRejection) {
-	    var util$$1 = util;
+	    var util$$2 = util;
 	    var RangeError = errors.RangeError;
 	    var AggregateError = errors.AggregateError;
-	    var isArray = util$$1.isArray;
+	    var isArray = util$$2.isArray;
 	    var CANCELLATION = {};
 
 	    function SomePromiseArray(values) {
@@ -11982,7 +11987,7 @@
 	        this._unwrap = false;
 	        this._initialized = false;
 	    }
-	    util$$1.inherits(SomePromiseArray, PromiseArray);
+	    util$$2.inherits(SomePromiseArray, PromiseArray);
 
 	    SomePromiseArray.prototype._init = function () {
 	        if (!this._initialized) {
@@ -18280,9 +18285,9 @@
 	  }
 	}
 
-	var fragmentShader = { "text": "uniform vec3 u_color;\r\nuniform float u_metallic;\r\nuniform float u_roughness;\r\nuniform vec3 u_light0Pos;\r\nuniform vec3 u_light0Color;\r\nuniform vec3 u_light1Pos;\r\nuniform vec3 u_light1Color;\r\nuniform mat4 u_modelMatrix;\r\nuniform sampler2D u_reflectionCube;\r\nuniform sampler2D u_reflectionCubeBlur;", "base64": "data:text/plain;base64,dW5pZm9ybSB2ZWMzIHVfY29sb3I7DQp1bmlmb3JtIGZsb2F0IHVfbWV0YWxsaWM7DQp1bmlmb3JtIGZsb2F0IHVfcm91Z2huZXNzOw0KdW5pZm9ybSB2ZWMzIHVfbGlnaHQwUG9zOw0KdW5pZm9ybSB2ZWMzIHVfbGlnaHQwQ29sb3I7DQp1bmlmb3JtIHZlYzMgdV9saWdodDFQb3M7DQp1bmlmb3JtIHZlYzMgdV9saWdodDFDb2xvcjsNCnVuaWZvcm0gbWF0NCB1X21vZGVsTWF0cml4Ow0KdW5pZm9ybSBzYW1wbGVyMkQgdV9yZWZsZWN0aW9uQ3ViZTsNCnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmVCbHVyOw==" };
+	var fragmentShader = { "text": "uniform vec3 u_color;\nuniform float u_metallic;\nuniform float u_roughness;\nuniform vec3 u_light0Pos;\nuniform vec3 u_light0Color;\nuniform vec3 u_light1Pos;\nuniform vec3 u_light1Color;\nuniform mat4 u_modelMatrix;\nuniform sampler2D u_reflectionCube;\nuniform sampler2D u_reflectionCubeBlur;", "base64": "data:text/plain;base64,dW5pZm9ybSB2ZWMzIHVfY29sb3I7CnVuaWZvcm0gZmxvYXQgdV9tZXRhbGxpYzsKdW5pZm9ybSBmbG9hdCB1X3JvdWdobmVzczsKdW5pZm9ybSB2ZWMzIHVfbGlnaHQwUG9zOwp1bmlmb3JtIHZlYzMgdV9saWdodDBDb2xvcjsKdW5pZm9ybSB2ZWMzIHVfbGlnaHQxUG9zOwp1bmlmb3JtIHZlYzMgdV9saWdodDFDb2xvcjsKdW5pZm9ybSBtYXQ0IHVfbW9kZWxNYXRyaXg7CnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmU7CnVuaWZvcm0gc2FtcGxlcjJEIHVfcmVmbGVjdGlvbkN1YmVCbHVyOw==" };
 
-	var vertexShader = { "text": "varying vec3 v_normal;\r\nvarying vec3 v_position;\r\nvarying vec3 v_binormal;\r\nvarying vec3 v_tangent;\r\n", "base64": "data:text/plain;base64,dmFyeWluZyB2ZWMzIHZfbm9ybWFsOw0KdmFyeWluZyB2ZWMzIHZfcG9zaXRpb247DQp2YXJ5aW5nIHZlYzMgdl9iaW5vcm1hbDsNCnZhcnlpbmcgdmVjMyB2X3RhbmdlbnQ7DQo=" };
+	var vertexShader = { "text": "varying vec3 v_normal;\nvarying vec3 v_position;\nvarying vec3 v_binormal;\nvarying vec3 v_tangent;\n", "base64": "data:text/plain;base64,dmFyeWluZyB2ZWMzIHZfbm9ybWFsOwp2YXJ5aW5nIHZlYzMgdl9wb3NpdGlvbjsKdmFyeWluZyB2ZWMzIHZfYmlub3JtYWw7CnZhcnlpbmcgdmVjMyB2X3RhbmdlbnQ7Cg==" };
 
 	// TODO: Replace placeholder shaders by original ones (requires fixing projection matrix)
 	// configs
@@ -25664,7 +25669,7 @@
 	    }
 	  },
 
-	  generateMeshes3d: function generateMeshes3d$$1() {}
+	  generateMeshes3d: function generateMeshes3d() {}
 	};
 
 	var getFloorData3d = function (attributes) {
@@ -26805,12 +26810,12 @@
 
 	  // API
 	  options = options || {};
-	  var url = options.url;
+	  var url$$1 = options.url;
 
 	  var parsedUrl, rootDir, origin;
 
-	  if (url) {
-	    parsedUrl = Url.parse(url);
+	  if (url$$1) {
+	    parsedUrl = Url.parse(url$$1);
 	    rootDir = path.parse(parsedUrl.path || parsedUrl.pathname || '').dir;
 	    origin = parsedUrl.protocol + '//' + parsedUrl.host;
 	  }
@@ -26865,7 +26870,7 @@
 	  traverseData3d(structure.data3d, function (data3d) {
 
 	    // map typed arrays to payload area in file buffer
-	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url);
+	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url$$1);
 
 	    //  convert relative material keys into absolute one
 	    if (origin && data3d.materials) convertTextureKeys(data3d, origin, rootDir);
@@ -26910,7 +26915,7 @@
 	  }
 	}
 
-	function mapArraysToBuffer(data3d, buffer, payloadByteOffset, url) {
+	function mapArraysToBuffer(data3d, buffer, payloadByteOffset, url$$1) {
 
 	  var mesh,
 	      i,
@@ -26943,7 +26948,7 @@
 	    }
 
 	    // add cache key
-	    if (url) mesh.cacheKey = url + ':' + meshKeys[i];
+	    if (url$$1) mesh.cacheKey = url$$1 + ':' + meshKeys[i];
 	  }
 	}
 
@@ -34702,7 +34707,7 @@
 
 	var fragmentShader$1 = { "text": "uniform vec3 color;\nuniform vec3 emissive;\nuniform vec3 specular;\nuniform float shininess;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#ifdef USE_LIGHTMAP\n\tuniform sampler2D lightMap;\n\tuniform float lightMapIntensity;\n\tuniform float lightMapExposure;\n\tuniform float lightMapFalloff;\n#endif\n#include <normalmap_pars_fragment>\n#include <specularmap_pars_fragment>\n#include <bsdfs>\n#include <lights_pars>\n#include <lights_phong_pars_fragment>\n#include <shadowmap_pars_fragment>\nvoid main() {\n    vec4 diffuseColor = vec4( color, opacity );\n    ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n    vec3 totalEmissiveRadiance = emissive;\n    #include <map_fragment>\n    #include <alphamap_fragment>\n    #include <alphatest_fragment>\n    #include <specularmap_fragment>\n    #ifdef FLAT_SHADED\n      vec3 fdx = vec3( dFdx( vViewPosition.x ), dFdx( vViewPosition.y ), dFdx( vViewPosition.z ) );\n      vec3 fdy = vec3( dFdy( vViewPosition.x ), dFdy( vViewPosition.y ), dFdy( vViewPosition.z ) );\n      vec3 normal = normalize( cross( fdx, fdy ) );\n    #else\n      vec3 normal = normalize( vNormal );\n      #ifdef DOUBLE_SIDED\n        normal = normal * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n      #endif\n    #endif\n    #ifdef USE_NORMALMAP\n      normal = perturbNormal2Arb( -vViewPosition, normal );\n    #elif defined( USE_BUMPMAP )\n      normal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );\n    #endif\n    #include <lights_phong_fragment>\n    GeometricContext geometry;\n    geometry.position = - vViewPosition;\n    geometry.normal = normal;\n    geometry.viewDir = normalize( vViewPosition );\n    IncidentLight directLight;\n    #if ( NUM_POINT_LIGHTS > 0 ) && defined( RE_Direct )\n        PointLight pointLight;\n        for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {\n            pointLight = pointLights[ i ];\n            getPointDirectLightIrradiance( pointLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( pointLight.shadow, directLight.visible ) ) ? getPointShadow( pointShadowMap[ i ], pointLight.shadowMapSize, pointLight.shadowBias, pointLight.shadowRadius, vPointShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_SPOT_LIGHTS > 0 ) && defined( RE_Direct )\n        SpotLight spotLight;\n        for ( int i = 0; i < NUM_SPOT_LIGHTS; i ++ ) {\n            spotLight = spotLights[ i ];\n            getSpotDirectLightIrradiance( spotLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( spotLight.shadow, directLight.visible ) ) ? getShadow( spotShadowMap[ i ], spotLight.shadowMapSize, spotLight.shadowBias, spotLight.shadowRadius, vSpotShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_DIR_LIGHTS > 0 ) && defined( RE_Direct )\n        DirectionalLight directionalLight;\n        for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {\n            directionalLight = directionalLights[ i ];\n            getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );\n            #ifdef USE_SHADOWMAP\n            directLight.color *= all( bvec2( directionalLight.shadow, directLight.visible ) ) ? getShadow( directionalShadowMap[ i ], directionalLight.shadowMapSize, directionalLight.shadowBias, directionalLight.shadowRadius, vDirectionalShadowCoord[ i ] ) : 1.0;\n            #endif\n            RE_Direct( directLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if ( NUM_RECT_AREA_LIGHTS > 0 ) && defined( RE_Direct_RectArea )\n        RectAreaLight rectAreaLight;\n        for ( int i = 0; i < NUM_RECT_AREA_LIGHTS; i ++ ) {\n            rectAreaLight = rectAreaLights[ i ];\n            RE_Direct_RectArea( rectAreaLight, geometry, material, reflectedLight );\n        }\n    #endif\n    #if defined( RE_IndirectDiffuse )\n        vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );\n        #ifdef USE_LIGHTMAP\n            vec3 unit = vec3(1.0);\n            vec3 light = 2.0 * (texture2D( lightMap, vUv2 ).xyz - lightMapExposure * unit);\n            vec3 modifier = -lightMapFalloff * light * light + unit;\n            vec3 lightMapIrradiance = light * modifier * lightMapIntensity;\n            #ifndef PHYSICALLY_CORRECT_LIGHTS\n                lightMapIrradiance *= PI;\n            #endif\n            irradiance += lightMapIrradiance;\n        #endif\n        #if ( NUM_HEMI_LIGHTS > 0 )\n            for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {\n                irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );\n            }\n        #endif\n        RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );\n    #endif\n    vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n    gl_FragColor = vec4( outgoingLight, diffuseColor.a );\n}", "base64": "data:text/plain;base64,dW5pZm9ybSB2ZWMzIGNvbG9yOwp1bmlmb3JtIHZlYzMgZW1pc3NpdmU7CnVuaWZvcm0gdmVjMyBzcGVjdWxhcjsKdW5pZm9ybSBmbG9hdCBzaGluaW5lc3M7CnVuaWZvcm0gZmxvYXQgb3BhY2l0eTsKI2luY2x1ZGUgPGNvbW1vbj4KI2luY2x1ZGUgPHBhY2tpbmc+CiNpbmNsdWRlIDx1dl9wYXJzX2ZyYWdtZW50PgojaW5jbHVkZSA8dXYyX3BhcnNfZnJhZ21lbnQ+CiNpbmNsdWRlIDxtYXBfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPGFscGhhbWFwX3BhcnNfZnJhZ21lbnQ+CiNpZmRlZiBVU0VfTElHSFRNQVAKCXVuaWZvcm0gc2FtcGxlcjJEIGxpZ2h0TWFwOwoJdW5pZm9ybSBmbG9hdCBsaWdodE1hcEludGVuc2l0eTsKCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBFeHBvc3VyZTsKCXVuaWZvcm0gZmxvYXQgbGlnaHRNYXBGYWxsb2ZmOwojZW5kaWYKI2luY2x1ZGUgPG5vcm1hbG1hcF9wYXJzX2ZyYWdtZW50PgojaW5jbHVkZSA8c3BlY3VsYXJtYXBfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPGJzZGZzPgojaW5jbHVkZSA8bGlnaHRzX3BhcnM+CiNpbmNsdWRlIDxsaWdodHNfcGhvbmdfcGFyc19mcmFnbWVudD4KI2luY2x1ZGUgPHNoYWRvd21hcF9wYXJzX2ZyYWdtZW50Pgp2b2lkIG1haW4oKSB7CiAgICB2ZWM0IGRpZmZ1c2VDb2xvciA9IHZlYzQoIGNvbG9yLCBvcGFjaXR5ICk7CiAgICBSZWZsZWN0ZWRMaWdodCByZWZsZWN0ZWRMaWdodCA9IFJlZmxlY3RlZExpZ2h0KCB2ZWMzKCAwLjAgKSwgdmVjMyggMC4wICksIHZlYzMoIDAuMCApLCB2ZWMzKCAwLjAgKSApOwogICAgdmVjMyB0b3RhbEVtaXNzaXZlUmFkaWFuY2UgPSBlbWlzc2l2ZTsKICAgICNpbmNsdWRlIDxtYXBfZnJhZ21lbnQ+CiAgICAjaW5jbHVkZSA8YWxwaGFtYXBfZnJhZ21lbnQ+CiAgICAjaW5jbHVkZSA8YWxwaGF0ZXN0X2ZyYWdtZW50PgogICAgI2luY2x1ZGUgPHNwZWN1bGFybWFwX2ZyYWdtZW50PgogICAgI2lmZGVmIEZMQVRfU0hBREVECiAgICAgIHZlYzMgZmR4ID0gdmVjMyggZEZkeCggdlZpZXdQb3NpdGlvbi54ICksIGRGZHgoIHZWaWV3UG9zaXRpb24ueSApLCBkRmR4KCB2Vmlld1Bvc2l0aW9uLnogKSApOwogICAgICB2ZWMzIGZkeSA9IHZlYzMoIGRGZHkoIHZWaWV3UG9zaXRpb24ueCApLCBkRmR5KCB2Vmlld1Bvc2l0aW9uLnkgKSwgZEZkeSggdlZpZXdQb3NpdGlvbi56ICkgKTsKICAgICAgdmVjMyBub3JtYWwgPSBub3JtYWxpemUoIGNyb3NzKCBmZHgsIGZkeSApICk7CiAgICAjZWxzZQogICAgICB2ZWMzIG5vcm1hbCA9IG5vcm1hbGl6ZSggdk5vcm1hbCApOwogICAgICAjaWZkZWYgRE9VQkxFX1NJREVECiAgICAgICAgbm9ybWFsID0gbm9ybWFsICogKCBmbG9hdCggZ2xfRnJvbnRGYWNpbmcgKSAqIDIuMCAtIDEuMCApOwogICAgICAjZW5kaWYKICAgICNlbmRpZgogICAgI2lmZGVmIFVTRV9OT1JNQUxNQVAKICAgICAgbm9ybWFsID0gcGVydHVyYk5vcm1hbDJBcmIoIC12Vmlld1Bvc2l0aW9uLCBub3JtYWwgKTsKICAgICNlbGlmIGRlZmluZWQoIFVTRV9CVU1QTUFQICkKICAgICAgbm9ybWFsID0gcGVydHVyYk5vcm1hbEFyYiggLXZWaWV3UG9zaXRpb24sIG5vcm1hbCwgZEhkeHlfZndkKCkgKTsKICAgICNlbmRpZgogICAgI2luY2x1ZGUgPGxpZ2h0c19waG9uZ19mcmFnbWVudD4KICAgIEdlb21ldHJpY0NvbnRleHQgZ2VvbWV0cnk7CiAgICBnZW9tZXRyeS5wb3NpdGlvbiA9IC0gdlZpZXdQb3NpdGlvbjsKICAgIGdlb21ldHJ5Lm5vcm1hbCA9IG5vcm1hbDsKICAgIGdlb21ldHJ5LnZpZXdEaXIgPSBub3JtYWxpemUoIHZWaWV3UG9zaXRpb24gKTsKICAgIEluY2lkZW50TGlnaHQgZGlyZWN0TGlnaHQ7CiAgICAjaWYgKCBOVU1fUE9JTlRfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdCApCiAgICAgICAgUG9pbnRMaWdodCBwb2ludExpZ2h0OwogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9QT0lOVF9MSUdIVFM7IGkgKysgKSB7CiAgICAgICAgICAgIHBvaW50TGlnaHQgPSBwb2ludExpZ2h0c1sgaSBdOwogICAgICAgICAgICBnZXRQb2ludERpcmVjdExpZ2h0SXJyYWRpYW5jZSggcG9pbnRMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7CiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQCiAgICAgICAgICAgIGRpcmVjdExpZ2h0LmNvbG9yICo9IGFsbCggYnZlYzIoIHBvaW50TGlnaHQuc2hhZG93LCBkaXJlY3RMaWdodC52aXNpYmxlICkgKSA/IGdldFBvaW50U2hhZG93KCBwb2ludFNoYWRvd01hcFsgaSBdLCBwb2ludExpZ2h0LnNoYWRvd01hcFNpemUsIHBvaW50TGlnaHQuc2hhZG93QmlhcywgcG9pbnRMaWdodC5zaGFkb3dSYWRpdXMsIHZQb2ludFNoYWRvd0Nvb3JkWyBpIF0gKSA6IDEuMDsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIFJFX0RpcmVjdCggZGlyZWN0TGlnaHQsIGdlb21ldHJ5LCBtYXRlcmlhbCwgcmVmbGVjdGVkTGlnaHQgKTsKICAgICAgICB9CiAgICAjZW5kaWYKICAgICNpZiAoIE5VTV9TUE9UX0xJR0hUUyA+IDAgKSAmJiBkZWZpbmVkKCBSRV9EaXJlY3QgKQogICAgICAgIFNwb3RMaWdodCBzcG90TGlnaHQ7CiAgICAgICAgZm9yICggaW50IGkgPSAwOyBpIDwgTlVNX1NQT1RfTElHSFRTOyBpICsrICkgewogICAgICAgICAgICBzcG90TGlnaHQgPSBzcG90TGlnaHRzWyBpIF07CiAgICAgICAgICAgIGdldFNwb3REaXJlY3RMaWdodElycmFkaWFuY2UoIHNwb3RMaWdodCwgZ2VvbWV0cnksIGRpcmVjdExpZ2h0ICk7CiAgICAgICAgICAgICNpZmRlZiBVU0VfU0hBRE9XTUFQCiAgICAgICAgICAgIGRpcmVjdExpZ2h0LmNvbG9yICo9IGFsbCggYnZlYzIoIHNwb3RMaWdodC5zaGFkb3csIGRpcmVjdExpZ2h0LnZpc2libGUgKSApID8gZ2V0U2hhZG93KCBzcG90U2hhZG93TWFwWyBpIF0sIHNwb3RMaWdodC5zaGFkb3dNYXBTaXplLCBzcG90TGlnaHQuc2hhZG93Qmlhcywgc3BvdExpZ2h0LnNoYWRvd1JhZGl1cywgdlNwb3RTaGFkb3dDb29yZFsgaSBdICkgOiAxLjA7CiAgICAgICAgICAgICNlbmRpZgogICAgICAgICAgICBSRV9EaXJlY3QoIGRpcmVjdExpZ2h0LCBnZW9tZXRyeSwgbWF0ZXJpYWwsIHJlZmxlY3RlZExpZ2h0ICk7CiAgICAgICAgfQogICAgI2VuZGlmCiAgICAjaWYgKCBOVU1fRElSX0xJR0hUUyA+IDAgKSAmJiBkZWZpbmVkKCBSRV9EaXJlY3QgKQogICAgICAgIERpcmVjdGlvbmFsTGlnaHQgZGlyZWN0aW9uYWxMaWdodDsKICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fRElSX0xJR0hUUzsgaSArKyApIHsKICAgICAgICAgICAgZGlyZWN0aW9uYWxMaWdodCA9IGRpcmVjdGlvbmFsTGlnaHRzWyBpIF07CiAgICAgICAgICAgIGdldERpcmVjdGlvbmFsRGlyZWN0TGlnaHRJcnJhZGlhbmNlKCBkaXJlY3Rpb25hbExpZ2h0LCBnZW9tZXRyeSwgZGlyZWN0TGlnaHQgKTsKICAgICAgICAgICAgI2lmZGVmIFVTRV9TSEFET1dNQVAKICAgICAgICAgICAgZGlyZWN0TGlnaHQuY29sb3IgKj0gYWxsKCBidmVjMiggZGlyZWN0aW9uYWxMaWdodC5zaGFkb3csIGRpcmVjdExpZ2h0LnZpc2libGUgKSApID8gZ2V0U2hhZG93KCBkaXJlY3Rpb25hbFNoYWRvd01hcFsgaSBdLCBkaXJlY3Rpb25hbExpZ2h0LnNoYWRvd01hcFNpemUsIGRpcmVjdGlvbmFsTGlnaHQuc2hhZG93QmlhcywgZGlyZWN0aW9uYWxMaWdodC5zaGFkb3dSYWRpdXMsIHZEaXJlY3Rpb25hbFNoYWRvd0Nvb3JkWyBpIF0gKSA6IDEuMDsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIFJFX0RpcmVjdCggZGlyZWN0TGlnaHQsIGdlb21ldHJ5LCBtYXRlcmlhbCwgcmVmbGVjdGVkTGlnaHQgKTsKICAgICAgICB9CiAgICAjZW5kaWYKICAgICNpZiAoIE5VTV9SRUNUX0FSRUFfTElHSFRTID4gMCApICYmIGRlZmluZWQoIFJFX0RpcmVjdF9SZWN0QXJlYSApCiAgICAgICAgUmVjdEFyZWFMaWdodCByZWN0QXJlYUxpZ2h0OwogICAgICAgIGZvciAoIGludCBpID0gMDsgaSA8IE5VTV9SRUNUX0FSRUFfTElHSFRTOyBpICsrICkgewogICAgICAgICAgICByZWN0QXJlYUxpZ2h0ID0gcmVjdEFyZWFMaWdodHNbIGkgXTsKICAgICAgICAgICAgUkVfRGlyZWN0X1JlY3RBcmVhKCByZWN0QXJlYUxpZ2h0LCBnZW9tZXRyeSwgbWF0ZXJpYWwsIHJlZmxlY3RlZExpZ2h0ICk7CiAgICAgICAgfQogICAgI2VuZGlmCiAgICAjaWYgZGVmaW5lZCggUkVfSW5kaXJlY3REaWZmdXNlICkKICAgICAgICB2ZWMzIGlycmFkaWFuY2UgPSBnZXRBbWJpZW50TGlnaHRJcnJhZGlhbmNlKCBhbWJpZW50TGlnaHRDb2xvciApOwogICAgICAgICNpZmRlZiBVU0VfTElHSFRNQVAKICAgICAgICAgICAgdmVjMyB1bml0ID0gdmVjMygxLjApOwogICAgICAgICAgICB2ZWMzIGxpZ2h0ID0gMi4wICogKHRleHR1cmUyRCggbGlnaHRNYXAsIHZVdjIgKS54eXogLSBsaWdodE1hcEV4cG9zdXJlICogdW5pdCk7CiAgICAgICAgICAgIHZlYzMgbW9kaWZpZXIgPSAtbGlnaHRNYXBGYWxsb2ZmICogbGlnaHQgKiBsaWdodCArIHVuaXQ7CiAgICAgICAgICAgIHZlYzMgbGlnaHRNYXBJcnJhZGlhbmNlID0gbGlnaHQgKiBtb2RpZmllciAqIGxpZ2h0TWFwSW50ZW5zaXR5OwogICAgICAgICAgICAjaWZuZGVmIFBIWVNJQ0FMTFlfQ09SUkVDVF9MSUdIVFMKICAgICAgICAgICAgICAgIGxpZ2h0TWFwSXJyYWRpYW5jZSAqPSBQSTsKICAgICAgICAgICAgI2VuZGlmCiAgICAgICAgICAgIGlycmFkaWFuY2UgKz0gbGlnaHRNYXBJcnJhZGlhbmNlOwogICAgICAgICNlbmRpZgogICAgICAgICNpZiAoIE5VTV9IRU1JX0xJR0hUUyA+IDAgKQogICAgICAgICAgICBmb3IgKCBpbnQgaSA9IDA7IGkgPCBOVU1fSEVNSV9MSUdIVFM7IGkgKysgKSB7CiAgICAgICAgICAgICAgICBpcnJhZGlhbmNlICs9IGdldEhlbWlzcGhlcmVMaWdodElycmFkaWFuY2UoIGhlbWlzcGhlcmVMaWdodHNbIGkgXSwgZ2VvbWV0cnkgKTsKICAgICAgICAgICAgfQogICAgICAgICNlbmRpZgogICAgICAgIFJFX0luZGlyZWN0RGlmZnVzZSggaXJyYWRpYW5jZSwgZ2VvbWV0cnksIG1hdGVyaWFsLCByZWZsZWN0ZWRMaWdodCApOwogICAgI2VuZGlmCiAgICB2ZWMzIG91dGdvaW5nTGlnaHQgPSByZWZsZWN0ZWRMaWdodC5kaXJlY3REaWZmdXNlICsgcmVmbGVjdGVkTGlnaHQuaW5kaXJlY3REaWZmdXNlICsgcmVmbGVjdGVkTGlnaHQuZGlyZWN0U3BlY3VsYXIgKyByZWZsZWN0ZWRMaWdodC5pbmRpcmVjdFNwZWN1bGFyICsgdG90YWxFbWlzc2l2ZVJhZGlhbmNlOwogICAgZ2xfRnJhZ0NvbG9yID0gdmVjNCggb3V0Z29pbmdMaWdodCwgZGlmZnVzZUNvbG9yLmEgKTsKfQ==" };
 
-	var vertexShader$1 = { "text": "varying vec3 vViewPosition;\r\n\r\n#ifndef FLAT_SHADED\r\n\tvarying vec3 vNormal;\r\n#endif\r\n\r\n#include <uv_pars_vertex>\r\n#include <uv2_pars_vertex>\r\n#include <shadowmap_pars_vertex>\r\n\r\nvoid main()\r\n{\r\n//  vUv = uv;\r\n  #include <uv_vertex>\r\n  #include <uv2_vertex>\r\n\r\n  #include <beginnormal_vertex>\r\n  #include <defaultnormal_vertex>\r\n\r\n  #ifndef FLAT_SHADED\r\n    // Normal computed with derivatives when FLAT_SHADED\r\n  \tvNormal = normalize( transformedNormal );\r\n  #endif\r\n\r\n  #include <begin_vertex>\r\n  #include <project_vertex>\r\n\r\n  vViewPosition = - mvPosition.xyz;\r\n\r\n  #include <worldpos_vertex>\r\n  #include <shadowmap_vertex>\r\n\r\n}", "base64": "data:text/plain;base64,dmFyeWluZyB2ZWMzIHZWaWV3UG9zaXRpb247DQoNCiNpZm5kZWYgRkxBVF9TSEFERUQNCgl2YXJ5aW5nIHZlYzMgdk5vcm1hbDsNCiNlbmRpZg0KDQojaW5jbHVkZSA8dXZfcGFyc192ZXJ0ZXg+DQojaW5jbHVkZSA8dXYyX3BhcnNfdmVydGV4Pg0KI2luY2x1ZGUgPHNoYWRvd21hcF9wYXJzX3ZlcnRleD4NCg0Kdm9pZCBtYWluKCkNCnsNCi8vICB2VXYgPSB1djsNCiAgI2luY2x1ZGUgPHV2X3ZlcnRleD4NCiAgI2luY2x1ZGUgPHV2Ml92ZXJ0ZXg+DQoNCiAgI2luY2x1ZGUgPGJlZ2lubm9ybWFsX3ZlcnRleD4NCiAgI2luY2x1ZGUgPGRlZmF1bHRub3JtYWxfdmVydGV4Pg0KDQogICNpZm5kZWYgRkxBVF9TSEFERUQNCiAgICAvLyBOb3JtYWwgY29tcHV0ZWQgd2l0aCBkZXJpdmF0aXZlcyB3aGVuIEZMQVRfU0hBREVEDQogIAl2Tm9ybWFsID0gbm9ybWFsaXplKCB0cmFuc2Zvcm1lZE5vcm1hbCApOw0KICAjZW5kaWYNCg0KICAjaW5jbHVkZSA8YmVnaW5fdmVydGV4Pg0KICAjaW5jbHVkZSA8cHJvamVjdF92ZXJ0ZXg+DQoNCiAgdlZpZXdQb3NpdGlvbiA9IC0gbXZQb3NpdGlvbi54eXo7DQoNCiAgI2luY2x1ZGUgPHdvcmxkcG9zX3ZlcnRleD4NCiAgI2luY2x1ZGUgPHNoYWRvd21hcF92ZXJ0ZXg+DQoNCn0=" };
+	var vertexShader$1 = { "text": "varying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <shadowmap_pars_vertex>\nvoid main()\n{\n  #include <uv_vertex>\n  #include <uv2_vertex>\n  #include <beginnormal_vertex>\n  #include <defaultnormal_vertex>\n  #ifndef FLAT_SHADED\n  \tvNormal = normalize( transformedNormal );\n  #endif\n  #include <begin_vertex>\n  #include <project_vertex>\n  vViewPosition = - mvPosition.xyz;\n  #include <worldpos_vertex>\n  #include <shadowmap_vertex>\n}", "base64": "data:text/plain;base64,dmFyeWluZyB2ZWMzIHZWaWV3UG9zaXRpb247CiNpZm5kZWYgRkxBVF9TSEFERUQKCXZhcnlpbmcgdmVjMyB2Tm9ybWFsOwojZW5kaWYKI2luY2x1ZGUgPHV2X3BhcnNfdmVydGV4PgojaW5jbHVkZSA8dXYyX3BhcnNfdmVydGV4PgojaW5jbHVkZSA8c2hhZG93bWFwX3BhcnNfdmVydGV4Pgp2b2lkIG1haW4oKQp7CiAgI2luY2x1ZGUgPHV2X3ZlcnRleD4KICAjaW5jbHVkZSA8dXYyX3ZlcnRleD4KICAjaW5jbHVkZSA8YmVnaW5ub3JtYWxfdmVydGV4PgogICNpbmNsdWRlIDxkZWZhdWx0bm9ybWFsX3ZlcnRleD4KICAjaWZuZGVmIEZMQVRfU0hBREVECiAgCXZOb3JtYWwgPSBub3JtYWxpemUoIHRyYW5zZm9ybWVkTm9ybWFsICk7CiAgI2VuZGlmCiAgI2luY2x1ZGUgPGJlZ2luX3ZlcnRleD4KICAjaW5jbHVkZSA8cHJvamVjdF92ZXJ0ZXg+CiAgdlZpZXdQb3NpdGlvbiA9IC0gbXZQb3NpdGlvbi54eXo7CiAgI2luY2x1ZGUgPHdvcmxkcG9zX3ZlcnRleD4KICAjaW5jbHVkZSA8c2hhZG93bWFwX3ZlcnRleD4KfQ==" };
 
 	var Io3dMaterial = checkDependencies({
 	  three: true,
@@ -36635,13 +36640,15 @@
 	 * @param {object} args
 	 * @param {string} args.email
 	 * @param {string} args.password (optional)
+	 * @param {string} args.emailOptIn (optional)
 	 */
 	function signUp(args) {
 
 	  var credentials = {
 	    email: args.email,
 	    password: args.password || uuid.generate(),
-	    accountSetup: '3dio'
+	    accountSetup: '3dio',
+	    emailOptIn: args.emailOptIn || false
 
 	    // log out first
 	  };return callService('User.logOut').then(function () {
@@ -40025,36 +40032,36 @@
 
 	// main
 	function getModifier(modifier) {
-	    return function modifyModel(storageId, options) {
+	  return function modifyModel(storageId, options) {
 
-	        // API
-	        options = options || {};
+	    // API
+	    options = options || {};
 
-	        var modifySettings = {};
-	        if (options.ratio) modifySettings.ratio = options.ratio;
-	        if (options.subdivisions) modifySettings.subdivisions = options.subdivisions;
+	    var modifySettings = {};
+	    if (options.ratio) modifySettings.ratio = options.ratio;
+	    if (options.subdivisions) modifySettings.subdivisions = options.subdivisions;
 
-	        var modifyParams = {
-	            method: 'modify'.concat('.', modifier),
-	            params: {
-	                inputFileKey: storageId
-	            }
-	        };
-
-	        if (Object.keys(modifySettings).length > 0) {
-	            modifyParams.params.settings = JSON.stringify(modifySettings);
-	        }
-
-	        return callService('Processing.task.enqueue', modifyParams);
+	    var modifyParams = {
+	      method: 'modify'.concat('.', modifier),
+	      params: {
+	        inputFileKey: storageId
+	      }
 	    };
+
+	    if (Object.keys(modifySettings).length > 0) {
+	      modifyParams.params.settings = JSON.stringify(modifySettings);
+	    }
+
+	    return callService('Processing.task.enqueue', modifyParams);
+	  };
 	}
 
 	// expose api
 
 	var modifyModel = {
-	    collisionObject: getModifier('collisionObject'),
-	    consolidateFaceSides: getModifier('consolidateFaceSides'),
-	    origami: getModifier('origami')
+	  collisionObject: getModifier('collisionObject'),
+	  consolidateFaceSides: getModifier('consolidateFaceSides'),
+	  origami: getModifier('origami')
 	};
 
 	var modify = {
@@ -40069,26 +40076,26 @@
 	}
 
 	function getTextureUrls(data3d) {
-	    var materialUrls = [];
-	    Object.keys(data3d.materials).forEach(function cacheMaterial(materialKey) {
-	        var material = data3d.materials[materialKey];
-	        if (material.mapDiffuse) materialUrls.push(material.mapDiffuse);
-	        if (material.mapDiffusePreview) materialUrls.push(material.mapDiffusePreview);
+	  var materialUrls = [];
+	  Object.keys(data3d.materials).forEach(function cacheMaterial(materialKey) {
+	    var material = data3d.materials[materialKey];
+	    if (material.mapDiffuse) materialUrls.push(material.mapDiffuse);
+	    if (material.mapDiffusePreview) materialUrls.push(material.mapDiffusePreview);
 
-	        if (material.mapNormal) materialUrls.push(material.mapNormal);
-	        if (material.mapNormalPreview) materialUrls.push(material.mapNormalPreview);
+	    if (material.mapNormal) materialUrls.push(material.mapNormal);
+	    if (material.mapNormalPreview) materialUrls.push(material.mapNormalPreview);
 
-	        if (material.mapSpecular) materialUrls.push(material.mapSpecular);
-	        if (material.mapSpecularPreview) materialUrls.push(material.mapSpecularPreview);
+	    if (material.mapSpecular) materialUrls.push(material.mapSpecular);
+	    if (material.mapSpecularPreview) materialUrls.push(material.mapSpecularPreview);
 
-	        if (material.mapAlpha) materialUrls.push(material.mapAlpha);
-	        if (material.mapAlphaPreview) materialUrls.push(material.mapAlphaPreview);
+	    if (material.mapAlpha) materialUrls.push(material.mapAlpha);
+	    if (material.mapAlphaPreview) materialUrls.push(material.mapAlphaPreview);
 
-	        if (material.mapLight) materialUrls.push(material.mapLight);
-	        if (material.mapLightPreview) materialUrls.push(material.mapLightPreview);
-	    });
+	    if (material.mapLight) materialUrls.push(material.mapLight);
+	    if (material.mapLightPreview) materialUrls.push(material.mapLightPreview);
+	  });
 
-	    return materialUrls;
+	  return materialUrls;
 	}
 
 	function storeInCache(url, cacheName) {
@@ -40802,142 +40809,142 @@
 	// main
 
 	function createResetPasswordUi(credentials, options) {
-	    runtime.assertBrowser();
-	    return new bluebird_1(function (resolve, reject) {
+	  runtime.assertBrowser();
+	  return new bluebird_1(function (resolve, reject) {
 
-	        credentials = credentials || {};
-	        var email = credentials.email;
+	    credentials = credentials || {};
+	    var email = credentials.email;
 
-	        // overlay
-	        var overlay = createOverlay().show();
+	    // overlay
+	    var overlay = createOverlay().show();
 
-	        // DOM
+	    // DOM
 
-	        el('<div>', {
-	            text: 'x',
-	            class: 'button close-button',
-	            click: function onCancel() {
-	                destroy(function () {
-	                    reject('User canceled action.');
-	                });
-	            }
-	        }).appendTo(overlay.mainEl);
+	    el('<div>', {
+	      text: 'x',
+	      class: 'button close-button',
+	      click: function onCancel() {
+	        destroy(function () {
+	          reject('User canceled action.');
+	        });
+	      }
+	    }).appendTo(overlay.mainEl);
 
-	        // centered content
+	    // centered content
 
-	        var centerEl = el('<div>', { style: CSS_WIDTH$2 }).appendTo(overlay.centerEl);
+	    var centerEl = el('<div>', { style: CSS_WIDTH$2 }).appendTo(overlay.centerEl);
 
-	        // tab with email input
+	    // tab with email input
 
-	        var emailTabEl = el('<div>').appendTo(centerEl);
+	    var emailTabEl = el('<div>').appendTo(centerEl);
 
-	        el('<h1>', { text: 'Reset Password' }).appendTo(emailTabEl);
+	    el('<h1>', { text: 'Reset Password' }).appendTo(emailTabEl);
 
-	        el('<p>', { text: 'email:', class: 'hint' }).appendTo(emailTabEl);
-	        var emailEl = el('<input>', { type: 'text' }).appendTo(emailTabEl);
-	        if (email) emailEl.val(email);
-	        emailEl.focus();
-	        function onEmailElKeyDown(e) {
-	            if (e.which === 13) onConfirm();
-	        }
-	        emailEl.addEventListener('keydown', onEmailElKeyDown);
-	        emailEl.addEventListener('input', updateGoButton);
+	    el('<p>', { text: 'email:', class: 'hint' }).appendTo(emailTabEl);
+	    var emailEl = el('<input>', { type: 'text' }).appendTo(emailTabEl);
+	    if (email) emailEl.val(email);
+	    emailEl.focus();
+	    function onEmailElKeyDown(e) {
+	      if (e.which === 13) onConfirm();
+	    }
+	    emailEl.addEventListener('keydown', onEmailElKeyDown);
+	    emailEl.addEventListener('input', updateGoButton);
 
-	        var goButtonEl = el('<div>', {
-	            text: 'go',
-	            class: 'button',
-	            click: onConfirm
-	        }).appendTo(emailTabEl);
+	    var goButtonEl = el('<div>', {
+	      text: 'go',
+	      class: 'button',
+	      click: onConfirm
+	    }).appendTo(emailTabEl);
 
-	        // tab with loading screen
+	    // tab with loading screen
 
-	        var loadingTabEl = el('<div>', {
-	            text: '...'
-	        }).appendTo(centerEl).hide();
+	    var loadingTabEl = el('<div>', {
+	      text: '...'
+	    }).appendTo(centerEl).hide();
 
-	        // tab with action message
+	    // tab with action message
 
-	        var requestSentTabEl = el('<div>').hide().appendTo(centerEl);
+	    var requestSentTabEl = el('<div>').hide().appendTo(centerEl);
 
-	        el('<p>', {
-	            html: 'Check your email for<br>support@archilogic.com<br>and follow instructions.'
-	        }).appendTo(requestSentTabEl);
+	    el('<p>', {
+	      html: 'Check your email for<br>support@archilogic.com<br>and follow instructions.'
+	    }).appendTo(requestSentTabEl);
 
-	        var goButton2El = el('<div>', {
-	            text: 'ok',
-	            class: 'button',
-	            click: function click() {
-	                destroy(function () {
-	                    resolve();
-	                });
-	            }
-	        }).appendTo(requestSentTabEl);
+	    var goButton2El = el('<div>', {
+	      text: 'ok',
+	      class: 'button',
+	      click: function click() {
+	        destroy(function () {
+	          resolve();
+	        });
+	      }
+	    }).appendTo(requestSentTabEl);
 
-	        // stuff at the bottom
+	    // stuff at the bottom
 
-	        var bottomEl = el('<div>', {
-	            text: 'Resend activation email.',
-	            style: CSS_WIDTH$2,
-	            class: 'clickable',
-	            click: function click() {
-	                destroy(function () {
-	                    createSignUpUi({ email: emailEl.val() }, { resendActivation: true }).then(resolve, reject);
-	                });
-	            }
-	        }).appendTo(overlay.bottomEl);
+	    var bottomEl = el('<div>', {
+	      text: 'Resend activation email.',
+	      style: CSS_WIDTH$2,
+	      class: 'clickable',
+	      click: function click() {
+	        destroy(function () {
+	          createSignUpUi({ email: emailEl.val() }, { resendActivation: true }).then(resolve, reject);
+	        });
+	      }
+	    }).appendTo(overlay.bottomEl);
 
-	        var bottomEl = el('<div>', {
-	            text: 'Already have an account? Log in.',
-	            style: CSS_WIDTH$2,
-	            class: 'clickable',
-	            click: function click() {
-	                destroy(function () {
-	                    createLogInUi({ email: emailEl.val() }).then(resolve, reject);
-	                });
-	            }
-	        }).appendTo(overlay.bottomEl);
+	    var bottomEl = el('<div>', {
+	      text: 'Already have an account? Log in.',
+	      style: CSS_WIDTH$2,
+	      class: 'clickable',
+	      click: function click() {
+	        destroy(function () {
+	          createLogInUi({ email: emailEl.val() }).then(resolve, reject);
+	        });
+	      }
+	    }).appendTo(overlay.bottomEl);
 
-	        // register ESC key
+	    // register ESC key
 
-	        function onKeyDown(e) {
-	            // ESC
-	            if (e.keyCode === 27) {
-	                destroy(function () {
-	                    reject('User canceled action.');
-	                });
-	            }
-	        }
-	        document.body.addEventListener('keydown', onKeyDown);
+	    function onKeyDown(e) {
+	      // ESC
+	      if (e.keyCode === 27) {
+	        destroy(function () {
+	          reject('User canceled action.');
+	        });
+	      }
+	    }
+	    document.body.addEventListener('keydown', onKeyDown);
 
-	        // methods
+	    // methods
 
-	        function updateGoButton() {
-	            // highlight button if email has entry
-	            emailEl.val() !== '' ? goButtonEl.addClass('button-highlighted') : goButtonEl.removeClass('button-highlighted');
-	        }
-	        updateGoButton();
+	    function updateGoButton() {
+	      // highlight button if email has entry
+	      emailEl.val() !== '' ? goButtonEl.addClass('button-highlighted') : goButtonEl.removeClass('button-highlighted');
+	    }
+	    updateGoButton();
 
-	        function onConfirm() {
-	            //FIXME: check email field not empty
-	            // show loading screen
-	            emailTabEl.hide();
-	            loadingTabEl.show();
-	            requestPasswordReset({ email: emailEl.val() }).then(function () {
-	                // show tab saying that email has been sent
-	                loadingTabEl.hide();
-	                requestSentTabEl.show();
-	            }).then();
-	        }
+	    function onConfirm() {
+	      //FIXME: check email field not empty
+	      // show loading screen
+	      emailTabEl.hide();
+	      loadingTabEl.show();
+	      requestPasswordReset({ email: emailEl.val() }).then(function () {
+	        // show tab saying that email has been sent
+	        loadingTabEl.hide();
+	        requestSentTabEl.show();
+	      }).then();
+	    }
 
-	        function destroy(callback) {
-	            // unbind events
-	            document.body.removeEventListener('keydown', onKeyDown);
-	            emailEl.removeEventListener('keydown', onEmailElKeyDown);
-	            emailEl.removeEventListener('input', updateGoButton);
-	            // remove DOM elements
-	            overlay.destroy(callback);
-	        }
-	    });
+	    function destroy(callback) {
+	      // unbind events
+	      document.body.removeEventListener('keydown', onKeyDown);
+	      emailEl.removeEventListener('keydown', onEmailElKeyDown);
+	      emailEl.removeEventListener('input', updateGoButton);
+	      // remove DOM elements
+	      overlay.destroy(callback);
+	    }
+	  });
 	}
 
 	// configs
@@ -41162,6 +41169,9 @@
 
 	    el('<p>', { text: 'email:', class: 'hint' }).appendTo(emailTabEl);
 	    var emailEl = el('<input>', { type: 'text' }).appendTo(emailTabEl);
+	    var checkboxEl = el('<div>', { style: 'margin-top: 20px;' }).appendTo(emailTabEl);
+	    el('<label>', { text: 'Keep me up to date about 3d.io' }).appendTo(checkboxEl);
+	    var emailOptInEl = el('<input>', { type: 'checkbox', style: 'margin-left: 20px;', id: 'email-opt-in' }).appendTo(checkboxEl);
 	    if (email) emailEl.val(email);
 	    emailEl.focus();
 	    function onEmailElKeyDown(e) {
@@ -41225,7 +41235,7 @@
 	          return resendActivationEmail({ email: emailEl.val() });
 	        } else {
 	          // sign up
-	          return signUp({ email: emailEl.val() });
+	          return signUp({ email: emailEl.val(), emailOptIn: emailOptInEl.checked });
 	        }
 	      }).then(function () {
 	        // wait for activation
