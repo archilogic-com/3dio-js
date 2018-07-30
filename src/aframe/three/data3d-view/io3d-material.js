@@ -24,8 +24,9 @@ export default checkDependencies ({
     this.lightMapFalloff = params.lightMapFalloff || DEFAULT_LIGHT_MAP_FALLOFF
 
     this.uniforms = THREE.UniformsUtils.merge( [
-      THREE.UniformsLib[ "lights" ],
-      THREE.UniformsLib[ "shadowmap" ],
+      THREE.UniformsLib.common,
+      THREE.UniformsLib.lights,
+      THREE.UniformsLib.shadowmap,
       { color: { value: params.color || new THREE.Color(1.0, 1.0, 1.0) },
         map: { value: params.map || null },
         specularMap: { value: params.specularMap || null },
