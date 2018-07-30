@@ -128,6 +128,9 @@ export default {
       y: THREE.Math.radToDeg(controls.yawObject.rotation.y),
       z: 0,
     }
+    var normalizedRotations = getNormalizeRotations(startRotation, newRotation)
+    newRotation = normalizedRotations.end
+    startRotation = normalizedRotations.start
     // compute distance to adapt speed
     var d = dist(startPosition, newPosition)
     // compute angle difference to adapt speed
@@ -151,7 +154,7 @@ export default {
       })
     }
     if (startRotation.y !== newRotation.y) {
-      controls.rotation.y = THREE.Math.degToRad(startRotation.y)
+      controls.yawObject.y = THREE.Math.degToRad(startRotation.y)
       this.rotationAnimationY = window.anime({
         targets: controls.yawObject.rotation,
         y: THREE.Math.degToRad(newRotation.y),
