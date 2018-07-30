@@ -154,7 +154,7 @@ export default {
       })
     }
     if (startRotation.y !== newRotation.y) {
-      controls.yawObject.y = THREE.Math.degToRad(startRotation.y)
+      controls.yawObject.rotation.y = THREE.Math.degToRad(startRotation.y)
       this.rotationAnimationY = window.anime({
         targets: controls.yawObject.rotation,
         y: THREE.Math.degToRad(newRotation.y),

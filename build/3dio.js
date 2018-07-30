@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.2.1
- * @date 2018/07/30 18:50
+ * @date 2018/07/30 18:53
  * @branch fixTour
- * @commit b0fbe576bb955e989f725bdb93a30d7d162b9160
+ * @commit 808f7e7289c2b042a74b4d1c6fdefcb5f43b2768
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2018/07/30 18:50', GIT_BRANCH = 'fixTour', GIT_COMMIT = 'b0fbe576bb955e989f725bdb93a30d7d162b9160'
+	var BUILD_DATE='2018/07/30 18:53', GIT_BRANCH = 'fixTour', GIT_COMMIT = '808f7e7289c2b042a74b4d1c6fdefcb5f43b2768'
 
 	var name = "3dio";
 	var version = "1.2.1";
@@ -17180,7 +17180,7 @@
 	      });
 	    }
 	    if (startRotation.y !== newRotation.y) {
-	      controls.yawObject.y = THREE.Math.degToRad(startRotation.y);
+	      controls.yawObject.rotation.y = THREE.Math.degToRad(startRotation.y);
 	      this.rotationAnimationY = window.anime({
 	        targets: controls.yawObject.rotation,
 	        y: THREE.Math.degToRad(newRotation.y),
