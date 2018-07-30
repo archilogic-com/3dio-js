@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.2.1
- * @date 2018/06/04 20:49
+ * @date 2018/07/30 11:20
  * @branch master
- * @commit 224cf51552410470bc5acb305b93b6ebc4bc2231
+ * @commit dc15cfbad43e6d5036ca239060253236de52d752
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2018/06/04 20:49', GIT_BRANCH = 'master', GIT_COMMIT = '224cf51552410470bc5acb305b93b6ebc4bc2231'
+	var BUILD_DATE='2018/07/30 11:20', GIT_BRANCH = 'master', GIT_COMMIT = 'dc15cfbad43e6d5036ca239060253236de52d752'
 
 	var name = "3dio";
 	var version = "1.2.1";
@@ -8565,9 +8565,9 @@
 	};
 
 	var thenables = function thenables(Promise, INTERNAL) {
-	    var util$$2 = util;
-	    var errorObj = util$$2.errorObj;
-	    var isObject = util$$2.isObject;
+	    var util$$1 = util;
+	    var errorObj = util$$1.errorObj;
+	    var isObject = util$$1.isObject;
 
 	    function tryConvertToPromise(obj, context) {
 	        if (isObject(obj)) {
@@ -8619,7 +8619,7 @@
 	        promise._captureStackTrace();
 	        if (context) context._popContext();
 	        var synchronous = true;
-	        var result = util$$2.tryCatch(then).call(x, resolve, reject);
+	        var result = util$$1.tryCatch(then).call(x, resolve, reject);
 	        synchronous = false;
 
 	        if (promise && result === errorObj) {
@@ -8645,8 +8645,8 @@
 	};
 
 	var promise_array = function promise_array(Promise, INTERNAL, tryConvertToPromise, apiRejection, Proxyable) {
-	    var util$$2 = util;
-	    var isArray = util$$2.isArray;
+	    var util$$1 = util;
+	    var isArray = util$$1.isArray;
 
 	    function toResolutionValue(val) {
 	        switch (val) {
@@ -8670,7 +8670,7 @@
 	        this._totalResolved = 0;
 	        this._init(undefined, -2);
 	    }
-	    util$$2.inherits(PromiseArray, Proxyable);
+	    util$$1.inherits(PromiseArray, Proxyable);
 
 	    PromiseArray.prototype.length = function () {
 	        return this._length;
@@ -8699,9 +8699,9 @@
 	                return this._cancel();
 	            }
 	        }
-	        values = util$$2.asArray(values);
+	        values = util$$1.asArray(values);
 	        if (values === null) {
-	            var err = apiRejection("expecting an array or an iterable object but got " + util$$2.classString(values)).reason();
+	            var err = apiRejection("expecting an array or an iterable object but got " + util$$1.classString(values)).reason();
 	            this._promise._rejectCallback(err, false);
 	            return;
 	        }
@@ -8898,8 +8898,8 @@
 	    var getDomain = Promise._getDomain;
 	    var async = Promise._async;
 	    var Warning = errors.Warning;
-	    var util$$2 = util;
-	    var canAttachTrace = util$$2.canAttachTrace;
+	    var util$$1 = util;
+	    var canAttachTrace = util$$1.canAttachTrace;
 	    var unhandledRejectionHandled;
 	    var possiblyUnhandledRejection;
 	    var bluebirdFramePattern = /[\\\/]bluebird[\\\/]js[\\\/](release|debug|instrumented)/;
@@ -8909,13 +8909,13 @@
 	    var formatStack = null;
 	    var indentStackFrames = false;
 	    var printWarning;
-	    var debugging = !!(util$$2.env("BLUEBIRD_DEBUG") != 0 && (false || util$$2.env("BLUEBIRD_DEBUG") || util$$2.env("NODE_ENV") === "development"));
+	    var debugging = !!(util$$1.env("BLUEBIRD_DEBUG") != 0 && (false || util$$1.env("BLUEBIRD_DEBUG") || util$$1.env("NODE_ENV") === "development"));
 
-	    var warnings = !!(util$$2.env("BLUEBIRD_WARNINGS") != 0 && (debugging || util$$2.env("BLUEBIRD_WARNINGS")));
+	    var warnings = !!(util$$1.env("BLUEBIRD_WARNINGS") != 0 && (debugging || util$$1.env("BLUEBIRD_WARNINGS")));
 
-	    var longStackTraces = !!(util$$2.env("BLUEBIRD_LONG_STACK_TRACES") != 0 && (debugging || util$$2.env("BLUEBIRD_LONG_STACK_TRACES")));
+	    var longStackTraces = !!(util$$1.env("BLUEBIRD_LONG_STACK_TRACES") != 0 && (debugging || util$$1.env("BLUEBIRD_LONG_STACK_TRACES")));
 
-	    var wForgottenReturn = util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 && (warnings || !!util$$2.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
+	    var wForgottenReturn = util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 && (warnings || !!util$$1.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
 
 	    Promise.prototype.suppressUnhandledRejections = function () {
 	        var target = this._target();
@@ -8985,12 +8985,12 @@
 
 	    Promise.onPossiblyUnhandledRejection = function (fn) {
 	        var domain = getDomain();
-	        possiblyUnhandledRejection = typeof fn === "function" ? domain === null ? fn : util$$2.domainBind(domain, fn) : undefined;
+	        possiblyUnhandledRejection = typeof fn === "function" ? domain === null ? fn : util$$1.domainBind(domain, fn) : undefined;
 	    };
 
 	    Promise.onUnhandledRejectionHandled = function (fn) {
 	        var domain = getDomain();
-	        unhandledRejectionHandled = typeof fn === "function" ? domain === null ? fn : util$$2.domainBind(domain, fn) : undefined;
+	        unhandledRejectionHandled = typeof fn === "function" ? domain === null ? fn : util$$1.domainBind(domain, fn) : undefined;
 	    };
 
 	    var disableLongStackTraces = function disableLongStackTraces() {};
@@ -9027,32 +9027,32 @@
 	        try {
 	            if (typeof CustomEvent === "function") {
 	                var event = new CustomEvent("CustomEvent");
-	                util$$2.global.dispatchEvent(event);
+	                util$$1.global.dispatchEvent(event);
 	                return function (name, event) {
 	                    var domEvent = new CustomEvent(name.toLowerCase(), {
 	                        detail: event,
 	                        cancelable: true
 	                    });
-	                    return !util$$2.global.dispatchEvent(domEvent);
+	                    return !util$$1.global.dispatchEvent(domEvent);
 	                };
 	            } else if (typeof Event === "function") {
 	                var event = new Event("CustomEvent");
-	                util$$2.global.dispatchEvent(event);
+	                util$$1.global.dispatchEvent(event);
 	                return function (name, event) {
 	                    var domEvent = new Event(name.toLowerCase(), {
 	                        cancelable: true
 	                    });
 	                    domEvent.detail = event;
-	                    return !util$$2.global.dispatchEvent(domEvent);
+	                    return !util$$1.global.dispatchEvent(domEvent);
 	                };
 	            } else {
 	                var event = document.createEvent("CustomEvent");
 	                event.initCustomEvent("testingtheevent", false, true, {});
-	                util$$2.global.dispatchEvent(event);
+	                util$$1.global.dispatchEvent(event);
 	                return function (name, event) {
 	                    var domEvent = document.createEvent("CustomEvent");
 	                    domEvent.initCustomEvent(name.toLowerCase(), false, true, event);
-	                    return !util$$2.global.dispatchEvent(domEvent);
+	                    return !util$$1.global.dispatchEvent(domEvent);
 	                };
 	            }
 	        } catch (e) {}
@@ -9062,21 +9062,21 @@
 	    }();
 
 	    var fireGlobalEvent = function () {
-	        if (util$$2.isNode) {
+	        if (util$$1.isNode) {
 	            return function () {
 	                return process.emit.apply(process, arguments);
 	            };
 	        } else {
-	            if (!util$$2.global) {
+	            if (!util$$1.global) {
 	                return function () {
 	                    return false;
 	                };
 	            }
 	            return function (name) {
 	                var methodName = "on" + name.toLowerCase();
-	                var method = util$$2.global[methodName];
+	                var method = util$$1.global[methodName];
 	                if (!method) return false;
-	                method.apply(util$$2.global, [].slice.call(arguments, 1));
+	                method.apply(util$$1.global, [].slice.call(arguments, 1));
 	                return true;
 	            };
 	        }
@@ -9138,7 +9138,7 @@
 	            config.warnings = !!warningsOption;
 	            wForgottenReturn = config.warnings;
 
-	            if (util$$2.isObject(warningsOption)) {
+	            if (util$$1.isObject(warningsOption)) {
 	                if ("wForgottenReturn" in warningsOption) {
 	                    wForgottenReturn = !!warningsOption.wForgottenReturn;
 	                }
@@ -9201,7 +9201,7 @@
 	        try {
 	            executor(resolve, reject, function (onCancel) {
 	                if (typeof onCancel !== "function") {
-	                    throw new TypeError("onCancel must be a function, got: " + util$$2.toString(onCancel));
+	                    throw new TypeError("onCancel must be a function, got: " + util$$1.toString(onCancel));
 	                }
 	                promise._attachCancellationCallback(onCancel);
 	            });
@@ -9215,7 +9215,7 @@
 
 	        var previousOnCancel = this._onCancel();
 	        if (previousOnCancel !== undefined) {
-	            if (util$$2.isArray(previousOnCancel)) {
+	            if (util$$1.isArray(previousOnCancel)) {
 	                previousOnCancel.push(onCancel);
 	            } else {
 	                this._setOnCancel([previousOnCancel, onCancel]);
@@ -9287,8 +9287,8 @@
 	                trace.attachExtraTrace(error);
 	            } else if (!error.__stackCleaned__) {
 	                var parsed = parseStackAndMessage(error);
-	                util$$2.notEnumerableProp(error, "stack", parsed.message + "\n" + parsed.stack.join("\n"));
-	                util$$2.notEnumerableProp(error, "__stackCleaned__", true);
+	                util$$1.notEnumerableProp(error, "stack", parsed.message + "\n" + parsed.stack.join("\n"));
+	                util$$1.notEnumerableProp(error, "__stackCleaned__", true);
 	            }
 	        }
 	    }
@@ -9448,7 +9448,7 @@
 	    function formatAndLogError(error, title, isSoft) {
 	        if (typeof console !== "undefined") {
 	            var message;
-	            if (util$$2.isObject(error)) {
+	            if (util$$1.isObject(error)) {
 	                var stack = error.stack;
 	                message = title + formatStack(stack, error);
 	            } else {
@@ -9491,7 +9491,7 @@
 	        if (typeof obj === "function") {
 	            str = "[function " + (obj.name || "anonymous") + "]";
 	        } else {
-	            str = obj && typeof obj.toString === "function" ? obj.toString() : util$$2.toString(obj);
+	            str = obj && typeof obj.toString === "function" ? obj.toString() : util$$1.toString(obj);
 	            var ruselessToString = /\[object [a-zA-Z0-9$_]+\]/;
 	            if (ruselessToString.test(str)) {
 	                try {
@@ -9579,7 +9579,7 @@
 	        captureStackTrace(this, CapturedTrace);
 	        if (length > 32) this.uncycle();
 	    }
-	    util$$2.inherits(CapturedTrace, Error);
+	    util$$1.inherits(CapturedTrace, Error);
 	    Context.CapturedTrace = CapturedTrace;
 
 	    CapturedTrace.prototype.uncycle = function () {
@@ -9643,8 +9643,8 @@
 	        }
 	        removeCommonRoots(stacks);
 	        removeDuplicateOrEmptyJumps(stacks);
-	        util$$2.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
-	        util$$2.notEnumerableProp(error, "__stackCleaned__", true);
+	        util$$1.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
+	        util$$1.notEnumerableProp(error, "__stackCleaned__", true);
 	    };
 
 	    var captureStackTrace = function stackDetection() {
@@ -9720,12 +9720,12 @@
 	        printWarning = function printWarning(message) {
 	            console.warn(message);
 	        };
-	        if (util$$2.isNode && process.stderr.isTTY) {
+	        if (util$$1.isNode && process.stderr.isTTY) {
 	            printWarning = function printWarning(message, isSoft) {
 	                var color = isSoft ? '\x1B[33m' : '\x1B[31m';
 	                console.warn(color + message + '\x1B[0m\n');
 	            };
-	        } else if (!util$$2.isNode && typeof new Error().stack === "string") {
+	        } else if (!util$$1.isNode && typeof new Error().stack === "string") {
 	            printWarning = function printWarning(message, isSoft) {
 	                console.warn("%c" + message, isSoft ? "color: darkorange" : "color: red");
 	            };
@@ -9771,10 +9771,10 @@
 	};
 
 	var catch_filter = function catch_filter(NEXT_FILTER) {
-	    var util$$2 = util;
+	    var util$$1 = util;
 	    var getKeys = es5.keys;
-	    var tryCatch = util$$2.tryCatch;
-	    var errorObj = util$$2.errorObj;
+	    var tryCatch = util$$1.tryCatch;
+	    var errorObj = util$$1.errorObj;
 
 	    function catchFilter(instances, cb, promise) {
 	        return function (e) {
@@ -9793,7 +9793,7 @@
 	                    } else if (matchesPredicate) {
 	                        return tryCatch(cb).call(boundTo, e);
 	                    }
-	                } else if (util$$2.isObject(e)) {
+	                } else if (util$$1.isObject(e)) {
 	                    var keys = getKeys(item);
 	                    for (var j = 0; j < keys.length; ++j) {
 	                        var key = keys[j];
@@ -9812,9 +9812,9 @@
 	};
 
 	var _finally = function _finally(Promise, tryConvertToPromise, NEXT_FILTER) {
-	    var util$$2 = util;
+	    var util$$1 = util;
 	    var CancellationError = Promise.CancellationError;
-	    var errorObj = util$$2.errorObj;
+	    var errorObj = util$$1.errorObj;
 	    var catchFilter = catch_filter(NEXT_FILTER);
 
 	    function PassThroughHandlerContext(promise, type, handler) {
@@ -9919,10 +9919,10 @@
 	                i;
 	            for (i = 0; i < len - 1; ++i) {
 	                var item = arguments[i];
-	                if (util$$2.isObject(item)) {
+	                if (util$$1.isObject(item)) {
 	                    catchInstances[j++] = item;
 	                } else {
-	                    return Promise.reject(new TypeError("tapCatch statement predicate: " + "expecting an object but got " + util$$2.classString(item)));
+	                    return Promise.reject(new TypeError("tapCatch statement predicate: " + "expecting an object but got " + util$$1.classString(item)));
 	                }
 	            }
 	            catchInstances.length = j;
@@ -9985,12 +9985,12 @@
 	var nodeback = nodebackForPromise;
 
 	var method = function method(Promise, INTERNAL, tryConvertToPromise, apiRejection, debug) {
-	    var util$$2 = util;
-	    var tryCatch = util$$2.tryCatch;
+	    var util$$1 = util;
+	    var tryCatch = util$$1.tryCatch;
 
 	    Promise.method = function (fn) {
 	        if (typeof fn !== "function") {
-	            throw new Promise.TypeError("expecting a function but got " + util$$2.classString(fn));
+	            throw new Promise.TypeError("expecting a function but got " + util$$1.classString(fn));
 	        }
 	        return function () {
 	            var ret = new Promise(INTERNAL);
@@ -10006,7 +10006,7 @@
 
 	    Promise.attempt = Promise["try"] = function (fn) {
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
 	        }
 	        var ret = new Promise(INTERNAL);
 	        ret._captureStackTrace();
@@ -10016,7 +10016,7 @@
 	            debug.deprecated("calling Promise.try with more than 1 argument");
 	            var arg = arguments[1];
 	            var ctx = arguments[2];
-	            value = util$$2.isArray(arg) ? tryCatch(fn).apply(ctx, arg) : tryCatch(fn).call(ctx, arg);
+	            value = util$$1.isArray(arg) ? tryCatch(fn).apply(ctx, arg) : tryCatch(fn).call(ctx, arg);
 	        } else {
 	            value = tryCatch(fn)();
 	        }
@@ -10027,7 +10027,7 @@
 	    };
 
 	    Promise.prototype._resolveFromSyncValue = function (value) {
-	        if (value === util$$2.errorObj) {
+	        if (value === util$$1.errorObj) {
 	            this._rejectCallback(value.e, false);
 	        } else {
 	            this._resolveCallback(value, true);
@@ -10102,9 +10102,9 @@
 	};
 
 	var cancel = function cancel(Promise, PromiseArray, apiRejection, debug) {
-	    var util$$2 = util;
-	    var tryCatch = util$$2.tryCatch;
-	    var errorObj = util$$2.errorObj;
+	    var util$$1 = util;
+	    var tryCatch = util$$1.tryCatch;
+	    var errorObj = util$$1.errorObj;
 	    var async = Promise._async;
 
 	    Promise.prototype["break"] = Promise.prototype.cancel = function () {
@@ -10191,7 +10191,7 @@
 	    };
 
 	    Promise.prototype._doInvokeOnCancel = function (onCancelCallback, internalOnly) {
-	        if (util$$2.isArray(onCancelCallback)) {
+	        if (util$$1.isArray(onCancelCallback)) {
 	            for (var i = 0; i < onCancelCallback.length; ++i) {
 	                this._doInvokeOnCancel(onCancelCallback[i], internalOnly);
 	            }
@@ -10373,10 +10373,10 @@
 	};
 
 	var join = function join(Promise, PromiseArray, tryConvertToPromise, INTERNAL, async, getDomain) {
-	    var util$$2 = util;
-	    var canEvaluate = util$$2.canEvaluate;
-	    var tryCatch = util$$2.tryCatch;
-	    var errorObj = util$$2.errorObj;
+	    var util$$1 = util;
+	    var canEvaluate = util$$1.canEvaluate;
+	    var tryCatch = util$$1.tryCatch;
+	    var errorObj = util$$1.errorObj;
 	    var reject;
 
 	    {
@@ -10513,7 +10513,7 @@
 	                        if (holder.asyncNeeded) {
 	                            var domain = getDomain();
 	                            if (domain !== null) {
-	                                holder.fn = util$$2.domainBind(domain, holder.fn);
+	                                holder.fn = util$$1.domainBind(domain, holder.fn);
 	                            }
 	                        }
 	                        ret._setAsyncGuaranteed();
@@ -10534,23 +10534,23 @@
 
 	var map = function map(Promise, PromiseArray, apiRejection, tryConvertToPromise, INTERNAL, debug) {
 	    var getDomain = Promise._getDomain;
-	    var util$$2 = util;
-	    var tryCatch = util$$2.tryCatch;
-	    var errorObj = util$$2.errorObj;
+	    var util$$1 = util;
+	    var tryCatch = util$$1.tryCatch;
+	    var errorObj = util$$1.errorObj;
 	    var async = Promise._async;
 
 	    function MappingPromiseArray(promises, fn, limit, _filter) {
 	        this.constructor$(promises);
 	        this._promise._captureStackTrace();
 	        var domain = getDomain();
-	        this._callback = domain === null ? fn : util$$2.domainBind(domain, fn);
+	        this._callback = domain === null ? fn : util$$1.domainBind(domain, fn);
 	        this._preservedValues = _filter === INTERNAL ? new Array(this.length()) : null;
 	        this._limit = limit;
 	        this._inFlight = 0;
 	        this._queue = [];
 	        async.invoke(this._asyncInit, this, undefined);
 	    }
-	    util$$2.inherits(MappingPromiseArray, PromiseArray);
+	    util$$1.inherits(MappingPromiseArray, PromiseArray);
 
 	    MappingPromiseArray.prototype._asyncInit = function () {
 	        this._init$(undefined, -2);
@@ -10654,18 +10654,18 @@
 
 	    function map(promises, fn, options, _filter) {
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
 	        }
 
 	        var limit = 0;
 	        if (options !== undefined) {
 	            if ((typeof options === 'undefined' ? 'undefined' : _typeof(options)) === "object" && options !== null) {
 	                if (typeof options.concurrency !== "number") {
-	                    return Promise.reject(new TypeError("'concurrency' must be a number but it is " + util$$2.classString(options.concurrency)));
+	                    return Promise.reject(new TypeError("'concurrency' must be a number but it is " + util$$1.classString(options.concurrency)));
 	                }
 	                limit = options.concurrency;
 	            } else {
-	                return Promise.reject(new TypeError("options argument must be an object but it is " + util$$2.classString(options)));
+	                return Promise.reject(new TypeError("options argument must be an object but it is " + util$$1.classString(options)));
 	            }
 	        }
 	        limit = typeof limit === "number" && isFinite(limit) && limit >= 1 ? limit : 0;
@@ -10689,9 +10689,9 @@
 	}
 
 	var call_get = function call_get(Promise) {
-	    var util$$2 = util;
-	    var canEvaluate = util$$2.canEvaluate;
-	    var isIdentifier = util$$2.isIdentifier;
+	    var util$$1 = util;
+	    var canEvaluate = util$$1.canEvaluate;
+	    var isIdentifier = util$$1.isIdentifier;
 
 	    var getMethodCaller;
 	    var getGetter;
@@ -10753,7 +10753,7 @@
 	        var fn;
 	        if (obj != null) fn = obj[methodName];
 	        if (typeof fn !== "function") {
-	            var message = "Object " + util$$2.classString(obj) + " has no method '" + util$$2.toString(methodName) + "'";
+	            var message = "Object " + util$$1.classString(obj) + " has no method '" + util$$1.toString(methodName) + "'";
 	            throw new Promise.TypeError(message);
 	        }
 	        return fn;
@@ -10806,11 +10806,11 @@
 	};
 
 	var using = function using(Promise, apiRejection, tryConvertToPromise, createContext, INTERNAL, debug) {
-	    var util$$2 = util;
+	    var util$$1 = util;
 	    var TypeError = errors.TypeError;
 	    var inherits = util.inherits;
-	    var errorObj = util$$2.errorObj;
-	    var tryCatch = util$$2.tryCatch;
+	    var errorObj = util$$1.errorObj;
+	    var tryCatch = util$$1.tryCatch;
 	    var NULL = {};
 
 	    function thrower(e) {
@@ -10924,7 +10924,7 @@
 	        if (len < 2) return apiRejection("you must pass at least 2 arguments to Promise.using");
 	        var fn = arguments[len - 1];
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
 	        }
 	        var input;
 	        var spreadArgs = true;
@@ -11017,7 +11017,7 @@
 	};
 
 	var timers$1 = function timers(Promise, INTERNAL, debug) {
-	    var util$$2 = util;
+	    var util$$1 = util;
 	    var TimeoutError = Promise.TimeoutError;
 
 	    function HandleWrapper(handle) {
@@ -11068,7 +11068,7 @@
 	        } else {
 	            err = new TimeoutError(message);
 	        }
-	        util$$2.markAsOriginatingFromRejection(err);
+	        util$$1.markAsOriginatingFromRejection(err);
 	        promise._attachExtraTrace(err);
 	        promise._reject(err);
 
@@ -11110,11 +11110,11 @@
 	};
 
 	var generators = function generators(Promise, apiRejection, INTERNAL, tryConvertToPromise, Proxyable, debug) {
-	    var errors$$2 = errors;
-	    var TypeError = errors$$2.TypeError;
-	    var util$$2 = util;
-	    var errorObj = util$$2.errorObj;
-	    var tryCatch = util$$2.tryCatch;
+	    var errors$$1 = errors;
+	    var TypeError = errors$$1.TypeError;
+	    var util$$1 = util;
+	    var errorObj = util$$1.errorObj;
+	    var tryCatch = util$$1.tryCatch;
 	    var yieldHandlers = [];
 
 	    function promiseFromYieldHandler(value, yieldHandlers, traceParent) {
@@ -11155,7 +11155,7 @@
 	        this._yieldedPromise = null;
 	        this._cancellationPhase = false;
 	    }
-	    util$$2.inherits(PromiseSpawn, Proxyable);
+	    util$$1.inherits(PromiseSpawn, Proxyable);
 
 	    PromiseSpawn.prototype._isResolved = function () {
 	        return this._promise === null;
@@ -11289,7 +11289,7 @@
 
 	    Promise.coroutine.addYieldHandler = function (fn) {
 	        if (typeof fn !== "function") {
-	            throw new TypeError("expecting a function but got " + util$$2.classString(fn));
+	            throw new TypeError("expecting a function but got " + util$$1.classString(fn));
 	        }
 	        yieldHandlers.push(fn);
 	    };
@@ -11307,14 +11307,14 @@
 	};
 
 	var nodeify = function nodeify(Promise) {
-	    var util$$2 = util;
+	    var util$$1 = util;
 	    var async = Promise._async;
-	    var tryCatch = util$$2.tryCatch;
-	    var errorObj = util$$2.errorObj;
+	    var tryCatch = util$$1.tryCatch;
+	    var errorObj = util$$1.errorObj;
 
 	    function spreadAdapter(val, nodeback) {
 	        var promise = this;
-	        if (!util$$2.isArray(val)) return successAdapter.call(promise, val, nodeback);
+	        if (!util$$1.isArray(val)) return successAdapter.call(promise, val, nodeback);
 	        var ret = tryCatch(nodeback).apply(promise._boundValue(), [null].concat(val));
 	        if (ret === errorObj) {
 	            async.throwLater(ret.e);
@@ -11356,11 +11356,11 @@
 
 	var promisify = function promisify(Promise, INTERNAL) {
 	    var THIS = {};
-	    var util$$2 = util;
+	    var util$$1 = util;
 	    var nodebackForPromise = nodeback;
-	    var withAppended = util$$2.withAppended;
-	    var maybeWrapAsError = util$$2.maybeWrapAsError;
-	    var canEvaluate = util$$2.canEvaluate;
+	    var withAppended = util$$1.withAppended;
+	    var maybeWrapAsError = util$$1.maybeWrapAsError;
+	    var canEvaluate = util$$1.canEvaluate;
 	    var TypeError = errors.TypeError;
 	    var defaultSuffix = "Async";
 	    var defaultPromisified = { __isPromisified__: true };
@@ -11368,7 +11368,7 @@
 	    var noCopyPropsPattern = new RegExp("^(?:" + noCopyProps.join("|") + ")$");
 
 	    var defaultFilter = function defaultFilter(name) {
-	        return util$$2.isIdentifier(name) && name.charAt(0) !== "_" && name !== "constructor";
+	        return util$$1.isIdentifier(name) && name.charAt(0) !== "_" && name !== "constructor";
 	    };
 
 	    function propsFilter(key) {
@@ -11384,7 +11384,7 @@
 	    }
 
 	    function hasPromisified(obj, key, suffix) {
-	        var val = util$$2.getDataPropertyOrDefault(obj, key + suffix, defaultPromisified);
+	        var val = util$$1.getDataPropertyOrDefault(obj, key + suffix, defaultPromisified);
 	        return val ? isPromisified(val) : false;
 	    }
 	    function checkValid(ret, suffix, suffixRegexp) {
@@ -11402,7 +11402,7 @@
 	    }
 
 	    function promisifiableMethods(obj, suffix, suffixRegexp, filter) {
-	        var keys = util$$2.inheritedDataKeys(obj);
+	        var keys = util$$1.inheritedDataKeys(obj);
 	        var ret = [];
 	        for (var i = 0; i < keys.length; ++i) {
 	            var key = keys[i];
@@ -11435,11 +11435,11 @@
 	        };
 
 	        var argumentSequence = function argumentSequence(argumentCount) {
-	            return util$$2.filledRange(argumentCount, "_arg", "");
+	            return util$$1.filledRange(argumentCount, "_arg", "");
 	        };
 
 	        var parameterDeclaration = function parameterDeclaration(parameterCount) {
-	            return util$$2.filledRange(Math.max(parameterCount, 3), "_arg", "");
+	            return util$$1.filledRange(Math.max(parameterCount, 3), "_arg", "");
 	        };
 
 	        var parameterCount = function parameterCount(fn) {
@@ -11509,7 +11509,7 @@
         return ret;                                                          \n\
     ".replace("[CodeForSwitchCase]", generateArgumentSwitchCase()).replace("[GetFunctionCode]", getFunctionCode);
 	            body = body.replace("Parameters", parameterDeclaration(newParameterCount));
-	            return new Function("Promise", "fn", "receiver", "withAppended", "maybeWrapAsError", "nodebackForPromise", "tryCatch", "errorObj", "notEnumerableProp", "INTERNAL", body)(Promise, fn, receiver, withAppended, maybeWrapAsError, nodebackForPromise, util$$2.tryCatch, util$$2.errorObj, util$$2.notEnumerableProp, INTERNAL);
+	            return new Function("Promise", "fn", "receiver", "withAppended", "maybeWrapAsError", "nodebackForPromise", "tryCatch", "errorObj", "notEnumerableProp", "INTERNAL", body)(Promise, fn, receiver, withAppended, maybeWrapAsError, nodebackForPromise, util$$1.tryCatch, util$$1.errorObj, util$$1.notEnumerableProp, INTERNAL);
 	        };
 	    }
 
@@ -11536,7 +11536,7 @@
 	            if (!promise._isFateSealed()) promise._setAsyncGuaranteed();
 	            return promise;
 	        }
-	        util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
+	        util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
 	        return promisified;
 	    }
 
@@ -11556,11 +11556,11 @@
 	                var promisified = promisifier(fn, function () {
 	                    return makeNodePromisified(key, THIS, key, fn, suffix, multiArgs);
 	                });
-	                util$$2.notEnumerableProp(promisified, "__isPromisified__", true);
+	                util$$1.notEnumerableProp(promisified, "__isPromisified__", true);
 	                obj[promisifiedKey] = promisified;
 	            }
 	        }
-	        util$$2.toFastProperties(obj);
+	        util$$1.toFastProperties(obj);
 	        return obj;
 	    }
 
@@ -11570,7 +11570,7 @@
 
 	    Promise.promisify = function (fn, options) {
 	        if (typeof fn !== "function") {
-	            throw new TypeError("expecting a function but got " + util$$2.classString(fn));
+	            throw new TypeError("expecting a function but got " + util$$1.classString(fn));
 	        }
 	        if (isPromisified(fn)) {
 	            return fn;
@@ -11579,7 +11579,7 @@
 	        var receiver = options.context === undefined ? THIS : options.context;
 	        var multiArgs = !!options.multiArgs;
 	        var ret = promisify(fn, receiver, multiArgs);
-	        util$$2.copyDescriptors(fn, ret, propsFilter);
+	        util$$1.copyDescriptors(fn, ret, propsFilter);
 	        return ret;
 	    };
 
@@ -11596,14 +11596,14 @@
 	        var promisifier = options.promisifier;
 	        if (typeof promisifier !== "function") promisifier = makeNodePromisified;
 
-	        if (!util$$2.isIdentifier(suffix)) {
+	        if (!util$$1.isIdentifier(suffix)) {
 	            throw new RangeError('suffix must be a valid identifier\n\n    See http://goo.gl/MqrFmX\n');
 	        }
 
-	        var keys = util$$2.inheritedDataKeys(target);
+	        var keys = util$$1.inheritedDataKeys(target);
 	        for (var i = 0; i < keys.length; ++i) {
 	            var value = target[keys[i]];
-	            if (keys[i] !== "constructor" && util$$2.isClass(value)) {
+	            if (keys[i] !== "constructor" && util$$1.isClass(value)) {
 	                promisifyAll(value.prototype, suffix, filter, promisifier, multiArgs);
 	                promisifyAll(value, suffix, filter, promisifier, multiArgs);
 	            }
@@ -11614,9 +11614,9 @@
 	};
 
 	var props = function props(Promise, PromiseArray, tryConvertToPromise, apiRejection) {
-	    var util$$2 = util;
-	    var isObject = util$$2.isObject;
-	    var es5$$2 = es5;
+	    var util$$1 = util;
+	    var isObject = util$$1.isObject;
+	    var es5$$1 = es5;
 	    var Es6Map;
 	    if (typeof Map === "function") Es6Map = Map;
 
@@ -11657,7 +11657,7 @@
 	            entries = mapToEntries(obj);
 	            isMap = true;
 	        } else {
-	            var keys = es5$$2.keys(obj);
+	            var keys = es5$$1.keys(obj);
 	            var len = keys.length;
 	            entries = new Array(len * 2);
 	            for (var i = 0; i < len; ++i) {
@@ -11670,7 +11670,7 @@
 	        this._isMap = isMap;
 	        this._init$(undefined, isMap ? -6 : -3);
 	    }
-	    util$$2.inherits(PropertiesPromiseArray, PromiseArray);
+	    util$$1.inherits(PropertiesPromiseArray, PromiseArray);
 
 	    PropertiesPromiseArray.prototype._init = function () {};
 
@@ -11730,7 +11730,7 @@
 	};
 
 	var race = function race(Promise, INTERNAL, tryConvertToPromise, apiRejection) {
-	    var util$$2 = util;
+	    var util$$1 = util;
 
 	    var raceLater = function raceLater(promise) {
 	        return promise.then(function (array) {
@@ -11744,8 +11744,8 @@
 	        if (maybePromise instanceof Promise) {
 	            return raceLater(maybePromise);
 	        } else {
-	            promises = util$$2.asArray(promises);
-	            if (promises === null) return apiRejection("expecting an array or an iterable object but got " + util$$2.classString(promises));
+	            promises = util$$1.asArray(promises);
+	            if (promises === null) return apiRejection("expecting an array or an iterable object but got " + util$$1.classString(promises));
 	        }
 
 	        var ret = new Promise(INTERNAL);
@@ -11777,13 +11777,13 @@
 
 	var reduce = function reduce(Promise, PromiseArray, apiRejection, tryConvertToPromise, INTERNAL, debug) {
 	    var getDomain = Promise._getDomain;
-	    var util$$2 = util;
-	    var tryCatch = util$$2.tryCatch;
+	    var util$$1 = util;
+	    var tryCatch = util$$1.tryCatch;
 
 	    function ReductionPromiseArray(promises, fn, initialValue, _each) {
 	        this.constructor$(promises);
 	        var domain = getDomain();
-	        this._fn = domain === null ? fn : util$$2.domainBind(domain, fn);
+	        this._fn = domain === null ? fn : util$$1.domainBind(domain, fn);
 	        if (initialValue !== undefined) {
 	            initialValue = Promise.resolve(initialValue);
 	            initialValue._attachCancellationCallback(this);
@@ -11800,7 +11800,7 @@
 	        this._promise._captureStackTrace();
 	        this._init$(undefined, -5);
 	    }
-	    util$$2.inherits(ReductionPromiseArray, PromiseArray);
+	    util$$1.inherits(ReductionPromiseArray, PromiseArray);
 
 	    ReductionPromiseArray.prototype._gotAccum = function (accum) {
 	        if (this._eachValues !== undefined && this._eachValues !== null && accum !== INTERNAL) {
@@ -11894,7 +11894,7 @@
 
 	    function reduce(promises, fn, initialValue, _each) {
 	        if (typeof fn !== "function") {
-	            return apiRejection("expecting a function but got " + util$$2.classString(fn));
+	            return apiRejection("expecting a function but got " + util$$1.classString(fn));
 	        }
 	        var array = new ReductionPromiseArray(promises, fn, initialValue, _each);
 	        return array.promise();
@@ -11934,12 +11934,12 @@
 
 	var settle = function settle(Promise, PromiseArray, debug) {
 	    var PromiseInspection = Promise.PromiseInspection;
-	    var util$$2 = util;
+	    var util$$1 = util;
 
 	    function SettledPromiseArray(values) {
 	        this.constructor$(values);
 	    }
-	    util$$2.inherits(SettledPromiseArray, PromiseArray);
+	    util$$1.inherits(SettledPromiseArray, PromiseArray);
 
 	    SettledPromiseArray.prototype._promiseResolved = function (index, inspection) {
 	        this._values[index] = inspection;
@@ -11975,10 +11975,10 @@
 	};
 
 	var some = function some(Promise, PromiseArray, apiRejection) {
-	    var util$$2 = util;
+	    var util$$1 = util;
 	    var RangeError = errors.RangeError;
 	    var AggregateError = errors.AggregateError;
-	    var isArray = util$$2.isArray;
+	    var isArray = util$$1.isArray;
 	    var CANCELLATION = {};
 
 	    function SomePromiseArray(values) {
@@ -11987,7 +11987,7 @@
 	        this._unwrap = false;
 	        this._initialized = false;
 	    }
-	    util$$2.inherits(SomePromiseArray, PromiseArray);
+	    util$$1.inherits(SomePromiseArray, PromiseArray);
 
 	    SomePromiseArray.prototype._init = function () {
 	        if (!this._initialized) {
@@ -16440,16 +16440,15 @@
 
 	  init: function init() {
 	    this._currentWayPoint = -1;
-	    this.el.setAttribute('animation__move', { startEvents: 'doNotFire', pauseEvents: 'pauseTour', resumeEvents: 'resumeTour', property: 'position', easing: 'easeInOutSine', dur: 100 });
-	    this.el.setAttribute('animation__turn', { startEvents: 'doNotFire', pauseEvents: 'pauseTour', resumeEvents: 'resumeTour', property: 'rotation', easing: 'easeInOutSine', dur: 100 });
 	    this._nextWaypointHandler = this._nextWaypoint.bind(this);
-	    this.el.addEventListener('animation__move-complete', this._nextWaypointHandler);
+	    this.el.addEventListener('nextTourPoint', this._nextWaypointHandler);
 	  },
 
 	  update: function update() {
 	    this._waypoints = Array.from(this.el.querySelectorAll('[tour-waypoint]'));
-
-	    if (this.data.autoStart) {
+	    // with aframe >= 0.8.0 rotation possible only with look-controls
+	    if (!this.el.components["look-controls"]) this.el.setAttribute("look-controls", "");
+	    if (this.data.autoStart && this.el.components["look-controls"]) {
 	      this.playTour();
 	    }
 	  },
@@ -16464,13 +16463,15 @@
 	        clearTimeout(this._nextAnimationTimeout);
 	        this.goTo(this._waypoints[this._currentWayPoint].getAttribute('io3d-uuid'), this._isPlaying);
 	      } else {
-	        this.el.dispatchEvent(new CustomEvent('resumeTour'));
+	        if (this.positionAnimation) this.positionAnimation.play();
+	        if (this.rotationAnimationX) this.rotationAnimationX.play();
+	        if (this.rotationAnimationY) this.rotationAnimationY.play();
 	      }
 	      this._isPaused = false;
 	    } else {
 	      this._isPlaying = true;
 	      this._isPaused = false;
-	      var next = this._waypoints[++this._currentWayPoint];
+	      var next = this._waypoints[this._currentWayPoint + 1];
 	      if (next) this.goTo(next.getAttribute('io3d-uuid'), true);else if (this.data.loop) {
 	        this._currentWayPoint = 0;
 	        this.goTo(this._waypoints[0].getAttribute('io3d-uuid'), true);
@@ -16480,7 +16481,9 @@
 
 	  pauseTour: function pauseTour() {
 	    this._isPaused = true;
-	    this.el.dispatchEvent(new CustomEvent('pauseTour'));
+	    if (this.positionAnimation) this.positionAnimation.pause();
+	    if (this.rotationAnimationX) this.rotationAnimationX.pause();
+	    if (this.rotationAnimationY) this.rotationAnimationY.pause();
 	  },
 
 	  stopTour: function stopTour() {
@@ -16491,9 +16494,11 @@
 
 	  goTo: function goTo(uuid, keepPlaying) {
 	    this._isPlaying = !!keepPlaying;
-	    var target = this._waypoints.find(function (item) {
-	      return item.getAttribute('io3d-uuid') === uuid;
-	    });
+	    var target = this._waypoints.find(function (item, index) {
+	      var isCurrent = item.getAttribute('io3d-uuid') === uuid;
+	      if (isCurrent) this._currentWayPoint = index;
+	      return isCurrent;
+	    }.bind(this));
 	    if (!target) {
 	      console.error('The given waypoint ' + uuid + ' does not exist. Available waypoints:', this._waypoints.map(function (elem) {
 	        return elem.getAttribute('io3d-uuid');
@@ -16534,15 +16539,14 @@
 	    var newPosition = isDomElement ? bookmark.getAttribute('position') : bookmark.position;
 	    var newRotation = isDomElement ? bookmark.getAttribute('rotation') : bookmark.rotation;
 	    var startPosition = entity.getAttribute('position');
-	    var startRotation = entity.getAttribute('rotation');
-
-	    // normalize start and end rotation and find shortest arc for each rotation
-	    var normalizedRotations = getNormalizeRotations(startRotation, newRotation);
-	    newRotation = normalizedRotations.end;
-	    startRotation = normalizedRotations.start;
-
-	    // compute distance to adapt speed
-	    var d = dist(startPosition, newPosition);
+	    // with aframe >= 0.8.0 rotation possible only with look-controls
+	    var controls = entity.components["look-controls"];
+	    var startRotation = {
+	      x: THREE.Math.radToDeg(controls.pitchObject.rotation.x),
+	      y: THREE.Math.radToDeg(controls.yawObject.rotation.y),
+	      z: 0
+	      // compute distance to adapt speed
+	    };var d = dist(startPosition, newPosition);
 	    // compute angle difference to adapt speed
 	    var angle = Math.abs(startRotation.y - newRotation.y);
 	    // compute animation time
@@ -16551,19 +16555,49 @@
 	    if (t > Math.max(5000, this.data.move)) t = Math.max(5000, this.data.move);
 	    // prevent zero length animation
 	    if (!t) return this._nextWaypoint();
-
-	    entity.components.animation__move.pauseAnimation();
-	    entity.components.animation__turn.pauseAnimation();
-	    entity.components.animation__move.data.dur = t;
-	    entity.components.animation__move.data.from = startPosition;
-	    entity.components.animation__move.data.to = newPosition;
-	    entity.components.animation__move.update();
-	    entity.components.animation__turn.data.dur = t;
-	    entity.components.animation__turn.data.from = startRotation;
-	    entity.components.animation__turn.data.to = newRotation;
-	    entity.components.animation__turn.update();
-	    entity.components.animation__move.resumeAnimation();
-	    entity.components.animation__turn.resumeAnimation();
+	    if (this.positionAnimation) this.positionAnimation.pause();
+	    if (this.rotationAnimationX) this.rotationAnimationX.pause();
+	    if (this.rotationAnimationY) this.rotationAnimationY.pause();
+	    if (startRotation.x !== newRotation.x) {
+	      controls.pitchObject.rotation.x = THREE.Math.degToRad(startRotation.x);
+	      this.rotationAnimationX = window.anime({
+	        targets: controls.pitchObject.rotation,
+	        x: THREE.Math.degToRad(newRotation.x),
+	        duration: t,
+	        easing: 'linear'
+	      });
+	    }
+	    if (startRotation.y !== newRotation.y) {
+	      controls.rotation.y = THREE.Math.degToRad(startRotation.y);
+	      this.rotationAnimationY = window.anime({
+	        targets: controls.yawObject.rotation,
+	        y: THREE.Math.degToRad(newRotation.y),
+	        duration: t,
+	        easing: 'linear'
+	      });
+	    }
+	    this.positionAnimation = window.anime({
+	      targets: entity.object3D.position,
+	      y: newPosition.y,
+	      x: newPosition.x,
+	      z: newPosition.z,
+	      duration: t,
+	      easing: 'linear',
+	      update: function update(anim) {
+	        var value = anim.animatables[0].target;
+	        if (entity.object3D.position.x === value.x && entity.object3D.position.y === value.y && entity.object3D.position.z === value.z) return;
+	        entity.object3D.position.set(value.x, value.y, value.z);
+	      }
+	    });
+	    this.positionAnimation.finished.then(function () {
+	      controls.yawObject.rotation.y = THREE.Math.degToRad(newRotation.y);
+	      controls.pitchObject.rotation.x = THREE.Math.degToRad(newRotation.x);
+	      entity.object3D.position.set(newPosition.x, newPosition.y, newPosition.z);
+	      this.rotationAnimationX = undefined;
+	      this.rotationAnimationY = undefined;
+	      this.positionAnimation = undefined;
+	      entity.dispatchEvent(new CustomEvent('nextTourPoint'));
+	    }.bind(this));
 	    this._isChangingAnimation = false;
 	  },
 
@@ -16579,31 +16613,13 @@
 	    this._isChangingAnimation = true;
 	    var next = this._waypoints[++this._currentWayPoint];
 	    this._nextAnimationTimeout = setTimeout(function () {
+	      if (this._isPaused) return;
 	      this.goTo(next.getAttribute('io3d-uuid'), this._isPlaying);
 	    }.bind(this), this.data.wait === undefined ? 0 : this.data.wait);
 	  }
 
 	  // we want to prevent excessive spinning in rotations
-	};function getNormalizeRotations(start, end) {
-	  // normalize both rotations
-	  var normStart = normalizeRotation(start);
-	  var normEnd = normalizeRotation(end);
-	  // find the shortest arc for each rotation
-	  Object.keys(start).forEach(function (axis) {
-	    if (normEnd[axis] - normStart[axis] > 180) normEnd[axis] -= 360;
-	  });
-	  return { start: normStart, end: normEnd };
-	}
-
-	function normalizeRotation(rot) {
-	  return {
-	    x: rot.x % 360,
-	    y: rot.y % 360,
-	    z: rot.z % 360
-	  };
-	}
-
-	function dist(p, q) {
+	};function dist(p, q) {
 	  var a = parseFloat(q.x) - parseFloat(p.x);
 	  var b = parseFloat(q.y) - parseFloat(p.y);
 	  var c = parseFloat(q.z) - parseFloat(p.z);
@@ -25669,7 +25685,7 @@
 	    }
 	  },
 
-	  generateMeshes3d: function generateMeshes3d() {}
+	  generateMeshes3d: function generateMeshes3d$$1() {}
 	};
 
 	var getFloorData3d = function (attributes) {
@@ -26810,12 +26826,12 @@
 
 	  // API
 	  options = options || {};
-	  var url$$1 = options.url;
+	  var url = options.url;
 
 	  var parsedUrl, rootDir, origin;
 
-	  if (url$$1) {
-	    parsedUrl = Url.parse(url$$1);
+	  if (url) {
+	    parsedUrl = Url.parse(url);
 	    rootDir = path.parse(parsedUrl.path || parsedUrl.pathname || '').dir;
 	    origin = parsedUrl.protocol + '//' + parsedUrl.host;
 	  }
@@ -26870,7 +26886,7 @@
 	  traverseData3d(structure.data3d, function (data3d) {
 
 	    // map typed arrays to payload area in file buffer
-	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url$$1);
+	    mapArraysToBuffer(data3d, buffer, payloadByteOffset, url);
 
 	    //  convert relative material keys into absolute one
 	    if (origin && data3d.materials) convertTextureKeys(data3d, origin, rootDir);
@@ -26915,7 +26931,7 @@
 	  }
 	}
 
-	function mapArraysToBuffer(data3d, buffer, payloadByteOffset, url$$1) {
+	function mapArraysToBuffer(data3d, buffer, payloadByteOffset, url) {
 
 	  var mesh,
 	      i,
@@ -26948,7 +26964,7 @@
 	    }
 
 	    // add cache key
-	    if (url$$1) mesh.cacheKey = url$$1 + ':' + meshKeys[i];
+	    if (url) mesh.cacheKey = url + ':' + meshKeys[i];
 	  }
 	}
 
