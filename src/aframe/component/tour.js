@@ -139,6 +139,7 @@ export default {
     // add 1 to the this.data.move parameter to allow users to specify 0 without the animation cancelling out
     var t = Math.round((this.data.move === undefined ? 3000 : this.data.move + 1) / 6 * (d + angle / 30))
     if (t > Math.max(5000, this.data.move)) t = Math.max(5000, this.data.move)
+    var anime = window.anime || AFRAME.anime
     // prevent zero length animation
     if (!t) return this._nextWaypoint()
     if (this.positionAnimation) this.positionAnimation.pause()
@@ -146,7 +147,7 @@ export default {
     if (this.rotationAnimationY) this.rotationAnimationY.pause()
     if (startRotation.x !== newRotation.x) {
       controls.pitchObject.rotation.x = THREE.Math.degToRad(startRotation.x)
-      this.rotationAnimationX = window.anime({
+      this.rotationAnimationX = anime({
         targets: controls.pitchObject.rotation,
         x: THREE.Math.degToRad(newRotation.x),
         duration: t,
@@ -155,14 +156,14 @@ export default {
     }
     if (startRotation.y !== newRotation.y) {
       controls.yawObject.rotation.y = THREE.Math.degToRad(startRotation.y)
-      this.rotationAnimationY = window.anime({
+      this.rotationAnimationY = anime({
         targets: controls.yawObject.rotation,
         y: THREE.Math.degToRad(newRotation.y),
         duration: t,
         easing: 'linear',
       })
     }
-    this.positionAnimation = window.anime({
+    this.positionAnimation = anime({
       targets: entity.object3D.position,
       y: newPosition.y,
       x: newPosition.x,
