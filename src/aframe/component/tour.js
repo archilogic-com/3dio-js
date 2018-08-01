@@ -123,10 +123,14 @@ export default {
     var startPosition = entity.getAttribute('position')
     // with aframe >= 0.8.0 rotation possible only with look-controls
     var controls = entity.components["look-controls"]
-    var startRotation = {
+    var startRotation = isAframeLessThen('0.8.0') ? {
+      x: entity.components.rotation.data.x,
+      y: entity.components.rotation.data.y,
+      z: entity.components.rotation.data.z
+    } : {
       x: THREE.Math.radToDeg(controls.pitchObject.rotation.x),
       y: THREE.Math.radToDeg(controls.yawObject.rotation.y),
-      z: 0,
+      z: 0
     }
     var normalizedRotations = getNormalizeRotations(startRotation, newRotation)
     newRotation = normalizedRotations.end
@@ -145,23 +149,35 @@ export default {
     if (this.positionAnimation) this.positionAnimation.pause()
     if (this.rotationAnimationX) this.rotationAnimationX.pause()
     if (this.rotationAnimationY) this.rotationAnimationY.pause()
-    if (startRotation.x !== newRotation.x) {
-      controls.pitchObject.rotation.x = THREE.Math.degToRad(startRotation.x)
+    if(isAframeLessThen('0.8.0')){
+      entity.components.rotation.data.x = startRotation.x
+      entity.components.rotation.data.y = startRotation.y
       this.rotationAnimationX = anime({
-        targets: controls.pitchObject.rotation,
-        x: THREE.Math.degToRad(newRotation.x),
+        targets: entity.components.rotation.data,
+        x: newRotation.x,
+        y: newRotation.y,
         duration: t,
         easing: 'linear',
       })
-    }
-    if (startRotation.y !== newRotation.y) {
-      controls.yawObject.rotation.y = THREE.Math.degToRad(startRotation.y)
-      this.rotationAnimationY = anime({
-        targets: controls.yawObject.rotation,
-        y: THREE.Math.degToRad(newRotation.y),
-        duration: t,
-        easing: 'linear',
-      })
+    } else {
+      if (startRotation.x !== newRotation.x) {
+        controls.pitchObject.rotation.x = THREE.Math.degToRad(startRotation.x)
+        this.rotationAnimationX = anime({
+          targets: controls.pitchObject.rotation,
+          x: THREE.Math.degToRad(newRotation.x),
+          duration: t,
+          easing: 'linear',
+        })
+      }
+      if (startRotation.y !== newRotation.y) {
+        controls.yawObject.rotation.y = THREE.Math.degToRad(startRotation.y)
+        this.rotationAnimationY = anime({
+          targets: controls.yawObject.rotation,
+          y: THREE.Math.degToRad(newRotation.y),
+          duration: t,
+          easing: 'linear',
+        })
+      }
     }
     this.positionAnimation = anime({
       targets: entity.object3D.position,
@@ -181,8 +197,13 @@ export default {
       }
     })
     this.positionAnimation.finished.then(function () {
-      controls.yawObject.rotation.y = THREE.Math.degToRad(newRotation.y)
-      controls.pitchObject.rotation.x = THREE.Math.degToRad(newRotation.x)
+      if (isAframeLessThen('0.8.0')) {
+        entity.components.rotation.data.x = newRotation.x
+        entity.components.rotation.data.y = newRotation.y
+      } else {
+        controls.yawObject.rotation.y = THREE.Math.degToRad(newRotation.y)
+        controls.pitchObject.rotation.x = THREE.Math.degToRad(newRotation.x)
+      }
       entity.object3D.position.set(newPosition.x, newPosition.y, newPosition.z)
       this.rotationAnimationX = undefined
       this.rotationAnimationY = undefined
@@ -220,6 +241,17 @@ function getNormalizeRotations(start, end) {
     if (normEnd[axis] - normStart[axis] > 180) normEnd[axis] -= 360
   })
   return { start: normStart, end: normEnd }
+}
+
+function isAframeLessThen(version) {
+  version = version || '';
+  var versionMatch = (AFRAME.version || '').match(/^(\d)\.(\d)\.(\d)/i)
+  var testMatch = (version || '').match(/^(\d)\.(\d)\.(\d)/i)
+  if (!versionMatch || !versionMatch[1]) return true
+  if(versionMatch[1] < testMatch[1]) return true
+  if(versionMatch[2] < testMatch[2]) return true
+  if(versionMatch[3] < testMatch[3]) return true
+  return false
 }
 
 function normalizeRotation(rot) {
