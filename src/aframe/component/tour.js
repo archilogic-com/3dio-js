@@ -157,7 +157,7 @@ export default {
         x: newRotation.x,
         y: newRotation.y,
         duration: t,
-        easing: 'linear',
+        easing: 'easeInOutSine',
       })
     } else {
       if (startRotation.x !== newRotation.x) {
@@ -166,7 +166,7 @@ export default {
           targets: controls.pitchObject.rotation,
           x: THREE.Math.degToRad(newRotation.x),
           duration: t,
-          easing: 'linear',
+          easing: 'easeInOutSine',
         })
       }
       if (startRotation.y !== newRotation.y) {
@@ -175,7 +175,7 @@ export default {
           targets: controls.yawObject.rotation,
           y: THREE.Math.degToRad(newRotation.y),
           duration: t,
-          easing: 'linear',
+          easing: 'easeInOutSine',
         })
       }
     }
@@ -185,7 +185,7 @@ export default {
       x: newPosition.x,
       z: newPosition.z,
       duration: t,
-      easing: 'linear',
+      easing: 'easeInOutSine',
       update: function (anim) {
         const value = anim.animatables[0].target
         if (
