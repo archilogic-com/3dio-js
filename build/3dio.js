@@ -2,9 +2,9 @@
  * @preserve
  * @name 3dio
  * @version 1.2.1
- * @date 2018/08/02 13:31
+ * @date 2018/08/02 13:41
  * @branch master
- * @commit 724496e8a7c2e8e73dfebb4daf4726a2c382b226
+ * @commit f38e4c2a106d6b508423cf0b08168b4ceb375400
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,7 +18,7 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2018/08/02 13:31', GIT_BRANCH = 'master', GIT_COMMIT = '724496e8a7c2e8e73dfebb4daf4726a2c382b226'
+	var BUILD_DATE='2018/08/02 13:41', GIT_BRANCH = 'master', GIT_COMMIT = 'f38e4c2a106d6b508423cf0b08168b4ceb375400'
 
 	var name = "3dio";
 	var version = "1.2.1";
@@ -17183,7 +17183,7 @@
 	        x: newRotation.x,
 	        y: newRotation.y,
 	        duration: t,
-	        easing: 'linear',
+	        easing: 'easeInOutSine',
 	      });
 	    } else {
 	      if (startRotation.x !== newRotation.x) {
@@ -17192,7 +17192,7 @@
 	          targets: controls.pitchObject.rotation,
 	          x: THREE.Math.degToRad(newRotation.x),
 	          duration: t,
-	          easing: 'linear',
+	          easing: 'easeInOutSine',
 	        });
 	      }
 	      if (startRotation.y !== newRotation.y) {
@@ -17201,7 +17201,7 @@
 	          targets: controls.yawObject.rotation,
 	          y: THREE.Math.degToRad(newRotation.y),
 	          duration: t,
-	          easing: 'linear',
+	          easing: 'easeInOutSine',
 	        });
 	      }
 	    }
@@ -17211,7 +17211,7 @@
 	      x: newPosition.x,
 	      z: newPosition.z,
 	      duration: t,
-	      easing: 'linear',
+	      easing: 'easeInOutSine',
 	      update: function (anim) {
 	        const value = anim.animatables[0].target;
 	        if (
