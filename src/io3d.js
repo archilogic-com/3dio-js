@@ -40,7 +40,10 @@ var io3d = {
 
 }
 
-// create upper case alias fro main lib object in browser environment
-if (runtime.isBrowser) window.IO3D = io3d
+// create globals for main lib object in browser environment
+if (runtime.isBrowser) {
+  window.io3d = io3d
+  window.IO3D = io3d // upper case alias
+}
 
 export default io3d
