@@ -1,10 +1,10 @@
 /**
  * @preserve
  * @name 3dio
- * @version 2.0.0
- * @date 2018/08/02 14:01
+ * @version 2.1.0
+ * @date 2019/02/05 00:18
  * @branch master
- * @commit 6d8e40b5d28ffa2206a3c4c6434cd03998fb2e7e
+ * @commit c9a74259796d08cd16bfcfcc1ab2158d4f1c9688
  * @description toolkit for interior apps
  * @see https://3d.io
  * @tutorial https://github.com/archilogic-com/3dio-js
@@ -18,10 +18,10 @@
 	(global.io3d = factory());
 }(this, (function () { 'use strict';
 
-	var BUILD_DATE='2018/08/02 14:01', GIT_BRANCH = 'master', GIT_COMMIT = '6d8e40b5d28ffa2206a3c4c6434cd03998fb2e7e'
+	var BUILD_DATE='2019/02/05 00:18', GIT_BRANCH = 'master', GIT_COMMIT = 'c9a74259796d08cd16bfcfcc1ab2158d4f1c9688'
 
 	var name = "3dio";
-	var version = "2.0.0";
+	var version = "2.1.0";
 	var description = "toolkit for interior apps";
 	var keywords = ["3d", "aframe", "cardboard", "components", "oculus", "vive", "rift", "vr", "WebVR", "WegGL", "three", "three.js", "3D model", "api", "visualization", "furniture", "real estate", "interior", "building", "architecture", "3d.io"];
 	var homepage = "https://3d.io";
@@ -42279,8 +42279,11 @@
 	  configs: configs,
 	  config: configs // alias
 
-	  // create upper case alias fro main lib object in browser environment
-	};if (runtime.isBrowser) window.IO3D = io3d$1;
+	  // create globals for main lib object in browser environment
+	};if (runtime.isBrowser) {
+	  window.io3d = io3d$1;
+	  window.IO3D = io3d$1; // upper case alias
+	}
 
 	return io3d$1;
 
