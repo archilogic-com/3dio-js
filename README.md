@@ -1,17 +1,7 @@
-<p align="center"><a href="https://app.3d.io/oFXeKW" target="_blank"><img alt="toolkit for interior apps" src="img/title-pic3.gif"></a></p>
+> 3dio.js is deprecated
+> visit [https://developers.archilogic.com](https://developers.archilogic.com) for new developements
 
-<div align="center">
-  <a href="https://3d.io">Website</a>
-  &mdash;
-  <a href="https://3d.io/docs/api/1/">Docs</a>
-  &mdash;
-  <a href="#install">Install</a>
-  &mdash;
-  <a href="https://dist.3d.io/">Releases</a>
-  &mdash;
-  <a href="#contribute">Contribute</a>
-</div>
-
+<!--p align="center"><a href="https://app.3d.io/oFXeKW" target="_blank"><img alt="toolkit for interior apps" src="img/title-pic3.gif"></a></p-->
 
 ## Basic Example
 
